@@ -1,0 +1,4 @@
+This is a testing file with some UTF-8 chars:
+x x x x x x x x x x x x
+£ @ £ ¬ ` 漢 _ _ あ _ _
+x x x x x xx x x xx x x
