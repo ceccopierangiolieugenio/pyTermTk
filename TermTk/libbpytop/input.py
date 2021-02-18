@@ -27,6 +27,8 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
+from TermTk.TTk import TTkLog
+
 class MouseEvent:
     # Keys
     NoButton      = 0x00000000    # The button state does not refer to any button (see QMouseEvent::button()).
@@ -138,6 +140,7 @@ class Input:
                     m = mouse_re.match(input_key)
                     if not m:
                         # TODO: Return Error
+                        TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                         continue
                     code = int(m.group(1))
                     x = int(m.group(2))
@@ -170,7 +173,8 @@ class Input:
                         key = MouseEvent.Wheel
                         evt = MouseEvent.Down
                     mevt = MouseEvent(x, y, key, evt, m.group(0).replace("\033", "<ESC>"))
-
+                else:
+                    TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                 input_key = ""
                 if callback is not None:
                     callback(kevt, mevt)

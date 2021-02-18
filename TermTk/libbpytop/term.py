@@ -45,6 +45,19 @@ class Term:
     _sigWinChCb = None
 
     @staticmethod
+    def init(mouse: bool = True, title: str = "TermTk"):
+        Term.push(Term.alt_screen, Term.clear, Term.hide_cursor, Term.title("BpyTOP"))
+        if mouse:
+            Term.push(Term.mouse_on)
+        Term.echo(False)
+
+    @staticmethod
+    def exit():
+        Term.push(Term.mouse_off, Term.mouse_direct_off)
+        Term.echo(True)
+
+
+    @staticmethod
     def echo(on: bool):
         """Toggle input echo"""
         (iflag, oflag, cflag, lflag, ispeed, ospeed, cc) = termios.tcgetattr(sys.stdin.fileno())
@@ -79,5 +92,7 @@ class Term:
     @staticmethod
     def registerResizeCb(callback):
         Term._sigWinChCb = callback
+        # Dummy call to retrieve the terminal size
+        Term._sigWinCh(signal.SIGWINCH, None)
         signal.signal(signal.SIGWINCH, Term._sigWinCh)
 

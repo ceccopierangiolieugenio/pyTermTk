@@ -1,2 +1,2 @@
-# py-ttk
+# pyTermTk
 Python Terminal Toolkit
