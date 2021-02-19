@@ -24,44 +24,40 @@
 
 import sys, os
 import logging
+import time
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 from TermTk import TTkLog
-import TermTk.libbpytop as lbt
 
-def message_handler(mode, context, message):
-    log = logging.debug
-    if mode == TTkLog.InfoMsg:       log = logging.info
-    elif mode == TTkLog.WarningMsg:  log = logging.warning
-    elif mode == TTkLog.CriticalMsg: log = logging.critical
-    elif mode == TTkLog.FatalMsg:    log = logging.fatal
-    elif mode == TTkLog.ErrorMsg:    log = logging.error
-    log(f"{context.file} {message}")
+from TermTk import TTk
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
-TTkLog.installMessageHandler(message_handler)
+class Demo1:
+    def __init__(self, master):
+        self.master = master
+        self.frame = ttk.Frame(self.master)
+        self.button1 = ttk.Button(self.frame, text = 'New Window', width = 25, command = self.new_window)
+        self.button1.pack()
+        self.frame.pack()
 
-TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
-TTkLog.info("Press q or <ESC> to exit")
+    def new_window(self):
+        self.newWindow = ttk.Toplevel(self.master)
+        self.app = Demo2(self.newWindow)
 
-lbt.Term.push(lbt.Term.mouse_on)
-lbt.Term.echo(False)
+class Demo2:
+    def __init__(self, master):
+        self.master = master
+        self.frame = ttk.Frame(self.master)
+        self.quitButton = ttk.Button(self.frame, text = 'Quit', width = 25, command = self.close_windows)
+        self.quitButton.pack()
+        self.frame.pack()
 
-def keyCallback(kevt=None, mevt=None):
-    if mevt is not None:
-        TTkLog.info(f"Mouse Event: {mevt}")
-    if kevt is not None:
-        TTkLog.info(f"Key Event: {kevt}")
-        if kevt.key == "q":
-            return False
-    return True
+    def close_windows(self):
+        self.master.destroy()
 
-def winCallback(width, height):
-    TTkLog.info(f"Resize: w:{width}, h:{height}")
+def main():
+    root = ttk.TTk()
+    app = Demo1(root)
+    root.mainloop()
 
-lbt.Term.registerResizeCb(winCallback)
-lbt.Input.get_key(keyCallback)
-
-lbt.Term.push(lbt.Term.mouse_off, lbt.Term.mouse_direct_off)
-lbt.Term.echo(True)
+if __name__ == '__main__':
+    main()

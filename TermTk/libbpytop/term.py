@@ -26,8 +26,36 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
+class Mv:
+    """Class with collection of cursor movement functions: .t[o](line, column) | .r[ight](columns) | .l[eft](columns) | .u[p](lines) | .d[own](lines) | .save() | .restore()"""
+    @staticmethod
+    def to(line: int, col: int) -> str:
+        return f'\033[{line};{col}f' #* Move cursor to line, column
+    @staticmethod
+    def right(x: int) -> str:        #* Move cursor right x columns
+        return f'\033[{x}C'
+    @staticmethod
+    def left(x: int) -> str:         #* Move cursor left x columns
+        return f'\033[{x}D'
+    @staticmethod
+    def up(x: int) -> str:           #* Move cursor up x lines
+        return f'\033[{x}A'
+    @staticmethod
+    def down(x: int) -> str:         #* Move cursor down x lines
+        return f'\033[{x}B'
+
+    save: str = "\033[s"             #* Save cursor position
+    restore: str = "\033[u"          #* Restore saved cursor postion
+    t = to
+    r = right
+    l = left
+    u = up
+    d = down
+
 class Term:
     """Terminal info and commands"""
+    title: str = "TermTk"
+    mouse: bool = True
     width: int = 0
     height: int = 0
     fg: str = ""                                           #* Default foreground color
@@ -46,14 +74,30 @@ class Term:
 
     @staticmethod
     def init(mouse: bool = True, title: str = "TermTk"):
-        Term.push(Term.alt_screen, Term.clear, Term.hide_cursor, Term.title("BpyTOP"))
-        if mouse:
+        Term.title = title
+        Term.mouse = mouse
+        Term.push(Term.alt_screen, Term.clear, Term.hide_cursor, Term.escTitle(Term.title))
+        if Term.mouse:
+            Term.push(Term.mouse_on)
+        Term.echo(False)
+
+    @staticmethod
+    def stop():
+        Term.push(Term.mouse_off, Term.mouse_direct_off)
+        Term.push(Term.clear, Term.normal_screen, Term.show_cursor, Term.escTitle())
+        Term.echo(True)
+
+    @staticmethod
+    def cont():
+        Term.push(Term.alt_screen, Term.clear, Term.hide_cursor, Term.escTitle(Term.title))
+        if Term.mouse:
             Term.push(Term.mouse_on)
         Term.echo(False)
 
     @staticmethod
     def exit():
         Term.push(Term.mouse_off, Term.mouse_direct_off)
+        Term.push(Term.clear, Term.normal_screen, Term.show_cursor, Term.escTitle())
         Term.echo(True)
 
 
@@ -77,7 +121,7 @@ class Term:
             print(*args, sep="", end="", flush=True)
 
     @staticmethod
-    def title(text: str = "") -> str:
+    def escTitle(text: str = "") -> str:
         out: str = f'{os.environ.get("TERMINAL_TITLE", "")}'
         if out and text: out += " "
         if text: out += f'{text}'
@@ -95,4 +139,3 @@ class Term:
         # Dummy call to retrieve the terminal size
         Term._sigWinCh(signal.SIGWINCH, None)
         signal.signal(signal.SIGWINCH, Term._sigWinCh)
-

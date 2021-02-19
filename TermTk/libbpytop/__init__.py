@@ -1,2 +1,3 @@
-from .input import *
-from .term import *
+from .input  import *
+from .term   import *
+from .colors import *

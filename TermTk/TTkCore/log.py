@@ -26,6 +26,7 @@
 # https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuDebug.py
 
 import inspect
+import logging
 from collections.abc import Callable
 
 class _TTkContext:
@@ -47,6 +48,30 @@ class TTkLog:
     SystemMsg   = CriticalMsg
 
     _messageHandler: Callable = None
+
+    @staticmethod
+    def _logging_message_handler(mode, context, message):
+        log = logging.debug
+        if mode == TTkLog.InfoMsg:       log = logging.info
+        elif mode == TTkLog.WarningMsg:  log = logging.warning
+        elif mode == TTkLog.CriticalMsg: log = logging.critical
+        elif mode == TTkLog.FatalMsg:    log = logging.fatal
+        elif mode == TTkLog.ErrorMsg:    log = logging.error
+        log(f"{context.file}:{context.line} {message}")
+
+    @staticmethod
+    def use_default_file_logging():
+        logging.basicConfig(level=logging.DEBUG,
+                    filename='session.log',
+                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
+        TTkLog.installMessageHandler(TTkLog._logging_message_handler)
+
+    @staticmethod
+    def use_default_stdout_logging():
+        logging.basicConfig(level=logging.DEBUG,
+                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
+        TTkLog.installMessageHandler(TTkLog._logging_message_handler)
+
 
     @staticmethod
     def _process_msg(mode: int, msg: str):

@@ -27,7 +27,7 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-from TermTk.TTk import TTkLog
+import TermTk as ttk
 
 class MouseEvent:
     # Keys
@@ -130,9 +130,7 @@ class Input:
                 # ttk.debug("INPUT: "+input_key.replace("\033","<ESC>"))
                 mevt = None
                 kevt = None
-                if input_key == "\033" or input_key == "q":     #* Key is "escape" key if only containing \033
-                    break
-                elif len(input_key) == 1:
+                if len(input_key) == 1:
                     # Key Pressed
                     kevt = KeyEvent(0, input_key)
                 elif input_key.startswith("\033[<"):
@@ -140,7 +138,7 @@ class Input:
                     m = mouse_re.match(input_key)
                     if not m:
                         # TODO: Return Error
-                        TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
+                        ttk.TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                         continue
                     code = int(m.group(1))
                     x = int(m.group(2))
@@ -174,10 +172,11 @@ class Input:
                         evt = MouseEvent.Down
                     mevt = MouseEvent(x, y, key, evt, m.group(0).replace("\033", "<ESC>"))
                 else:
-                    TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
+                    ttk.TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                 input_key = ""
                 if callback is not None:
-                    callback(kevt, mevt)
+                    if not callback(kevt, mevt):
+                        break
 
 def main():
     print("Retrieve Keyboard, Mouse press/drag/wheel Events")
