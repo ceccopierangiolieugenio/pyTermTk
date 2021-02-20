@@ -28,6 +28,7 @@ from TermTk.TTkCore.cfg import *
 
 class TTkHelper:
     # TODO: Add Setter/Getter
+    _focusWidget = None
     _rootCanvas = None
     _updateWidget = []
     _paintBuffer  = []
@@ -75,6 +76,19 @@ class TTkHelper:
         if widget is None or widget.parentWidget() is None:
             return (0, 0)
         return TTkHelper.absPos(widget.parentWidget())
+
+    @staticmethod
+    def setFocus(widget):
+        TTkHelper._focusWidget = widget
+
+    @staticmethod
+    def getFocus():
+        return TTkHelper._focusWidget
+
+    @staticmethod
+    def clearFocus():
+        TTkHelper._focusWidget = None
+
 
     class Color(lbt.Color): pass
     class Mv(lbt.Mv): pass

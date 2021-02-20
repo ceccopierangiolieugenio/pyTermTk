@@ -71,6 +71,14 @@ class TTkCanvas:
         self._height = h
         TTkHelper.addPaintBuffer(self)
 
+    def clean(self, pos=(0, 0), size=None):
+        x,y = pos
+        w,h = size if size is not None else (self._width, self._height)
+        for iy in range(y,y+h):
+            for ix in range(x,x+w):
+                self._data[iy][ix] = ' '
+                self._colors[iy][ix] = TTkColor.RST
+
     def zTop(self):
         # TODO: Figure out how to use this
         pass

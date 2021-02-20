@@ -78,8 +78,13 @@ class TTk(TTkWidget):
             evt = self.events.get()
             if   evt is TTk.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
-                self.mouseEvent(mevt)
-                # TTkLog.info(f"Mouse Event: {mevt}")
+                focusWidget = TTkHelper.getFocus()
+                if focusWidget is not None:
+                    x,y = TTkHelper.absPos(focusWidget)
+                    nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
+                    focusWidget.mouseEvent(nmevt)
+                else:
+                    self.mouseEvent(mevt)
             elif evt is TTk.KEY_EVENT:
                 kevt = self.key_events.get()
                 self.keyEvent(kevt)

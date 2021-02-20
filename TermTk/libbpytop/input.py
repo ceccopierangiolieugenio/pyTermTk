@@ -56,6 +56,10 @@ class MouseEvent:
         self.evt = evt
         self.raw = raw
 
+    def clone(self, pos=None):
+        x,y = pos if pos != None else (self.x, self.y)
+        return MouseEvent(x, y, self.key, self.evt, self.raw)
+
     def key2str(self):
         return {
             MouseEvent.NoButton     : "NoButton",

@@ -37,7 +37,7 @@ class TTkButton(TTkWidget):
             self._padl = 1
             self._padr = 1
         self._pressed = False
-        self.update()
+        self.setFocusPolicy(TTkWidget.ClickFocus)
 
     def paintEvent(self):
         if self._pressed:

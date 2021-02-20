@@ -28,6 +28,19 @@ from TermTk.TTkCore.cfg import *
 from TermTk.TTkWidgets.layout import *
 
 class TTkWidget:
+    # Focus Policies
+    NoFocus    = 0x0000
+    ClickFocus = 0x0001
+    WheelFocus = 0x0002
+    TabFocus   = 0x0004
+
+    # positions
+    NONE   = 0x0000
+    TOP    = 0x0001
+    BOTTOM = 0x0002
+    LEFT   = 0x0004
+    RIGHT  = 0x0008
+
     '''
     Terminal
     ┌─────────────────────────────────────────┐
@@ -46,18 +59,27 @@ class TTkWidget:
         self._childs = []
         self._name = kwargs.get('name', None )
         self._parent = kwargs.get('parent', None )
+
         self._x = kwargs.get('x', 0 )
         self._y = kwargs.get('y', 0 )
+        self._x, self._y = kwargs.get('pos', (self._x, self._y))
         self._width  = kwargs.get('width' , 0 )
         self._height = kwargs.get('height', 0 )
+        self._width, self._height = kwargs.get('size', (self._width, self._height))
+
         self._padt = kwargs.get('paddingTop',    0 )
         self._padb = kwargs.get('paddingBottom', 0 )
         self._padl = kwargs.get('paddingLeft',   0 )
         self._padr = kwargs.get('paddingRight',  0 )
+
         self._maxw = 0x10000
         self._maxh = 0x10000
         self._minw = 0x00000
         self._minh = 0x00000
+
+        self._focus = False
+        self._focus_policy = TTkWidget.NoFocus
+
         self._canvas = TTkCanvas(
                             widget = self,
                             width  = self._width  ,
@@ -89,6 +111,8 @@ class TTkWidget:
     def paintNotifyParent(self):
         parent = self._parent
         while parent is not None:
+            parent._canvas.clean()
+            parent.paintEvent()
             parent.paintChildCanvas()
             parent = parent._parent
 
@@ -113,6 +137,17 @@ class TTkWidget:
     def setGeometry(self, x, y, w, h):
         self.resize(w, h)
         self.move(x, y)
+
+    def setPadding(self, top, bottom, left, right):
+        self._padt = top
+        self._padb = bottom
+        self._padl = left
+        self._padr = right
+        if self._layout is not None:
+            self._layout.setGeometry(
+                                self._padl, self._padt,
+                                self._width   - self._padl - self._padr,
+                                self._height  - self._padt - self._padb)
 
     def mouseDoubleClickEvent(self, evt): pass
     def mouseMoveEvent(self, evt): pass
@@ -145,11 +180,7 @@ class TTkWidget:
                     wx,wy,ww,wh = widget.geometry()
                     # Skip the mouse event if outside this widget
                     if x >= wx and x<wx+ww and y>=wy and y<wy+wh:
-                        wevt = lbt.MouseEvent(
-                                        x=x-wx, y=y-wy,
-                                        key=evt.key,
-                                        evt=evt.evt,
-                                        raw=evt.raw)
+                        wevt = evt.clone(pos=(x-wx, y-wy))
                 if mouseEvent:
                     if wevt is not None:
                         #if not widget._data['mouse']['underMouse']:
@@ -168,11 +199,7 @@ class TTkWidget:
                 #if widget.event(evt):
                 #    return True
             elif isinstance(item, TTkLayout):
-                levt = lbt.MouseEvent(
-                                x=x, y=y,
-                                key=evt.key,
-                                evt=evt.evt,
-                                raw=evt.raw)
+                levt = evt.clone(pos=(x, y))
                 if TTkWidget._mouseEventLayoutHandle(levt, item):
                     return True
         return False
@@ -185,10 +212,12 @@ class TTkWidget:
             self.mouseDragEvent(evt)
         elif   evt.evt == lbt.MouseEvent.Release:
             self.mouseReleaseEvent(evt)
+            if self.hasFocus():
+                self.clearFocus()
         elif   evt.evt == lbt.MouseEvent.Press:
             self.mousePressEvent(evt)
-            #if self.focusPolicy() & CuT.ClickFocus == CuT.ClickFocus:
-            #    self.setFocus()
+            if self.focusPolicy() & TTkWidget.ClickFocus == TTkWidget.ClickFocus:
+                self.setFocus()
         elif evt.key == lbt.MouseEvent.Wheel:
             self.wheelEvent(evt)
             #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
@@ -301,7 +330,31 @@ class TTkWidget:
             self._layout.update()
 
     def setFocus(self):
-        pass
+        tmp = TTkHelper.getFocus()
+        if tmp is not None:
+            tmp.clearFocus()
+            tmp.focusOutEvent()
+            tmp.update()
+        TTkHelper.setFocus(self)
+        self._focus = True
+        self.focusInEvent()
+
+    def clearFocus(self):
+        TTkHelper.clearFocus()
+        self._focus = False
+        self.focusOutEvent()
+
+    def hasFocus(self):
+        return self._focus
 
     def getCanvas(self):
         return self._canvas
+
+    def focusPolicy(self):
+        return self._focus_policy
+
+    def setFocusPolicy(self, policy):
+        self._focus_policy = policy
+
+    def focusInEvent(self): pass
+    def focusOutEvent(self): pass
