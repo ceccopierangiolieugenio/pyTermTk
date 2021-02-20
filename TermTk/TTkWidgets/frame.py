@@ -29,11 +29,12 @@ class TTkFrame(TTkWidget):
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._border = kwargs.get('border', True )
-        self.update()
+        if self._border:
+            self._padt = 1
+            self._padb = 1
+            self._padl = 1
+            self._padr = 1
 
     def paintEvent(self):
         if self._border:
-            self._canvas.drawBox(0,0,self._width,self._height)
-
-
-
+            self._canvas.drawBox(pos=(0,0),size=(self._width,self._height))

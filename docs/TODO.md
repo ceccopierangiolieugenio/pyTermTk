@@ -25,6 +25,8 @@
 
 ## Logs
   - [x] Log Class
+  - [ ] Run Logger on a separate thread (push sring to a queue)
+    - [ ] Include option to force print
   - [ ] Log helpers
     - [x] File and Stdout logger
   - [ ] logger auto integration

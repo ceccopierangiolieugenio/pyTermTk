@@ -141,8 +141,8 @@ class Input:
                         ttk.TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                         continue
                     code = int(m.group(1))
-                    x = int(m.group(2))
-                    y = int(m.group(3))
+                    x = int(m.group(2))-1
+                    y = int(m.group(3))-1
                     state = m.group(4)
                     key = MouseEvent.NoButton
                     evt = MouseEvent.NoEvent

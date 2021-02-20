@@ -22,50 +22,81 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import TermTk.libbpytop as lbt
 from TermTk.TTkCore.canvas import *
 from TermTk.TTkCore.cfg import *
-from .layout import *
+from TermTk.TTkWidgets.layout import *
 
 class TTkWidget:
+    '''
+    Terminal
+    ┌─────────────────────────────────────────┐
+    │                                         │
+    │    TTkWidget     width                  │
+    │ (x,y)┌─────────────────────────┐        │
+    │      │      padt               │        │
+    │      │    ┌───────────────┐    │ height │
+    │      │padl│ Layout/childs │padr│        │
+    │      │    └───────────────┘    │        │
+    │      │      padl               │        │
+    │      └─────────────────────────┘        │
+    └─────────────────────────────────────────┘
+    '''
     def __init__(self, *args, **kwargs):
         self._childs = []
+        self._name = kwargs.get('name', None )
         self._parent = kwargs.get('parent', None )
         self._x = kwargs.get('x', 0 )
         self._y = kwargs.get('y', 0 )
         self._width  = kwargs.get('width' , 0 )
         self._height = kwargs.get('height', 0 )
-        self._maxw = 0x80000000
-        self._maxh = 0x80000000
-        self._minw = 0x00000000
-        self._minh = 0x00000000
-        self._layout = TTkLayout()
+        self._padt = kwargs.get('paddingTop',    0 )
+        self._padb = kwargs.get('paddingBottom', 0 )
+        self._padl = kwargs.get('paddingLeft',   0 )
+        self._padr = kwargs.get('paddingRight',  0 )
+        self._maxw = 0x10000
+        self._maxh = 0x10000
+        self._minw = 0x00000
+        self._minh = 0x00000
         self._canvas = TTkCanvas(
                             widget = self,
                             width  = self._width  ,
                             height = self._height )
+        self.setLayout(TTkLayout())
         if self._parent is not None and \
            self._parent._layout is not None:
             self._parent._layout.addWidget(self)
-
-    def getX(self): return self._x
-    def getY(self): return self._y
-    def getWidth(self):  return self._width
-    def getHeight(self): return self._height
-
-    def pos(self):
-        return (self._x, self._y)
 
     def addLayout(self, l):
         self._layout = l
 
     def paintEvent(self): pass
 
+    def paintChildCanvas(self):
+        # paint over child canvas
+        lx,ly,lw,lh = self._layout.geometry()
+        for i in range(self._layout.count()):
+            item = self._layout.itemAt(i)
+            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
+                child = item.widget()
+                cx,cy,cw,ch = child.geometry()
+                self._canvas.paintCanvas(
+                                child.getCanvas(),
+                                (cx,  cy,  cw, ch),
+                                (0,0,cw,ch),
+                                (lx, ly, lw, lh))
+
+    def paintNotifyParent(self):
+        parent = self._parent
+        while parent is not None:
+            parent.paintChildCanvas()
+            parent = parent._parent
+
+
     def move(self, x, y):
         self._x = x
         self._y = y
         self._canvas.move(self._x, self._y)
-        if self._layout is not None:
-            self._layout.setGeometry(self._x, self._y, self._width, self._height)
         self.update()
 
     def resize(self, w, h):
@@ -73,7 +104,10 @@ class TTkWidget:
         self._height = h
         self._canvas.resize(self._width, self._height)
         if self._layout is not None:
-            self._layout.setGeometry(self._x, self._y, self._width, self._height)
+            self._layout.setGeometry(
+                                self._padl, self._padt,
+                                self._width   - self._padl - self._padr,
+                                self._height  - self._padt - self._padb)
         self.update()
 
     def setGeometry(self, x, y, w, h):
@@ -82,6 +116,7 @@ class TTkWidget:
 
     def mouseDoubleClickEvent(self, evt): pass
     def mouseMoveEvent(self, evt): pass
+    def mouseDragEvent(self, evt): pass
     def mousePressEvent(self, evt): pass
     def mouseReleaseEvent(self, evt): pass
     def wheelEvent(self, evt): pass
@@ -90,8 +125,87 @@ class TTkWidget:
     def keyPressEvent(self, evt): pass
     def keyReleaseEvent(self, evt): pass
 
-    def event(self, evt):
+    @staticmethod
+    def _mouseEventLayoutHandle(evt, layout):
+        x, y = evt.x, evt.y
+        lx,ly,lw,lh =layout.geometry()
+        # opt of bounds
+        #x-=lx
+        #y-=ly
+        if x<0 or x>lw or y<0 or y>lh:
+            return True
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
+                widget = item.widget()
+                wevt = None
+                mouseEvent = False
+                if isinstance(evt, lbt.MouseEvent):
+                    mouseEvent = True
+                    wx,wy,ww,wh = widget.geometry()
+                    # Skip the mouse event if outside this widget
+                    if x >= wx and x<wx+ww and y>=wy and y<wy+wh:
+                        wevt = lbt.MouseEvent(
+                                        x=x-wx, y=y-wy,
+                                        key=evt.key,
+                                        evt=evt.evt,
+                                        raw=evt.raw)
+                if mouseEvent:
+                    if wevt is not None:
+                        #if not widget._data['mouse']['underMouse']:
+                        #    widget._data['mouse']['underMouse'] = True
+                        #    widget.enterEvent(wevt)
+                        if widget.mouseEvent(wevt):
+                            return True
+                    #else:
+                    #    if widget._data['mouse']['underMouse']:
+                    #        widget._data['mouse']['underMouse'] = False
+                    #        widget.leaveEvent(evt)
+                    #    if widget._data['layout'] is not None:
+                    #        CuWidget._broadcastLeaveEvent(evt, widget._data['layout'])
+                    continue
+
+                #if widget.event(evt):
+                #    return True
+            elif isinstance(item, TTkLayout):
+                levt = lbt.MouseEvent(
+                                x=x, y=y,
+                                key=evt.key,
+                                evt=evt.evt,
+                                raw=evt.raw)
+                if TTkWidget._mouseEventLayoutHandle(levt, item):
+                    return True
+        return False
+
+    def mouseEvent(self, evt):
+        # handle own events
+        if evt.evt == lbt.MouseEvent.Move:
+            self.mouseMoveEvent(evt)
+        if evt.evt == lbt.MouseEvent.Drag:
+            self.mouseDragEvent(evt)
+        elif   evt.evt == lbt.MouseEvent.Release:
+            self.mouseReleaseEvent(evt)
+        elif   evt.evt == lbt.MouseEvent.Press:
+            self.mousePressEvent(evt)
+            #if self.focusPolicy() & CuT.ClickFocus == CuT.ClickFocus:
+            #    self.setFocus()
+        elif evt.key == lbt.MouseEvent.Wheel:
+            self.wheelEvent(evt)
+            #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
+            #    self.setFocus()
+        #elif evt.type() == CuEvent.KeyPress:
+        #    self.keyPressEvent(evt)
+        #elif evt.type() == CuEvent.KeyRelease:
+        #    self.keyReleaseEvent(evt)
+        # Trigger this event to the childs
+        if self._layout is not None:
+            return TTkWidget._mouseEventLayoutHandle(evt, self._layout)
+
+    def keyEvent(self, evt):
         pass
+
+    #def event(self, evt):
+    #    pass
 #        # handle own events
 #        if evt.type() == CuEvent.MouseMove:
 #            if evt.button() == CuT.NoButton:
@@ -113,6 +227,32 @@ class TTkWidget:
 #        # Trigger this event to the childs
 #        if self._layout is not None:
 #            return CuWidget._eventLayoutHandle(evt, self._layout)
+
+    def setLayout(self, layout):
+        self._layout = layout
+        self._layout.setParent(self)
+        self._layout.setGeometry(
+                        self._padl, self._padt,
+                        self._width   - self._padl - self._padr,
+                        self._height  - self._padt - self._padb)
+        self._layout.update()
+
+    def layout(self): return self._layout
+
+    def setParent(self, parent):
+        self._parent = parent
+    def parentWidget(self):
+        return self._parent
+
+    def x(self): return self._x
+    def y(self): return self._y
+    def width(self):  return self._width
+    def height(self): return self._height
+
+    def pos(self):      return self._x, self._y
+    def size(self):     return self._width, self._height
+    def geometry(self): return self._x, self._y, self._width, self._height
+
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
     def maximumHeight(self):
@@ -160,13 +300,8 @@ class TTkWidget:
         if self._layout is not None:
             self._layout.update()
 
+    def setFocus(self):
+        pass
+
     def getCanvas(self):
         return self._canvas
-
-    def layout(self):
-        return self._layout
-
-    def setParent(self, parent):
-        self._parent = parent
-    def parentWidget(self):
-        return self._parent

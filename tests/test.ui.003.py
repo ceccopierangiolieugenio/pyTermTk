@@ -23,42 +23,32 @@
 # SOFTWARE.
 
 import sys, os
-import logging
-import time
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk.libbpytop import Term, Mv, Color
-from TermTk import TTkLog
-from TermTk.TTkCore import TTkColor
-from TermTk.TTkCore import TTkHelper
+import TermTk as ttk
 
-TTkLog.use_default_file_logging()
+ttk.TTkLog.use_default_file_logging()
 
-Term.init(mouse=False)
-TTkLog.info("Starting")
-Term.push(
-        TTkHelper.Mv.t(2,4) + # Cursor x:2, y:4
-        TTkColor.fg("#ff0000") +
-        "Test Text 3"
-    )
-time.sleep(1)
-TTkLog.info("next : 2")
+root = ttk.TTk()
+root.setLayout(ttk.TTkHBoxLayout())
 
-Term.push(
-        TTkHelper.Mv.d(1) + Mv.l(3) + # Cursor 1 Down, 3 Left
-        TTkColor.bg("#550088") +
-        "Test Text 2"
-    )
-time.sleep(1)
-TTkLog.info("next : 1")
+ttk.TTkTestWidget(parent=root,border=True)
+rightframe = ttk.TTkFrame(parent=root)
+rightframe.setLayout(ttk.TTkVBoxLayout())
 
-Term.push(
-        TTkHelper.Mv.d(1) + Mv.l(3) + # Cursor 1 Down, 3 Left
-        TTkColor.fg("#00ff00") +
-        TTkColor.bg("#555500") +
-        "Test Text 1"
-    )
-time.sleep(1)
-TTkLog.info("Ending")
+ttk.TTkFrame(parent=rightframe, border=True)
+centerrightframe=ttk.TTkFrame(parent=rightframe, border=True)
+centerrightframe.setLayout(ttk.TTkHBoxLayout())
+ttk.TTkTestWidget(parent=rightframe, border=True)
 
-Term.exit()
+
+smallframe = ttk.TTkFrame(parent=centerrightframe, border=True)
+# smallframe.setLayout(ttk.TTkVBoxLayout())
+ttk.TTkTestWidget(parent=centerrightframe, border=True)
+ttk.TTkFrame(parent=centerrightframe, border=True)
+
+ttk.TTkButton(parent=smallframe, x=3, y=1, width=20, height=3, text=" Ui.003 Button")
+ttk.TTkTestWidget(parent=smallframe, x=3, y=5, width=50, height=8, border=True)
+ttk.TTkTestWidget(parent=smallframe, x=-5, y=14, width=50, height=15, border=True)
+
+root.mainloop()

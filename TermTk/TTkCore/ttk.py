@@ -78,10 +78,12 @@ class TTk(TTkWidget):
             evt = self.events.get()
             if   evt is TTk.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
-                TTkLog.info(f"Mouse Event: {mevt}")
+                self.mouseEvent(mevt)
+                # TTkLog.info(f"Mouse Event: {mevt}")
             elif evt is TTk.KEY_EVENT:
                 kevt = self.key_events.get()
-                TTkLog.info(f"Key Event: {kevt}")
+                self.keyEvent(kevt)
+                # TTkLog.info(f"Key Event: {kevt}")
                 pass
             elif evt is TTk.TIME_EVENT:
                 pass

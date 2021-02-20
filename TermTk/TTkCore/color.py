@@ -22,43 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
-import logging
-import time
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.helper import *
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk.libbpytop import Term, Mv, Color
-from TermTk import TTkLog
-from TermTk.TTkCore import TTkColor
-from TermTk.TTkCore import TTkHelper
-
-TTkLog.use_default_file_logging()
-
-Term.init(mouse=False)
-TTkLog.info("Starting")
-Term.push(
-        TTkHelper.Mv.t(2,4) + # Cursor x:2, y:4
-        TTkColor.fg("#ff0000") +
-        "Test Text 3"
-    )
-time.sleep(1)
-TTkLog.info("next : 2")
-
-Term.push(
-        TTkHelper.Mv.d(1) + Mv.l(3) + # Cursor 1 Down, 3 Left
-        TTkColor.bg("#550088") +
-        "Test Text 2"
-    )
-time.sleep(1)
-TTkLog.info("next : 1")
-
-Term.push(
-        TTkHelper.Mv.d(1) + Mv.l(3) + # Cursor 1 Down, 3 Left
-        TTkColor.fg("#00ff00") +
-        TTkColor.bg("#555500") +
-        "Test Text 1"
-    )
-time.sleep(1)
-TTkLog.info("Ending")
-
-Term.exit()
+class TTkColor:
+    RST = '\033[0m'
+    @staticmethod
+    def fg(*args, **kwargs):
+        return TTkHelper.Color.fg(*args, **kwargs)
+    @staticmethod
+    def bg(*args, **kwargs):
+        return TTkHelper.Color.bg(*args, **kwargs)

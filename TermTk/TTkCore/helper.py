@@ -50,38 +50,31 @@ class TTkHelper:
         TTkHelper._updateWidget = []
 
     @staticmethod
-    def execPaint(cw, ch):
-        if TTkHelper._rootCanvas is None :
-            return
-        for canvas in TTkHelper._paintBuffer:
-            widget = canvas.getWidget()
-            x = widget.getX()
-            y = widget.getY()
-            w = widget.getWidth()
-            h = widget.getHeight()
-            TTkHelper._rootCanvas.paintCanvas(canvas, x, y, w, h)
-        TTkHelper._paintBuffer = []
-
-    @staticmethod
     def paintAll():
         if TTkHelper._rootCanvas is None:
             return
+        processed = []
         for widget in TTkHelper._updateWidget:
+            processed.append(widget)
             widget.paintEvent()
+            widget.paintChildCanvas()
+            p = widget.parentWidget()
+            #if p in TTkHelper._updateWidget and p not in processed:
+            widget.paintNotifyParent()
         TTkHelper._updateWidget = []
-        TTkHelper.execPaint(TTkGlbl.term_w,TTkGlbl.term_h)
         TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-
-        # curses.panel.update_panels()
-        # TTkGlbl.GLBL['screen'].refresh()
 
     @staticmethod
     def absPos(widget) -> (int,int):
-        pos = TTkHelper.absParentPos(widget)
-        return widget.pos() + pos
+        ppos = TTkHelper.absParentPos(widget)
+        wpos = widget.pos()
+        return (wpos[0]+ppos[0], wpos[1]+ppos[1])
 
     @staticmethod
     def absParentPos(widget) -> (int,int):
         if widget is None or widget.parentWidget() is None:
             return (0, 0)
         return TTkHelper.absPos(widget.parentWidget())
+
+    class Color(lbt.Color): pass
+    class Mv(lbt.Mv): pass

@@ -21,3 +21,41 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkWidgets.widget import *
+
+class TTkButton(TTkWidget):
+    def __init__(self, *args, **kwargs):
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._text = kwargs.get('text', "" )
+        self._border = kwargs.get('border', True )
+        if self._border:
+            self._padt = 1
+            self._padb = 1
+            self._padl = 1
+            self._padr = 1
+        self._pressed = False
+        self.update()
+
+    def paintEvent(self):
+        if self._pressed:
+            borderColor = TTkColor.fg("#00ffff")
+            textColor   = TTkColor.fg("#0000ff")
+        else:
+            borderColor = TTkColor.fg("#ffff00")
+            textColor   = TTkColor.fg("#00ff00")
+        self._canvas.drawText(pos=(1,1), color=textColor ,text=self._text)
+        if self._border:
+            self._canvas.drawBox(pos=(0,0),size=(self._width,self._height),color=borderColor)
+
+    def mousePressEvent(self, evt):
+        TTkLog.debug(f"{self._name} Test Mouse {evt}")
+        self._pressed = True
+        self.update()
+
+    def mouseReleaseEvent(self, evt):
+        TTkLog.debug(f"{self._name} Test Mouse {evt}")
+        self._pressed = False
+        self.update()

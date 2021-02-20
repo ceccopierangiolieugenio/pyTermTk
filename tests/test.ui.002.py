@@ -30,16 +30,16 @@ import TermTk as ttk
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
-root._layout = ttk.TTkHBoxLayout()
+root.setLayout(ttk.TTkHBoxLayout())
 ttk.TTkFrame(parent=root,border=True)
 rightframe = ttk.TTkFrame(parent=root)
-rightframe._layout = ttk.TTkVBoxLayout()
+rightframe.setLayout(ttk.TTkVBoxLayout())
 
 ttk.TTkFrame(parent=rightframe, border=True)
-centerrightframe=ttk.TTkFrame(parent=rightframe)
+centerrightframe=ttk.TTkFrame(parent=rightframe, border=True)
 ttk.TTkFrame(parent=rightframe, border=True)
 
-centerrightframe._layout = ttk.TTkHBoxLayout()
+centerrightframe.setLayout(ttk.TTkHBoxLayout())
 
 ttk.TTkFrame(parent=centerrightframe, border=True)
 ttk.TTkFrame(parent=centerrightframe, border=True)
