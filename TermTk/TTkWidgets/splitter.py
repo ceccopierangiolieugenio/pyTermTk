@@ -22,33 +22,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-import TermTk as ttk
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.ttk import *
+from TermTk.TTkWidgets.widget import *
+from TermTk.TTkWidgets.frame import *
 
-ttk.TTkLog.use_default_file_logging()
+class TTkSplitter(TTkFrame):
+    __slots__ = ('_widgets', '_orientation', '_splitters', '_selected')
+    def __init__(self, *args, **kwargs):
+        TTkFrame.__init__(self, *args, **kwargs)
+        self._widgets = []
+        self._splitters = []
+        self._orientation = kwargs.get('orientation' , TTk.HORIZONTAL )
 
-root = ttk.TTk()
+    def addWidget(self, widget):
+        # NOTE: Check with the max/min size if the new widget can fit
+        self._widgets.append(widget)
+        self._splitters.append(0x10000)
+        self._rearrange()
 
-win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(60,30), title="Test Window 1", border=True)
+    def _rearrange(self):
+        w, h = self.size()
+        if self._orientation == TTk.HORIZONTAL:
+            pass
+        else:
+            pass
 
-win2 = ttk.TTkWindow(parent=win1,pos = (3,3), size=(40,20), title="Test Window 2", border=True)
-win2.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkTestWidget(parent=win2, border=False)
-
-win3 = ttk.TTkWindow(parent=root,pos = (20,5), size=(60,20), title="Test Window 3", border=True)
-win3.setLayout(ttk.TTkHBoxLayout())
-
-ttk.TTkTestWidget(parent=win3, border=True, maxWidth=30, minWidth=20)
-rightFrame = ttk.TTkFrame(parent=win3,border=True)
-rightFrame.setLayout(ttk.TTkVBoxLayout())
-
-ttk.TTkTestWidget(parent=rightFrame,border=True, maxHeight=11, minHeight=6)
-bottomrightframe = ttk.TTkFrame(parent=rightFrame,border=True)
-
-win4 = ttk.TTkWindow(parent=bottomrightframe, pos = (3,3), size=(40,20), title="Test Window 4", border=True)
-win4.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkTestWidget(parent=win4, border=False)
-
-root.mainloop()

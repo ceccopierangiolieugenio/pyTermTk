@@ -54,12 +54,6 @@ class TTkCanvas:
 
     def getWidget(self): return self._widget
 
-    def move(self, x, y):
-        npos = TTkHelper.absParentPos(self._widget)
-        # CuTCore.cuDebug("Move: x:"+str(nx+x)+" y:"+str(ny+y))
-        # self._bufPaint['move']={'x':npos.x()+x, 'y':npos.y()+y}
-        TTkHelper.addPaintBuffer(self)
-
     def resize(self, w, h):
         # TTkLog.debug(f"CanvasResize:{(w,h)}")
         self._data = [[]]*h
@@ -69,7 +63,6 @@ class TTkCanvas:
             self._colors[i] = [TTkColor.RST]*w
         self._width  = w
         self._height = h
-        TTkHelper.addPaintBuffer(self)
 
     def clean(self, pos=(0, 0), size=None):
         x,y = pos
@@ -119,7 +112,6 @@ class TTkCanvas:
             for i in range(y+1,y+h-1):
                 _set(i, x,   "║")
                 _set(i, x+w-1, "║")
-        TTkHelper.addPaintBuffer(self)
 
     def execPaint(self, winw, winh):
         pass

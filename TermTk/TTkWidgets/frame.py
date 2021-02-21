@@ -26,14 +26,12 @@ from TermTk.TTkCore.log import TTkLog
 from .widget import *
 
 class TTkFrame(TTkWidget):
+    __slots__ = ('_border')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._border = kwargs.get('border', True )
         if self._border:
-            self._padt = 1
-            self._padb = 1
-            self._padl = 1
-            self._padr = 1
+            self.setPadding(1,1,1,1)
 
     def paintEvent(self):
         if self._border:

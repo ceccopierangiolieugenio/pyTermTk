@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# tmp folder
+# other
 tmp
+profiler.txt
+.vscode
 
 # C extensions
 *.so

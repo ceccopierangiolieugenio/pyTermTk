@@ -27,6 +27,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):
+    __slots__ = ('_text', '_border', '_pressed')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._text = kwargs.get('text', "" )

@@ -49,12 +49,14 @@ class _TestContent(TTkWidget):
 
 class TTkTestWidget(TTkFrame):
     ID = 1
+    __slots__ = ('_name')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
         #self.setLayout(TTkHBoxLayout())
         self._name = f"TestWidget-{TTkTestWidget.ID}"
-        TTkButton(parent=self, x=1, y=1, width=15, height=3, text=' Test Button')
-        _TestContent(parent=self, x=1, y=4, width=50, height=50, name=f"content-{self._name}")
+        t,_,l,_ = self.getPadding()
+        TTkButton(parent=self, x=l, y=t, width=15, height=3, text=' Test Button')
+        _TestContent(parent=self, x=l, y=3+t, width=50, height=50, name=f"content-{self._name}")
         TTkTestWidget.ID+=1
 
     def mousePressEvent(self, evt):

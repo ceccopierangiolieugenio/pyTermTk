@@ -31,7 +31,7 @@ class TTkHelper:
     _focusWidget = None
     _rootCanvas = None
     _updateWidget = []
-    _paintBuffer  = []
+    _updateBuffer  = []
 
     @staticmethod
     def addUpdateWidget(widget):
@@ -39,31 +39,36 @@ class TTkHelper:
             TTkHelper._updateWidget.append(widget)
 
     @staticmethod
-    def addPaintBuffer(canvas):
+    def addUpdateBuffer(canvas):
         if canvas is not TTkHelper._rootCanvas:
-            if canvas not in TTkHelper._paintBuffer:
-                TTkHelper._paintBuffer.append(canvas)
+            if canvas not in TTkHelper._updateBuffer:
+                TTkHelper._updateBuffer.append(canvas)
 
     @staticmethod
     def registerRootCanvas(canvas):
         TTkHelper._rootCanvas = canvas
-        TTkHelper._paintBuffer = []
+        TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
 
     @staticmethod
     def paintAll():
         if TTkHelper._rootCanvas is None:
             return
-        processed = []
-        for widget in TTkHelper._updateWidget:
-            processed.append(widget)
+        #processed = []
+        pushToTerminal = False
+        for widget in TTkHelper._updateBuffer:
             widget.paintEvent()
+        TTkHelper._updateBuffer = []
+        for widget in TTkHelper._updateWidget:
+            pushToTerminal = True
+            #processed.append(widget)
             widget.paintChildCanvas()
-            p = widget.parentWidget()
+            #p = widget.parentWidget()
             #if p in TTkHelper._updateWidget and p not in processed:
             widget.paintNotifyParent()
         TTkHelper._updateWidget = []
-        TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+        if pushToTerminal:
+            TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
 
     @staticmethod
     def absPos(widget) -> (int,int):

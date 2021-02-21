@@ -29,6 +29,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 
 class TTkWindow(TTkWidget):
+    __slots__ = ('_title', '_mouseDelta', '_draggable', '_resizable')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._title = kwargs.get('title' , 0 )

@@ -55,8 +55,15 @@ class TTkWidget:
     │      └─────────────────────────┘        │
     └─────────────────────────────────────────┘
     '''
+    __slots__ = (
+        '_name', '_parent',
+        '_x', '_y', '_width', '_height',
+        '_padt', '_padb', '_padl', '_padr',
+        '_maxw', '_maxh', '_minw', '_minh',
+        '_focus','_focus_policy',
+        '_layout', '_canvas')
+
     def __init__(self, *args, **kwargs):
-        self._childs = []
         self._name = kwargs.get('name', None )
         self._parent = kwargs.get('parent', None )
 
@@ -67,15 +74,18 @@ class TTkWidget:
         self._height = kwargs.get('height', 0 )
         self._width, self._height = kwargs.get('size', (self._width, self._height))
 
-        self._padt = kwargs.get('paddingTop',    0 )
-        self._padb = kwargs.get('paddingBottom', 0 )
-        self._padl = kwargs.get('paddingLeft',   0 )
-        self._padr = kwargs.get('paddingRight',  0 )
+        padding = kwargs.get('padding',    0 )
+        self._padt = kwargs.get('paddingTop',    padding )
+        self._padb = kwargs.get('paddingBottom', padding )
+        self._padl = kwargs.get('paddingLeft',   padding )
+        self._padr = kwargs.get('paddingRight',  padding )
 
-        self._maxw = 0x10000
-        self._maxh = 0x10000
-        self._minw = 0x00000
-        self._minh = 0x00000
+        self._maxw = kwargs.get('maxWidth',  0x10000)
+        self._maxh = kwargs.get('maxHeight', 0x10000)
+        self._maxw, self._maxh = kwargs.get('maxSize', (self._maxw, self._maxh))
+        self._minw = kwargs.get('minWidth',  0x00000)
+        self._minh = kwargs.get('minHeight', 0x00000)
+        self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
 
         self._focus = False
         self._focus_policy = TTkWidget.NoFocus
@@ -84,10 +94,14 @@ class TTkWidget:
                             widget = self,
                             width  = self._width  ,
                             height = self._height )
+
         self.setLayout(TTkLayout())
         if self._parent is not None and \
            self._parent._layout is not None:
             self._parent._layout.addWidget(self)
+            self._parent._layout.update()
+
+        self.update(repaint=True, updateLayout=True)
 
     def addLayout(self, l):
         self._layout = l
@@ -120,8 +134,7 @@ class TTkWidget:
     def move(self, x, y):
         self._x = x
         self._y = y
-        self._canvas.move(self._x, self._y)
-        self.update()
+        self.update(repaint=False, updateLayout=False)
 
     def resize(self, w, h):
         self._width  = w
@@ -132,11 +145,14 @@ class TTkWidget:
                                 self._padl, self._padt,
                                 self._width   - self._padl - self._padr,
                                 self._height  - self._padt - self._padb)
-        self.update()
+        self.update(repaint=True, updateLayout=True)
 
     def setGeometry(self, x, y, w, h):
         self.resize(w, h)
         self.move(x, y)
+
+    def getPadding(self):
+        return self._padt, self._padb, self._padl, self._padr
 
     def setPadding(self, top, bottom, left, right):
         self._padt = top
@@ -165,8 +181,6 @@ class TTkWidget:
         x, y = evt.x, evt.y
         lx,ly,lw,lh =layout.geometry()
         # opt of bounds
-        #x-=lx
-        #y-=ly
         if x<0 or x>lw or y<0 or y>lh:
             return True
         for i in range(layout.count()):
@@ -264,7 +278,7 @@ class TTkWidget:
                         self._padl, self._padt,
                         self._width   - self._padl - self._padr,
                         self._height  - self._padt - self._padb)
-        self._layout.update()
+        self.update(repaint=True, updateLayout=True)
 
     def layout(self): return self._layout
 
@@ -324,9 +338,11 @@ class TTkWidget:
     def setMinimumHeight(self, minh):     self._minh = minh
     def setMinimumWidth(self, minw):      self._minw = minw
 
-    def update(self):
+    def update(self, repaint=True, updateLayout=False):
+        if repaint:
+            TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
-        if self._layout is not None:
+        if updateLayout and self._layout is not None:
             self._layout.update()
 
     def setFocus(self):
@@ -334,7 +350,7 @@ class TTkWidget:
         if tmp is not None:
             tmp.clearFocus()
             tmp.focusOutEvent()
-            tmp.update()
+            tmp.update(repaint=True, updateLayout=False)
         TTkHelper.setFocus(self)
         self._focus = True
         self.focusInEvent()

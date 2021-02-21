@@ -171,10 +171,10 @@ class TTkHBoxLayout(TTkLayout):
         for item in self.children():
             if item._sMax:
                 item.setGeometry(newx, newy, item._sMaxVal, h)
-                newy += item._sMaxVal
+                newx += item._sMaxVal
             elif item._sMin:
                 item.setGeometry(newx, newy, item._sMinVal, h)
-                newy += item._sMinVal
+                newx += item._sMinVal
             else:
                 sliceSize = freeWidth//leftWidgets
                 item.setGeometry(newx, newy, sliceSize, h)

@@ -33,6 +33,19 @@ from TermTk.TTkCore.canvas import *
 from TermTk.TTkWidgets.layout import *
 from TermTk.TTkWidgets.widget import *
 
+class TTkTimer(threading.Thread):
+    def __init__(self, callback):
+        threading.Thread.__init__(self)
+        self.stopped = threading.Event()
+        self._callback = callback
+
+    def quit(self):
+        self.stopped.set()
+
+    def run(self):
+        while not self.stopped.wait(0.05):
+            self._callback()
+
 class TTk(TTkWidget):
     running: bool = False
     events = None
@@ -45,6 +58,9 @@ class TTk(TTkWidget):
     SCREEN_EVENT = 0x04
     QUIT_EVENT   = 0x08
     TIME_EVENT   = 0x10
+
+    HORIZONTAL = 0x01
+    VERTICAL   = 0x02
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
@@ -69,7 +85,8 @@ class TTk(TTkWidget):
 
         lbt.Term.registerResizeCb(self._win_resize_cb)
         threading.Thread(target=self._input_thread, daemon=True).start()
-        # threading.Timer(30.0, hello)
+        self._timer = TTkTimer(self._time_event)
+        self._timer.start()
 
         self.running = True
         lbt.Term.init()
@@ -91,6 +108,7 @@ class TTk(TTkWidget):
                 # TTkLog.info(f"Key Event: {kevt}")
                 pass
             elif evt is TTk.TIME_EVENT:
+                TTkHelper.paintAll()
                 pass
             elif evt is TTk.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
@@ -102,10 +120,11 @@ class TTk(TTkWidget):
                 TTkLog.error(f"Unhandled Event {evt}")
                 break
 
-            TTkHelper.paintAll()
-
         lbt.Term.exit()
         pass
+
+    def _time_event(self):
+        self.events.put(TTk.TIME_EVENT)
 
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)
@@ -129,6 +148,7 @@ class TTk(TTkWidget):
 
     def quit(self):
         self.events.put(TTk.QUIT_EVENT)
+        self._timer.quit()
         self.running = False
 
     def _SIGSTOP(self, signum, frame):
