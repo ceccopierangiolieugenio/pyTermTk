@@ -41,10 +41,10 @@ win3 = ttk.TTkWindow(parent=root,pos = (20,5), size=(60,20), title="Test Window 
 win3.setLayout(ttk.TTkHBoxLayout())
 
 ttk.TTkTestWidget(parent=win3, border=True, maxWidth=30, minWidth=20)
-rightFrame = ttk.TTkFrame(parent=win3,border=True)
+rightFrame = ttk.TTkFrame(parent=win3, border=True)
 rightFrame.setLayout(ttk.TTkVBoxLayout())
 
-ttk.TTkTestWidget(parent=rightFrame,border=True, maxHeight=11, minHeight=6)
+ttk.TTkTestWidget(parent=rightFrame, border=True, maxSize=(50,15), minSize=(30,8))
 bottomrightframe = ttk.TTkFrame(parent=rightFrame,border=True)
 
 win4 = ttk.TTkWindow(parent=bottomrightframe, pos = (3,3), size=(40,20), title="Test Window 4", border=True)

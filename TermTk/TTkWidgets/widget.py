@@ -74,7 +74,7 @@ class TTkWidget:
         self._height = kwargs.get('height', 0 )
         self._width, self._height = kwargs.get('size', (self._width, self._height))
 
-        padding = kwargs.get('padding',    0 )
+        padding = kwargs.get('padding', 0 )
         self._padt = kwargs.get('paddingTop',    padding )
         self._padb = kwargs.get('paddingBottom', padding )
         self._padl = kwargs.get('paddingLeft',   padding )
@@ -301,14 +301,14 @@ class TTkWidget:
     def maximumHeight(self):
         wMaxH = self._maxh
         if self._layout is not None:
-            lMaxH = self._layout.maximumHeight()
+            lMaxH = self._layout.maximumHeight() + self._padl + self._padr
             if lMaxH < wMaxH:
                 return lMaxH
         return wMaxH
     def maximumWidth(self):
         wMaxW = self._maxw
         if self._layout is not None:
-            lMaxW = self._layout.maximumWidth()
+            lMaxW = self._layout.maximumWidth() + self._padt + self._padb
             if lMaxW < wMaxW:
                 return lMaxW
         return wMaxW
@@ -318,23 +318,27 @@ class TTkWidget:
     def minimumHeight(self):
         wMinH = self._minh
         if self._layout is not None:
-            lMinH = self._layout.minimumHeight()
+            lMinH = self._layout.minimumHeight() + self._padl + self._padr
             if lMinH > wMinH:
                 return lMinH
         return wMinH
     def minimumWidth(self):
         wMinW = self._minw
         if self._layout is not None:
-            lMinW = self._layout.minimumWidth()
+            lMinW = self._layout.minimumWidth() + self._padt + self._padb
             if lMinW > wMinW:
                 return lMinW
         return wMinW
 
-    def setMaximumSize(self, maxw, maxh): self._maxw = maxw; self._maxh = maxh
+    def setMaximumSize(self, maxw, maxh):
+        self.setMaximumWidth(maxw)
+        self.setMaximumHeight(maxh)
     def setMaximumHeight(self, maxh):     self._maxh = maxh
     def setMaximumWidth(self, maxw):      self._maxw = maxw
 
-    def setMinimumSize(self, minw, minh): self._minw = minw; self._minh = minh
+    def setMinimumSize(self, minw, minh):
+        self.setMinimumWidth(minw)
+        self.setMinimumHeight(minh)
     def setMinimumHeight(self, minh):     self._minh = minh
     def setMinimumWidth(self, minw):      self._minw = minw
 
