@@ -29,10 +29,10 @@ class TTkLabel(TTkWidget):
     __slots__ = ('_text')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self.text = kwargs.get('text', "" )
+        self._text = kwargs.get('text', "" )
 
     def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text=self.text)
+        self._canvas.drawText(pos=(0,0), text=self._text)
 
     @property
     def Abouttext(self):
