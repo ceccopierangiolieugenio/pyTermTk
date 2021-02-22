@@ -79,16 +79,24 @@ class TTkWindow(TTkWidget):
         elif self._resizable:
             # TTkLog.debug(f"{self._resizable}")
             x,y,w,h = self.geometry()
+            maxw, maxh = self.maximumSize()
+            minw, minh = self.minimumSize()
             dx = evt.x-self._mouseDelta[0]
             dy = evt.y-self._mouseDelta[1]
             if self._resizable & TTkWidget.LEFT:
-                x += dx ; w -= dx
+                tmpw = w-dx
+                if minw < tmpw < maxw:
+                    x += dx ; w -= tmpw
             elif self._resizable & TTkWidget.RIGHT:
-                w = evt.x
+                if minw < evt.x < maxw:
+                    w = evt.x
             if self._resizable & TTkWidget.TOP:
-                y += dy ; h -= dy
+                tmph = h-dy
+                if minh < tmph < maxh:
+                    y += dy ; h = tmph
             elif self._resizable & TTkWidget.BOTTOM:
-                h = evt.y
+                if minh < evt.y < maxh:
+                    h = evt.y
             self.move(x,y)
             self.resize(w,h)
 
