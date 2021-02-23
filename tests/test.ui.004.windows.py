@@ -33,9 +33,14 @@ root = ttk.TTk()
 
 win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(60,30), title="Test Window 1", border=True)
 
-win2 = ttk.TTkWindow(parent=win1,pos = (3,3), size=(40,20), title="Test Window 2", border=True)
-win2.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkTestWidget(parent=win2, border=False)
+win2_1 = ttk.TTkWindow(parent=win1,pos = (3,3), size=(40,20), title="Test Window 2.1", border=True)
+win2_1.setLayout(ttk.TTkHBoxLayout())
+ttk.TTkTestWidget(parent=win2_1, border=False)
+
+win2_2 = ttk.TTkWindow(parent=win1,pos = (5,5), size=(40,20), title="Test Window 2.2", border=True)
+win2_2.setLayout(ttk.TTkHBoxLayout())
+ttk.TTkTestWidget(parent=win2_2, border=False)
+
 
 win3 = ttk.TTkWindow(parent=root,pos = (20,5), size=(60,20), title="Test Window 3", border=True)
 win3.setLayout(ttk.TTkHBoxLayout())

@@ -19,6 +19,9 @@
   - [x] Keyboard
   - [x] Mouse
 
+## Colors
+- [ ] Allow dynamic depth change
+- [ ] Define a gradient feature
 ## Canvas Class
 - [ ] Have a look to the Unicode chartable: https://www.utf8-chartable.de/unicode-utf8-table.pl
 

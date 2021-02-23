@@ -57,9 +57,11 @@ class TTkLayoutItem:
 
 
 class TTkLayout(TTkLayoutItem):
+    __slots__ = ('_items', '_zSortedItems', '_parent')
     def __init__(self):
         TTkLayoutItem.__init__(self)
         self._items = []
+        self._zSortedItems = []
         self._parent = None
         pass
 
@@ -80,8 +82,15 @@ class TTkLayout(TTkLayoutItem):
     def parentWidget(self):
         return self._parent
 
+    def _zSortItems(self):
+        self._zSortedItems = sorted(self._items, key=lambda item: item.z)
+
+    @property
+    def zSortedItems(self): return self._zSortedItems
+
     def addItem(self, item):
         self._items.append(item)
+        self._zSortItems()
 
     def addWidget(self, widget):
         self.addItem(TTkWidgetItem(widget))
@@ -91,6 +100,30 @@ class TTkLayout(TTkLayoutItem):
             if i.widget() == widget:
                 self._items.remove(i)
                 return
+        self._zSortItems()
+
+    def raiseWidget(self, widget):
+        maxz = 0
+        item = None
+        for i in self._items:
+            if i.widget() == widget:
+                item = i
+            elif i.z >= maxz:
+                maxz=i.z+1
+        item.z = maxz
+        self._zSortItems()
+
+
+    def lowerWidget(self, widget):
+        minz = 0
+        item = None
+        for i in self._items:
+            if i.widget() == widget:
+                item = i
+            elif i.z <= minz:
+                minz=i.z-1
+        item.z = minz
+        self._zSortItems()
 
     def update(self):
         for i in self.children():
@@ -102,9 +135,11 @@ class TTkLayout(TTkLayoutItem):
                 i.update()
 
 class TTkWidgetItem(TTkLayoutItem):
-    def __init__(self, widget):
+    slots = ('_widget','_z')
+    def __init__(self, widget, z=0):
         TTkLayoutItem.__init__(self)
         self._widget = widget
+        self.z = z
 
     def widget(self):
         return self._widget
@@ -122,6 +157,11 @@ class TTkWidgetItem(TTkLayoutItem):
 
     def setGeometry(self, x, y, w, h):
         self._widget.setGeometry(x, y, w, h)
+
+    @property
+    def z(self): return self._z
+    @z.setter
+    def z(self, z): self._z = z
 
 
 
@@ -212,7 +252,6 @@ class TTkHBoxLayout(TTkLayout):
                 leftWidgets -= 1
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 item.widget().update()
-                item.widget().getCanvas().zTop()
             elif isinstance(item, TTkLayout):
                 item.update()
 
@@ -304,6 +343,5 @@ class TTkVBoxLayout(TTkLayout):
                 leftWidgets -= 1
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 item.widget().update()
-                item.widget().getCanvas().zTop()
             elif isinstance(item, TTkLayout):
                 item.update()

@@ -61,6 +61,7 @@ class TTkWindow(TTkWidget):
         # If the mouse position is inside the header box enable the dragging feature
         if x >= 1 and y>=1 and x<w-1 and y<3:
             self._draggable = True
+            return True
         else:
             # check if the ckick is on any norder to enable the resize feature
             if x==0:
@@ -72,7 +73,8 @@ class TTkWindow(TTkWidget):
             elif y==h-1:
                 self._resizable |= TTkWidget.BOTTOM
             # TTkLog.debug(f"{(x,y)} - {self._resizable}")
-
+            return self._resizable != TTkWidget.NONE
+        return False
 
     def mouseDragEvent(self, evt):
         # TTkLog.debug(f"{self._resizable}")
@@ -81,6 +83,7 @@ class TTkWindow(TTkWidget):
             dx = evt.x-self._mouseDelta[0]
             dy = evt.y-self._mouseDelta[1]
             self.move(x+dx, y+dy)
+            return True
         elif self._resizable:
             # TTkLog.debug(f"{self._resizable}")
             x,y,w,h = self.geometry()
@@ -91,7 +94,7 @@ class TTkWindow(TTkWidget):
             if self._resizable & TTkWidget.LEFT:
                 tmpw = w-dx
                 if   minw > tmpw: tmpw=minw; dx= w-tmpw
-                elif maxw < tmpw: tmpw=minw; dx= w-tmpw
+                elif maxw < tmpw: tmpw=maxw; dx= w-tmpw
                 x += dx ; w = tmpw
             elif self._resizable & TTkWidget.RIGHT:
                 if   minw > evt.x: w = minw
@@ -100,7 +103,7 @@ class TTkWindow(TTkWidget):
             if self._resizable & TTkWidget.TOP:
                 tmph = h-dy
                 if   minh > tmph: tmph=minh; dy= h-tmph
-                elif maxh < tmph: tmph=minh; dy= h-tmph
+                elif maxh < tmph: tmph=maxh; dy= h-tmph
                 y += dy ; h = tmph
             elif self._resizable & TTkWidget.BOTTOM:
                 if   minh > evt.y: h = minh
@@ -108,8 +111,8 @@ class TTkWindow(TTkWidget):
                 else: h = evt.y
             self.move(x,y)
             self.resize(w,h)
-
-
+            return True
+        return False
 
     def focusInEvent(self):
         self.update()

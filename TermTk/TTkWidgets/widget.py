@@ -112,8 +112,7 @@ class TTkWidget:
     def paintChildCanvas(self):
         # paint over child canvas
         lx,ly,lw,lh = self._layout.geometry()
-        for i in range(self._layout.count()):
-            item = self._layout.itemAt(i)
+        for item in self._layout.zSortedItems:
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 child = item.widget()
                 cx,cy,cw,ch = child.geometry()
@@ -166,16 +165,16 @@ class TTkWidget:
                                 self._width   - self._padl - self._padr,
                                 self._height  - self._padt - self._padb)
 
-    def mouseDoubleClickEvent(self, evt): pass
-    def mouseMoveEvent(self, evt): pass
-    def mouseDragEvent(self, evt): pass
-    def mousePressEvent(self, evt): pass
-    def mouseReleaseEvent(self, evt): pass
-    def wheelEvent(self, evt): pass
-    def enterEvent(self, evt): pass
-    def leaveEvent(self, evt): pass
-    def keyPressEvent(self, evt): pass
-    def keyReleaseEvent(self, evt): pass
+    def mouseDoubleClickEvent(self, evt): return False
+    def mouseMoveEvent(self, evt): return False
+    def mouseDragEvent(self, evt): return False
+    def mousePressEvent(self, evt): return False
+    def mouseReleaseEvent(self, evt): return False
+    def wheelEvent(self, evt): return False
+    def enterEvent(self, evt): return False
+    def leaveEvent(self, evt): return False
+    def keyPressEvent(self, evt): return False
+    def keyReleaseEvent(self, evt): return False
 
     @staticmethod
     def _mouseEventLayoutHandle(evt, layout):
@@ -184,8 +183,7 @@ class TTkWidget:
         # opt of bounds
         if x<lx or x>lx+lw or y<ly or y>lh+ly:
             return True
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
+        for item in layout.zSortedItems:# reversed(layout.zSortedItems):
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 widget = item.widget()
                 if not widget._visible: continue
@@ -223,19 +221,25 @@ class TTkWidget:
     def mouseEvent(self, evt):
         # handle own events
         if evt.evt == lbt.MouseEvent.Move:
-            self.mouseMoveEvent(evt)
+            if self.mouseMoveEvent(evt):
+                return
         if evt.evt == lbt.MouseEvent.Drag:
-            self.mouseDragEvent(evt)
+            if self.mouseDragEvent(evt):
+                return
         elif   evt.evt == lbt.MouseEvent.Release:
-            self.mouseReleaseEvent(evt)
             if self.hasFocus():
                 self.clearFocus()
+            if self.mouseReleaseEvent(evt):
+                return
         elif   evt.evt == lbt.MouseEvent.Press:
-            self.mousePressEvent(evt)
             if self.focusPolicy() & TTkWidget.ClickFocus == TTkWidget.ClickFocus:
                 self.setFocus()
+                self.raiseWidget()
+            if self.mousePressEvent(evt):
+                return
         elif evt.key == lbt.MouseEvent.Wheel:
-            self.wheelEvent(evt)
+            if self.wheelEvent(evt):
+                return
             #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
             #    self.setFocus()
         #elif evt.type() == CuEvent.KeyPress:
@@ -384,6 +388,20 @@ class TTkWidget:
         self.update()
     #    if self._layout is not None:
     #        TTkWidget._hideHandle(self._layout])
+
+    def raiseWidget(self):
+        if self._parent is not None and \
+           self._parent._layout is not None:
+            self._parent.raiseWidget()
+            self._parent._layout.raiseWidget(self)
+
+    def lowerWidget(self):
+        if self._parent is not None and \
+           self._parent._layout is not None:
+            self._parent.lowerWidget()
+            self._parent._layout.lowerWidget(self)
+
+    def close(self): pass
 
     def isVisible(self):
         return self._visible

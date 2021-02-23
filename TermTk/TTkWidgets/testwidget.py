@@ -58,11 +58,11 @@ class TTkTestWidget(TTkFrame):
         t,_,l,_ = self.getPadding()
         TTkButton(parent=self, x=l, y=t, width=15, height=3, text=' Test Button')
         self._l = [
-                TTkLabel(parent=self,pos=(l, t+3), size=(50,1), color=TTkColor.fg("#ff0000")+TTkColor.bg("#ffff88"), text="pippo"),
-                TTkLabel(parent=self,pos=(l, t+4), size=(50,1), color=TTkColor.fg("#0000ff")+TTkColor.bg("#ff8888")),
-                TTkLabel(parent=self,pos=(l, t+5), size=(50,1), color=TTkColor.fg("#0044ff")+TTkColor.bg("#ff88ff")),
-                TTkLabel(parent=self,pos=(l, t+6), size=(50,1), color=TTkColor.fg("#aaff00")+TTkColor.bg("#8888ff")),
-                TTkLabel(parent=self,pos=(l, t+7), size=(50,1), color=TTkColor.fg("#8800ff")+TTkColor.bg("#88ffff")),
+                TTkLabel(parent=self,pos=(l, t+3), size=(50,1), color=TTkColor.bg('#440099')+TTkColor.fg('#00ffff'), text="pippo"),
+                TTkLabel(parent=self,pos=(l, t+4), size=(50,1), color=TTkColor.bg('#440077')+TTkColor.fg('#00ccff')),
+                TTkLabel(parent=self,pos=(l, t+5), size=(50,1), color=TTkColor.bg('#440066')+TTkColor.fg('#0088ff')),
+                TTkLabel(parent=self,pos=(l, t+6), size=(50,1), color=TTkColor.bg('#440055')+TTkColor.fg('#0055ff')),
+                TTkLabel(parent=self,pos=(l, t+7), size=(50,1), color=TTkColor.bg('#440033')+TTkColor.fg('#0033ff')),
             ]
         _TestContent(parent=self, x=l, y=t+8, width=50, height=50, name=f"content-{self._name}")
         TTkTestWidget.ID+=1

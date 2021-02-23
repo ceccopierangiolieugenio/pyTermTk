@@ -94,11 +94,6 @@ class TTkCanvas:
     def show(self):
         self._visible = True
 
-
-    def zTop(self):
-        # TODO: Figure out how to use this
-        pass
-
     def _set(self, _y, _x, _ch, _col=TTkColor.RST):
         if _y < self._height  and \
            _x < self._width and \

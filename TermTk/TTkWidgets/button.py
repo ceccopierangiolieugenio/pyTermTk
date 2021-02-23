@@ -55,11 +55,13 @@ class TTkButton(TTkWidget):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
         self._pressed = True
         self.update()
+        return True
 
     def mouseReleaseEvent(self, evt):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
         self._pressed = False
         self.update()
+        return True
 
     @property
     def text(self):
