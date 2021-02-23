@@ -45,6 +45,7 @@ class TTkWindow(TTkWidget):
             color = TTkColor.fg("#ffff55")
         else:
             color = TTkColor.RST
+        self._canvas.drawText(pos=(2,1),text=self._title)
         self._canvas.drawGrid(
                     color=color,
                     pos=(0,0), size=self.size(),
@@ -52,7 +53,6 @@ class TTkWindow(TTkWidget):
         #self._canvas.drawBox(pos=(0,0),  color=color, size=(self._width,3))
         #self._canvas.drawBox(pos=(0,2),  color=color, size=(self._width,self._height-2))
         #self._canvas.drawText(pos=(0,2), color=color, text="╟"+("─"*(self._width-2))+"╢")
-        self._canvas.drawText(pos=(2,1),text=self._title)
 
     def mousePressEvent(self, evt):
         self._mouseDelta = (evt.x, evt.y)

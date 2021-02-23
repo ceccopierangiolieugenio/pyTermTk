@@ -80,6 +80,14 @@ class TTkScrollBar(TTkWidget):
         bb = 1+b*size2//drawingSize
         self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa,bb),orientation=self._orientation, color=self.color)
 
+
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Up:
+            self.value = self._value - self._pagestep
+        else:
+            self.value = self._value + self._pagestep
+        return True
+
     @property
     def minimum(self): return self._minimum
     @minimum.setter
@@ -108,12 +116,6 @@ class TTkScrollBar(TTkWidget):
         if v < self._minimum: v = self._minimum
         self._value = v
         self.update()
-
-    def wheelEvent(self, evt):
-        if evt.evt == TTkK.WHEEL_Up:
-            self.value = self._value - self._pagestep
-        else:
-            self.value = self._value + self._pagestep
 
     @property
     def color(self):

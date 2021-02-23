@@ -68,6 +68,7 @@ class TTkTestWidget(TTkFrame):
         TTkTestWidget.ID+=1
 
     def paintEvent(self):
+        TTkFrame.paintEvent(self)
         self._l[0].text=f"Test Widget [{self._name}]"
         self._l[1].text=f"x,y ({self._x},{self._y})"
         self._l[2].text=f"w,h ({self._width},{self._height})"
