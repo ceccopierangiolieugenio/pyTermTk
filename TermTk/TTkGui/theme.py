@@ -22,30 +22,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+class TTkTheme():
+    '''  from: https://en.wikipedia.org/wiki/Box-drawing_character
+        ┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕
+        │ ││  ║ ║║  ║ ║║  │ ││
+        ├─┼┤  ╠═╬╣  ╟─╫╢  ╞═╪╡
+        └─┴┘  ╚═╩╝  ╙─╨╜  ╘═╧╛
+        ┌───────────────────┐
+        │  ╔═══╗ Some Text  │▒
+        │  ╚═╦═╝ in the box │▒
+        ╞═╤══╩══╤═══════════╡▒
+        │ ├──┬──┤           │▒
+        │ └──┴──┘           │▒
+        └───────────────────┘▒
+         ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+'''
+    box = ( '═','║',
+            '╔','╗',
+            '╚','╝')
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-import TermTk as ttk
+    grid = ( '═','║',
+            '╔','╗',
+            '╚','╝',
+            '╟','╢','╤','╧',
+            '─','│','┼',)
 
-ttk.TTkLog.use_default_file_logging()
-
-root = ttk.TTk()
-
-win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,50), title="Test Window 1", border=True)
-win1.setLayout(ttk.TTkVBoxLayout())
-ttk.TTkButton(parent=win1, text="BUTTON")
-ttk.TTkLabel(parent=win1, text="Test Label 1")
-ttk.TTkLabel(parent=win1, text="Test Label 2")
-ttk.TTkLabel(parent=win1, text="Test Label 3")
-ttk.TTkLabel(parent=win1, text="Test Label 4")
-ttk.TTkLabel(parent=win1, text="Test Label 5")
-ttk.TTkLabel(parent=win1, text="Test Label 6")
-ttk.TTkLabel(parent=win1, text="Test Very Long Label 7 - abcdefghihjlmno")
-ttk.TTkLabel(parent=win1, text="Test Label 8")
-ttk.TTkLabel(parent=win1, text="Test Label 9")
-ttk.TTkLabel(parent=win1, text="Test Label 10")
-ttk.TTkLabel(parent=win1, text="Test Label 11")
-ttk.TTkLabel(parent=win1, text="Test Label 12")
-
-
-root.mainloop()
+    hscroll = ('◀','┄','▓','▶')
+    vscroll = ('▲','┊','▓','▼')

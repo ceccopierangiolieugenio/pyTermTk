@@ -30,13 +30,13 @@ class TTkButton(TTkWidget):
     __slots__ = ('_text', '_border', '_pressed')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._text = kwargs.get('text', "" )
+        self._name = kwargs.get('name' , 'TTkButton' )
+        self.text = kwargs.get('text', "" )
         self._border = kwargs.get('border', True )
         if self._border:
-            self._padt = 1
-            self._padb = 1
-            self._padl = 1
-            self._padr = 1
+            self.setMinimumSize(2+len(self.text), 3)
+        else:
+            self.setMinimumSize(len(self.text), 1)
         self._pressed = False
         self.setFocusPolicy(TTkWidget.ClickFocus)
 
@@ -47,7 +47,7 @@ class TTkButton(TTkWidget):
         else:
             borderColor = TTkColor.fg("#ffff00")
             textColor   = TTkColor.fg("#00ff00")
-        self._canvas.drawText(pos=(1,1), color=textColor ,text=self._text)
+        self._canvas.drawText(pos=(1,1), color=textColor ,text=self.text)
         if self._border:
             self._canvas.drawBox(pos=(0,0),size=(self._width,self._height),color=borderColor)
 
@@ -59,4 +59,14 @@ class TTkButton(TTkWidget):
     def mouseReleaseEvent(self, evt):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
         self._pressed = False
+        self.update()
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, text):
+        self._text = text
+        self.setMinimumSize(len(text), 1)
         self.update()

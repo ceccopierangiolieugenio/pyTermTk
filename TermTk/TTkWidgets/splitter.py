@@ -33,6 +33,7 @@ class TTkSplitter(TTkFrame):
     __slots__ = ('_widgets', '_orientation', '_splitters', '_selected')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkSplitter' )
         self._widgets = []
         self._splitters = []
         self._orientation = kwargs.get('orientation' , TTk.HORIZONTAL )

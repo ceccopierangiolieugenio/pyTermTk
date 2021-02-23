@@ -27,6 +27,7 @@ import time
 import threading, queue
 
 import TermTk.libbpytop as lbt
+from TermTk.TTkCore.constant import TTkConstant, TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.canvas import *
@@ -53,14 +54,14 @@ class TTk(TTkWidget):
     mouse_events = None
     screen_events = None
 
-    MOUSE_EVENT  = 0x01
-    KEY_EVENT    = 0x02
-    SCREEN_EVENT = 0x04
-    QUIT_EVENT   = 0x08
-    TIME_EVENT   = 0x10
+    MOUSE_EVENT  = TTkK.MOUSE_EVENT
+    KEY_EVENT    = TTkK.KEY_EVENT
+    SCREEN_EVENT = TTkK.SCREEN_EVENT
+    QUIT_EVENT   = TTkK.QUIT_EVENT
+    TIME_EVENT   = TTkK.TIME_EVENT
 
-    HORIZONTAL = 0x01
-    VERTICAL   = 0x02
+    HORIZONTAL = TTkConstant.HORIZONTAL
+    VERTICAL   = TTkConstant.VERTICAL
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)

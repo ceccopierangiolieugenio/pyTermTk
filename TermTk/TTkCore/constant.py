@@ -22,30 +22,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+class TTkConstant:
+    MOUSE_EVENT  = 0x01
+    KEY_EVENT    = 0x02
+    SCREEN_EVENT = 0x04
+    QUIT_EVENT   = 0x08
+    TIME_EVENT   = 0x10
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-import TermTk as ttk
+    HORIZONTAL = 0x01
+    VERTICAL   = 0x02
 
-ttk.TTkLog.use_default_file_logging()
+    # Keys
+    NoButton      = 0x00000000    # The button state does not refer to any button (see QMouseEvent::button()).
+    AllButtons    = 0x07ffffff    # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.
+    LeftButton    = 0x00000001    # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
+    RightButton   = 0x00000002    # The right button.
+    MidButton     = 0x00000004    # The middle button.
+    MiddleButton  = MidButton     # The middle button.
+    Wheel         = 0x00000008
 
-root = ttk.TTk()
+    # Events
+    NoEvent = 0x00000000
+    Press   = 0x00010000
+    Release = 0x00020000
+    Drag    = 0x00040000
+    Move    = 0x00080000
+    WHEEL_Up   = 0x00100000 # Wheel Up
+    WHEEL_Down = 0x00200000 # Wheel Down
 
-win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,50), title="Test Window 1", border=True)
-win1.setLayout(ttk.TTkVBoxLayout())
-ttk.TTkButton(parent=win1, text="BUTTON")
-ttk.TTkLabel(parent=win1, text="Test Label 1")
-ttk.TTkLabel(parent=win1, text="Test Label 2")
-ttk.TTkLabel(parent=win1, text="Test Label 3")
-ttk.TTkLabel(parent=win1, text="Test Label 4")
-ttk.TTkLabel(parent=win1, text="Test Label 5")
-ttk.TTkLabel(parent=win1, text="Test Label 6")
-ttk.TTkLabel(parent=win1, text="Test Very Long Label 7 - abcdefghihjlmno")
-ttk.TTkLabel(parent=win1, text="Test Label 8")
-ttk.TTkLabel(parent=win1, text="Test Label 9")
-ttk.TTkLabel(parent=win1, text="Test Label 10")
-ttk.TTkLabel(parent=win1, text="Test Label 11")
-ttk.TTkLabel(parent=win1, text="Test Label 12")
-
-
-root.mainloop()
+# Alias to TTkConstant
+class TTkK(TTkConstant): pass

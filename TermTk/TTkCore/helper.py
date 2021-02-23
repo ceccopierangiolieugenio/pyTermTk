@@ -57,9 +57,14 @@ class TTkHelper:
         #processed = []
         pushToTerminal = False
         for widget in TTkHelper._updateBuffer:
+            if not widget.isVisible(): continue
+            # Resize the canvas just before the paintEvent
+            # to avoid too many allocations
+            widget.getCanvas().updateSize()
             widget.paintEvent()
         TTkHelper._updateBuffer = []
         for widget in TTkHelper._updateWidget:
+            if not widget.isVisible(): continue
             pushToTerminal = True
             #processed.append(widget)
             widget.paintChildCanvas()

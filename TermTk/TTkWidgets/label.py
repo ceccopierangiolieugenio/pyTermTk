@@ -26,20 +26,36 @@ from TermTk.TTkCore.log import TTkLog
 from .widget import *
 
 class TTkLabel(TTkWidget):
-    __slots__ = ('_text')
+    __slots__ = ('_text', '_color')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._text = kwargs.get('text', "" )
+        self._name = kwargs.get('name' , 'TTkLabel' )
+        self._text  = ""
+        self._color = TTkColor.RST
+        self.text  = kwargs.get('text', "" )
+        self.color = kwargs.get('color', TTkColor.RST )
 
     def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text=self._text)
+        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color)
+        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color)
 
     @property
-    def Abouttext(self):
+    def text(self):
         return self._text
 
-    @Abouttext.setter
-    def Abouttext(self, text):
-        self._text = text
-        self.setMinimumSize(len(text), 1)
-        self.update()
+    @text.setter
+    def text(self, text):
+        if self.text != text:
+            self._text = text
+            self.setMinimumSize(len(text), 1)
+            self.update()
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, color):
+        if self.color != color:
+            self._color = color
+            self.update()

@@ -23,10 +23,12 @@
 # SOFTWARE.
 
 import TermTk.libbpytop as lbt
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.color import *
 from TermTk.TTkCore.helper import *
+from TermTk.TTkGui.theme import *
 
 class TTkCanvas:
     '''
@@ -45,17 +47,26 @@ class TTkCanvas:
       in  w = the width of the new canvas
       in  h = the height of the new canvas
     '''
+    __slots__ = ('_widget', '_width', '_height', '_newWidth', '_newHeight','_theme', '_data', '_colors', '_visible')
     def __init__(self, *args, **kwargs):
         self._widget = kwargs.get('widget', None)
-        self._width = kwargs.get('width', 0 )
-        self._height = kwargs.get('height', 0 )
-        self.resize(self._width, self._height)
+        self._visible = True
+        self._width = 0
+        self._height = 0
+        self._newWidth = kwargs.get('width', 0 )
+        self._newHeight = kwargs.get('height', 0 )
+        self.updateSize()
+        # self.resize(self._width, self._height)
+        self._theme = TTkTheme()
         # TTkLog.debug((self._width, self._height))
 
     def getWidget(self): return self._widget
 
-    def resize(self, w, h):
-        # TTkLog.debug(f"CanvasResize:{(w,h)}")
+    def updateSize(self):
+        if not self._visible: return
+        w,h = self._newWidth, self._newHeight
+        if w  == self._width and h == self._height:
+            return
         self._data = [[]]*h
         self._colors = [[]]*h
         for i in range(0,h):
@@ -64,7 +75,12 @@ class TTkCanvas:
         self._width  = w
         self._height = h
 
+    def resize(self, w, h):
+        self._newWidth = w
+        self._newHeight = h
+
     def clean(self, pos=(0, 0), size=None):
+        if not self._visible: return
         x,y = pos
         w,h = size if size is not None else (self._width, self._height)
         for iy in range(y,y+h):
@@ -72,46 +88,95 @@ class TTkCanvas:
                 self._data[iy][ix] = ' '
                 self._colors[iy][ix] = TTkColor.RST
 
+    def hide(self):
+        self._visible = False
+
+    def show(self):
+        self._visible = True
+
+
     def zTop(self):
         # TODO: Figure out how to use this
         pass
 
+    def _set(self, _y, _x, _ch, _col=TTkColor.RST):
+        if _y < self._height  and \
+           _x < self._width and \
+           _x >= 0 and _y >=0 :
+            self._data[_y][_x] = _ch
+            self._colors[_y][_x] = _col
+
     def drawText(self, pos, text, color=TTkColor.RST):
-        def _set(_y,_x,_c):
-            if  _y < self._height  and \
-                _x < self._width and \
-                _x >= 0 and _y >=0 :
-                self._data[_y][_x] = _c
-                self._colors[_y][_x] = color
+        if not self._visible: return
         x,y = pos
         arr = list(text)
         for i in range(0, len(arr)):
-            _set(y, x+i, arr[i])
+            self._set(y, x+i, arr[i], color)
 
 
     def drawBox(self, pos, size, color=TTkColor.RST):
+        self.drawGrid(pos=pos, size=size, color=color)
+
+    def drawGrid(self, pos, size, hlines=[], vlines=[], color=TTkColor.RST):
+        if not self._visible: return
         x,y = pos
         w,h = size
-        # TODO: Handle Clip/OutOfBorder
-        def _set(_y,_x,_c):
-            if  _y < self._height  and \
-                _x < self._width and \
-                _x >= 0 and _y >=0 :
-                self._data[_y][_x] = _c
-                self._colors[_y][_x] = color
         # 4 corners
-        _set(y,     x,     "╔")
-        _set(y,     x+w-1, "╗")
-        _set(y+h-1, x,     "╚")
-        _set(y+h-1, x+w-1, "╝")
+        self._set(y,     x,     self._theme.grid[2], color)
+        self._set(y,     x+w-1, self._theme.grid[3], color)
+        self._set(y+h-1, x,     self._theme.grid[4], color)
+        self._set(y+h-1, x+w-1, self._theme.grid[5], color)
         if w > 2:
             for i in range(x+1,x+w-1):
-                _set(y,   i, "═")
-                _set(y+h-1, i, "═")
+                self._set(y,   i, self._theme.grid[0], color)
+                self._set(y+h-1, i, self._theme.grid[0], color)
         if h > 2:
             for i in range(y+1,y+h-1):
-                _set(i, x,   "║")
-                _set(i, x+w-1, "║")
+                self._set(i, x,   self._theme.grid[1], color)
+                self._set(i, x+w-1, self._theme.grid[1], color)
+        # Draw horizontal lines
+        for iy in hlines:
+            iy += y
+            if not (0 < iy < h): continue
+            self._set(iy, x,     self._theme.grid[6], color)
+            self._set(iy, x+w-1, self._theme.grid[7], color)
+            if w > 2:
+                for ix in range(x+1,x+w-1):
+                    self._set(iy, ix, self._theme.grid[10], color)
+        # Draw vertical lines
+        for ix in vlines:
+            ix+=x
+            if not (0 < ix < w): continue
+            self._set(y,     ix, self._theme.grid[8], color)
+            self._set(y+h-1, ix, self._theme.grid[9], color)
+            if h > 2:
+                for iy in range(y+1,y+h-1):
+                    self._set(iy, ix, self._theme.grid[11], color)
+        # Draw intersections
+        for iy in hlines:
+            for ix in vlines:
+                self._set(y+iy, x+ix, self._theme.grid[12], color)
+
+    def drawScroll(self, pos, size, slider, orientation, color):
+        if not self._visible: return
+        x,y = pos
+        f,t = slider # slider from-to position
+        if orientation == TTkK.HORIZONTAL:
+            for i in range(x+1,x+size-1):
+                self._set(y,x+i, self._theme.hscroll[1], color)
+            for i in range(f,t):
+                self._set(y,x+i, self._theme.hscroll[2], color)
+            self._set(y,x, self._theme.hscroll[0], color)
+            self._set(y,x+size-1, self._theme.hscroll[3], color)
+        else:
+            for i in range(y+1,y+size-1):
+                self._set(y+i,x, self._theme.vscroll[1], color)
+            for i in range(f,t):
+                self._set(y+i,x, self._theme.vscroll[2], color)
+            self._set(y,x, self._theme.vscroll[0], color)
+            self._set(y+size-1,x, self._theme.vscroll[3], color)
+
+        pass
 
     def execPaint(self, winw, winh):
         pass
@@ -125,6 +190,8 @@ class TTkCanvas:
         x, y, w, h  = geom
         bx,by,bw,bh = bound
         # out of bound
+        if not self._visible: return
+        if not canvas._visible: return
         if x+w < bx or y+h<by or bx+bw<x or by+bh<y:
             return
         if x>=self._width:    x=self._width-1

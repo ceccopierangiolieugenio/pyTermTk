@@ -27,26 +27,27 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-import TermTk as ttk
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkK
 
 class MouseEvent:
     # Keys
-    NoButton      = 0x00000000    # The button state does not refer to any button (see QMouseEvent::button()).
-    AllButtons    = 0x07ffffff    # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.
-    LeftButton    = 0x00000001    # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
-    RightButton   = 0x00000002    # The right button.
-    MidButton     = 0x00000004    # The middle button.
-    MiddleButton  = MidButton     # The middle button.
-    Wheel         = 0x00000008
+    NoButton      = TTkK.NoButton     # The button state does not refer to any button (see QMouseEvent::button()).
+    AllButtons    = TTkK.AllButtons   # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.
+    LeftButton    = TTkK.LeftButton   # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
+    RightButton   = TTkK.RightButton  # The right button.
+    MidButton     = TTkK.MidButton    # The middle button.
+    MiddleButton  = TTkK.MiddleButton # The middle button.
+    Wheel         = TTkK.Wheel
 
     # Events
-    NoEvent = 0x00000000
-    Press   = 0x00010000
-    Release = 0x00020000
-    Drag    = 0x00040000
-    Move    = 0x00080000
-    Up      = 0x00100000 # Wheel Up
-    Down    = 0x00200000 # Wheel Down
+    NoEvent = TTkK.NoEvent
+    Press   = TTkK.Press
+    Release = TTkK.Release
+    Drag    = TTkK.Drag
+    Move    = TTkK.Move
+    Up      = TTkK.WHEEL_Up
+    Down    = TTkK.WHEEL_Down
 
     __slots__ = ('x','y','key','evt','raw')
     def __init__(self, x: int, y: int, key: int, evt: int, raw: str):
@@ -131,7 +132,7 @@ class Input:
                         input_key += sys.stdin.read(20)
                         if input_key.startswith("\033[<"):
                             _ = sys.stdin.read(1000)
-                # ttk.debug("INPUT: "+input_key.replace("\033","<ESC>"))
+                # TTkLog.debug("INPUT: "+input_key.replace("\033","<ESC>"))
                 mevt = None
                 kevt = None
                 if len(input_key) == 1:
@@ -142,7 +143,7 @@ class Input:
                     m = mouse_re.match(input_key)
                     if not m:
                         # TODO: Return Error
-                        ttk.TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
+                        TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                         continue
                     code = int(m.group(1))
                     x = int(m.group(2))-1
@@ -176,7 +177,7 @@ class Input:
                         evt = MouseEvent.Down
                     mevt = MouseEvent(x, y, key, evt, m.group(0).replace("\033", "<ESC>"))
                 else:
-                    ttk.TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
+                    TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                 input_key = ""
                 if callback is not None:
                     if not callback(kevt, mevt):

@@ -61,7 +61,7 @@ class TTkWidget:
         '_padt', '_padb', '_padl', '_padr',
         '_maxw', '_maxh', '_minw', '_minh',
         '_focus','_focus_policy',
-        '_layout', '_canvas')
+        '_layout', '_canvas', '_visible')
 
     def __init__(self, *args, **kwargs):
         self._name = kwargs.get('name', None )
@@ -87,6 +87,8 @@ class TTkWidget:
         self._minh = kwargs.get('minHeight', 0x00000)
         self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
 
+        self._visible = kwargs.get('visible', True)
+
         self._focus = False
         self._focus_policy = TTkWidget.NoFocus
 
@@ -94,12 +96,11 @@ class TTkWidget:
                             widget = self,
                             width  = self._width  ,
                             height = self._height )
-
-        self.setLayout(TTkLayout())
+        self.setLayout(kwargs.get('layout',TTkLayout()))
         if self._parent is not None and \
            self._parent._layout is not None:
             self._parent._layout.addWidget(self)
-            self._parent._layout.update()
+            self._parent.update(repaint=True, updateLayout=True)
 
         self.update(repaint=True, updateLayout=True)
 
@@ -181,12 +182,13 @@ class TTkWidget:
         x, y = evt.x, evt.y
         lx,ly,lw,lh =layout.geometry()
         # opt of bounds
-        if x<0 or x>lw or y<0 or y>lh:
+        if x<lx or x>lx+lw or y<ly or y>lh+ly:
             return True
         for i in range(layout.count()):
             item = layout.itemAt(i)
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 widget = item.widget()
+                if not widget._visible: continue
                 wevt = None
                 mouseEvent = False
                 if isinstance(evt, lbt.MouseEvent):
@@ -301,14 +303,14 @@ class TTkWidget:
     def maximumHeight(self):
         wMaxH = self._maxh
         if self._layout is not None:
-            lMaxH = self._layout.maximumHeight() + self._padl + self._padr
+            lMaxH = self._layout.maximumHeight() + self._padt + self._padb
             if lMaxH < wMaxH:
                 return lMaxH
         return wMaxH
     def maximumWidth(self):
         wMaxW = self._maxw
         if self._layout is not None:
-            lMaxW = self._layout.maximumWidth() + self._padt + self._padb
+            lMaxW = self._layout.maximumWidth() + self._padl + self._padr
             if lMaxW < wMaxW:
                 return lMaxW
         return wMaxW
@@ -318,14 +320,14 @@ class TTkWidget:
     def minimumHeight(self):
         wMinH = self._minh
         if self._layout is not None:
-            lMinH = self._layout.minimumHeight() + self._padl + self._padr
+            lMinH = self._layout.minimumHeight() + self._padt + self._padb
             if lMinH > wMinH:
                 return lMinH
         return wMinH
     def minimumWidth(self):
         wMinW = self._minw
         if self._layout is not None:
-            lMinW = self._layout.minimumWidth() + self._padt + self._padb
+            lMinW = self._layout.minimumWidth() + self._padl + self._padr
             if lMinW > wMinW:
                 return lMinW
         return wMinW
@@ -333,21 +335,67 @@ class TTkWidget:
     def setMaximumSize(self, maxw, maxh):
         self.setMaximumWidth(maxw)
         self.setMaximumHeight(maxh)
-    def setMaximumHeight(self, maxh):     self._maxh = maxh
-    def setMaximumWidth(self, maxw):      self._maxw = maxw
+    def setMaximumHeight(self, maxh):
+        self._maxh = maxh
+        self.update(updateLayout=True, updateParent=True)
+    def setMaximumWidth(self, maxw):
+        self._maxw = maxw
+        self.update(updateLayout=True, updateParent=True)
 
     def setMinimumSize(self, minw, minh):
         self.setMinimumWidth(minw)
         self.setMinimumHeight(minh)
-    def setMinimumHeight(self, minh):     self._minh = minh
-    def setMinimumWidth(self, minw):      self._minw = minw
+    def setMinimumHeight(self, minh):
+        self._minh = minh
+        self.update(updateLayout=True, updateParent=True)
+    def setMinimumWidth(self, minw):
+        self._minw = minw
+        self.update(updateLayout=True, updateParent=True)
 
-    def update(self, repaint=True, updateLayout=False):
+    #@staticmethod
+    #def _showHandle(layout):
+    #    for i in range(layout.count()):
+    #        item = layout.itemAt(i)
+    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
+    #            item.widget().show()
+    #        elif isinstance(item, CuLayout):
+    #            CuWidget._showHandle(item)
+
+    def show(self):
+        self._canvas.show()
+        self._visible = True
+        self.update()
+    #    if self._data['layout'] is not None:
+    #        CuWidget._showHandle(self._data['layout'])
+
+    #@staticmethod
+    #def _hideHandle(layout):
+    #    for i in range(layout.count()):
+    #        item = layout.itemAt(i)
+    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
+    #            item.widget().hide()
+    #        elif isinstance(item, CuLayout):
+    #            CuWidget._hideHandle(item)
+
+    def hide(self):
+        self._canvas.hide()
+        self._visible = False
+        #self._parent._canvas.clean(self.pos(),self.size())
+        self.update()
+    #    if self._layout is not None:
+    #        TTkWidget._hideHandle(self._layout])
+
+    def isVisible(self):
+        return self._visible
+
+    def update(self, repaint=True, updateLayout=False, updateParent=False):
         if repaint:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
         if updateLayout and self._layout is not None:
             self._layout.update()
+        if updateParent and self._parent is not None:
+            self._parent.update(updateLayout=True)
 
     def setFocus(self):
         tmp = TTkHelper.getFocus()

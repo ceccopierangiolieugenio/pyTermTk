@@ -32,6 +32,7 @@ class TTkWindow(TTkWidget):
     __slots__ = ('_title', '_mouseDelta', '_draggable', '_resizable')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkWindow' )
         self._title = kwargs.get('title' , 0 )
         self.setPadding(3,1,1,1)
         self._mouseDelta = (0,0)
@@ -44,9 +45,13 @@ class TTkWindow(TTkWidget):
             color = TTkColor.fg("#ffff55")
         else:
             color = TTkColor.RST
-        self._canvas.drawBox(pos=(0,0),  color=color, size=(self._width,3))
-        self._canvas.drawBox(pos=(0,2),  color=color, size=(self._width,self._height-2))
-        self._canvas.drawText(pos=(0,2), color=color, text="╟"+("─"*(self._width-2))+"╢")
+        self._canvas.drawGrid(
+                    color=color,
+                    pos=(0,0), size=self.size(),
+                    hlines=[2])
+        #self._canvas.drawBox(pos=(0,0),  color=color, size=(self._width,3))
+        #self._canvas.drawBox(pos=(0,2),  color=color, size=(self._width,self._height-2))
+        #self._canvas.drawText(pos=(0,2), color=color, text="╟"+("─"*(self._width-2))+"╢")
         self._canvas.drawText(pos=(2,1),text=self._title)
 
     def mousePressEvent(self, evt):
@@ -85,18 +90,22 @@ class TTkWindow(TTkWidget):
             dy = evt.y-self._mouseDelta[1]
             if self._resizable & TTkWidget.LEFT:
                 tmpw = w-dx
-                if minw < tmpw < maxw:
-                    x += dx ; w -= tmpw
+                if   minw > tmpw: tmpw=minw; dx= w-tmpw
+                elif maxw < tmpw: tmpw=minw; dx= w-tmpw
+                x += dx ; w = tmpw
             elif self._resizable & TTkWidget.RIGHT:
-                if minw < evt.x < maxw:
-                    w = evt.x
+                if   minw > evt.x: w = minw
+                elif maxw < evt.x: w = maxw
+                else: w = evt.x
             if self._resizable & TTkWidget.TOP:
                 tmph = h-dy
-                if minh < tmph < maxh:
-                    y += dy ; h = tmph
+                if   minh > tmph: tmph=minh; dy= h-tmph
+                elif maxh < tmph: tmph=minh; dy= h-tmph
+                y += dy ; h = tmph
             elif self._resizable & TTkWidget.BOTTOM:
-                if minh < evt.y < maxh:
-                    h = evt.y
+                if   minh > evt.y: h = minh
+                elif maxh < evt.y: h = maxh
+                else: h = evt.y
             self.move(x,y)
             self.resize(w,h)
 

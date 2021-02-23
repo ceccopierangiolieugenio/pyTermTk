@@ -26,17 +26,13 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.button import *
+from TermTk.TTkWidgets.label import *
 from TermTk.TTkWidgets.frame import *
 
 class _TestContent(TTkWidget):
     def paintEvent(self):
         # TTkLog.debug(f"Test Paint - {self._name}")
-        self._canvas.drawText(pos=(0,0),text=f"Test Widget [{self._parent._name}]")
-        self._canvas.drawText(pos=(0,1),text=f"x,y ({self._parent._x},{self._parent._y})")
-        self._canvas.drawText(pos=(0,2),text=f"w,h ({self._parent._width},{self._parent._height})")
-        self._canvas.drawText(pos=(0,3),text=f"max w,h ({self._parent._maxw},{self._parent._maxh})")
-        self._canvas.drawText(pos=(0,4),text=f"min w,h ({self._parent._minw},{self._parent._minh})")
-        y=6;  self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff0000"),text="Lorem ipsum dolor sit amet,")
+        y=0;  self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff0000"),text="Lorem ipsum dolor sit amet,")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff8800"),text="consectetur adipiscing elit,")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ffff00"),text="sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#00ff00"),text="Ut enim ad minim veniam,")
@@ -44,20 +40,40 @@ class _TestContent(TTkWidget):
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#0088ff"),text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#0000ff"),text="Excepteur sint occaecat cupidatat non proident,")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff00ff"),text="sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        y+=1; self._canvas.drawGrid(
+                pos=(0,y),size=(self._width,self._height-y),
+                hlines=(2,5,7), vlines=(4,7,15,30),
+                color=TTkColor.fg("#aaffaa"))
 
 
 
 class TTkTestWidget(TTkFrame):
     ID = 1
-    __slots__ = ('_name')
+    __slots__ = ('_name', '_l')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkTestWidget' )
         #self.setLayout(TTkHBoxLayout())
         self._name = f"TestWidget-{TTkTestWidget.ID}"
         t,_,l,_ = self.getPadding()
         TTkButton(parent=self, x=l, y=t, width=15, height=3, text=' Test Button')
-        _TestContent(parent=self, x=l, y=3+t, width=50, height=50, name=f"content-{self._name}")
+        self._l = [
+                TTkLabel(parent=self,pos=(l, t+3), size=(50,1), color=TTkColor.fg("#ff0000")+TTkColor.bg("#ffff88"), text="pippo"),
+                TTkLabel(parent=self,pos=(l, t+4), size=(50,1), color=TTkColor.fg("#0000ff")+TTkColor.bg("#ff8888")),
+                TTkLabel(parent=self,pos=(l, t+5), size=(50,1), color=TTkColor.fg("#0044ff")+TTkColor.bg("#ff88ff")),
+                TTkLabel(parent=self,pos=(l, t+6), size=(50,1), color=TTkColor.fg("#aaff00")+TTkColor.bg("#8888ff")),
+                TTkLabel(parent=self,pos=(l, t+7), size=(50,1), color=TTkColor.fg("#8800ff")+TTkColor.bg("#88ffff")),
+            ]
+        _TestContent(parent=self, x=l, y=t+8, width=50, height=50, name=f"content-{self._name}")
         TTkTestWidget.ID+=1
+
+    def paintEvent(self):
+        self._l[0].text=f"Test Widget [{self._name}]"
+        self._l[1].text=f"x,y ({self._x},{self._y})"
+        self._l[2].text=f"w,h ({self._width},{self._height})"
+        self._l[3].text=f"max w,h ({self._maxw},{self._maxh})"
+        self._l[4].text=f"min w,h ({self._minw},{self._minh})"
+
 
     def mousePressEvent(self, evt):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")

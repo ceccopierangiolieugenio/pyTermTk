@@ -29,6 +29,7 @@ class TTkFrame(TTkWidget):
     __slots__ = ('_border')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkFrame' )
         self._border = kwargs.get('border', True )
         if self._border:
             self.setPadding(1,1,1,1)

@@ -22,10 +22,11 @@ python3 tests/test.input.py
 # Press CTRL-C to exit
 # the logs are written to "session.log"
 python3 tests/test.ui.002.py
-python3 tests/test.ui.003.py
-python3 tests/test.ui.004.py
+python3 tests/test.ui.003.layout.py
+python3 tests/test.ui.004.windowspy
 ```
 #### Profiling
+##### cProfile
 ```shell
 python3 -m cProfile -o profiler.txt tests/test.ui.004.py
 
@@ -34,3 +35,5 @@ python3 -m cProfile -o profiler.txt tests/test.ui.004.py
 cprofilev -f profiler.txt
 # open http://127.0.0.1:4000
 ```
+##### pyroscope
+[pyroscope](https://pyroscope.io/) can be used as well for profiling

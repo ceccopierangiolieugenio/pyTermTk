@@ -1,6 +1,32 @@
+#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 '''
     Layout System
 '''
+
+from TermTk.TTkCore.log import TTkLog
 
 class TTkLayoutItem:
     __slots__ = ('_x', '_y', '_w', '_h', '_sMax', '_sMaxVal', '_sMin', '_sMinVal')
@@ -146,14 +172,18 @@ class TTkHBoxLayout(TTkLayout):
             item._sMax = False
             item._sMin = False
         iterate = True
+
+        # Copy and Sort list of items based on the minsize
+        sortedItems = sorted(self.children(), key=lambda item: item.minimumWidth())
+
         while iterate and leftWidgets > 0:
             iterate = False
-            sliceSize = freeWidth//leftWidgets
-            for item in self.children():
+            for item in sortedItems:
                 if item._sMax or item._sMin: continue
+                sliceSize = freeWidth//leftWidgets
                 maxs = item.maximumWidth()
                 mins = item.minimumWidth()
-                if sliceSize > maxs:
+                if sliceSize >= maxs:
                     freeWidth -= maxs
                     iterate = True
                     item._sMax = True
@@ -162,7 +192,6 @@ class TTkHBoxLayout(TTkLayout):
                 elif sliceSize < mins:
                     freeWidth -= mins
                     leftWidgets -= 1
-                    # slicesize = freeWidth//leftWidgets
                     iterate = True
                     item._sMin = True
                     item._sMinVal = mins
@@ -235,14 +264,18 @@ class TTkVBoxLayout(TTkLayout):
             item._sMax = False
             item._sMin = False
         iterate = True
+
+        # Copy and Sort list of items based on the minsize
+        sortedItems = sorted(self.children(), key=lambda item: item.minimumHeight())
+
         while iterate and leftWidgets > 0:
             iterate = False
-            sliceSize = freeHeight//leftWidgets
-            for item in self.children():
+            for item in sortedItems:
                 if item._sMax or item._sMin: continue
+                sliceSize = freeHeight//leftWidgets
                 maxs = item.maximumHeight()
                 mins = item.minimumHeight()
-                if sliceSize > maxs:
+                if sliceSize >= maxs:
                     freeHeight -= maxs
                     iterate = True
                     item._sMax = True
@@ -251,7 +284,6 @@ class TTkVBoxLayout(TTkLayout):
                 elif sliceSize < mins:
                     freeHeight -= mins
                     leftWidgets -= 1
-                    # slicesize = freeHeight//leftWidgets
                     iterate = True
                     item._sMin = True
                     item._sMinVal = mins
