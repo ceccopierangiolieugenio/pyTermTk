@@ -27,6 +27,9 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
+'''
+    ref: https://doc.qt.io/qt-5/qscrollbar.html
+'''
 class TTkScrollBar(TTkWidget):
     __slots__ = (
         '_orientation',

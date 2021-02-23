@@ -22,26 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkWidgets.widget import *
-from TermTk.TTkTemplates.color import TColor
-from TermTk.TTkTemplates.text  import TText
+from TermTk.TTkCore.color import TTkColor
 
-class TTkLabel(TTkWidget, TColor, TText):
-    __slots__ = ('_color', '_text')
+class TColor():
+    #__slots__ = ('_color')
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
-        TColor.__init__(self, *args, **kwargs)
-        TText.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLabel' )
+        self._color = TTkColor.RST
+        self.color = kwargs.get('color', TTkColor.RST )
 
-    def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color)
-        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color)
+    def colorUpdated(self, color): pass
 
-    def textUpdated(self, text):
-        self.setMinimumSize(len(text), 1)
-        self.update()
+    @property
+    def color(self):
+        return self._color
 
-    def colorUpdated(self, color):
-        self.update()
+    @color.setter
+    def color(self, color):
+        if self.color != color:
+            self._color = color
+            self.colorUpdated(color)

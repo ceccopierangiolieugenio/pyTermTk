@@ -117,45 +117,46 @@ class TTkCanvas:
     def drawBox(self, pos, size, color=TTkColor.RST):
         self.drawGrid(pos=pos, size=size, color=color)
 
-    def drawGrid(self, pos, size, hlines=[], vlines=[], color=TTkColor.RST):
+    def drawGrid(self, pos, size, hlines=[], vlines=[], color=TTkColor.RST, grid=0):
         if not self._visible: return
         x,y = pos
         w,h = size
+        gg = self._theme.grid[grid]
         # 4 corners
-        self._set(y,     x,     self._theme.grid[2], color)
-        self._set(y,     x+w-1, self._theme.grid[3], color)
-        self._set(y+h-1, x,     self._theme.grid[4], color)
-        self._set(y+h-1, x+w-1, self._theme.grid[5], color)
+        self._set(y,     x,     gg[2], color)
+        self._set(y,     x+w-1, gg[3], color)
+        self._set(y+h-1, x,     gg[4], color)
+        self._set(y+h-1, x+w-1, gg[5], color)
         if w > 2:
             for i in range(x+1,x+w-1):
-                self._set(y,   i, self._theme.grid[0], color)
-                self._set(y+h-1, i, self._theme.grid[0], color)
+                self._set(y,   i, gg[0], color)
+                self._set(y+h-1, i, gg[0], color)
         if h > 2:
             for i in range(y+1,y+h-1):
-                self._set(i, x,   self._theme.grid[1], color)
-                self._set(i, x+w-1, self._theme.grid[1], color)
+                self._set(i, x,   gg[1], color)
+                self._set(i, x+w-1, gg[1], color)
         # Draw horizontal lines
         for iy in hlines:
             iy += y
             if not (0 < iy < h): continue
-            self._set(iy, x,     self._theme.grid[6], color)
-            self._set(iy, x+w-1, self._theme.grid[7], color)
+            self._set(iy, x,     gg[6], color)
+            self._set(iy, x+w-1, gg[7], color)
             if w > 2:
                 for ix in range(x+1,x+w-1):
-                    self._set(iy, ix, self._theme.grid[10], color)
+                    self._set(iy, ix, gg[10], color)
         # Draw vertical lines
         for ix in vlines:
             ix+=x
             if not (0 < ix < w): continue
-            self._set(y,     ix, self._theme.grid[8], color)
-            self._set(y+h-1, ix, self._theme.grid[9], color)
+            self._set(y,     ix, gg[8], color)
+            self._set(y+h-1, ix, gg[9], color)
             if h > 2:
                 for iy in range(y+1,y+h-1):
-                    self._set(iy, ix, self._theme.grid[11], color)
+                    self._set(iy, ix, gg[11], color)
         # Draw intersections
         for iy in hlines:
             for ix in vlines:
-                self._set(y+iy, x+ix, self._theme.grid[12], color)
+                self._set(y+iy, x+ix, gg[12], color)
 
     def drawScroll(self, pos, size, slider, orientation, color):
         if not self._visible: return

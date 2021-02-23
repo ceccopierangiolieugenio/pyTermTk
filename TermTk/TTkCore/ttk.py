@@ -35,16 +35,21 @@ from TermTk.TTkWidgets.layout import *
 from TermTk.TTkWidgets.widget import *
 
 class TTkTimer(threading.Thread):
-    def __init__(self, callback):
+    def __init__(self, callback, waitTime=1, event=None):
         threading.Thread.__init__(self)
         self.stopped = threading.Event()
+        self._waitTime = waitTime
         self._callback = callback
+        self._event = event
 
     def quit(self):
         self.stopped.set()
 
     def run(self):
-        while not self.stopped.wait(0.05):
+        while not self.stopped.wait(self._waitTime):
+            if self._event is not None:
+                self._event.wait()
+                self._event.clear()
             self._callback()
 
 class TTk(TTkWidget):
@@ -86,7 +91,9 @@ class TTk(TTkWidget):
 
         lbt.Term.registerResizeCb(self._win_resize_cb)
         threading.Thread(target=self._input_thread, daemon=True).start()
-        self._timer = TTkTimer(self._time_event)
+        self._timerEvent = threading.Event()
+        self._timerEvent.set()
+        self._timer = TTkTimer(self._time_event, 0.02, self._timerEvent)
         self._timer.start()
 
         self.running = True
@@ -110,6 +117,7 @@ class TTk(TTkWidget):
                 pass
             elif evt is TTk.TIME_EVENT:
                 TTkHelper.paintAll()
+                self._timerEvent.set()
                 pass
             elif evt is TTk.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
