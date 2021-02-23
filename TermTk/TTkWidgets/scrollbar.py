@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import math
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
@@ -35,7 +37,14 @@ class TTkScrollBar(TTkWidget):
         '_orientation',
         '_minimum', '_maximum',
         '_singlestep', '_pagestep',
-        '_value', '_color')
+        '_value', '_color', '_focusColor',
+        '_draggable', '_mouseDelta',
+        # Those Vars are required to handle the mouseclick
+        #  |-----|           Screen Pg Down
+        #        |---|       Screen Scroller
+        #            |-----| Screen Pg Up
+        # <------|XXX|----->
+        '_screenPgDown','_screenPgUp','_screenScroller')
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
@@ -53,7 +62,13 @@ class TTkScrollBar(TTkWidget):
         self._pagestep = kwargs.get('pagestep' , 10 )
         self._value = kwargs.get('value' , 0 )
         self._color = kwargs.get('color', TTkColor.RST )
-        self.update()
+        self._focusColor = kwargs.get('focusColor', TTkColor.fg('#cccc00') )
+        self._screenPgDown = (0,0)
+        self._screenPgUp = (0,0)
+        self._screenScroller = (0,0)
+        self._draggable = False
+        self._mouseDelta = 0
+        self.setFocusPolicy(TTkWidget.ClickFocus)
 
     '''
          | min        | max
@@ -63,7 +78,7 @@ class TTkScrollBar(TTkWidget):
          |------------|     workingSize = max - min
          |----------------| drawingSize = max - min + pagestep
               a---b            slider = [a=value-min, b=a+pagestep]
-              |---|            pagestep
+              |---|            pagestep, asciiStep (step size in ascii)
 
     '''
     def paintEvent(self):
@@ -71,22 +86,89 @@ class TTkScrollBar(TTkWidget):
             size=self._height
         else:
             size=self._width
-        size2 = size-2
-        drawingSize = self._maximum - self._minimum + self._pagestep
-        a = self._value - self._minimum
-        b = a + self._pagestep
-        # covert i screen coordinates
-        aa = 1+a*size2//drawingSize
-        bb = 1+b*size2//drawingSize
-        self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa,bb),orientation=self._orientation, color=self.color)
 
+        if self.hasFocus():
+            color = self.focusColor
+        else:
+            color = self.color
+
+        size2 = size-2
+        asciiStep = size2 * self._pagestep // (self._maximum - self._minimum + self._pagestep)
+        if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
+        asciiDrawingSize = size2 - asciiStep
+        a = self._value - self._minimum
+        # covert i screen coordinates
+        aa = asciiDrawingSize * a // (self._maximum - self._minimum)
+        bb = aa + asciiStep
+        self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
+        # Update the screen position coordinates
+        self._screenPgDown =   ( 1 ,    aa+1     )
+        self._screenScroller = ( aa+1 , bb+1)
+        self._screenPgUp =     ( bb+1 , size-1 )
+        # TTkLog.debug(f"aa:{aa} bb:{bb}, a:{a}, size2:{size2}")
 
     def wheelEvent(self, evt):
         if evt.evt == TTkK.WHEEL_Up:
-            self.value = self._value - self._pagestep
+            self.value = self.value - self.pagestep
         else:
-            self.value = self._value + self._pagestep
+            self.value = self.value + self.pagestep
         return True
+
+    def mousePressEvent(self, evt):
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+            mouse = evt.y
+        else:
+            size=self._width
+            mouse = evt.x
+
+        if mouse == 0: # left/up arrow pressed
+            self.value = self.value - self.singlestep
+            self.update()
+        elif mouse == size-1: # right/down arrow pressed
+            self.value = self.value + self.singlestep
+            self.update()
+        elif self._screenPgDown[0] <= mouse < self._screenPgDown[1]:
+            self.value = self.value - self.pagestep
+            self.update()
+        elif self._screenPgUp[0] <= mouse < self._screenPgUp[1]:
+            self.value = self.value + self.pagestep
+            self.update()
+        elif self._screenScroller[0] <= mouse < self._screenScroller[1]:
+            self._mouseDelta = mouse-self._screenScroller[0]
+            self._draggable = True
+            self.update()
+        else:
+            return False
+        # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}")
+        return True
+
+    def mouseDragEvent(self, evt):
+        if not self._draggable: return False
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+            mouse = evt.y
+        else:
+            size=self._width
+            mouse = evt.x
+        aa = mouse-self._mouseDelta
+
+        size2 = size-2
+        asciiStep = self._screenScroller[1] - self._screenScroller[0]
+        asciiDrawingSize = size2 - asciiStep
+
+        a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
+        self.value = a + self._minimum
+
+        # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, aa:{aa}")
+        return True
+
+
+    def focusInEvent(self):
+        self.update()
+
+    def focusOutEvent(self):
+        self.update()
 
     @property
     def minimum(self): return self._minimum
@@ -124,4 +206,13 @@ class TTkScrollBar(TTkWidget):
     def color(self, color):
         if self.color != color:
             self._color = color
+            self.update()
+
+    @property
+    def focusColor(self):
+        return self._focusColor
+    @focusColor.setter
+    def focusColor(self, color):
+        if self.focusColor != color:
+            self._focusColor = color
             self.update()

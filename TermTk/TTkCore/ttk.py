@@ -104,7 +104,7 @@ class TTk(TTkWidget):
             if   evt is TTk.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
                 focusWidget = TTkHelper.getFocus()
-                if focusWidget is not None:
+                if focusWidget is not None and mevt.evt != TTkK.Press:
                     x,y = TTkHelper.absPos(focusWidget)
                     nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
                     focusWidget.mouseEvent(nmevt)
@@ -176,4 +176,7 @@ class TTk(TTkWidget):
 
     def _SIGINT(self, signum, frame):
         TTkLog.debug("Captured SIGINT <CTRL-C>")
+        # Deregister the handler
+        # so CTRL-C can be redirected to the default handler if the app does not exit
+        signal.signal(signal.SIGINT,  signal.SIG_DFL)
         self.quit()

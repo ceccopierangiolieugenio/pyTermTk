@@ -158,19 +158,19 @@ class TTkCanvas:
         x,y = pos
         f,t = slider # slider from-to position
         if orientation == TTkK.HORIZONTAL:
-            for i in range(x+1,x+size-1):
+            for i in range(x+1,x+size-1): # H line
                 self._set(y,x+i, self._theme.hscroll[1], color)
-            for i in range(f,t):
+            for i in range(f,t): # Slider
                 self._set(y,x+i, self._theme.hscroll[2], color)
-            self._set(y,x, self._theme.hscroll[0], color)
-            self._set(y,x+size-1, self._theme.hscroll[3], color)
+            self._set(y,x, self._theme.hscroll[0], color)        # Left Arrow
+            self._set(y,x+size-1, self._theme.hscroll[3], color) # Right Arrow
         else:
-            for i in range(y+1,y+size-1):
+            for i in range(y+1,y+size-1): # V line
                 self._set(y+i,x, self._theme.vscroll[1], color)
-            for i in range(f,t):
+            for i in range(f,t): # Slider
                 self._set(y+i,x, self._theme.vscroll[2], color)
-            self._set(y,x, self._theme.vscroll[0], color)
-            self._set(y+size-1,x, self._theme.vscroll[3], color)
+            self._set(y,x, self._theme.vscroll[0], color)        # Up Arrow
+            self._set(y+size-1,x, self._theme.vscroll[3], color) # Down Arrow
 
         pass
 

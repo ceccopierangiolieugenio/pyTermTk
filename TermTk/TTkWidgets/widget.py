@@ -227,8 +227,8 @@ class TTkWidget:
             if self.mouseDragEvent(evt):
                 return
         elif   evt.evt == lbt.MouseEvent.Release:
-            if self.hasFocus():
-                self.clearFocus()
+            #if self.hasFocus():
+            #    self.clearFocus()
             if self.mouseReleaseEvent(evt):
                 return
         elif   evt.evt == lbt.MouseEvent.Press:
