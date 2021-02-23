@@ -23,28 +23,38 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkWidgets.widget import *
-from TermTk.TTkTemplates.color import TColor
-from TermTk.TTkTemplates.text  import TText
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkWidgets.widget import TTkWidget, TTkScrollBar, TTkLayout
 
-class TTkLabel(TTkWidget, TColor, TText):
-    __slots__ = ('_color', '_text')
+'''
+
+
+'''
+class TTkScrollArea(TTkWidget):
+    __slots__ = ('_border', '_hszroll', '_vscroll', '_widgetScroller')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLabel' )
-        TColor.__init__(self, *args, **kwargs)
-        TText.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkScrollArea' )
+    #    self._border = kwargs.get('border', True )
+    #    if self._border:
+    #        self.setPadding(1,2,1,2)
+    #    else:
+    #        self.setPadding(0,1,0,1)
+    #    self._hscroll = TTkScrollBar(parent=self)
+    #    self._vscroll = TTkScrollBar(parent=self)
 
-    def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color)
-        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color)
+    #def setWidget(self, widget):
 
-    def textUpdated(self, text):
-        w, h = self.size()
-        if w<len(text) or h<1:
-            self.resize(len(text),1)
-        self.setMinimumSize(len(text), 1)
-        self.update()
+    #def setLayout(self, layout):
+    #    self._layout = layout
+    #    self._layout.setParent(self)
+    #    self._layout.setGeometry(
+    #                    self._padl, self._padt,
+    #                    self._width   - self._padl - self._padr,
+    #                    self._height  - self._padt - self._padb)
+    #    self.update(repaint=True, updateLayout=True)
 
-    def colorUpdated(self, color):
-        self.update()
+    #def paintEvent(self):
+    #    if self._border:
+    #        self._canvas.drawBox(pos=(0,0),size=(self._width,self._height))

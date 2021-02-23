@@ -25,7 +25,9 @@
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.canvas import *
 from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.signal import *
 from TermTk.TTkWidgets.layout import *
+
 
 class TTkWidget:
     # Focus Policies
@@ -97,15 +99,16 @@ class TTkWidget:
                             width  = self._width  ,
                             height = self._height )
         self.setLayout(kwargs.get('layout',TTkLayout()))
-        if self._parent is not None and \
-           self._parent._layout is not None:
-            self._parent._layout.addWidget(self)
+        if self._parent is not None:
+            self._parent.addWidget(self)
             self._parent.update(repaint=True, updateLayout=True)
 
         self.update(repaint=True, updateLayout=True)
 
-    def addLayout(self, l):
-        self._layout = l
+    def addWidget(self, widget):
+        if self._layout is not None:
+            self._layout.addWidget(widget)
+            self.update(repaint=True, updateLayout=True)
 
     def paintEvent(self): pass
 
@@ -130,11 +133,14 @@ class TTkWidget:
             parent.paintChildCanvas()
             parent = parent._parent
 
+    def moveEvent(self, x, y): pass
+    def resizeEvent(self, w, h): pass
 
     def move(self, x, y):
         self._x = x
         self._y = y
         self.update(repaint=False, updateLayout=False)
+        self.moveEvent(x,y)
 
     def resize(self, w, h):
         self._width  = w
@@ -146,6 +152,7 @@ class TTkWidget:
                                 self._width   - self._padl - self._padr,
                                 self._height  - self._padt - self._padb)
         self.update(repaint=True, updateLayout=True)
+        self.resizeEvent(w,h)
 
     def setGeometry(self, x, y, w, h):
         self.resize(w, h)
@@ -365,6 +372,7 @@ class TTkWidget:
     #        elif isinstance(item, CuLayout):
     #            CuWidget._showHandle(item)
 
+    @pyTTkSlot()
     def show(self):
         self._canvas.show()
         self._visible = True
@@ -381,10 +389,11 @@ class TTkWidget:
     #        elif isinstance(item, CuLayout):
     #            CuWidget._hideHandle(item)
 
+    @pyTTkSlot()
     def hide(self):
         self._canvas.hide()
         self._visible = False
-        #self._parent._canvas.clean(self.pos(),self.size())
+        # self._parent._canvas.clean(self.pos(),self.size())
         self.update()
     #    if self._layout is not None:
     #        TTkWidget._hideHandle(self._layout])

@@ -26,6 +26,7 @@ import math
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
@@ -44,11 +45,20 @@ class TTkScrollBar(TTkWidget):
         #        |---|       Screen Scroller
         #            |-----| Screen Pg Up
         # <------|XXX|----->
-        '_screenPgDown','_screenPgUp','_screenScroller')
+        '_screenPgDown','_screenPgUp','_screenScroller',
+        # Signals
+        'valueChanged', 'rangeChanged', 'sliderMoved'
+        )
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkScrollBar' )
+        # Define Signals
+        self.valueChanged = pyTTkSignal(int) #  Value
+        self.rangeChanged = pyTTkSignal(int, int) # Min, Max
+        self.sliderMoved  = pyTTkSignal(int) # Value
+
+
         self._orientation = kwargs.get('orientation' , TTkK.VERTICAL )
         if self._orientation == TTkK.VERTICAL:
             self.setMaximumWidth(1)
@@ -91,15 +101,19 @@ class TTkScrollBar(TTkWidget):
             color = self.focusColor
         else:
             color = self.color
-
-        size2 = size-2
-        asciiStep = size2 * self._pagestep // (self._maximum - self._minimum + self._pagestep)
-        if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
-        asciiDrawingSize = size2 - asciiStep
-        a = self._value - self._minimum
-        # covert i screen coordinates
-        aa = asciiDrawingSize * a // (self._maximum - self._minimum)
-        bb = aa + asciiStep
+        if self._maximum == self._minimum:
+            # Special case where no scroll is needed
+            aa=0
+            bb=size-2
+        else:
+            size2 = size-2
+            asciiStep = size2 * self._pagestep // (self._maximum - self._minimum + self._pagestep)
+            if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
+            asciiDrawingSize = size2 - asciiStep
+            a = self._value - self._minimum
+            # covert i screen coordinates
+            aa = asciiDrawingSize * a // (self._maximum - self._minimum)
+            bb = aa + asciiStep
         self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
         # Update the screen position coordinates
         self._screenPgDown =   ( 1 ,    aa+1     )
@@ -159,6 +173,7 @@ class TTkScrollBar(TTkWidget):
 
         a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
         self.value = a + self._minimum
+        self.sliderMoved.emit(aa)
 
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, aa:{aa}")
         return True
@@ -170,15 +185,33 @@ class TTkScrollBar(TTkWidget):
     def focusOutEvent(self):
         self.update()
 
+    @pyTTkSlot(int, int)
+    def setRange(self, min, max):
+        self.minimum = min
+        self.maximum = max
+        self.rangeChanged.emit(min, max)
+
+    @pyTTkSlot(int)
+    def setValue(self, v):
+        self.value = v
+
     @property
     def minimum(self): return self._minimum
     @minimum.setter
-    def minimum(self, v): self._minimum = v; self.update()
+    def minimum(self, v):
+        if v > self._maximum:
+            v = self._maximum
+        self._minimum = v
+        self.update()
 
     @property
     def maximum(self): return self._maximum
     @minimum.setter
-    def minimum(self, v): self._maximum = v; self.update()
+    def maximum(self, v):
+        if v < self._minimum:
+            v = self._minimum
+        self._maximum = v
+        self.update()
 
     @property
     def singlestep(self): return self._singlestep
@@ -197,6 +230,7 @@ class TTkScrollBar(TTkWidget):
         if v > self._maximum: v = self._maximum
         if v < self._minimum: v = self._minimum
         self._value = v
+        self.valueChanged.emit(v)
         self.update()
 
     @property

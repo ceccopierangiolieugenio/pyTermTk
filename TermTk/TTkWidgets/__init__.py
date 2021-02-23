@@ -6,5 +6,6 @@ from .button import *
 from .label  import *
 from .scrollbar import *
 from .window import *
+from .table import *
 from .logviewer import *
 from .testwidget import *

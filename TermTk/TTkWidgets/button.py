@@ -23,13 +23,17 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):
-    __slots__ = ('_text', '_border', '_pressed')
+    __slots__ = ('_text', '_border', '_pressed', 'clicked')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
+        # Define Signals
+        self.clicked = pyTTkSignal()
+
         self._name = kwargs.get('name' , 'TTkButton' )
         self.text = kwargs.get('text', "" )
         self._border = kwargs.get('border', True )
@@ -61,6 +65,7 @@ class TTkButton(TTkWidget):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
         self._pressed = False
         self.update()
+        self.clicked.emit()
         return True
 
     @property
