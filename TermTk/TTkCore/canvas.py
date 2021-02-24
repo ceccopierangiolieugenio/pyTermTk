@@ -215,7 +215,7 @@ class TTkCanvas:
                 ch = self._data[y][x]
                 color = self._colors[y][x]
                 if color != lastcolor:
-                    ansi += color
+                    ansi += color-lastcolor
                     lastcolor = color
                 ansi+=ch
             lbt.Term.push(ansi)

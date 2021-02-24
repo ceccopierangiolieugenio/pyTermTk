@@ -99,7 +99,7 @@ class TTkWindow(TTkWidget):
             elif self._resizable & TTkWidget.RIGHT:
                 if   minw > evt.x: w = minw
                 elif maxw < evt.x: w = maxw
-                else: w = evt.x
+                else: w = evt.x+1
             if self._resizable & TTkWidget.TOP:
                 tmph = h-dy
                 if   minh > tmph: tmph=minh; dy= h-tmph
@@ -108,7 +108,7 @@ class TTkWindow(TTkWidget):
             elif self._resizable & TTkWidget.BOTTOM:
                 if   minh > evt.y: h = minh
                 elif maxh < evt.y: h = maxh
-                else: h = evt.y
+                else: h = evt.y+1
             self.move(x,y)
             self.resize(w,h)
             return True
