@@ -68,6 +68,17 @@ class TTk(TTkWidget):
         self.setFocusPolicy(TTkWidget.ClickFocus)
         TTkHelper.registerRootCanvas(self._canvas)
 
+    frame = 0
+    time = time.time()
+    def _fps(self):
+        curtime = time.time()
+        self.frame+=1
+        delta = curtime - self.time
+        if delta > 3:
+            TTkLog.debug(f"fps: {int(self.frame/delta)}")
+            self.frame = 0
+            self.time  = curtime
+
     def mainloop(self):
         TTkLog.debug("Starting Main Loop...")
         # Register events
@@ -85,7 +96,7 @@ class TTk(TTkWidget):
         threading.Thread(target=self._input_thread, daemon=True).start()
         self._timerEvent = threading.Event()
         self._timerEvent.set()
-        self._timer = TTkTimer(self._time_event, 0.02, self._timerEvent)
+        self._timer = TTkTimer(self._time_event, 0.03, self._timerEvent)
         self._timer.start()
 
         self.running = True
@@ -110,10 +121,11 @@ class TTk(TTkWidget):
             elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()
                 self._timerEvent.set()
+                self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-                TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
+                #TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
             elif evt is TTkK.QUIT_EVENT:
                 TTkLog.debug(f"Quit.")
                 break

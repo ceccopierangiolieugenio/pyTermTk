@@ -52,28 +52,57 @@ class TTkHelper:
 
     @staticmethod
     def paintAll():
+        '''
+            _updateBuffer = list widgets that require a repaint [paintEvent]
+            _updateWidget = list widgets that need to be pushed below
+        '''
         if TTkHelper._rootCanvas is None:
             return
-        #processed = []
-        pushToTerminal = False
-        for widget in TTkHelper._updateBuffer:
+        # Build a list of buffers to be repainted
+        updateBuffers = [w for w in TTkHelper._updateBuffer]
+        updateWidgets = [w for w in TTkHelper._updateWidget]
+
+        for widget in TTkHelper._updateWidget:
+            parent = widget.parentWidget()
+            while parent is not None:
+                if parent not in updateBuffers:
+                    updateBuffers.append(parent)
+                if parent not in updateWidgets:
+                    updateWidgets.append(parent)
+                parent = parent.parentWidget()
+
+        TTkHelper._updateBuffer = []
+        TTkHelper._updateWidget = []
+
+        # Paint all the canvas
+        for widget in updateBuffers:
             if not widget.isVisible(): continue
             # Resize the canvas just before the paintEvent
             # to avoid too many allocations
             widget.getCanvas().updateSize()
+            widget.getCanvas().clean()
             widget.paintEvent()
-        TTkHelper._updateBuffer = []
-        for widget in TTkHelper._updateWidget:
+
+        # Compose all the canvas to the parents
+        # From the deepest childs to the bottom
+        pushToTerminal = False
+        sortedUpdateWidget = [ (w, TTkHelper.widgetDepth(w)) for w in updateWidgets]
+        sortedUpdateWidget = sorted(sortedUpdateWidget, key=lambda w: -w[1])
+        for w in sortedUpdateWidget:
+            widget = w[0]
             if not widget.isVisible(): continue
             pushToTerminal = True
-            #processed.append(widget)
             widget.paintChildCanvas()
-            #p = widget.parentWidget()
-            #if p in TTkHelper._updateWidget and p not in processed:
-            widget.paintNotifyParent()
-        TTkHelper._updateWidget = []
+
         if pushToTerminal:
             TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+
+
+    @staticmethod
+    def widgetDepth(widget) -> int:
+        if widget is None:
+            return 0
+        return 1 + TTkHelper.widgetDepth(widget.parentWidget())
 
     @staticmethod
     def absPos(widget) -> (int,int):
