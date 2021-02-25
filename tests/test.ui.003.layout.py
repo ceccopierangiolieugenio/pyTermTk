@@ -33,28 +33,30 @@ root = ttk.TTk()
 root.setLayout(ttk.TTkHBoxLayout())
 
 ttk.TTkTestWidget(parent=root,border=True, maxWidth=52)
-rightframe = ttk.TTkFrame(parent=root)
+rightframe = ttk.TTkFrame(parent=root, border=True, title="V Box Layout", titleColor=ttk.TTkColor.BOLD+ttk.TTkColor.fg('#8888dd'))
 rightframe.setLayout(ttk.TTkVBoxLayout())
 
-gridFrame = ttk.TTkFrame(parent=rightframe, border=False)
+gridFrame = ttk.TTkFrame(parent=rightframe, border=True, title="Grid Layout", titleColor=ttk.TTkColor.fg('#88dd88'))
 gridFrame.setLayout(ttk.TTkGridLayout())
 ttk.TTkButton(parent=gridFrame, text="Button1")
 ttk.TTkButton(parent=gridFrame, text="Button2")
 gridFrame.layout().addWidget(ttk.TTkButton(text="Button (1,0)"),1,0)
 ttk.TTkButton(parent=gridFrame, text="Button4")
+gridFrame.layout().addWidget(ttk.TTkButton(text="Button (0,3)"),0,3)
 gridFrame.layout().addWidget(ttk.TTkButton(text="Button (1,2)"),1,2)
 # Test (add a widget to the same parent with a different layout params than the default)
 gridFrame.layout().addWidget(ttk.TTkButton(parent=gridFrame, text="Button (2,1)"),2,1)
 gridFrame.layout().addWidget(ttk.TTkButton(text="Button (5,5)"),5,5)
 
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True),0,5)
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True),2,3)
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True),5,3)
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True),5,1)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame1"),0,5)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame2"),2,3)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame3"),5,3)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame4"),5,1)
 
-centerrightframe=ttk.TTkFrame(parent=rightframe, border=True)
+
+centerrightframe=ttk.TTkFrame(parent=rightframe, border=True, title="H Box Layout", titleColor=ttk.TTkColor.fg('#dd88dd'))
 centerrightframe.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkTestWidget(parent=rightframe, border=True)
+ttk.TTkTestWidget(parent=rightframe, border=True, title="Test Widget", titleColor=ttk.TTkColor.fg('#dddddd'))
 
 
 smallframe = ttk.TTkFrame(parent=centerrightframe, border=True)

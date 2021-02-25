@@ -108,9 +108,45 @@ class TTkCanvas:
         for i in range(0, len(arr)):
             self._set(y, x+i, arr[i], color)
 
+    def drawBoxTitle(self, pos, size, text, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
+        if not self._visible: return
+        x,y = pos
+        w,h = size
+        if w < 4: return
+        gg = self._theme.grid[grid]
+
+        if len(text) > w-4:
+            text = text[:w-4]
+        l = (w-2-len(text))//2
+        r = l+len(text)+1
+
+        self._set(y,l, gg[7], color)
+        self._set(y,r, gg[6], color)
+        self.drawText((l+1,y),text,colorText)
+
+
 
     def drawBox(self, pos, size, color=TTkColor.RST):
         self.drawGrid(pos=pos, size=size, color=color)
+
+    def drawButtonBox(self, pos, size, color=TTkColor.RST, grid=0):
+        if not self._visible: return
+        x,y = pos
+        w,h = size
+        gg = self._theme.buttonBox[grid]
+        # 4 corners
+        self._set(y,     x,     gg[0], color)
+        self._set(y,     x+w-1, gg[2], color)
+        self._set(y+h-1, x,     gg[6], color)
+        self._set(y+h-1, x+w-1, gg[8], color)
+        if w > 2:
+            for i in range(x+1,x+w-1):
+                self._set(y,     i, gg[1], color)
+                self._set(y+h-1, i, gg[7], color)
+        if h > 2:
+            for i in range(y+1,y+h-1):
+                self._set(i, x,     gg[3], color)
+                self._set(i, x+w-1, gg[5], color)
 
     def drawGrid(self, pos, size, hlines=[], vlines=[], color=TTkColor.RST, grid=0):
         if not self._visible: return

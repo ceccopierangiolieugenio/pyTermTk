@@ -26,14 +26,25 @@ from TermTk.TTkCore.log import TTkLog
 from .widget import *
 
 class TTkFrame(TTkWidget):
-    __slots__ = ('_border')
+    __slots__ = ('_border','_title', '_titleColor', '_borderColor')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkFrame' )
+        self._title = kwargs.get('title' , '' )
         self._border = kwargs.get('border', True )
+        self._borderColor = kwargs.get('borderColor', TTkColor.RST )
+        self._titleColor = kwargs.get('titleColor', TTkColor.RST )
         if self._border:
             self.setPadding(1,1,1,1)
 
     def paintEvent(self):
         if self._border:
-            self._canvas.drawBox(pos=(0,0),size=(self._width,self._height))
+            self._canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=self._borderColor)
+            if self._title != '':
+                self._canvas.drawBoxTitle(
+                                pos=(0,0),
+                                size=(self._width,self._height),
+                                text=self._title,
+                                color=self._borderColor,
+                                colorText=self._titleColor)
+

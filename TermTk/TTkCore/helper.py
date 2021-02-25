@@ -62,6 +62,7 @@ class TTkHelper:
         updateBuffers = [w for w in TTkHelper._updateBuffer]
         updateWidgets = [w for w in TTkHelper._updateWidget]
 
+        # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
         for widget in TTkHelper._updateWidget:
             parent = widget.parentWidget()
             while parent is not None:

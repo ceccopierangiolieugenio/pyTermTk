@@ -74,7 +74,7 @@ class TTk(TTkWidget):
         curtime = time.time()
         self.frame+=1
         delta = curtime - self.time
-        if delta > 3:
+        if delta > 5:
             TTkLog.debug(f"fps: {int(self.frame/delta)}")
             self.frame = 0
             self.time  = curtime

@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # other
+*.swp
 tmp
 profiler.txt
 .vscode

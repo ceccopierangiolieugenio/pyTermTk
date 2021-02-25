@@ -43,6 +43,8 @@
 ## Widgets
 - [ ] Add Size Policy (fixed minimum maximum expanding)
 - [x] Add Show/Hide
+- [ ] Clean the way the parent is assigned, propagated
+      *Widget \[setParent, addWidget, . . ], GridLayout \[addWidget]*
 ### Layout
 - [ ] Add Weight in V and H Layout
 - [ ] Add addLayout method

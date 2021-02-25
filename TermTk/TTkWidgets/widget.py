@@ -106,6 +106,7 @@ class TTkWidget:
         self.update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
+        widget._parent = self
         if self._layout is not None:
             self._layout.addWidget(widget)
             self.update(repaint=True, updateLayout=True)

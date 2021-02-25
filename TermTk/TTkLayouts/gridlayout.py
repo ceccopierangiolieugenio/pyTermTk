@@ -79,6 +79,8 @@ class TTkGridLayout(TTkLayout):
     # addWidget(self, widget, row, col)
     def addWidget(self, *args, **kwargs):
         widget = args[0]
+        self.removeWidget(widget)
+        widget._parent = self.parentWidget()
         if len(args) == 3:
             row = args[1]
             col = args[2]

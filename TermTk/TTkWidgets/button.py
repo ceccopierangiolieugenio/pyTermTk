@@ -46,26 +46,25 @@ class TTkButton(TTkWidget):
 
     def paintEvent(self):
         if self._pressed:
-            # borderColor = TTkColor.fg("#00ffff")
-            # textColor   = TTkColor.fg("#0000ff")
-            borderColor = TTkColor.fg("#ffff88")+TTkColor.BOLD
-            textColor   = TTkColor.fg("#00ff00")+TTkColor.BOLD
-        else:
-            # borderColor = TTkColor.fg("#ffff00")
             borderColor = TTkColor.RST
-            textColor   = TTkColor.fg("#00ff00")
+            textColor   = TTkColor.RST
+            grid = 0
+        else:
+            borderColor = TTkColor.RST+TTkColor.BOLD
+            textColor   = TTkColor.RST+TTkColor.BOLD
+            grid = 1
         self._canvas.drawText(pos=(1,1), color=textColor ,text=self.text)
         if self._border:
-            self._canvas.drawBox(pos=(0,0),size=(self._width,self._height),color=borderColor)
+            self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
 
     def mousePressEvent(self, evt):
-        TTkLog.debug(f"{self._name} Test Mouse {evt}")
+        TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self._pressed = True
         self.update()
         return True
 
     def mouseReleaseEvent(self, evt):
-        TTkLog.debug(f"{self._name} Test Mouse {evt}")
+        TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self._pressed = False
         self.update()
         self.clicked.emit()
