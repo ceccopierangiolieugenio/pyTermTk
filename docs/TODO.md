@@ -1,7 +1,10 @@
 # TODO
 - [ ] Follow [PEP 8](https://www.python.org/dev/peps/pep-0008/) coding style
-- [ ] Use @property/@setter when possible
 - [ ] Move the Global Constants outside TTk object
+- [ ] Add Typing (good luck) https://docs.python.org/3/library/typing.html
+- [ ] Remove Duplicate functionalities (i.e. Widget)
+  - [ ] Use @property/@setter when possible
+  - [ ] Uniform the setter/getter/signal/slots
 
 ## Terminal Helper
 - [ ] Events
@@ -21,12 +24,12 @@
 
 ## Colors
 - [ ] Allow dynamic depth change
-- [ ] Define a gradient feature
+- [x] Define a gradient feature
 ## Canvas Class
 - [ ] Have a look to the Unicode chartable: https://www.utf8-chartable.de/unicode-utf8-table.pl
 
 ## Signal/Slots
-- [ ] Implement Signal/Slots
+- [x] Implement Signal/Slots
 
 ## Logs
 - [x] Log Class
@@ -39,6 +42,8 @@
 
 ## Widgets
 - [ ] Add Size Policy (fixed minimum maximum expanding)
-- [ ] Add Show/Hide
+- [x] Add Show/Hide
 ### Layout
 - [ ] Add Weight in V and H Layout
+- [ ] Add addLayout method
+- [x] Add Grid Layout

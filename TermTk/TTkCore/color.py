@@ -62,12 +62,13 @@ from TermTk.TTkCore.helper import *
 # [49m          2.53      set background color to default (black)
 
 class _TTkColor:
-    __slots__ = ('_fg','_bg','_mod')
+    __slots__ = ('_fg','_bg','_mod', '_colorMod')
     _fg: str; _bg: str; _mod: str
-    def __init__(self, fg:str="", bg:str="", mod:str=""):
+    def __init__(self, fg:str="", bg:str="", mod:str="", colorMod=None):
         self._fg  = fg
         self._bg  = bg
         self._mod = mod
+        self._colorMod = colorMod
 
     def __str__(self):
         return self._fg+self._bg+self._mod
@@ -86,8 +87,9 @@ class _TTkColor:
         else:
             fg:  str = self._fg  if other._fg == ""  else other._fg
             bg:  str = self._bg  if other._bg == ""  else other._bg
-            mod: str = self._mod if other._mod == "" else other._mod
-            return TTkColor(fg,bg,mod)
+            mod: str = self._mod + other._mod
+            colorMod = self._colorMod  if other._colorMod == None  else other._colorMod
+            return TTkColor(fg,bg,mod,colorMod)
 
     def __radd__(self, other):
         # TTkLog.debug("__radd__")
@@ -96,23 +98,116 @@ class _TTkColor:
         else:
             fg:  str = self._fg  if other._fg == ""  else other._fg
             bg:  str = self._bg  if other._bg == ""  else other._bg
-            mod: str = self._mod if other._mod == "" else other._mod
-            return TTkColor(fg,bg,mod)
+            mod: self._mod + other._mod
+            colorMod = self._colorMod  if other._colorMod == None  else other._colorMod
+            return TTkColor(fg,bg,mod,colorMod)
 
     def __sub__(self, other):
         # TTkLog.debug("__sub__")
-        if other is None: return str(self)
+        # if other is None: return str(self)
         if "" == self._bg  != other._bg  or \
+           "" == self._fg  != other._fg  or \
            "" == self._mod != other._mod :
             return '\033[0m'+self
         return str(self)
 
+    def modParam(self, *args, **kwargs):
+        if self._colorMod is None: return self
+        ret = self.copy()
+        ret._colorMod.setParam(*args, **kwargs)
+        return ret
+
+    def mod(self, x , y):
+        if self._colorMod is None: return self
+        return self._colorMod.exec(x,y,self)
+
+    def copy(self, modifier=True):
+        ret = _TTkColor()
+        ret._fg  = self._fg
+        ret._bg  = self._bg
+        ret._mod = self._mod
+        if modifier:
+            ret._colorMod = self._colorMod.copy()
+        return ret
+
+class _TTkColorModifier():
+    def __init__(self, *args, **kwargs): pass
+    def setParam(self, *args, **kwargs): pass
+    def copy(self): return self
+
+class TTkColorGradient(_TTkColorModifier):
+    __slots__ = ('_increment', '_val', '_buffer')
+    _increment: int; _val: int
+    def __init__(self, *args, **kwargs):
+        _TTkColorModifier.__init__(self, *args, **kwargs)
+        self._increment = kwargs.get("increment",0)
+        self._val = 0
+        self._buffer = {}
+    def setParam(self, *args, **kwargs):
+        self._val = kwargs.get("val",0)
+    def exec(self, x, y, color):
+        def _applyGradient(c):
+            if c == "": return c
+            multiplier = abs(self._val + y)
+            cc = c.split(';')
+            #TTkLog.debug("Eugenio "+c.replace('\033','<ESC>'))
+            r = int(cc[2])     + self._increment * multiplier
+            g = int(cc[3])     + self._increment * multiplier
+            b = int(cc[4][:-1])+ self._increment * multiplier
+            if r>255: r=255
+            if g>255: g=255
+            if b>255: b=255
+            if r<0: r=0
+            if g<0: g=0
+            if b<0: b=0
+            return f"{cc[0]};{cc[1]};{r};{g};{b}m"
+
+        bname = str(color)
+        # I made a buffer to keep all the gradient values to speed up the paint process
+        if bname not in self._buffer:
+            self._buffer[bname] = [None]*(256*2)
+        id = self._val + y - 256
+        if self._buffer[bname][id] is not None:
+            return self._buffer[bname][id]
+        copy = color.copy(modifier=False)
+        copy._fg = _applyGradient(color._fg)
+        copy._bg = _applyGradient(color._bg)
+        self._buffer[bname][id] = copy
+        return self._buffer[bname][id]
+
+    def copy(self):
+        return self
+        #ret = TTkColorGradient()
+        #ret._increment = self._increment
+        #ret._val = self._val
+        #return ret
+
+
+
 class TTkColor(_TTkColor):
-    RST = _TTkColor('\033[0m')
+    RST = _TTkColor(fg='\033[0m')
+
+    # Modifiers:
+    BOLD         = _TTkColor(mod='\033[1m')
+    ITALIC       = _TTkColor(mod='\033[3m')
+    UNDERLINE    = _TTkColor(mod='\033[4m')
+    STRIKETROUGH = _TTkColor(mod='\033[9m')
 
     @staticmethod
     def fg(*args, **kwargs):
-        return _TTkColor(fg=TTkHelper.Color.fg(*args, **kwargs))
+        mod = kwargs.get('modifier', None )
+        if len(args) > 0:
+            color = args[0]
+        else:
+            color = kwargs.get('color', "" )
+        return _TTkColor(fg=TTkHelper.Color.fg(color), colorMod=mod)
+
     @staticmethod
     def bg(*args, **kwargs):
-        return _TTkColor(bg=TTkHelper.Color.bg(*args, **kwargs))
+        mod = kwargs.get('modifier', None )
+        if len(args) > 0:
+            color = args[0]
+        else:
+            color = kwargs.get('color', "" )
+        return _TTkColor(bg=TTkHelper.Color.bg(color), colorMod=mod)
+

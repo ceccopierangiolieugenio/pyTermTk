@@ -50,5 +50,13 @@ class TTkConstant:
     WHEEL_Up   = 0x00100000 # Wheel Up
     WHEEL_Down = 0x00200000 # Wheel Down
 
+    # Alignment
+    NONE   = 0x0000
+    LEFT_ALIGN   = 0x0001
+    RIGHT_ALIGN  = 0x0002
+    CENTER_ALIGN = 0x0003
+    JUSTIFY      = 0x0004
+
+
 # Alias to TTkConstant
 class TTkK(TTkConstant): pass

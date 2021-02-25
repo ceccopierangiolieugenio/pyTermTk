@@ -36,7 +36,7 @@ class TTkSplitter(TTkFrame):
         self._name = kwargs.get('name' , 'TTkSplitter' )
         self._widgets = []
         self._splitters = []
-        self._orientation = kwargs.get('orientation' , TTk.HORIZONTAL )
+        self._orientation = kwargs.get('orientation' , TTkK.HORIZONTAL )
 
     def addWidget(self, widget):
         # NOTE: Check with the max/min size if the new widget can fit
@@ -46,7 +46,7 @@ class TTkSplitter(TTkFrame):
 
     def _rearrange(self):
         w, h = self.size()
-        if self._orientation == TTk.HORIZONTAL:
+        if self._orientation == TTkK.HORIZONTAL:
             pass
         else:
             pass

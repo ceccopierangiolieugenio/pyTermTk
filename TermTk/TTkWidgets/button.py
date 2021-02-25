@@ -46,10 +46,13 @@ class TTkButton(TTkWidget):
 
     def paintEvent(self):
         if self._pressed:
-            borderColor = TTkColor.fg("#00ffff")
-            textColor   = TTkColor.fg("#0000ff")
+            # borderColor = TTkColor.fg("#00ffff")
+            # textColor   = TTkColor.fg("#0000ff")
+            borderColor = TTkColor.fg("#ffff88")+TTkColor.BOLD
+            textColor   = TTkColor.fg("#00ff00")+TTkColor.BOLD
         else:
-            borderColor = TTkColor.fg("#ffff00")
+            # borderColor = TTkColor.fg("#ffff00")
+            borderColor = TTkColor.RST
             textColor   = TTkColor.fg("#00ff00")
         self._canvas.drawText(pos=(1,1), color=textColor ,text=self.text)
         if self._border:

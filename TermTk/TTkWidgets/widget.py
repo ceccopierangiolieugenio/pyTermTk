@@ -26,7 +26,7 @@ import TermTk.libbpytop as lbt
 from TermTk.TTkCore.canvas import *
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.signal import *
-from TermTk.TTkWidgets.layout import *
+from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
 
 class TTkWidget:
@@ -110,6 +110,11 @@ class TTkWidget:
             self._layout.addWidget(widget)
             self.update(repaint=True, updateLayout=True)
 
+    def removeWidget(self, widget):
+        if self._layout is not None:
+            self._layout.removeWidget(widget)
+            self.update(repaint=True, updateLayout=True)
+
     def paintEvent(self): pass
 
     def paintChildCanvas(self):
@@ -190,7 +195,8 @@ class TTkWidget:
         # opt of bounds
         if x<lx or x>lx+lw or y<ly or y>lh+ly:
             return True
-        for item in layout.zSortedItems:# reversed(layout.zSortedItems):
+        for item in reversed(layout.zSortedItems):
+        # for item in layout.zSortedItems:
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
                 widget = item.widget()
                 if not widget._visible: continue
@@ -229,24 +235,25 @@ class TTkWidget:
         # handle own events
         if evt.evt == lbt.MouseEvent.Move:
             if self.mouseMoveEvent(evt):
-                return
+                return True
         if evt.evt == lbt.MouseEvent.Drag:
             if self.mouseDragEvent(evt):
-                return
+                return True
         elif   evt.evt == lbt.MouseEvent.Release:
             #if self.hasFocus():
             #    self.clearFocus()
             if self.mouseReleaseEvent(evt):
-                return
+                return True
         elif   evt.evt == lbt.MouseEvent.Press:
             if self.focusPolicy() & TTkWidget.ClickFocus == TTkWidget.ClickFocus:
                 self.setFocus()
                 self.raiseWidget()
             if self.mousePressEvent(evt):
-                return
+                TTkLog.debug(f"Click {self._name}")
+                return True
         elif evt.key == lbt.MouseEvent.Wheel:
             if self.wheelEvent(evt):
-                return
+                return True
             #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
             #    self.setFocus()
         #elif evt.type() == CuEvent.KeyPress:

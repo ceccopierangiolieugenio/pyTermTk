@@ -31,7 +31,7 @@ from TermTk.TTkCore.constant import TTkConstant, TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.canvas import *
-from TermTk.TTkWidgets.layout import *
+from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
 
 class TTkTimer(threading.Thread):
@@ -59,21 +59,13 @@ class TTk(TTkWidget):
     mouse_events = None
     screen_events = None
 
-    MOUSE_EVENT  = TTkK.MOUSE_EVENT
-    KEY_EVENT    = TTkK.KEY_EVENT
-    SCREEN_EVENT = TTkK.SCREEN_EVENT
-    QUIT_EVENT   = TTkK.QUIT_EVENT
-    TIME_EVENT   = TTkK.TIME_EVENT
-
-    HORIZONTAL = TTkConstant.HORIZONTAL
-    VERTICAL   = TTkConstant.VERTICAL
-
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self.events = queue.Queue()
         self.key_events = queue.Queue()
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
+        self.setFocusPolicy(TTkWidget.ClickFocus)
         TTkHelper.registerRootCanvas(self._canvas)
 
     def mainloop(self):
@@ -101,7 +93,7 @@ class TTk(TTkWidget):
         while self.running:
             # Main Loop
             evt = self.events.get()
-            if   evt is TTk.MOUSE_EVENT:
+            if   evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
                 focusWidget = TTkHelper.getFocus()
                 if focusWidget is not None and mevt.evt != TTkK.Press:
@@ -110,19 +102,19 @@ class TTk(TTkWidget):
                     focusWidget.mouseEvent(nmevt)
                 else:
                     self.mouseEvent(mevt)
-            elif evt is TTk.KEY_EVENT:
+            elif evt is TTkK.KEY_EVENT:
                 kevt = self.key_events.get()
                 self.keyEvent(kevt)
                 # TTkLog.info(f"Key Event: {kevt}")
                 pass
-            elif evt is TTk.TIME_EVENT:
+            elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()
                 self._timerEvent.set()
                 pass
-            elif evt is TTk.SCREEN_EVENT:
+            elif evt is TTkK.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
                 TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
-            elif evt is TTk.QUIT_EVENT:
+            elif evt is TTkK.QUIT_EVENT:
                 TTkLog.debug(f"Quit.")
                 break
             else:
@@ -133,21 +125,21 @@ class TTk(TTkWidget):
         pass
 
     def _time_event(self):
-        self.events.put(TTk.TIME_EVENT)
+        self.events.put(TTkK.TIME_EVENT)
 
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)
         TTkGlbl.term_h = int(height)
-        self.events.put(TTk.SCREEN_EVENT)
+        self.events.put(TTkK.SCREEN_EVENT)
 
     def _input_thread(self):
         def _inputCallback(kevt=None, mevt=None):
             if kevt is not None:
                 self.key_events.put(kevt)
-                self.events.put(TTk.KEY_EVENT)
+                self.events.put(TTkK.KEY_EVENT)
             if mevt is not None:
                 self.mouse_events.put(mevt)
-                self.events.put(TTk.MOUSE_EVENT)
+                self.events.put(TTkK.MOUSE_EVENT)
             return self.running
         # Start input key loop
         lbt.Input.get_key(_inputCallback)
@@ -156,7 +148,7 @@ class TTk(TTkWidget):
         pass
 
     def quit(self):
-        self.events.put(TTk.QUIT_EVENT)
+        self.events.put(TTkK.QUIT_EVENT)
         self._timer.quit()
         self.running = False
 

@@ -26,8 +26,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.layout import *
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
@@ -36,30 +36,59 @@ from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
 '''
 class TTkTable(TTkWidget):
-    __slots__ = ('_hlayout','_vscroller','_columns','_tableData', '_moveTo')
+    __slots__ = ('_hlayout','_vscroller', '_header', '_alignments', '_headerColor', '_columns', '_columnColors', '_selectColor', '_tableData', '_moveTo', '_selected')
     def __init__(self, *args, **kwargs):
         self._vscroller = None # This is required to avoid crash int he vScroller Tuning
         self._moveTo = 0
         self._tableData = []
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTable' )
-        self._columns = kwargs.get('columns' , 'TTkTable' )
+        self._columns = kwargs.get('columns' , [] )
+        self._header = [""]*len(self._columns)
+        self._alignments = [TTkK.NONE]*len(self._columns)
+        self._columnColors = kwargs.get('columnColors' , [TTkColor.RST]*len(self._columns) )
+        self._selectColor = kwargs.get('selectColor' , TTkColor.BOLD )
+        self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
         self._hlayout = TTkHBoxLayout()
         self.setLayout(self._hlayout)
+        self._selected = -1
         TTkSpacer(parent=self)
         self._vscroller = TTkScrollBar(parent=self)
         self._vscroller.valueChanged.connect(self.scrollTo)
+        self.setFocusPolicy(TTkWidget.ClickFocus)
+
+    def setAlignment(self, alignments):
+        if len(alignments) != len(self._columns):
+            return
+        self._alignments = alignments
+
+    def setHeader(self, header):
+        if len(header) != len(self._columns):
+            return
+        self._header = header
 
     def setColumnSize(self, columns):
         self._columns = columns
+        self._columnColors = [TTkColor.RST]*len(self._columns)
+        self._header = [""]*len(self._columns)
+        self._alignments = [TTkK.NONE]*len(self._columns)
+
+    def setColumnColors(self, colors):
+        if len(colors) != len(self._columns):
+            return
+        self._columnColors = colors
 
     def appendItem(self, item):
+        if len(item) != len(self._columns):
+            return
         self._tableData.append(item)
         self._tuneTheScroller()
 
     def resizeEvent(self, w, h):
-        if self._moveTo > len(self._tableData)-h:
-            self._moveTo = len(self._tableData)-h
+        if self._moveTo > len(self._tableData)-h-1:
+            self._moveTo = len(self._tableData)-h-1
+        if self._moveTo < 0:
+            self._moveTo = 0
         self._tuneTheScroller()
 
     def _tuneTheScroller(self):
@@ -67,6 +96,15 @@ class TTkTable(TTkWidget):
         scrollTo = len(self._tableData) - self.height()
         self._vscroller.setRange(0, scrollTo)
         self._vscroller.pagestep = self.height()
+
+    def mousePressEvent(self, evt):
+        x,y = evt.x, evt.y
+        if x == self.width() - 1:
+            return False
+        if y > 0:
+            self._selected = self._moveTo + y - 1
+            self.update()
+        return True
 
     def wheelEvent(self, evt):
         # delta = self.height()
@@ -86,7 +124,6 @@ class TTkTable(TTkWidget):
         self.update()
 
     def paintEvent(self):
-        y = 0
         w,h = self.size()
         total = 0
         variableCols = 0
@@ -98,34 +135,64 @@ class TTkTable(TTkWidget):
                 variableCols += 1
         if variableCols > 0:
             slicesize = int((w-total)/variableCols)
-        TTkLog.debug(f"ss:{slicesize}, w:{w}")
+        # TTkLog.debug(f"ss:{slicesize}, w:{w}")
 
         maxItems = len(self._tableData)
-        itemFrom = self._moveTo
+        itemFrom = self._moveTo -1
+        if itemFrom > maxItems-h: itemFrom = maxItems-h
+        if itemFrom < 0 : itemFrom = 0
         itemTo   = itemFrom + h
-        if itemFrom > maxItems: itemFrom = maxItems
         if itemTo > maxItems: itemTo = maxItems
-        for i in range(itemFrom, itemTo):
-            item=  self._tableData[i]
-            line = ""
-            for i in range(0,len(item)):
-                txt = item[i]
-                width = self._columns[i]
-                if width < 0:
-                    width = slicesize
-                if width > 0:
-                    lentxt = len(txt)
-                    if lentxt > width:
-                        line += txt[0:width]
+        # TTkLog.debug(f"moveto:{self._moveTo}, maxItems:{maxItems}, f:{itemFrom}, t{itemTo}, h:{h}, sel:{self._selected}")
+
+        def _lineDraw(_y, _val, _item, _inColor=None):
+            _x = 0
+            for i in range(0,len(_item)):
+                _txt = _item[i]
+                _width = self._columns[i]
+                _color = self._columnColors[i]
+                _align = self._alignments[i]
+                if _inColor is not None:
+                    _color = _inColor
+                if _width < 0:
+                    _width = slicesize
+                if _width > 0:
+                    _line = ""
+                    _lentxt = len(_txt)
+                    if _lentxt > _width:
+                        _line += _txt[0:_width]
                     else:
-                        line += txt + " "*(width-lentxt)
-                    line += "  "
-            lentxt = len(line)
-            if lentxt > w-2:
-                line = line[0:w-2]
+                        _pad = _width-_lentxt
+                        if _align == TTkK.NONE or _align == TTkK.LEFT_ALIGN:
+                            _line += _txt + " "*_pad
+                        elif _align == TTkK.RIGHT_ALIGN:
+                            _line += " "*_pad + _txt
+                        elif _align == TTkK.CENTER_ALIGN:
+                            _p1 = _pad//2
+                            _p2 = _pad-_p1
+                            _line += " "*_p1 + _txt+" "*_p2
+                        elif _align == TTkK.JUSTIFY:
+                            # TODO: Text Justification
+                            _line += _txt + " "*_pad
+                    self._canvas.drawText(pos=(_x,_y), text=_line, color=_color.modParam(val=-_val))
+                    _line  += " "
+                    _x += _width + 1
+
+        _lineDraw(0,0,self._header,self._headerColor)
+
+        y = 1
+        for it in range(itemFrom, itemTo):
+            item =  self._tableData[it]
+            if self._selected > 0:
+                val = self._selected - itemFrom
             else:
-                line = line + " "*(w-2-lentxt)
-            self._canvas.drawText(pos=(0,y), text=line)
+                val = h//2
+            if val < 0 : val = 0
+            if val > h : val = h
+            if it == self._selected:
+                _lineDraw(y,val,item,self._selectColor)
+            else:
+                _lineDraw(y,val,item)
             y+=1
 
 

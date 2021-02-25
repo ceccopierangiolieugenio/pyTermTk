@@ -229,6 +229,7 @@ class TTkScrollBar(TTkWidget):
     def value(self, v):
         if v > self._maximum: v = self._maximum
         if v < self._minimum: v = self._minimum
+        if self._value == v: return
         self._value = v
         self.valueChanged.emit(v)
         self.update()

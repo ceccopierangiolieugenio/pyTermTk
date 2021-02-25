@@ -99,7 +99,7 @@ class TTkCanvas:
            _x < self._width and \
            _x >= 0 and _y >=0 :
             self._data[_y][_x] = _ch
-            self._colors[_y][_x] = _col
+            self._colors[_y][_x] = _col.mod(_x,_y)
 
     def drawText(self, pos, text, color=TTkColor.RST):
         if not self._visible: return
@@ -208,7 +208,7 @@ class TTkCanvas:
 
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
-        lastcolor = None
+        lastcolor = TTkColor.RST
         for y in range(0, self._height):
             ansi = lbt.Mv.t(y+1,1)
             for x in range(0, self._width):

@@ -1,5 +1,4 @@
 from .widget import *
-from .layout import *
 from .spacer import *
 from .frame  import *
 from .button import *
