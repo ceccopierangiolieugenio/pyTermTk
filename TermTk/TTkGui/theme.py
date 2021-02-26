@@ -95,6 +95,19 @@ class TTkTheme():
     buttonBorderColor = TTkColor.fg("#dddd88")
     buttonTextColorClicked   = TTkColor.fg("#ffffdd")+TTkColor.BOLD
     buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
+    buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
+    buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
+
 
     lineEditTextColor       = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
     lineEditTextColorFocus  = TTkColor.fg("#dddddd")+TTkColor.bg("#000044")
+
+    checkboxContentColor      = buttonTextColor
+    checkboxBorderColor       = buttonBorderColor
+    checkboxContentColorFocus = buttonTextColorFocus
+    checkboxBorderColorFocus  = buttonBorderColorFocus
+
+    radioButtonContentColor      = buttonTextColor
+    radioButtonBorderColor       = buttonBorderColor
+    radioButtonContentColorFocus = buttonTextColorFocus
+    radioButtonBorderColorFocus  = buttonBorderColorFocus

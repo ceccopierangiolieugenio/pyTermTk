@@ -22,27 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.constant import *
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.canvas import *
-from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.signal import *
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
 
 class TTkWidget:
-    # Focus Policies
-    NoFocus    = 0x0000
-    ClickFocus = 0x0001
-    WheelFocus = 0x0002
-    TabFocus   = 0x0004
-
-    # positions
-    NONE   = 0x0000
-    TOP    = 0x0001
-    BOTTOM = 0x0002
-    LEFT   = 0x0004
-    RIGHT  = 0x0008
-
     '''
     Terminal
     ┌─────────────────────────────────────────┐
@@ -66,7 +54,7 @@ class TTkWidget:
         '_layout', '_canvas', '_visible')
 
     def __init__(self, *args, **kwargs):
-        self._name = kwargs.get('name', None )
+        self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
 
         self._x = kwargs.get('x', 0 )
@@ -92,7 +80,7 @@ class TTkWidget:
         self._visible = kwargs.get('visible', True)
 
         self._focus = False
-        self._focus_policy = TTkWidget.NoFocus
+        self._focus_policy = TTkK.NoFocus
 
         self._canvas = TTkCanvas(
                             widget = self,
@@ -250,7 +238,7 @@ class TTkWidget:
             if self.mouseReleaseEvent(evt):
                 return True
         elif   evt.evt == lbt.MouseEvent.Press:
-            if self.focusPolicy() & TTkWidget.ClickFocus == TTkWidget.ClickFocus:
+            if self.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 self.setFocus()
                 self.raiseWidget()
             if self.mousePressEvent(evt):

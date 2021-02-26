@@ -2,6 +2,8 @@ from .widget import *
 from .spacer import *
 from .frame  import *
 from .button import *
+from .checkbox import *
+from .radiobutton import *
 from .label  import *
 from .lineedit import *
 from .scrollbar import *

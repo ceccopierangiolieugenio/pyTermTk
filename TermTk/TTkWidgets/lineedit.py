@@ -40,7 +40,7 @@ class TTkLineEdit(TTkWidget):
     __slots__ = ('_text', '_cursorPos', '_offset', '_replace', '_inputType')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkButton' )
+        self._name = kwargs.get('name' , 'TTkLineEdit' )
         self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
         self._text = kwargs.get('text' , '' )
         if self._inputType & TTkK.Input_Number and\
@@ -50,7 +50,7 @@ class TTkLineEdit(TTkWidget):
         self._replace=False
         self.setMaximumHeight(1)
         self.setMinimumSize(10,1)
-        self.setFocusPolicy(TTkWidget.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def _pushCursor(self):
         TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)

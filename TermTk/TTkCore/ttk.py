@@ -66,7 +66,7 @@ class TTk(TTkWidget):
         self.key_events = queue.Queue()
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
-        self.setFocusPolicy(TTkWidget.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus)
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootCanvas(self._canvas)
 

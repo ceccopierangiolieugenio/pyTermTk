@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.constant import *
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.frame import TTkFrame
@@ -36,9 +38,9 @@ class TTkWindow(TTkWidget):
         self._title = kwargs.get('title' , 0 )
         self.setPadding(3,1,1,1)
         self._mouseDelta = (0,0)
-        self.setFocusPolicy(TTkWidget.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus)
         self._draggable = False
-        self._resizable = TTkWidget.NONE
+        self._resizable = TTkK.NONE
 
     def paintEvent(self):
         if self.hasFocus():
@@ -65,15 +67,15 @@ class TTkWindow(TTkWidget):
         else:
             # check if the ckick is on any norder to enable the resize feature
             if x==0:
-                self._resizable |= TTkWidget.LEFT
+                self._resizable |= TTkK.LEFT
             elif x==w-1:
-                self._resizable |= TTkWidget.RIGHT
+                self._resizable |= TTkK.RIGHT
             if y==0:
-                self._resizable |= TTkWidget.TOP
+                self._resizable |= TTkK.TOP
             elif y==h-1:
-                self._resizable |= TTkWidget.BOTTOM
+                self._resizable |= TTkK.BOTTOM
             # TTkLog.debug(f"{(x,y)} - {self._resizable}")
-            return self._resizable != TTkWidget.NONE
+            return self._resizable != TTkK.NONE
         return False
 
     def mouseDragEvent(self, evt):
@@ -91,21 +93,21 @@ class TTkWindow(TTkWidget):
             minw, minh = self.minimumSize()
             dx = evt.x-self._mouseDelta[0]
             dy = evt.y-self._mouseDelta[1]
-            if self._resizable & TTkWidget.LEFT:
+            if self._resizable & TTkK.LEFT:
                 tmpw = w-dx
                 if   minw > tmpw: tmpw=minw; dx= w-tmpw
                 elif maxw < tmpw: tmpw=maxw; dx= w-tmpw
                 x += dx ; w = tmpw
-            elif self._resizable & TTkWidget.RIGHT:
+            elif self._resizable & TTkK.RIGHT:
                 if   minw > evt.x: w = minw
                 elif maxw < evt.x: w = maxw
                 else: w = evt.x+1
-            if self._resizable & TTkWidget.TOP:
+            if self._resizable & TTkK.TOP:
                 tmph = h-dy
                 if   minh > tmph: tmph=minh; dy= h-tmph
                 elif maxh < tmph: tmph=maxh; dy= h-tmph
                 y += dy ; h = tmph
-            elif self._resizable & TTkWidget.BOTTOM:
+            elif self._resizable & TTkK.BOTTOM:
                 if   minh > evt.y: h = minh
                 elif maxh < evt.y: h = maxh
                 else: h = evt.y+1
@@ -127,5 +129,5 @@ class TTkWindow(TTkWidget):
 
     def focusOutEvent(self):
         self._draggable = False
-        self._resizable = TTkWidget.NONE
+        self._resizable = TTkK.NONE
         self.update()

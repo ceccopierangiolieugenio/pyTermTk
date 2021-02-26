@@ -78,7 +78,7 @@ class TTkScrollBar(TTkWidget):
         self._screenScroller = (0,0)
         self._draggable = False
         self._mouseDelta = 0
-        self.setFocusPolicy(TTkWidget.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus)
 
     '''
          | min        | max

@@ -70,13 +70,13 @@
  - [ ] Events (Signal/Slots)
  - [ ] Themes
  #### CheckBox Widget
- - [ ] Basic Implementation
+ - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
 #### Radio button Widget
- - [ ] Basic Implementation
+ - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
 #### Dropdown Widget
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)

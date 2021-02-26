@@ -38,13 +38,13 @@ class TTkButton(TTkWidget):
         self._name = kwargs.get('name' , 'TTkButton' )
         self._text = kwargs.get('text', "" )
         self._border = kwargs.get('border', False )
+        self._pressed = False
         if self._border:
             self.setMinimumSize(2+len(self._text), 3)
         else:
             self.setMinimumSize(len(self._text)+2, 1)
             self.setMaximumHeight(1)
-        self._pressed = False
-        self.setFocusPolicy(TTkWidget.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def paintEvent(self):
         if self._pressed:

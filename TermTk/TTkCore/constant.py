@@ -23,6 +23,20 @@
 # SOFTWARE.
 
 class TTkConstant:
+    # Focus Policies
+    NoFocus    = 0x0000
+    ClickFocus = 0x0001
+    WheelFocus = 0x0002
+    TabFocus   = 0x0004
+
+    # positions
+    NONE   = 0x0000
+    TOP    = 0x0001
+    BOTTOM = 0x0002
+    LEFT   = 0x0004
+    RIGHT  = 0x0008
+
+    # Mouse Events
     MOUSE_EVENT  = 0x01
     KEY_EVENT    = 0x02
     SCREEN_EVENT = 0x04

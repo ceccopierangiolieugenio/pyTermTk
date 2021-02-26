@@ -55,7 +55,7 @@ class TTkTable(TTkWidget):
         TTkSpacer(parent=self)
         self._vscroller = TTkScrollBar(parent=self)
         self._vscroller.valueChanged.connect(self.scrollTo)
-        self.setFocusPolicy(TTkWidget.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus)
 
     def setAlignment(self, alignments):
         if len(alignments) != len(self._columns):
