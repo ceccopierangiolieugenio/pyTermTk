@@ -143,12 +143,14 @@ class TTkWidget:
     def resizeEvent(self, w, h): pass
 
     def move(self, x, y):
+        if x==self._x and y==self._y: return
         self._x = x
         self._y = y
         self.update(repaint=False, updateLayout=False)
         self.moveEvent(x,y)
 
     def resize(self, w, h):
+        if w==self._width and h==self._height: return
         self._width  = w
         self._height = h
         self._canvas.resize(self._width, self._height)
@@ -168,6 +170,8 @@ class TTkWidget:
         return self._padt, self._padb, self._padl, self._padr
 
     def setPadding(self, top, bottom, left, right):
+        if self._padt == top  and self._padb == bottom and \
+           self._padl == left and self._padr == right: return
         self._padt = top
         self._padb = bottom
         self._padl = left
@@ -423,12 +427,16 @@ class TTkWidget:
     def isVisible(self):
         return self._visible
 
+    # Event to be sent
+    def layoutUpdated(): pass
+
     def update(self, repaint=True, updateLayout=False, updateParent=False):
         if repaint:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
         if updateLayout and self._layout is not None:
-            self._layout.update()
+            if self._layout.update():
+                self.layoutUpdated()
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
 

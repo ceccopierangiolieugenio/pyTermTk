@@ -37,14 +37,19 @@ from TermTk.TTkWidgets.widget import *
             <-->           Offset
 '''
 class TTkLineEdit(TTkWidget):
-    __slots__ = ('_text', '_cursorPos', '_offset', '_replace')
+    __slots__ = ('_text', '_cursorPos', '_offset', '_replace', '_inputType')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkButton' )
+        self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
         self._text = kwargs.get('text' , '' )
-        self._cursorPos = 0
+        if self._inputType & TTkK.Input_Number and\
+           not self._text.isdigit(): self._text = ""
         self._offset = 0
+        self._cursorPos = 0
         self._replace=False
+        self.setMaximumHeight(1)
+        self.setMinimumSize(10,1)
         self.setFocusPolicy(TTkWidget.ClickFocus)
 
     def _pushCursor(self):
@@ -61,7 +66,10 @@ class TTkLineEdit(TTkWidget):
         else:
             color = TTkCfg.theme.lineEditTextColor
         w = self.width()
-        text = self._text[self._offset:]
+        if self._inputType & TTkK.Input_Password:
+            text = ("*"*(len(self._text)))[self._offset:]
+        else:
+            text = self._text[self._offset:]
         text = text[:w].ljust(w)
         self._canvas.drawText(pos=(0,0), text=text, color=color)
 
@@ -106,6 +114,9 @@ class TTkLineEdit(TTkWidget):
                 self._offset = self._cursorPos
             self._pushCursor()
         else:
+            if self._inputType & TTkK.Input_Number and \
+               not evt.key.isdigit():
+                return
             text = self._text
             pre = text[:self._cursorPos]
             if self._replace:

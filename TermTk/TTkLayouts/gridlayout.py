@@ -107,6 +107,7 @@ class TTkGridLayout(TTkLayout):
         item = TTkGridWidgetItem(widget, row=row, col=col)
         self._gridItems[row][col] = item
         self.addItem(item)
+        widget.update(updateParent=True)
 
     def removeWidget(self, widget):
         TTkLayout.removeWidget(self, widget)
@@ -283,3 +284,4 @@ class TTkGridLayout(TTkLayout):
                 item.widget().update()
             elif isinstance(item, TTkLayout):
                 item.update()
+        return True

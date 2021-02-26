@@ -32,13 +32,33 @@ ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
 win_form1 = ttk.TTkWindow(parent=root,pos=(1,1), size=(60,30), title="Test Window 1", border=True)
+win_form1.setLayout(ttk.TTkGridLayout(columnMinWidth=1))
 
-ttk.TTkButton(parent=win_form1, pos=(1,3), size=(15,1), text='Button 1')
-ttk.TTkButton(parent=win_form1, pos=(1,4), size=(15,1), text='Button 2')
+win_form1.layout().addWidget(ttk.TTkButton(text='Button 1'),0,0)
+win_form1.layout().addWidget(ttk.TTkButton(text='Button 2'),1,0)
 
-ttk.TTkLineEdit(parent=win_form1, pos=(1,5), size=(20,1), text='Line Edit Test 1')
-ttk.TTkLineEdit(parent=win_form1, pos=(1,6), size=(50,1), text='Line Edit Test 2')
-ttk.TTkLineEdit(parent=win_form1, pos=(1,7), size=(50,1), text='Line Edit Test 3')
-ttk.TTkLineEdit(parent=win_form1, pos=(1,8), size=(50,1), text='Line Edit Test 4')
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 1'),2,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 1'),2,2)
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 2'),3,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 2'),3,2)
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 3'),4,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 3'),4,2)
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 4'),5,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 4'),5,2)
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 5'),6,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 5'),6,2)
+
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Input Number'),7,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='123456', inputType=ttk.TTkK.Input_Number),7,2)
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Input Wrong Number'),8,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='No num Text', inputType=ttk.TTkK.Input_Number),8,2)
+
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Input Password'),9,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password),9,2)
+win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Number Password'),10,0)
+win_form1.layout().addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password+ttk.TTkK.Input_Number),10,2)
+
+win_form1.layout().addWidget(ttk.TTkSpacer(),11,0)
+
 
 root.mainloop()

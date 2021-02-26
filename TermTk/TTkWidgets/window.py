@@ -114,6 +114,14 @@ class TTkWindow(TTkWidget):
             return True
         return False
 
+    def layoutUpdated(self):
+        pass
+        #    maxw,maxh = self.layout.maximumSize()
+        #    minw,minh = self.layout.maximumSize()
+        #    if
+        #    self.resize(w+self._padl+self._padr,h+self._padt+self._padb)
+
+
     def focusInEvent(self):
         self.update()
 

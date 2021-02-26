@@ -48,6 +48,65 @@
 - [x] Add Show/Hide
 - [ ] Clean the way the parent is assigned, propagated
       *Widget \[setParent, addWidget, . . ], GridLayout \[addWidget]*
+#### Button Widget
+ - [x] Basic Implementation
+ - [x] Events (Signal/Slots)
+ - [x] Themes
+#### Line Edit Widget
+ - [x] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [x] Themes
+ - [x] Input Type Numbers/Password
+#### Text Edit Widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+ #### Table Widget
+ - [x] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+ #### Window Widget
+ - [x] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+ #### CheckBox Widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Radio button Widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Dropdown Widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Splitter widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Tab Widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Spin Box
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Progress Bar
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Graph Widget
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Header Menu
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+
+
 ### Layout
 - [ ] Add Weight in V and H Layout
 - [ ] Add addLayout method

@@ -128,13 +128,15 @@ class TTkLayout(TTkLayoutItem):
         self._zSortItems()
 
     def update(self):
+        ret = False
         for i in self.children():
             if isinstance(i, TTkWidgetItem) and not i.isEmpty():
-                i.widget().update()
+                ret = ret or i.widget().update()
                 # TODO: Have a look at this:
                 # i.getCanvas().top()
             elif isinstance(i, TTkLayout):
-                i.update()
+                ret= ret or i.update()
+        return ret
 
 class TTkWidgetItem(TTkLayoutItem):
     slots = ('_widget','_z')

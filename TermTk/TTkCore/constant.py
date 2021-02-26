@@ -59,6 +59,11 @@ class TTkConstant:
     Cursor_Blinking_Bar        = 0x0006
     Cursor_Steady_Bar          = 0x0007
 
+    # Input types
+    Input_Text      = 0x01
+    Input_Number    = 0x02
+    Input_Password  = 0x04
+
     # Alignment
     NONE   = 0x0000
     LEFT_ALIGN   = 0x0001

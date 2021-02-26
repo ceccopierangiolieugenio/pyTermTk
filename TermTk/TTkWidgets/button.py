@@ -42,6 +42,7 @@ class TTkButton(TTkWidget):
             self.setMinimumSize(2+len(self._text), 3)
         else:
             self.setMinimumSize(len(self._text)+2, 1)
+            self.setMaximumHeight(1)
         self._pressed = False
         self.setFocusPolicy(TTkWidget.ClickFocus)
 
