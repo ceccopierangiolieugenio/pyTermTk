@@ -148,6 +148,8 @@ class TTkWidgetItem(TTkLayoutItem):
     def widget(self):
         return self._widget
 
+    def isVisible(self): return self._widget.isVisible()
+
     def isEmpty(self): return self._widget is None
 
     def minimumSize(self)  -> int: return self._widget.minimumSize()

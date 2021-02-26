@@ -100,6 +100,37 @@ class TTkCanvas:
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
 
+    '''
+
+    '''
+    def drawTableLine(self, pos, items, sizes, colors, alignments ):
+        x,y = pos
+        for i in range(0,len(items)):
+            txt = items[i]
+            w = sizes[i]
+            color = colors[i]
+            align = alignments[i]
+            if w > 0:
+                line = ""
+                lentxt = len(txt)
+                if lentxt > w:
+                    line += txt[0:w]
+                else:
+                    pad = w-lentxt
+                    if align == TTkK.NONE or align == TTkK.LEFT_ALIGN:
+                        line += txt + " "*pad
+                    elif align == TTkK.RIGHT_ALIGN:
+                        line += " "*pad + txt
+                    elif align == TTkK.CENTER_ALIGN:
+                        p1 = pad//2
+                        p2 = pad-p1
+                        line += " "*p1 + txt+" "*p2
+                    elif align == TTkK.JUSTIFY:
+                        # TODO: Text Justification
+                        line += txt + " "*pad
+                self.drawText(pos=(x,y), text=line, color=color)
+                x += w + 1
+
     def drawText(self, pos, text, color=TTkColor.RST):
         if not self._visible: return
         x,y = pos

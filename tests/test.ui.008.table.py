@@ -48,7 +48,7 @@ win_table2 = ttk.TTkWindow(parent=root,pos = (15,5), size=(100,30), title="Test 
 table2 = ttk.TTkTable(parent=win_table2)
 
 win_table3 = ttk.TTkWindow(parent=root,pos = (15,5), size=(130,40), title="Test Table 2 Default", layout=ttk.TTkHBoxLayout(), border=True)
-table3 = ttk.TTkTable(parent=win_table3)
+table3 = ttk.TTkTable(parent=win_table3, showHeader=False)
 
 table1.setColumnSize((5,10,-1,10,20))
 table1.setAlignment((
@@ -114,7 +114,15 @@ def addMany():
     for i in range(0, 500):
         ii+=1
         table1.appendItem((str(ii), getWord(), getSentence(), getWord(), getWord()))
+    table1.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 btn2.clicked.connect(addMany)
+
+
+#win_form1 = ttk.TTkWindow(parent=root,pos=(1,1), size=(60,30), title="Test Window 1", border=True)
+#win_form1.setLayout(ttk.TTkGridLayout(columnMinWidth=1))
+
+#win_form1.layout().addWidget(ttk.TTkTestWidget(border=True),0,0)
+#win_form1.layout().addWidget(ttk.TTkScrollBar(),0,1)
 
 
 root.mainloop()

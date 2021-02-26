@@ -58,7 +58,6 @@ class TTkScrollBar(TTkWidget):
         self.rangeChanged = pyTTkSignal(int, int) # Min, Max
         self.sliderMoved  = pyTTkSignal(int) # Value
 
-
         self._orientation = kwargs.get('orientation' , TTkK.VERTICAL )
         if self._orientation == TTkK.VERTICAL:
             self.setMaximumWidth(1)
@@ -126,6 +125,7 @@ class TTkScrollBar(TTkWidget):
             self.value = self.value - self.pagestep
         else:
             self.value = self.value + self.pagestep
+        self.sliderMoved.emit(self.value)
         return True
 
     def mousePressEvent(self, evt):
@@ -154,6 +154,7 @@ class TTkScrollBar(TTkWidget):
             self.update()
         else:
             return False
+        self.sliderMoved.emit(self.value)
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}")
         return True
 
@@ -173,7 +174,7 @@ class TTkScrollBar(TTkWidget):
 
         a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
         self.value = a + self._minimum
-        self.sliderMoved.emit(aa)
+        self.sliderMoved.emit(self.value)
 
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, aa:{aa}")
         return True
@@ -184,6 +185,14 @@ class TTkScrollBar(TTkWidget):
 
     def focusOutEvent(self):
         self.update()
+
+    @pyTTkSlot(int)
+    def setPageStep(self, pageStep):
+        self._pagestep = pageStep
+
+    @pyTTkSlot(int)
+    def setRangeTo(self, max):
+        self.setRange(0,max)
 
     @pyTTkSlot(int, int)
     def setRange(self, min, max):

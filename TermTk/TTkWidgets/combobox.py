@@ -22,19 +22,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TTkCfg:
-    DEP_2: int  = 0x02
-    DEP_4: int  = 0x04
-    DEP_8: int  = 0x08
-    DEP_24: int = 0x18
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkWidgets.widget import *
+from TermTk.TTkWidgets.button import *
+from TermTk.TTkWidgets.table import *
 
-    color_depth: int = DEP_24
+class TTkComboBox(TTkWidget):
+    __slots__ = ('_list', '_id')
+    def __init__(self, *args, **kwargs):
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkCheckbox' )
+        # Define Signals
+        # self.cehcked = pyTTkSignal()
+        self._list = kwargs.get('list', [] )
+        self.setMinimumSize(5, 1)
+        self.setMaximumHeight(1)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-    scrollDelta = 5
-    theme = None
+    def paintEvent(self):
+        self._canvas.drawText(pos=(0,0), text="XXXXXXXXXXXXXXXX")
 
-class TTkGlbl:
-    term_w: int = 0
-    term_h: int = 0
-
-
+    def mouseReleaseEvent(self, evt):
+        table = TTkTable(size=(self.width(),10))
+        for item in self._list:
+            table.appendItem((item))
+        TTkHelper.overlay(self, table, 0, 0)
+        self.update()
+        return True

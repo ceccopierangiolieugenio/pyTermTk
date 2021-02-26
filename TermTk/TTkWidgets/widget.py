@@ -242,7 +242,7 @@ class TTkWidget:
                 self.setFocus()
                 self.raiseWidget()
             if self.mousePressEvent(evt):
-                TTkLog.debug(f"Click {self._name}")
+                # TTkLog.debug(f"Click {self._name}")
                 return True
         elif evt.key == lbt.MouseEvent.Wheel:
             if self.wheelEvent(evt):
@@ -376,9 +376,7 @@ class TTkWidget:
     def show(self):
         self._canvas.show()
         self._visible = True
-        self.update()
-    #    if self._data['layout'] is not None:
-    #        CuWidget._showHandle(self._data['layout'])
+        self.update(updateLayout=True, updateParent=True)
 
     #@staticmethod
     #def _hideHandle(layout):
@@ -393,10 +391,7 @@ class TTkWidget:
     def hide(self):
         self._canvas.hide()
         self._visible = False
-        # self._parent._canvas.clean(self.pos(),self.size())
-        self.update()
-    #    if self._layout is not None:
-    #        TTkWidget._hideHandle(self._layout])
+        self.update(repaint=False, updateParent=True)
 
     def raiseWidget(self):
         if self._parent is not None and \
@@ -416,7 +411,8 @@ class TTkWidget:
         return self._visible
 
     # Event to be sent
-    def layoutUpdated(): pass
+    # TODO: Remove This
+    def layoutUpdated(self): pass
 
     def update(self, repaint=True, updateLayout=False, updateParent=False):
         if repaint:
@@ -434,6 +430,9 @@ class TTkWidget:
             tmp.clearFocus()
             tmp.focusOutEvent()
             tmp.update(repaint=True, updateLayout=False)
+        tmp = TTkHelper.getOverlay()
+        if tmp is not None and tmp is not self:
+            TTkHelper.removeOverlay()
         TTkHelper.setFocus(self)
         self._focus = True
         self.focusInEvent()

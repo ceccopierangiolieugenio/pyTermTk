@@ -129,7 +129,7 @@ class TTkGridLayout(TTkLayout):
         anyItem = False
         for gridRow in range(len(self._gridItems)):
             item = self._gridItems[gridRow][gridCol]
-            if item is not None:
+            if item is not None and item.isVisible():
                 anyItem = True
                 w = item.minimumWidth()
                 if colw < w:
@@ -142,7 +142,7 @@ class TTkGridLayout(TTkLayout):
         rowh = 0
         anyItem = False
         for item in self._gridItems[gridRow]:
-            if item is not None:
+            if item is not None and item.isVisible():
                 anyItem = True
                 h = item.minimumHeight()
                 if rowh < h:
@@ -156,7 +156,7 @@ class TTkGridLayout(TTkLayout):
         anyItem = False
         for gridRow in range(len(self._gridItems)):
             item = self._gridItems[gridRow][gridCol]
-            if item is not None:
+            if item is not None and item.isVisible():
                 anyItem = True
                 w = item.maximumWidth()
                 if colw > w:
@@ -169,7 +169,7 @@ class TTkGridLayout(TTkLayout):
         rowh = 0x10000
         anyItem = False
         for item in self._gridItems[gridRow]:
-            if item is not None:
+            if item is not None and item.isVisible():
                 anyItem = True
                 h = item.maximumHeight()
                 if rowh > h:
@@ -272,6 +272,8 @@ class TTkGridLayout(TTkLayout):
         for i in vertSizes:
             i[0] = newy
             newy += i[1]
+
+        # TTkLog.debug(f"h:{horSizes} v:{vertSizes}")
 
         # loop and set the geometry of any item
         for item in self.children():

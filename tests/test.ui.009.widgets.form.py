@@ -37,8 +37,14 @@ win_form1.setLayout(ttk.TTkGridLayout(columnMinWidth=1))
 
 win_form1.layout().addWidget(ttk.TTkButton(text='Button 1'),0,0)
 win_form1.layout().addWidget(ttk.TTkButton(text='Button 2'),1,0)
+win_form1.layout().addWidget(ttk.TTkButton(text='Button 3'),0,2)
+win_form1.layout().addWidget(ttk.TTkButton(text='Button 4'),1,2)
+row = 2
 
-row = 1;  win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 1'),row,0)
+row +=1;  win_form1.layout().addWidget(ttk.TTkLabel(text='Combo Box'),row,0)
+win_form1.layout().addWidget(ttk.TTkComboBox(list=['One','Two','Three']),row,2)
+
+row +=1;  win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 1'),row,0)
 win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 1'),row,2)
 row += 1; win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 2'),row,0)
 win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 2'),row,2)

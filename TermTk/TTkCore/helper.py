@@ -36,6 +36,13 @@ class TTkHelper:
     _cursorPos = [0,0]
     _cursor = False
     _cursorType = lbt.Term.cursor_blinking_block
+    class _Overlay():
+        __slots__ = ('_widget','_x','_y')
+        def __init__(self,x,y,widget):
+            self._widget = widget
+            widget.move(x,y)
+
+    _overlay = None
 
     @staticmethod
     def addUpdateWidget(widget):
@@ -53,6 +60,23 @@ class TTkHelper:
         TTkHelper._rootCanvas = canvas
         TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
+
+    @staticmethod
+    def overlay(caller, widget, x, y):
+        wx, wy = TTkHelper.absPos(caller)
+        TTkHelper._overlay = TTkHelper._Overlay(wx+x,wy+y,widget)
+        # widget.setFocus()
+
+    @staticmethod
+    def getOverlay():
+        if TTkHelper._overlay is not None:
+            return TTkHelper._overlay._widget
+        return None
+
+    @staticmethod
+    def removeOverlay():
+        if TTkHelper._overlay is not None:
+            TTkHelper._overlay = None
 
     @staticmethod
     def paintAll():
@@ -98,6 +122,16 @@ class TTkHelper:
             if not widget.isVisible(): continue
             pushToTerminal = True
             widget.paintChildCanvas()
+
+        if TTkHelper._overlay is not None:
+            lx,ly,lw,lh = (0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+            child =TTkHelper._overlay._widget
+            cx,cy,cw,ch = child.geometry()
+            TTkHelper._rootCanvas.paintCanvas(
+                                child.getCanvas(),
+                                (cx,  cy,  cw, ch),
+                                (0,0,cw,ch),
+                                (lx, ly, lw, lh))
 
         if pushToTerminal:
             if TTkHelper._cursor:

@@ -109,17 +109,29 @@ class TTk(TTkWidget):
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
                 focusWidget = TTkHelper.getFocus()
+                overlayWidget = TTkHelper.getOverlay()
                 if focusWidget is not None and mevt.evt != TTkK.Press:
                     x,y = TTkHelper.absPos(focusWidget)
                     nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
                     focusWidget.mouseEvent(nmevt)
+                elif overlayWidget is not None:
+                    x,y,w,h=overlayWidget.geometry()
+                    if x <= mevt.x < x+w and y <= mevt.y < y+h:
+                        px,py = TTkHelper.absPos(overlayWidget)
+                        nmevt = mevt.clone(pos=(mevt.x-px, mevt.y-py))
+                        overlayWidget.mouseEvent(nmevt)
+                    else:
+                        self.mouseEvent(mevt)
                 else:
                     self.mouseEvent(mevt)
             elif evt is TTkK.KEY_EVENT:
                 kevt = self.key_events.get()
                 focusWidget = TTkHelper.getFocus()
+                overlayWidget = TTkHelper.getOverlay()
                 if focusWidget is not None:
                     focusWidget.keyEvent(kevt)
+                elif overlayWidget is not None:
+                    overlayWidget.keyEvent(kevt)
                 pass
             elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()

@@ -1,6 +1,6 @@
 # TODO
 - [ ] Follow [PEP 8](https://www.python.org/dev/peps/pep-0008/) coding style
-- [ ] Move the Global Constants outside TTk object
+- [x] Move the Global Constants outside TTk object
 - [ ] Add Typing (good luck) https://docs.python.org/3/library/typing.html
 - [ ] Remove Duplicate functionalities (i.e. Widget)
   - [ ] Use @property/@setter when possible
@@ -18,7 +18,7 @@
 - [x] Handle the Paste Buffer
 - [ ] Investigate the middle mouse button paste
   *note: It works only in "INSERT" mode on Vim*
-- [ ] Handle Special Keys (UP, Down, . . .)
+- [x] Handle Special Keys (UP, Down, . . .)
 - [ ] Events
   https://tkinterexamples.com/events/events.html
   https://www.pythontutorial.net/tkinter/tkinter-event-binding/
@@ -43,6 +43,14 @@
 - [ ] logger auto integration
   - [ ] stdout until mainLoop
 
+### Layout
+- [ ] Add Weight in V and H Layout
+- [ ] Add addLayout method - Nested layouts
+- [x] Add Grid Layout
+
+### Overlay widget
+- [ ] Rewrite the Handling (ttk.py)
+      It would be nice to have it as child outside the layour
 ## Widgets
 - [ ] Add Size Policy (fixed minimum maximum expanding)
 - [x] Add Show/Hide
@@ -77,7 +85,7 @@
  - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [x] Themes
-#### Dropdown Widget
+#### ComboBox (dropdown) Widget
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [ ] Themes
@@ -105,9 +113,3 @@
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [ ] Themes
-
-
-### Layout
-- [ ] Add Weight in V and H Layout
-- [ ] Add addLayout method
-- [x] Add Grid Layout
