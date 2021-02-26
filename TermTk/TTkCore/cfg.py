@@ -30,6 +30,8 @@ class TTkCfg:
 
     color_depth: int = DEP_24
 
+    theme = None
+
 class TTkGlbl:
     term_w: int = 0
     term_h: int = 0

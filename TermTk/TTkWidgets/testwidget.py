@@ -56,7 +56,7 @@ class TTkTestWidget(TTkFrame):
         #self.setLayout(TTkHBoxLayout())
         self._name = f"TestWidget-{TTkTestWidget.ID}"
         t,_,l,_ = self.getPadding()
-        TTkButton(parent=self, x=l, y=t, width=15, height=3, text=' Test Button')
+        TTkButton(parent=self, x=l, y=t, width=15, height=3, border=True, text=' Test Button')
         self._l = [
                 TTkLabel(parent=self,pos=(l, t+3), size=(50,1), color=TTkColor.bg('#440099')+TTkColor.fg('#00ffff'), text="pippo"),
                 TTkLabel(parent=self,pos=(l, t+4), size=(50,1), color=TTkColor.bg('#440077')+TTkColor.fg('#00ccff')),

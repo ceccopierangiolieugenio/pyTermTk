@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.color import TTkColor
+
 class TTkTheme():
     '''  from: https://en.wikipedia.org/wiki/Box-drawing_character
         ┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕
@@ -37,7 +39,6 @@ class TTkTheme():
         └───────────────────┘▒
          ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
     '''
-
     box = ( '═','║',
             '╔','╗',
             '╚','╝')
@@ -72,7 +73,7 @@ class TTkTheme():
         '═','║','╬',))
 
     '''
-        grid0  grid1
+        box0   box1
         ┌─┐    ┌─┐
         │ │    │ │
         └─┘    ╘═╛
@@ -87,3 +88,13 @@ class TTkTheme():
 
     hscroll = ('◀','┄','▓','▶')
     vscroll = ('▲','┊','▓','▼')
+
+    buttonBoxGrid = 1
+    buttonBoxGridClicked = 0
+    buttonTextColor   = TTkColor.fg("#dddd88")+TTkColor.bg("#000044")
+    buttonBorderColor = TTkColor.fg("#dddd88")
+    buttonTextColorClicked   = TTkColor.fg("#ffffdd")+TTkColor.BOLD
+    buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
+
+    lineEditTextColor       = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
+    lineEditTextColorFocus  = TTkColor.fg("#dddddd")+TTkColor.bg("#000044")

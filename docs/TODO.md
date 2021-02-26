@@ -5,6 +5,9 @@
 - [ ] Remove Duplicate functionalities (i.e. Widget)
   - [ ] Use @property/@setter when possible
   - [ ] Uniform the setter/getter/signal/slots
+  - [ ] [UTF-8] Handle "Fullwidth" forms characters
+        https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
+        https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
 
 ## Terminal Helper
 - [ ] Events

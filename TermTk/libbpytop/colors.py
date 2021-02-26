@@ -26,8 +26,8 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-from . import Term
-import TermTk as ttk
+from TermTk.libbpytop.term import Term
+from TermTk.TTkCore.cfg import TTkCfg
 
 
 # Ansi Escape Codes:
@@ -60,12 +60,12 @@ class Color:
             try:
                 if len(hexa) == 3:
                     c = int(hexa[1:], base=16)
-                    if ttk.TTkCfg.color_depth is ttk.TTkCfg.DEP_24:
+                    if TTkCfg.color_depth is TTkCfg.DEP_24:
                         color = f'\033[{dint};2;{c};{c};{c}m'
                     else:
                         color = f'{Color.truecolor_to_256(rgb=(c, c, c), depth=depth)}'
                 elif len(hexa) == 7:
-                    if ttk.TTkCfg.color_depth is ttk.TTkCfg.DEP_24:
+                    if TTkCfg.color_depth is TTkCfg.DEP_24:
                         color = f'\033[{dint};2;{int(hexa[1:3], base=16)};{int(hexa[3:5], base=16)};{int(hexa[5:7], base=16)}m'
                     else:
                         color = f'{Color.truecolor_to_256(rgb=(int(hexa[1:3], base=16), int(hexa[3:5], base=16), int(hexa[5:7], base=16)), depth=depth)}'
@@ -73,7 +73,7 @@ class Color:
                 ttk.TTkLog.error(f'{e}')
 
         else:
-            if ttk.TTkCfg.color_depth is ttk.TTkCfg.DEP_24:
+            if TTkCfg.color_depth is TTkCfg.DEP_24:
                 color = f'\033[{dint};2;{r};{g};{b}m'
             else:
                 color = f'{Color.truecolor_to_256(rgb=(r, g, b), depth=depth)}'

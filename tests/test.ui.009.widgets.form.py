@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import sys, os
+import random
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
@@ -30,23 +31,14 @@ import TermTk as ttk
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
+win_form1 = ttk.TTkWindow(parent=root,pos=(1,1), size=(60,30), title="Test Window 1", border=True)
 
-win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,50), title="Test Window 1", border=True)
-win1.setLayout(ttk.TTkVBoxLayout())
-ttk.TTkButton(parent=win1, border=True, text="BUTTON")
-ttk.TTkLabel(parent=win1, text="Test Label 1")
-ttk.TTkLabel(parent=win1, text="Test Label 2 Bold", color=ttk.TTkColor.BOLD)
-ttk.TTkLabel(parent=win1, text="Test Label 3 Italic", color=ttk.TTkColor.ITALIC)
-ttk.TTkLabel(parent=win1, text="Test Label 4 Underline", color=ttk.TTkColor.UNDERLINE)
-ttk.TTkLabel(parent=win1, text="Test Label 5 StrikeTrough", color=ttk.TTkColor.STRIKETROUGH)
-ttk.TTkLabel(parent=win1, text="Test Label 6 Mix", color=ttk.TTkColor.BOLD+ttk.TTkColor.ITALIC+ttk.TTkColor.UNDERLINE)
-ttk.TTkLabel(parent=win1, text="Test Label 7")
-ttk.TTkLabel(parent=win1, text="Test Very Long Label 8 - abcdefghihjlmno")
-ttk.TTkLabel(parent=win1, text="Test Label 9")
-ttk.TTkLabel(parent=win1, text="Test Label 10")
-ttk.TTkLabel(parent=win1, text="Test Label 11")
-ttk.TTkLabel(parent=win1, text="Test Label 12")
-ttk.TTkLabel(parent=win1, text="Test Label 13")
+ttk.TTkButton(parent=win_form1, pos=(1,3), size=(15,1), text='Button 1')
+ttk.TTkButton(parent=win_form1, pos=(1,4), size=(15,1), text='Button 2')
 
+ttk.TTkLineEdit(parent=win_form1, pos=(1,5), size=(20,1), text='Line Edit Test 1')
+ttk.TTkLineEdit(parent=win_form1, pos=(1,6), size=(50,1), text='Line Edit Test 2')
+ttk.TTkLineEdit(parent=win_form1, pos=(1,7), size=(50,1), text='Line Edit Test 3')
+ttk.TTkLineEdit(parent=win_form1, pos=(1,8), size=(50,1), text='Line Edit Test 4')
 
 root.mainloop()

@@ -38,8 +38,8 @@ def getSentence():
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
-btn1 = ttk.TTkButton(parent=root, pos=(0,0), size=(5,3), text='Add')
-btn2 = ttk.TTkButton(parent=root, pos=(5,0), size=(10,3), text='Add Many')
+btn1 = ttk.TTkButton(parent=root, pos=(0,0), size=(5,3), border=True, text='Add')
+btn2 = ttk.TTkButton(parent=root, pos=(5,0), size=(10,3), border=True, text='Add Many')
 
 win_table1 = ttk.TTkWindow(parent=root,pos = (3,3), size=(150,40), title="Test Table 1", layout=ttk.TTkHBoxLayout(), border=True)
 table1 = ttk.TTkTable(parent=win_table1, selectColor=ttk.TTkColor.bg('#882200'))

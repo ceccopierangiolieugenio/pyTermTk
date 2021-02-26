@@ -26,7 +26,7 @@ import sys, os
 import logging
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog
+from TermTk import TTkLog, TTkK
 import TermTk.libbpytop as lbt
 
 def message_handler(mode, context, message):
@@ -52,7 +52,10 @@ def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
         TTkLog.info(f"Mouse Event: {mevt}")
     if kevt is not None:
-        TTkLog.info(f"Key Event: {kevt}")
+        if kevt.type == TTkK.Character:
+            TTkLog.info(f"Key Event: char '{kevt.key}' {kevt}")
+        else:
+            TTkLog.info(f"Key Event: Special '{kevt}'")
         if kevt.key == "q":
             return False
     return True

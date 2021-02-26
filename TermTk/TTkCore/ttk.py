@@ -31,6 +31,7 @@ from TermTk.TTkCore.constant import TTkConstant, TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.canvas import *
+from TermTk.TTkGui.theme import TTkTheme
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
 
@@ -66,6 +67,7 @@ class TTk(TTkWidget):
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
         self.setFocusPolicy(TTkWidget.ClickFocus)
+        TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootCanvas(self._canvas)
 
     frame = 0
@@ -115,8 +117,9 @@ class TTk(TTkWidget):
                     self.mouseEvent(mevt)
             elif evt is TTkK.KEY_EVENT:
                 kevt = self.key_events.get()
-                self.keyEvent(kevt)
-                # TTkLog.info(f"Key Event: {kevt}")
+                focusWidget = TTkHelper.getFocus()
+                if focusWidget is not None:
+                    focusWidget.keyEvent(kevt)
                 pass
             elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()

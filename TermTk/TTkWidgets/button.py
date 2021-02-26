@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
@@ -35,27 +36,42 @@ class TTkButton(TTkWidget):
         self.clicked = pyTTkSignal()
 
         self._name = kwargs.get('name' , 'TTkButton' )
-        self.text = kwargs.get('text', "" )
-        self._border = kwargs.get('border', True )
+        self._text = kwargs.get('text', "" )
+        self._border = kwargs.get('border', False )
         if self._border:
-            self.setMinimumSize(2+len(self.text), 3)
+            self.setMinimumSize(2+len(self._text), 3)
         else:
-            self.setMinimumSize(len(self.text), 1)
+            self.setMinimumSize(len(self._text)+2, 1)
         self._pressed = False
         self.setFocusPolicy(TTkWidget.ClickFocus)
 
     def paintEvent(self):
         if self._pressed:
-            borderColor = TTkColor.RST
-            textColor   = TTkColor.RST
-            grid = 0
+            borderColor = TTkCfg.theme.buttonBorderColorClicked
+            textColor   = TTkCfg.theme.buttonTextColorClicked
+            grid = TTkCfg.theme.buttonBoxGridClicked
         else:
-            borderColor = TTkColor.RST+TTkColor.BOLD
-            textColor   = TTkColor.RST+TTkColor.BOLD
-            grid = 1
-        self._canvas.drawText(pos=(1,1), color=textColor ,text=self.text)
+            borderColor = TTkCfg.theme.buttonBorderColor
+            textColor   = TTkCfg.theme.buttonTextColor
+            grid = TTkCfg.theme.buttonBoxGrid
+        text = self._text
+        w = self.width()-2
+        h = self.height()
+        y = (h-1)//2
+        l = len(text)
+        text = (" "*((w-l)//2)+text).ljust(w)
         if self._border:
-            self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
+            if self._border:
+                self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
+                for i in range(1,h-1):
+                    self._canvas.drawText(pos=(1,i), color=textColor ,text=" "*w)
+                self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
+            else:
+                self._canvas.drawText(pos=(1,1), color=textColor ,text=text)
+        else:
+            self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
+            self._canvas.drawText(pos=(1+len(text),y), color=borderColor ,text=']')
+            self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
 
     def mousePressEvent(self, evt):
         TTkLog.debug(f"{self._text} Test Mouse {evt}")

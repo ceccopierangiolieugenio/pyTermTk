@@ -70,7 +70,33 @@ class Term:
     mouse_direct_on  = "\033[?1003h"                       #* Enable reporting of mouse position at any movement
     mouse_direct_off = "\033[?1003l"                       #* Disable direct mouse reporting
 
+    # from:
+    # https://superuser.com/questions/607478/how-do-you-change-the-xterm-cursor-to-an-i-beam-or-vertical-bar
+    # echo -e -n "\x1b[\x30 q" # changes to blinking block
+    # echo -e -n "\x1b[\x31 q" # changes to blinking block also
+    # echo -e -n "\x1b[\x32 q" # changes to steady block
+    # echo -e -n "\x1b[\x33 q" # changes to blinking underline
+    # echo -e -n "\x1b[\x34 q" # changes to steady underline
+    # echo -e -n "\x1b[\x35 q" # changes to blinking bar
+    # echo -e -n "\x1b[\x36 q" # changes to steady bar
+
+    cursor_blinking_block      = "\033[\x30 q"
+    cursor_blinking_block_also = "\033[\x31 q"
+    cursor_steady_block        = "\033[\x32 q"
+    cursor_blinking_underline  = "\033[\x33 q"
+    cursor_steady_underline    = "\033[\x34 q"
+    cursor_blinking_bar        = "\033[\x35 q"
+    cursor_steady_bar          = "\033[\x36 q"
+
     _sigWinChCb = None
+
+    @staticmethod
+    def showCursor(cursor):
+        Term.push(cursor)
+        Term.push(Term.show_cursor)
+    @staticmethod
+    def hideCursor():
+        Term.push(Term.hide_cursor)
 
     @staticmethod
     def init(mouse: bool = True, title: str = "TermTk"):

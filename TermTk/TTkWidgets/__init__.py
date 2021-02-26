@@ -3,6 +3,7 @@ from .spacer import *
 from .frame  import *
 from .button import *
 from .label  import *
+from .lineedit import *
 from .scrollbar import *
 from .window import *
 from .table import *

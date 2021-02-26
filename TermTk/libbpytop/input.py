@@ -29,6 +29,7 @@ except Exception as e:
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
+from TermTk.libbpytop.inputkey import *
 
 class MouseEvent:
     # Keys
@@ -86,14 +87,6 @@ class MouseEvent:
     def __str__(self):
         return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} - {self.raw}"
 
-class KeyEvent:
-    __slots__ = ('id', 'key')
-    def __init__(self, id:int, key: str):
-        self.id = id
-        self.key = key
-    def __str__(self):
-        return f"KeyEvent: {self.key}"
-
 class Input:
     class _nonblocking(object):
         """Set nonblocking mode for device"""
@@ -134,11 +127,9 @@ class Input:
                             _ = sys.stdin.read(1000)
                 # TTkLog.debug("INPUT: "+input_key.replace("\033","<ESC>"))
                 mevt = None
-                kevt = None
-                if len(input_key) == 1:
-                    # Key Pressed
-                    kevt = KeyEvent(0, input_key)
-                elif input_key.startswith("\033[<"):
+                kevt = KeyEvent.parse(input_key)
+                if kevt is None and \
+                   input_key.startswith("\033[<"):
                     # Mouse Event
                     m = mouse_re.match(input_key)
                     if not m:
@@ -176,7 +167,7 @@ class Input:
                         key = MouseEvent.Wheel
                         evt = MouseEvent.Down
                     mevt = MouseEvent(x, y, key, evt, m.group(0).replace("\033", "<ESC>"))
-                else:
+                if kevt is None and mevt is None:
                     TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                 input_key = ""
                 if callback is not None:
