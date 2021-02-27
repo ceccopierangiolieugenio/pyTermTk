@@ -131,9 +131,27 @@ class TTkCanvas:
                 self.drawText(pos=(x,y), text=line, color=color)
                 x += w + 1
 
-    def drawText(self, pos, text, color=TTkColor.RST):
+    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
         if not self._visible: return
+        lentxt = len(text)
+        if width is None or width<0:
+            width = lentxt
         x,y = pos
+
+        if lentxt < width:
+            pad = width-lentxt
+            if alignment == TTkK.NONE or alignment == TTkK.LEFT_ALIGN:
+                text = text + " "*pad
+            elif alignment == TTkK.RIGHT_ALIGN:
+                text = " "*pad + text
+            elif alignment == TTkK.CENTER_ALIGN:
+                p1 = pad//2
+                p2 = pad-p1
+                text = " "*p1 + text+" "*p2
+            elif alignment == TTkK.JUSTIFY:
+                # TODO: Text Justification
+                text = text + " "*pad
+
         arr = list(text)
         for i in range(0, len(arr)):
             self._set(y, x+i, arr[i], color)

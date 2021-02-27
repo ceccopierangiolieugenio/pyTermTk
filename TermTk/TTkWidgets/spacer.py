@@ -29,4 +29,4 @@ class TTkSpacer(TTkWidget):
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkSpacer')
-        self.hide()
+        # self.hide()

@@ -51,6 +51,7 @@
 ### Overlay widget
 - [ ] Rewrite the Handling (ttk.py)
       It would be nice to have it as child outside the layour
+- [ ] Enable mouse move on overlay
 ## Widgets
 - [ ] Add Size Policy (fixed minimum maximum expanding)
 - [x] Add Show/Hide
@@ -86,9 +87,9 @@
  - [ ] Events (Signal/Slots)
  - [x] Themes
 #### ComboBox (dropdown) Widget
- - [ ] Basic Implementation
+ - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
 #### Splitter widget
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)

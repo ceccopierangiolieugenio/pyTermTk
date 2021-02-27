@@ -430,8 +430,8 @@ class TTkWidget:
             tmp.clearFocus()
             tmp.focusOutEvent()
             tmp.update(repaint=True, updateLayout=False)
-        tmp = TTkHelper.getOverlay()
-        if tmp is not None and tmp is not self:
+        #tmp = TTkHelper.getOverlay()
+        if not TTkHelper.isOverlay(self):
             TTkHelper.removeOverlay()
         TTkHelper.setFocus(self)
         self._focus = True

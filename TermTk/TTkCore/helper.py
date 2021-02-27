@@ -62,6 +62,18 @@ class TTkHelper:
         TTkHelper._updateWidget = []
 
     @staticmethod
+    def isOverlay(widget):
+        if widget is None:
+            return False
+        if TTkHelper._overlay is None:
+            return False
+        while widget is not None:
+            if widget == TTkHelper._overlay._widget:
+                return True
+            widget = widget.parentWidget()
+        return False
+
+    @staticmethod
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
         TTkHelper._overlay = TTkHelper._Overlay(wx+x,wy+y,widget)
@@ -124,6 +136,8 @@ class TTkHelper:
             widget.paintChildCanvas()
 
         if TTkHelper._overlay is not None:
+            TTkHelper._rootCanvas.clean()
+            TTkHelper._rootCanvas.getWidget().paintChildCanvas()
             lx,ly,lw,lh = (0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             child =TTkHelper._overlay._widget
             cx,cy,cw,ch = child.geometry()

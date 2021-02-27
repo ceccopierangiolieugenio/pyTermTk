@@ -1,6 +1,7 @@
 from .widget import *
 from .spacer import *
 from .frame  import *
+from .resizableframe  import *
 from .label  import *
 from .button import *
 from .checkbox import *

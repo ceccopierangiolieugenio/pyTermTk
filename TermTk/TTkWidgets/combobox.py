@@ -23,32 +23,60 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.button import *
 from TermTk.TTkWidgets.table import *
+from TermTk.TTkWidgets.resizableframe import *
 
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id')
+    __slots__ = ('_list', '_id', )
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
         # Define Signals
         # self.cehcked = pyTTkSignal()
         self._list = kwargs.get('list', [] )
+        self._id = -1
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text="XXXXXXXXXXXXXXXX")
+        color       = TTkCfg.theme.comboboxContentColor
+        borderColor = TTkCfg.theme.comboboxBorderColor
+        if self._id == -1:
+            text = "- select -"
+        else:
+            text = self._list[self._id]
+        w = self.width()
 
-    def mouseReleaseEvent(self, evt):
-        table = TTkTable(size=(self.width(),10))
+        self._canvas.drawText(pos=(1,0), text=text, width=w-2, alignment=TTkK.CENTER_ALIGN, color=color)
+        self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
+        self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
+
+    @pyTTkSlot(int)
+    def _callback(self, val):
+        self._id = val
+        #TTkHelper.removeOverlay()
+        self.setFocus()
+        self.update()
+
+    def mousePressEvent(self, evt):
+        frameHeight = len(self._list) + 2
+        frameWidth = self.width()
+        if frameHeight > 30: frameHeight = 30
+        if frameWidth  < 20: frameWidth = 20
+
+        frame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
+        table = TTkTable(parent=frame, showHeader=False)
+        table.activated.connect(self._callback)
+        TTkLog.debug(f"{self._list}")
         for item in self._list:
-            table.appendItem((item))
-        TTkHelper.overlay(self, table, 0, 0)
+            table.appendItem([item])
+        TTkHelper.overlay(self, frame, 0, 0)
         self.update()
         return True

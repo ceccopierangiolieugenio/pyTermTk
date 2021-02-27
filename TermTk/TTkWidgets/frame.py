@@ -22,20 +22,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.log import TTkLog
-from .widget import *
+from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkFrame(TTkWidget):
     __slots__ = ('_border','_title', '_titleColor', '_borderColor')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkFrame' )
+        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.frameBorderColor )
+        self._titleColor = kwargs.get('titleColor', TTkCfg.theme.frameTitleColor )
         self._title = kwargs.get('title' , '' )
         self._border = kwargs.get('border', True )
-        self._borderColor = kwargs.get('borderColor', TTkColor.RST )
-        self._titleColor = kwargs.get('titleColor', TTkColor.RST )
-        if self._border:
-            self.setPadding(1,1,1,1)
+        self.setBorder(self._border)
+
+    def setBorder(self, border):
+        self._border = border
+        if border: self.setPadding(1,1,1,1)
+        else:      self.setPadding(0,0,0,0)
 
     def paintEvent(self):
         if self._border:

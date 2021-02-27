@@ -28,6 +28,12 @@ import random
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
+words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+def getWord():
+    return random.choice(words)
+def getSentence():
+    return " ".join([getWord() for i in range(0,random.randint(1, 4))])
+
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
@@ -42,7 +48,10 @@ win_form1.layout().addWidget(ttk.TTkButton(text='Button 4'),1,2)
 row = 2
 
 row +=1;  win_form1.layout().addWidget(ttk.TTkLabel(text='Combo Box'),row,0)
-win_form1.layout().addWidget(ttk.TTkComboBox(list=['One','Two','Three']),row,2)
+win_form1.layout().addWidget(ttk.TTkComboBox(list=['One','Two','Some Long Sentence That Is Not a Written Number','Three']),row,2)
+row +=1;  win_form1.layout().addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
+win_form1.layout().addWidget(ttk.TTkComboBox(list=[getSentence() for i in range(100)]),row,2)
+
 
 row +=1;  win_form1.layout().addWidget(ttk.TTkLabel(text='Line Edit Test 1'),row,0)
 win_form1.layout().addWidget(ttk.TTkLineEdit(text='Line Edit Test 1'),row,2)
@@ -96,6 +105,7 @@ win_form1.layout().addWidget(ttk.TTkRadioButton(name="Name Two"),row,2)
 row += 1; win_form1.layout().addWidget(ttk.TTkLabel(text='Radio Button (Name Two)'),row,0)
 win_form1.layout().addWidget(ttk.TTkRadioButton(name="Name Two"),row,2)
 
+# ttk.TTkResizableFrame(parent=root, pos=(20,3),size=(30,30))
 
 row += 1; win_form1.layout().addWidget(ttk.TTkSpacer(),row,0)
 

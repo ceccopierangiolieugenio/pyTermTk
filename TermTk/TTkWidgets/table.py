@@ -115,13 +115,14 @@ class _TTkTableView(TTkWidget):
              '_tableData',
             '_selectColor', '_moveTo', '_selected',
             # Signals
-            'tableMoved', 'displayedMaxRowsChanged', 'tablePropertiesChanged')
+            'activated', 'tableMoved', 'displayedMaxRowsChanged', 'tablePropertiesChanged')
     def __init__(self, *args, **kwargs):
         self._moveTo = 0
         self._tableData = []
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTableView' )
         # define signals
+        self.activated = pyTTkSignal(int) # Value
         self.tableMoved = pyTTkSignal(int) # Value
         self.displayedMaxRowsChanged = pyTTkSignal(int) # Value
         self.tablePropertiesChanged  = pyTTkSignal(int, int, int, int) # selected, numItems, displayed lines, offsetView
@@ -181,11 +182,13 @@ class _TTkTableView(TTkWidget):
 
     def mousePressEvent(self, evt):
         x,y = evt.x, evt.y
-        if x == self.width() - 1:
-            return False
-        if y > 0:
-            self._selected = self._moveTo + y - 1
+        if y >= 0:
+            selected = self._moveTo + y
+            if selected >= len(self._tableData):
+                selected = -1
+            self._selected = selected
             self.update()
+            self.activated.emit(self._selected)
         return True
 
     def wheelEvent(self, evt):
@@ -262,7 +265,7 @@ class _TTkTableView(TTkWidget):
 
 
 class TTkTable(TTkWidget):
-    __slots__ = ('_vscroller', '_hscroller', '_tableView', '_headerView', '_showHeader')
+    __slots__ = ('_vscroller', '_hscroller', '_tableView', '_headerView', '_showHeader', 'activated')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTable' )
@@ -270,6 +273,8 @@ class TTkTable(TTkWidget):
             kwargs.pop('parent')
         self._tableView = _TTkTableView(*args, **kwargs)
         self._headerView = _TTkTableViewHeader(*args, **kwargs)
+        # Forward the signal
+        self.activated = self._tableView.activated
         self._showHeader = kwargs.get('showHeader',True)
         self._vscroller = TTkScrollBar(orientation=TTkK.VERTICAL)
         self._hscroller = TTkScrollBar(orientation=TTkK.HORIZONTAL)

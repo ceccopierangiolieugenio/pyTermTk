@@ -89,6 +89,9 @@ class TTkTheme():
     hscroll = ('◀','┄','▓','▶')
     vscroll = ('▲','┊','▓','▼')
 
+    frameBorderColor = TTkColor.RST
+    frameTitleColor  = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
+
     buttonBoxGrid = 1
     buttonBoxGridClicked = 0
     buttonTextColor   = TTkColor.fg("#dddd88")+TTkColor.bg("#000044")
@@ -101,6 +104,9 @@ class TTkTheme():
 
     lineEditTextColor       = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
     lineEditTextColorFocus  = TTkColor.fg("#dddddd")+TTkColor.bg("#000044")
+
+    comboboxContentColor      = TTkColor.fg("#dddd88")+TTkColor.bg("#111111")
+    comboboxBorderColor       = buttonBorderColor
 
     checkboxContentColor      = buttonTextColor
     checkboxBorderColor       = buttonBorderColor
