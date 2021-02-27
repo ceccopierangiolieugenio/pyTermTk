@@ -21,3 +21,42 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import os
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkWidgets.widget import *
+from TermTk.TTkTemplates.color import TColor
+from TermTk.TTkTemplates.text  import TText
+
+class TTkLogViewer(TTkWidget):
+    __slots__ = ('_color', '_text', '_messages', '_cwd')
+    def __init__(self, *args, **kwargs):
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkLabel' )
+        self._messages = []
+        self._cwd = os.getcwd()
+        TTkLog.installMessageHandler(self.loggingCallback)
+
+
+    def loggingCallback(self, mode, context, message):
+        logType = "NONE"
+        if mode == TTkLog.InfoMsg:       logType = "INFO"
+        elif mode == TTkLog.DebugMsg:  logType = "DEBUG"
+        elif mode == TTkLog.WarningMsg:  logType = "WARNING"
+        elif mode == TTkLog.CriticalMsg: logType = "CRITICAL"
+        elif mode == TTkLog.FatalMsg:    logType = "FATAL"
+        elif mode == TTkLog.ErrorMsg:    logType = "ERROR"
+        self._messages.append(f"{logType}: {context.file}:{context.line} {message}".replace(self._cwd,"_"))
+        self.update()
+
+    def paintEvent(self):
+        y = 0
+        _,h = self.size()
+        offset = len(self._messages)-h
+        if offset<0: offset = 0
+        for message in self._messages[offset:]:
+            self._canvas.drawText(pos=(0,y),text=message)
+            y+=1
+
+
+

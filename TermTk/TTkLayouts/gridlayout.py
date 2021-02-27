@@ -194,6 +194,8 @@ class TTkGridLayout(TTkLayout):
 
     def maximumWidth(self) -> int:
         ''' process the widgets and get the min size '''
+        if not self._gridItems[0]:
+            return 0x1000
         maxw = 0
         for gridCol in range(len(self._gridItems[0])):
             maxw += self.maximumColWidth(gridCol)
@@ -201,6 +203,8 @@ class TTkGridLayout(TTkLayout):
 
     def maximumHeight(self) -> int:
         ''' process the widgets and get the min size '''
+        if not self._gridItems[0]:
+            return 0x1000
         maxh = 0
         for gridRow in range(len(self._gridItems)):
             maxh += self.maximumRowHeight(gridRow)
@@ -227,8 +231,8 @@ class TTkGridLayout(TTkLayout):
         if h < minHeight: h = minHeight
         if w < minWidth:  w = minWidth
 
-        # TTkLog.debug(f"w,h:({w,h}) mh:{minHeight} sh:{sortedHeights}")
-        # TTkLog.debug(f"w,h:({w,h}) mw:{minWidth}  sw:{sortedWidths}")
+        #TTkLog.debug(f"w,h:({w,h}) mh:{minHeight} sh:{sortedHeights}")
+        #TTkLog.debug(f"w,h:({w,h}) mw:{minWidth}  sw:{sortedWidths}")
 
         def parseSizes(sizes, space, out):
             iterate = True
@@ -273,7 +277,7 @@ class TTkGridLayout(TTkLayout):
             i[0] = newy
             newy += i[1]
 
-        # TTkLog.debug(f"h:{horSizes} v:{vertSizes}")
+        #TTkLog.debug(f"h:{horSizes} v:{vertSizes}")
 
         # loop and set the geometry of any item
         for item in self.children():

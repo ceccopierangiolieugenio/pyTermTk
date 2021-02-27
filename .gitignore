@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # other
+tests/test.dummy.py
 *.swp
 tmp
 profiler.txt

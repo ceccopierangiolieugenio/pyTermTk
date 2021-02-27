@@ -68,7 +68,7 @@ class TTkComboBox(TTkWidget):
     def mousePressEvent(self, evt):
         frameHeight = len(self._list) + 2
         frameWidth = self.width()
-        if frameHeight > 30: frameHeight = 30
+        if frameHeight > 20: frameHeight = 20
         if frameWidth  < 20: frameWidth = 20
 
         frame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))

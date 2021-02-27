@@ -27,7 +27,7 @@
 
 import inspect
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Set
 
 class _TTkContext:
     __slots__ = ['file', 'line', 'function']
@@ -47,7 +47,8 @@ class TTkLog:
     FatalMsg    = 0x0020
     SystemMsg   = CriticalMsg
 
-    _messageHandler: Callable = None
+    # TypeHandlers = list[Callable]
+    _messageHandler: Set = []
 
     @staticmethod
     def _logging_message_handler(mode, context, message):
@@ -75,12 +76,12 @@ class TTkLog:
 
     @staticmethod
     def _process_msg(mode: int, msg: str):
-        if TTkLog._messageHandler is not None:
+        for cb in TTkLog._messageHandler:
             curframe = inspect.currentframe()
             calframe = inspect.getouterframes(curframe,1)
             if len(calframe) > 2:
                 ctx = _TTkContext(calframe[2])
-                TTkLog._messageHandler(mode, ctx, msg)
+                cb(mode, ctx, msg)
 
     @staticmethod
     def debug(msg):
@@ -108,4 +109,4 @@ class TTkLog:
 
     @staticmethod
     def installMessageHandler(mh: Callable):
-        TTkLog._messageHandler = mh
+        TTkLog._messageHandler.append(mh)

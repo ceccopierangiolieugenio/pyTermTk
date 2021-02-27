@@ -142,11 +142,6 @@ class TTkWidget:
         self._width  = w
         self._height = h
         self._canvas.resize(self._width, self._height)
-        if self._layout is not None:
-            self._layout.setGeometry(
-                                self._padl, self._padt,
-                                self._width   - self._padl - self._padr,
-                                self._height  - self._padt - self._padb)
         self.update(repaint=True, updateLayout=True)
         self.resizeEvent(w,h)
 
@@ -164,11 +159,7 @@ class TTkWidget:
         self._padb = bottom
         self._padl = left
         self._padr = right
-        if self._layout is not None:
-            self._layout.setGeometry(
-                                self._padl, self._padt,
-                                self._width   - self._padl - self._padr,
-                                self._height  - self._padt - self._padb)
+        self.update(repaint=True, updateLayout=True)
 
     def mouseDoubleClickEvent(self, evt): return False
     def mouseMoveEvent(self, evt): return False
@@ -287,10 +278,6 @@ class TTkWidget:
     def setLayout(self, layout):
         self._layout = layout
         self._layout.setParent(self)
-        self._layout.setGeometry(
-                        self._padl, self._padt,
-                        self._width   - self._padl - self._padr,
-                        self._height  - self._padt - self._padb)
         self.update(repaint=True, updateLayout=True)
 
     def layout(self): return self._layout
@@ -419,10 +406,15 @@ class TTkWidget:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
         if updateLayout and self._layout is not None:
-            if self._layout.update():
-                self.layoutUpdated()
+            self._layout.setGeometry(
+                        self._padl, self._padt,
+                        self._width   - self._padl - self._padr,
+                        self._height  - self._padt - self._padb)
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
+        if updateLayout and self._layout is not None:
+            if self._layout.update():
+                self.layoutUpdated()
 
     def setFocus(self):
         tmp = TTkHelper.getFocus()

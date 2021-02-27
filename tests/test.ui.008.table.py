@@ -31,8 +31,8 @@ import TermTk as ttk
 words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
 def getWord():
     return random.choice(words)
-def getSentence():
-    return " ".join([getWord() for i in range(0,random.randint(8, 30))])
+def getSentence(a,b):
+    return " ".join([getWord() for i in range(0,random.randint(a,b))])
 
 
 ttk.TTkLog.use_default_file_logging()
@@ -90,11 +90,11 @@ table3.setColumnColors((
 
 table3.appendItem((" - ","","You see it's all clear, You were meant to be here, From the beginning","",""))
 for i in range(0, 5):
-    table1.appendItem((str(i), getWord(), getSentence(), getWord(), getWord()))
+    table1.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
 for i in range(0, 5):
-    table2.appendItem((str(i), getWord(), getSentence(), getWord(), getWord()))
+    table2.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
 for i in range(0, 35):
-    table3.appendItem((str(i), getWord(), getSentence(), getWord(), getWord()))
+    table3.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
 
 table3.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 
@@ -105,15 +105,15 @@ ii = 1000
 def add():
     global ii
     ii+=1
-    table1.appendItem((str(ii), getWord(), getSentence(), getWord(), getWord()))
-    table2.appendItem((str(ii), getWord(), getSentence(), getWord(), getWord()))
+    table1.appendItem((str(ii), getWord(), getSentence(8,30), getWord(), getWord()))
+    table2.appendItem((str(ii), getWord(), getSentence(8,30), getWord(), getWord()))
 btn1.clicked.connect(add)
 
 def addMany():
     global ii
     for i in range(0, 500):
         ii+=1
-        table1.appendItem((str(ii), getWord(), getSentence(), getWord(), getWord()))
+        table1.appendItem((str(ii), getWord(), getSentence(8,30), getWord(), getWord()))
     table1.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 btn2.clicked.connect(addMany)
 

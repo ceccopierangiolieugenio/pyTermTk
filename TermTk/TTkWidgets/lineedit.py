@@ -80,6 +80,7 @@ class TTkLineEdit(TTkWidget):
             txtPos = len(self._text)
         self._cursorPos = txtPos
         self._pushCursor()
+        return True
 
 
     def keyEvent(self, evt):

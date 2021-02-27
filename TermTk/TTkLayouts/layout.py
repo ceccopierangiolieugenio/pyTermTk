@@ -127,6 +127,12 @@ class TTkLayout(TTkLayoutItem):
         item.z = minz
         self._zSortItems()
 
+    def setGeometry(self, x, y, w, h):
+        ax, ay, aw, ah = self.geometry()
+        if ax==x and ay==y and aw==w and ah==h: return
+        TTkLayoutItem.setGeometry(self, x, y, w, h)
+        self.update()
+
     def update(self):
         ret = False
         for i in self.children():

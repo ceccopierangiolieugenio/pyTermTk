@@ -170,7 +170,7 @@ class TTkCanvas:
 
         self._set(y,l, gg[7], color)
         self._set(y,r, gg[6], color)
-        self.drawText((l+1,y),text,colorText)
+        self.drawText(pos=(l+1,y),text=text,color=colorText)
 
 
 
