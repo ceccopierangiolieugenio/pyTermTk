@@ -298,6 +298,11 @@ class TTkWidget:
 
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
+    def maxDimension(self, orientation) -> int:
+        if orientation == TTkK.HORIZONTAL:
+            return self.maximumWidth()
+        else:
+            return self.maximumHeight()
     def maximumHeight(self):
         wMaxH = self._maxh
         if self._layout is not None:
@@ -315,6 +320,11 @@ class TTkWidget:
 
     def minimumSize(self):
         return self.minimumWidth(), self.minimumHeight()
+    def minDimension(self, orientation) -> int:
+        if orientation == TTkK.HORIZONTAL:
+            return self.minimumWidth()
+        else:
+            return self.minimumHeight()
     def minimumHeight(self):
         wMinH = self._minh
         if self._layout is not None:

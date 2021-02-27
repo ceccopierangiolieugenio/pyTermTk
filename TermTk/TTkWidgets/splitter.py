@@ -87,8 +87,8 @@ class TTkSplitter(TTkFrame):
                     ww = w-x
                 else:
                     ww = sep[i+1]-x
-                    maxw = item.maximumWidth()
-                    minw = item.minimumWidth()
+                    maxw = item.maxDimension(self._orientation)
+                    minw = item.minDimension(self._orientation)
                     if   ww > maxw: ww = maxw
                     elif ww < minw: ww = minw
                     sep[i+1]=ww+x
@@ -100,8 +100,8 @@ class TTkSplitter(TTkFrame):
                     hh = h-y
                 else:
                     hh = sep[i+1]-y
-                    maxh = item.maximumHeight()
-                    minh = item.minimumHeight()
+                    maxh = item.maxDimension(self._orientation)
+                    minh = item.minDimension(self._orientation)
                     if   hh > maxh: hh = maxh
                     elif hh < minh: hh = minh
                     sep[i+1]=hh+y

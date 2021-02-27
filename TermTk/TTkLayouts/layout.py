@@ -38,13 +38,15 @@ class TTkLayoutItem:
         pass
     def minimumSize(self):
         return self.minimumWidth(), self.minimumHeight()
+    def minDimension(self,o)-> int: return 0
     def minimumHeight(self) -> int: return 0
     def minimumWidth(self)  -> int: return 0
 
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
+    def maxDimension(self,o)-> int: return 0x1000
     def maximumHeight(self) -> int: return 0x10000
-    def maximumWidth(self)  -> int:  return 0x10000
+    def maximumWidth(self)  -> int: return 0x10000
 
     def geometry(self):
         return self._x, self._y, self._w, self._h
@@ -158,12 +160,14 @@ class TTkWidgetItem(TTkLayoutItem):
 
     def isEmpty(self): return self._widget is None
 
-    def minimumSize(self)  -> int: return self._widget.minimumSize()
-    def minimumHeight(self)-> int: return self._widget.minimumHeight()
-    def minimumWidth(self) -> int: return self._widget.minimumWidth()
-    def maximumSize(self)  -> int: return self._widget.maximumSize()
-    def maximumHeight(self)-> int: return self._widget.maximumHeight()
-    def maximumWidth(self) -> int: return self._widget.maximumWidth()
+    def minimumSize(self)   -> int: return self._widget.minimumSize()
+    def minDimension(self,o)-> int: return self._widget.minDimension(o)
+    def minimumHeight(self) -> int: return self._widget.minimumHeight()
+    def minimumWidth(self)  -> int: return self._widget.minimumWidth()
+    def maximumSize(self)   -> int: return self._widget.maximumSize()
+    def maxDimension(self,o)-> int: return self._widget.maxDimension(o)
+    def maximumHeight(self) -> int: return self._widget.maximumHeight()
+    def maximumWidth(self)  -> int: return self._widget.maximumWidth()
 
     def geometry(self):      return self._widget.geometry()
 
