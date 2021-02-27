@@ -30,7 +30,6 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.frame import TTkFrame
-from TermTk.TTkWidgets.testwidget import TTkTestWidget
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 

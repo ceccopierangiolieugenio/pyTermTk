@@ -33,8 +33,8 @@ class TTkResizableFrame(TTkFrame):
         self._name = kwargs.get('name' , 'TTkResizableFrame' )
         self.setBorder(True)
         self._mouseDelta = (0,0)
-        self.setFocusPolicy(TTkK.ClickFocus)
         self._resizable = TTkK.NONE
+        self.setFocusPolicy(TTkK.ClickFocus)
 
 
     def mousePressEvent(self, evt):

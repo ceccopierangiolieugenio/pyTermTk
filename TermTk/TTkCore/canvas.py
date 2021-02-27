@@ -100,8 +100,34 @@ class TTkCanvas:
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
 
-    '''
+    def drawVLine(self, pos, size, color=TTkColor.RST):
+        if size == 0: return
+        x,y = pos
+        ln = TTkCfg.theme.vline
+        self._set(y, x, ln[0], color)
+        self._set(y+size-1, x, ln[2], color)
+        if size > 2:
+            for i in range(1,size-1):
+                self._set(y+i, x, ln[1], color)
 
+    def drawHLine(self, pos, size, color=TTkColor.RST):
+        if size == 0: return
+        x,y = pos
+        ln = TTkCfg.theme.hline
+        if size == 1:
+            txt = ln[0]
+        elif size == 2:
+            txt = ln[0]+ln[2]
+        else:
+            txt = ln[0]+(ln[1]*(size-2))+ln[2]
+        self.drawText(pos=pos, text=txt, color=color)
+
+    '''
+        pos = (x:int, y:int)
+        items      = [str] # list of str to be written (for each column)
+        size       = [int] # list of output sizes (for each column)
+        colors     = [TTkColor] # list of colors (for each column)
+        alignments = [TTkK.alignment] # list of txtalignments (for each column)
     '''
     def drawTableLine(self, pos, items, sizes, colors, alignments ):
         x,y = pos

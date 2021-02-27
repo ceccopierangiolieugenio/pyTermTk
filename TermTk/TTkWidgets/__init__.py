@@ -2,6 +2,7 @@ from .widget import *
 from .spacer import *
 from .frame  import *
 from .resizableframe  import *
+from .splitter import *
 from .label  import *
 from .button import *
 from .checkbox import *
@@ -12,4 +13,3 @@ from .scrollbar import *
 from .window import *
 from .table import *
 from .logviewer import *
-from .testwidget import *
