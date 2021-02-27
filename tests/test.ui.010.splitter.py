@@ -39,14 +39,14 @@ ttk.TTkTestWidgetSizes(parent=vsplitter1_1 ,border=True, title="Frame1.2")
 ttk.TTkTestWidgetSizes(parent=hsplitter1_1 ,border=True, title="Frame2")
 ttk.TTkTestWidgetSizes(parent=hsplitter1_1 ,border=True, title="Frame3")
 
-winSplitter2 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
+winSplitter2 = ttk.TTkWindow(parent=root,pos = (10,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
 vsplitter2_1 = ttk.TTkSplitter(parent=winSplitter2, orientation=ttk.TTkK.VERTICAL)
 ttk.TTkTestWidgetSizes(parent=vsplitter2_1 ,border=True, title="Frame1.1")
 hsplitter2_1 = ttk.TTkSplitter(parent=vsplitter2_1)
 ttk.TTkTestWidgetSizes(parent=vsplitter2_1 ,border=True, title="Frame1.2")
 ttk.TTkTestWidgetSizes(parent=vsplitter2_1 ,border=True, title="Frame1.3")
-ttk.TTkTestWidgetSizes(parent=hsplitter2_1 ,border=True, title="Frame2")
 ttk.TTkTestWidgetSizes(parent=hsplitter2_1 ,border=True, title="Frame3")
+ttk.TTkTestWidgetSizes(parent=hsplitter2_1 ,border=True, title="Frame2", minSize=(33,7), maxSize=(33,7))
 ttk.TTkTestWidgetSizes(parent=hsplitter2_1 ,border=True, title="Frame4")
 
 

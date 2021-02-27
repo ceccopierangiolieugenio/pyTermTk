@@ -42,3 +42,6 @@ class TTkTestWidgetSizes(TTkFrame):
         self._canvas.drawText(pos=(l,t+2), text=f"w,h ({self._width},{self._height})")
         self._canvas.drawText(pos=(l,t+3), text=f"max w,h ({self._maxw},{self._maxh})")
         self._canvas.drawText(pos=(l,t+4), text=f"min w,h ({self._minw},{self._minh})")
+
+    def mousePressEvent(self, evt): return True
+    def mouseReleaseEvent(self, evt): return True

@@ -8,6 +8,7 @@
   - [ ] [UTF-8] Handle "Fullwidth" forms characters
         https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
         https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
+- [ ] Process child events before parent
 
 ## Terminal Helper
 - [ ] Events
@@ -69,7 +70,7 @@
 #### Text Edit Widget
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
  #### Table Widget
  - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
@@ -77,7 +78,7 @@
  #### Window Widget
  - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
  #### CheckBox Widget
  - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
@@ -91,9 +92,10 @@
  - [ ] Events (Signal/Slots)
  - [x] Themes
 #### Splitter widget
- - [ ] Basic Implementation
+ - [x] Basic Implementation
+ - [ ] Snap on min/max sizes
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
 #### Tab Widget
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)

@@ -30,15 +30,19 @@ from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.frame import *
 
 class TTkSplitter(TTkFrame):
-    __slots__ = ('_orientation','_separators', '_separatorSelected', '_mouseDelta')
+    __slots__ = ('_splitterInitialized', '_orientation','_separators', '_separatorSelected', '_mouseDelta')
     def __init__(self, *args, **kwargs):
+        self._splitterInitialized = False
+        # self._splitterInitialized = True
         self._separators = []
         self._separatorSelected = None
+        self._orientation = TTkK.HORIZONTAL
         TTkFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkSpacer')
         self._orientation = kwargs.get('orientation', TTkK.HORIZONTAL)
         self.setBorder(False)
         self.setFocusPolicy(TTkK.ClickFocus)
+        self._splitterInitialized = True
 
     def addWidget(self, widget, size=None):
         TTkFrame.addWidget(self, widget)
@@ -72,19 +76,36 @@ class TTkSplitter(TTkFrame):
 
     def _updateGeometries(self):
         _,_,w,h = self.geometry()
+        forward = True
         sep = self._separators
         for i in range(len(sep)):
             item = self.layout().itemAt(i)
             if self._orientation == TTkK.HORIZONTAL:
-                x  = sep[i]+1
-                x1 = w if i>len(sep)-2 else sep[i+1]
                 y = 0
-                item.setGeometry(x,y,x1-x,h)
+                x  = sep[i]+1
+                if i>len(sep)-2: # this is the last widget
+                    ww = w-x
+                else:
+                    ww = sep[i+1]-x
+                    maxw = item.maximumWidth()
+                    minw = item.minimumWidth()
+                    if   ww > maxw: ww = maxw
+                    elif ww < minw: ww = minw
+                    sep[i+1]=ww+x
+                item.setGeometry(x,y,ww,h)
             else:
                 x = 0
-                y = sep[i]+1
-                y1 = h if i>len(sep)-2 else sep[i+1]
-                item.setGeometry(x,y,w,y1-y)
+                y  = sep[i]+1
+                if i>len(sep)-2: # this is the last widget
+                    hh = h-y
+                else:
+                    hh = sep[i+1]-y
+                    maxh = item.maximumHeight()
+                    minh = item.minimumHeight()
+                    if   hh > maxh: hh = maxh
+                    elif hh < minh: hh = minh
+                    sep[i+1]=hh+y
+                item.setGeometry(x,y,w,hh)
 
     def resizeEvent(self, w, h):
         self._updateGeometries()
@@ -134,3 +155,54 @@ class TTkSplitter(TTkFrame):
             self.update()
             return True
         return False
+
+
+    def minimumHeight(self) -> int:
+        if not self._splitterInitialized: return 0
+        min = 0
+        if self._orientation == TTkK.VERTICAL:
+            for item in self.layout().children():
+                min+=item.minimumHeight()
+        else:
+            for item in self.layout().children():
+                if min < item.minimumHeight():
+                    min = item.minimumHeight()
+        return min
+
+    def minimumWidth(self)  -> int:
+        if not self._splitterInitialized: return 0
+        min = 0
+        if self._orientation == TTkK.HORIZONTAL:
+            for item in self.layout().children():
+                min+=item.minimumWidth()
+        else:
+            for item in self.layout().children():
+                if min < item.minimumWidth():
+                    min = item.minimumWidth()
+        return min
+
+    def maximumHeight(self) -> int:
+        if not self._splitterInitialized: return 0x10000
+        if self._orientation == TTkK.VERTICAL:
+            max = 0
+            for item in self.layout().children():
+                max+=item.maximumHeight()
+        else:
+            max = 0x10000
+            for item in self.layout().children():
+                if max > item.maximumHeight():
+                    max = item.maximumHeight()
+        return max
+
+    def maximumWidth(self)  -> int:
+        if not self._splitterInitialized: return 0x10000
+        if self._orientation == TTkK.HORIZONTAL:
+            max = 0
+            for item in self.layout().children():
+                max+=item.maximumHeight()
+        else:
+            max = 0x10000
+            for item in self.layout().children():
+                if max > item.maximumWidth():
+                    max = item.maximumWidth()
+        return max

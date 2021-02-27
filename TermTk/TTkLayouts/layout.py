@@ -43,8 +43,8 @@ class TTkLayoutItem:
 
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
-    def maximumHeight(self) -> int: return 0x80000000
-    def maximumWidth(self)  -> int:  return 0x80000000
+    def maximumHeight(self) -> int: return 0x10000
+    def maximumWidth(self)  -> int:  return 0x10000
 
     def geometry(self):
         return self._x, self._y, self._w, self._h
