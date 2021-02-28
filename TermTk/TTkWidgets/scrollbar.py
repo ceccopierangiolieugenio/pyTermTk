@@ -196,6 +196,9 @@ class TTkScrollBar(TTkWidget):
 
     @pyTTkSlot(int, int)
     def setRange(self, min, max):
+        if self._minimum == min and \
+           self._maximum == max :
+            return
         self.minimum = min
         self.maximum = max
         self.rangeChanged.emit(min, max)
@@ -208,6 +211,8 @@ class TTkScrollBar(TTkWidget):
     def minimum(self): return self._minimum
     @minimum.setter
     def minimum(self, v):
+        if v == self._minimum:
+            return
         if v > self._maximum:
             v = self._maximum
         self._minimum = v
@@ -217,6 +222,8 @@ class TTkScrollBar(TTkWidget):
     def maximum(self): return self._maximum
     @minimum.setter
     def maximum(self, v):
+        if v == self._maximum:
+            return
         if v < self._minimum:
             v = self._minimum
         self._maximum = v
@@ -236,6 +243,8 @@ class TTkScrollBar(TTkWidget):
     def value(self): return self._value
     @value.setter
     def value(self, v):
+        if self._value == v:
+            return
         if v > self._maximum: v = self._maximum
         if v < self._minimum: v = self._minimum
         if self._value == v: return

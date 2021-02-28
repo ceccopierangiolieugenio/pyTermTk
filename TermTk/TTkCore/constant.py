@@ -46,6 +46,12 @@ class TTkConstant:
     HORIZONTAL = 0x01
     VERTICAL   = 0x02
 
+    # Scroll Bar Policy
+    ScrollBarAsNeeded  =  0x00
+    ScrollBarAlwaysOff =  0x01
+    ScrollBarAlwaysOn  =  0x02
+
+
     # Keys
     NoButton      = 0x00000000    # The button state does not refer to any button (see QMouseEvent::button()).
     AllButtons    = 0x07ffffff    # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.

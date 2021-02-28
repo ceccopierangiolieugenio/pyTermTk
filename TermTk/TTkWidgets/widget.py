@@ -149,7 +149,7 @@ class TTkWidget:
         self.resize(w, h)
         self.move(x, y)
 
-    def getPadding(self):
+    def getPadding(self) -> (int, int, int, int) :
         return self._padt, self._padb, self._padl, self._padr
 
     def setPadding(self, top, bottom, left, right):
@@ -161,16 +161,16 @@ class TTkWidget:
         self._padr = right
         self.update(repaint=True, updateLayout=True)
 
-    def mouseDoubleClickEvent(self, evt): return False
-    def mouseMoveEvent(self, evt): return False
-    def mouseDragEvent(self, evt): return False
-    def mousePressEvent(self, evt): return False
-    def mouseReleaseEvent(self, evt): return False
-    def wheelEvent(self, evt): return False
-    def enterEvent(self, evt): return False
-    def leaveEvent(self, evt): return False
-    def keyPressEvent(self, evt): return False
-    def keyReleaseEvent(self, evt): return False
+    def mouseDoubleClickEvent(self, evt) -> bool : return False
+    def mouseMoveEvent(self, evt)        -> bool : return False
+    def mouseDragEvent(self, evt)        -> bool : return False
+    def mousePressEvent(self, evt)       -> bool : return False
+    def mouseReleaseEvent(self, evt)     -> bool : return False
+    def wheelEvent(self, evt)            -> bool : return False
+    def enterEvent(self, evt)            -> bool : return False
+    def leaveEvent(self, evt)            -> bool : return False
+    def keyPressEvent(self, evt)         -> bool : return False
+    def keyReleaseEvent(self, evt)       -> bool : return False
 
     @staticmethod
     def _mouseEventLayoutHandle(evt, layout):

@@ -22,47 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.spacer import TTkSpacer
-from TermTk.TTkWidgets.scrollbar import TTkScrollBar
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-'''
-
-
-'''
-class _______TTkTable(TTkWidget):
-    __slots__ = (
-            '_hlayout','_vscroller',
-            '_header', '_showHeader',
-            '_alignments', '_headerColor',
-            '_columns', '_columnColors',
-             '_tableData',
-            '_selectColor', '_moveTo', '_selected')
+class _TTkTableViewHeader(TTkWidget):
+    __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
     def __init__(self, *args, **kwargs):
-        self._vscroller = None # This is required to avoid crash int he vScroller Tuning
-        self._moveTo = 0
-        self._tableData = []
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTable' )
+        self._name = kwargs.get('name' , '_TTkTableViewHeader' )
         self._columns = kwargs.get('columns' , [-1] )
         self._header = [""]*len(self._columns)
-        self._showHeader = False
         self._alignments = [TTkK.NONE]*len(self._columns)
-        self._columnColors = kwargs.get('columnColors' , [TTkColor.RST]*len(self._columns) )
-        self._selectColor = kwargs.get('selectColor' , TTkColor.BOLD )
         self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
-        self._hlayout = TTkHBoxLayout()
-        self.setLayout(self._hlayout)
-        self._selected = -1
-        TTkSpacer(parent=self)
-        self._vscroller = TTkScrollBar(parent=self)
-        self._vscroller.valueChanged.connect(self.scrollTo)
-        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setMaximumHeight(1)
+        self.setMinimumHeight(1)
 
     def setAlignment(self, alignments):
         if len(alignments) != len(self._columns):
@@ -76,8 +55,88 @@ class _______TTkTable(TTkWidget):
 
     def setColumnSize(self, columns):
         self._columns = columns
-        self._columnColors = [TTkColor.RST]*len(self._columns)
         self._header = [""]*len(self._columns)
+        self._alignments = [TTkK.NONE]*len(self._columns)
+
+    def paintEvent(self):
+        w,h = self.size()
+        total = 0
+        variableCols = 0
+        # Retrieve the free size
+        for width in self._columns:
+            if width > 0:
+                total += width
+            else:
+                variableCols += 1
+        # Define the list of cols sizes
+        sizes = []
+        for width in self._columns:
+            if width > 0:
+                sizes.append(width)
+            else:
+                sizes.append((w-total)//variableCols)
+                variableCols -= 1
+        colors = [self._headerColor]*len(self._header)
+        self._canvas.drawTableLine(pos=(0,0), items=self._header, sizes=sizes, colors=colors, alignments=self._alignments)
+
+
+class _TTkTableView(TTkAbstractScrollView):
+    __slots__ = (
+            '_alignments', '_headerColor',
+            '_columns', '_columnColors',
+             '_tableData',
+            '_selectColor', '_selected',
+            # Signals
+            'activated')
+    def __init__(self, *args, **kwargs):
+        self._tableData = []
+        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_TTkTableView' )
+        # define signals
+        self.activated = pyTTkSignal(int) # Value
+
+        self._columns = kwargs.get('columns' , [-1] )
+        self._alignments = [TTkK.NONE]*len(self._columns)
+        self._columnColors = kwargs.get('columnColors' , [TTkColor.RST]*len(self._columns) )
+        self._selectColor = kwargs.get('selectColor' , TTkColor.BOLD )
+        self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
+        self._selected = -1
+        self.setFocusPolicy(TTkK.ClickFocus)
+
+    def _initSignals(self):
+        # self.cellActivated(int row, int column)
+        # self.cellChanged(int row, int column)
+        # self.cellClicked(int row, int column)
+        # self.cellDoubleClicked(int row, int column)
+        # self.cellEntered(int row, int column)
+        # self.cellPressed(int row, int column)
+        # self.currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
+        # self.currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
+        # self.itemActivated(QTableWidgetItem *item)
+        # self.itemChanged(QTableWidgetItem *item)
+        # self.itemClicked(QTableWidgetItem *item)
+        # self.itemDoubleClicked(QTableWidgetItem *item)
+        # self.itemEntered(QTableWidgetItem *item)
+        # self.itemPressed(QTableWidgetItem *item)
+        # self.itemSelectionChanged()
+        pass
+
+    def viewFullAreaSize(self) -> (int, int):
+        return self.width(), len(self._tableData)
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+    def items(self): return self._tableData
+
+    def setAlignment(self, alignments):
+        if len(alignments) != len(self._columns):
+            return
+        self._alignments = alignments
+
+    def setColumnSize(self, columns):
+        self._columns = columns
+        self._columnColors = [TTkColor.RST]*len(self._columns)
         self._alignments = [TTkK.NONE]*len(self._columns)
 
     def setColumnColors(self, colors):
@@ -89,107 +148,52 @@ class _______TTkTable(TTkWidget):
         if len(item) != len(self._columns):
             return
         self._tableData.append(item)
-        self._tuneTheScroller()
-
-    def resizeEvent(self, w, h):
-        if self._moveTo > len(self._tableData)-h-1:
-            self._moveTo = len(self._tableData)-h-1
-        if self._moveTo < 0:
-            self._moveTo = 0
-        self._tuneTheScroller()
-
-    def _tuneTheScroller(self):
-        if self._vscroller is None: return
-        scrollTo = len(self._tableData) - self.height()
-        self._vscroller.setRange(0, scrollTo)
-        self._vscroller.pagestep = self.height()
+        self.viewChanged.emit()
+        self.update()
 
     def mousePressEvent(self, evt):
-        x,y = evt.x, evt.y
-        if x == self.width() - 1:
-            return False
-        if y > 0:
-            self._selected = self._moveTo + y - 1
+        _,y = evt.x, evt.y
+        _, oy = self.getViewOffsets()
+        if y >= 0:
+            selected = oy + y
+            if selected >= len(self._tableData):
+                selected = -1
+            self._selected = selected
             self.update()
+            self.activated.emit(self._selected)
         return True
-
-    def wheelEvent(self, evt):
-        # delta = self.height()
-        delta = 5
-        if evt.evt == TTkK.WHEEL_Up:
-            delta = -delta
-        # self.scrollTo(self._moveTo + delta)
-        self._vscroller.value = self._moveTo + delta
-        return True
-
-    @pyTTkSlot(int)
-    def scrollTo(self, to):
-        max = len(self._tableData) - self.height()
-        if to>max: to=max
-        if to<0: to=0
-        self._moveTo = to
-        self.update()
 
     def paintEvent(self):
         w,h = self.size()
+        _, oy = self.getViewOffsets()
         total = 0
         variableCols = 0
-        slicesize = 0
+        # Retrieve the free size
         for width in self._columns:
             if width > 0:
                 total += width
             else:
                 variableCols += 1
-        if variableCols > 0:
-            slicesize = int((w-total)/variableCols)
-        # TTkLog.debug(f"ss:{slicesize}, w:{w}")
+        # Define the list of cols sizes
+        sizes = []
+        for width in self._columns:
+            if width > 0:
+                sizes.append(width)
+            else:
+                sizes.append((w-total)//variableCols)
+                variableCols -= 1
 
         maxItems = len(self._tableData)
-        itemFrom = self._moveTo -1
+        itemFrom = oy
         if itemFrom > maxItems-h: itemFrom = maxItems-h
         if itemFrom < 0 : itemFrom = 0
         itemTo   = itemFrom + h
         if itemTo > maxItems: itemTo = maxItems
         # TTkLog.debug(f"moveto:{self._moveTo}, maxItems:{maxItems}, f:{itemFrom}, t{itemTo}, h:{h}, sel:{self._selected}")
 
-        def _lineDraw(_y, _val, _item, _inColor=None):
-            _x = 0
-            for i in range(0,len(_item)):
-                _txt = _item[i]
-                _width = self._columns[i]
-                _color = self._columnColors[i]
-                _align = self._alignments[i]
-                if _inColor is not None:
-                    _color = _inColor
-                if _width < 0:
-                    _width = slicesize
-                if _width > 0:
-                    _line = ""
-                    _lentxt = len(_txt)
-                    if _lentxt > _width:
-                        _line += _txt[0:_width]
-                    else:
-                        _pad = _width-_lentxt
-                        if _align == TTkK.NONE or _align == TTkK.LEFT_ALIGN:
-                            _line += _txt + " "*_pad
-                        elif _align == TTkK.RIGHT_ALIGN:
-                            _line += " "*_pad + _txt
-                        elif _align == TTkK.CENTER_ALIGN:
-                            _p1 = _pad//2
-                            _p2 = _pad-_p1
-                            _line += " "*_p1 + _txt+" "*_p2
-                        elif _align == TTkK.JUSTIFY:
-                            # TODO: Text Justification
-                            _line += _txt + " "*_pad
-                    self._canvas.drawText(pos=(_x,_y), text=_line, color=_color.modParam(val=-_val))
-                    _line  += " "
-                    _x += _width + 1
-
-        _lineDraw(0,0,self._header,self._headerColor)
-
-        y = 1
+        y = 0
         for it in range(itemFrom, itemTo):
-            item =  self._tableData[it]
+            item = self._tableData[it]
             if self._selected > 0:
                 val = self._selected - itemFrom
             else:
@@ -197,12 +201,56 @@ class _______TTkTable(TTkWidget):
             if val < 0 : val = 0
             if val > h : val = h
             if it == self._selected:
-                _lineDraw(y,val,item,self._selectColor)
+                colors = [self._selectColor]*len(self._columnColors)
+                self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
             else:
-                _lineDraw(y,val,item)
+                colors = [c.modParam(val=-val) for c in self._columnColors]
+                self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
             y+=1
 
+class TTkTableView(TTkAbstractScrollView):
+    __slots__ = ( '_header', '_tableView', '_showHeader', 'activated')
 
+    def __init__(self, *args, **kwargs):
+        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkTableView' )
+        if 'parent' in kwargs: kwargs.pop('parent')
+        self._showHeader = kwargs.get('showHeader', True)
+        self.setLayout(TTkGridLayout())
+        self._tableView = _TTkTableView(*args, **kwargs)
+        self._header = _TTkTableViewHeader(*args, **kwargs)
+        self.layout().addWidget(self._header,0,0)
+        self.layout().addWidget(self._tableView,1,0)
+        # Forward the tableSignals
+        self.viewMovedTo     = self._tableView.viewMovedTo
+        self.viewSizeChanged = self._tableView.viewSizeChanged
+        self.activated       = self._tableView.activated
+        self.viewChanged     = self._tableView.viewChanged
+        if not self._showHeader:
+            self._header.hide()
 
+    @pyTTkSlot(int, int)
+    def viewMoveTo(self, x, y):
+        self._tableView.viewMoveTo(x, y)
 
+    def getViewOffsets(self):
+        return self._tableView.getViewOffsets()
 
+    def viewFullAreaSize(self) -> (int, int):
+        return self._tableView.viewFullAreaSize()
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self._tableView.viewDisplayedSize()
+
+    def setAlignment(self, *args, **kwargs)   :
+        self._tableView.setAlignment(*args, **kwargs)
+        self._header.setAlignment(*args, **kwargs)
+    def setHeader(self, *args, **kwargs)      :
+        self._header.setHeader(*args, **kwargs)
+    def setColumnSize(self, *args, **kwargs)  :
+        self._tableView.setColumnSize(*args, **kwargs)
+        self._header.setColumnSize(*args, **kwargs)
+    def setColumnColors(self, *args, **kwargs):
+        self._tableView.setColumnColors(*args, **kwargs)
+    def appendItem(self, *args, **kwargs)     :
+        self._tableView.appendItem(*args, **kwargs)
