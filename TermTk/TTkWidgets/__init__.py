@@ -14,4 +14,5 @@ from .scrollbar   import *
 from .window      import *
 from .table       import *
 from .tableview   import *
+from .treeview    import *
 from .logviewer   import *
