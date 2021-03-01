@@ -43,9 +43,16 @@ for commit in allCommits:
 
 ttk.TTkLog.use_default_file_logging()
 
-root = ttk.TTk()
+fullscreen = True
 
-gittk = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,40), title="gittk", border=True, layout=ttk.TTkGridLayout())
+root = ttk.TTk()
+if fullscreen:
+    gittk = root
+    root.setLayout(ttk.TTkGridLayout())
+else:
+    root = ttk.TTk()
+    gittk = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,40), title="gittk", border=True, layout=ttk.TTkGridLayout())
+
 gittkVsplitter = ttk.TTkSplitter(parent=gittk, orientation=ttk.TTkK.VERTICAL)
 tableCommit = ttk.TTkTable(parent=gittkVsplitter, selectColor=ttk.TTkColor.bg('#882200'))
 gittkHsplitter = ttk.TTkSplitter(parent=gittkVsplitter, orientation=ttk.TTkK.HORIZONTAL)
@@ -70,7 +77,19 @@ def _tableCallback(val):
     commit = allCommits[val]
     diff = repo.git.diff(f"{commit.hexsha}",f"{commit.hexsha}~")
     # ttk.TTkLog.debug(diff)
-    diffText.setText(diff)
+    lines = []
+    for line in diff.split('\n'):
+        color = ttk.TTkColor.RST
+        if   line.startswith('---') or line.startswith('+++'):
+            color = ttk.TTkColor.fg('#000000')+ttk.TTkColor.bg('#888888')
+        elif line.startswith('+'):
+            color = ttk.TTkColor.fg('#00ff00')
+        elif line.startswith('-'):
+            color = ttk.TTkColor.fg('#ff0000')
+        elif line.startswith('@@'):
+            color = ttk.TTkColor.fg('#0088ff')
+        lines.append((color,line))
+    diffText.setColoredLines(lines)
 
 tableCommit.activated.connect(_tableCallback)
 

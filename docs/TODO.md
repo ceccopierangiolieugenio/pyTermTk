@@ -50,14 +50,16 @@
 - [x] Add Grid Layout
 
 ### AbstractScrollArea
-- [ ] Implement something that mimic the QAbstactScrollArea
+- [x] Implement something that mimic the QAbstactScrollArea
   https://doc.qt.io/qt-5/qabstractscrollarea.html
   https://doc.qt.io/qt-5/qscrollarea.html
+- [ ] Implement the focus policy
 
 ### Overlay widget
 - [ ] Rewrite the Handling (ttk.py)
-      It would be nice to have it as child outside the layour
+      It would be nice to have it as child outside the layout
 - [ ] Enable mouse move on overlay
+
 ## Widgets
 - [ ] Add Size Policy (fixed minimum maximum expanding)
 - [x] Add Show/Hide
