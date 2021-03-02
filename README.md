@@ -30,13 +30,11 @@ python3 tests/test.input.py
 ```shell
 # Press CTRL-C to exit
 # the logs are written to "session.log"
-python3 tests/test.ui.002.py
-python3 tests/test.ui.003.layout.py
-python3 tests/test.ui.004.windowspy
+python3 tests/test.showcase.001.py -f
 
 # Try gittk
 pip3 install GitPython
-tests/gittk.py 
+tests/gittk.py
 ```
 #### Profiling
 ##### cProfile

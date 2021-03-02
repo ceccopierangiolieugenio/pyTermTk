@@ -125,11 +125,11 @@ class TTkSplitter(TTkFrame):
             selected = self._separatorSelected
             sepPos = sep[selected]
             minsize,maxsize = self._minMaxSizeBefore(selected)
-            TTkLog.debug(f"before:{minsize,maxsize}")
+            # TTkLog.debug(f"before:{minsize,maxsize}")
             if sepPos > maxsize: sep[selected] = maxsize
             if sepPos < minsize: sep[selected] = minsize
             minsize,maxsize = self._minMaxSizeAfter(selected)
-            TTkLog.debug(f"after:{minsize,maxsize}")
+            # TTkLog.debug(f"after:{minsize,maxsize}")
             if sepPos < size-maxsize: sep[selected] = size-maxsize
             if sepPos > size-minsize: sep[selected] = size-minsize
 
@@ -157,7 +157,7 @@ class TTkSplitter(TTkFrame):
         self._separatorSelected = None
         self._mouseDelta = (evt.x, evt.y)
         x,y = evt.x, evt.y
-        TTkLog.debug(f"{self._separators} {evt}")
+        # TTkLog.debug(f"{self._separators} {evt}")
         for i in range(len(self._separators)):
             val = self._separators[i]
             if self._orientation == TTkK.HORIZONTAL:

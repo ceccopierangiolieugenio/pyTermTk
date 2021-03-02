@@ -31,8 +31,6 @@ import sys
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-ttk.TTkLog.use_default_file_logging()
-
 def demoTree(root=None):
     # tw = ttk.TTkTreeWidget(parent=rootTree1)
     tw = ttk.TTkTree(parent=root)

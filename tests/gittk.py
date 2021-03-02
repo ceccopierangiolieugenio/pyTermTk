@@ -22,12 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, time
+import sys, os, time, argparse
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
 import git
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', help='Full Screen', action='store_true')
+args = parser.parse_args()
+
+fullscreen = args.f
 
 repo = git.Repo('.')
 assert not repo.bare
@@ -43,7 +49,6 @@ for commit in allCommits:
 
 ttk.TTkLog.use_default_file_logging()
 
-fullscreen = True
 
 root = ttk.TTk()
 if fullscreen:

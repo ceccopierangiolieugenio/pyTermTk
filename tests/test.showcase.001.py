@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+import sys, os, argparse
 import random
 
 sys.path.append(os.path.join(sys.path[0],'..'))
@@ -36,28 +36,35 @@ from  showcase.splitter    import demoSplitter
 from  showcase.windows     import demoWindows
 from  showcase.formwidgets import demoFormWidgets
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
-def getWord():
-    return random.choice(words)
-def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
+def demoShowcase(root= None):
+    tabWidget1 = ttk.TTkTabWidget(parent=root, border=True)
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
+    tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
+    tabWidget1.addTab(demoLayout(),      " Layout Test ")
+    tabWidget1.addTab(demoFormWidgets(), " Form Test ")
+    tabWidget1.addTab(demoTable(),       " Table Test ")
+    tabWidget1.addTab(demoTree(),        " Tree Test ")
+    tabWidget1.addTab(demoSplitter(),    " Splitter Test ")
+    tabWidget1.addTab(demoWindows(),     " Windows Test ")
+    tabWidget1.addTab(demoTab(),         " Tab Test ")
+    return tabWidget1
 
-ttk.TTkLog.use_default_file_logging()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Full Screen', action='store_true')
+    args = parser.parse_args()
 
-root = ttk.TTk()
+    ttk.TTkLog.use_default_file_logging()
 
-winTabbed1 = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
-tabWidget1 = ttk.TTkTabWidget(parent=winTabbed1, border=True)
-tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
-tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
-tabWidget1.addTab(demoLayout(),      " Layout Test ")
-tabWidget1.addTab(demoFormWidgets(), " Form Test ")
-tabWidget1.addTab(demoTable(),       " Table Test ")
-tabWidget1.addTab(demoTree(),        " Tree Test ")
-tabWidget1.addTab(demoSplitter(),    " Splitter Test ")
-tabWidget1.addTab(demoWindows(),     " Windows Test ")
-tabWidget1.addTab(demoTab(),         " Tab Test ")
+    root = ttk.TTk()
+    if args.f:
+        root.setLayout(ttk.TTkGridLayout())
+        winTabbed1 = root
+    else:
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
+    demoShowcase(winTabbed1)
+    root.mainloop()
 
+if __name__ == "__main__":
+    main()
 
-
-root.mainloop()
