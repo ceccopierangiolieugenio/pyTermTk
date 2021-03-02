@@ -60,52 +60,86 @@ class TTkSplitter(TTkFrame):
         self._separators.append(newSep)
         self._updateGeometries()
 
-        #widgetsNum = self.layout().count()
-        #lastId = widgetsNum - 2
-        #newId = widgetsNum - 1
-        #lastSep = -1
-        #if self._separators:
-        #    lastSep = self._separators[-1]
-        #self._separators.append(newSep)
-        #if self._orientation == TTkK.HORIZONTAL:
-        #    self.layout().itemAt(oldId).setGeometry(lastSep+1, 0, newSep-lastSep-1, h)
-        #    self.layout().itemAt(newId).setGeometry(newSep+1,  0, w-newSep-1,       h)
-        #else:
-        #    self.layout().itemAt(oldId).setGeometry(0, lastSep+1, w, newSep-lastSep-1)
-        #    self.layout().itemAt(newId).setGeometry(0, newSep+1,  w, h-newSep-1)
+    def _minMaxSizeBefore(self, index):
+        if self._separatorSelected is None:
+            return 0, 0x1000
+        # this is because there is a hidden splitter at position -1
+        minsize = -1
+        maxsize = 0x0
+        for i in range(self._separatorSelected):
+            item = self.layout().itemAt(i)
+            minsize += item.minDimension(self._orientation)+1
+            maxsize += item.maxDimension(self._orientation)+1
+        return minsize, maxsize
+
+    def _minMaxSizeAfter(self, index):
+        if self._separatorSelected is None:
+            return 0, 0x1000
+        minsize = 0x0
+        maxsize = 0x0
+        for i in range(self._separatorSelected, len(self._separators)):
+            item = self.layout().itemAt(i)
+            minsize += item.minDimension(self._orientation)+1
+            maxsize += item.maxDimension(self._orientation)+1
+        return minsize, maxsize
 
     def _updateGeometries(self):
         _,_,w,h = self.geometry()
-        forward = True
         sep = self._separators
-        for i in range(len(sep)):
+        x,y=0,0
+
+        def _processGeometry(index, forward):
             item = self.layout().itemAt(i)
+
             if self._orientation == TTkK.HORIZONTAL:
-                y = 0
-                x  = sep[i]+1
-                if i>len(sep)-2: # this is the last widget
-                    ww = w-x
-                else:
-                    ww = sep[i+1]-x
-                    maxw = item.maxDimension(self._orientation)
-                    minw = item.minDimension(self._orientation)
-                    if   ww > maxw: ww = maxw
-                    elif ww < minw: ww = minw
-                    sep[i+1]=ww+x
-                item.setGeometry(x,y,ww,h)
+                newPos  = sep[i]+1
+                size = w-newPos
             else:
-                x = 0
-                y  = sep[i]+1
-                if i>len(sep)-2: # this is the last widget
-                    hh = h-y
+                newPos = sep[i]+1
+                size = h-newPos
+
+            if i<=len(sep)-2: # this is not the last widget
+                size = sep[i+1]-newPos
+                maxsize = item.maxDimension(self._orientation)
+                minsize = item.minDimension(self._orientation)
+                if   size > maxsize: size = maxsize
+                elif size < minsize: size = minsize
+                if forward:
+                    sep[i+1]=sep[i]+size+1
                 else:
-                    hh = sep[i+1]-y
-                    maxh = item.maxDimension(self._orientation)
-                    minh = item.minDimension(self._orientation)
-                    if   hh > maxh: hh = maxh
-                    elif hh < minh: hh = minh
-                    sep[i+1]=hh+y
-                item.setGeometry(x,y,w,hh)
+                    sep[i]=sep[i+1]-size-1
+
+            if self._orientation == TTkK.HORIZONTAL:
+                item.setGeometry(sep[i]+1,0,size,h)
+            else:
+                item.setGeometry(0,sep[i]+1,w,size)
+            pass
+
+
+        selected = 0
+        if self._orientation == TTkK.HORIZONTAL:
+            size = w
+        else:
+            size = h
+        if self._separatorSelected is not None:
+            selected = self._separatorSelected
+            sepPos = sep[selected]
+            minsize,maxsize = self._minMaxSizeBefore(selected)
+            TTkLog.debug(f"before:{minsize,maxsize}")
+            if sepPos > maxsize: sep[selected] = maxsize
+            if sepPos < minsize: sep[selected] = minsize
+            minsize,maxsize = self._minMaxSizeAfter(selected)
+            TTkLog.debug(f"after:{minsize,maxsize}")
+            if sepPos < size-maxsize: sep[selected] = size-maxsize
+            if sepPos > size-minsize: sep[selected] = size-minsize
+
+        forward = False
+        for i in reversed(range(selected)):
+            _processGeometry(i, False)
+
+        forward = True
+        for i in range(selected, len(sep)):
+            _processGeometry(i, True)
 
     def resizeEvent(self, w, h):
         self._updateGeometries()
@@ -131,22 +165,15 @@ class TTkSplitter(TTkFrame):
                     self._separatorSelected = i
                     self.update()
                     self._updateGeometries()
-                    return True
             else:
                 if y == val:
                     self._separatorSelected = i
                     self.update()
                     self._updateGeometries()
-                    return True
+        return self._separatorSelected is not None
 
     def mouseDragEvent(self, evt):
         if self._separatorSelected is not None:
-            # TTkLog.debug(f"{self._resizable}")
-            x,y,w,h = self.geometry()
-            maxw, maxh = self.maximumSize()
-            minw, minh = self.minimumSize()
-            dx = evt.x-self._mouseDelta[0]
-            dy = evt.y-self._mouseDelta[1]
             if self._orientation == TTkK.HORIZONTAL:
                 self._separators[self._separatorSelected] = evt.x
             else:
@@ -156,6 +183,8 @@ class TTkSplitter(TTkFrame):
             return True
         return False
 
+    def focusOutEvent(self):
+        self._separatorSelected = None
 
     def minimumHeight(self) -> int:
         if not self._splitterInitialized: return 0

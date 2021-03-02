@@ -325,7 +325,7 @@ class TTkCanvas:
             i = offset
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx, y, tt[0], tt[1], tt[3], tt[9], tt[9], tt[12], tt[12], tt[12], text, color, borderColor)
+            _drawTab(x+posx, y, tt[0], tt[1], tt[3], tt[9], tt[9], tt[13], tt[12], tt[13], text, color, borderColor)
         # phase 4 - Draw left right tilt
         if leftScroller:
             top =    tt[7]+tt[1]

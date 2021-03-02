@@ -30,13 +30,20 @@ import TermTk as ttk
 
 def demoSplitter(root=None):
     vsplitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
-    ttk.TTkTestWidgetSizes(parent=vsplitter ,border=True, title="Frame1.1")
-    hsplitter = ttk.TTkSplitter(parent=vsplitter)
-    ttk.TTkTestWidgetSizes(parent=vsplitter ,border=True, title="Frame1.2")
-    ttk.TTkTestWidgetSizes(parent=vsplitter ,border=True, title="Frame1.3")
-    ttk.TTkTestWidgetSizes(parent=hsplitter ,border=True, title="Frame3")
-    ttk.TTkTestWidgetSizes(parent=hsplitter ,border=True, title="Frame2", minSize=(33,7), maxSize=(33,7))
-    ttk.TTkTestWidgetSizes(parent=hsplitter ,border=True, title="Frame4")
+    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.1")
+    hsplitter1 = ttk.TTkSplitter(parent=vsplitter)
+    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.2")
+    hsplitter2 = ttk.TTkSplitter(parent=vsplitter)
+    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.3")
+    ttk.TTkFrame(parent=hsplitter1 ,border=True, title="Frame3")
+    ttk.TTkTestWidgetSizes(parent=hsplitter1 ,border=True, title="Frame2", minSize=(33,7), maxSize=(33,7))
+    ttk.TTkFrame(parent=hsplitter1 ,border=True, title="Frame4")
+
+    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame5")
+    ttk.TTkTestWidgetSizes(parent=hsplitter2 ,border=True, title="Frame6", minSize=(33,7), maxSize=(33,7))
+    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame7")
+    ttk.TTkTestWidgetSizes(parent=hsplitter2 ,border=True, title="Frame8", minSize=(33,7), maxSize=(33,7))
+    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame9")
     return vsplitter
 
 

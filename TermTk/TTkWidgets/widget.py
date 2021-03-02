@@ -220,6 +220,12 @@ class TTkWidget:
         return False
 
     def mouseEvent(self, evt):
+        # Mouse Drag has priority because it
+        # should be handled by the focussed widget
+        if evt.evt == lbt.MouseEvent.Drag:
+            if self.mouseDragEvent(evt):
+                return True
+
         if self._layout is not None:
             if  TTkWidget._mouseEventLayoutHandle(evt, self._layout):
                 return True
@@ -228,22 +234,22 @@ class TTkWidget:
         if evt.evt == lbt.MouseEvent.Move:
             if self.mouseMoveEvent(evt):
                 return True
-        if evt.evt == lbt.MouseEvent.Drag:
-            if self.mouseDragEvent(evt):
-                return True
-        elif   evt.evt == lbt.MouseEvent.Release:
+
+        if evt.evt == lbt.MouseEvent.Release:
             #if self.hasFocus():
             #    self.clearFocus()
             if self.mouseReleaseEvent(evt):
                 return True
-        elif   evt.evt == lbt.MouseEvent.Press:
+
+        if evt.evt == lbt.MouseEvent.Press:
             if self.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 self.setFocus()
                 self.raiseWidget()
             if self.mousePressEvent(evt):
                 # TTkLog.debug(f"Click {self._name}")
                 return True
-        elif evt.key == lbt.MouseEvent.Wheel:
+
+        if evt.key == lbt.MouseEvent.Wheel:
             if self.wheelEvent(evt):
                 return True
             #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:

@@ -104,9 +104,10 @@
  - [ ] Events (Signal/Slots)
  - [x] Themes
 #### Tab Widget
- - [ ] Basic Implementation
+ - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
+ - [ ] Keyboard events
 #### Spin Box
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
