@@ -48,13 +48,17 @@ class TTkAbstractScrollArea(TTkWidget):
 
     @pyTTkSlot()
     def _viewportChanged(self):
+        if not self.isVisible(): return
         fw, fh = self._viewport.viewFullAreaSize()
         dw, dh = self._viewport.viewDisplayedSize()
         ox, oy = self._viewport.getViewOffsets()
+        if fw==0 or fh==0 or dw==0 or dh==0:
+            return
         hpage = dw
         vpage = dh
         hrange = fw - dw
         vrange = fh - dh
+        # TTkLog.debug(f"f:{fw,fh}, d:{dw,dh}, o:{ox,oy}")
         self._verticalScrollBar.setPageStep(vpage)
         self._verticalScrollBar.setRange(0, vrange)
         self._verticalScrollBar.setValue(oy)

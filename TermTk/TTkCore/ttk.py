@@ -100,6 +100,7 @@ class TTk(TTkWidget):
         self._timerEvent.set()
         self._timer = TTkTimer(self._time_event, 0.03, self._timerEvent)
         self._timer.start()
+        self.show()
 
         self.running = True
         lbt.Term.init()

@@ -200,8 +200,8 @@ class TTkCanvas:
 
 
 
-    def drawBox(self, pos, size, color=TTkColor.RST):
-        self.drawGrid(pos=pos, size=size, color=color)
+    def drawBox(self, pos, size, color=TTkColor.RST, grid=0):
+        self.drawGrid(pos=pos, size=size, color=color, grid=grid)
 
     def drawButtonBox(self, pos, size, color=TTkColor.RST, grid=0):
         if not self._visible: return
@@ -228,42 +228,44 @@ class TTkCanvas:
         w,h = size
         gg = TTkCfg.theme.grid[grid]
         # 4 corners
-        self._set(y,     x,     gg[2], color)
-        self._set(y,     x+w-1, gg[3], color)
-        self._set(y+h-1, x,     gg[4], color)
-        self._set(y+h-1, x+w-1, gg[5], color)
+        self._set(y,     x,     gg[0x00], color)
+        self._set(y,     x+w-1, gg[0x03], color)
+        self._set(y+h-1, x,     gg[0x0C], color)
+        self._set(y+h-1, x+w-1, gg[0x0F], color)
         if w > 2:
+            # Top/Bottom Line
             for i in range(x+1,x+w-1):
-                self._set(y,   i, gg[0], color)
-                self._set(y+h-1, i, gg[0], color)
+                self._set(y,   i, gg[0x01], color)
+                self._set(y+h-1, i, gg[0x0D], color)
         if h > 2:
+            # Left/Right Line
             for i in range(y+1,y+h-1):
-                self._set(i, x,   gg[1], color)
-                self._set(i, x+w-1, gg[1], color)
+                self._set(i, x,   gg[0x04], color)
+                self._set(i, x+w-1, gg[0x07], color)
         # Draw horizontal lines
         for iy in hlines:
             iy += y
             if not (0 < iy < h): continue
-            self._set(iy, x,     gg[6], color)
-            self._set(iy, x+w-1, gg[7], color)
+            self._set(iy, x,     gg[0x08], color)
+            self._set(iy, x+w-1, gg[0x0B], color)
             if w > 2:
                 for ix in range(x+1,x+w-1):
-                    self._set(iy, ix, gg[10], color)
+                    self._set(iy, ix, gg[0x09], color)
         # Draw vertical lines
         for ix in vlines:
             ix+=x
             if not (0 < ix < w): continue
-            self._set(y,     ix, gg[8], color)
-            self._set(y+h-1, ix, gg[9], color)
+            self._set(y,     ix, gg[0x02], color)
+            self._set(y+h-1, ix, gg[0x0E], color)
             if h > 2:
                 for iy in range(y+1,y+h-1):
-                    self._set(iy, ix, gg[11], color)
+                    self._set(iy, ix, gg[0x06], color)
         # Draw intersections
         for iy in hlines:
             for ix in vlines:
-                self._set(y+iy, x+ix, gg[12], color)
+                self._set(y+iy, x+ix, gg[0x0A], color)
 
-    def drawScroll(self, pos, size, slider, orientation, color):
+    def drawScroll(self, pos, size, slider, orientation, color=TTkColor.RST):
         if not self._visible: return
         x,y = pos
         f,t = slider # slider from-to position
@@ -281,8 +283,60 @@ class TTkCanvas:
                 self._set(y+i,x, TTkCfg.theme.vscroll[2], color)
             self._set(y,x, TTkCfg.theme.vscroll[0], color)        # Up Arrow
             self._set(y+size-1,x, TTkCfg.theme.vscroll[3], color) # Down Arrow
-
         pass
+
+    def drawTab(
+            self, pos, size,
+            labels, labelsPos, selected,
+            offset,  leftScroller, rightScroller,
+            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
+        x,y = pos
+        w,h = size
+        tt = TTkCfg.theme.tab
+        # phase 0 - Draw the Bottom bar
+        bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
+        self.drawText(pos=(x,y+2),text=bottomBar)
+        # phase 1 - Draw From left  to 'Selected'
+        # phase 2 - Draw From right to 'Selected'
+        def _drawTab(x,y,a,b,c,d,e,f,g,h,txt,txtColor,borderColor):
+            text = labels[i]
+            posx = labelsPos[i]
+            lentext = len(txt)
+            top =    a+b*lentext+c
+            center = d+txt+e
+            bottom = f+g*(lentext)+h
+            self.drawText(pos=(x,y+0),text=top, color=borderColor)
+            self.drawText(pos=(x,y+1),text=center, color=borderColor)
+            self.drawText(pos=(x+1,y+1),text=txt, color=txtColor)
+            self.drawText(pos=(x,y+2),text=bottom, color=borderColor)
+
+        for i in list(         range(offset              )) + \
+                 list(reversed(range(offset+1, len(labels)) )):
+            text = labels[i]
+            posx = labelsPos[i]
+            _drawTab(x+posx, y, tt[0], tt[1], tt[3], tt[9], tt[9], tt[12], tt[12], tt[12], text, color, borderColor)
+        # phase 3 - Draw 'Selected'
+        if selected != -1:
+            i = selected
+            text = labels[i]
+            posx = labelsPos[i]
+            _drawTab(x+posx, y, tt[4], tt[5], tt[6], tt[10], tt[10], tt[14], tt[12], tt[14], text, selectColor, borderColor)
+        if selected != offset:
+            i = offset
+            text = labels[i]
+            posx = labelsPos[i]
+            _drawTab(x+posx, y, tt[0], tt[1], tt[3], tt[9], tt[9], tt[12], tt[12], tt[12], text, color, borderColor)
+        # phase 4 - Draw left right tilt
+        if leftScroller:
+            top =    tt[7]+tt[1]
+            center = tt[9]+tt[16]
+            self.drawText(pos=(x,y+0),text=top, color=borderColor)
+            self.drawText(pos=(x,y+1),text=center, color=borderColor)
+        if rightScroller:
+            top =    tt[1]+tt[8]
+            center = tt[17]+tt[9]
+            self.drawText(pos=(x+w-2,y+0),text=top, color=borderColor)
+            self.drawText(pos=(x+w-2,y+1),text=center, color=borderColor)
 
     def execPaint(self, winw, winh):
         pass

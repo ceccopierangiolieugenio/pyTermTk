@@ -12,6 +12,7 @@ from .lineedit    import *
 from .texedit     import *
 from .scrollbar   import *
 from .window      import *
+from .tabwidget   import *
 from .table       import *
 from .tableview   import *
 from .tree        import *

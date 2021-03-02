@@ -42,6 +42,9 @@ class TTkFrame(TTkWidget):
         if border: self.setPadding(1,1,1,1)
         else:      self.setPadding(0,0,0,0)
 
+    def border(self):
+        return self._border
+
     def paintEvent(self):
         if self._border:
             self._canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=self._borderColor)

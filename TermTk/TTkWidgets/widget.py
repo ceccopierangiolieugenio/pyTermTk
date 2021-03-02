@@ -101,6 +101,7 @@ class TTkWidget:
         if self._layout is not None:
             self._layout.addWidget(widget)
             self.update(repaint=True, updateLayout=True)
+        # widget.show()
 
     def removeWidget(self, widget):
         if self._layout is not None:
