@@ -8,7 +8,7 @@
   - [ ] [UTF-8] Handle "Fullwidth" forms characters
         https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
         https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
-- [ ] Process child events before parent
+- [x] Process child events before parent
 
 ## Terminal Helper
 - [ ] Events

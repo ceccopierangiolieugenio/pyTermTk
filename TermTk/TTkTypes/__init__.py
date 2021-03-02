@@ -1,2 +1,2 @@
 from .viewitem import *
-from .treeitem import *
+from .treewidgetitem import *

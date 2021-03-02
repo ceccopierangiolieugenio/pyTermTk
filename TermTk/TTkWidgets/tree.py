@@ -27,12 +27,37 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.tableview import TTkTableView
+from TermTk.TTkWidgets.treewidget import TTkTreeWidget
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
-class TTkTreeItem():
-    __slots__ = ()
+class TTkTree(TTkAbstractScrollArea):
+    __slots__ = ('_treeView', 'activated')
     def __init__(self, *args, **kwargs):
-        self._tableData = []
-        TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTableView' )
- 
+        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkTree' )
+        if 'parent' in kwargs: kwargs.pop('parent')
+        self._treeView = TTkTreeWidget(*args, **kwargs)
+        # Forward the signal
+        self.activated = self._treeView.activated
+
+        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setViewport(self._treeView)
+
+    def setAlignment(self, *args, **kwargs)   :
+        self._treeView.setAlignment(*args, **kwargs)
+    def setHeader(self, *args, **kwargs)      :
+        self._treeView.setHeader(*args, **kwargs)
+    def setHeaderLabels(self, *args, **kwargs)      :
+        self._treeView.setHeaderLabels(*args, **kwargs)
+    def setColumnSize(self, *args, **kwargs)  :
+        self._treeView.setColumnSize(*args, **kwargs)
+    def setColumnColors(self, *args, **kwargs):
+        self._treeView.setColumnColors(*args, **kwargs)
+    def appendItem(self, *args, **kwargs)     :
+        self._treeView.appendItem(*args, **kwargs)
+    def addTopLevelItem(self, *args, **kwargs)     :
+        self._treeView.addTopLevelItem(*args, **kwargs)
+
+
+
