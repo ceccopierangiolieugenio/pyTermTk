@@ -93,6 +93,9 @@ class TTkWidget:
 
         self.update(repaint=True, updateLayout=True)
 
+    def __del__(self):
+        TTkLog.debug("DESTRUCTOR")
+
     def addWidget(self, widget):
         widget._parent = self
         if self._layout is not None:
@@ -178,7 +181,7 @@ class TTkWidget:
         lx,ly,lw,lh =layout.geometry()
         # opt of bounds
         if x<lx or x>lx+lw or y<ly or y>lh+ly:
-            return True
+            return False
         for item in reversed(layout.zSortedItems):
         # for item in layout.zSortedItems:
             if isinstance(item, TTkWidgetItem) and not item.isEmpty():
@@ -216,6 +219,10 @@ class TTkWidget:
         return False
 
     def mouseEvent(self, evt):
+        if self._layout is not None:
+            if  TTkWidget._mouseEventLayoutHandle(evt, self._layout):
+                return True
+
         # handle own events
         if evt.evt == lbt.MouseEvent.Move:
             if self.mouseMoveEvent(evt):
@@ -245,8 +252,7 @@ class TTkWidget:
         #elif evt.type() == CuEvent.KeyRelease:
         #    self.keyReleaseEvent(evt)
         # Trigger this event to the childs
-        if self._layout is not None:
-            return TTkWidget._mouseEventLayoutHandle(evt, self._layout)
+        return False
 
     def keyEvent(self, evt):
         pass
@@ -371,6 +377,7 @@ class TTkWidget:
 
     @pyTTkSlot()
     def show(self):
+        if self._visible: return
         self._canvas.show()
         self._visible = True
         self.update(updateLayout=True, updateParent=True)
@@ -386,6 +393,7 @@ class TTkWidget:
 
     @pyTTkSlot()
     def hide(self):
+        if not self._visible: return
         self._canvas.hide()
         self._visible = False
         self.update(repaint=False, updateParent=True)

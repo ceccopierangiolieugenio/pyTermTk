@@ -55,7 +55,7 @@ class _TTkTableViewHeader(TTkWidget):
 
     def setColumnSize(self, columns):
         self._columns = columns
-        self._header = [""]*len(self._columns)
+        self._header += [""]*(len(self._columns)-len(self._header))
         self._alignments = [TTkK.NONE]*len(self._columns)
 
     def paintEvent(self):
@@ -84,12 +84,15 @@ class _TTkTableView(TTkAbstractScrollView):
     __slots__ = (
             '_alignments', '_headerColor',
             '_columns', '_columnColors',
-             '_tableData',
+            '_tableDataId', '_tableDataText', '_tableDataWidget', '_shownWidgets',
             '_selectColor', '_selected',
             # Signals
             'activated')
     def __init__(self, *args, **kwargs):
-        self._tableData = []
+        self._tableDataId = []
+        self._tableDataText = []
+        self._tableDataWidget = []
+        self._shownWidgets = []
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTableView' )
         # define signals
@@ -102,6 +105,7 @@ class _TTkTableView(TTkAbstractScrollView):
         self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
         self._selected = -1
         self.setFocusPolicy(TTkK.ClickFocus)
+        self.viewChanged.connect(self._viewChangedHandler)
 
     def _initSignals(self):
         # self.cellActivated(int row, int column)
@@ -121,13 +125,63 @@ class _TTkTableView(TTkAbstractScrollView):
         # self.itemSelectionChanged()
         pass
 
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        w,h = self.size()
+        _, oy = self.getViewOffsets()
+        total = 0
+        variableCols = 0
+        # Retrieve the free size
+        for width in self._columns:
+            if width > 0:
+                total += width
+            else:
+                variableCols += 1
+        # Define the list of cols sizes
+        sizes = []
+        for width in self._columns:
+            if width > 0:
+                sizes.append(width)
+            else:
+                sizes.append((w-total)//variableCols)
+                variableCols -= 1
+
+        maxItems = len(self._tableDataText)
+        itemFrom = oy
+        if itemFrom > maxItems-h: itemFrom = maxItems-h
+        if itemFrom < 0 : itemFrom = 0
+        itemTo   = itemFrom + h
+        if itemTo > maxItems: itemTo = maxItems
+
+        widgetsToHide = self._shownWidgets
+        self._shownWidgets = []
+        y=0
+        for it in range(itemFrom, itemTo):
+            x = 0
+            item = self._tableDataWidget[it]
+            for iw, widget in enumerate(item):
+                size = sizes[iw]
+                if widget is not None:
+                    if widget.parentWidget() != self:
+                        self.addWidget(widget)
+                    widget.setGeometry(x,y,size,1)
+                    widget.show()
+                    self._shownWidgets.append(widget)
+                x+=size+1
+            y+=1
+        for widget in widgetsToHide:
+            if widget not in self._shownWidgets:
+                widget.hide()
+
+
+
     def viewFullAreaSize(self) -> (int, int):
-        return self.width(), len(self._tableData)
+        return self.width(), len(self._tableDataText)
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def items(self): return self._tableData
+    def items(self): return self._tableDataText
 
     def setAlignment(self, alignments):
         if len(alignments) != len(self._columns):
@@ -144,19 +198,71 @@ class _TTkTableView(TTkAbstractScrollView):
             return
         self._columnColors = colors
 
-    def appendItem(self, item):
+    def appendItem(self, item, id=None):
         if len(item) != len(self._columns):
             return
-        self._tableData.append(item)
+        textItem = [i if isinstance(i,str) else "" for i in item]
+        widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
+        if id is not None:
+            self._tableDataId.append(id)
+        else:
+            self._tableDataId.append(item)
+        self._tableDataText.append(textItem)
+        self._tableDataWidget.append(widgetItem)
         self.viewChanged.emit()
         self.update()
+
+    def insertItem(self, index, item, id=None):
+        if len(item) != len(self._columns):
+            return#
+        textItem = [i if isinstance(i,str) else "" for i in item]
+        widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
+        if id is not None:
+            self._tableDataId.insert(index, id)
+        else:
+            self._tableDataId.insert(index, item)
+        self._tableDataText.insert(index, textItem)
+        self._tableDataWidget.insert(index, widgetItem)
+        self.viewChanged.emit()
+        self.update()
+
+    def removeItem(self, item):
+        index = self.indexOf(item)
+        self.removeItemAt(index)
+        self.viewChanged.emit()
+        self.update()
+
+    def removeItemAt(self, index):
+        if self._selected == index:
+            self._selected = -1
+        del self._tableDataId[index]
+        del self._tableDataText[index]
+        del self._tableDataWidget[index]
+        self.viewChanged.emit()
+        self.update()
+
+    def removeItemsFrom(self, index):
+        if self._selected >= index:
+            self._selected = -1
+        self._tableDataId = self._tableDataId[:index]
+        self._tableDataText = self._tableDataText[:index]
+        self._tableDataWidget = self._tableDataWidget[:index]
+        self.viewChanged.emit()
+        self.update()
+
+    def indexOf(self, id) -> int:
+        for index, value in enumerate(self._tableDataId):
+            if id is value:
+                return index
+        return -1
+
 
     def mousePressEvent(self, evt):
         _,y = evt.x, evt.y
         _, oy = self.getViewOffsets()
         if y >= 0:
             selected = oy + y
-            if selected >= len(self._tableData):
+            if selected >= len(self._tableDataText):
                 selected = -1
             self._selected = selected
             self.update()
@@ -183,7 +289,7 @@ class _TTkTableView(TTkAbstractScrollView):
                 sizes.append((w-total)//variableCols)
                 variableCols -= 1
 
-        maxItems = len(self._tableData)
+        maxItems = len(self._tableDataText)
         itemFrom = oy
         if itemFrom > maxItems-h: itemFrom = maxItems-h
         if itemFrom < 0 : itemFrom = 0
@@ -193,7 +299,7 @@ class _TTkTableView(TTkAbstractScrollView):
 
         y = 0
         for it in range(itemFrom, itemTo):
-            item = self._tableData[it]
+            item = self._tableDataText[it]
             if self._selected > 0:
                 val = self._selected - itemFrom
             else:
@@ -212,7 +318,7 @@ class TTkTableView(TTkAbstractScrollView):
     __slots__ = ( '_header', '_tableView', '_showHeader', 'activated')
 
     def __init__(self, *args, **kwargs):
-        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTableView' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._showHeader = kwargs.get('showHeader', True)
@@ -254,3 +360,13 @@ class TTkTableView(TTkAbstractScrollView):
         self._tableView.setColumnColors(*args, **kwargs)
     def appendItem(self, *args, **kwargs)     :
         self._tableView.appendItem(*args, **kwargs)
+    def indexOf(self, *args, **kwargs)  :
+        return self._tableView.indexOf(*args, **kwargs)
+    def insertItem(self, *args, **kwargs)  :
+        self._tableView.insertItem(*args, **kwargs)
+    def removeItem(self, *args, **kwargs)  :
+        self._tableView.removeItem(*args, **kwargs)
+    def removeItemAt(self, *args, **kwargs)  :
+        self._tableView.removeItemAt(*args, **kwargs)
+    def removeItemsFrom(self, *args, **kwargs)  :
+        self._tableView.removeItemsFrom(*args, **kwargs)

@@ -23,40 +23,17 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.widget import *
+from TermTk.TTkWidgets.tableview import TTkTableView
 
-class TTkCheckbox(TTkWidget):
-    __slots__ = ('_checked', 'clicked')
+class TTkTreeView(TTkTableView):
+    __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
+
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkCheckbox' )
-        # Define Signals
-        # self.cehcked = pyTTkSignal()
-        self.clicked = pyTTkSignal(bool)
-        self._checked = kwargs.get('checked', False )
-        self.setMinimumSize(3, 1)
-        self.setMaximumHeight(1)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        super().__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkTreeView' )
+        # if 'parent' in kwargs: kwargs.pop('parent')
 
-    def paintEvent(self):
-        if self.hasFocus():
-            borderColor = TTkCfg.theme.checkboxBorderColorFocus
-            color       = TTkCfg.theme.checkboxContentColorFocus
-        else:
-            borderColor = TTkCfg.theme.checkboxBorderColor
-            color       = TTkCfg.theme.checkboxContentColor
-        if self._checked:
-            self._canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
-            self._canvas.drawText(pos=(1,0), color=color ,text="X")
-        else:
-            self._canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
-            self._canvas.drawText(pos=(1,0), color=color ,text=" ")
-
-    def mousePressEvent(self, evt):
-        self._checked = not self._checked
-        self.clicked.emit(self._checked)
-        self.update()
-        return True
