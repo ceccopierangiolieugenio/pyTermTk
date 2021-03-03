@@ -25,7 +25,6 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.ttk import *
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.frame import *
 

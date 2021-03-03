@@ -24,34 +24,18 @@
 import os
 import signal
 import time
-import threading, queue
+import queue
 
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.constant import TTkConstant, TTkK
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.canvas import *
+from TermTk.TTkCore.timer import *
 from TermTk.TTkGui.theme import TTkTheme
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
 
-class TTkTimer(threading.Thread):
-    def __init__(self, callback, waitTime=1, event=None):
-        threading.Thread.__init__(self)
-        self.stopped = threading.Event()
-        self._waitTime = waitTime
-        self._callback = callback
-        self._event = event
-
-    def quit(self):
-        self.stopped.set()
-
-    def run(self):
-        while not self.stopped.wait(self._waitTime):
-            if self._event is not None:
-                self._event.wait()
-                self._event.clear()
-            self._callback()
 
 class TTk(TTkWidget):
     running: bool = False
@@ -96,10 +80,9 @@ class TTk(TTkWidget):
 
         lbt.Term.registerResizeCb(self._win_resize_cb)
         threading.Thread(target=self._input_thread, daemon=True).start()
-        self._timerEvent = threading.Event()
-        self._timerEvent.set()
-        self._timer = TTkTimer(self._time_event, 0.03, self._timerEvent)
-        self._timer.start()
+        self._timer = TTkTimer()
+        self._timer.timeout.connect(self._time_event)
+        self._timer.start(0.2)
         self.show()
 
         self.running = True
@@ -136,7 +119,7 @@ class TTk(TTkWidget):
                 pass
             elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()
-                self._timerEvent.set()
+                self._timer.start(0.03)
                 self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
@@ -148,9 +131,7 @@ class TTk(TTkWidget):
             else:
                 TTkLog.error(f"Unhandled Event {evt}")
                 break
-
         lbt.Term.exit()
-        pass
 
     def _time_event(self):
         self.events.put(TTkK.TIME_EVENT)
