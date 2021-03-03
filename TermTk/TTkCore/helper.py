@@ -99,8 +99,8 @@ class TTkHelper:
         if TTkHelper._rootCanvas is None:
             return
         # Build a list of buffers to be repainted
-        updateBuffers = [w for w in TTkHelper._updateBuffer]
-        updateWidgets = [w for w in TTkHelper._updateWidget]
+        updateBuffers = TTkHelper._updateBuffer.copy()
+        updateWidgets = TTkHelper._updateWidget.copy()
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
         for widget in TTkHelper._updateWidget:

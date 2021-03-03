@@ -117,9 +117,9 @@
  - [ ] Events (Signal/Slots)
  - [ ] Themes
 #### Graph Widget
- - [ ] Basic Implementation
+ - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
 #### Header Menu
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)

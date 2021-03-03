@@ -22,13 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.constant import TTkK
 class TTkCfg:
-    DEP_2: int  = 0x02
-    DEP_4: int  = 0x04
-    DEP_8: int  = 0x08
-    DEP_24: int = 0x18
+    color_depth: int = TTkK.DEP_24
 
-    color_depth: int = DEP_24
+    maxFps = 35
 
     scrollDelta = 5
     theme = None

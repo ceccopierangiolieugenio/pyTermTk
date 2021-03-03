@@ -22,9 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# This code is inspired by
-# https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuDebug.py
-
 import threading, time
 
 from TermTk.TTkCore.constant import TTkK
@@ -33,6 +30,7 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 
 class TTkTimer(threading.Thread):
+    _timers = []
     __slots__ = (
         'timeout', '_timerEvent',
         '_delay', '_delayLock', '_quit',
@@ -42,28 +40,33 @@ class TTkTimer(threading.Thread):
         self.timeout = pyTTkSignal()
 
         self._timerEvent = threading.Event()
-        self._quit = False
+        self._quit = threading.Event()
         self._stopTime = 0
         self._delay=0
         self._delayLock = threading.Lock()
         threading.Thread.__init__(self)
+        TTkTimer._timers.append(self)
         threading.Thread.start(self)
 
+    @staticmethod
+    def quitAll():
+        for timer in TTkTimer._timers:
+            timer.quit()
+
     def quit(self):
-        self._quit = True
-        self._delay = 0
+        self._quit.set()
         self._timerEvent.set()
 
     def run(self):
         while self._timerEvent.wait():
             self._timerEvent.clear()
-            if self._quit: break
             while self._delay > 0:
                 # self._delayLock.acquire()
                 delay = self._delay
                 self._delay = 0
                 # self._delayLock.release()
-                time.sleep(delay)
+                if self._quit.wait(delay):
+                    return
             self.timeout.emit()
 
     @pyTTkSlot(int)
@@ -74,4 +77,5 @@ class TTkTimer(threading.Thread):
 
     @pyTTkSlot()
     def stop(self):
+        # TODO: Timer.stop()
         self._stopTime = time.time()

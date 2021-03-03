@@ -1,3 +1,5 @@
+from: https://www.utf8-chartable.de/unicode-utf8-table.pl
+
 U+2300	⌀	e2 8c 80	DIAMETER SIGN
 U+2301	⌁	e2 8c 81	ELECTRIC ARROW
 U+2302	⌂	e2 8c 82	HOUSE

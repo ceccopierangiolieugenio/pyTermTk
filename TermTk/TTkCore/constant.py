@@ -23,6 +23,12 @@
 # SOFTWARE.
 
 class TTkConstant:
+    # Color Depth
+    DEP_2: int  = 0x02
+    DEP_4: int  = 0x04
+    DEP_8: int  = 0x08
+    DEP_24: int = 0x18
+
     # Focus Policies
     NoFocus    = 0x0000
     ClickFocus = 0x0001

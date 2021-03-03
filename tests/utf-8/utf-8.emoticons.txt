@@ -1,3 +1,4 @@
+from: https://www.utf8-chartable.de/unicode-utf8-table.pl
 
 U+1F600	😀	f0 9f 98 80	GRINNING FACE
 U+1F601	😁	f0 9f 98 81	GRINNING FACE WITH SMILING EYES

@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import math
+
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -337,6 +339,42 @@ class TTkCanvas:
             center = tt[17]+tt[9]
             self.drawText(pos=(x+w-2,y+0),text=top, color=borderColor)
             self.drawText(pos=(x+w-2,y+1),text=center, color=borderColor)
+
+    def drawHChart(self, pos, values, zoom=1.0, color=TTkColor.RST):
+        x,y=pos
+        v1,v2 = values
+        t1,t2,b1,b2=0,0,0,0
+        gu=TTkCfg.theme.graph_up
+        gd=TTkCfg.theme.graph_down
+
+        if v1>0: t1 = v1*zoom
+        else:    b1 = v1*zoom
+        if v2>0: t2 = v2*zoom
+        else:    b2 = v2*zoom
+        '''
+        loop       0   1   2   3   = range(0,1+maxt//4)
+        v1    13  |---|---|---|--|
+        v2    10  |---|---|-|
+        maxt  13  |---|---|---|--|
+        out        4,4 4,4 4,2 3,0 0,0
+        o1 = 4 if v1-4 > i*4 else v1-i*4
+        '''
+        # Draw Top Chart
+        maxt = max(t1,t2)
+        for i in range(0,int(maxt//4)+1):
+            o1 = 4 if t1-4 > i*4 else max(0,int(t1-i*4))
+            o2 = 4 if t2-4 > i*4 else max(0,int(t2-i*4))
+            #TTkLog.debug(f"{v1,v2},{(t1//4),(t2//4)}, {(t1%4),(t2%4)}, {o1,o2}")
+            self._set(y-i,x, gu[o1][o2], color)
+        # Draw Bottom Chart
+        minb = min(b1,b2)
+        for i in range(int(minb//4),0):
+            o1 = 4 if -b1-4 > -i*4 else max(0,int(-b1+i*4))
+            o2 = 4 if -b2-4 > -i*4 else max(0,int(-b2+i*4))
+            ##TTkLog.debug(f"{v1,v2},{(t1//(t2//4)}, {(t1%4),(t2%4)}, {o1,o2}")
+            self._set(y-i,x, gd[o1][o2], color)
+
+
 
     def execPaint(self, winw, winh):
         pass

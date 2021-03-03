@@ -1,3 +1,5 @@
+from: https://www.utf8-chartable.de/unicode-utf8-table.pl
+
 U+1F300	🌀	f0 9f 8c 80	CYCLONE
 U+1F301	🌁	f0 9f 8c 81	FOGGY
 U+1F302	🌂	f0 9f 8c 82	CLOSED UMBRELLA

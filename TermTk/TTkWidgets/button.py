@@ -75,13 +75,13 @@ class TTkButton(TTkWidget):
             self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
 
     def mousePressEvent(self, evt):
-        TTkLog.debug(f"{self._text} Test Mouse {evt}")
+        # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self._pressed = True
         self.update()
         return True
 
     def mouseReleaseEvent(self, evt):
-        TTkLog.debug(f"{self._text} Test Mouse {evt}")
+        # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self._pressed = False
         self.update()
         self.clicked.emit()

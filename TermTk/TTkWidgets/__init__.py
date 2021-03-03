@@ -19,3 +19,4 @@ from .tree        import *
 from .treeview    import *
 from .treewidget  import *
 from .logviewer   import *
+from .graph       import *

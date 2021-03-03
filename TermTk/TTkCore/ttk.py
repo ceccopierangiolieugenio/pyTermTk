@@ -21,6 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import os
 import signal
 import time
@@ -82,7 +83,7 @@ class TTk(TTkWidget):
         threading.Thread(target=self._input_thread, daemon=True).start()
         self._timer = TTkTimer()
         self._timer.timeout.connect(self._time_event)
-        self._timer.start(0.2)
+        self._timer.start(0.1)
         self.show()
 
         self.running = True
@@ -119,7 +120,7 @@ class TTk(TTkWidget):
                 pass
             elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()
-                self._timer.start(0.03)
+                self._timer.start(1/TTkCfg.maxFps)
                 self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
@@ -158,7 +159,7 @@ class TTk(TTkWidget):
 
     def quit(self):
         self.events.put(TTkK.QUIT_EVENT)
-        self._timer.quit()
+        TTkTimer.quitAll()
         self.running = False
 
     def _SIGSTOP(self, signum, frame):
