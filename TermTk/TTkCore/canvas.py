@@ -343,14 +343,8 @@ class TTkCanvas:
     def drawHChart(self, pos, values, zoom=1.0, color=TTkColor.RST):
         x,y=pos
         v1,v2 = values
-        t1,t2,b1,b2=0,0,0,0
-        gu=TTkCfg.theme.graph_up
-        gd=TTkCfg.theme.graph_down
+        gb=TTkCfg.theme.braille
 
-        if v1>0: t1 = v1*zoom
-        else:    b1 = v1*zoom
-        if v2>0: t2 = v2*zoom
-        else:    b2 = v2*zoom
         '''
         loop       0   1   2   3   = range(0,1+maxt//4)
         v1    13  |---|---|---|--|
@@ -359,21 +353,48 @@ class TTkCanvas:
         out        4,4 4,4 4,2 3,0 0,0
         o1 = 4 if v1-4 > i*4 else v1-i*4
         '''
-        # Draw Top Chart
-        maxt = max(t1,t2)
-        for i in range(0,int(maxt//4)+1):
-            o1 = 4 if t1-4 > i*4 else max(0,int(t1-i*4))
-            o2 = 4 if t2-4 > i*4 else max(0,int(t2-i*4))
-            #TTkLog.debug(f"{v1,v2},{(t1//4),(t2//4)}, {(t1%4),(t2%4)}, {o1,o2}")
-            self._set(y-i,x, gu[o1][o2], color)
-        # Draw Bottom Chart
-        minb = min(b1,b2)
-        for i in range(int(minb//4),0):
-            o1 = 4 if -b1-4 > -i*4 else max(0,int(-b1+i*4))
-            o2 = 4 if -b2-4 > -i*4 else max(0,int(-b2+i*4))
-            ##TTkLog.debug(f"{v1,v2},{(t1//(t2//4)}, {(t1%4),(t2%4)}, {o1,o2}")
-            self._set(y-i,x, gd[o1][o2], color)
+        # TTkLog.debug(f"{(v1,v2)} z{zoom}")
+        zl1 = [ int(i*zoom) for i in v1 ]
+        zl2 = [ int(i*zoom) for i in v2 ]
+        maxz = max(max(zl1),max(zl2),0)
+        minz = min(min(zl1),min(zl2),0)
+        filled = True
+        for i in range(int(minz//4),int(maxz//4)+2):
+            ts1 = i*4
+            ts2 = i*4+4
+            '''
+                Braille bits:
+                o2  o1 = 4 bits each
 
+                1   5   Braille dots
+                2   6
+                3   7
+                4   8
+
+                TTkTheme.braille[( o1<<4 | o2 )] = Braille UTF-8 char
+            '''
+            braille = 0x00
+            for ii in range(len(zl1)):
+                z1 = zl1[ii]
+                z2 = zl2[ii]
+                o1,o2 = 0,0
+                #TTkLog.debug
+                if not filled or ii>0:
+                    if ts1 <= z1 < ts2: o1 = 0x80>>max(0,int(z1-ts1))
+                    if ts1 <= z2 < ts2: o2 = 0x08>>max(0,int(z2-ts1))
+                else:
+                    if (0<=ts1<z1)or(0>ts1>z1): o1 = 0xf0
+                    if (0<=ts1<z2)or(0>ts1>z2): o2 = 0x0f
+                    k1 = 0x0f80 if z1>=0 else 0x00f0
+                    k2 = 0x00f8 if z2>=0 else 0x000f
+                    if ts1 <= z1 < ts2: o1 = 0xf0&(k1>>max(0,int(z1-ts1)))
+                    if ts1 <= z2 < ts2: o2 = 0x0f&(k2>>max(0,int(z2-ts1)))
+                braille ^= (o1|o2)
+                # braille &= 0xff
+            #TTkLog.debug(f"z:{zl1,zl2}, ts:{ts1,ts2},{o1,o2}")
+            #if braille<0 or braille>0xff:
+            #    TTkLog.debug(f"z:{zl1,zl2},t:{t1,t2},i:{i} {t1-i*4} {t2-i*4} o:{o1,o2}, {hex(braille)}")
+            self._set(y-i-1,x, gb[braille], color)
 
 
     def execPaint(self, winw, winh):

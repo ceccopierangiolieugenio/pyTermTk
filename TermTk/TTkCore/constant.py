@@ -41,6 +41,11 @@ class TTkConstant:
     BOTTOM = 0x0002
     LEFT   = 0x0004
     RIGHT  = 0x0008
+    CENTER = 0x0010
+
+    # Graph types
+    FILLED = 0x0001
+    LINE   = 0x0002
 
     # Mouse Events
     MOUSE_EVENT  = 0x01

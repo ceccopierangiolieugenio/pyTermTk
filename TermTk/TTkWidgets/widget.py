@@ -420,7 +420,10 @@ class TTkWidget:
     def close(self): pass
 
     def isVisible(self):
-        return self._visible
+        if self._parent is None:
+            return self._visible
+        else:
+            return self._visible & self._parent.isVisible()
 
     # Event to be sent
     # TODO: Remove This

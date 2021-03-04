@@ -46,6 +46,7 @@ class TTkHelper:
 
     @staticmethod
     def addUpdateWidget(widget):
+        if not widget.isVisible(): return
         if widget not in TTkHelper._updateWidget:
             TTkHelper._updateWidget.append(widget)
 
@@ -104,6 +105,7 @@ class TTkHelper:
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
         for widget in TTkHelper._updateWidget:
+            if not widget.isVisible(): continue
             parent = widget.parentWidget()
             while parent is not None:
                 if parent not in updateBuffers:

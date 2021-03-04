@@ -34,29 +34,37 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkTemplates.color import TColor
 
 class TTkGraph(TTkWidget, TColor):
-    __slots__ = ('_data', '_maxData', '_offset', '_direction')
+    __slots__ = ('_data', '_maxData', '_offset', '_direction', '_align')
     def __init__(self, *args, **kwargs):
-        self._data = []
+        self._data = [[0]]
         self._offset = 0
         TTkWidget.__init__(self, *args, **kwargs)
         TColor.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkGraph' )
         self._maxData = kwargs.get('maxData', 0x1000)
         self._direction = kwargs.get('direction', TTkK.RIGHT)
+        self._align = kwargs.get('align', TTkK.CENTER)
 
-    def addValue(self, value):
-        self._data.append(value)
+    def addValue(self, values):
+        self._data.append(values)
         self.update()
 
     def paintEvent(self):
         if not self._data: return
-        x=0
-        y = self.height()//2
         w,h = self.size()
-        v1,v2 = 0,0
+        x=0
+        if   self._align == TTkK.CENTER:
+            y = h//2
+        elif self._align == TTkK.TOP:
+            y = 0
+        else:
+            y = h
+        v1,v2 = [0],[0]
         i=0
         data = self._data[-w*2:]
-        zoom = 2*h/max(max(data),-min(data))
+        # TTkLog.debug(data)
+        mv = max(max(map(max,data)),-min(map(min,data)))
+        zoom = 2*h/mv if mv>0 else 1.0
         for i in range(len(data)):
             v2 = v1
             v1 = data[i]
@@ -67,6 +75,6 @@ class TTkGraph(TTkWidget, TColor):
                     self._canvas.drawHChart(pos=(w-(x+i//2),y),values=(v1,v2), zoom=zoom, color=self.color.modParam(val=-y))
         if i%2==1:
             if self._direction == TTkK.RIGHT:
-                self._canvas.drawHChart(pos=(x+i//2+1,y),values=(v1,0), zoom=zoom, color=self.color.modParam(val=-y))
+                self._canvas.drawHChart(pos=(x+i//2+1,y),values=(v1,v1), zoom=zoom, color=self.color.modParam(val=-y))
             else:
-                self._canvas.drawHChart(pos=(w-(x+i//2+1),y),values=(0,v1), zoom=zoom, color=self.color.modParam(val=-y))
+                self._canvas.drawHChart(pos=(w-(x+i//2+1),y),values=(v1,v1), zoom=zoom, color=self.color.modParam(val=-y))
