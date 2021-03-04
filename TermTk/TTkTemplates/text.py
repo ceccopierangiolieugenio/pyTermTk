@@ -25,8 +25,7 @@
 class TText():
     #__slots__ = ('_text')
     def __init__(self, *args, **kwargs):
-        self._text  = ""
-        self.text  = kwargs.get('text', "" )
+        self._text  = kwargs.get('text', "" )
 
     def textUpdated(self, text): pass
 

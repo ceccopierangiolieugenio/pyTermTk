@@ -135,6 +135,25 @@ class TTkLayout(TTkLayoutItem):
         TTkLayoutItem.setGeometry(self, x, y, w, h)
         self.update()
 
+    def groupMoveTo(self, x, y):
+        ox,oy,_,_ = self.fullWidgetAreaGeometry()
+        dx = x-ox
+        dy = y-oy
+        for item in self._items:
+            x,y,w,h = item.geometry()
+            item.setGeometry(x+dx,y+dy,w,h)
+
+    def fullWidgetAreaGeometry(self):
+        if not self._items: return 0,0,0,0
+        minx,miny,maxx,maxy = 0x10000,0x10000,-0x10000,-0x10000
+        for item in self._items:
+            x,y,w,h = item.geometry()
+            minx = min(minx,x)
+            miny = min(miny,y)
+            maxx = max(maxx,x+w)
+            maxy = max(maxy,y+h)
+        return minx, miny, maxx-minx, maxy-miny
+
     def update(self):
         ret = False
         for i in self.children():

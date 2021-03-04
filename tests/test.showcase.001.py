@@ -32,10 +32,12 @@ from  showcase.layout      import demoLayout
 from  showcase.table       import demoTable
 from  showcase.tab         import demoTab
 from  showcase.tree        import demoTree
-from  showcase.graph        import demoGraph
+from  showcase.graph       import demoGraph
 from  showcase.splitter    import demoSplitter
 from  showcase.windows     import demoWindows
 from  showcase.formwidgets import demoFormWidgets
+from  showcase.scrollarea  import demoScrollArea
+from  showcase.list        import demoList
 
 def demoShowcase(root= None, border=True):
     tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
@@ -43,12 +45,14 @@ def demoShowcase(root= None, border=True):
     tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
     tabWidget1.addTab(demoLayout(),      " Layout Test ")
     tabWidget1.addTab(demoFormWidgets(), " Form Test ")
+    tabWidget1.addTab(demoList(),        " List Test ")
     tabWidget1.addTab(demoGraph(),       " Graph Test ")
     tabWidget1.addTab(demoTable(),       " Table Test ")
     tabWidget1.addTab(demoTree(),        " Tree Test ")
     tabWidget1.addTab(demoSplitter(),    " Splitter Test ")
     tabWidget1.addTab(demoWindows(),     " Windows Test ")
     tabWidget1.addTab(demoTab(),         " Tab Test ")
+    tabWidget1.addTab(demoScrollArea(),  " Scroll Area ")
     return tabWidget1
 
 def main():

@@ -145,11 +145,11 @@ class TTkWidget:
         self.moveEvent(x,y)
 
     def resize(self, w, h):
-        if w==self._width and h==self._height: return
-        self._width  = w
-        self._height = h
-        self._canvas.resize(self._width, self._height)
-        self.update(repaint=True, updateLayout=True)
+        if w!=self._width or h!=self._height:
+            self._width  = w
+            self._height = h
+            self._canvas.resize(self._width, self._height)
+            self.update(repaint=True, updateLayout=True)
         self.resizeEvent(w,h)
 
     def setGeometry(self, x, y, w, h):
@@ -360,9 +360,11 @@ class TTkWidget:
         self.setMaximumWidth(maxw)
         self.setMaximumHeight(maxh)
     def setMaximumHeight(self, maxh):
+        if self._maxh == maxh: return
         self._maxh = maxh
         self.update(updateLayout=True, updateParent=True)
     def setMaximumWidth(self, maxw):
+        if self._maxw == maxw: return
         self._maxw = maxw
         self.update(updateLayout=True, updateParent=True)
 
@@ -370,9 +372,11 @@ class TTkWidget:
         self.setMinimumWidth(minw)
         self.setMinimumHeight(minh)
     def setMinimumHeight(self, minh):
+        if self._minh == minh: return
         self._minh = minh
         self.update(updateLayout=True, updateParent=True)
     def setMinimumWidth(self, minw):
+        if self._minw == minw: return
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
 

@@ -42,7 +42,6 @@ class TTkAbstractScrollView(TTkWidget):
         super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbstractScrollView')
 
-
         self._viewOffsetX = 0
         self._viewOffsetY = 0
 
@@ -61,10 +60,8 @@ class TTkAbstractScrollView(TTkWidget):
         rangex = fw - dw
         rangey = fh - dh
         # TTkLog.debug(f"x:{x},y:{y}, full:{fw,fh}, display:{dw,dh}, range:{rangex,rangey}")
-        if x>rangex: x = rangex
-        if y>rangey: y = rangey
-        if x<0 : x = 0
-        if y<0 : y = 0
+        x = max(0,min(rangex,x))
+        y = max(0,min(rangey,y))
         # TTkLog.debug(f"x:{x},y:{y}, wo:{self._viewOffsetX,self._viewOffsetY}")
         if self._viewOffsetX == x and \
            self._viewOffsetY == y: # Nothong to do

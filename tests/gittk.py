@@ -80,7 +80,7 @@ for commit in commitResults:
 @ttk.pyTTkSlot(int)
 def _tableCallback(val):
     commit = allCommits[val]
-    diff = repo.git.diff(f"{commit.hexsha}",f"{commit.hexsha}~")
+    diff = repo.git.diff(f"{commit.hexsha}~",f"{commit.hexsha}")
     # ttk.TTkLog.debug(diff)
     lines = []
     for line in diff.split('\n'):

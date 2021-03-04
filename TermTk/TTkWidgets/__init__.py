@@ -11,12 +11,14 @@ from .combobox    import *
 from .lineedit    import *
 from .texedit     import *
 from .scrollbar   import *
+from .scrollarea  import *
 from .window      import *
 from .tabwidget   import *
+from .list        import *
+from .listwidget  import *
 from .table       import *
 from .tableview   import *
 from .tree        import *
 from .treeview    import *
 from .treewidget  import *
-from .logviewer   import *
 from .graph       import *

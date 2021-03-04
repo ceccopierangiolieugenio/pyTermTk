@@ -22,21 +22,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkWidgets.listwidget import TTkListWidget
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
-class TColor():
-    #__slots__ = ('_color')
+class TTkList(TTkAbstractScrollArea):
+    __slots__ = ('_listView', 'itemClicked', 'textClicked')
     def __init__(self, *args, **kwargs):
-        self._color = kwargs.get('color', TTkColor.RST )
+        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkList' )
+        if 'parent' in kwargs: kwargs.pop('parent')
+        self._listView = TTkListWidget(*args, **kwargs)
+        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setViewport(self._listView)
+        self.itemClicked = self._listView.itemClicked
+        self.textClicked = self._listView.textClicked
 
-    def colorUpdated(self, color): pass
+    def addItem(self, *args, **kwargs):
+        return self._listView.addItem(*args, **kwargs)
+    def setSelectionMode(self, *args, **kwargs):
+        return self._listView.setSelectionMode(*args, **kwargs)
+    def selectedLabels(self, *args, **kwargs):
+        return self._listView.selectedLabels(*args, **kwargs)
 
-    @property
-    def color(self):
-        return self._color
-
-    @color.setter
-    def color(self, color):
-        if self.color != color:
-            self._color = color
-            self.colorUpdated(color)

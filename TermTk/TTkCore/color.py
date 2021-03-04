@@ -154,12 +154,9 @@ class TTkColorGradient(_TTkColorModifier):
             r = int(cc[2])     + self._increment * multiplier
             g = int(cc[3])     + self._increment * multiplier
             b = int(cc[4][:-1])+ self._increment * multiplier
-            if r>255: r=255
-            if g>255: g=255
-            if b>255: b=255
-            if r<0: r=0
-            if g<0: g=0
-            if b<0: b=0
+            r = max(min(255,r),0)
+            g = max(min(255,g),0)
+            b = max(min(255,b),0)
             return f"{cc[0]};{cc[1]};{r};{g};{b}m"
 
         bname = str(color)

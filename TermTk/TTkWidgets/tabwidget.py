@@ -62,7 +62,7 @@ class TTkTabWidget(TTkFrame):
         self._tabColor = TTkCfg.theme.tabColor
         self._tabBorderColor = TTkCfg.theme.tabBorderColor
         self._tabSelectColor = TTkCfg.theme.tabSelectColor
-        super().__init__(self, *args, **kwargs)
+        TTkFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTabWidget')
         self.setLayout(TTkGridLayout())
         self._viewport = TTkWidget(layout=TTkGridLayout())

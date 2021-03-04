@@ -299,7 +299,7 @@ class TTkCanvas:
         tt = TTkCfg.theme.tab
         # phase 0 - Draw the Bottom bar
         if slim:
-            bottomBar = tt[16]+tt[12]*(w-2)+tt[17]
+            bottomBar = tt[18]+tt[19]*(w-2)+tt[20]
             bottomPos = y+1
         else:
             bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
@@ -329,22 +329,22 @@ class TTkCanvas:
                  list(reversed(range(offset+1, len(labels)) )):
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[12],tt[12],tt[12],tt[9],tt[9],tt[13],tt[12],tt[13], text, color, borderColor, slim)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[12],tt[12],tt[12],tt[9],tt[9],tt[23],tt[19],tt[24], text, color, borderColor, slim)
         # phase 3 - Draw 'Selected'
         if selected != -1:
             i = selected
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[4],tt[5],tt[6],tt[10],tt[10],tt[14],tt[12],tt[14],tt[10],tt[10],tt[14],tt[12],tt[14], text, selectColor, borderColor, slim)
+            _drawTab(x+posx,y,tt[4],tt[5],tt[6],tt[10],tt[10],tt[14],tt[12],tt[14],tt[10],tt[10],tt[21],tt[12],tt[22], text, selectColor, borderColor, slim)
         if selected != offset:
             i = offset
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[13],tt[12],tt[13], text, color, borderColor, slim)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, color, borderColor, slim)
         # phase 4 - Draw left right tilt
         if leftScroller:
             top =    tt[7]+tt[1]
-            center = tt[9]+tt[18]
+            center = tt[9]+tt[31]
             if slim:
                 self.drawText(pos=(x,y),text=center, color=borderColor)
             else:
@@ -352,7 +352,7 @@ class TTkCanvas:
                 self.drawText(pos=(x,y+1),text=center, color=borderColor)
         if rightScroller:
             top =    tt[1]+tt[8]
-            center = tt[19]+tt[9]
+            center = tt[32]+tt[9]
             if slim:
                 self.drawText(pos=(x+w-2,y),text=center, color=borderColor)
             else:

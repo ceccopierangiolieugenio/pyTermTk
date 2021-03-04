@@ -20,6 +20,8 @@
 - [ ] Investigate the middle mouse button paste
   *note: It works only in "INSERT" mode on Vim*
 - [x] Handle Special Keys (UP, Down, . . .)
+- [ ] Handle CTRL-Mouse
+- [ ] Handle CTRL,ALT,SHIFT + Key (Tab, UP, Down, . . .)
 - [ ] Events
   https://tkinterexamples.com/events/events.html
   https://www.pythontutorial.net/tkinter/tkinter-event-binding/

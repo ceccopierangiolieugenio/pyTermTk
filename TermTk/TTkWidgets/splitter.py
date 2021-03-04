@@ -64,7 +64,7 @@ class TTkSplitter(TTkFrame):
             return 0, 0x1000
         # this is because there is a hidden splitter at position -1
         minsize = -1
-        maxsize = 0x0
+        maxsize = -1
         for i in range(self._separatorSelected):
             item = self.layout().itemAt(i)
             minsize += item.minDimension(self._orientation)+1

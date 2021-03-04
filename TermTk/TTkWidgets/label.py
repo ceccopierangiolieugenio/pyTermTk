@@ -30,10 +30,12 @@ from TermTk.TTkTemplates.text  import TText
 class TTkLabel(TTkWidget, TColor, TText):
     __slots__ = ('_color', '_text')
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLabel' )
         TColor.__init__(self, *args, **kwargs)
         TText.__init__(self, *args, **kwargs)
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkLabel' )
+        # self.setMinimumSize(len(self.text), 1)
+        self.textUpdated(self.text)
 
     def paintEvent(self):
         self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color)

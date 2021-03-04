@@ -109,4 +109,5 @@ class TTkAbstractScrollArea(TTkWidget):
     def setHorizontalScrollBarPolicy(self, policy):
         self._horizontalScrollBarPolicy = policy
 
-
+    def viewport(self):
+        return self._viewport

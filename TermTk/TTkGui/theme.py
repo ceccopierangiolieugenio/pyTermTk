@@ -136,9 +136,11 @@ class TTkTheme():
       '┌','─','┬','┐','╔','═','╗','╭','╮',
       #9   10
       '│','║',
-      #11  12  13  14  15 16  17
-      '╞','═','╧','╩','╡','╘','╛',
-      #18 19
+      #11  12  13  14  15  16  17  18  19  20
+      '╞','═','╧','╩','╡','╘','╛','└','─','┘',
+      #21  22  23  24  25  26  27  28  29  30
+      '╚','╝','╰','╯','X','X','X','X','X','X',
+      #31  32
       '◀','▶'
     )
     '''
@@ -195,6 +197,8 @@ class TTkTheme():
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
     buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
 
+    listColor          = TTkColor.RST
+    listColorSelected  = TTkColor.fg("#ffffdd")+TTkColor.bg("#000044") + TTkColor.BOLD
 
     lineEditTextColor       = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
     lineEditTextColorFocus  = TTkColor.fg("#dddddd")+TTkColor.bg("#000044")

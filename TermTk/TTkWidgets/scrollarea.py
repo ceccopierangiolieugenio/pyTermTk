@@ -23,38 +23,36 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkConstant, TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.widget import TTkWidget, TTkScrollBar, TTkLayout
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-'''
-
-
-'''
-class TTkScrollArea(TTkWidget):
-    __slots__ = ('_border', '_hszroll', '_vscroll', '_widgetScroller')
+class _TTkAreaWidget(TTkAbstractScrollView):
+    __slots__ = ()
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
+        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_TTkAreaWidget' )
+        self.viewChanged.connect(self._viewChangedHandler)
+
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        x,y = self.getViewOffsets()
+        self.layout().groupMoveTo(-x,-y)
+
+    def viewFullAreaSize(self) -> (int, int):
+        _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        return w , h
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+class TTkScrollArea(TTkAbstractScrollArea):
+    __slots__ = ('_areaView')
+    def __init__(self, *args, **kwargs):
+        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkScrollArea' )
-    #    self._border = kwargs.get('border', True )
-    #    if self._border:
-    #        self.setPadding(1,2,1,2)
-    #    else:
-    #        self.setPadding(0,1,0,1)
-    #    self._hscroll = TTkScrollBar(parent=self)
-    #    self._vscroll = TTkScrollBar(parent=self)
-
-    #def setWidget(self, widget):
-
-    #def setLayout(self, layout):
-    #    self._layout = layout
-    #    self._layout.setParent(self)
-    #    self._layout.setGeometry(
-    #                    self._padl, self._padt,
-    #                    self._width   - self._padl - self._padr,
-    #                    self._height  - self._padt - self._padb)
-    #    self.update(repaint=True, updateLayout=True)
-
-    #def paintEvent(self):
-    #    if self._border:
-    #        self._canvas.drawBox(pos=(0,0),size=(self._width,self._height))
+        if 'parent' in kwargs: kwargs.pop('parent')
+        self._areaView = _TTkAreaWidget(*args, **kwargs)
+        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setViewport(self._areaView)

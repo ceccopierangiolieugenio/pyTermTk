@@ -43,6 +43,13 @@ class TTkConstant:
     RIGHT  = 0x0008
     CENTER = 0x0010
 
+    # SelectionMode
+    NoSelection         = 0x00
+    SingleSelection     = 0x01
+    MultiSelection      = 0x02
+    ExtendedSelection   = 0x03
+    ContiguousSelection = 0x04
+
     # Graph types
     FILLED = 0x0001
     LINE   = 0x0002
