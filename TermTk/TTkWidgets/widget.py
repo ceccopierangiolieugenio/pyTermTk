@@ -95,6 +95,9 @@ class TTkWidget:
 
     def __del__(self):
         TTkLog.debug("DESTRUCTOR")
+        if self._parent is not None:
+            self._parent.removeWidget(self)
+            self._parent = None
 
     def addWidget(self, widget):
         widget._parent = self
@@ -382,12 +385,20 @@ class TTkWidget:
     #        elif isinstance(item, CuLayout):
     #            CuWidget._showHandle(item)
 
+    def _propagateShow(self):
+        if not self._visible: return
+        self.update(updateLayout=True, updateParent=True)
+        for item in self._layout.zSortedItems:
+            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
+                child = item.widget()
+                child._propagateShow()
+
     @pyTTkSlot()
     def show(self):
         if self._visible: return
         self._canvas.show()
         self._visible = True
-        self.update(updateLayout=True, updateParent=True)
+        self._propagateShow()
 
     #@staticmethod
     #def _hideHandle(layout):

@@ -55,6 +55,8 @@ class TTkCanvas:
         self._visible = True
         self._width = 0
         self._height = 0
+        self._data = [[0]]
+        self._colors = [[TTkColor.RST]]
         self._newWidth = kwargs.get('width', 0 )
         self._newHeight = kwargs.get('height', 0 )
         self.updateSize()
@@ -290,19 +292,30 @@ class TTkCanvas:
     def drawTab(
             self, pos, size,
             labels, labelsPos, selected,
-            offset,  leftScroller, rightScroller,
+            offset,  leftScroller, rightScroller, slim=False,
             color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
         x,y = pos
         w,h = size
         tt = TTkCfg.theme.tab
         # phase 0 - Draw the Bottom bar
-        bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
-        self.drawText(pos=(x,y+2),text=bottomBar)
+        if slim:
+            bottomBar = tt[16]+tt[12]*(w-2)+tt[17]
+            bottomPos = y+1
+        else:
+            bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
+            bottomPos = y+2
+        self.drawText(pos=(x,bottomPos),text=bottomBar)
         # phase 1 - Draw From left  to 'Selected'
         # phase 2 - Draw From right to 'Selected'
-        def _drawTab(x,y,a,b,c,d,e,f,g,h,txt,txtColor,borderColor):
-            text = labels[i]
-            posx = labelsPos[i]
+        def _drawTabSlim(x,y,a,b,c,d,e,txt,txtColor,borderColor):
+            lentext = len(txt)
+            center = a+txt+b
+            bottom = c+d*(lentext)+e
+            self.drawText(pos=(x,y),text=center, color=borderColor)
+            self.drawText(pos=(x+1,y),text=txt, color=txtColor)
+            self.drawText(pos=(x,y+1),text=bottom, color=borderColor)
+        def _drawTab(x,y,a,b,c,d,e,f,g,h,i,j,k,l,m,txt,txtColor,borderColor,slim):
+            if slim: return _drawTabSlim(x,y,i,j,k,l,m,txt,txtColor,borderColor)
             lentext = len(txt)
             top =    a+b*lentext+c
             center = d+txt+e
@@ -316,29 +329,35 @@ class TTkCanvas:
                  list(reversed(range(offset+1, len(labels)) )):
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx, y, tt[0], tt[1], tt[3], tt[9], tt[9], tt[12], tt[12], tt[12], text, color, borderColor)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[12],tt[12],tt[12],tt[9],tt[9],tt[13],tt[12],tt[13], text, color, borderColor, slim)
         # phase 3 - Draw 'Selected'
         if selected != -1:
             i = selected
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx, y, tt[4], tt[5], tt[6], tt[10], tt[10], tt[14], tt[12], tt[14], text, selectColor, borderColor)
+            _drawTab(x+posx,y,tt[4],tt[5],tt[6],tt[10],tt[10],tt[14],tt[12],tt[14],tt[10],tt[10],tt[14],tt[12],tt[14], text, selectColor, borderColor, slim)
         if selected != offset:
             i = offset
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx, y, tt[0], tt[1], tt[3], tt[9], tt[9], tt[13], tt[12], tt[13], text, color, borderColor)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[13],tt[12],tt[13], text, color, borderColor, slim)
         # phase 4 - Draw left right tilt
         if leftScroller:
             top =    tt[7]+tt[1]
-            center = tt[9]+tt[16]
-            self.drawText(pos=(x,y+0),text=top, color=borderColor)
-            self.drawText(pos=(x,y+1),text=center, color=borderColor)
+            center = tt[9]+tt[18]
+            if slim:
+                self.drawText(pos=(x,y),text=center, color=borderColor)
+            else:
+                self.drawText(pos=(x,y+0),text=top, color=borderColor)
+                self.drawText(pos=(x,y+1),text=center, color=borderColor)
         if rightScroller:
             top =    tt[1]+tt[8]
-            center = tt[17]+tt[9]
-            self.drawText(pos=(x+w-2,y+0),text=top, color=borderColor)
-            self.drawText(pos=(x+w-2,y+1),text=center, color=borderColor)
+            center = tt[19]+tt[9]
+            if slim:
+                self.drawText(pos=(x+w-2,y),text=center, color=borderColor)
+            else:
+                self.drawText(pos=(x+w-2,y+0),text=top, color=borderColor)
+                self.drawText(pos=(x+w-2,y+1),text=center, color=borderColor)
 
     def drawHChart(self, pos, values, zoom=1.0, color=TTkColor.RST):
         x,y=pos

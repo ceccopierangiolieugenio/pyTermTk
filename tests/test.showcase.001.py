@@ -37,8 +37,8 @@ from  showcase.splitter    import demoSplitter
 from  showcase.windows     import demoWindows
 from  showcase.formwidgets import demoFormWidgets
 
-def demoShowcase(root= None):
-    tabWidget1 = ttk.TTkTabWidget(parent=root, border=True)
+def demoShowcase(root= None, border=True):
+    tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
     tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
     tabWidget1.addTab(demoLayout(),      " Layout Test ")
@@ -62,9 +62,11 @@ def main():
     if args.f:
         root.setLayout(ttk.TTkGridLayout())
         winTabbed1 = root
+        border = False
     else:
         winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
-    demoShowcase(winTabbed1)
+        border = True
+    demoShowcase(winTabbed1, border)
     root.mainloop()
 
 if __name__ == "__main__":

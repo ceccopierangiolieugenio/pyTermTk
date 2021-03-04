@@ -74,7 +74,7 @@ class TTkTabWidget(TTkFrame):
         if self.border():
             self.setPadding(3,1,1,1)
         else:
-            self.setPadding(3,0,0,0)
+            self.setPadding(2,0,0,0)
         self.setFocusPolicy(TTkK.ClickFocus)
 
 
@@ -125,7 +125,10 @@ class TTkTabWidget(TTkFrame):
         x,y = evt.x, evt.y
         w = self.width()
         offset = self._offset
-        if y>2: return False
+        if self.border():
+            if y>2: return False
+        else:
+            if y>1: return False
         # Check from the selected to the left and from selected+1 to the right
         if self._leftScroller and x<2 and offset>0:
             self._offset -= 1
@@ -166,7 +169,7 @@ class TTkTabWidget(TTkFrame):
         if self.border():
             self._canvas.drawBox(pos=(0,2),size=(self._width,self._height-2), color=self._borderColor, grid=9)
         self._canvas.drawTab(
-                pos=(0,0), size=self.size(),
+                pos=(0,0), size=self.size(), slim=not self.border(),
                 labels=self._labels, labelsPos=self._labelsPos,
                 selected=self._currentIndex, offset=self._offset,
                 leftScroller=self._leftScroller, rightScroller=self._rightScroller,
