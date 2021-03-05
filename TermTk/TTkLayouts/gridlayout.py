@@ -30,17 +30,10 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
-class TTkGridWidgetItem(TTkWidgetItem):
-    __slots__ = ('_row','_col')
-    def __init__(self, *args, **kwargs):
-        TTkWidgetItem.__init__(self, args[0])
-        self._row = kwargs.get('row')
-        self._col = kwargs.get('col')
-
 class TTkGridLayout(TTkLayout):
     __slots__ = ('_gridItems','_columnMinWidth','_columnMinHeight')
     def __init__(self, *args, **kwargs):
-        TTkLayout.__init__(self, args, kwargs)
+        TTkLayout.__init__(self, *args, **kwargs)
         self._gridItems = [[]]
         self._columnMinWidth = kwargs.get('columnMinWidth',0)
         self._columnMinHeight = kwargs.get('columnMinHeight',0)
@@ -82,6 +75,14 @@ class TTkGridLayout(TTkLayout):
         widget = args[0]
         self.removeWidget(widget)
         widget._parent = self.parentWidget()
+        item = TTkWidgetItem(widget=widget)
+        self.addItem(*[item], **kwargs)
+        widget.update(updateParent=True)
+
+    def replaceItem(self, item, index): pass
+    def addItem(self, *args, **kwargs):
+        item = args[0]
+        self.removeItem(item)
         if len(args) == 3:
             row = args[1]
             col = args[2]
@@ -93,9 +94,9 @@ class TTkGridLayout(TTkLayout):
         #retrieve the max col/rows to reshape the grid
         maxrow = row
         maxcol = col
-        for item in self.children():
-            if maxrow < item._row: maxrow = item._row
-            if maxcol < item._col: maxcol = item._col
+        for child in self.children():
+            if maxrow < child._row: maxrow = child._row
+            if maxcol < child._col: maxcol = child._col
         # reshape the gridItems
         maxrow += 1
         maxcol += 1
@@ -103,18 +104,29 @@ class TTkGridLayout(TTkLayout):
 
         if self._gridItems[row][col] is not None:
             # TODO: Handle the LayoutItem
-            self.removeWidget(self._gridItems[row][col])
+            self.removeItem(self._gridItems[row][col])
 
-        item = TTkGridWidgetItem(widget, row=row, col=col)
+        item._row = row
+        item._col = col
         self._gridItems[row][col] = item
-        self.addItem(item)
-        widget.update(updateParent=True)
+        TTkLayout.addItem(self, item)
+        if self.parentWidget():
+            self.parentWidget().update()
+
+    def removeItem(self, item):
+        TTkLayout.removeItem(self, item)
+        for gridRow in range(len(self._gridItems)):
+            for gridCol in range(len(self._gridItems[0])):
+                if self._gridItems[gridRow][gridCol] == item:
+                    self._gridItems[gridRow][gridCol] = None
+        self._reshapeGrid(self._gridUsedsize())
 
     def removeWidget(self, widget):
         TTkLayout.removeWidget(self, widget)
         for gridRow in range(len(self._gridItems)):
             for gridCol in range(len(self._gridItems[0])):
                 if self._gridItems[gridRow][gridCol] is not None and \
+                   self._gridItems[gridRow][gridCol].layoutItemType == TTkK.WidgetItem and \
                    self._gridItems[gridRow][gridCol].widget() == widget:
                     self._gridItems[gridRow][gridCol] = None
         self._reshapeGrid(self._gridUsedsize())
@@ -130,11 +142,12 @@ class TTkGridLayout(TTkLayout):
         anyItem = False
         for gridRow in range(len(self._gridItems)):
             item = self._gridItems[gridRow][gridCol]
-            if item is not None and item.isVisible():
-                anyItem = True
-                w = item.minimumWidth()
-                if colw < w:
-                    colw = w
+            if item is not None and \
+               ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+                    anyItem = True
+                    w = item.minimumWidth()
+                    if colw < w:
+                        colw = w
         if not anyItem:
             return self._columnMinWidth
         return colw
@@ -143,11 +156,12 @@ class TTkGridLayout(TTkLayout):
         rowh = 0
         anyItem = False
         for item in self._gridItems[gridRow]:
-            if item is not None and item.isVisible():
-                anyItem = True
-                h = item.minimumHeight()
-                if rowh < h:
-                    rowh = h
+            if item is not None and \
+               ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+                    anyItem = True
+                    h = item.minimumHeight()
+                    if rowh < h:
+                        rowh = h
         if not anyItem:
             return self._columnMinHeight
         return rowh
@@ -157,11 +171,12 @@ class TTkGridLayout(TTkLayout):
         anyItem = False
         for gridRow in range(len(self._gridItems)):
             item = self._gridItems[gridRow][gridCol]
-            if item is not None and item.isVisible():
-                anyItem = True
-                w = item.maximumWidth()
-                if colw > w:
-                    colw = w
+            if item is not None and \
+               ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+                    anyItem = True
+                    w = item.maximumWidth()
+                    if colw > w:
+                        colw = w
         if not anyItem:
             return self._columnMinWidth
         return colw
@@ -170,11 +185,12 @@ class TTkGridLayout(TTkLayout):
         rowh = 0x10000
         anyItem = False
         for item in self._gridItems[gridRow]:
-            if item is not None and item.isVisible():
-                anyItem = True
-                h = item.maximumHeight()
-                if rowh > h:
-                    rowh = h
+            if item is not None and \
+               ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
+                    anyItem = True
+                    h = item.maximumHeight()
+                    if rowh > h:
+                        rowh = h
         if not anyItem:
             return self._columnMinHeight
         return rowh

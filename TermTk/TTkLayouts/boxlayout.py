@@ -33,5 +33,7 @@ class TTkHBoxLayout(TTkGridLayout):
     pass
 
 class TTkVBoxLayout(TTkGridLayout):
+    def addItem(self, item):
+        TTkGridLayout.addItem(self, item, self.count(), 0)
     def addWidget(self, widget):
         TTkGridLayout.addWidget(self, widget, self.count(), 0)

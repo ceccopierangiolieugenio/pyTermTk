@@ -30,10 +30,12 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:
-    __slots__ = ('_x', '_y', '_z', '_w', '_h', '_sMax', '_sMaxVal', '_sMin', '_sMinVal', '_layoutItemType')
+    __slots__ = ('_x', '_y', '_z', '_w', '_h', '_row','_col', '_sMax', '_sMaxVal', '_sMin', '_sMinVal', '_layoutItemType')
     def __init__(self, *args, **kwargs):
         self._x, self._y = 0, 0
         self._z = kwargs.get('z',0)
+        self._row = kwargs.get('row', 0)
+        self._col = kwargs.get('col', 0)
         self._layoutItemType = kwargs.get('layoutItemType', TTkK.NONE)
         self._w, self._h = 0, 0
         self._sMax,    self._sMin    = False, False
@@ -95,7 +97,7 @@ class TTkLayout(TTkLayoutItem):
         if isinstance(parent, TTkLayoutItem):
             self._parent = parent
         else:
-            self._parent = TTkWidgetItem(parent)
+            self._parent = TTkWidgetItem(widget=parent)
 
     def parentWidget(self):
         if self._parent is None: return None
@@ -121,15 +123,17 @@ class TTkLayout(TTkLayoutItem):
     def addWidget(self, widget):
         if widget.parentWidget() is not None:
             widget.parentWidget().removeWidget(self)
-        self.addItem(TTkWidgetItem(widget))
+        self.addItem(TTkWidgetItem(widget=widget))
 
     def removeItem(self, item):
-        self._items.remove(item)
+        if item in self._items:
+            self._items.remove(item)
         self._zSortItems()
 
     def removeWidget(self, widget):
         for item in self._items:
-            if item.widget() == widget:
+            if item.layoutItemType == TTkK.WidgetItem and \
+               item.widget() == widget:
                 self.removeItem(item)
 
     def findBranchWidget(self, widget):
@@ -200,9 +204,9 @@ class TTkLayout(TTkLayoutItem):
 
 class TTkWidgetItem(TTkLayoutItem):
     slots = ('_widget')
-    def __init__(self, widget, z=0):
-        TTkLayoutItem.__init__(self)
-        self._widget = widget
+    def __init__(self, *args, **kwargs):
+        TTkLayoutItem.__init__(self, *args, **kwargs)
+        self._widget = kwargs.get('widget', None)
         self.layoutItemType = TTkK.WidgetItem
 
     def widget(self):
