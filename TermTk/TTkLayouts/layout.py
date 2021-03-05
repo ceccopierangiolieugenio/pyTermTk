@@ -27,15 +27,20 @@
 '''
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:
-    __slots__ = ('_x', '_y', '_w', '_h', '_sMax', '_sMaxVal', '_sMin', '_sMinVal')
+    __slots__ = ('_x', '_y', '_z', '_w', '_h', '_row','_col', '_sMax', '_sMaxVal', '_sMin', '_sMinVal', '_layoutItemType')
     def __init__(self, *args, **kwargs):
         self._x, self._y = 0, 0
+        self._z = kwargs.get('z',0)
+        self._row = kwargs.get('row', 0)
+        self._col = kwargs.get('col', 0)
+        self._layoutItemType = kwargs.get('layoutItemType', TTkK.NONE)
         self._w, self._h = 0, 0
         self._sMax,    self._sMin    = False, False
         self._sMaxVal, self._sMinVal = 0, 0
-        pass
+
     def minimumSize(self):
         return self.minimumWidth(), self.minimumHeight()
     def minDimension(self,o)-> int: return 0
@@ -57,6 +62,16 @@ class TTkLayoutItem:
         self._w = w
         self._h = h
 
+    @property
+    def z(self): return self._z
+    @z.setter
+    def z(self, z): self._z = z
+
+    @property
+    def layoutItemType(self): return self._layoutItemType
+    @layoutItemType.setter
+    def layoutItemType(self, t): self._layoutItemType = t
+
 
 class TTkLayout(TTkLayoutItem):
     __slots__ = ('_items', '_zSortedItems', '_parent')
@@ -65,7 +80,7 @@ class TTkLayout(TTkLayoutItem):
         self._items = []
         self._zSortedItems = []
         self._parent = None
-        pass
+        self.layoutItemType = TTkK.LayoutItem
 
     def children(self):
         return self._items
@@ -79,10 +94,22 @@ class TTkLayout(TTkLayoutItem):
         return 0
 
     def setParent(self, parent):
-        self._parent = parent
+        if isinstance(parent, TTkLayoutItem):
+            self._parent = parent
+        else:
+            self._parent = TTkWidgetItem(widget=parent)
+        for item in self._items:
+            if item.layoutItemType == TTkK.LayoutItem:
+                item.setParent(self)
+            else:
+                item.widget().setParent(self.parentWidget())
 
     def parentWidget(self):
-        return self._parent
+        if self._parent is None: return None
+        if self._parent.layoutItemType == TTkK.WidgetItem:
+            return self._parent.widget()
+        else:
+            return self._parent.parentWidget()
 
     def _zSortItems(self):
         self._zSortedItems = sorted(self._items, key=lambda item: item.z)
@@ -90,50 +117,72 @@ class TTkLayout(TTkLayoutItem):
     @property
     def zSortedItems(self): return self._zSortedItems
 
+    def replaceItem(self, item, index):
+        self._items[index] = item
+        self._zSortItems()
+
     def addItem(self, item):
         self._items.append(item)
         self._zSortItems()
+        self.update()
+        if item.layoutItemType == TTkK.LayoutItem:
+            item.setParent(self)
+        else:
+            item.widget().setParent(self.parentWidget())
+        if self.parentWidget():
+            self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
         if widget.parentWidget() is not None:
             widget.parentWidget().removeWidget(self)
-        self.addItem(TTkWidgetItem(widget))
+        self.addItem(TTkWidgetItem(widget=widget))
+
+    def removeItem(self, item):
+        if item in self._items:
+            self._items.remove(item)
+        self._zSortItems()
 
     def removeWidget(self, widget):
-        for i in self._items:
-            if i.widget() == widget:
-                self._items.remove(i)
-                return
-        self._zSortItems()
+        for item in self._items:
+            if item.layoutItemType == TTkK.WidgetItem and \
+               item.widget() == widget:
+                self.removeItem(item)
+
+    def findBranchWidget(self, widget):
+        for item in self._items:
+            if item.layoutItemType == TTkK.LayoutItem:
+                if item.findBranchWidget(widget) is not None:
+                    return item
+            else:
+                if item.widget() == widget:
+                    return item
+        return None
 
     def raiseWidget(self, widget):
         maxz = 0
-        item = None
+        item = self.findBranchWidget(widget)
         for i in self._items:
-            if i.widget() == widget:
-                item = i
-            elif i.z >= maxz:
-                maxz=i.z+1
+            maxz=max(i.z+1,maxz)
         item.z = maxz
+        if item.layoutItemType == TTkK.LayoutItem:
+            item.raiseWidget(widget)
         self._zSortItems()
-
 
     def lowerWidget(self, widget):
         minz = 0
-        item = None
+        item = self.findBranchWidget(widget)
         for i in self._items:
-            if i.widget() == widget:
-                item = i
-            elif i.z <= minz:
-                minz=i.z-1
+            minz=min(i.z-1,minz)
         item.z = minz
+        if item.layoutItemType == TTkK.LayoutItem:
+            item.lowerWidget(widget)
         self._zSortItems()
 
     def setGeometry(self, x, y, w, h):
         ax, ay, aw, ah = self.geometry()
         if ax==x and ay==y and aw==w and ah==h: return
         TTkLayoutItem.setGeometry(self, x, y, w, h)
-        self.update()
+        self.update(repaint=True, updateLayout=True)
 
     def groupMoveTo(self, x, y):
         ox,oy,_,_ = self.fullWidgetAreaGeometry()
@@ -154,23 +203,23 @@ class TTkLayout(TTkLayoutItem):
             maxy = max(maxy,y+h)
         return minx, miny, maxx-minx, maxy-miny
 
-    def update(self):
+    def update(self, *args, **kwargs):
         ret = False
         for i in self.children():
-            if isinstance(i, TTkWidgetItem) and not i.isEmpty():
-                ret = ret or i.widget().update()
+            if i.layoutItemType == TTkK.WidgetItem and not i.isEmpty():
+                ret = ret or i.widget().update(*args, **kwargs)
                 # TODO: Have a look at this:
                 # i.getCanvas().top()
-            elif isinstance(i, TTkLayout):
-                ret= ret or i.update()
+            elif i.layoutItemType == TTkK.LayoutItem:
+                ret= ret or i.update(*args, **kwargs)
         return ret
 
 class TTkWidgetItem(TTkLayoutItem):
-    slots = ('_widget','_z')
-    def __init__(self, widget, z=0):
-        TTkLayoutItem.__init__(self)
-        self._widget = widget
-        self.z = z
+    slots = ('_widget')
+    def __init__(self, *args, **kwargs):
+        TTkLayoutItem.__init__(self, *args, **kwargs)
+        self._widget = kwargs.get('widget', None)
+        self.layoutItemType = TTkK.WidgetItem
 
     def widget(self):
         return self._widget
@@ -193,7 +242,5 @@ class TTkWidgetItem(TTkLayoutItem):
     def setGeometry(self, x, y, w, h):
         self._widget.setGeometry(x, y, w, h)
 
-    @property
-    def z(self): return self._z
-    @z.setter
-    def z(self, z): self._z = z
+    #def update(self, *args, **kwargs):
+    #    self.widget().update(*args, **kwargs)

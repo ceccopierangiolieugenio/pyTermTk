@@ -22,12 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.constant import *
-import TermTk.libbpytop as lbt
-from TermTk.TTkCore.canvas import *
-from TermTk.TTkCore.signal import *
+from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
+from TermTk.TTkCore.constant  import TTkK
+from TermTk.TTkCore.log       import TTkLog
+from TermTk.TTkCore.helper    import TTkHelper
+from TermTk.TTkCore.canvas    import TTkCanvas
+from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
+import TermTk.libbpytop       as lbt
 
 
 class TTkWidget:
@@ -57,6 +59,8 @@ class TTkWidget:
         self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
 
+        self._layout = TTkLayout() # root layout
+        self._layout.addItem(TTkLayout()) # main layout
         self._x = kwargs.get('x', 0 )
         self._y = kwargs.get('y', 0 )
         self._x, self._y = kwargs.get('pos', (self._x, self._y))
@@ -101,30 +105,43 @@ class TTkWidget:
 
     def addWidget(self, widget):
         widget._parent = self
-        if self._layout is not None:
-            self._layout.addWidget(widget)
+        if self.layout() is not None:
+            self.layout().addWidget(widget)
             self.update(repaint=True, updateLayout=True)
         # widget.show()
 
     def removeWidget(self, widget):
-        if self._layout is not None:
-            self._layout.removeWidget(widget)
+        if self.layout() is not None:
+            self.layout().removeWidget(widget)
             self.update(repaint=True, updateLayout=True)
 
     def paintEvent(self): pass
 
+    @staticmethod
+    def _paintChildCanvas(canvas, item, geometry):
+        lx,ly,lw,lh = geometry
+        if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            child = item.widget()
+            cx,cy,cw,ch = child.geometry()
+            canvas.paintCanvas(
+                        child.getCanvas(),
+                        (cx,  cy,  cw, ch), # geometry
+                        (0,0,cw,ch),        # slice
+                        (lx, ly, lw, lh))   # bound
+        else:
+            for child in item.zSortedItems:
+                ix, iy, iw, ih = item.geometry()
+                # child outside the bound
+                if ix+iw < lx and ix > lx+lw and iy+ih < ly and y > ly+lh: continue
+                # Reduce the bound to the minimum visible
+                bx = max(ix,lx)
+                by = max(iy,ly)
+                bw = min(ix+iw,lx+lw)-bx
+                bh = min(iy+ih,ly+lh)-by
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
+
     def paintChildCanvas(self):
-        # paint over child canvas
-        lx,ly,lw,lh = self._layout.geometry()
-        for item in self._layout.zSortedItems:
-            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
-                child = item.widget()
-                cx,cy,cw,ch = child.geometry()
-                self._canvas.paintCanvas(
-                                child.getCanvas(),
-                                (cx,  cy,  cw, ch),
-                                (0,0,cw,ch),
-                                (lx, ly, lw, lh))
+        TTkWidget._paintChildCanvas(self._canvas, self.layout(), self.layout().geometry())
 
     def paintNotifyParent(self):
         parent = self._parent
@@ -188,7 +205,7 @@ class TTkWidget:
             return False
         for item in reversed(layout.zSortedItems):
         # for item in layout.zSortedItems:
-            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
                 widget = item.widget()
                 if not widget._visible: continue
                 wevt = None
@@ -216,7 +233,7 @@ class TTkWidget:
 
                 #if widget.event(evt):
                 #    return True
-            elif isinstance(item, TTkLayout):
+            elif item.layoutItemType == TTkK.LayoutItem:
                 levt = evt.clone(pos=(x, y))
                 if TTkWidget._mouseEventLayoutHandle(levt, item):
                     return True
@@ -225,26 +242,26 @@ class TTkWidget:
     def mouseEvent(self, evt):
         # Mouse Drag has priority because it
         # should be handled by the focussed widget
-        if evt.evt == lbt.MouseEvent.Drag:
+        if evt.evt == TTkK.Drag:
             if self.mouseDragEvent(evt):
                 return True
 
-        if self._layout is not None:
-            if  TTkWidget._mouseEventLayoutHandle(evt, self._layout):
+        if self.rootLayout() is not None:
+            if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
                 return True
 
         # handle own events
-        if evt.evt == lbt.MouseEvent.Move:
+        if evt.evt == TTkK.Move:
             if self.mouseMoveEvent(evt):
                 return True
 
-        if evt.evt == lbt.MouseEvent.Release:
+        if evt.evt == TTkK.Release:
             #if self.hasFocus():
             #    self.clearFocus()
             if self.mouseReleaseEvent(evt):
                 return True
 
-        if evt.evt == lbt.MouseEvent.Press:
+        if evt.evt == TTkK.Press:
             if self.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 self.setFocus()
                 self.raiseWidget()
@@ -252,7 +269,7 @@ class TTkWidget:
                 # TTkLog.debug(f"Click {self._name}")
                 return True
 
-        if evt.key == lbt.MouseEvent.Wheel:
+        if evt.key == TTkK.Wheel:
             if self.wheelEvent(evt):
                 return True
             #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
@@ -288,15 +305,16 @@ class TTkWidget:
 #        elif evt.type() == CuEvent.KeyRelease:
 #            self.keyReleaseEvent(evt)
 #        # Trigger this event to the childs
-#        if self._layout is not None:
-#            return CuWidget._eventLayoutHandle(evt, self._layout)
+#        if self.layout() is not None:
+#            return CuWidget._eventLayoutHandle(evt, self.layout())
 
     def setLayout(self, layout):
-        self._layout = layout
-        self._layout.setParent(self)
+        self._layout.replaceItem(layout, 0)
+        self.layout().setParent(self)
         self.update(repaint=True, updateLayout=True)
 
-    def layout(self): return self._layout
+    def layout(self): return self._layout.itemAt(0)
+    def rootLayout(self): return self._layout
 
     def setParent(self, parent):
         self._parent = parent
@@ -321,15 +339,15 @@ class TTkWidget:
             return self.maximumHeight()
     def maximumHeight(self):
         wMaxH = self._maxh
-        if self._layout is not None:
-            lMaxH = self._layout.maximumHeight() + self._padt + self._padb
+        if self.layout() is not None:
+            lMaxH = self.layout().maximumHeight() + self._padt + self._padb
             if lMaxH < wMaxH:
                 return lMaxH
         return wMaxH
     def maximumWidth(self):
         wMaxW = self._maxw
-        if self._layout is not None:
-            lMaxW = self._layout.maximumWidth() + self._padl + self._padr
+        if self.layout() is not None:
+            lMaxW = self.layout().maximumWidth() + self._padl + self._padr
             if lMaxW < wMaxW:
                 return lMaxW
         return wMaxW
@@ -343,15 +361,15 @@ class TTkWidget:
             return self.minimumHeight()
     def minimumHeight(self):
         wMinH = self._minh
-        if self._layout is not None:
-            lMinH = self._layout.minimumHeight() + self._padt + self._padb
+        if self.layout() is not None:
+            lMinH = self.layout().minimumHeight() + self._padt + self._padb
             if lMinH > wMinH:
                 return lMinH
         return wMinH
     def minimumWidth(self):
         wMinW = self._minw
-        if self._layout is not None:
-            lMinW = self._layout.minimumWidth() + self._padl + self._padr
+        if self.layout() is not None:
+            lMinW = self.layout().minimumWidth() + self._padl + self._padr
             if lMinW > wMinW:
                 return lMinW
         return wMinW
@@ -389,13 +407,20 @@ class TTkWidget:
     #        elif isinstance(item, CuLayout):
     #            CuWidget._showHandle(item)
 
+    @staticmethod
+    def _propagateShowToLayout(layout):
+        if layout is None: return
+        for item in layout.zSortedItems:
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+                child = item.widget()
+                child._propagateShow()
+            else:
+                TTkWidget._propagateShowToLayout(item)
+
     def _propagateShow(self):
         if not self._visible: return
         self.update(updateLayout=True, updateParent=True)
-        for item in self._layout.zSortedItems:
-            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
-                child = item.widget()
-                child._propagateShow()
+        TTkWidget._propagateShowToLayout(self.rootLayout())
 
     @pyTTkSlot()
     def show(self):
@@ -422,15 +447,15 @@ class TTkWidget:
 
     def raiseWidget(self):
         if self._parent is not None and \
-           self._parent._layout is not None:
+           self._parent.rootLayout() is not None:
             self._parent.raiseWidget()
-            self._parent._layout.raiseWidget(self)
+            self._parent.rootLayout().raiseWidget(self)
 
     def lowerWidget(self):
         if self._parent is not None and \
-           self._parent._layout is not None:
+           self._parent.rootLayout() is not None:
             self._parent.lowerWidget()
-            self._parent._layout.lowerWidget(self)
+            self._parent.rootLayout().lowerWidget(self)
 
     def close(self): pass
 
@@ -448,15 +473,16 @@ class TTkWidget:
         if repaint:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
-        if updateLayout and self._layout is not None:
-            self._layout.setGeometry(
+        if updateLayout and self.layout() is not None:
+            self.rootLayout().setGeometry(0,0,self._width,self._height)
+            self.layout().setGeometry(
                         self._padl, self._padt,
                         self._width   - self._padl - self._padr,
                         self._height  - self._padt - self._padb)
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
-        if updateLayout and self._layout is not None:
-            if self._layout.update():
+        if updateLayout and self.layout() is not None:
+            if self.layout().update():
                 self.layoutUpdated()
 
     def setFocus(self):

@@ -53,8 +53,8 @@ class TTkResizableFrame(TTkFrame):
         elif y==h-1:
             self._resizable |= TTkK.BOTTOM
         # TTkLog.debug(f"{(x,y)} - {self._resizable}")
-        return self._resizable != TTkK.NONE
-        #return True
+        #return self._resizable != TTkK.NONE
+        return True
 
     def mouseDragEvent(self, evt):
         if self._resizable:

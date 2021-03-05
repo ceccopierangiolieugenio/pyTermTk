@@ -422,6 +422,14 @@ class TTkCanvas:
     '''
     geom  = (x,y,w,h)
     bound = (x,y,w,h)
+
+                    x                       x+w
+    canvas:         |xxxxxxxxxxxxxxxxxxxxxxx|
+    slice:                     |-----------|
+                             bx       bx+bw
+    bound:                   |--------|
+                          0                      self._width
+    self._canvas:         |----|xxxxxx|----------|
     '''
     def paintCanvas(self, canvas, geom, slice, bound):
         # TTkLog.debug(f"PaintCanvas:{(x,y,w,h)}")

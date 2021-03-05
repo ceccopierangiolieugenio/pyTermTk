@@ -26,8 +26,17 @@ from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import TTkWidget
 
+
+class _TTkMenuBar():
+    __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight')
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def addMenu(self):
+        pass
+
 class TTkFrame(TTkWidget):
-    __slots__ = ('_border','_title', '_titleColor', '_borderColor')
+    __slots__ = ('_border','_title', '_titleColor', '_borderColor', '_menubarTop', '_menubarBottom')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkFrame' )
