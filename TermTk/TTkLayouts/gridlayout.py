@@ -26,6 +26,7 @@
     Layout System
 '''
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
@@ -286,8 +287,8 @@ class TTkGridLayout(TTkLayout):
             item.setGeometry(
                     horSizes[col][0], vertSizes[row][0] ,
                     horSizes[col][1], vertSizes[row][1] )
-            if isinstance(item, TTkWidgetItem) and not item.isEmpty():
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
                 item.widget().update()
-            elif isinstance(item, TTkLayout):
+            elif item.layoutItemType == TTkK.LayoutItem:
                 item.update()
         return True

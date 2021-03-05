@@ -109,6 +109,10 @@ class TTkConstant:
     CENTER_ALIGN = 0x0003
     JUSTIFY      = 0x0004
 
+    # LayoutItem Types
+    LayoutItem = 0x01
+    WidgetItem = 0x02
+
     Character  = 0x0001
     SpecialKey = 0x0002
 

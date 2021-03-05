@@ -27,10 +27,12 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.widget import *
-from TermTk.TTkWidgets.button import *
-from TermTk.TTkWidgets.table import *
-from TermTk.TTkWidgets.resizableframe import *
+from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.button import TTkButton
+from TermTk.TTkWidgets.list import TTkList
+from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
     __slots__ = ('_list', '_id', )
@@ -58,9 +60,9 @@ class TTkComboBox(TTkWidget):
         self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
         self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
 
-    @pyTTkSlot(int)
-    def _callback(self, val):
-        self._id = val
+    @pyTTkSlot(str)
+    def _callback(self, label):
+        self._id = self._list.index(label)
         #TTkHelper.removeOverlay()
         self.setFocus()
         self.update()
@@ -72,11 +74,11 @@ class TTkComboBox(TTkWidget):
         if frameWidth  < 20: frameWidth = 20
 
         frame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
-        table = TTkTable(parent=frame, showHeader=False)
-        table.activated.connect(self._callback)
+        listw = TTkList(parent=frame)
+        listw.textClicked.connect(self._callback)
         TTkLog.debug(f"{self._list}")
         for item in self._list:
-            table.appendItem([item])
+            listw.addItem(item)
         TTkHelper.overlay(self, frame, 0, 0)
         self.update()
         return True
