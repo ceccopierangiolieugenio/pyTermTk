@@ -62,7 +62,7 @@ class TTkGridLayout(TTkLayout):
         # remove extra cols
         for gridRow in range(len(self._gridItems)):
             if self._gridItems[gridRow] is None:
-                self._gridItems[gridRow] = [None]*(cols+1)
+                self._gridItems[gridRow] = [None]*(cols)
                 continue
             sizeRow = len(self._gridItems[gridRow])
             if cols < sizeRow:
@@ -74,12 +74,15 @@ class TTkGridLayout(TTkLayout):
     def addWidget(self, *args, **kwargs):
         widget = args[0]
         self.removeWidget(widget)
-        widget._parent = self.parentWidget()
         item = TTkWidgetItem(widget=widget)
-        self.addItem(*[item], **kwargs)
-        widget.update(updateParent=True)
+        if len(args) == 3:
+            TTkGridLayout.addItem(self, item, args[1], args[2])
+        else:
+            TTkGridLayout.addItem(self, item)
+        widget.update()
 
     def replaceItem(self, item, index): pass
+
     def addItem(self, *args, **kwargs):
         item = args[0]
         self.removeItem(item)
@@ -100,18 +103,18 @@ class TTkGridLayout(TTkLayout):
         # reshape the gridItems
         maxrow += 1
         maxcol += 1
-        self._reshapeGrid(size=(maxrow,maxcol))
 
+        # TODO: This is RUBBISH!!!
+        self._reshapeGrid(size=(maxrow,maxcol))
         if self._gridItems[row][col] is not None:
             # TODO: Handle the LayoutItem
             self.removeItem(self._gridItems[row][col])
+        self._reshapeGrid(size=(maxrow,maxcol))
 
         item._row = row
         item._col = col
         self._gridItems[row][col] = item
         TTkLayout.addItem(self, item)
-        if self.parentWidget():
-            self.parentWidget().update()
 
     def removeItem(self, item):
         TTkLayout.removeItem(self, item)
@@ -228,7 +231,7 @@ class TTkGridLayout(TTkLayout):
         return maxh
 
 
-    def update(self):
+    def update(self, *args, **kwargs):
         x, y, w, h = self.geometry()
         newx, newy = x, y
 
@@ -303,8 +306,10 @@ class TTkGridLayout(TTkLayout):
             item.setGeometry(
                     horSizes[col][0], vertSizes[row][0] ,
                     horSizes[col][1], vertSizes[row][1] )
+            #TTkLog.debug(f"Children: {item.geometry()}")
             if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
-                item.widget().update()
+                #TTkLog.debug(f"Children name: {item.widget()._name}")
+                item.widget().update(*args, **kwargs)
             elif item.layoutItemType == TTkK.LayoutItem:
-                item.update()
+                item.update(*args, **kwargs)
         return True

@@ -98,6 +98,11 @@ class TTkLayout(TTkLayoutItem):
             self._parent = parent
         else:
             self._parent = TTkWidgetItem(widget=parent)
+        for item in self._items:
+            if item.layoutItemType == TTkK.LayoutItem:
+                item.setParent(self)
+            else:
+                item.widget().setParent(self.parentWidget())
 
     def parentWidget(self):
         if self._parent is None: return None
@@ -119,6 +124,13 @@ class TTkLayout(TTkLayoutItem):
     def addItem(self, item):
         self._items.append(item)
         self._zSortItems()
+        self.update()
+        if item.layoutItemType == TTkK.LayoutItem:
+            item.setParent(self)
+        else:
+            item.widget().setParent(self.parentWidget())
+        if self.parentWidget():
+            self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
         if widget.parentWidget() is not None:
@@ -170,7 +182,7 @@ class TTkLayout(TTkLayoutItem):
         ax, ay, aw, ah = self.geometry()
         if ax==x and ay==y and aw==w and ah==h: return
         TTkLayoutItem.setGeometry(self, x, y, w, h)
-        self.update()
+        self.update(repaint=True, updateLayout=True)
 
     def groupMoveTo(self, x, y):
         ox,oy,_,_ = self.fullWidgetAreaGeometry()

@@ -117,18 +117,31 @@ class TTkWidget:
 
     def paintEvent(self): pass
 
+    @staticmethod
+    def _paintChildCanvas(canvas, item, geometry):
+        lx,ly,lw,lh = geometry
+        if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            child = item.widget()
+            cx,cy,cw,ch = child.geometry()
+            canvas.paintCanvas(
+                        child.getCanvas(),
+                        (cx,  cy,  cw, ch), # geometry
+                        (0,0,cw,ch),        # slice
+                        (lx, ly, lw, lh))   # bound
+        else:
+            for child in item.zSortedItems:
+                ix, iy, iw, ih = item.geometry()
+                # child outside the bound
+                if ix+iw < lx and ix > lx+lw and iy+ih < ly and y > ly+lh: continue
+                # Reduce the bound to the minimum visible
+                bx = max(ix,lx)
+                by = max(iy,ly)
+                bw = min(ix+iw,lx+lw)-bx
+                bh = min(iy+ih,ly+lh)-by
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
+
     def paintChildCanvas(self):
-        # paint over child canvas
-        lx,ly,lw,lh = self.layout().geometry()
-        for item in self.layout().zSortedItems:
-            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
-                child = item.widget()
-                cx,cy,cw,ch = child.geometry()
-                self._canvas.paintCanvas(
-                                child.getCanvas(),
-                                (cx,  cy,  cw, ch),
-                                (0,0,cw,ch),
-                                (lx, ly, lw, lh))
+        TTkWidget._paintChildCanvas(self._canvas, self.layout(), self.layout().geometry())
 
     def paintNotifyParent(self):
         parent = self._parent

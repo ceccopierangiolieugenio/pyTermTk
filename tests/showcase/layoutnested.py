@@ -36,6 +36,9 @@ def demoLayoutNested(root=None):
     gridLayout = ttk.TTkGridLayout()
     mainLayout.addItem(gridLayout)
 
+    nestedLayout = ttk.TTkGridLayout()
+    gridLayout.addItem(nestedLayout,1,2)
+
     mainLayout.addWidget(ttk.TTkFrame(border=True,title="Frame1"))
     mainLayout.addWidget(ttk.TTkFrame(border=True,title="Frame2"))
 
@@ -45,6 +48,9 @@ def demoLayoutNested(root=None):
 
     gridLayout.addWidget(ttk.TTkFrame(border=True,title="Frame3"),0,1)
     gridLayout.addWidget(ttk.TTkFrame(border=True,title="Frame4"),2,3)
+
+    nestedLayout.addWidget(ttk.TTkButton(border=True, text="Button4"),0,1)
+    nestedLayout.addWidget(ttk.TTkButton(border=True, text="Button5"),1,0)
 
     return frame
 
