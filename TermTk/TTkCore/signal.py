@@ -78,7 +78,8 @@ class pyTTkSignal_obj():
         if hasattr(slot, '_TTkslot_attr') and slot._TTkslot_attr != self._types:
             error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
             raise TypeError(error)
-        self._connected_slots.append(slot)
+        if slot not in self._connected_slots:
+            self._connected_slots.append(slot)
 
     def disconnect(self, *args, **kwargs):
         for slot in args:

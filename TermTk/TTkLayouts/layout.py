@@ -30,13 +30,20 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:
-    __slots__ = ('_x', '_y', '_z', '_w', '_h', '_row','_col', '_sMax', '_sMaxVal', '_sMin', '_sMinVal', '_layoutItemType')
+    __slots__ = (
+        '_x', '_y', '_z', '_w', '_h',
+        '_row','_col',
+        '_sMax', '_sMaxVal',
+        '_sMin', '_sMinVal',
+        '_alignment',
+        '_layoutItemType')
     def __init__(self, *args, **kwargs):
         self._x, self._y = 0, 0
         self._z = kwargs.get('z',0)
         self._row = kwargs.get('row', 0)
         self._col = kwargs.get('col', 0)
         self._layoutItemType = kwargs.get('layoutItemType', TTkK.NONE)
+        self._alignment =  kwargs.get('alignment', TTkK.NONE)
         self._w, self._h = 0, 0
         self._sMax,    self._sMin    = False, False
         self._sMaxVal, self._sMinVal = 0, 0
@@ -120,6 +127,13 @@ class TTkLayout(TTkLayoutItem):
     def replaceItem(self, item, index):
         self._items[index] = item
         self._zSortItems()
+        self.update()
+        if item.layoutItemType == TTkK.LayoutItem:
+            item.setParent(self)
+        else:
+            item.widget().setParent(self.parentWidget())
+        if self.parentWidget():
+            self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addItem(self, item):
         self._items.append(item)

@@ -186,7 +186,7 @@ class TTkCanvas:
         for i in range(0, len(arr)):
             self._set(y, x+i, arr[i], color)
 
-    def drawBoxTitle(self, pos, size, text, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
+    def drawBoxTitle(self, pos, size, text, align=TTkK.CENTER_ALIGN, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
         if not self._visible: return
         x,y = pos
         w,h = size
@@ -195,7 +195,12 @@ class TTkCanvas:
 
         if len(text) > w-4:
             text = text[:w-4]
-        l = (w-2-len(text))//2
+        if align == TTkK.CENTER_ALIGN:
+            l = (w-2-len(text))//2
+        elif align == TTkK.LEFT_ALIGN:
+            l=1
+        else:
+            l = w-2-len(text)
         r = l+len(text)+1
 
         self._set(y,l, gg[7], color)
@@ -415,6 +420,25 @@ class TTkCanvas:
             #    TTkLog.debug(f"z:{zl1,zl2},t:{t1,t2},i:{i} {t1-i*4} {t2-i*4} o:{o1,o2}, {hex(braille)}")
             self._set(y-i-1,x, gb[braille], color)
 
+    def drawMenuBarBg(self, pos, size, color=TTkColor.RST ):
+        mb = TTkCfg.theme.menuBar
+        self.drawText(pos, text=f"{mb[3]}{mb[1]*(size-2)}{mb[4]}", color=color)
+
+    def drawMenuBarButton(self, pos, width, text, border=True, submenu=False, shortcuts=[], color=TTkColor.RST, borderColor=TTkColor.RST, shortcutColor=TTkColor.UNDERLINE ):
+        mb = TTkCfg.theme.menuBar
+        x,y = pos
+        if border:
+            self.drawText(pos=(x,y), color=borderColor ,text=mb[2])
+            self.drawText(pos=(x+1+len(text),y), color=borderColor ,text=mb[0])
+            self.drawText(pos=(x+1,y), color=color ,text=text)
+            off = 1
+        else:
+            self.drawText(pos=(x,y), color=color ,text=text)
+            if submenu:
+                self._set(y,x+width-1, mb[5], color)
+            off = 0
+        for i in shortcuts:
+            self._set(y,x+i+off, text[i], shortcutColor)
 
     def execPaint(self, winw, winh):
         pass
@@ -438,22 +462,34 @@ class TTkCanvas:
         # out of bound
         if not self._visible: return
         if not canvas._visible: return
+        if canvas._width==0 or canvas._height==0: return
         if x+w < bx or y+h<by or bx+bw<x or by+bh<y:
             return
-        if x>=self._width:    x=self._width-1
-        if y>=self._height:   y=self._height-1
-        if w>=self._width-x:  w=self._width-x
-        if h>=self._height-y: h=self._height-y
+
+        x = min(x,self._width-1)
+        y = min(y,self._height-1)
+        w = min(w,self._width-x)
+        h = min(h,self._height-y)
+
+        # if x>=self._width:    x=self._width-1
+        # if y>=self._height:   y=self._height-1
+        # if w>=self._width-x:  w=self._width-x
+        # if h>=self._height-y: h=self._height-y
 
         xoffset = 0 if x>=bx else bx-x
         yoffset = 0 if y>=by else by-y
         wslice = w if x+w < bx+bw else bx+bw-x
         hslice = h if y+h < by+bh else by+bh-y
 
+
         for iy in range(yoffset,hslice):
             for ix in range(xoffset,wslice):
                 #TTkLog.debug(f"PaintCanvas:{(ix,iy)}")
-                self._data[y+iy][x+ix]   = canvas._data[iy][ix]
+                if iy > len(canvas._data)-1:
+                    TTkLog.debug(f"{canvas._width, canvas._height} - {(yoffset,hslice)}, {(xoffset,wslice)}, {slice}")
+                b = canvas._data[iy]
+                a = b[ix]
+                self._data[y+iy][x+ix]   = a # canvas._data[iy][ix]
                 self._colors[y+iy][x+ix] = canvas._colors[iy][ix]
 
     def pushToTerminal(self, x, y, w, h):

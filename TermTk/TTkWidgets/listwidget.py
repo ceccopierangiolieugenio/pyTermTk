@@ -29,7 +29,6 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
-from TermTk.TTkTestWidgets.testwidgetsizes import TTkTestWidgetSizes
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkListWidgetText(TTkLabel):
@@ -121,6 +120,5 @@ class TTkListWidget(TTkAbstractScrollView):
         w = self.width()
         for item in self.layout().children():
             x,y,_,h = item.geometry()
-            minw = item.minimumWidth()
             item.setGeometry(x,y,max(w-1,fw),h)
         self.viewChanged.emit()

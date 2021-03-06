@@ -39,6 +39,7 @@ from  showcase.windows      import demoWindows
 from  showcase.formwidgets  import demoFormWidgets
 from  showcase.scrollarea   import demoScrollArea
 from  showcase.list         import demoList
+from  showcase.menubar      import demoMenuBar
 
 def demoShowcase(root= None, border=True):
     tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
@@ -46,6 +47,7 @@ def demoShowcase(root= None, border=True):
     tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
     tabWidget1.addTab(demoLayout(),      " Layout Test ")
     tabWidget1.addTab(demoLayoutNested()," Nested Layout Test ")
+    tabWidget1.addTab(demoMenuBar(),     " MenuBar Test ")
     tabWidget1.addTab(demoFormWidgets(), " Form Test ")
     tabWidget1.addTab(demoList(),        " List Test ")
     tabWidget1.addTab(demoGraph(),       " Graph Test ")

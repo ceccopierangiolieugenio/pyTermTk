@@ -42,7 +42,33 @@ class TTkHelper:
             self._widget = widget
             widget.move(x,y)
 
-    _overlay = None
+    _overlay = []
+
+    class _Shortcut():
+        __slots__ = ('_letter','_widget')
+        def __init__(self, letter, widget):
+            self._letter = letter.lower()
+            self._widget = widget
+    _shortcut = []
+
+    @staticmethod
+    def addShortcut(widget, letter):
+        TTkHelper._shortcut.append(TTkHelper._Shortcut(letter, widget))
+
+    @staticmethod
+    def isParent(parent, widget):
+        if parent==widget: return True
+        if widget.parentWidget() is None: return False
+        return TTkHelper.isParent(parent,widget.parentWidget())
+
+    @staticmethod
+    def execShortcut(letter, widget=None):
+        if not isinstance(letter, str): return
+        for sc in TTkHelper._shortcut:
+            if sc._letter == letter.lower() and sc._widget.isVisible():
+                if not widget or TTkHelper.isParent(widget, sc._widget):
+                    sc._widget.shortcutEvent()
+                    return
 
     @staticmethod
     def addUpdateWidget(widget):
@@ -66,10 +92,11 @@ class TTkHelper:
     def isOverlay(widget):
         if widget is None:
             return False
-        if TTkHelper._overlay is None:
+        if not TTkHelper._overlay:
             return False
+        overlayWidgets = [o._widget for o in TTkHelper._overlay]
         while widget is not None:
-            if widget == TTkHelper._overlay._widget:
+            if widget in overlayWidgets:
                 return True
             widget = widget.parentWidget()
         return False
@@ -77,19 +104,17 @@ class TTkHelper:
     @staticmethod
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
-        TTkHelper._overlay = TTkHelper._Overlay(wx+x,wy+y,widget)
-        # widget.setFocus()
+        TTkHelper._overlay.append(TTkHelper._Overlay(wx+x,wy+y,widget))
 
     @staticmethod
     def getOverlay():
-        if TTkHelper._overlay is not None:
-            return TTkHelper._overlay._widget
+        if TTkHelper._overlay:
+            return TTkHelper._overlay[-1]._widget
         return None
 
     @staticmethod
     def removeOverlay():
-        if TTkHelper._overlay is not None:
-            TTkHelper._overlay = None
+        TTkHelper._overlay = []
 
     @staticmethod
     def paintAll():
@@ -137,17 +162,18 @@ class TTkHelper:
             pushToTerminal = True
             widget.paintChildCanvas()
 
-        if TTkHelper._overlay is not None:
+        if TTkHelper._overlay:
             TTkHelper._rootCanvas.clean()
             TTkHelper._rootCanvas.getWidget().paintChildCanvas()
             lx,ly,lw,lh = (0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            child =TTkHelper._overlay._widget
-            cx,cy,cw,ch = child.geometry()
-            TTkHelper._rootCanvas.paintCanvas(
-                                child.getCanvas(),
-                                (cx,  cy,  cw, ch),
-                                (0,0,cw,ch),
-                                (lx, ly, lw, lh))
+            for o in TTkHelper._overlay:
+                child =o._widget
+                cx,cy,cw,ch = child.geometry()
+                TTkHelper._rootCanvas.paintCanvas(
+                                    child.getCanvas(),
+                                    (cx,  cy,  cw, ch),
+                                    (0,0,cw,ch),
+                                    (lx, ly, lw, lh))
 
         if pushToTerminal:
             if TTkHelper._cursor:

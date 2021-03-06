@@ -40,6 +40,7 @@ class TTkWindow(TTkResizableFrame):
         self._mouseDelta = (0,0)
         self.setFocusPolicy(TTkK.ClickFocus)
         self._draggable = False
+        self._menubarTopPosition = 2
 
     def paintEvent(self):
         if self.hasFocus():
@@ -73,7 +74,11 @@ class TTkWindow(TTkResizableFrame):
         return TTkResizableFrame.mouseDragEvent(self, evt)
 
     def focusInEvent(self):
+        if self._menubarTop:
+            self._menubarTop.setBorderColor(TTkColor.fg("#ffff55"))
         self.update()
 
     def focusOutEvent(self):
+        if self._menubarTop:
+            self._menubarTop.setBorderColor(TTkColor.RST)
         self.update()

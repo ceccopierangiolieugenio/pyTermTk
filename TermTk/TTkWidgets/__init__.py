@@ -22,3 +22,4 @@ from .tree        import *
 from .treeview    import *
 from .treewidget  import *
 from .graph       import *
+from .menubar     import *

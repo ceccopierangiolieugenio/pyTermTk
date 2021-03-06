@@ -115,10 +115,15 @@ class TTk(TTkWidget):
                 kevt = self.key_events.get()
                 focusWidget = TTkHelper.getFocus()
                 overlayWidget = TTkHelper.getOverlay()
+                TTkLog.debug(f"{focusWidget}")
                 if focusWidget is not None:
+                    TTkHelper.execShortcut(kevt.key,focusWidget)
                     focusWidget.keyEvent(kevt)
                 elif overlayWidget is not None:
+                    TTkHelper.execShortcut(kevt.key,overlayWidget)
                     overlayWidget.keyEvent(kevt)
+                else:
+                    TTkHelper.execShortcut(kevt.key)
                 pass
             elif evt is TTkK.TIME_EVENT:
                 TTkHelper.paintAll()

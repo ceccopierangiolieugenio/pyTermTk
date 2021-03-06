@@ -120,6 +120,9 @@ class TTkTheme():
     hscroll = ('◀','┄','▓','▶')
     vscroll = ('▲','┊','▓','▼')
 
+            #   0   1   2   3   4   5
+    menuBar = ('├','─','┤','┄','┄','▶')
+
     '''
         ┌──────╔══════╗──────┬──────┐      ┌─┌──────╔══════╗──────┬──────┐─┐
         │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│
@@ -196,6 +199,12 @@ class TTkTheme():
     buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
     buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
+
+    menuButtonShortcutColor = TTkColor.fg("#dddddd") + TTkColor.UNDERLINE
+    menuButtonColor = TTkColor.BOLD
+    menuButtonBorderColor = frameBorderColor
+    menuButtonColorClicked =  TTkColor.fg("#ffff88")
+    menuButtonBorderColorClicked = frameBorderColor
 
     listColor          = TTkColor.RST
     listColorSelected  = TTkColor.fg("#ffffdd")+TTkColor.bg("#000044") + TTkColor.BOLD

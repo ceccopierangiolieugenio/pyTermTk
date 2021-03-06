@@ -53,14 +53,12 @@ class TTkWidget:
         '_padt', '_padb', '_padl', '_padr',
         '_maxw', '_maxh', '_minw', '_minh',
         '_focus','_focus_policy',
-        '_layout', '_canvas', '_visible')
+        '_layout', '_canvas', '_visible', '_transparent')
 
     def __init__(self, *args, **kwargs):
         self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
 
-        self._layout = TTkLayout() # root layout
-        self._layout.addItem(TTkLayout()) # main layout
         self._x = kwargs.get('x', 0 )
         self._y = kwargs.get('y', 0 )
         self._x, self._y = kwargs.get('pos', (self._x, self._y))
@@ -86,11 +84,15 @@ class TTkWidget:
         self._focus = False
         self._focus_policy = TTkK.NoFocus
 
+        self._layout = TTkLayout() # root layout
+        self._layout.setParent(self)
+        self._layout.addItem(kwargs.get('layout',TTkLayout())) # main layout
+
         self._canvas = TTkCanvas(
                             widget = self,
                             width  = self._width  ,
                             height = self._height )
-        self.setLayout(kwargs.get('layout',TTkLayout()))
+
         if self._parent is not None:
             self._parent.addWidget(self)
             self._parent.update(repaint=True, updateLayout=True)
@@ -141,7 +143,7 @@ class TTkWidget:
                 TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
 
     def paintChildCanvas(self):
-        TTkWidget._paintChildCanvas(self._canvas, self.layout(), self.layout().geometry())
+        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
 
     def paintNotifyParent(self):
         parent = self._parent
@@ -310,7 +312,7 @@ class TTkWidget:
 
     def setLayout(self, layout):
         self._layout.replaceItem(layout, 0)
-        self.layout().setParent(self)
+        #self.layout().setParent(self)
         self.update(repaint=True, updateLayout=True)
 
     def layout(self): return self._layout.itemAt(0)
@@ -473,7 +475,7 @@ class TTkWidget:
         if repaint:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
-        if updateLayout and self.layout() is not None:
+        if updateLayout and self.rootLayout() is not None:
             self.rootLayout().setGeometry(0,0,self._width,self._height)
             self.layout().setGeometry(
                         self._padl, self._padt,
@@ -481,8 +483,8 @@ class TTkWidget:
                         self._height  - self._padt - self._padb)
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
-        if updateLayout and self.layout() is not None:
-            if self.layout().update():
+        if updateLayout and self.rootLayout() is not None:
+            if self.rootLayout().update():
                 self.layoutUpdated()
 
     def setFocus(self):
