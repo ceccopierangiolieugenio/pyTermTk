@@ -30,11 +30,15 @@ python3 tests/test.input.py
 ```shell
 # Press CTRL-C to exit
 # the logs are written to "session.log"
-python3 tests/test.showcase.001.py -f
+make runDemo
+# or
+python3 demo/demo.py -f
 
 # Try gittk
+make runGittk
+# or
 pip3 install GitPython
-tests/gittk.py
+demo/gittk.py -f
 ```
 #### Profiling
 ##### cProfile

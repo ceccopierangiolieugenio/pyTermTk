@@ -28,24 +28,27 @@ from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+from TermTk.TTkTemplates.mouseevents import TMouseEvents
+from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 import TermTk.libbpytop       as lbt
 
 
-class TTkWidget:
+class TTkWidget(TMouseEvents,TKeyEvents):
     '''
-    Terminal
-    ┌─────────────────────────────────────────┐
-    │                                         │
-    │    TTkWidget     width                  │
-    │ (x,y)┌─────────────────────────┐        │
-    │      │      padt               │        │
-    │      │    ┌───────────────┐    │ height │
-    │      │padl│ Layout/childs │padr│        │
-    │      │    └───────────────┘    │        │
-    │      │      padl               │        │
-    │      └─────────────────────────┘        │
-    └─────────────────────────────────────────┘
+    ### Widget Layout sizes:
+        Terminal window
+        ┌─────────────────────────────────────────┐
+        │                                         │
+        │    TTkWidget     width                  │
+        │ (x,y)┌─────────────────────────┐        │
+        │      │      padt               │        │
+        │      │    ┌───────────────┐    │ height │
+        │      │padl│ Layout/childs │padr│        │
+        │      │    └───────────────┘    │        │
+        │      │      padl               │        │
+        │      └─────────────────────────┘        │
+        └─────────────────────────────────────────┘
     '''
     __slots__ = (
         '_name', '_parent',
@@ -56,6 +59,36 @@ class TTkWidget:
         '_layout', '_canvas', '_visible', '_transparent')
 
     def __init__(self, *args, **kwargs):
+        '''
+        TTkWidget constructor
+
+        Args:
+            name (str, optional): the name of the widget
+            parent ([TermTk.TTkWidgets.widget.TTkWidget], optional): the parent widget
+
+            x (int, optional, default=0): the x position
+            y (int, optional, default=0): the y position
+            pos ([int,int], optional, default=[0,0]): the [x,y] position (override the previously defined x, y)
+
+            width (int, optional, default=0): the width of the widget
+            height (int, optional, default=0): the height of the widget
+            size ([int,int], optional, default=[0,0]): the size [width, height] of the widget (override the previously defined sizes)
+
+            padding (int, optional, default=0): the padding (top, bottom, left, right) of the widget
+            paddingTop (int, optional, default=padding): the Top padding, override Top padding if already defined
+            paddingBottom (int, optional, default=padding): the Bottom padding, override Bottom padding if already defined
+            paddingLeft (int, optional, default=padding): the Left padding, override Left padding if already defined
+            paddingRight (int, optional, default=padding): the Right padding, override Right padding if already defined
+            maxWidth (int, optional, default=0x10000): the maxWidth of the widget
+            maxHeight (int, optional, default=0x10000): the maxHeight of the widget
+            maxSize ([int,int], optional): the max [width,height] of the widget
+            minWidth (int, optional, default=0): the minWidth of the widget
+            minHeight (int, optional, default=0): the minHeight of the widget
+            minSize ([int,int], optional): the minSize [width,height] of the widget
+
+            visible (bool, optional, default=True): the visibility
+            layout ([TermTk.TTkLayouts], optional, default=[TermTk.TTkLayouts.layout.TTkLayout]): the layout of this widget
+        '''
         self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
 
@@ -100,12 +133,19 @@ class TTkWidget:
         self.update(repaint=True, updateLayout=True)
 
     def __del__(self):
+        ''' .. caution:: Don't touch this! '''
         TTkLog.debug("DESTRUCTOR")
         if self._parent is not None:
             self._parent.removeWidget(self)
             self._parent = None
 
     def addWidget(self, widget):
+        '''
+        Add a child widget to the layout
+
+        Args:
+            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be added
+        '''
         widget._parent = self
         if self.layout() is not None:
             self.layout().addWidget(widget)
@@ -113,14 +153,26 @@ class TTkWidget:
         # widget.show()
 
     def removeWidget(self, widget):
+        '''
+        Remove the child widget from the layout
+
+        Args:
+            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be removed
+        '''
         if self.layout() is not None:
             self.layout().removeWidget(widget)
             self.update(repaint=True, updateLayout=True)
 
-    def paintEvent(self): pass
+    def paintEvent(self):
+        '''
+        Pain Event callback,
+        ths need to be overridden in the widget.
+        '''
+        pass
 
     @staticmethod
     def _paintChildCanvas(canvas, item, geometry):
+        ''' .. caution:: Don't touch this! '''
         lx,ly,lw,lh = geometry
         if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
             child = item.widget()
@@ -143,9 +195,11 @@ class TTkWidget:
                 TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
 
     def paintChildCanvas(self):
+        ''' .. caution:: Don't touch this! '''
         TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
 
     def paintNotifyParent(self):
+        ''' .. caution:: Don't touch this! '''
         parent = self._parent
         while parent is not None:
             parent._canvas.clean()
@@ -153,17 +207,33 @@ class TTkWidget:
             parent.paintChildCanvas()
             parent = parent._parent
 
-    def moveEvent(self, x, y): pass
-    def resizeEvent(self, w, h): pass
+    def moveEvent(self, x: int, y: int):
+        ''' Event Callback triggered after a successful move'''
+        pass
+    def resizeEvent(self, w: int, h: int):
+        ''' Event Callback triggered after a successful resize'''
+        pass
 
-    def move(self, x, y):
+    def move(self, x: int, y: int):
+        '''
+        Move the widget
+        Args:
+            x (int): x position
+            y (int): y position
+        '''
         if x==self._x and y==self._y: return
         self._x = x
         self._y = y
         self.update(repaint=False, updateLayout=False)
         self.moveEvent(x,y)
 
-    def resize(self, w, h):
+    def resize(self, w: int, h: int):
+        '''
+        Resize the widget
+        Args:
+            w (int): the new width
+            h (int): the new height
+        '''
         # TTkLog.debug(f"resize: {w,h} {self._name}")
         if w!=self._width or h!=self._height:
             self._width  = w
@@ -172,14 +242,35 @@ class TTkWidget:
             self.update(repaint=True, updateLayout=True)
         self.resizeEvent(w,h)
 
-    def setGeometry(self, x, y, w, h):
+    def setGeometry(self, x: int, y: int, w: int, h: int):
+        '''
+        Resize and move the widget
+        Args:
+            x (int): x position
+            y (int): y position
+            w (int): the new width
+            h (int): the new height
+        '''
         self.resize(w, h)
         self.move(x, y)
 
-    def getPadding(self) -> (int, int, int, int) :
+    def getPadding(self) -> (int, int, int, int):
+        '''
+        Retrieve the widget padding sizes
+        Returns:
+            List[top, bottom, left, right]: the 4 padding sizes
+        '''
         return self._padt, self._padb, self._padl, self._padr
 
     def setPadding(self, top, bottom, left, right):
+        '''
+       set the padding of the widget
+        Args:
+            top (int): top padding
+            bottom (int): bottom padding
+            left (int): left padding
+            right (int): right padding
+        '''
         if self._padt == top  and self._padb == bottom and \
            self._padl == left and self._padr == right: return
         self._padt = top
@@ -188,19 +279,9 @@ class TTkWidget:
         self._padr = right
         self.update(repaint=True, updateLayout=True)
 
-    def mouseDoubleClickEvent(self, evt) -> bool : return False
-    def mouseMoveEvent(self, evt)        -> bool : return False
-    def mouseDragEvent(self, evt)        -> bool : return False
-    def mousePressEvent(self, evt)       -> bool : return False
-    def mouseReleaseEvent(self, evt)     -> bool : return False
-    def wheelEvent(self, evt)            -> bool : return False
-    def enterEvent(self, evt)            -> bool : return False
-    def leaveEvent(self, evt)            -> bool : return False
-    def keyPressEvent(self, evt)         -> bool : return False
-    def keyReleaseEvent(self, evt)       -> bool : return False
-
     @staticmethod
     def _mouseEventLayoutHandle(evt, layout):
+        ''' .. caution:: Don't touch this! '''
         x, y = evt.x, evt.y
         lx,ly,lw,lh =layout.geometry()
         # opt of bounds
@@ -243,6 +324,7 @@ class TTkWidget:
         return False
 
     def mouseEvent(self, evt):
+        ''' .. caution:: Don't touch this! '''
         # Mouse Drag has priority because it
         # should be handled by the focussed widget
         if evt.evt == TTkK.Drag:
@@ -283,9 +365,6 @@ class TTkWidget:
         #    self.keyReleaseEvent(evt)
         # Trigger this event to the childs
         return False
-
-    def keyEvent(self, evt):
-        pass
 
     #def event(self, evt):
     #    pass
@@ -412,6 +491,7 @@ class TTkWidget:
 
     @staticmethod
     def _propagateShowToLayout(layout):
+        ''' .. caution:: Don't touch this! '''
         if layout is None: return
         for item in layout.zSortedItems:
             if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
@@ -421,6 +501,7 @@ class TTkWidget:
                 TTkWidget._propagateShowToLayout(item)
 
     def _propagateShow(self):
+        ''' .. caution:: Don't touch this! '''
         if not self._visible: return
         self.update(updateLayout=True, updateParent=True)
         TTkWidget._propagateShowToLayout(self.rootLayout())
