@@ -164,6 +164,7 @@ class TTkWidget:
         self.moveEvent(x,y)
 
     def resize(self, w, h):
+        # TTkLog.debug(f"resize: {w,h} {self._name}")
         if w!=self._width or h!=self._height:
             self._width  = w
             self._height = h
@@ -427,8 +428,8 @@ class TTkWidget:
     @pyTTkSlot()
     def show(self):
         if self._visible: return
-        self._canvas.show()
         self._visible = True
+        self._canvas.show()
         self._propagateShow()
 
     #@staticmethod
@@ -443,8 +444,8 @@ class TTkWidget:
     @pyTTkSlot()
     def hide(self):
         if not self._visible: return
-        self._canvas.hide()
         self._visible = False
+        self._canvas.hide()
         self.update(repaint=False, updateParent=True)
 
     def raiseWidget(self):
@@ -493,7 +494,6 @@ class TTkWidget:
             tmp.clearFocus()
             tmp.focusOutEvent()
             tmp.update(repaint=True, updateLayout=False)
-        #tmp = TTkHelper.getOverlay()
         if not TTkHelper.isOverlay(self):
             TTkHelper.removeOverlay()
         TTkHelper.setFocus(self)

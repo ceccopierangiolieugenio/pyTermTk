@@ -67,16 +67,22 @@ class TTkAbstractScrollArea(TTkWidget):
         self._horizontalScrollBar.setValue(ox)
 
         if self._verticalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
-            if vrange<=0: self._verticalScrollBar.hide()
-            else:         self._verticalScrollBar.show()
+            if vrange<=0:
+                self._verticalScrollBar.hide()
+            elif dh>self._verticalScrollBar.minimumHeight()+1:
+                # we need enough space to display the bar to avoid endless loop
+                self._verticalScrollBar.show()
         elif self._verticalScrollBarPolicy == TTkK.ScrollBarAlwaysOn:
             self._verticalScrollBar.show()
         else:
             self._verticalScrollBar.show()
 
         if self._horizontalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
-            if hrange<=0: self._horizontalScrollBar.hide()
-            else:         self._horizontalScrollBar.show()
+            if hrange<=0:
+                self._horizontalScrollBar.hide()
+            elif dw>self._horizontalScrollBar.minimumWidth()+1:
+                # we need enough space to display the bar to avoid endless loop
+                self._horizontalScrollBar.show()
         elif self._horizontalScrollBarPolicy == TTkK.ScrollBarAlwaysOn:
             self._horizontalScrollBar.show()
         else:

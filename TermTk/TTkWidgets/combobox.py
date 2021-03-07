@@ -63,7 +63,6 @@ class TTkComboBox(TTkWidget):
     @pyTTkSlot(str)
     def _callback(self, label):
         self._id = self._list.index(label)
-        #TTkHelper.removeOverlay()
         self.setFocus()
         self.update()
 
