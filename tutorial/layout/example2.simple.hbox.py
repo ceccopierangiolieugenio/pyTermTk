@@ -25,14 +25,14 @@
 import sys, os
 import TermTk as ttk
 
-    # Create a root object (it is a widget that represent the terminal)
+    # Set the HBoxLayout as defaut in the terminal widget
 root = ttk.TTk()
+root.setLayout(ttk.TTkHBoxLayout())
 
-    # Create a window and attach it to the root (parent=root)
-helloWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(30,10), title="Hello Window", border=True)
+    # Attach 4 buttons to the root widget
+ttk.TTkButton(parent=root, border=True, text="Button1")
+ttk.TTkButton(parent=root, border=True, text="Button2")
+ttk.TTkButton(parent=root, border=True, text="Button3")
+ttk.TTkButton(parent=root, border=True, text="Button4")
 
-    # Define the Label and attach it to the window (parent=helloWin)
-ttk.TTkLabel(parent=helloWin, pos=(5,5), text="Hello World")
-
-    # Start the Main loop
 root.mainloop()

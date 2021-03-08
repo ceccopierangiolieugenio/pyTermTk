@@ -21,3 +21,6 @@ A list of frequently used modules is given below:
 
 ## Tutorials
 - **[Hello World](001-helloworld.md)**
+- **[Logging](004-logging.md)**
+- **[Layout](002-layout.md)**
+- **[Signals and Slots](003-signalslots.md)**

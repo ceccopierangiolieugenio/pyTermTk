@@ -25,14 +25,16 @@
 import sys, os
 import TermTk as ttk
 
-    # Create a root object (it is a widget that represent the terminal)
-root = ttk.TTk()
+    # Set the GridLayout as defaut in the terminal widget
+gridLayout = ttk.TTkGridLayout(columnMinHeight=0,columnMinWidth=2)
+root = ttk.TTk(layout=gridLayout)
 
-    # Create a window and attach it to the root (parent=root)
-helloWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(30,10), title="Hello Window", border=True)
+    # Attach 2 buttons to the root widget using the default method
+    # this wil append them to the first row
+ttk.TTkButton(parent=root, border=True, text="Button1")
+ttk.TTkButton(parent=root, border=True, text="Button2")
+    # Attach 2 buttons to a specific position in the grid
+gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button3"), 1,2)
+gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button4"), 3,4)
 
-    # Define the Label and attach it to the window (parent=helloWin)
-ttk.TTkLabel(parent=helloWin, pos=(5,5), text="Hello World")
-
-    # Start the Main loop
 root.mainloop()

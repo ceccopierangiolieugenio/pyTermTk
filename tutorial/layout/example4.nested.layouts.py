@@ -25,14 +25,26 @@
 import sys, os
 import TermTk as ttk
 
-    # Create a root object (it is a widget that represent the terminal)
+    # Set the GridLayout as defaut in the terminal widget
 root = ttk.TTk()
 
-    # Create a window and attach it to the root (parent=root)
-helloWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(30,10), title="Hello Window", border=True)
+gridLayout = ttk.TTkGridLayout()
+root.setLayout(gridLayout)
 
-    # Define the Label and attach it to the window (parent=helloWin)
-ttk.TTkLabel(parent=helloWin, pos=(5,5), text="Hello World")
+    # Attach 2 buttons to the root widget using the default method
+    # this will append them to the first row
+    # NOTE: it is not recommended to use this legacy method in a gridLayout
+ttk.TTkButton(parent=root, border=True, text="Button1")
+ttk.TTkButton(parent=root, border=True, text="Button2")
+    # Attach 2 buttons to a specific position in the grid
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 1,2)
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 2,4)
 
-    # Start the Main loop
+    # Create a VBoxLayout and add it to the gridLayout
+vboxLayout = ttk.TTkVBoxLayout()
+gridLayout.addItem(vboxLayout,1,3)
+    # Attach 2 buttons to the vBoxLayout
+vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button5"))
+vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button6"))
+
 root.mainloop()

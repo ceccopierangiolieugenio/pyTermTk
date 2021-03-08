@@ -19,7 +19,7 @@ ttk.TTkLabel(parent=root, pos=(5,2), text="Hello World")
 root.mainloop()
 ```
 
-The above code produces the following output (yuhuuuuu!!!)−
+The above code produces the following output
 ```text
 
 
@@ -35,17 +35,20 @@ Following is the code to execute [Hello World program](helloworld/helloworld.002
 import sys, os
 import TermTk as ttk
 
-# Create a root object (it is a widget that represent the terminal)
+    # Create a root object (it is a widget that represent the terminal)
 root = ttk.TTk()
-# Create a window and attach it to the root (parent=root)
+
+    # Create a window and attach it to the root (parent=root)
 helloWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(30,10), title="Hello Window", border=True)
-# Define the Label and attach it to the window (parent=helloWin)
+
+    # Define the Label and attach it to the window (parent=helloWin)
 ttk.TTkLabel(parent=helloWin, pos=(5,5), text="Hello World")
-# Start the Main loop
+
+    # Start the Main loop
 root.mainloop()
 ```
 
-The above code produces the following output (yuhuuuuu!!!)−
+The above code produces the following output (yuhuuuuu!!!)
 ```text
 
  ╔════════════════════════════╗
