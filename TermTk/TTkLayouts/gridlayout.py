@@ -23,7 +23,24 @@
 # SOFTWARE.
 
 '''
-    Layout System
+### Grid Layout
+[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
+
+The grid layout allows an automatic place all the widgets in a grid
+the empty rows/cols are resized to the "columnMinHeight,columnMinWidth" parameters
+
+    TTkGridLayout        ┌┐ columnMinWidth
+     ╔═════════╤═════════╤╤═════════╗
+     ║ Widget1 │ Widget2 ││ Widget3 ║
+     ║ (0,0)   │ (0,1)   ││ (0,3)   ║
+     ╟─────────┼─────────┼┼─────────╢ ┐ columnMinHeight
+     ╟─────────┼─────────┼┼─────────╢ ┘
+     ║ Widget4 │         ││         ║
+     ║ (2,0)   │         ││         ║
+     ╟─────────┼─────────┼┼─────────╢
+     ║         │         ││ Widget5 ║
+     ║         │         ││ (3,3)   ║
+     ╚═════════╧═════════╧╧═════════╝
 '''
 
 from TermTk.TTkCore.constant import TTkK
@@ -33,6 +50,13 @@ from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 class TTkGridLayout(TTkLayout):
     __slots__ = ('_gridItems','_columnMinWidth','_columnMinHeight')
     def __init__(self, *args, **kwargs):
+        '''
+        TTkGridLayout constructor
+
+        Args:
+            columnMinWidth (int, optional, default=0): the minimum width of the column
+            columnMinHeight (int, optional, default=0): the minimum height of the column
+        '''
         TTkLayout.__init__(self, *args, **kwargs)
         self._gridItems = [[]]
         self._columnMinWidth = kwargs.get('columnMinWidth',0)

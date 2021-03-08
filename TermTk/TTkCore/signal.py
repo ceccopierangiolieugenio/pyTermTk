@@ -23,12 +23,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-'''
-ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html
-     https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuSignal.py
-'''
+# ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html
+#      https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuSignal.py
 
-# dummy decorator
+'''
+[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/003-signalslots.md)
+'''
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function
@@ -37,44 +37,40 @@ def pyTTkSlot(*args, **kwargs):
     return pyTTkSlot_d
 
 def pyTTkSignal(*args, **kwargs):
-    return pyTTkSignal_obj(*args, **kwargs)
+    return _pyTTkSignal_obj(*args, **kwargs)
 
-class pyTTkSignal_obj():
-    '''
-        ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
-
-        PyQt5.QtCore.pyqtSignal(types[, name[, revision=0[, arguments=[]]]])
-            Create one or more overloaded unbound signals as a class attribute.
-
-            Parameters:
-            types - the types that define the C++ signature of the signal. Each type may be a Python type object or a string that is the name of a C++ type. Alternatively each may be a sequence of type arguments. In this case each sequence defines the signature of a different signal overload. The first overload will be the default.
-            name - the name of the signal. If it is omitted then the name of the class attribute is used. This may only be given as a keyword argument.
-            revision - the revision of the signal that is exported to QML. This may only be given as a keyword argument.
-            arguments - the sequence of the names of the signal's arguments that is exported to QML. This may only be given as a keyword argument.
-            Return type:
-                an unbound signal
-    '''
+class _pyTTkSignal_obj():
     __slots__ = ('_types', '_name', '_revision', '_connected_slots')
     def __init__(self, *args, **kwargs):
+        # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
+
+        # PyQt5.QtCore.pyqtSignal(types[, name[, revision=0[, arguments=[]]]])
+        #    Create one or more overloaded unbound signals as a class attribute.
+
+        #    Parameters:
+        #    types - the types that define the C++ signature of the signal. Each type may be a Python type object or a string that is the name of a C++ type. Alternatively each may be a sequence of type arguments. In this case each sequence defines the signature of a different signal overload. The first overload will be the default.
+        #    name - the name of the signal. If it is omitted then the name of the class attribute is used. This may only be given as a keyword argument.
+        #    revision - the revision of the signal that is exported to QML. This may only be given as a keyword argument.
+        #    arguments - the sequence of the names of the signal's arguments that is exported to QML. This may only be given as a keyword argument.
+        #    Return type:
+        #        an unbound signal
         self._types = args
         self._name = kwargs.get('name', None)
         self._revision = kwargs.get('revision', 0)
         self._connected_slots = []
 
-    '''
-        ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
-
-        connect(slot[, type=PyQt5.QtCore.Qt.AutoConnection[, no_receiver_check=False]]) -> PyQt5.QtCore.QMetaObject.Connection
-            Connect a signal to a slot. An exception will be raised if the connection failed.
-
-            Parameters:
-            slot - the slot to connect to, either a Python callable or another bound signal.
-            type - the type of the connection to make.
-            no_receiver_check - suppress the check that the underlying C++ receiver instance still exists and deliver the signal anyway.
-            Returns:
-                a Connection object which can be passed to disconnect(). This is the only way to disconnect a connection to a lambda function.
-    '''
     def connect(self, slot):
+        # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
+
+        # connect(slot[, type=PyQt5.QtCore.Qt.AutoConnection[, no_receiver_check=False]]) -> PyQt5.QtCore.QMetaObject.Connection
+        #    Connect a signal to a slot. An exception will be raised if the connection failed.
+
+        #    Parameters:
+        #    slot - the slot to connect to, either a Python callable or another bound signal.
+        #    type - the type of the connection to make.
+        #    no_receiver_check - suppress the check that the underlying C++ receiver instance still exists and deliver the signal anyway.
+        #    Returns:
+        #        a Connection object which can be passed to disconnect(). This is the only way to disconnect a connection to a lambda function.
         if hasattr(slot, '_TTkslot_attr') and slot._TTkslot_attr != self._types:
             error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
             raise TypeError(error)
