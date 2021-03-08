@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>TermTk.libbpytop.inputkey API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>TermTk.libbpytop.inputkey</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the &#34;Software&#34;), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from TermTk.TTkCore.constant import TTkK
+
+class KeyEvent:
+    __slots__ = (&#39;type&#39;, &#39;key&#39;, &#39;code&#39;)
+    def __init__(self, type:int, key: str, code: str):
+        self.type = type
+        self.key = key
+        self.code = code
+    def __str__(self):
+        code = self.code.replace(&#39;\033&#39;,&#39;&lt;ESC&gt;&#39;)
+        return f&#34;KeyEvent: {self.key} {key2str(self.key)} {code}&#34;
+
+    @staticmethod
+    def parse(input_key):  # from: Space           except &#34;DEL&#34;
+        if len(input_key) == 1 and &#34;\040&#34; &lt;= input_key != &#34;\177&#34;:
+            return KeyEvent(TTkK.Character, input_key, input_key)
+        else:
+            key = _translate_key(input_key)
+            if key is not None:
+                return KeyEvent(TTkK.SpecialKey, key, input_key)
+        return None
+
+def _translate_key(key):
+    if   key == &#34;\177&#34;   : return TTkK.Key_Backspace
+    elif key == &#34;\t&#34;     : return TTkK.Key_Tab
+    elif key == &#34;\n&#34;     : return TTkK.Key_Enter
+    elif key == &#34;\033[A&#34; : return TTkK.Key_Up
+    elif key == &#34;\033[B&#34; : return TTkK.Key_Down
+    elif key == &#34;\033[C&#34; : return TTkK.Key_Right
+    elif key == &#34;\033[D&#34; : return TTkK.Key_Left
+    elif key == &#34;\033[5~&#34;: return TTkK.Key_PageUp
+    elif key == &#34;\033[6~&#34;: return TTkK.Key_PageDown
+    # Xterm
+    elif key == &#34;\033[F&#34; : return TTkK.Key_End
+    elif key == &#34;\033[H&#34; : return TTkK.Key_Home
+    # Terminator + tmux
+    elif key == &#34;\033[4~&#34;: return TTkK.Key_End
+    elif key == &#34;\033[1~&#34;: return TTkK.Key_Home
+    elif key == &#34;\033[2~&#34;: return TTkK.Key_Insert
+    elif key == &#34;\033[3~&#34;: return TTkK.Key_Delete
+    elif key == &#34;\033&#34;: return TTkK.Key_Escape
+    elif key == &#34;\033OP&#34;: return TTkK.Key_F1
+    elif key == &#34;\033OQ&#34;: return TTkK.Key_F2
+    elif key == &#34;\033OR&#34;: return TTkK.Key_F3
+    elif key == &#34;\033OS&#34;: return TTkK.Key_F4
+    elif key == &#34;\033[15~&#34;: return TTkK.Key_F5
+    elif key == &#34;\033[17~&#34;: return TTkK.Key_F6
+    elif key == &#34;\033[18~&#34;: return TTkK.Key_F7
+    elif key == &#34;\033[19~&#34;: return TTkK.Key_F8
+    elif key == &#34;\033[20~&#34;: return TTkK.Key_F9
+    elif key == &#34;\033[21~&#34;: return TTkK.Key_F10
+    elif key == &#34;\033[23~&#34;: return TTkK.Key_F11
+    elif key == &#34;\033[24~&#34;: return TTkK.Key_F12
+    return None
+
+    # # elif key == &#34;\033&#34;: return TTkK.Key_Tab
+    # if True: return None
+    # elif key == &#34;\033&#34;: return TTkK.Key_Backtab
+    # elif key == &#34;\033&#34;: return TTkK.Key_Backspace
+    # elif key == &#34;\033&#34;: return TTkK.Key_Return
+    # elif key == &#34;\033&#34;: return TTkK.Key_Enter
+    # elif key == &#34;\033&#34;: return TTkK.Key_Pause
+    # elif key == &#34;\033&#34;: return TTkK.Key_Print
+    # elif key == &#34;\033&#34;: return TTkK.Key_SysReq
+    # elif key == &#34;\033&#34;: return TTkK.Key_Clear
+    # elif key == &#34;\033&#34;: return TTkK.Key_Shift
+    # elif key == &#34;\033&#34;: return TTkK.Key_Control
+    # elif key == &#34;\033&#34;: return TTkK.Key_Meta
+    # elif key == &#34;\033&#34;: return TTkK.Key_Alt
+    # elif key == &#34;\033&#34;: return TTkK.Key_AltGr
+    # elif key == &#34;\033&#34;: return TTkK.Key_CapsLock
+    # elif key == &#34;\033&#34;: return TTkK.Key_NumLock
+    # elif key == &#34;\033&#34;: return TTkK.Key_ScrollLock
+    # elif key == &#34;\033&#34;: return TTkK.Key_F13
+    # elif key == &#34;\033&#34;: return TTkK.Key_F14
+    # elif key == &#34;\033&#34;: return TTkK.Key_F15
+    # elif key == &#34;\033&#34;: return TTkK.Key_F16
+    # elif key == &#34;\033&#34;: return TTkK.Key_F17
+    # elif key == &#34;\033&#34;: return TTkK.Key_F18
+    # elif key == &#34;\033&#34;: return TTkK.Key_F19
+    # elif key == &#34;\033&#34;: return TTkK.Key_F20
+    # elif key == &#34;\033&#34;: return TTkK.Key_F21
+    # elif key == &#34;\033&#34;: return TTkK.Key_F22
+    # elif key == &#34;\033&#34;: return TTkK.Key_F23
+    # elif key == &#34;\033&#34;: return TTkK.Key_F24
+    # elif key == &#34;\033&#34;: return TTkK.Key_F25
+    # elif key == &#34;\033&#34;: return TTkK.Key_F26
+    # elif key == &#34;\033&#34;: return TTkK.Key_F27
+    # elif key == &#34;\033&#34;: return TTkK.Key_F28
+    # elif key == &#34;\033&#34;: return TTkK.Key_F29
+    # elif key == &#34;\033&#34;: return TTkK.Key_F30
+    # elif key == &#34;\033&#34;: return TTkK.Key_F31
+    # elif key == &#34;\033&#34;: return TTkK.Key_F32
+    # elif key == &#34;\033&#34;: return TTkK.Key_F33
+    # elif key == &#34;\033&#34;: return TTkK.Key_F34
+    # elif key == &#34;\033&#34;: return TTkK.Key_F35
+    # elif key == &#34;\033&#34;: return TTkK.Key_Super_L
+    # elif key == &#34;\033&#34;: return TTkK.Key_Super_R
+    # elif key == &#34;\033&#34;: return TTkK.Key_Menu
+    # elif key == &#34;\033&#34;: return TTkK.Key_Hyper_L
+    # elif key == &#34;\033&#34;: return TTkK.Key_Hyper_R
+    # elif key == &#34;\033&#34;: return TTkK.Key_Help
+    # elif key == &#34;\033&#34;: return TTkK.Key_Direction_L
+    # elif key == &#34;\033&#34;: return TTkK.Key_Direction_R
+    # elif key == &#34;\033&#34;: return TTkK.Key_Space
+    # elif key == &#34;\033&#34;: return TTkK.Key_Any
+    # return TTkK.NONE
+
+def key2str(k):
+    if k == TTkK.Key_Escape                   : return &#34;Key_Escape&#34;
+    if k == TTkK.Key_Tab                      : return &#34;Key_Tab&#34;
+    if k == TTkK.Key_Backtab                  : return &#34;Key_Backtab&#34;
+    if k == TTkK.Key_Backspace                : return &#34;Key_Backspace&#34;
+    if k == TTkK.Key_Return                   : return &#34;Key_Return&#34;
+    if k == TTkK.Key_Enter                    : return &#34;Key_Enter&#34;
+    if k == TTkK.Key_Insert                   : return &#34;Key_Insert&#34;
+    if k == TTkK.Key_Delete                   : return &#34;Key_Delete&#34;
+    if k == TTkK.Key_Pause                    : return &#34;Key_Pause&#34;
+    if k == TTkK.Key_Print                    : return &#34;Key_Print&#34;
+    if k == TTkK.Key_SysReq                   : return &#34;Key_SysReq&#34;
+    if k == TTkK.Key_Clear                    : return &#34;Key_Clear&#34;
+    if k == TTkK.Key_Home                     : return &#34;Key_Home&#34;
+    if k == TTkK.Key_End                      : return &#34;Key_End&#34;
+    if k == TTkK.Key_Left                     : return &#34;Key_Left&#34;
+    if k == TTkK.Key_Up                       : return &#34;Key_Up&#34;
+    if k == TTkK.Key_Right                    : return &#34;Key_Right&#34;
+    if k == TTkK.Key_Down                     : return &#34;Key_Down&#34;
+    if k == TTkK.Key_PageUp                   : return &#34;Key_PageUp&#34;
+    if k == TTkK.Key_PageDown                 : return &#34;Key_PageDown&#34;
+    if k == TTkK.Key_Shift                    : return &#34;Key_Shift&#34;
+    if k == TTkK.Key_Control                  : return &#34;Key_Control&#34;
+    if k == TTkK.Key_Meta                     : return &#34;Key_Meta&#34;
+    if k == TTkK.Key_Alt                      : return &#34;Key_Alt&#34;
+    if k == TTkK.Key_AltGr                    : return &#34;Key_AltGr&#34;
+    if k == TTkK.Key_CapsLock                 : return &#34;Key_CapsLock&#34;
+    if k == TTkK.Key_NumLock                  : return &#34;Key_NumLock&#34;
+    if k == TTkK.Key_ScrollLock               : return &#34;Key_ScrollLock&#34;
+    if k == TTkK.Key_F1                       : return &#34;Key_F1&#34;
+    if k == TTkK.Key_F2                       : return &#34;Key_F2&#34;
+    if k == TTkK.Key_F3                       : return &#34;Key_F3&#34;
+    if k == TTkK.Key_F4                       : return &#34;Key_F4&#34;
+    if k == TTkK.Key_F5                       : return &#34;Key_F5&#34;
+    if k == TTkK.Key_F6                       : return &#34;Key_F6&#34;
+    if k == TTkK.Key_F7                       : return &#34;Key_F7&#34;
+    if k == TTkK.Key_F8                       : return &#34;Key_F8&#34;
+    if k == TTkK.Key_F9                       : return &#34;Key_F9&#34;
+    if k == TTkK.Key_F10                      : return &#34;Key_F10&#34;
+    if k == TTkK.Key_F11                      : return &#34;Key_F11&#34;
+    if k == TTkK.Key_F12                      : return &#34;Key_F12&#34;
+    if k == TTkK.Key_F13                      : return &#34;Key_F13&#34;
+    if k == TTkK.Key_F14                      : return &#34;Key_F14&#34;
+    if k == TTkK.Key_F15                      : return &#34;Key_F15&#34;
+    if k == TTkK.Key_F16                      : return &#34;Key_F16&#34;
+    if k == TTkK.Key_F17                      : return &#34;Key_F17&#34;
+    if k == TTkK.Key_F18                      : return &#34;Key_F18&#34;
+    if k == TTkK.Key_F19                      : return &#34;Key_F19&#34;
+    if k == TTkK.Key_F20                      : return &#34;Key_F20&#34;
+    if k == TTkK.Key_F21                      : return &#34;Key_F21&#34;
+    if k == TTkK.Key_F22                      : return &#34;Key_F22&#34;
+    if k == TTkK.Key_F23                      : return &#34;Key_F23&#34;
+    if k == TTkK.Key_F24                      : return &#34;Key_F24&#34;
+    if k == TTkK.Key_F25                      : return &#34;Key_F25&#34;
+    if k == TTkK.Key_F26                      : return &#34;Key_F26&#34;
+    if k == TTkK.Key_F27                      : return &#34;Key_F27&#34;
+    if k == TTkK.Key_F28                      : return &#34;Key_F28&#34;
+    if k == TTkK.Key_F29                      : return &#34;Key_F29&#34;
+    if k == TTkK.Key_F30                      : return &#34;Key_F30&#34;
+    if k == TTkK.Key_F31                      : return &#34;Key_F31&#34;
+    if k == TTkK.Key_F32                      : return &#34;Key_F32&#34;
+    if k == TTkK.Key_F33                      : return &#34;Key_F33&#34;
+    if k == TTkK.Key_F34                      : return &#34;Key_F34&#34;
+    if k == TTkK.Key_F35                      : return &#34;Key_F35&#34;
+    if k == TTkK.Key_Super_L                  : return &#34;Key_Super_L&#34;
+    if k == TTkK.Key_Super_R                  : return &#34;Key_Super_R&#34;
+    if k == TTkK.Key_Menu                     : return &#34;Key_Menu&#34;
+    if k == TTkK.Key_Hyper_L                  : return &#34;Key_Hyper_L&#34;
+    if k == TTkK.Key_Hyper_R                  : return &#34;Key_Hyper_R&#34;
+    if k == TTkK.Key_Help                     : return &#34;Key_Help&#34;
+    if k == TTkK.Key_Direction_L              : return &#34;Key_Direction_L&#34;
+    if k == TTkK.Key_Direction_R              : return &#34;Key_Direction_R&#34;
+    if k == TTkK.Key_Space                    : return &#34;Key_Space&#34;
+    if k == TTkK.Key_Any                      : return &#34;Key_Any&#34;
+    if k == TTkK.Key_Space                    : return &#34;Key_Space&#34;
+    if k == TTkK.Key_Exclam                   : return &#34;Key_Exclam&#34;
+    if k == TTkK.Key_QuoteDbl                 : return &#34;Key_QuoteDbl&#34;
+    if k == TTkK.Key_NumberSign               : return &#34;Key_NumberSign&#34;
+    if k == TTkK.Key_Dollar                   : return &#34;Key_Dollar&#34;
+    if k == TTkK.Key_Percent                  : return &#34;Key_Percent&#34;
+    if k == TTkK.Key_Ampersand                : return &#34;Key_Ampersand&#34;
+    if k == TTkK.Key_Apostrophe               : return &#34;Key_Apostrophe&#34;
+    if k == TTkK.Key_ParenLeft                : return &#34;Key_ParenLeft&#34;
+    if k == TTkK.Key_ParenRight               : return &#34;Key_ParenRight&#34;
+    if k == TTkK.Key_Asterisk                 : return &#34;Key_Asterisk&#34;
+    if k == TTkK.Key_Plus                     : return &#34;Key_Plus&#34;
+    if k == TTkK.Key_Comma                    : return &#34;Key_Comma&#34;
+    if k == TTkK.Key_Minus                    : return &#34;Key_Minus&#34;
+    if k == TTkK.Key_Period                   : return &#34;Key_Period&#34;
+    if k == TTkK.Key_Slash                    : return &#34;Key_Slash&#34;
+    if k == TTkK.Key_0                        : return &#34;Key_0&#34;
+    if k == TTkK.Key_1                        : return &#34;Key_1&#34;
+    if k == TTkK.Key_2                        : return &#34;Key_2&#34;
+    if k == TTkK.Key_3                        : return &#34;Key_3&#34;
+    if k == TTkK.Key_4                        : return &#34;Key_4&#34;
+    if k == TTkK.Key_5                        : return &#34;Key_5&#34;
+    if k == TTkK.Key_6                        : return &#34;Key_6&#34;
+    if k == TTkK.Key_7                        : return &#34;Key_7&#34;
+    if k == TTkK.Key_8                        : return &#34;Key_8&#34;
+    if k == TTkK.Key_9                        : return &#34;Key_9&#34;
+    if k == TTkK.Key_Colon                    : return &#34;Key_Colon&#34;
+    if k == TTkK.Key_Semicolon                : return &#34;Key_Semicolon&#34;
+    if k == TTkK.Key_Less                     : return &#34;Key_Less&#34;
+    if k == TTkK.Key_Equal                    : return &#34;Key_Equal&#34;
+    if k == TTkK.Key_Greater                  : return &#34;Key_Greater&#34;
+    if k == TTkK.Key_Question                 : return &#34;Key_Question&#34;
+    if k == TTkK.Key_At                       : return &#34;Key_At&#34;
+    if k == TTkK.Key_A                        : return &#34;Key_A&#34;
+    if k == TTkK.Key_B                        : return &#34;Key_B&#34;
+    if k == TTkK.Key_C                        : return &#34;Key_C&#34;
+    if k == TTkK.Key_D                        : return &#34;Key_D&#34;
+    if k == TTkK.Key_E                        : return &#34;Key_E&#34;
+    if k == TTkK.Key_F                        : return &#34;Key_F&#34;
+    if k == TTkK.Key_G                        : return &#34;Key_G&#34;
+    if k == TTkK.Key_H                        : return &#34;Key_H&#34;
+    if k == TTkK.Key_I                        : return &#34;Key_I&#34;
+    if k == TTkK.Key_J                        : return &#34;Key_J&#34;
+    if k == TTkK.Key_K                        : return &#34;Key_K&#34;
+    if k == TTkK.Key_L                        : return &#34;Key_L&#34;
+    if k == TTkK.Key_M                        : return &#34;Key_M&#34;
+    if k == TTkK.Key_N                        : return &#34;Key_N&#34;
+    if k == TTkK.Key_O                        : return &#34;Key_O&#34;
+    if k == TTkK.Key_P                        : return &#34;Key_P&#34;
+    if k == TTkK.Key_Q                        : return &#34;Key_Q&#34;
+    if k == TTkK.Key_R                        : return &#34;Key_R&#34;
+    if k == TTkK.Key_S                        : return &#34;Key_S&#34;
+    if k == TTkK.Key_T                        : return &#34;Key_T&#34;
+    if k == TTkK.Key_U                        : return &#34;Key_U&#34;
+    if k == TTkK.Key_V                        : return &#34;Key_V&#34;
+    if k == TTkK.Key_W                        : return &#34;Key_W&#34;
+    if k == TTkK.Key_X                        : return &#34;Key_X&#34;
+    if k == TTkK.Key_Y                        : return &#34;Key_Y&#34;
+    if k == TTkK.Key_Z                        : return &#34;Key_Z&#34;
+    if k == TTkK.Key_BracketLeft              : return &#34;Key_BracketLeft&#34;
+    if k == TTkK.Key_Backslash                : return &#34;Key_Backslash&#34;
+    if k == TTkK.Key_BracketRight             : return &#34;Key_BracketRight&#34;
+    if k == TTkK.Key_AsciiCircum              : return &#34;Key_AsciiCircum&#34;
+    if k == TTkK.Key_Underscore               : return &#34;Key_Underscore&#34;
+    if k == TTkK.Key_QuoteLeft                : return &#34;Key_QuoteLeft&#34;
+    if k == TTkK.Key_BraceLeft                : return &#34;Key_BraceLeft&#34;
+    if k == TTkK.Key_Bar                      : return &#34;Key_Bar&#34;
+    if k == TTkK.Key_BraceRight               : return &#34;Key_BraceRight&#34;
+    if k == TTkK.Key_AsciiTilde               : return &#34;Key_AsciiTilde&#34;
+    if k == TTkK.Key_nobreakspace             : return &#34;Key_nobreakspace&#34;
+    if k == TTkK.Key_exclamdown               : return &#34;Key_exclamdown&#34;
+    if k == TTkK.Key_cent                     : return &#34;Key_cent&#34;
+    if k == TTkK.Key_sterling                 : return &#34;Key_sterling&#34;
+    if k == TTkK.Key_currency                 : return &#34;Key_currency&#34;
+    if k == TTkK.Key_yen                      : return &#34;Key_yen&#34;
+    if k == TTkK.Key_brokenbar                : return &#34;Key_brokenbar&#34;
+    if k == TTkK.Key_section                  : return &#34;Key_section&#34;
+    if k == TTkK.Key_diaeresis                : return &#34;Key_diaeresis&#34;
+    if k == TTkK.Key_copyright                : return &#34;Key_copyright&#34;
+    if k == TTkK.Key_ordfeminine              : return &#34;Key_ordfeminine&#34;
+    if k == TTkK.Key_guillemotleft            : return &#34;Key_guillemotleft&#34;
+    if k == TTkK.Key_notsign                  : return &#34;Key_notsign&#34;
+    if k == TTkK.Key_hyphen                   : return &#34;Key_hyphen&#34;
+    if k == TTkK.Key_registered               : return &#34;Key_registered&#34;
+    if k == TTkK.Key_macron                   : return &#34;Key_macron&#34;
+    if k == TTkK.Key_degree                   : return &#34;Key_degree&#34;
+    if k == TTkK.Key_plusminus                : return &#34;Key_plusminus&#34;
+    if k == TTkK.Key_twosuperior              : return &#34;Key_twosuperior&#34;
+    if k == TTkK.Key_threesuperior            : return &#34;Key_threesuperior&#34;
+    if k == TTkK.Key_acute                    : return &#34;Key_acute&#34;
+    if k == TTkK.Key_mu                       : return &#34;Key_mu&#34;
+    if k == TTkK.Key_paragraph                : return &#34;Key_paragraph&#34;
+    if k == TTkK.Key_periodcentered           : return &#34;Key_periodcentered&#34;
+    if k == TTkK.Key_cedilla                  : return &#34;Key_cedilla&#34;
+    if k == TTkK.Key_onesuperior              : return &#34;Key_onesuperior&#34;
+    if k == TTkK.Key_masculine                : return &#34;Key_masculine&#34;
+    if k == TTkK.Key_guillemotright           : return &#34;Key_guillemotright&#34;
+    if k == TTkK.Key_onequarter               : return &#34;Key_onequarter&#34;
+    if k == TTkK.Key_onehalf                  : return &#34;Key_onehalf&#34;
+    if k == TTkK.Key_threequarters            : return &#34;Key_threequarters&#34;
+    if k == TTkK.Key_questiondown             : return &#34;Key_questiondown&#34;
+    if k == TTkK.Key_Agrave                   : return &#34;Key_Agrave&#34;
+    if k == TTkK.Key_Aacute                   : return &#34;Key_Aacute&#34;
+    if k == TTkK.Key_Acircumflex              : return &#34;Key_Acircumflex&#34;
+    if k == TTkK.Key_Atilde                   : return &#34;Key_Atilde&#34;
+    if k == TTkK.Key_Adiaeresis               : return &#34;Key_Adiaeresis&#34;
+    if k == TTkK.Key_Aring                    : return &#34;Key_Aring&#34;
+    if k == TTkK.Key_AE                       : return &#34;Key_AE&#34;
+    if k == TTkK.Key_Ccedilla                 : return &#34;Key_Ccedilla&#34;
+    if k == TTkK.Key_Egrave                   : return &#34;Key_Egrave&#34;
+    if k == TTkK.Key_Eacute                   : return &#34;Key_Eacute&#34;
+    if k == TTkK.Key_Ecircumflex              : return &#34;Key_Ecircumflex&#34;
+    if k == TTkK.Key_Ediaeresis               : return &#34;Key_Ediaeresis&#34;
+    if k == TTkK.Key_Igrave                   : return &#34;Key_Igrave&#34;
+    if k == TTkK.Key_Iacute                   : return &#34;Key_Iacute&#34;
+    if k == TTkK.Key_Icircumflex              : return &#34;Key_Icircumflex&#34;
+    if k == TTkK.Key_Idiaeresis               : return &#34;Key_Idiaeresis&#34;
+    if k == TTkK.Key_ETH                      : return &#34;Key_ETH&#34;
+    if k == TTkK.Key_Ntilde                   : return &#34;Key_Ntilde&#34;
+    if k == TTkK.Key_Ograve                   : return &#34;Key_Ograve&#34;
+    if k == TTkK.Key_Oacute                   : return &#34;Key_Oacute&#34;
+    if k == TTkK.Key_Ocircumflex              : return &#34;Key_Ocircumflex&#34;
+    if k == TTkK.Key_Otilde                   : return &#34;Key_Otilde&#34;
+    if k == TTkK.Key_Odiaeresis               : return &#34;Key_Odiaeresis&#34;
+    if k == TTkK.Key_multiply                 : return &#34;Key_multiply&#34;
+    if k == TTkK.Key_Ooblique                 : return &#34;Key_Ooblique&#34;
+    if k == TTkK.Key_Ugrave                   : return &#34;Key_Ugrave&#34;
+    if k == TTkK.Key_Uacute                   : return &#34;Key_Uacute&#34;
+    if k == TTkK.Key_Ucircumflex              : return &#34;Key_Ucircumflex&#34;
+    if k == TTkK.Key_Udiaeresis               : return &#34;Key_Udiaeresis&#34;
+    if k == TTkK.Key_Yacute                   : return &#34;Key_Yacute&#34;
+    if k == TTkK.Key_THORN                    : return &#34;Key_THORN&#34;
+    if k == TTkK.Key_ssharp                   : return &#34;Key_ssharp&#34;
+    if k == TTkK.Key_division                 : return &#34;Key_division&#34;
+    if k == TTkK.Key_ydiaeresis               : return &#34;Key_ydiaeresis&#34;
+    if k == TTkK.Key_Multi_key                : return &#34;Key_Multi_key&#34;
+    if k == TTkK.Key_Codeinput                : return &#34;Key_Codeinput&#34;
+    if k == TTkK.Key_SingleCandidate          : return &#34;Key_SingleCandidate&#34;
+    if k == TTkK.Key_MultipleCandidate        : return &#34;Key_MultipleCandidate&#34;
+    if k == TTkK.Key_PreviousCandidate        : return &#34;Key_PreviousCandidate&#34;
+    if k == TTkK.Key_Mode_switch              : return &#34;Key_Mode_switch&#34;
+    if k == TTkK.Key_Kanji                    : return &#34;Key_Kanji&#34;
+    if k == TTkK.Key_Muhenkan                 : return &#34;Key_Muhenkan&#34;
+    if k == TTkK.Key_Henkan                   : return &#34;Key_Henkan&#34;
+    if k == TTkK.Key_Romaji                   : return &#34;Key_Romaji&#34;
+    if k == TTkK.Key_Hiragana                 : return &#34;Key_Hiragana&#34;
+    if k == TTkK.Key_Katakana                 : return &#34;Key_Katakana&#34;
+    if k == TTkK.Key_Hiragana_Katakana        : return &#34;Key_Hiragana_Katakana&#34;
+    if k == TTkK.Key_Zenkaku                  : return &#34;Key_Zenkaku&#34;
+    if k == TTkK.Key_Hankaku                  : return &#34;Key_Hankaku&#34;
+    if k == TTkK.Key_Zenkaku_Hankaku          : return &#34;Key_Zenkaku_Hankaku&#34;
+    if k == TTkK.Key_Touroku                  : return &#34;Key_Touroku&#34;
+    if k == TTkK.Key_Massyo                   : return &#34;Key_Massyo&#34;
+    if k == TTkK.Key_Kana_Lock                : return &#34;Key_Kana_Lock&#34;
+    if k == TTkK.Key_Kana_Shift               : return &#34;Key_Kana_Shift&#34;
+    if k == TTkK.Key_Eisu_Shift               : return &#34;Key_Eisu_Shift&#34;
+    if k == TTkK.Key_Eisu_toggle              : return &#34;Key_Eisu_toggle&#34;
+    if k == TTkK.Key_Hangul                   : return &#34;Key_Hangul&#34;
+    if k == TTkK.Key_Hangul_Start             : return &#34;Key_Hangul_Start&#34;
+    if k == TTkK.Key_Hangul_End               : return &#34;Key_Hangul_End&#34;
+    if k == TTkK.Key_Hangul_Hanja             : return &#34;Key_Hangul_Hanja&#34;
+    if k == TTkK.Key_Hangul_Jamo              : return &#34;Key_Hangul_Jamo&#34;
+    if k == TTkK.Key_Hangul_Romaja            : return &#34;Key_Hangul_Romaja&#34;
+    if k == TTkK.Key_Hangul_Jeonja            : return &#34;Key_Hangul_Jeonja&#34;
+    if k == TTkK.Key_Hangul_Banja             : return &#34;Key_Hangul_Banja&#34;
+    if k == TTkK.Key_Hangul_PreHanja          : return &#34;Key_Hangul_PreHanja&#34;
+    if k == TTkK.Key_Hangul_PostHanja         : return &#34;Key_Hangul_PostHanja&#34;
+    if k == TTkK.Key_Hangul_Special           : return &#34;Key_Hangul_Special&#34;
+    if k == TTkK.Key_Dead_Grave               : return &#34;Key_Dead_Grave&#34;
+    if k == TTkK.Key_Dead_Acute               : return &#34;Key_Dead_Acute&#34;
+    if k == TTkK.Key_Dead_Circumflex          : return &#34;Key_Dead_Circumflex&#34;
+    if k == TTkK.Key_Dead_Tilde               : return &#34;Key_Dead_Tilde&#34;
+    if k == TTkK.Key_Dead_Macron              : return &#34;Key_Dead_Macron&#34;
+    if k == TTkK.Key_Dead_Breve               : return &#34;Key_Dead_Breve&#34;
+    if k == TTkK.Key_Dead_Abovedot            : return &#34;Key_Dead_Abovedot&#34;
+    if k == TTkK.Key_Dead_Diaeresis           : return &#34;Key_Dead_Diaeresis&#34;
+    if k == TTkK.Key_Dead_Abovering           : return &#34;Key_Dead_Abovering&#34;
+    if k == TTkK.Key_Dead_Doubleacute         : return &#34;Key_Dead_Doubleacute&#34;
+    if k == TTkK.Key_Dead_Caron               : return &#34;Key_Dead_Caron&#34;
+    if k == TTkK.Key_Dead_Cedilla             : return &#34;Key_Dead_Cedilla&#34;
+    if k == TTkK.Key_Dead_Ogonek              : return &#34;Key_Dead_Ogonek&#34;
+    if k == TTkK.Key_Dead_Iota                : return &#34;Key_Dead_Iota&#34;
+    if k == TTkK.Key_Dead_Voiced_Sound        : return &#34;Key_Dead_Voiced_Sound&#34;
+    if k == TTkK.Key_Dead_Semivoiced_Sound    : return &#34;Key_Dead_Semivoiced_Sound&#34;
+    if k == TTkK.Key_Dead_Belowdot            : return &#34;Key_Dead_Belowdot&#34;
+    if k == TTkK.Key_Dead_Hook                : return &#34;Key_Dead_Hook&#34;
+    if k == TTkK.Key_Dead_Horn                : return &#34;Key_Dead_Horn&#34;
+    if k == TTkK.Key_Dead_Stroke              : return &#34;Key_Dead_Stroke&#34;
+    if k == TTkK.Key_Dead_Abovecomma          : return &#34;Key_Dead_Abovecomma&#34;
+    if k == TTkK.Key_Dead_Abovereversedcomma  : return &#34;Key_Dead_Abovereversedcomma&#34;
+    if k == TTkK.Key_Dead_Doublegrave         : return &#34;Key_Dead_Doublegrave&#34;
+    if k == TTkK.Key_Dead_Belowring           : return &#34;Key_Dead_Belowring&#34;
+    if k == TTkK.Key_Dead_Belowmacron         : return &#34;Key_Dead_Belowmacron&#34;
+    if k == TTkK.Key_Dead_Belowcircumflex     : return &#34;Key_Dead_Belowcircumflex&#34;
+    if k == TTkK.Key_Dead_Belowtilde          : return &#34;Key_Dead_Belowtilde&#34;
+    if k == TTkK.Key_Dead_Belowbreve          : return &#34;Key_Dead_Belowbreve&#34;
+    if k == TTkK.Key_Dead_Belowdiaeresis      : return &#34;Key_Dead_Belowdiaeresis&#34;
+    if k == TTkK.Key_Dead_Invertedbreve       : return &#34;Key_Dead_Invertedbreve&#34;
+    if k == TTkK.Key_Dead_Belowcomma          : return &#34;Key_Dead_Belowcomma&#34;
+    if k == TTkK.Key_Dead_Currency            : return &#34;Key_Dead_Currency&#34;
+    if k == TTkK.Key_Dead_a                   : return &#34;Key_Dead_a&#34;
+    if k == TTkK.Key_Dead_A                   : return &#34;Key_Dead_A&#34;
+    if k == TTkK.Key_Dead_e                   : return &#34;Key_Dead_e&#34;
+    if k == TTkK.Key_Dead_E                   : return &#34;Key_Dead_E&#34;
+    if k == TTkK.Key_Dead_i                   : return &#34;Key_Dead_i&#34;
+    if k == TTkK.Key_Dead_I                   : return &#34;Key_Dead_I&#34;
+    if k == TTkK.Key_Dead_o                   : return &#34;Key_Dead_o&#34;
+    if k == TTkK.Key_Dead_O                   : return &#34;Key_Dead_O&#34;
+    if k == TTkK.Key_Dead_u                   : return &#34;Key_Dead_u&#34;
+    if k == TTkK.Key_Dead_U                   : return &#34;Key_Dead_U&#34;
+    if k == TTkK.Key_Dead_Small_Schwa         : return &#34;Key_Dead_Small_Schwa&#34;
+    if k == TTkK.Key_Dead_Capital_Schwa       : return &#34;Key_Dead_Capital_Schwa&#34;
+    if k == TTkK.Key_Dead_Greek               : return &#34;Key_Dead_Greek&#34;
+    if k == TTkK.Key_Dead_Lowline             : return &#34;Key_Dead_Lowline&#34;
+    if k == TTkK.Key_Dead_Aboveverticalline   : return &#34;Key_Dead_Aboveverticalline&#34;
+    if k == TTkK.Key_Dead_Belowverticalline   : return &#34;Key_Dead_Belowverticalline&#34;
+    if k == TTkK.Key_Dead_Longsolidusoverlay  : return &#34;Key_Dead_Longsolidusoverlay&#34;
+    if k == TTkK.Key_Back                     : return &#34;Key_Back&#34;
+    if k == TTkK.Key_Forward                  : return &#34;Key_Forward&#34;
+    if k == TTkK.Key_Stop                     : return &#34;Key_Stop&#34;
+    if k == TTkK.Key_Refresh                  : return &#34;Key_Refresh&#34;
+    if k == TTkK.Key_VolumeDown               : return &#34;Key_VolumeDown&#34;
+    if k == TTkK.Key_VolumeMute               : return &#34;Key_VolumeMute&#34;
+    if k == TTkK.Key_VolumeUp                 : return &#34;Key_VolumeUp&#34;
+    if k == TTkK.Key_BassBoost                : return &#34;Key_BassBoost&#34;
+    if k == TTkK.Key_BassUp                   : return &#34;Key_BassUp&#34;
+    if k == TTkK.Key_BassDown                 : return &#34;Key_BassDown&#34;
+    if k == TTkK.Key_TrebleUp                 : return &#34;Key_TrebleUp&#34;
+    if k == TTkK.Key_TrebleDown               : return &#34;Key_TrebleDown&#34;
+    if k == TTkK.Key_MediaPlay                : return &#34;Key_MediaPlay&#34;
+    if k == TTkK.Key_MediaStop                : return &#34;Key_MediaStop&#34;
+    if k == TTkK.Key_MediaPrevious            : return &#34;Key_MediaPrevious&#34;
+    if k == TTkK.Key_MediaNext                : return &#34;Key_MediaNext&#34;
+    if k == TTkK.Key_MediaRecord              : return &#34;Key_MediaRecord&#34;
+    if k == TTkK.Key_MediaPause               : return &#34;Key_MediaPause&#34;
+    if k == TTkK.Key_MediaTogglePlayPause     : return &#34;Key_MediaTogglePlayPause&#34;
+    if k == TTkK.Key_HomePage                 : return &#34;Key_HomePage&#34;
+    if k == TTkK.Key_Favorites                : return &#34;Key_Favorites&#34;
+    if k == TTkK.Key_Search                   : return &#34;Key_Search&#34;
+    if k == TTkK.Key_Standby                  : return &#34;Key_Standby&#34;
+    if k == TTkK.Key_OpenUrl                  : return &#34;Key_OpenUrl&#34;
+    if k == TTkK.Key_LaunchMail               : return &#34;Key_LaunchMail&#34;
+    if k == TTkK.Key_LaunchMedia              : return &#34;Key_LaunchMedia&#34;
+    if k == TTkK.Key_Launch0                  : return &#34;Key_Launch0&#34;
+    if k == TTkK.Key_Launch1                  : return &#34;Key_Launch1&#34;
+    if k == TTkK.Key_Launch2                  : return &#34;Key_Launch2&#34;
+    if k == TTkK.Key_Launch3                  : return &#34;Key_Launch3&#34;
+    if k == TTkK.Key_Launch4                  : return &#34;Key_Launch4&#34;
+    if k == TTkK.Key_Launch5                  : return &#34;Key_Launch5&#34;
+    if k == TTkK.Key_Launch6                  : return &#34;Key_Launch6&#34;
+    if k == TTkK.Key_Launch7                  : return &#34;Key_Launch7&#34;
+    if k == TTkK.Key_Launch8                  : return &#34;Key_Launch8&#34;
+    if k == TTkK.Key_Launch9                  : return &#34;Key_Launch9&#34;
+    if k == TTkK.Key_LaunchA                  : return &#34;Key_LaunchA&#34;
+    if k == TTkK.Key_LaunchB                  : return &#34;Key_LaunchB&#34;
+    if k == TTkK.Key_LaunchC                  : return &#34;Key_LaunchC&#34;
+    if k == TTkK.Key_LaunchD                  : return &#34;Key_LaunchD&#34;
+    if k == TTkK.Key_LaunchE                  : return &#34;Key_LaunchE&#34;
+    if k == TTkK.Key_LaunchF                  : return &#34;Key_LaunchF&#34;
+    if k == TTkK.Key_LaunchG                  : return &#34;Key_LaunchG&#34;
+    if k == TTkK.Key_LaunchH                  : return &#34;Key_LaunchH&#34;
+    if k == TTkK.Key_MonBrightnessUp          : return &#34;Key_MonBrightnessUp&#34;
+    if k == TTkK.Key_MonBrightnessDown        : return &#34;Key_MonBrightnessDown&#34;
+    if k == TTkK.Key_KeyboardLightOnOff       : return &#34;Key_KeyboardLightOnOff&#34;
+    if k == TTkK.Key_KeyboardBrightnessUp     : return &#34;Key_KeyboardBrightnessUp&#34;
+    if k == TTkK.Key_KeyboardBrightnessDown   : return &#34;Key_KeyboardBrightnessDown&#34;
+    if k == TTkK.Key_PowerOff                 : return &#34;Key_PowerOff&#34;
+    if k == TTkK.Key_WakeUp                   : return &#34;Key_WakeUp&#34;
+    if k == TTkK.Key_Eject                    : return &#34;Key_Eject&#34;
+    if k == TTkK.Key_ScreenSaver              : return &#34;Key_ScreenSaver&#34;
+    if k == TTkK.Key_WWW                      : return &#34;Key_WWW&#34;
+    if k == TTkK.Key_Memo                     : return &#34;Key_Memo&#34;
+    if k == TTkK.Key_LightBulb                : return &#34;Key_LightBulb&#34;
+    if k == TTkK.Key_Shop                     : return &#34;Key_Shop&#34;
+    if k == TTkK.Key_History                  : return &#34;Key_History&#34;
+    if k == TTkK.Key_AddFavorite              : return &#34;Key_AddFavorite&#34;
+    if k == TTkK.Key_HotLinks                 : return &#34;Key_HotLinks&#34;
+    if k == TTkK.Key_BrightnessAdjust         : return &#34;Key_BrightnessAdjust&#34;
+    if k == TTkK.Key_Finance                  : return &#34;Key_Finance&#34;
+    if k == TTkK.Key_Community                : return &#34;Key_Community&#34;
+    if k == TTkK.Key_AudioRewind              : return &#34;Key_AudioRewind&#34;
+    if k == TTkK.Key_BackForward              : return &#34;Key_BackForward&#34;
+    if k == TTkK.Key_ApplicationLeft          : return &#34;Key_ApplicationLeft&#34;
+    if k == TTkK.Key_ApplicationRight         : return &#34;Key_ApplicationRight&#34;
+    if k == TTkK.Key_Book                     : return &#34;Key_Book&#34;
+    if k == TTkK.Key_CD                       : return &#34;Key_CD&#34;
+    if k == TTkK.Key_Calculator               : return &#34;Key_Calculator&#34;
+    if k == TTkK.Key_ToDoList                 : return &#34;Key_ToDoList&#34;
+    if k == TTkK.Key_ClearGrab                : return &#34;Key_ClearGrab&#34;
+    if k == TTkK.Key_Close                    : return &#34;Key_Close&#34;
+    if k == TTkK.Key_Copy                     : return &#34;Key_Copy&#34;
+    if k == TTkK.Key_Cut                      : return &#34;Key_Cut&#34;
+    if k == TTkK.Key_Display                  : return &#34;Key_Display&#34;
+    if k == TTkK.Key_DOS                      : return &#34;Key_DOS&#34;
+    if k == TTkK.Key_Documents                : return &#34;Key_Documents&#34;
+    if k == TTkK.Key_Excel                    : return &#34;Key_Excel&#34;
+    if k == TTkK.Key_Explorer                 : return &#34;Key_Explorer&#34;
+    if k == TTkK.Key_Game                     : return &#34;Key_Game&#34;
+    if k == TTkK.Key_Go                       : return &#34;Key_Go&#34;
+    if k == TTkK.Key_iTouch                   : return &#34;Key_iTouch&#34;
+    if k == TTkK.Key_LogOff                   : return &#34;Key_LogOff&#34;
+    if k == TTkK.Key_Market                   : return &#34;Key_Market&#34;
+    if k == TTkK.Key_Meeting                  : return &#34;Key_Meeting&#34;
+    if k == TTkK.Key_MenuKB                   : return &#34;Key_MenuKB&#34;
+    if k == TTkK.Key_MenuPB                   : return &#34;Key_MenuPB&#34;
+    if k == TTkK.Key_MySites                  : return &#34;Key_MySites&#34;
+    if k == TTkK.Key_News                     : return &#34;Key_News&#34;
+    if k == TTkK.Key_OfficeHome               : return &#34;Key_OfficeHome&#34;
+    if k == TTkK.Key_Option                   : return &#34;Key_Option&#34;
+    if k == TTkK.Key_Paste                    : return &#34;Key_Paste&#34;
+    if k == TTkK.Key_Phone                    : return &#34;Key_Phone&#34;
+    if k == TTkK.Key_Calendar                 : return &#34;Key_Calendar&#34;
+    if k == TTkK.Key_Reply                    : return &#34;Key_Reply&#34;
+    if k == TTkK.Key_Reload                   : return &#34;Key_Reload&#34;
+    if k == TTkK.Key_RotateWindows            : return &#34;Key_RotateWindows&#34;
+    if k == TTkK.Key_RotationPB               : return &#34;Key_RotationPB&#34;
+    if k == TTkK.Key_RotationKB               : return &#34;Key_RotationKB&#34;
+    if k == TTkK.Key_Save                     : return &#34;Key_Save&#34;
+    if k == TTkK.Key_Send                     : return &#34;Key_Send&#34;
+    if k == TTkK.Key_Spell                    : return &#34;Key_Spell&#34;
+    if k == TTkK.Key_SplitScreen              : return &#34;Key_SplitScreen&#34;
+    if k == TTkK.Key_Support                  : return &#34;Key_Support&#34;
+    if k == TTkK.Key_TaskPane                 : return &#34;Key_TaskPane&#34;
+    if k == TTkK.Key_Terminal                 : return &#34;Key_Terminal&#34;
+    if k == TTkK.Key_Tools                    : return &#34;Key_Tools&#34;
+    if k == TTkK.Key_Travel                   : return &#34;Key_Travel&#34;
+    if k == TTkK.Key_Video                    : return &#34;Key_Video&#34;
+    if k == TTkK.Key_Word                     : return &#34;Key_Word&#34;
+    if k == TTkK.Key_Xfer                     : return &#34;Key_Xfer&#34;
+    if k == TTkK.Key_ZoomIn                   : return &#34;Key_ZoomIn&#34;
+    if k == TTkK.Key_ZoomOut                  : return &#34;Key_ZoomOut&#34;
+    if k == TTkK.Key_Away                     : return &#34;Key_Away&#34;
+    if k == TTkK.Key_Messenger                : return &#34;Key_Messenger&#34;
+    if k == TTkK.Key_WebCam                   : return &#34;Key_WebCam&#34;
+    if k == TTkK.Key_MailForward              : return &#34;Key_MailForward&#34;
+    if k == TTkK.Key_Pictures                 : return &#34;Key_Pictures&#34;
+    if k == TTkK.Key_Music                    : return &#34;Key_Music&#34;
+    if k == TTkK.Key_Battery                  : return &#34;Key_Battery&#34;
+    if k == TTkK.Key_Bluetooth                : return &#34;Key_Bluetooth&#34;
+    if k == TTkK.Key_WLAN                     : return &#34;Key_WLAN&#34;
+    if k == TTkK.Key_UWB                      : return &#34;Key_UWB&#34;
+    if k == TTkK.Key_AudioForward             : return &#34;Key_AudioForward&#34;
+    if k == TTkK.Key_AudioRepeat              : return &#34;Key_AudioRepeat&#34;
+    if k == TTkK.Key_AudioRandomPlay          : return &#34;Key_AudioRandomPlay&#34;
+    if k == TTkK.Key_Subtitle                 : return &#34;Key_Subtitle&#34;
+    if k == TTkK.Key_AudioCycleTrack          : return &#34;Key_AudioCycleTrack&#34;
+    if k == TTkK.Key_Time                     : return &#34;Key_Time&#34;
+    if k == TTkK.Key_Hibernate                : return &#34;Key_Hibernate&#34;
+    if k == TTkK.Key_View                     : return &#34;Key_View&#34;
+    if k == TTkK.Key_TopMenu                  : return &#34;Key_TopMenu&#34;
+    if k == TTkK.Key_PowerDown                : return &#34;Key_PowerDown&#34;
+    if k == TTkK.Key_Suspend                  : return &#34;Key_Suspend&#34;
+    if k == TTkK.Key_ContrastAdjust           : return &#34;Key_ContrastAdjust&#34;
+    if k == TTkK.Key_TouchpadToggle           : return &#34;Key_TouchpadToggle&#34;
+    if k == TTkK.Key_TouchpadOn               : return &#34;Key_TouchpadOn&#34;
+    if k == TTkK.Key_TouchpadOff              : return &#34;Key_TouchpadOff&#34;
+    if k == TTkK.Key_MicMute                  : return &#34;Key_MicMute&#34;
+    if k == TTkK.Key_Red                      : return &#34;Key_Red&#34;
+    if k == TTkK.Key_Green                    : return &#34;Key_Green&#34;
+    if k == TTkK.Key_Yellow                   : return &#34;Key_Yellow&#34;
+    if k == TTkK.Key_Blue                     : return &#34;Key_Blue&#34;
+    if k == TTkK.Key_ChannelUp                : return &#34;Key_ChannelUp&#34;
+    if k == TTkK.Key_ChannelDown              : return &#34;Key_ChannelDown&#34;
+    if k == TTkK.Key_Guide                    : return &#34;Key_Guide&#34;
+    if k == TTkK.Key_Info                     : return &#34;Key_Info&#34;
+    if k == TTkK.Key_Settings                 : return &#34;Key_Settings&#34;
+    if k == TTkK.Key_MicVolumeUp              : return &#34;Key_MicVolumeUp&#34;
+    if k == TTkK.Key_MicVolumeDown            : return &#34;Key_MicVolumeDown&#34;
+    if k == TTkK.Key_New                      : return &#34;Key_New&#34;
+    if k == TTkK.Key_Open                     : return &#34;Key_Open&#34;
+    if k == TTkK.Key_Find                     : return &#34;Key_Find&#34;
+    if k == TTkK.Key_Undo                     : return &#34;Key_Undo&#34;
+    if k == TTkK.Key_Redo                     : return &#34;Key_Redo&#34;
+    if k == TTkK.Key_MediaLast                : return &#34;Key_MediaLast&#34;
+    if k == TTkK.Key_unknown                  : return &#34;Key_unknown&#34;
+    if k == TTkK.Key_Call                     : return &#34;Key_Call&#34;
+    if k == TTkK.Key_Camera                   : return &#34;Key_Camera&#34;
+    if k == TTkK.Key_CameraFocus              : return &#34;Key_CameraFocus&#34;
+    if k == TTkK.Key_Context1                 : return &#34;Key_Context1&#34;
+    if k == TTkK.Key_Context2                 : return &#34;Key_Context2&#34;
+    if k == TTkK.Key_Context3                 : return &#34;Key_Context3&#34;
+    if k == TTkK.Key_Context4                 : return &#34;Key_Context4&#34;
+    if k == TTkK.Key_Flip                     : return &#34;Key_Flip&#34;
+    if k == TTkK.Key_Hangup                   : return &#34;Key_Hangup&#34;
+    if k == TTkK.Key_No                       : return &#34;Key_No&#34;
+    if k == TTkK.Key_Select                   : return &#34;Key_Select&#34;
+    if k == TTkK.Key_Yes                      : return &#34;Key_Yes&#34;
+    if k == TTkK.Key_ToggleCallHangup         : return &#34;Key_ToggleCallHangup&#34;
+    if k == TTkK.Key_VoiceDial                : return &#34;Key_VoiceDial&#34;
+    if k == TTkK.Key_LastNumberRedial         : return &#34;Key_LastNumberRedial&#34;
+    if k == TTkK.Key_Execute                  : return &#34;Key_Execute&#34;
+    if k == TTkK.Key_Printer                  : return &#34;Key_Printer&#34;
+    if k == TTkK.Key_Play                     : return &#34;Key_Play&#34;
+    if k == TTkK.Key_Sleep                    : return &#34;Key_Sleep&#34;
+    if k == TTkK.Key_Zoom                     : return &#34;Key_Zoom&#34;
+    if k == TTkK.Key_Exit                     : return &#34;Key_Exit&#34;
+    if k == TTkK.Key_Cancel                   : return &#34;Key_Cancel&#34;
+    return &#34;NONE!!!&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="TermTk.libbpytop.inputkey.key2str"><code class="name flex">
+<span>def <span class="ident">key2str</span></span>(<span>k)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def key2str(k):
+    if k == TTkK.Key_Escape                   : return &#34;Key_Escape&#34;
+    if k == TTkK.Key_Tab                      : return &#34;Key_Tab&#34;
+    if k == TTkK.Key_Backtab                  : return &#34;Key_Backtab&#34;
+    if k == TTkK.Key_Backspace                : return &#34;Key_Backspace&#34;
+    if k == TTkK.Key_Return                   : return &#34;Key_Return&#34;
+    if k == TTkK.Key_Enter                    : return &#34;Key_Enter&#34;
+    if k == TTkK.Key_Insert                   : return &#34;Key_Insert&#34;
+    if k == TTkK.Key_Delete                   : return &#34;Key_Delete&#34;
+    if k == TTkK.Key_Pause                    : return &#34;Key_Pause&#34;
+    if k == TTkK.Key_Print                    : return &#34;Key_Print&#34;
+    if k == TTkK.Key_SysReq                   : return &#34;Key_SysReq&#34;
+    if k == TTkK.Key_Clear                    : return &#34;Key_Clear&#34;
+    if k == TTkK.Key_Home                     : return &#34;Key_Home&#34;
+    if k == TTkK.Key_End                      : return &#34;Key_End&#34;
+    if k == TTkK.Key_Left                     : return &#34;Key_Left&#34;
+    if k == TTkK.Key_Up                       : return &#34;Key_Up&#34;
+    if k == TTkK.Key_Right                    : return &#34;Key_Right&#34;
+    if k == TTkK.Key_Down                     : return &#34;Key_Down&#34;
+    if k == TTkK.Key_PageUp                   : return &#34;Key_PageUp&#34;
+    if k == TTkK.Key_PageDown                 : return &#34;Key_PageDown&#34;
+    if k == TTkK.Key_Shift                    : return &#34;Key_Shift&#34;
+    if k == TTkK.Key_Control                  : return &#34;Key_Control&#34;
+    if k == TTkK.Key_Meta                     : return &#34;Key_Meta&#34;
+    if k == TTkK.Key_Alt                      : return &#34;Key_Alt&#34;
+    if k == TTkK.Key_AltGr                    : return &#34;Key_AltGr&#34;
+    if k == TTkK.Key_CapsLock                 : return &#34;Key_CapsLock&#34;
+    if k == TTkK.Key_NumLock                  : return &#34;Key_NumLock&#34;
+    if k == TTkK.Key_ScrollLock               : return &#34;Key_ScrollLock&#34;
+    if k == TTkK.Key_F1                       : return &#34;Key_F1&#34;
+    if k == TTkK.Key_F2                       : return &#34;Key_F2&#34;
+    if k == TTkK.Key_F3                       : return &#34;Key_F3&#34;
+    if k == TTkK.Key_F4                       : return &#34;Key_F4&#34;
+    if k == TTkK.Key_F5                       : return &#34;Key_F5&#34;
+    if k == TTkK.Key_F6                       : return &#34;Key_F6&#34;
+    if k == TTkK.Key_F7                       : return &#34;Key_F7&#34;
+    if k == TTkK.Key_F8                       : return &#34;Key_F8&#34;
+    if k == TTkK.Key_F9                       : return &#34;Key_F9&#34;
+    if k == TTkK.Key_F10                      : return &#34;Key_F10&#34;
+    if k == TTkK.Key_F11                      : return &#34;Key_F11&#34;
+    if k == TTkK.Key_F12                      : return &#34;Key_F12&#34;
+    if k == TTkK.Key_F13                      : return &#34;Key_F13&#34;
+    if k == TTkK.Key_F14                      : return &#34;Key_F14&#34;
+    if k == TTkK.Key_F15                      : return &#34;Key_F15&#34;
+    if k == TTkK.Key_F16                      : return &#34;Key_F16&#34;
+    if k == TTkK.Key_F17                      : return &#34;Key_F17&#34;
+    if k == TTkK.Key_F18                      : return &#34;Key_F18&#34;
+    if k == TTkK.Key_F19                      : return &#34;Key_F19&#34;
+    if k == TTkK.Key_F20                      : return &#34;Key_F20&#34;
+    if k == TTkK.Key_F21                      : return &#34;Key_F21&#34;
+    if k == TTkK.Key_F22                      : return &#34;Key_F22&#34;
+    if k == TTkK.Key_F23                      : return &#34;Key_F23&#34;
+    if k == TTkK.Key_F24                      : return &#34;Key_F24&#34;
+    if k == TTkK.Key_F25                      : return &#34;Key_F25&#34;
+    if k == TTkK.Key_F26                      : return &#34;Key_F26&#34;
+    if k == TTkK.Key_F27                      : return &#34;Key_F27&#34;
+    if k == TTkK.Key_F28                      : return &#34;Key_F28&#34;
+    if k == TTkK.Key_F29                      : return &#34;Key_F29&#34;
+    if k == TTkK.Key_F30                      : return &#34;Key_F30&#34;
+    if k == TTkK.Key_F31                      : return &#34;Key_F31&#34;
+    if k == TTkK.Key_F32                      : return &#34;Key_F32&#34;
+    if k == TTkK.Key_F33                      : return &#34;Key_F33&#34;
+    if k == TTkK.Key_F34                      : return &#34;Key_F34&#34;
+    if k == TTkK.Key_F35                      : return &#34;Key_F35&#34;
+    if k == TTkK.Key_Super_L                  : return &#34;Key_Super_L&#34;
+    if k == TTkK.Key_Super_R                  : return &#34;Key_Super_R&#34;
+    if k == TTkK.Key_Menu                     : return &#34;Key_Menu&#34;
+    if k == TTkK.Key_Hyper_L                  : return &#34;Key_Hyper_L&#34;
+    if k == TTkK.Key_Hyper_R                  : return &#34;Key_Hyper_R&#34;
+    if k == TTkK.Key_Help                     : return &#34;Key_Help&#34;
+    if k == TTkK.Key_Direction_L              : return &#34;Key_Direction_L&#34;
+    if k == TTkK.Key_Direction_R              : return &#34;Key_Direction_R&#34;
+    if k == TTkK.Key_Space                    : return &#34;Key_Space&#34;
+    if k == TTkK.Key_Any                      : return &#34;Key_Any&#34;
+    if k == TTkK.Key_Space                    : return &#34;Key_Space&#34;
+    if k == TTkK.Key_Exclam                   : return &#34;Key_Exclam&#34;
+    if k == TTkK.Key_QuoteDbl                 : return &#34;Key_QuoteDbl&#34;
+    if k == TTkK.Key_NumberSign               : return &#34;Key_NumberSign&#34;
+    if k == TTkK.Key_Dollar                   : return &#34;Key_Dollar&#34;
+    if k == TTkK.Key_Percent                  : return &#34;Key_Percent&#34;
+    if k == TTkK.Key_Ampersand                : return &#34;Key_Ampersand&#34;
+    if k == TTkK.Key_Apostrophe               : return &#34;Key_Apostrophe&#34;
+    if k == TTkK.Key_ParenLeft                : return &#34;Key_ParenLeft&#34;
+    if k == TTkK.Key_ParenRight               : return &#34;Key_ParenRight&#34;
+    if k == TTkK.Key_Asterisk                 : return &#34;Key_Asterisk&#34;
+    if k == TTkK.Key_Plus                     : return &#34;Key_Plus&#34;
+    if k == TTkK.Key_Comma                    : return &#34;Key_Comma&#34;
+    if k == TTkK.Key_Minus                    : return &#34;Key_Minus&#34;
+    if k == TTkK.Key_Period                   : return &#34;Key_Period&#34;
+    if k == TTkK.Key_Slash                    : return &#34;Key_Slash&#34;
+    if k == TTkK.Key_0                        : return &#34;Key_0&#34;
+    if k == TTkK.Key_1                        : return &#34;Key_1&#34;
+    if k == TTkK.Key_2                        : return &#34;Key_2&#34;
+    if k == TTkK.Key_3                        : return &#34;Key_3&#34;
+    if k == TTkK.Key_4                        : return &#34;Key_4&#34;
+    if k == TTkK.Key_5                        : return &#34;Key_5&#34;
+    if k == TTkK.Key_6                        : return &#34;Key_6&#34;
+    if k == TTkK.Key_7                        : return &#34;Key_7&#34;
+    if k == TTkK.Key_8                        : return &#34;Key_8&#34;
+    if k == TTkK.Key_9                        : return &#34;Key_9&#34;
+    if k == TTkK.Key_Colon                    : return &#34;Key_Colon&#34;
+    if k == TTkK.Key_Semicolon                : return &#34;Key_Semicolon&#34;
+    if k == TTkK.Key_Less                     : return &#34;Key_Less&#34;
+    if k == TTkK.Key_Equal                    : return &#34;Key_Equal&#34;
+    if k == TTkK.Key_Greater                  : return &#34;Key_Greater&#34;
+    if k == TTkK.Key_Question                 : return &#34;Key_Question&#34;
+    if k == TTkK.Key_At                       : return &#34;Key_At&#34;
+    if k == TTkK.Key_A                        : return &#34;Key_A&#34;
+    if k == TTkK.Key_B                        : return &#34;Key_B&#34;
+    if k == TTkK.Key_C                        : return &#34;Key_C&#34;
+    if k == TTkK.Key_D                        : return &#34;Key_D&#34;
+    if k == TTkK.Key_E                        : return &#34;Key_E&#34;
+    if k == TTkK.Key_F                        : return &#34;Key_F&#34;
+    if k == TTkK.Key_G                        : return &#34;Key_G&#34;
+    if k == TTkK.Key_H                        : return &#34;Key_H&#34;
+    if k == TTkK.Key_I                        : return &#34;Key_I&#34;
+    if k == TTkK.Key_J                        : return &#34;Key_J&#34;
+    if k == TTkK.Key_K                        : return &#34;Key_K&#34;
+    if k == TTkK.Key_L                        : return &#34;Key_L&#34;
+    if k == TTkK.Key_M                        : return &#34;Key_M&#34;
+    if k == TTkK.Key_N                        : return &#34;Key_N&#34;
+    if k == TTkK.Key_O                        : return &#34;Key_O&#34;
+    if k == TTkK.Key_P                        : return &#34;Key_P&#34;
+    if k == TTkK.Key_Q                        : return &#34;Key_Q&#34;
+    if k == TTkK.Key_R                        : return &#34;Key_R&#34;
+    if k == TTkK.Key_S                        : return &#34;Key_S&#34;
+    if k == TTkK.Key_T                        : return &#34;Key_T&#34;
+    if k == TTkK.Key_U                        : return &#34;Key_U&#34;
+    if k == TTkK.Key_V                        : return &#34;Key_V&#34;
+    if k == TTkK.Key_W                        : return &#34;Key_W&#34;
+    if k == TTkK.Key_X                        : return &#34;Key_X&#34;
+    if k == TTkK.Key_Y                        : return &#34;Key_Y&#34;
+    if k == TTkK.Key_Z                        : return &#34;Key_Z&#34;
+    if k == TTkK.Key_BracketLeft              : return &#34;Key_BracketLeft&#34;
+    if k == TTkK.Key_Backslash                : return &#34;Key_Backslash&#34;
+    if k == TTkK.Key_BracketRight             : return &#34;Key_BracketRight&#34;
+    if k == TTkK.Key_AsciiCircum              : return &#34;Key_AsciiCircum&#34;
+    if k == TTkK.Key_Underscore               : return &#34;Key_Underscore&#34;
+    if k == TTkK.Key_QuoteLeft                : return &#34;Key_QuoteLeft&#34;
+    if k == TTkK.Key_BraceLeft                : return &#34;Key_BraceLeft&#34;
+    if k == TTkK.Key_Bar                      : return &#34;Key_Bar&#34;
+    if k == TTkK.Key_BraceRight               : return &#34;Key_BraceRight&#34;
+    if k == TTkK.Key_AsciiTilde               : return &#34;Key_AsciiTilde&#34;
+    if k == TTkK.Key_nobreakspace             : return &#34;Key_nobreakspace&#34;
+    if k == TTkK.Key_exclamdown               : return &#34;Key_exclamdown&#34;
+    if k == TTkK.Key_cent                     : return &#34;Key_cent&#34;
+    if k == TTkK.Key_sterling                 : return &#34;Key_sterling&#34;
+    if k == TTkK.Key_currency                 : return &#34;Key_currency&#34;
+    if k == TTkK.Key_yen                      : return &#34;Key_yen&#34;
+    if k == TTkK.Key_brokenbar                : return &#34;Key_brokenbar&#34;
+    if k == TTkK.Key_section                  : return &#34;Key_section&#34;
+    if k == TTkK.Key_diaeresis                : return &#34;Key_diaeresis&#34;
+    if k == TTkK.Key_copyright                : return &#34;Key_copyright&#34;
+    if k == TTkK.Key_ordfeminine              : return &#34;Key_ordfeminine&#34;
+    if k == TTkK.Key_guillemotleft            : return &#34;Key_guillemotleft&#34;
+    if k == TTkK.Key_notsign                  : return &#34;Key_notsign&#34;
+    if k == TTkK.Key_hyphen                   : return &#34;Key_hyphen&#34;
+    if k == TTkK.Key_registered               : return &#34;Key_registered&#34;
+    if k == TTkK.Key_macron                   : return &#34;Key_macron&#34;
+    if k == TTkK.Key_degree                   : return &#34;Key_degree&#34;
+    if k == TTkK.Key_plusminus                : return &#34;Key_plusminus&#34;
+    if k == TTkK.Key_twosuperior              : return &#34;Key_twosuperior&#34;
+    if k == TTkK.Key_threesuperior            : return &#34;Key_threesuperior&#34;
+    if k == TTkK.Key_acute                    : return &#34;Key_acute&#34;
+    if k == TTkK.Key_mu                       : return &#34;Key_mu&#34;
+    if k == TTkK.Key_paragraph                : return &#34;Key_paragraph&#34;
+    if k == TTkK.Key_periodcentered           : return &#34;Key_periodcentered&#34;
+    if k == TTkK.Key_cedilla                  : return &#34;Key_cedilla&#34;
+    if k == TTkK.Key_onesuperior              : return &#34;Key_onesuperior&#34;
+    if k == TTkK.Key_masculine                : return &#34;Key_masculine&#34;
+    if k == TTkK.Key_guillemotright           : return &#34;Key_guillemotright&#34;
+    if k == TTkK.Key_onequarter               : return &#34;Key_onequarter&#34;
+    if k == TTkK.Key_onehalf                  : return &#34;Key_onehalf&#34;
+    if k == TTkK.Key_threequarters            : return &#34;Key_threequarters&#34;
+    if k == TTkK.Key_questiondown             : return &#34;Key_questiondown&#34;
+    if k == TTkK.Key_Agrave                   : return &#34;Key_Agrave&#34;
+    if k == TTkK.Key_Aacute                   : return &#34;Key_Aacute&#34;
+    if k == TTkK.Key_Acircumflex              : return &#34;Key_Acircumflex&#34;
+    if k == TTkK.Key_Atilde                   : return &#34;Key_Atilde&#34;
+    if k == TTkK.Key_Adiaeresis               : return &#34;Key_Adiaeresis&#34;
+    if k == TTkK.Key_Aring                    : return &#34;Key_Aring&#34;
+    if k == TTkK.Key_AE                       : return &#34;Key_AE&#34;
+    if k == TTkK.Key_Ccedilla                 : return &#34;Key_Ccedilla&#34;
+    if k == TTkK.Key_Egrave                   : return &#34;Key_Egrave&#34;
+    if k == TTkK.Key_Eacute                   : return &#34;Key_Eacute&#34;
+    if k == TTkK.Key_Ecircumflex              : return &#34;Key_Ecircumflex&#34;
+    if k == TTkK.Key_Ediaeresis               : return &#34;Key_Ediaeresis&#34;
+    if k == TTkK.Key_Igrave                   : return &#34;Key_Igrave&#34;
+    if k == TTkK.Key_Iacute                   : return &#34;Key_Iacute&#34;
+    if k == TTkK.Key_Icircumflex              : return &#34;Key_Icircumflex&#34;
+    if k == TTkK.Key_Idiaeresis               : return &#34;Key_Idiaeresis&#34;
+    if k == TTkK.Key_ETH                      : return &#34;Key_ETH&#34;
+    if k == TTkK.Key_Ntilde                   : return &#34;Key_Ntilde&#34;
+    if k == TTkK.Key_Ograve                   : return &#34;Key_Ograve&#34;
+    if k == TTkK.Key_Oacute                   : return &#34;Key_Oacute&#34;
+    if k == TTkK.Key_Ocircumflex              : return &#34;Key_Ocircumflex&#34;
+    if k == TTkK.Key_Otilde                   : return &#34;Key_Otilde&#34;
+    if k == TTkK.Key_Odiaeresis               : return &#34;Key_Odiaeresis&#34;
+    if k == TTkK.Key_multiply                 : return &#34;Key_multiply&#34;
+    if k == TTkK.Key_Ooblique                 : return &#34;Key_Ooblique&#34;
+    if k == TTkK.Key_Ugrave                   : return &#34;Key_Ugrave&#34;
+    if k == TTkK.Key_Uacute                   : return &#34;Key_Uacute&#34;
+    if k == TTkK.Key_Ucircumflex              : return &#34;Key_Ucircumflex&#34;
+    if k == TTkK.Key_Udiaeresis               : return &#34;Key_Udiaeresis&#34;
+    if k == TTkK.Key_Yacute                   : return &#34;Key_Yacute&#34;
+    if k == TTkK.Key_THORN                    : return &#34;Key_THORN&#34;
+    if k == TTkK.Key_ssharp                   : return &#34;Key_ssharp&#34;
+    if k == TTkK.Key_division                 : return &#34;Key_division&#34;
+    if k == TTkK.Key_ydiaeresis               : return &#34;Key_ydiaeresis&#34;
+    if k == TTkK.Key_Multi_key                : return &#34;Key_Multi_key&#34;
+    if k == TTkK.Key_Codeinput                : return &#34;Key_Codeinput&#34;
+    if k == TTkK.Key_SingleCandidate          : return &#34;Key_SingleCandidate&#34;
+    if k == TTkK.Key_MultipleCandidate        : return &#34;Key_MultipleCandidate&#34;
+    if k == TTkK.Key_PreviousCandidate        : return &#34;Key_PreviousCandidate&#34;
+    if k == TTkK.Key_Mode_switch              : return &#34;Key_Mode_switch&#34;
+    if k == TTkK.Key_Kanji                    : return &#34;Key_Kanji&#34;
+    if k == TTkK.Key_Muhenkan                 : return &#34;Key_Muhenkan&#34;
+    if k == TTkK.Key_Henkan                   : return &#34;Key_Henkan&#34;
+    if k == TTkK.Key_Romaji                   : return &#34;Key_Romaji&#34;
+    if k == TTkK.Key_Hiragana                 : return &#34;Key_Hiragana&#34;
+    if k == TTkK.Key_Katakana                 : return &#34;Key_Katakana&#34;
+    if k == TTkK.Key_Hiragana_Katakana        : return &#34;Key_Hiragana_Katakana&#34;
+    if k == TTkK.Key_Zenkaku                  : return &#34;Key_Zenkaku&#34;
+    if k == TTkK.Key_Hankaku                  : return &#34;Key_Hankaku&#34;
+    if k == TTkK.Key_Zenkaku_Hankaku          : return &#34;Key_Zenkaku_Hankaku&#34;
+    if k == TTkK.Key_Touroku                  : return &#34;Key_Touroku&#34;
+    if k == TTkK.Key_Massyo                   : return &#34;Key_Massyo&#34;
+    if k == TTkK.Key_Kana_Lock                : return &#34;Key_Kana_Lock&#34;
+    if k == TTkK.Key_Kana_Shift               : return &#34;Key_Kana_Shift&#34;
+    if k == TTkK.Key_Eisu_Shift               : return &#34;Key_Eisu_Shift&#34;
+    if k == TTkK.Key_Eisu_toggle              : return &#34;Key_Eisu_toggle&#34;
+    if k == TTkK.Key_Hangul                   : return &#34;Key_Hangul&#34;
+    if k == TTkK.Key_Hangul_Start             : return &#34;Key_Hangul_Start&#34;
+    if k == TTkK.Key_Hangul_End               : return &#34;Key_Hangul_End&#34;
+    if k == TTkK.Key_Hangul_Hanja             : return &#34;Key_Hangul_Hanja&#34;
+    if k == TTkK.Key_Hangul_Jamo              : return &#34;Key_Hangul_Jamo&#34;
+    if k == TTkK.Key_Hangul_Romaja            : return &#34;Key_Hangul_Romaja&#34;
+    if k == TTkK.Key_Hangul_Jeonja            : return &#34;Key_Hangul_Jeonja&#34;
+    if k == TTkK.Key_Hangul_Banja             : return &#34;Key_Hangul_Banja&#34;
+    if k == TTkK.Key_Hangul_PreHanja          : return &#34;Key_Hangul_PreHanja&#34;
+    if k == TTkK.Key_Hangul_PostHanja         : return &#34;Key_Hangul_PostHanja&#34;
+    if k == TTkK.Key_Hangul_Special           : return &#34;Key_Hangul_Special&#34;
+    if k == TTkK.Key_Dead_Grave               : return &#34;Key_Dead_Grave&#34;
+    if k == TTkK.Key_Dead_Acute               : return &#34;Key_Dead_Acute&#34;
+    if k == TTkK.Key_Dead_Circumflex          : return &#34;Key_Dead_Circumflex&#34;
+    if k == TTkK.Key_Dead_Tilde               : return &#34;Key_Dead_Tilde&#34;
+    if k == TTkK.Key_Dead_Macron              : return &#34;Key_Dead_Macron&#34;
+    if k == TTkK.Key_Dead_Breve               : return &#34;Key_Dead_Breve&#34;
+    if k == TTkK.Key_Dead_Abovedot            : return &#34;Key_Dead_Abovedot&#34;
+    if k == TTkK.Key_Dead_Diaeresis           : return &#34;Key_Dead_Diaeresis&#34;
+    if k == TTkK.Key_Dead_Abovering           : return &#34;Key_Dead_Abovering&#34;
+    if k == TTkK.Key_Dead_Doubleacute         : return &#34;Key_Dead_Doubleacute&#34;
+    if k == TTkK.Key_Dead_Caron               : return &#34;Key_Dead_Caron&#34;
+    if k == TTkK.Key_Dead_Cedilla             : return &#34;Key_Dead_Cedilla&#34;
+    if k == TTkK.Key_Dead_Ogonek              : return &#34;Key_Dead_Ogonek&#34;
+    if k == TTkK.Key_Dead_Iota                : return &#34;Key_Dead_Iota&#34;
+    if k == TTkK.Key_Dead_Voiced_Sound        : return &#34;Key_Dead_Voiced_Sound&#34;
+    if k == TTkK.Key_Dead_Semivoiced_Sound    : return &#34;Key_Dead_Semivoiced_Sound&#34;
+    if k == TTkK.Key_Dead_Belowdot            : return &#34;Key_Dead_Belowdot&#34;
+    if k == TTkK.Key_Dead_Hook                : return &#34;Key_Dead_Hook&#34;
+    if k == TTkK.Key_Dead_Horn                : return &#34;Key_Dead_Horn&#34;
+    if k == TTkK.Key_Dead_Stroke              : return &#34;Key_Dead_Stroke&#34;
+    if k == TTkK.Key_Dead_Abovecomma          : return &#34;Key_Dead_Abovecomma&#34;
+    if k == TTkK.Key_Dead_Abovereversedcomma  : return &#34;Key_Dead_Abovereversedcomma&#34;
+    if k == TTkK.Key_Dead_Doublegrave         : return &#34;Key_Dead_Doublegrave&#34;
+    if k == TTkK.Key_Dead_Belowring           : return &#34;Key_Dead_Belowring&#34;
+    if k == TTkK.Key_Dead_Belowmacron         : return &#34;Key_Dead_Belowmacron&#34;
+    if k == TTkK.Key_Dead_Belowcircumflex     : return &#34;Key_Dead_Belowcircumflex&#34;
+    if k == TTkK.Key_Dead_Belowtilde          : return &#34;Key_Dead_Belowtilde&#34;
+    if k == TTkK.Key_Dead_Belowbreve          : return &#34;Key_Dead_Belowbreve&#34;
+    if k == TTkK.Key_Dead_Belowdiaeresis      : return &#34;Key_Dead_Belowdiaeresis&#34;
+    if k == TTkK.Key_Dead_Invertedbreve       : return &#34;Key_Dead_Invertedbreve&#34;
+    if k == TTkK.Key_Dead_Belowcomma          : return &#34;Key_Dead_Belowcomma&#34;
+    if k == TTkK.Key_Dead_Currency            : return &#34;Key_Dead_Currency&#34;
+    if k == TTkK.Key_Dead_a                   : return &#34;Key_Dead_a&#34;
+    if k == TTkK.Key_Dead_A                   : return &#34;Key_Dead_A&#34;
+    if k == TTkK.Key_Dead_e                   : return &#34;Key_Dead_e&#34;
+    if k == TTkK.Key_Dead_E                   : return &#34;Key_Dead_E&#34;
+    if k == TTkK.Key_Dead_i                   : return &#34;Key_Dead_i&#34;
+    if k == TTkK.Key_Dead_I                   : return &#34;Key_Dead_I&#34;
+    if k == TTkK.Key_Dead_o                   : return &#34;Key_Dead_o&#34;
+    if k == TTkK.Key_Dead_O                   : return &#34;Key_Dead_O&#34;
+    if k == TTkK.Key_Dead_u                   : return &#34;Key_Dead_u&#34;
+    if k == TTkK.Key_Dead_U                   : return &#34;Key_Dead_U&#34;
+    if k == TTkK.Key_Dead_Small_Schwa         : return &#34;Key_Dead_Small_Schwa&#34;
+    if k == TTkK.Key_Dead_Capital_Schwa       : return &#34;Key_Dead_Capital_Schwa&#34;
+    if k == TTkK.Key_Dead_Greek               : return &#34;Key_Dead_Greek&#34;
+    if k == TTkK.Key_Dead_Lowline             : return &#34;Key_Dead_Lowline&#34;
+    if k == TTkK.Key_Dead_Aboveverticalline   : return &#34;Key_Dead_Aboveverticalline&#34;
+    if k == TTkK.Key_Dead_Belowverticalline   : return &#34;Key_Dead_Belowverticalline&#34;
+    if k == TTkK.Key_Dead_Longsolidusoverlay  : return &#34;Key_Dead_Longsolidusoverlay&#34;
+    if k == TTkK.Key_Back                     : return &#34;Key_Back&#34;
+    if k == TTkK.Key_Forward                  : return &#34;Key_Forward&#34;
+    if k == TTkK.Key_Stop                     : return &#34;Key_Stop&#34;
+    if k == TTkK.Key_Refresh                  : return &#34;Key_Refresh&#34;
+    if k == TTkK.Key_VolumeDown               : return &#34;Key_VolumeDown&#34;
+    if k == TTkK.Key_VolumeMute               : return &#34;Key_VolumeMute&#34;
+    if k == TTkK.Key_VolumeUp                 : return &#34;Key_VolumeUp&#34;
+    if k == TTkK.Key_BassBoost                : return &#34;Key_BassBoost&#34;
+    if k == TTkK.Key_BassUp                   : return &#34;Key_BassUp&#34;
+    if k == TTkK.Key_BassDown                 : return &#34;Key_BassDown&#34;
+    if k == TTkK.Key_TrebleUp                 : return &#34;Key_TrebleUp&#34;
+    if k == TTkK.Key_TrebleDown               : return &#34;Key_TrebleDown&#34;
+    if k == TTkK.Key_MediaPlay                : return &#34;Key_MediaPlay&#34;
+    if k == TTkK.Key_MediaStop                : return &#34;Key_MediaStop&#34;
+    if k == TTkK.Key_MediaPrevious            : return &#34;Key_MediaPrevious&#34;
+    if k == TTkK.Key_MediaNext                : return &#34;Key_MediaNext&#34;
+    if k == TTkK.Key_MediaRecord              : return &#34;Key_MediaRecord&#34;
+    if k == TTkK.Key_MediaPause               : return &#34;Key_MediaPause&#34;
+    if k == TTkK.Key_MediaTogglePlayPause     : return &#34;Key_MediaTogglePlayPause&#34;
+    if k == TTkK.Key_HomePage                 : return &#34;Key_HomePage&#34;
+    if k == TTkK.Key_Favorites                : return &#34;Key_Favorites&#34;
+    if k == TTkK.Key_Search                   : return &#34;Key_Search&#34;
+    if k == TTkK.Key_Standby                  : return &#34;Key_Standby&#34;
+    if k == TTkK.Key_OpenUrl                  : return &#34;Key_OpenUrl&#34;
+    if k == TTkK.Key_LaunchMail               : return &#34;Key_LaunchMail&#34;
+    if k == TTkK.Key_LaunchMedia              : return &#34;Key_LaunchMedia&#34;
+    if k == TTkK.Key_Launch0                  : return &#34;Key_Launch0&#34;
+    if k == TTkK.Key_Launch1                  : return &#34;Key_Launch1&#34;
+    if k == TTkK.Key_Launch2                  : return &#34;Key_Launch2&#34;
+    if k == TTkK.Key_Launch3                  : return &#34;Key_Launch3&#34;
+    if k == TTkK.Key_Launch4                  : return &#34;Key_Launch4&#34;
+    if k == TTkK.Key_Launch5                  : return &#34;Key_Launch5&#34;
+    if k == TTkK.Key_Launch6                  : return &#34;Key_Launch6&#34;
+    if k == TTkK.Key_Launch7                  : return &#34;Key_Launch7&#34;
+    if k == TTkK.Key_Launch8                  : return &#34;Key_Launch8&#34;
+    if k == TTkK.Key_Launch9                  : return &#34;Key_Launch9&#34;
+    if k == TTkK.Key_LaunchA                  : return &#34;Key_LaunchA&#34;
+    if k == TTkK.Key_LaunchB                  : return &#34;Key_LaunchB&#34;
+    if k == TTkK.Key_LaunchC                  : return &#34;Key_LaunchC&#34;
+    if k == TTkK.Key_LaunchD                  : return &#34;Key_LaunchD&#34;
+    if k == TTkK.Key_LaunchE                  : return &#34;Key_LaunchE&#34;
+    if k == TTkK.Key_LaunchF                  : return &#34;Key_LaunchF&#34;
+    if k == TTkK.Key_LaunchG                  : return &#34;Key_LaunchG&#34;
+    if k == TTkK.Key_LaunchH                  : return &#34;Key_LaunchH&#34;
+    if k == TTkK.Key_MonBrightnessUp          : return &#34;Key_MonBrightnessUp&#34;
+    if k == TTkK.Key_MonBrightnessDown        : return &#34;Key_MonBrightnessDown&#34;
+    if k == TTkK.Key_KeyboardLightOnOff       : return &#34;Key_KeyboardLightOnOff&#34;
+    if k == TTkK.Key_KeyboardBrightnessUp     : return &#34;Key_KeyboardBrightnessUp&#34;
+    if k == TTkK.Key_KeyboardBrightnessDown   : return &#34;Key_KeyboardBrightnessDown&#34;
+    if k == TTkK.Key_PowerOff                 : return &#34;Key_PowerOff&#34;
+    if k == TTkK.Key_WakeUp                   : return &#34;Key_WakeUp&#34;
+    if k == TTkK.Key_Eject                    : return &#34;Key_Eject&#34;
+    if k == TTkK.Key_ScreenSaver              : return &#34;Key_ScreenSaver&#34;
+    if k == TTkK.Key_WWW                      : return &#34;Key_WWW&#34;
+    if k == TTkK.Key_Memo                     : return &#34;Key_Memo&#34;
+    if k == TTkK.Key_LightBulb                : return &#34;Key_LightBulb&#34;
+    if k == TTkK.Key_Shop                     : return &#34;Key_Shop&#34;
+    if k == TTkK.Key_History                  : return &#34;Key_History&#34;
+    if k == TTkK.Key_AddFavorite              : return &#34;Key_AddFavorite&#34;
+    if k == TTkK.Key_HotLinks                 : return &#34;Key_HotLinks&#34;
+    if k == TTkK.Key_BrightnessAdjust         : return &#34;Key_BrightnessAdjust&#34;
+    if k == TTkK.Key_Finance                  : return &#34;Key_Finance&#34;
+    if k == TTkK.Key_Community                : return &#34;Key_Community&#34;
+    if k == TTkK.Key_AudioRewind              : return &#34;Key_AudioRewind&#34;
+    if k == TTkK.Key_BackForward              : return &#34;Key_BackForward&#34;
+    if k == TTkK.Key_ApplicationLeft          : return &#34;Key_ApplicationLeft&#34;
+    if k == TTkK.Key_ApplicationRight         : return &#34;Key_ApplicationRight&#34;
+    if k == TTkK.Key_Book                     : return &#34;Key_Book&#34;
+    if k == TTkK.Key_CD                       : return &#34;Key_CD&#34;
+    if k == TTkK.Key_Calculator               : return &#34;Key_Calculator&#34;
+    if k == TTkK.Key_ToDoList                 : return &#34;Key_ToDoList&#34;
+    if k == TTkK.Key_ClearGrab                : return &#34;Key_ClearGrab&#34;
+    if k == TTkK.Key_Close                    : return &#34;Key_Close&#34;
+    if k == TTkK.Key_Copy                     : return &#34;Key_Copy&#34;
+    if k == TTkK.Key_Cut                      : return &#34;Key_Cut&#34;
+    if k == TTkK.Key_Display                  : return &#34;Key_Display&#34;
+    if k == TTkK.Key_DOS                      : return &#34;Key_DOS&#34;
+    if k == TTkK.Key_Documents                : return &#34;Key_Documents&#34;
+    if k == TTkK.Key_Excel                    : return &#34;Key_Excel&#34;
+    if k == TTkK.Key_Explorer                 : return &#34;Key_Explorer&#34;
+    if k == TTkK.Key_Game                     : return &#34;Key_Game&#34;
+    if k == TTkK.Key_Go                       : return &#34;Key_Go&#34;
+    if k == TTkK.Key_iTouch                   : return &#34;Key_iTouch&#34;
+    if k == TTkK.Key_LogOff                   : return &#34;Key_LogOff&#34;
+    if k == TTkK.Key_Market                   : return &#34;Key_Market&#34;
+    if k == TTkK.Key_Meeting                  : return &#34;Key_Meeting&#34;
+    if k == TTkK.Key_MenuKB                   : return &#34;Key_MenuKB&#34;
+    if k == TTkK.Key_MenuPB                   : return &#34;Key_MenuPB&#34;
+    if k == TTkK.Key_MySites                  : return &#34;Key_MySites&#34;
+    if k == TTkK.Key_News                     : return &#34;Key_News&#34;
+    if k == TTkK.Key_OfficeHome               : return &#34;Key_OfficeHome&#34;
+    if k == TTkK.Key_Option                   : return &#34;Key_Option&#34;
+    if k == TTkK.Key_Paste                    : return &#34;Key_Paste&#34;
+    if k == TTkK.Key_Phone                    : return &#34;Key_Phone&#34;
+    if k == TTkK.Key_Calendar                 : return &#34;Key_Calendar&#34;
+    if k == TTkK.Key_Reply                    : return &#34;Key_Reply&#34;
+    if k == TTkK.Key_Reload                   : return &#34;Key_Reload&#34;
+    if k == TTkK.Key_RotateWindows            : return &#34;Key_RotateWindows&#34;
+    if k == TTkK.Key_RotationPB               : return &#34;Key_RotationPB&#34;
+    if k == TTkK.Key_RotationKB               : return &#34;Key_RotationKB&#34;
+    if k == TTkK.Key_Save                     : return &#34;Key_Save&#34;
+    if k == TTkK.Key_Send                     : return &#34;Key_Send&#34;
+    if k == TTkK.Key_Spell                    : return &#34;Key_Spell&#34;
+    if k == TTkK.Key_SplitScreen              : return &#34;Key_SplitScreen&#34;
+    if k == TTkK.Key_Support                  : return &#34;Key_Support&#34;
+    if k == TTkK.Key_TaskPane                 : return &#34;Key_TaskPane&#34;
+    if k == TTkK.Key_Terminal                 : return &#34;Key_Terminal&#34;
+    if k == TTkK.Key_Tools                    : return &#34;Key_Tools&#34;
+    if k == TTkK.Key_Travel                   : return &#34;Key_Travel&#34;
+    if k == TTkK.Key_Video                    : return &#34;Key_Video&#34;
+    if k == TTkK.Key_Word                     : return &#34;Key_Word&#34;
+    if k == TTkK.Key_Xfer                     : return &#34;Key_Xfer&#34;
+    if k == TTkK.Key_ZoomIn                   : return &#34;Key_ZoomIn&#34;
+    if k == TTkK.Key_ZoomOut                  : return &#34;Key_ZoomOut&#34;
+    if k == TTkK.Key_Away                     : return &#34;Key_Away&#34;
+    if k == TTkK.Key_Messenger                : return &#34;Key_Messenger&#34;
+    if k == TTkK.Key_WebCam                   : return &#34;Key_WebCam&#34;
+    if k == TTkK.Key_MailForward              : return &#34;Key_MailForward&#34;
+    if k == TTkK.Key_Pictures                 : return &#34;Key_Pictures&#34;
+    if k == TTkK.Key_Music                    : return &#34;Key_Music&#34;
+    if k == TTkK.Key_Battery                  : return &#34;Key_Battery&#34;
+    if k == TTkK.Key_Bluetooth                : return &#34;Key_Bluetooth&#34;
+    if k == TTkK.Key_WLAN                     : return &#34;Key_WLAN&#34;
+    if k == TTkK.Key_UWB                      : return &#34;Key_UWB&#34;
+    if k == TTkK.Key_AudioForward             : return &#34;Key_AudioForward&#34;
+    if k == TTkK.Key_AudioRepeat              : return &#34;Key_AudioRepeat&#34;
+    if k == TTkK.Key_AudioRandomPlay          : return &#34;Key_AudioRandomPlay&#34;
+    if k == TTkK.Key_Subtitle                 : return &#34;Key_Subtitle&#34;
+    if k == TTkK.Key_AudioCycleTrack          : return &#34;Key_AudioCycleTrack&#34;
+    if k == TTkK.Key_Time                     : return &#34;Key_Time&#34;
+    if k == TTkK.Key_Hibernate                : return &#34;Key_Hibernate&#34;
+    if k == TTkK.Key_View                     : return &#34;Key_View&#34;
+    if k == TTkK.Key_TopMenu                  : return &#34;Key_TopMenu&#34;
+    if k == TTkK.Key_PowerDown                : return &#34;Key_PowerDown&#34;
+    if k == TTkK.Key_Suspend                  : return &#34;Key_Suspend&#34;
+    if k == TTkK.Key_ContrastAdjust           : return &#34;Key_ContrastAdjust&#34;
+    if k == TTkK.Key_TouchpadToggle           : return &#34;Key_TouchpadToggle&#34;
+    if k == TTkK.Key_TouchpadOn               : return &#34;Key_TouchpadOn&#34;
+    if k == TTkK.Key_TouchpadOff              : return &#34;Key_TouchpadOff&#34;
+    if k == TTkK.Key_MicMute                  : return &#34;Key_MicMute&#34;
+    if k == TTkK.Key_Red                      : return &#34;Key_Red&#34;
+    if k == TTkK.Key_Green                    : return &#34;Key_Green&#34;
+    if k == TTkK.Key_Yellow                   : return &#34;Key_Yellow&#34;
+    if k == TTkK.Key_Blue                     : return &#34;Key_Blue&#34;
+    if k == TTkK.Key_ChannelUp                : return &#34;Key_ChannelUp&#34;
+    if k == TTkK.Key_ChannelDown              : return &#34;Key_ChannelDown&#34;
+    if k == TTkK.Key_Guide                    : return &#34;Key_Guide&#34;
+    if k == TTkK.Key_Info                     : return &#34;Key_Info&#34;
+    if k == TTkK.Key_Settings                 : return &#34;Key_Settings&#34;
+    if k == TTkK.Key_MicVolumeUp              : return &#34;Key_MicVolumeUp&#34;
+    if k == TTkK.Key_MicVolumeDown            : return &#34;Key_MicVolumeDown&#34;
+    if k == TTkK.Key_New                      : return &#34;Key_New&#34;
+    if k == TTkK.Key_Open                     : return &#34;Key_Open&#34;
+    if k == TTkK.Key_Find                     : return &#34;Key_Find&#34;
+    if k == TTkK.Key_Undo                     : return &#34;Key_Undo&#34;
+    if k == TTkK.Key_Redo                     : return &#34;Key_Redo&#34;
+    if k == TTkK.Key_MediaLast                : return &#34;Key_MediaLast&#34;
+    if k == TTkK.Key_unknown                  : return &#34;Key_unknown&#34;
+    if k == TTkK.Key_Call                     : return &#34;Key_Call&#34;
+    if k == TTkK.Key_Camera                   : return &#34;Key_Camera&#34;
+    if k == TTkK.Key_CameraFocus              : return &#34;Key_CameraFocus&#34;
+    if k == TTkK.Key_Context1                 : return &#34;Key_Context1&#34;
+    if k == TTkK.Key_Context2                 : return &#34;Key_Context2&#34;
+    if k == TTkK.Key_Context3                 : return &#34;Key_Context3&#34;
+    if k == TTkK.Key_Context4                 : return &#34;Key_Context4&#34;
+    if k == TTkK.Key_Flip                     : return &#34;Key_Flip&#34;
+    if k == TTkK.Key_Hangup                   : return &#34;Key_Hangup&#34;
+    if k == TTkK.Key_No                       : return &#34;Key_No&#34;
+    if k == TTkK.Key_Select                   : return &#34;Key_Select&#34;
+    if k == TTkK.Key_Yes                      : return &#34;Key_Yes&#34;
+    if k == TTkK.Key_ToggleCallHangup         : return &#34;Key_ToggleCallHangup&#34;
+    if k == TTkK.Key_VoiceDial                : return &#34;Key_VoiceDial&#34;
+    if k == TTkK.Key_LastNumberRedial         : return &#34;Key_LastNumberRedial&#34;
+    if k == TTkK.Key_Execute                  : return &#34;Key_Execute&#34;
+    if k == TTkK.Key_Printer                  : return &#34;Key_Printer&#34;
+    if k == TTkK.Key_Play                     : return &#34;Key_Play&#34;
+    if k == TTkK.Key_Sleep                    : return &#34;Key_Sleep&#34;
+    if k == TTkK.Key_Zoom                     : return &#34;Key_Zoom&#34;
+    if k == TTkK.Key_Exit                     : return &#34;Key_Exit&#34;
+    if k == TTkK.Key_Cancel                   : return &#34;Key_Cancel&#34;
+    return &#34;NONE!!!&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="TermTk.libbpytop.inputkey.KeyEvent"><code class="flex name class">
+<span>class <span class="ident">KeyEvent</span></span>
+<span>(</span><span>type: int, key: str, code: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class KeyEvent:
+    __slots__ = (&#39;type&#39;, &#39;key&#39;, &#39;code&#39;)
+    def __init__(self, type:int, key: str, code: str):
+        self.type = type
+        self.key = key
+        self.code = code
+    def __str__(self):
+        code = self.code.replace(&#39;\033&#39;,&#39;&lt;ESC&gt;&#39;)
+        return f&#34;KeyEvent: {self.key} {key2str(self.key)} {code}&#34;
+
+    @staticmethod
+    def parse(input_key):  # from: Space           except &#34;DEL&#34;
+        if len(input_key) == 1 and &#34;\040&#34; &lt;= input_key != &#34;\177&#34;:
+            return KeyEvent(TTkK.Character, input_key, input_key)
+        else:
+            key = _translate_key(input_key)
+            if key is not None:
+                return KeyEvent(TTkK.SpecialKey, key, input_key)
+        return None</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="TermTk.libbpytop.inputkey.KeyEvent.parse"><code class="name flex">
+<span>def <span class="ident">parse</span></span>(<span>input_key)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def parse(input_key):  # from: Space           except &#34;DEL&#34;
+    if len(input_key) == 1 and &#34;\040&#34; &lt;= input_key != &#34;\177&#34;:
+        return KeyEvent(TTkK.Character, input_key, input_key)
+    else:
+        key = _translate_key(input_key)
+        if key is not None:
+            return KeyEvent(TTkK.SpecialKey, key, input_key)
+    return None</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="TermTk.libbpytop.inputkey.KeyEvent.code"><code class="name">var <span class="ident">code</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.inputkey.KeyEvent.key"><code class="name">var <span class="ident">key</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.inputkey.KeyEvent.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="TermTk.libbpytop" href="index.html">TermTk.libbpytop</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="TermTk.libbpytop.inputkey.key2str" href="#TermTk.libbpytop.inputkey.key2str">key2str</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="TermTk.libbpytop.inputkey.KeyEvent" href="#TermTk.libbpytop.inputkey.KeyEvent">KeyEvent</a></code></h4>
+<ul class="">
+<li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.code" href="#TermTk.libbpytop.inputkey.KeyEvent.code">code</a></code></li>
+<li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.key" href="#TermTk.libbpytop.inputkey.KeyEvent.key">key</a></code></li>
+<li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.parse" href="#TermTk.libbpytop.inputkey.KeyEvent.parse">parse</a></code></li>
+<li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.type" href="#TermTk.libbpytop.inputkey.KeyEvent.type">type</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

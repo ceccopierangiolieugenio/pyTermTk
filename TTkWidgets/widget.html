@@ -1,0 +1,2367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>TermTk.TTkWidgets.widget API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>TermTk.TTkWidgets.widget</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the &#34;Software&#34;), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
+from TermTk.TTkCore.constant  import TTkK
+from TermTk.TTkCore.log       import TTkLog
+from TermTk.TTkCore.helper    import TTkHelper
+from TermTk.TTkCore.canvas    import TTkCanvas
+from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+from TermTk.TTkTemplates.mouseevents import TMouseEvents
+from TermTk.TTkTemplates.keyevents import TKeyEvents
+from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
+import TermTk.libbpytop       as lbt
+
+
+class TTkWidget(TMouseEvents,TKeyEvents):
+    &#39;&#39;&#39;
+    ### Widget Layout sizes:
+        Terminal window
+        ┌─────────────────────────────────────────┐
+        │                                         │
+        │    TTkWidget     width                  │
+        │ (x,y)┌─────────────────────────┐        │
+        │      │      padt               │        │
+        │      │    ┌───────────────┐    │ height │
+        │      │padl│ Layout/childs │padr│        │
+        │      │    └───────────────┘    │        │
+        │      │      padl               │        │
+        │      └─────────────────────────┘        │
+        └─────────────────────────────────────────┘
+    &#39;&#39;&#39;
+    __slots__ = (
+        &#39;_name&#39;, &#39;_parent&#39;,
+        &#39;_x&#39;, &#39;_y&#39;, &#39;_width&#39;, &#39;_height&#39;,
+        &#39;_padt&#39;, &#39;_padb&#39;, &#39;_padl&#39;, &#39;_padr&#39;,
+        &#39;_maxw&#39;, &#39;_maxh&#39;, &#39;_minw&#39;, &#39;_minh&#39;,
+        &#39;_focus&#39;,&#39;_focus_policy&#39;,
+        &#39;_layout&#39;, &#39;_canvas&#39;, &#39;_visible&#39;, &#39;_transparent&#39;)
+
+    def __init__(self, *args, **kwargs):
+        &#39;&#39;&#39;
+        TTkWidget constructor
+
+        Args:
+            name (str, optional): the name of the widget
+            parent ([TermTk.TTkWidgets.widget.TTkWidget], optional): the parent widget
+
+            x (int, optional, default=0): the x position
+            y (int, optional, default=0): the y position
+            pos ([int,int], optional, default=[0,0]): the [x,y] position (override the previously defined x, y)
+
+            width (int, optional, default=0): the width of the widget
+            height (int, optional, default=0): the height of the widget
+            size ([int,int], optional, default=[0,0]): the size [width, height] of the widget (override the previously defined sizes)
+
+            padding (int, optional, default=0): the padding (top, bottom, left, right) of the widget
+            paddingTop (int, optional, default=padding): the Top padding, override Top padding if already defined
+            paddingBottom (int, optional, default=padding): the Bottom padding, override Bottom padding if already defined
+            paddingLeft (int, optional, default=padding): the Left padding, override Left padding if already defined
+            paddingRight (int, optional, default=padding): the Right padding, override Right padding if already defined
+            maxWidth (int, optional, default=0x10000): the maxWidth of the widget
+            maxHeight (int, optional, default=0x10000): the maxHeight of the widget
+            maxSize ([int,int], optional): the max [width,height] of the widget
+            minWidth (int, optional, default=0): the minWidth of the widget
+            minHeight (int, optional, default=0): the minHeight of the widget
+            minSize ([int,int], optional): the minSize [width,height] of the widget
+
+            visible (bool, optional, default=True): the visibility
+            layout ([TermTk.TTkLayouts], optional, default=[TermTk.TTkLayouts.layout.TTkLayout]): the layout of this widget
+        &#39;&#39;&#39;
+        self._name = kwargs.get(&#39;name&#39;, &#39;TTkWidget&#39; )
+        self._parent = kwargs.get(&#39;parent&#39;, None )
+
+        self._x = kwargs.get(&#39;x&#39;, 0 )
+        self._y = kwargs.get(&#39;y&#39;, 0 )
+        self._x, self._y = kwargs.get(&#39;pos&#39;, (self._x, self._y))
+        self._width  = kwargs.get(&#39;width&#39; , 0 )
+        self._height = kwargs.get(&#39;height&#39;, 0 )
+        self._width, self._height = kwargs.get(&#39;size&#39;, (self._width, self._height))
+
+        padding = kwargs.get(&#39;padding&#39;, 0 )
+        self._padt = kwargs.get(&#39;paddingTop&#39;,    padding )
+        self._padb = kwargs.get(&#39;paddingBottom&#39;, padding )
+        self._padl = kwargs.get(&#39;paddingLeft&#39;,   padding )
+        self._padr = kwargs.get(&#39;paddingRight&#39;,  padding )
+
+        self._maxw = kwargs.get(&#39;maxWidth&#39;,  0x10000)
+        self._maxh = kwargs.get(&#39;maxHeight&#39;, 0x10000)
+        self._maxw, self._maxh = kwargs.get(&#39;maxSize&#39;, (self._maxw, self._maxh))
+        self._minw = kwargs.get(&#39;minWidth&#39;,  0x00000)
+        self._minh = kwargs.get(&#39;minHeight&#39;, 0x00000)
+        self._minw, self._minh = kwargs.get(&#39;minSize&#39;, (self._minw, self._minh))
+
+        self._visible = kwargs.get(&#39;visible&#39;, True)
+
+        self._focus = False
+        self._focus_policy = TTkK.NoFocus
+
+        self._layout = TTkLayout() # root layout
+        self._layout.setParent(self)
+        self._layout.addItem(kwargs.get(&#39;layout&#39;,TTkLayout())) # main layout
+
+        self._canvas = TTkCanvas(
+                            widget = self,
+                            width  = self._width  ,
+                            height = self._height )
+
+        if self._parent is not None:
+            self._parent.addWidget(self)
+            self._parent.update(repaint=True, updateLayout=True)
+
+        self.update(repaint=True, updateLayout=True)
+
+    def __del__(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        TTkLog.debug(&#34;DESTRUCTOR&#34;)
+        if self._parent is not None:
+            self._parent.removeWidget(self)
+            self._parent = None
+
+    def addWidget(self, widget):
+        &#39;&#39;&#39;
+        Add a child widget to the layout
+
+        Args:
+            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be added
+        &#39;&#39;&#39;
+        widget._parent = self
+        if self.layout() is not None:
+            self.layout().addWidget(widget)
+            self.update(repaint=True, updateLayout=True)
+        # widget.show()
+
+    def removeWidget(self, widget):
+        &#39;&#39;&#39;
+        Remove the child widget from the layout
+
+        Args:
+            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be removed
+        &#39;&#39;&#39;
+        if self.layout() is not None:
+            self.layout().removeWidget(widget)
+            self.update(repaint=True, updateLayout=True)
+
+    def paintEvent(self):
+        &#39;&#39;&#39;
+        Pain Event callback,
+        ths need to be overridden in the widget.
+        &#39;&#39;&#39;
+        pass
+
+    @staticmethod
+    def _paintChildCanvas(canvas, item, geometry):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        lx,ly,lw,lh = geometry
+        if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            child = item.widget()
+            cx,cy,cw,ch = child.geometry()
+            canvas.paintCanvas(
+                        child.getCanvas(),
+                        (cx,  cy,  cw, ch), # geometry
+                        (0,0,cw,ch),        # slice
+                        (lx, ly, lw, lh))   # bound
+        else:
+            for child in item.zSortedItems:
+                ix, iy, iw, ih = item.geometry()
+                # child outside the bound
+                if ix+iw &lt; lx and ix &gt; lx+lw and iy+ih &lt; ly and y &gt; ly+lh: continue
+                # Reduce the bound to the minimum visible
+                bx = max(ix,lx)
+                by = max(iy,ly)
+                bw = min(ix+iw,lx+lw)-bx
+                bh = min(iy+ih,ly+lh)-by
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
+
+    def paintChildCanvas(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
+
+    def paintNotifyParent(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        parent = self._parent
+        while parent is not None:
+            parent._canvas.clean()
+            parent.paintEvent()
+            parent.paintChildCanvas()
+            parent = parent._parent
+
+    def moveEvent(self, x: int, y: int):
+        &#39;&#39;&#39; Event Callback triggered after a successful move&#39;&#39;&#39;
+        pass
+    def resizeEvent(self, w: int, h: int):
+        &#39;&#39;&#39; Event Callback triggered after a successful resize&#39;&#39;&#39;
+        pass
+
+    def move(self, x: int, y: int):
+        &#39;&#39;&#39;
+        Move the widget
+        Args:
+            x (int): x position
+            y (int): y position
+        &#39;&#39;&#39;
+        if x==self._x and y==self._y: return
+        self._x = x
+        self._y = y
+        self.update(repaint=False, updateLayout=False)
+        self.moveEvent(x,y)
+
+    def resize(self, w: int, h: int):
+        &#39;&#39;&#39;
+        Resize the widget
+        Args:
+            w (int): the new width
+            h (int): the new height
+        &#39;&#39;&#39;
+        # TTkLog.debug(f&#34;resize: {w,h} {self._name}&#34;)
+        if w!=self._width or h!=self._height:
+            self._width  = w
+            self._height = h
+            self._canvas.resize(self._width, self._height)
+            self.update(repaint=True, updateLayout=True)
+        self.resizeEvent(w,h)
+
+    def setGeometry(self, x: int, y: int, w: int, h: int):
+        &#39;&#39;&#39;
+        Resize and move the widget
+        Args:
+            x (int): x position
+            y (int): y position
+            w (int): the new width
+            h (int): the new height
+        &#39;&#39;&#39;
+        self.resize(w, h)
+        self.move(x, y)
+
+    def getPadding(self) -&gt; (int, int, int, int):
+        &#39;&#39;&#39;
+        Retrieve the widget padding sizes
+        Returns:
+            List[top, bottom, left, right]: the 4 padding sizes
+        &#39;&#39;&#39;
+        return self._padt, self._padb, self._padl, self._padr
+
+    def setPadding(self, top, bottom, left, right):
+        &#39;&#39;&#39;
+       set the padding of the widget
+        Args:
+            top (int): top padding
+            bottom (int): bottom padding
+            left (int): left padding
+            right (int): right padding
+        &#39;&#39;&#39;
+        if self._padt == top  and self._padb == bottom and \
+           self._padl == left and self._padr == right: return
+        self._padt = top
+        self._padb = bottom
+        self._padl = left
+        self._padr = right
+        self.update(repaint=True, updateLayout=True)
+
+    @staticmethod
+    def _mouseEventLayoutHandle(evt, layout):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        x, y = evt.x, evt.y
+        lx,ly,lw,lh =layout.geometry()
+        # opt of bounds
+        if x&lt;lx or x&gt;lx+lw or y&lt;ly or y&gt;lh+ly:
+            return False
+        for item in reversed(layout.zSortedItems):
+        # for item in layout.zSortedItems:
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+                widget = item.widget()
+                if not widget._visible: continue
+                wevt = None
+                mouseEvent = False
+                if isinstance(evt, lbt.MouseEvent):
+                    mouseEvent = True
+                    wx,wy,ww,wh = widget.geometry()
+                    # Skip the mouse event if outside this widget
+                    if x &gt;= wx and x&lt;wx+ww and y&gt;=wy and y&lt;wy+wh:
+                        wevt = evt.clone(pos=(x-wx, y-wy))
+                if mouseEvent:
+                    if wevt is not None:
+                        #if not widget._data[&#39;mouse&#39;][&#39;underMouse&#39;]:
+                        #    widget._data[&#39;mouse&#39;][&#39;underMouse&#39;] = True
+                        #    widget.enterEvent(wevt)
+                        if widget.mouseEvent(wevt):
+                            return True
+                    #else:
+                    #    if widget._data[&#39;mouse&#39;][&#39;underMouse&#39;]:
+                    #        widget._data[&#39;mouse&#39;][&#39;underMouse&#39;] = False
+                    #        widget.leaveEvent(evt)
+                    #    if widget._data[&#39;layout&#39;] is not None:
+                    #        CuWidget._broadcastLeaveEvent(evt, widget._data[&#39;layout&#39;])
+                    continue
+
+                #if widget.event(evt):
+                #    return True
+            elif item.layoutItemType == TTkK.LayoutItem:
+                levt = evt.clone(pos=(x, y))
+                if TTkWidget._mouseEventLayoutHandle(levt, item):
+                    return True
+        return False
+
+    def mouseEvent(self, evt):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        # Mouse Drag has priority because it
+        # should be handled by the focussed widget
+        if evt.evt == TTkK.Drag:
+            if self.mouseDragEvent(evt):
+                return True
+
+        if self.rootLayout() is not None:
+            if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
+                return True
+
+        # handle own events
+        if evt.evt == TTkK.Move:
+            if self.mouseMoveEvent(evt):
+                return True
+
+        if evt.evt == TTkK.Release:
+            #if self.hasFocus():
+            #    self.clearFocus()
+            if self.mouseReleaseEvent(evt):
+                return True
+
+        if evt.evt == TTkK.Press:
+            if self.focusPolicy() &amp; TTkK.ClickFocus == TTkK.ClickFocus:
+                self.setFocus()
+                self.raiseWidget()
+            if self.mousePressEvent(evt):
+                # TTkLog.debug(f&#34;Click {self._name}&#34;)
+                return True
+
+        if evt.key == TTkK.Wheel:
+            if self.wheelEvent(evt):
+                return True
+            #if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:
+            #    self.setFocus()
+        #elif evt.type() == CuEvent.KeyPress:
+        #    self.keyPressEvent(evt)
+        #elif evt.type() == CuEvent.KeyRelease:
+        #    self.keyReleaseEvent(evt)
+        # Trigger this event to the childs
+        return False
+
+    #def event(self, evt):
+    #    pass
+#        # handle own events
+#        if evt.type() == CuEvent.MouseMove:
+#            if evt.button() == CuT.NoButton:
+#                self.mouseMoveEvent(evt)
+#        elif   evt.type() == CuEvent.MouseButtonRelease:
+#            self.mouseReleaseEvent(evt)
+#        elif evt.type() == CuEvent.MouseButtonPress:
+#            self.mousePressEvent(evt)
+#            if self.focusPolicy() &amp; CuT.ClickFocus == CuT.ClickFocus:
+#                self.setFocus()
+#        elif evt.type() == CuEvent.Wheel:
+#            self.wheelEvent(evt)
+#            if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:
+#                self.setFocus()
+#        elif evt.type() == CuEvent.KeyPress:
+#            self.keyPressEvent(evt)
+#        elif evt.type() == CuEvent.KeyRelease:
+#            self.keyReleaseEvent(evt)
+#        # Trigger this event to the childs
+#        if self.layout() is not None:
+#            return CuWidget._eventLayoutHandle(evt, self.layout())
+
+    def setLayout(self, layout):
+        self._layout.replaceItem(layout, 0)
+        #self.layout().setParent(self)
+        self.update(repaint=True, updateLayout=True)
+
+    def layout(self): return self._layout.itemAt(0)
+    def rootLayout(self): return self._layout
+
+    def setParent(self, parent):
+        self._parent = parent
+    def parentWidget(self):
+        return self._parent
+
+    def x(self): return self._x
+    def y(self): return self._y
+    def width(self):  return self._width
+    def height(self): return self._height
+
+    def pos(self):      return self._x, self._y
+    def size(self):     return self._width, self._height
+    def geometry(self): return self._x, self._y, self._width, self._height
+
+    def maximumSize(self):
+        return self.maximumWidth(), self.maximumHeight()
+    def maxDimension(self, orientation) -&gt; int:
+        if orientation == TTkK.HORIZONTAL:
+            return self.maximumWidth()
+        else:
+            return self.maximumHeight()
+    def maximumHeight(self):
+        wMaxH = self._maxh
+        if self.layout() is not None:
+            lMaxH = self.layout().maximumHeight() + self._padt + self._padb
+            if lMaxH &lt; wMaxH:
+                return lMaxH
+        return wMaxH
+    def maximumWidth(self):
+        wMaxW = self._maxw
+        if self.layout() is not None:
+            lMaxW = self.layout().maximumWidth() + self._padl + self._padr
+            if lMaxW &lt; wMaxW:
+                return lMaxW
+        return wMaxW
+
+    def minimumSize(self):
+        return self.minimumWidth(), self.minimumHeight()
+    def minDimension(self, orientation) -&gt; int:
+        if orientation == TTkK.HORIZONTAL:
+            return self.minimumWidth()
+        else:
+            return self.minimumHeight()
+    def minimumHeight(self):
+        wMinH = self._minh
+        if self.layout() is not None:
+            lMinH = self.layout().minimumHeight() + self._padt + self._padb
+            if lMinH &gt; wMinH:
+                return lMinH
+        return wMinH
+    def minimumWidth(self):
+        wMinW = self._minw
+        if self.layout() is not None:
+            lMinW = self.layout().minimumWidth() + self._padl + self._padr
+            if lMinW &gt; wMinW:
+                return lMinW
+        return wMinW
+
+    def setMaximumSize(self, maxw, maxh):
+        self.setMaximumWidth(maxw)
+        self.setMaximumHeight(maxh)
+    def setMaximumHeight(self, maxh):
+        if self._maxh == maxh: return
+        self._maxh = maxh
+        self.update(updateLayout=True, updateParent=True)
+    def setMaximumWidth(self, maxw):
+        if self._maxw == maxw: return
+        self._maxw = maxw
+        self.update(updateLayout=True, updateParent=True)
+
+    def setMinimumSize(self, minw, minh):
+        self.setMinimumWidth(minw)
+        self.setMinimumHeight(minh)
+    def setMinimumHeight(self, minh):
+        if self._minh == minh: return
+        self._minh = minh
+        self.update(updateLayout=True, updateParent=True)
+    def setMinimumWidth(self, minw):
+        if self._minw == minw: return
+        self._minw = minw
+        self.update(updateLayout=True, updateParent=True)
+
+    #@staticmethod
+    #def _showHandle(layout):
+    #    for i in range(layout.count()):
+    #        item = layout.itemAt(i)
+    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
+    #            item.widget().show()
+    #        elif isinstance(item, CuLayout):
+    #            CuWidget._showHandle(item)
+
+    @staticmethod
+    def _propagateShowToLayout(layout):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        if layout is None: return
+        for item in layout.zSortedItems:
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+                child = item.widget()
+                child._propagateShow()
+            else:
+                TTkWidget._propagateShowToLayout(item)
+
+    def _propagateShow(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        if not self._visible: return
+        self.update(updateLayout=True, updateParent=True)
+        TTkWidget._propagateShowToLayout(self.rootLayout())
+
+    @pyTTkSlot()
+    def show(self):
+        if self._visible: return
+        self._visible = True
+        self._canvas.show()
+        self._propagateShow()
+
+    #@staticmethod
+    #def _hideHandle(layout):
+    #    for i in range(layout.count()):
+    #        item = layout.itemAt(i)
+    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
+    #            item.widget().hide()
+    #        elif isinstance(item, CuLayout):
+    #            CuWidget._hideHandle(item)
+
+    @pyTTkSlot()
+    def hide(self):
+        if not self._visible: return
+        self._visible = False
+        self._canvas.hide()
+        self.update(repaint=False, updateParent=True)
+
+    def raiseWidget(self):
+        if self._parent is not None and \
+           self._parent.rootLayout() is not None:
+            self._parent.raiseWidget()
+            self._parent.rootLayout().raiseWidget(self)
+
+    def lowerWidget(self):
+        if self._parent is not None and \
+           self._parent.rootLayout() is not None:
+            self._parent.lowerWidget()
+            self._parent.rootLayout().lowerWidget(self)
+
+    def close(self): pass
+
+    def isVisible(self):
+        if self._parent is None:
+            return self._visible
+        else:
+            return self._visible &amp; self._parent.isVisible()
+
+    # Event to be sent
+    # TODO: Remove This
+    def layoutUpdated(self): pass
+
+    def update(self, repaint=True, updateLayout=False, updateParent=False):
+        if repaint:
+            TTkHelper.addUpdateBuffer(self)
+        TTkHelper.addUpdateWidget(self)
+        if updateLayout and self.rootLayout() is not None:
+            self.rootLayout().setGeometry(0,0,self._width,self._height)
+            self.layout().setGeometry(
+                        self._padl, self._padt,
+                        self._width   - self._padl - self._padr,
+                        self._height  - self._padt - self._padb)
+        if updateParent and self._parent is not None:
+            self._parent.update(updateLayout=True)
+        if updateLayout and self.rootLayout() is not None:
+            if self.rootLayout().update():
+                self.layoutUpdated()
+
+    def setFocus(self):
+        tmp = TTkHelper.getFocus()
+        if tmp is not None:
+            tmp.clearFocus()
+            tmp.focusOutEvent()
+            tmp.update(repaint=True, updateLayout=False)
+        if not TTkHelper.isOverlay(self):
+            TTkHelper.removeOverlay()
+        TTkHelper.setFocus(self)
+        self._focus = True
+        self.focusInEvent()
+
+    def clearFocus(self):
+        TTkHelper.clearFocus()
+        self._focus = False
+        self.focusOutEvent()
+
+    def hasFocus(self):
+        return self._focus
+
+    def getCanvas(self):
+        return self._canvas
+
+    def focusPolicy(self):
+        return self._focus_policy
+
+    def setFocusPolicy(self, policy):
+        self._focus_policy = policy
+
+    def focusInEvent(self): pass
+    def focusOutEvent(self): pass</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget"><code class="flex name class">
+<span>class <span class="ident">TTkWidget</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><h3 id="widget-layout-sizes">Widget Layout sizes:</h3>
+<pre><code>Terminal window
+┌─────────────────────────────────────────┐
+│                                         │
+│    TTkWidget     width                  │
+│ (x,y)┌─────────────────────────┐        │
+│      │      padt               │        │
+│      │    ┌───────────────┐    │ height │
+│      │padl│ Layout/childs │padr│        │
+│      │    └───────────────┘    │        │
+│      │      padl               │        │
+│      └─────────────────────────┘        │
+└─────────────────────────────────────────┘
+</code></pre>
+<p>TTkWidget constructor</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>the name of the widget</dd>
+<dt><strong><code>parent</code></strong> :&ensp;<code>[<a title="TermTk.TTkWidgets.widget.TTkWidget" href="#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a>]</code>, optional</dt>
+<dd>the parent widget</dd>
+<dt><strong><code>x</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the x position</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the y position</dd>
+<dt><strong><code>pos</code></strong> :&ensp;<code>[int,int]</code>, optional, default=<code>[0,0]</code></dt>
+<dd>the [x,y] position (override the previously defined x, y)</dd>
+<dt><strong><code>width</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the width of the widget</dd>
+<dt><strong><code>height</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the height of the widget</dd>
+<dt><strong><code>size</code></strong> :&ensp;<code>[int,int]</code>, optional, default=<code>[0,0]</code></dt>
+<dd>the size [width, height] of the widget (override the previously defined sizes)</dd>
+<dt><strong><code>padding</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the padding (top, bottom, left, right) of the widget</dd>
+<dt><strong><code>paddingTop</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Top padding, override Top padding if already defined</dd>
+<dt><strong><code>paddingBottom</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Bottom padding, override Bottom padding if already defined</dd>
+<dt><strong><code>paddingLeft</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Left padding, override Left padding if already defined</dd>
+<dt><strong><code>paddingRight</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Right padding, override Right padding if already defined</dd>
+<dt><strong><code>maxWidth</code></strong> :&ensp;<code>int</code>, optional, default=<code>0x10000</code></dt>
+<dd>the maxWidth of the widget</dd>
+<dt><strong><code>maxHeight</code></strong> :&ensp;<code>int</code>, optional, default=<code>0x10000</code></dt>
+<dd>the maxHeight of the widget</dd>
+<dt><strong><code>maxSize</code></strong> :&ensp;<code>[int,int]</code>, optional</dt>
+<dd>the max [width,height] of the widget</dd>
+<dt><strong><code>minWidth</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the minWidth of the widget</dd>
+<dt><strong><code>minHeight</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the minHeight of the widget</dd>
+<dt><strong><code>minSize</code></strong> :&ensp;<code>[int,int]</code>, optional</dt>
+<dd>the minSize [width,height] of the widget</dd>
+<dt><strong><code>visible</code></strong> :&ensp;<code>bool</code>, optional, default=<code>True</code></dt>
+<dd>the visibility</dd>
+<dt><strong><code>layout</code></strong> :&ensp;<code>[<a title="TermTk.TTkLayouts" href="../TTkLayouts/index.html">TermTk.TTkLayouts</a>]</code>, optional, default=<code>[<a title="TermTk.TTkLayouts.layout.TTkLayout" href="../TTkLayouts/layout.html#TermTk.TTkLayouts.layout.TTkLayout">TTkLayout</a>]</code></dt>
+<dd>the layout of this widget</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TTkWidget(TMouseEvents,TKeyEvents):
+    &#39;&#39;&#39;
+    ### Widget Layout sizes:
+        Terminal window
+        ┌─────────────────────────────────────────┐
+        │                                         │
+        │    TTkWidget     width                  │
+        │ (x,y)┌─────────────────────────┐        │
+        │      │      padt               │        │
+        │      │    ┌───────────────┐    │ height │
+        │      │padl│ Layout/childs │padr│        │
+        │      │    └───────────────┘    │        │
+        │      │      padl               │        │
+        │      └─────────────────────────┘        │
+        └─────────────────────────────────────────┘
+    &#39;&#39;&#39;
+    __slots__ = (
+        &#39;_name&#39;, &#39;_parent&#39;,
+        &#39;_x&#39;, &#39;_y&#39;, &#39;_width&#39;, &#39;_height&#39;,
+        &#39;_padt&#39;, &#39;_padb&#39;, &#39;_padl&#39;, &#39;_padr&#39;,
+        &#39;_maxw&#39;, &#39;_maxh&#39;, &#39;_minw&#39;, &#39;_minh&#39;,
+        &#39;_focus&#39;,&#39;_focus_policy&#39;,
+        &#39;_layout&#39;, &#39;_canvas&#39;, &#39;_visible&#39;, &#39;_transparent&#39;)
+
+    def __init__(self, *args, **kwargs):
+        &#39;&#39;&#39;
+        TTkWidget constructor
+
+        Args:
+            name (str, optional): the name of the widget
+            parent ([TermTk.TTkWidgets.widget.TTkWidget], optional): the parent widget
+
+            x (int, optional, default=0): the x position
+            y (int, optional, default=0): the y position
+            pos ([int,int], optional, default=[0,0]): the [x,y] position (override the previously defined x, y)
+
+            width (int, optional, default=0): the width of the widget
+            height (int, optional, default=0): the height of the widget
+            size ([int,int], optional, default=[0,0]): the size [width, height] of the widget (override the previously defined sizes)
+
+            padding (int, optional, default=0): the padding (top, bottom, left, right) of the widget
+            paddingTop (int, optional, default=padding): the Top padding, override Top padding if already defined
+            paddingBottom (int, optional, default=padding): the Bottom padding, override Bottom padding if already defined
+            paddingLeft (int, optional, default=padding): the Left padding, override Left padding if already defined
+            paddingRight (int, optional, default=padding): the Right padding, override Right padding if already defined
+            maxWidth (int, optional, default=0x10000): the maxWidth of the widget
+            maxHeight (int, optional, default=0x10000): the maxHeight of the widget
+            maxSize ([int,int], optional): the max [width,height] of the widget
+            minWidth (int, optional, default=0): the minWidth of the widget
+            minHeight (int, optional, default=0): the minHeight of the widget
+            minSize ([int,int], optional): the minSize [width,height] of the widget
+
+            visible (bool, optional, default=True): the visibility
+            layout ([TermTk.TTkLayouts], optional, default=[TermTk.TTkLayouts.layout.TTkLayout]): the layout of this widget
+        &#39;&#39;&#39;
+        self._name = kwargs.get(&#39;name&#39;, &#39;TTkWidget&#39; )
+        self._parent = kwargs.get(&#39;parent&#39;, None )
+
+        self._x = kwargs.get(&#39;x&#39;, 0 )
+        self._y = kwargs.get(&#39;y&#39;, 0 )
+        self._x, self._y = kwargs.get(&#39;pos&#39;, (self._x, self._y))
+        self._width  = kwargs.get(&#39;width&#39; , 0 )
+        self._height = kwargs.get(&#39;height&#39;, 0 )
+        self._width, self._height = kwargs.get(&#39;size&#39;, (self._width, self._height))
+
+        padding = kwargs.get(&#39;padding&#39;, 0 )
+        self._padt = kwargs.get(&#39;paddingTop&#39;,    padding )
+        self._padb = kwargs.get(&#39;paddingBottom&#39;, padding )
+        self._padl = kwargs.get(&#39;paddingLeft&#39;,   padding )
+        self._padr = kwargs.get(&#39;paddingRight&#39;,  padding )
+
+        self._maxw = kwargs.get(&#39;maxWidth&#39;,  0x10000)
+        self._maxh = kwargs.get(&#39;maxHeight&#39;, 0x10000)
+        self._maxw, self._maxh = kwargs.get(&#39;maxSize&#39;, (self._maxw, self._maxh))
+        self._minw = kwargs.get(&#39;minWidth&#39;,  0x00000)
+        self._minh = kwargs.get(&#39;minHeight&#39;, 0x00000)
+        self._minw, self._minh = kwargs.get(&#39;minSize&#39;, (self._minw, self._minh))
+
+        self._visible = kwargs.get(&#39;visible&#39;, True)
+
+        self._focus = False
+        self._focus_policy = TTkK.NoFocus
+
+        self._layout = TTkLayout() # root layout
+        self._layout.setParent(self)
+        self._layout.addItem(kwargs.get(&#39;layout&#39;,TTkLayout())) # main layout
+
+        self._canvas = TTkCanvas(
+                            widget = self,
+                            width  = self._width  ,
+                            height = self._height )
+
+        if self._parent is not None:
+            self._parent.addWidget(self)
+            self._parent.update(repaint=True, updateLayout=True)
+
+        self.update(repaint=True, updateLayout=True)
+
+    def __del__(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        TTkLog.debug(&#34;DESTRUCTOR&#34;)
+        if self._parent is not None:
+            self._parent.removeWidget(self)
+            self._parent = None
+
+    def addWidget(self, widget):
+        &#39;&#39;&#39;
+        Add a child widget to the layout
+
+        Args:
+            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be added
+        &#39;&#39;&#39;
+        widget._parent = self
+        if self.layout() is not None:
+            self.layout().addWidget(widget)
+            self.update(repaint=True, updateLayout=True)
+        # widget.show()
+
+    def removeWidget(self, widget):
+        &#39;&#39;&#39;
+        Remove the child widget from the layout
+
+        Args:
+            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be removed
+        &#39;&#39;&#39;
+        if self.layout() is not None:
+            self.layout().removeWidget(widget)
+            self.update(repaint=True, updateLayout=True)
+
+    def paintEvent(self):
+        &#39;&#39;&#39;
+        Pain Event callback,
+        ths need to be overridden in the widget.
+        &#39;&#39;&#39;
+        pass
+
+    @staticmethod
+    def _paintChildCanvas(canvas, item, geometry):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        lx,ly,lw,lh = geometry
+        if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            child = item.widget()
+            cx,cy,cw,ch = child.geometry()
+            canvas.paintCanvas(
+                        child.getCanvas(),
+                        (cx,  cy,  cw, ch), # geometry
+                        (0,0,cw,ch),        # slice
+                        (lx, ly, lw, lh))   # bound
+        else:
+            for child in item.zSortedItems:
+                ix, iy, iw, ih = item.geometry()
+                # child outside the bound
+                if ix+iw &lt; lx and ix &gt; lx+lw and iy+ih &lt; ly and y &gt; ly+lh: continue
+                # Reduce the bound to the minimum visible
+                bx = max(ix,lx)
+                by = max(iy,ly)
+                bw = min(ix+iw,lx+lw)-bx
+                bh = min(iy+ih,ly+lh)-by
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
+
+    def paintChildCanvas(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
+
+    def paintNotifyParent(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        parent = self._parent
+        while parent is not None:
+            parent._canvas.clean()
+            parent.paintEvent()
+            parent.paintChildCanvas()
+            parent = parent._parent
+
+    def moveEvent(self, x: int, y: int):
+        &#39;&#39;&#39; Event Callback triggered after a successful move&#39;&#39;&#39;
+        pass
+    def resizeEvent(self, w: int, h: int):
+        &#39;&#39;&#39; Event Callback triggered after a successful resize&#39;&#39;&#39;
+        pass
+
+    def move(self, x: int, y: int):
+        &#39;&#39;&#39;
+        Move the widget
+        Args:
+            x (int): x position
+            y (int): y position
+        &#39;&#39;&#39;
+        if x==self._x and y==self._y: return
+        self._x = x
+        self._y = y
+        self.update(repaint=False, updateLayout=False)
+        self.moveEvent(x,y)
+
+    def resize(self, w: int, h: int):
+        &#39;&#39;&#39;
+        Resize the widget
+        Args:
+            w (int): the new width
+            h (int): the new height
+        &#39;&#39;&#39;
+        # TTkLog.debug(f&#34;resize: {w,h} {self._name}&#34;)
+        if w!=self._width or h!=self._height:
+            self._width  = w
+            self._height = h
+            self._canvas.resize(self._width, self._height)
+            self.update(repaint=True, updateLayout=True)
+        self.resizeEvent(w,h)
+
+    def setGeometry(self, x: int, y: int, w: int, h: int):
+        &#39;&#39;&#39;
+        Resize and move the widget
+        Args:
+            x (int): x position
+            y (int): y position
+            w (int): the new width
+            h (int): the new height
+        &#39;&#39;&#39;
+        self.resize(w, h)
+        self.move(x, y)
+
+    def getPadding(self) -&gt; (int, int, int, int):
+        &#39;&#39;&#39;
+        Retrieve the widget padding sizes
+        Returns:
+            List[top, bottom, left, right]: the 4 padding sizes
+        &#39;&#39;&#39;
+        return self._padt, self._padb, self._padl, self._padr
+
+    def setPadding(self, top, bottom, left, right):
+        &#39;&#39;&#39;
+       set the padding of the widget
+        Args:
+            top (int): top padding
+            bottom (int): bottom padding
+            left (int): left padding
+            right (int): right padding
+        &#39;&#39;&#39;
+        if self._padt == top  and self._padb == bottom and \
+           self._padl == left and self._padr == right: return
+        self._padt = top
+        self._padb = bottom
+        self._padl = left
+        self._padr = right
+        self.update(repaint=True, updateLayout=True)
+
+    @staticmethod
+    def _mouseEventLayoutHandle(evt, layout):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        x, y = evt.x, evt.y
+        lx,ly,lw,lh =layout.geometry()
+        # opt of bounds
+        if x&lt;lx or x&gt;lx+lw or y&lt;ly or y&gt;lh+ly:
+            return False
+        for item in reversed(layout.zSortedItems):
+        # for item in layout.zSortedItems:
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+                widget = item.widget()
+                if not widget._visible: continue
+                wevt = None
+                mouseEvent = False
+                if isinstance(evt, lbt.MouseEvent):
+                    mouseEvent = True
+                    wx,wy,ww,wh = widget.geometry()
+                    # Skip the mouse event if outside this widget
+                    if x &gt;= wx and x&lt;wx+ww and y&gt;=wy and y&lt;wy+wh:
+                        wevt = evt.clone(pos=(x-wx, y-wy))
+                if mouseEvent:
+                    if wevt is not None:
+                        #if not widget._data[&#39;mouse&#39;][&#39;underMouse&#39;]:
+                        #    widget._data[&#39;mouse&#39;][&#39;underMouse&#39;] = True
+                        #    widget.enterEvent(wevt)
+                        if widget.mouseEvent(wevt):
+                            return True
+                    #else:
+                    #    if widget._data[&#39;mouse&#39;][&#39;underMouse&#39;]:
+                    #        widget._data[&#39;mouse&#39;][&#39;underMouse&#39;] = False
+                    #        widget.leaveEvent(evt)
+                    #    if widget._data[&#39;layout&#39;] is not None:
+                    #        CuWidget._broadcastLeaveEvent(evt, widget._data[&#39;layout&#39;])
+                    continue
+
+                #if widget.event(evt):
+                #    return True
+            elif item.layoutItemType == TTkK.LayoutItem:
+                levt = evt.clone(pos=(x, y))
+                if TTkWidget._mouseEventLayoutHandle(levt, item):
+                    return True
+        return False
+
+    def mouseEvent(self, evt):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        # Mouse Drag has priority because it
+        # should be handled by the focussed widget
+        if evt.evt == TTkK.Drag:
+            if self.mouseDragEvent(evt):
+                return True
+
+        if self.rootLayout() is not None:
+            if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
+                return True
+
+        # handle own events
+        if evt.evt == TTkK.Move:
+            if self.mouseMoveEvent(evt):
+                return True
+
+        if evt.evt == TTkK.Release:
+            #if self.hasFocus():
+            #    self.clearFocus()
+            if self.mouseReleaseEvent(evt):
+                return True
+
+        if evt.evt == TTkK.Press:
+            if self.focusPolicy() &amp; TTkK.ClickFocus == TTkK.ClickFocus:
+                self.setFocus()
+                self.raiseWidget()
+            if self.mousePressEvent(evt):
+                # TTkLog.debug(f&#34;Click {self._name}&#34;)
+                return True
+
+        if evt.key == TTkK.Wheel:
+            if self.wheelEvent(evt):
+                return True
+            #if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:
+            #    self.setFocus()
+        #elif evt.type() == CuEvent.KeyPress:
+        #    self.keyPressEvent(evt)
+        #elif evt.type() == CuEvent.KeyRelease:
+        #    self.keyReleaseEvent(evt)
+        # Trigger this event to the childs
+        return False
+
+    #def event(self, evt):
+    #    pass
+#        # handle own events
+#        if evt.type() == CuEvent.MouseMove:
+#            if evt.button() == CuT.NoButton:
+#                self.mouseMoveEvent(evt)
+#        elif   evt.type() == CuEvent.MouseButtonRelease:
+#            self.mouseReleaseEvent(evt)
+#        elif evt.type() == CuEvent.MouseButtonPress:
+#            self.mousePressEvent(evt)
+#            if self.focusPolicy() &amp; CuT.ClickFocus == CuT.ClickFocus:
+#                self.setFocus()
+#        elif evt.type() == CuEvent.Wheel:
+#            self.wheelEvent(evt)
+#            if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:
+#                self.setFocus()
+#        elif evt.type() == CuEvent.KeyPress:
+#            self.keyPressEvent(evt)
+#        elif evt.type() == CuEvent.KeyRelease:
+#            self.keyReleaseEvent(evt)
+#        # Trigger this event to the childs
+#        if self.layout() is not None:
+#            return CuWidget._eventLayoutHandle(evt, self.layout())
+
+    def setLayout(self, layout):
+        self._layout.replaceItem(layout, 0)
+        #self.layout().setParent(self)
+        self.update(repaint=True, updateLayout=True)
+
+    def layout(self): return self._layout.itemAt(0)
+    def rootLayout(self): return self._layout
+
+    def setParent(self, parent):
+        self._parent = parent
+    def parentWidget(self):
+        return self._parent
+
+    def x(self): return self._x
+    def y(self): return self._y
+    def width(self):  return self._width
+    def height(self): return self._height
+
+    def pos(self):      return self._x, self._y
+    def size(self):     return self._width, self._height
+    def geometry(self): return self._x, self._y, self._width, self._height
+
+    def maximumSize(self):
+        return self.maximumWidth(), self.maximumHeight()
+    def maxDimension(self, orientation) -&gt; int:
+        if orientation == TTkK.HORIZONTAL:
+            return self.maximumWidth()
+        else:
+            return self.maximumHeight()
+    def maximumHeight(self):
+        wMaxH = self._maxh
+        if self.layout() is not None:
+            lMaxH = self.layout().maximumHeight() + self._padt + self._padb
+            if lMaxH &lt; wMaxH:
+                return lMaxH
+        return wMaxH
+    def maximumWidth(self):
+        wMaxW = self._maxw
+        if self.layout() is not None:
+            lMaxW = self.layout().maximumWidth() + self._padl + self._padr
+            if lMaxW &lt; wMaxW:
+                return lMaxW
+        return wMaxW
+
+    def minimumSize(self):
+        return self.minimumWidth(), self.minimumHeight()
+    def minDimension(self, orientation) -&gt; int:
+        if orientation == TTkK.HORIZONTAL:
+            return self.minimumWidth()
+        else:
+            return self.minimumHeight()
+    def minimumHeight(self):
+        wMinH = self._minh
+        if self.layout() is not None:
+            lMinH = self.layout().minimumHeight() + self._padt + self._padb
+            if lMinH &gt; wMinH:
+                return lMinH
+        return wMinH
+    def minimumWidth(self):
+        wMinW = self._minw
+        if self.layout() is not None:
+            lMinW = self.layout().minimumWidth() + self._padl + self._padr
+            if lMinW &gt; wMinW:
+                return lMinW
+        return wMinW
+
+    def setMaximumSize(self, maxw, maxh):
+        self.setMaximumWidth(maxw)
+        self.setMaximumHeight(maxh)
+    def setMaximumHeight(self, maxh):
+        if self._maxh == maxh: return
+        self._maxh = maxh
+        self.update(updateLayout=True, updateParent=True)
+    def setMaximumWidth(self, maxw):
+        if self._maxw == maxw: return
+        self._maxw = maxw
+        self.update(updateLayout=True, updateParent=True)
+
+    def setMinimumSize(self, minw, minh):
+        self.setMinimumWidth(minw)
+        self.setMinimumHeight(minh)
+    def setMinimumHeight(self, minh):
+        if self._minh == minh: return
+        self._minh = minh
+        self.update(updateLayout=True, updateParent=True)
+    def setMinimumWidth(self, minw):
+        if self._minw == minw: return
+        self._minw = minw
+        self.update(updateLayout=True, updateParent=True)
+
+    #@staticmethod
+    #def _showHandle(layout):
+    #    for i in range(layout.count()):
+    #        item = layout.itemAt(i)
+    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
+    #            item.widget().show()
+    #        elif isinstance(item, CuLayout):
+    #            CuWidget._showHandle(item)
+
+    @staticmethod
+    def _propagateShowToLayout(layout):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        if layout is None: return
+        for item in layout.zSortedItems:
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+                child = item.widget()
+                child._propagateShow()
+            else:
+                TTkWidget._propagateShowToLayout(item)
+
+    def _propagateShow(self):
+        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+        if not self._visible: return
+        self.update(updateLayout=True, updateParent=True)
+        TTkWidget._propagateShowToLayout(self.rootLayout())
+
+    @pyTTkSlot()
+    def show(self):
+        if self._visible: return
+        self._visible = True
+        self._canvas.show()
+        self._propagateShow()
+
+    #@staticmethod
+    #def _hideHandle(layout):
+    #    for i in range(layout.count()):
+    #        item = layout.itemAt(i)
+    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
+    #            item.widget().hide()
+    #        elif isinstance(item, CuLayout):
+    #            CuWidget._hideHandle(item)
+
+    @pyTTkSlot()
+    def hide(self):
+        if not self._visible: return
+        self._visible = False
+        self._canvas.hide()
+        self.update(repaint=False, updateParent=True)
+
+    def raiseWidget(self):
+        if self._parent is not None and \
+           self._parent.rootLayout() is not None:
+            self._parent.raiseWidget()
+            self._parent.rootLayout().raiseWidget(self)
+
+    def lowerWidget(self):
+        if self._parent is not None and \
+           self._parent.rootLayout() is not None:
+            self._parent.lowerWidget()
+            self._parent.rootLayout().lowerWidget(self)
+
+    def close(self): pass
+
+    def isVisible(self):
+        if self._parent is None:
+            return self._visible
+        else:
+            return self._visible &amp; self._parent.isVisible()
+
+    # Event to be sent
+    # TODO: Remove This
+    def layoutUpdated(self): pass
+
+    def update(self, repaint=True, updateLayout=False, updateParent=False):
+        if repaint:
+            TTkHelper.addUpdateBuffer(self)
+        TTkHelper.addUpdateWidget(self)
+        if updateLayout and self.rootLayout() is not None:
+            self.rootLayout().setGeometry(0,0,self._width,self._height)
+            self.layout().setGeometry(
+                        self._padl, self._padt,
+                        self._width   - self._padl - self._padr,
+                        self._height  - self._padt - self._padb)
+        if updateParent and self._parent is not None:
+            self._parent.update(updateLayout=True)
+        if updateLayout and self.rootLayout() is not None:
+            if self.rootLayout().update():
+                self.layoutUpdated()
+
+    def setFocus(self):
+        tmp = TTkHelper.getFocus()
+        if tmp is not None:
+            tmp.clearFocus()
+            tmp.focusOutEvent()
+            tmp.update(repaint=True, updateLayout=False)
+        if not TTkHelper.isOverlay(self):
+            TTkHelper.removeOverlay()
+        TTkHelper.setFocus(self)
+        self._focus = True
+        self.focusInEvent()
+
+    def clearFocus(self):
+        TTkHelper.clearFocus()
+        self._focus = False
+        self.focusOutEvent()
+
+    def hasFocus(self):
+        return self._focus
+
+    def getCanvas(self):
+        return self._canvas
+
+    def focusPolicy(self):
+        return self._focus_policy
+
+    def setFocusPolicy(self, policy):
+        self._focus_policy = policy
+
+    def focusInEvent(self): pass
+    def focusOutEvent(self): pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents">TMouseEvents</a></li>
+<li><a title="TermTk.TTkTemplates.keyevents.TKeyEvents" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents">TKeyEvents</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="TermTk.TTkAbstract.abstractscrollarea.TTkAbstractScrollArea" href="../TTkAbstract/abstractscrollarea.html#TermTk.TTkAbstract.abstractscrollarea.TTkAbstractScrollArea">TTkAbstractScrollArea</a></li>
+<li><a title="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollView" href="../TTkAbstract/abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollView">TTkAbstractScrollView</a></li>
+<li><a title="TermTk.TTkCore.ttk.TTk" href="../TTkCore/ttk.html#TermTk.TTkCore.ttk.TTk">TTk</a></li>
+<li>TermTk.TTkTestWidgets.testwidget._TestContent</li>
+<li><a title="TermTk.TTkWidgets.button.TTkButton" href="button.html#TermTk.TTkWidgets.button.TTkButton">TTkButton</a></li>
+<li><a title="TermTk.TTkWidgets.checkbox.TTkCheckbox" href="checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox">TTkCheckbox</a></li>
+<li><a title="TermTk.TTkWidgets.combobox.TTkComboBox" href="combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox">TTkComboBox</a></li>
+<li><a title="TermTk.TTkWidgets.frame.TTkFrame" href="frame.html#TermTk.TTkWidgets.frame.TTkFrame">TTkFrame</a></li>
+<li><a title="TermTk.TTkWidgets.graph.TTkGraph" href="graph.html#TermTk.TTkWidgets.graph.TTkGraph">TTkGraph</a></li>
+<li><a title="TermTk.TTkWidgets.label.TTkLabel" href="label.html#TermTk.TTkWidgets.label.TTkLabel">TTkLabel</a></li>
+<li><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit" href="lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit">TTkLineEdit</a></li>
+<li>TermTk.TTkWidgets.menubar._TTkMenuSpacer</li>
+<li><a title="TermTk.TTkWidgets.radiobutton.TTkRadioButton" href="radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton">TTkRadioButton</a></li>
+<li><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar" href="scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar">TTkScrollBar</a></li>
+<li><a title="TermTk.TTkWidgets.spacer.TTkSpacer" href="spacer.html#TermTk.TTkWidgets.spacer.TTkSpacer">TTkSpacer</a></li>
+<li>TermTk.TTkWidgets.tableview._TTkTableViewHeader</li>
+<li>TermTk.TTkWidgets.treewidget._TTkDisplayedTreeItem</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.addWidget"><code class="name flex">
+<span>def <span class="ident">addWidget</span></span>(<span>self, widget)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a child widget to the layout</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>widget</code></strong> :&ensp;<code>[<a title="TermTk.TTkWidgets.widget.TTkWidget" href="#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a>]</code></dt>
+<dd>the widget to be added</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addWidget(self, widget):
+    &#39;&#39;&#39;
+    Add a child widget to the layout
+
+    Args:
+        widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be added
+    &#39;&#39;&#39;
+    widget._parent = self
+    if self.layout() is not None:
+        self.layout().addWidget(widget)
+        self.update(repaint=True, updateLayout=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.clearFocus"><code class="name flex">
+<span>def <span class="ident">clearFocus</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clearFocus(self):
+    TTkHelper.clearFocus()
+    self._focus = False
+    self.focusOutEvent()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self): pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.focusInEvent"><code class="name flex">
+<span>def <span class="ident">focusInEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusInEvent(self): pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.focusOutEvent"><code class="name flex">
+<span>def <span class="ident">focusOutEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusOutEvent(self): pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.focusPolicy"><code class="name flex">
+<span>def <span class="ident">focusPolicy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusPolicy(self):
+    return self._focus_policy</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.geometry"><code class="name flex">
+<span>def <span class="ident">geometry</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def geometry(self): return self._x, self._y, self._width, self._height</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.getCanvas"><code class="name flex">
+<span>def <span class="ident">getCanvas</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getCanvas(self):
+    return self._canvas</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.getPadding"><code class="name flex">
+<span>def <span class="ident">getPadding</span></span>(<span>self) ‑> (<class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve the widget padding sizes</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[top, bottom, left, right]</code></dt>
+<dd>the 4 padding sizes</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getPadding(self) -&gt; (int, int, int, int):
+    &#39;&#39;&#39;
+    Retrieve the widget padding sizes
+    Returns:
+        List[top, bottom, left, right]: the 4 padding sizes
+    &#39;&#39;&#39;
+    return self._padt, self._padb, self._padl, self._padr</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.hasFocus"><code class="name flex">
+<span>def <span class="ident">hasFocus</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hasFocus(self):
+    return self._focus</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.height"><code class="name flex">
+<span>def <span class="ident">height</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def height(self): return self._height</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.hide"><code class="name flex">
+<span>def <span class="ident">hide</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pyTTkSlot()
+def hide(self):
+    if not self._visible: return
+    self._visible = False
+    self._canvas.hide()
+    self.update(repaint=False, updateParent=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.isVisible"><code class="name flex">
+<span>def <span class="ident">isVisible</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isVisible(self):
+    if self._parent is None:
+        return self._visible
+    else:
+        return self._visible &amp; self._parent.isVisible()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="name flex">
+<span>def <span class="ident">layout</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def layout(self): return self._layout.itemAt(0)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.layoutUpdated"><code class="name flex">
+<span>def <span class="ident">layoutUpdated</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def layoutUpdated(self): pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.lowerWidget"><code class="name flex">
+<span>def <span class="ident">lowerWidget</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def lowerWidget(self):
+    if self._parent is not None and \
+       self._parent.rootLayout() is not None:
+        self._parent.lowerWidget()
+        self._parent.rootLayout().lowerWidget(self)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.maxDimension"><code class="name flex">
+<span>def <span class="ident">maxDimension</span></span>(<span>self, orientation) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maxDimension(self, orientation) -&gt; int:
+    if orientation == TTkK.HORIZONTAL:
+        return self.maximumWidth()
+    else:
+        return self.maximumHeight()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.maximumHeight"><code class="name flex">
+<span>def <span class="ident">maximumHeight</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maximumHeight(self):
+    wMaxH = self._maxh
+    if self.layout() is not None:
+        lMaxH = self.layout().maximumHeight() + self._padt + self._padb
+        if lMaxH &lt; wMaxH:
+            return lMaxH
+    return wMaxH</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.maximumSize"><code class="name flex">
+<span>def <span class="ident">maximumSize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maximumSize(self):
+    return self.maximumWidth(), self.maximumHeight()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.maximumWidth"><code class="name flex">
+<span>def <span class="ident">maximumWidth</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maximumWidth(self):
+    wMaxW = self._maxw
+    if self.layout() is not None:
+        lMaxW = self.layout().maximumWidth() + self._padl + self._padr
+        if lMaxW &lt; wMaxW:
+            return lMaxW
+    return wMaxW</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.minDimension"><code class="name flex">
+<span>def <span class="ident">minDimension</span></span>(<span>self, orientation) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minDimension(self, orientation) -&gt; int:
+    if orientation == TTkK.HORIZONTAL:
+        return self.minimumWidth()
+    else:
+        return self.minimumHeight()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.minimumHeight"><code class="name flex">
+<span>def <span class="ident">minimumHeight</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minimumHeight(self):
+    wMinH = self._minh
+    if self.layout() is not None:
+        lMinH = self.layout().minimumHeight() + self._padt + self._padb
+        if lMinH &gt; wMinH:
+            return lMinH
+    return wMinH</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.minimumSize"><code class="name flex">
+<span>def <span class="ident">minimumSize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minimumSize(self):
+    return self.minimumWidth(), self.minimumHeight()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.minimumWidth"><code class="name flex">
+<span>def <span class="ident">minimumWidth</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def minimumWidth(self):
+    wMinW = self._minw
+    if self.layout() is not None:
+        lMinW = self.layout().minimumWidth() + self._padl + self._padr
+        if lMinW &gt; wMinW:
+            return lMinW
+    return wMinW</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.mouseEvent"><code class="name flex">
+<span>def <span class="ident">mouseEvent</span></span>(<span>self, evt)</span>
+</code></dt>
+<dd>
+<div class="desc"><div class="admonition caution">
+<p class="admonition-title">Caution:&ensp;Don't touch this!</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mouseEvent(self, evt):
+    &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+    # Mouse Drag has priority because it
+    # should be handled by the focussed widget
+    if evt.evt == TTkK.Drag:
+        if self.mouseDragEvent(evt):
+            return True
+
+    if self.rootLayout() is not None:
+        if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
+            return True
+
+    # handle own events
+    if evt.evt == TTkK.Move:
+        if self.mouseMoveEvent(evt):
+            return True
+
+    if evt.evt == TTkK.Release:
+        #if self.hasFocus():
+        #    self.clearFocus()
+        if self.mouseReleaseEvent(evt):
+            return True
+
+    if evt.evt == TTkK.Press:
+        if self.focusPolicy() &amp; TTkK.ClickFocus == TTkK.ClickFocus:
+            self.setFocus()
+            self.raiseWidget()
+        if self.mousePressEvent(evt):
+            # TTkLog.debug(f&#34;Click {self._name}&#34;)
+            return True
+
+    if evt.key == TTkK.Wheel:
+        if self.wheelEvent(evt):
+            return True
+        #if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:
+        #    self.setFocus()
+    #elif evt.type() == CuEvent.KeyPress:
+    #    self.keyPressEvent(evt)
+    #elif evt.type() == CuEvent.KeyRelease:
+    #    self.keyReleaseEvent(evt)
+    # Trigger this event to the childs
+    return False</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.move"><code class="name flex">
+<span>def <span class="ident">move</span></span>(<span>self, x: int, y: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Move the widget</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>int</code></dt>
+<dd>x position</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>int</code></dt>
+<dd>y position</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move(self, x: int, y: int):
+    &#39;&#39;&#39;
+    Move the widget
+    Args:
+        x (int): x position
+        y (int): y position
+    &#39;&#39;&#39;
+    if x==self._x and y==self._y: return
+    self._x = x
+    self._y = y
+    self.update(repaint=False, updateLayout=False)
+    self.moveEvent(x,y)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.moveEvent"><code class="name flex">
+<span>def <span class="ident">moveEvent</span></span>(<span>self, x: int, y: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Callback triggered after a successful move</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def moveEvent(self, x: int, y: int):
+    &#39;&#39;&#39; Event Callback triggered after a successful move&#39;&#39;&#39;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas"><code class="name flex">
+<span>def <span class="ident">paintChildCanvas</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><div class="admonition caution">
+<p class="admonition-title">Caution:&ensp;Don't touch this!</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def paintChildCanvas(self):
+    &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+    TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.paintEvent"><code class="name flex">
+<span>def <span class="ident">paintEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pain Event callback,
+ths need to be overridden in the widget.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def paintEvent(self):
+    &#39;&#39;&#39;
+    Pain Event callback,
+    ths need to be overridden in the widget.
+    &#39;&#39;&#39;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent"><code class="name flex">
+<span>def <span class="ident">paintNotifyParent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><div class="admonition caution">
+<p class="admonition-title">Caution:&ensp;Don't touch this!</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def paintNotifyParent(self):
+    &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
+    parent = self._parent
+    while parent is not None:
+        parent._canvas.clean()
+        parent.paintEvent()
+        parent.paintChildCanvas()
+        parent = parent._parent</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.parentWidget"><code class="name flex">
+<span>def <span class="ident">parentWidget</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parentWidget(self):
+    return self._parent</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.pos"><code class="name flex">
+<span>def <span class="ident">pos</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pos(self):      return self._x, self._y</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.raiseWidget"><code class="name flex">
+<span>def <span class="ident">raiseWidget</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def raiseWidget(self):
+    if self._parent is not None and \
+       self._parent.rootLayout() is not None:
+        self._parent.raiseWidget()
+        self._parent.rootLayout().raiseWidget(self)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.removeWidget"><code class="name flex">
+<span>def <span class="ident">removeWidget</span></span>(<span>self, widget)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove the child widget from the layout</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>widget</code></strong> :&ensp;<code>[<a title="TermTk.TTkWidgets.widget.TTkWidget" href="#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a>]</code></dt>
+<dd>the widget to be removed</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def removeWidget(self, widget):
+    &#39;&#39;&#39;
+    Remove the child widget from the layout
+
+    Args:
+        widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be removed
+    &#39;&#39;&#39;
+    if self.layout() is not None:
+        self.layout().removeWidget(widget)
+        self.update(repaint=True, updateLayout=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.resize"><code class="name flex">
+<span>def <span class="ident">resize</span></span>(<span>self, w: int, h: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resize the widget</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>w</code></strong> :&ensp;<code>int</code></dt>
+<dd>the new width</dd>
+<dt><strong><code>h</code></strong> :&ensp;<code>int</code></dt>
+<dd>the new height</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resize(self, w: int, h: int):
+    &#39;&#39;&#39;
+    Resize the widget
+    Args:
+        w (int): the new width
+        h (int): the new height
+    &#39;&#39;&#39;
+    # TTkLog.debug(f&#34;resize: {w,h} {self._name}&#34;)
+    if w!=self._width or h!=self._height:
+        self._width  = w
+        self._height = h
+        self._canvas.resize(self._width, self._height)
+        self.update(repaint=True, updateLayout=True)
+    self.resizeEvent(w,h)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.resizeEvent"><code class="name flex">
+<span>def <span class="ident">resizeEvent</span></span>(<span>self, w: int, h: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Callback triggered after a successful resize</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resizeEvent(self, w: int, h: int):
+    &#39;&#39;&#39; Event Callback triggered after a successful resize&#39;&#39;&#39;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.rootLayout"><code class="name flex">
+<span>def <span class="ident">rootLayout</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rootLayout(self): return self._layout</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setFocus"><code class="name flex">
+<span>def <span class="ident">setFocus</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setFocus(self):
+    tmp = TTkHelper.getFocus()
+    if tmp is not None:
+        tmp.clearFocus()
+        tmp.focusOutEvent()
+        tmp.update(repaint=True, updateLayout=False)
+    if not TTkHelper.isOverlay(self):
+        TTkHelper.removeOverlay()
+    TTkHelper.setFocus(self)
+    self._focus = True
+    self.focusInEvent()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setFocusPolicy"><code class="name flex">
+<span>def <span class="ident">setFocusPolicy</span></span>(<span>self, policy)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setFocusPolicy(self, policy):
+    self._focus_policy = policy</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setGeometry"><code class="name flex">
+<span>def <span class="ident">setGeometry</span></span>(<span>self, x: int, y: int, w: int, h: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resize and move the widget</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>int</code></dt>
+<dd>x position</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>int</code></dt>
+<dd>y position</dd>
+<dt><strong><code>w</code></strong> :&ensp;<code>int</code></dt>
+<dd>the new width</dd>
+<dt><strong><code>h</code></strong> :&ensp;<code>int</code></dt>
+<dd>the new height</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setGeometry(self, x: int, y: int, w: int, h: int):
+    &#39;&#39;&#39;
+    Resize and move the widget
+    Args:
+        x (int): x position
+        y (int): y position
+        w (int): the new width
+        h (int): the new height
+    &#39;&#39;&#39;
+    self.resize(w, h)
+    self.move(x, y)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setLayout"><code class="name flex">
+<span>def <span class="ident">setLayout</span></span>(<span>self, layout)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setLayout(self, layout):
+    self._layout.replaceItem(layout, 0)
+    #self.layout().setParent(self)
+    self.update(repaint=True, updateLayout=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setMaximumHeight"><code class="name flex">
+<span>def <span class="ident">setMaximumHeight</span></span>(<span>self, maxh)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setMaximumHeight(self, maxh):
+    if self._maxh == maxh: return
+    self._maxh = maxh
+    self.update(updateLayout=True, updateParent=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setMaximumSize"><code class="name flex">
+<span>def <span class="ident">setMaximumSize</span></span>(<span>self, maxw, maxh)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setMaximumSize(self, maxw, maxh):
+    self.setMaximumWidth(maxw)
+    self.setMaximumHeight(maxh)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setMaximumWidth"><code class="name flex">
+<span>def <span class="ident">setMaximumWidth</span></span>(<span>self, maxw)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setMaximumWidth(self, maxw):
+    if self._maxw == maxw: return
+    self._maxw = maxw
+    self.update(updateLayout=True, updateParent=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setMinimumHeight"><code class="name flex">
+<span>def <span class="ident">setMinimumHeight</span></span>(<span>self, minh)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setMinimumHeight(self, minh):
+    if self._minh == minh: return
+    self._minh = minh
+    self.update(updateLayout=True, updateParent=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setMinimumSize"><code class="name flex">
+<span>def <span class="ident">setMinimumSize</span></span>(<span>self, minw, minh)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setMinimumSize(self, minw, minh):
+    self.setMinimumWidth(minw)
+    self.setMinimumHeight(minh)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setMinimumWidth"><code class="name flex">
+<span>def <span class="ident">setMinimumWidth</span></span>(<span>self, minw)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setMinimumWidth(self, minw):
+    if self._minw == minw: return
+    self._minw = minw
+    self.update(updateLayout=True, updateParent=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setPadding"><code class="name flex">
+<span>def <span class="ident">setPadding</span></span>(<span>self, top, bottom, left, right)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>set the padding of the widget
+Args:
+top (int): top padding
+bottom (int): bottom padding
+left (int): left padding
+right (int): right padding</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setPadding(self, top, bottom, left, right):
+    &#39;&#39;&#39;
+   set the padding of the widget
+    Args:
+        top (int): top padding
+        bottom (int): bottom padding
+        left (int): left padding
+        right (int): right padding
+    &#39;&#39;&#39;
+    if self._padt == top  and self._padb == bottom and \
+       self._padl == left and self._padr == right: return
+    self._padt = top
+    self._padb = bottom
+    self._padl = left
+    self._padr = right
+    self.update(repaint=True, updateLayout=True)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.setParent"><code class="name flex">
+<span>def <span class="ident">setParent</span></span>(<span>self, parent)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setParent(self, parent):
+    self._parent = parent</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pyTTkSlot()
+def show(self):
+    if self._visible: return
+    self._visible = True
+    self._canvas.show()
+    self._propagateShow()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.size"><code class="name flex">
+<span>def <span class="ident">size</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def size(self):     return self._width, self._height</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, repaint=True, updateLayout=False, updateParent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, repaint=True, updateLayout=False, updateParent=False):
+    if repaint:
+        TTkHelper.addUpdateBuffer(self)
+    TTkHelper.addUpdateWidget(self)
+    if updateLayout and self.rootLayout() is not None:
+        self.rootLayout().setGeometry(0,0,self._width,self._height)
+        self.layout().setGeometry(
+                    self._padl, self._padt,
+                    self._width   - self._padl - self._padr,
+                    self._height  - self._padt - self._padb)
+    if updateParent and self._parent is not None:
+        self._parent.update(updateLayout=True)
+    if updateLayout and self.rootLayout() is not None:
+        if self.rootLayout().update():
+            self.layoutUpdated()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.width"><code class="name flex">
+<span>def <span class="ident">width</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def width(self):  return self._width</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.x"><code class="name flex">
+<span>def <span class="ident">x</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def x(self): return self._x</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.widget.TTkWidget.y"><code class="name flex">
+<span>def <span class="ident">y</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def y(self): return self._y</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents">TMouseEvents</a></b></code>:
+<ul class="hlist">
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.enterEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.enterEvent">enterEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.leaveEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.leaveEvent">leaveEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDoubleClickEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDoubleClickEvent">mouseDoubleClickEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDragEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDragEvent">mouseDragEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseMoveEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseMoveEvent">mouseMoveEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.mousePressEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mousePressEvent">mousePressEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseReleaseEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseReleaseEvent">mouseReleaseEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents.wheelEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.wheelEvent">wheelEvent</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="TermTk.TTkTemplates.keyevents.TKeyEvents" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents">TKeyEvents</a></b></code>:
+<ul class="hlist">
+<li><code><a title="TermTk.TTkTemplates.keyevents.TKeyEvents.keyEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyEvent">keyEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.keyevents.TKeyEvents.keyPressEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyPressEvent">keyPressEvent</a></code></li>
+<li><code><a title="TermTk.TTkTemplates.keyevents.TKeyEvents.keyReleaseEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyReleaseEvent">keyReleaseEvent</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="TermTk.TTkWidgets" href="index.html">TermTk.TTkWidgets</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="TermTk.TTkWidgets.widget.TTkWidget" href="#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a></code></h4>
+<ul class="two-column">
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.addWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.addWidget">addWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.clearFocus" href="#TermTk.TTkWidgets.widget.TTkWidget.clearFocus">clearFocus</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.close" href="#TermTk.TTkWidgets.widget.TTkWidget.close">close</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.focusInEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.focusInEvent">focusInEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.focusOutEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.focusOutEvent">focusOutEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.focusPolicy" href="#TermTk.TTkWidgets.widget.TTkWidget.focusPolicy">focusPolicy</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.geometry" href="#TermTk.TTkWidgets.widget.TTkWidget.geometry">geometry</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.getCanvas" href="#TermTk.TTkWidgets.widget.TTkWidget.getCanvas">getCanvas</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.getPadding" href="#TermTk.TTkWidgets.widget.TTkWidget.getPadding">getPadding</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.hasFocus" href="#TermTk.TTkWidgets.widget.TTkWidget.hasFocus">hasFocus</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.height" href="#TermTk.TTkWidgets.widget.TTkWidget.height">height</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.hide" href="#TermTk.TTkWidgets.widget.TTkWidget.hide">hide</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.isVisible" href="#TermTk.TTkWidgets.widget.TTkWidget.isVisible">isVisible</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.layout" href="#TermTk.TTkWidgets.widget.TTkWidget.layout">layout</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.layoutUpdated" href="#TermTk.TTkWidgets.widget.TTkWidget.layoutUpdated">layoutUpdated</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.lowerWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.lowerWidget">lowerWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.maxDimension" href="#TermTk.TTkWidgets.widget.TTkWidget.maxDimension">maxDimension</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.maximumHeight" href="#TermTk.TTkWidgets.widget.TTkWidget.maximumHeight">maximumHeight</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.maximumSize" href="#TermTk.TTkWidgets.widget.TTkWidget.maximumSize">maximumSize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.maximumWidth" href="#TermTk.TTkWidgets.widget.TTkWidget.maximumWidth">maximumWidth</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.minDimension" href="#TermTk.TTkWidgets.widget.TTkWidget.minDimension">minDimension</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.minimumHeight" href="#TermTk.TTkWidgets.widget.TTkWidget.minimumHeight">minimumHeight</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.minimumSize" href="#TermTk.TTkWidgets.widget.TTkWidget.minimumSize">minimumSize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.minimumWidth" href="#TermTk.TTkWidgets.widget.TTkWidget.minimumWidth">minimumWidth</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mouseEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.mouseEvent">mouseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.move" href="#TermTk.TTkWidgets.widget.TTkWidget.move">move</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.moveEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas" href="#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent" href="#TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent">paintNotifyParent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.parentWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.parentWidget">parentWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.pos" href="#TermTk.TTkWidgets.widget.TTkWidget.pos">pos</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.raiseWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.raiseWidget">raiseWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.removeWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resize" href="#TermTk.TTkWidgets.widget.TTkWidget.resize">resize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resizeEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">resizeEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.rootLayout" href="#TermTk.TTkWidgets.widget.TTkWidget.rootLayout">rootLayout</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setFocus" href="#TermTk.TTkWidgets.widget.TTkWidget.setFocus">setFocus</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setFocusPolicy" href="#TermTk.TTkWidgets.widget.TTkWidget.setFocusPolicy">setFocusPolicy</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setGeometry" href="#TermTk.TTkWidgets.widget.TTkWidget.setGeometry">setGeometry</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setLayout" href="#TermTk.TTkWidgets.widget.TTkWidget.setLayout">setLayout</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setMaximumHeight" href="#TermTk.TTkWidgets.widget.TTkWidget.setMaximumHeight">setMaximumHeight</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setMaximumSize" href="#TermTk.TTkWidgets.widget.TTkWidget.setMaximumSize">setMaximumSize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setMaximumWidth" href="#TermTk.TTkWidgets.widget.TTkWidget.setMaximumWidth">setMaximumWidth</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setMinimumHeight" href="#TermTk.TTkWidgets.widget.TTkWidget.setMinimumHeight">setMinimumHeight</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setMinimumSize" href="#TermTk.TTkWidgets.widget.TTkWidget.setMinimumSize">setMinimumSize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setMinimumWidth" href="#TermTk.TTkWidgets.widget.TTkWidget.setMinimumWidth">setMinimumWidth</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setPadding" href="#TermTk.TTkWidgets.widget.TTkWidget.setPadding">setPadding</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setParent" href="#TermTk.TTkWidgets.widget.TTkWidget.setParent">setParent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.show" href="#TermTk.TTkWidgets.widget.TTkWidget.show">show</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.size" href="#TermTk.TTkWidgets.widget.TTkWidget.size">size</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.update" href="#TermTk.TTkWidgets.widget.TTkWidget.update">update</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.width" href="#TermTk.TTkWidgets.widget.TTkWidget.width">width</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.x" href="#TermTk.TTkWidgets.widget.TTkWidget.x">x</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.y" href="#TermTk.TTkWidgets.widget.TTkWidget.y">y</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

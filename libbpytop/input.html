@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>TermTk.libbpytop.input API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>TermTk.libbpytop.input</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+
+# Copyright 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;
+# Copyright 2020 Aristocratos (https://github.com/aristocratos/bpytop)
+#
+#    Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
+import os, sys, io, threading, signal, re, subprocess, logging, logging.handlers, argparse
+import re
+import queue
+from select import select
+from time import time, sleep, strftime, localtime
+from typing import TextIO, List, Set, Dict, Tuple, Optional, Union, Any, Callable, ContextManager, Iterable, Type, NamedTuple
+
+try: import fcntl, termios, tty, pwd
+except Exception as e:
+    print(f&#39;ERROR: {e}&#39;)
+    exit(1)
+
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkK
+from TermTk.libbpytop.inputkey import *
+
+class MouseEvent:
+    # Keys
+    NoButton      = TTkK.NoButton     # The button state does not refer to any button (see QMouseEvent::button()).
+    AllButtons    = TTkK.AllButtons   # This value corresponds to a mask of all possible mouse buttons. Use to set the &#39;acceptedButtons&#39; property of a MouseArea to accept ALL mouse buttons.
+    LeftButton    = TTkK.LeftButton   # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
+    RightButton   = TTkK.RightButton  # The right button.
+    MidButton     = TTkK.MidButton    # The middle button.
+    MiddleButton  = TTkK.MiddleButton # The middle button.
+    Wheel         = TTkK.Wheel
+
+    # Events
+    NoEvent = TTkK.NoEvent
+    Press   = TTkK.Press
+    Release = TTkK.Release
+    Drag    = TTkK.Drag
+    Move    = TTkK.Move
+    Up      = TTkK.WHEEL_Up
+    Down    = TTkK.WHEEL_Down
+
+    __slots__ = (&#39;x&#39;,&#39;y&#39;,&#39;key&#39;,&#39;evt&#39;,&#39;raw&#39;)
+    def __init__(self, x: int, y: int, key: int, evt: int, raw: str):
+        self.x = x
+        self.y = y
+        self.key = key
+        self.evt = evt
+        self.raw = raw
+
+    def clone(self, pos=None):
+        x,y = pos if pos != None else (self.x, self.y)
+        return MouseEvent(x, y, self.key, self.evt, self.raw)
+
+    def key2str(self):
+        return {
+            MouseEvent.NoButton     : &#34;NoButton&#34;,
+            MouseEvent.AllButtons   : &#34;AllButtons&#34;,
+            MouseEvent.LeftButton   : &#34;LeftButton&#34;,
+            MouseEvent.RightButton  : &#34;RightButton&#34;,
+            MouseEvent.MidButton    : &#34;MidButton&#34;,
+            MouseEvent.MiddleButton : &#34;MiddleButton&#34;,
+            MouseEvent.Wheel        : &#34;Wheel&#34;,
+        }.get(self.key, &#34;Undefined&#34;)
+
+    def evt2str(self):
+        return {
+            MouseEvent.NoEvent : &#34;NoEvent&#34;,
+            MouseEvent.Press   : &#34;Press&#34;,
+            MouseEvent.Release : &#34;Release&#34;,
+            MouseEvent.Drag    : &#34;Drag&#34;,
+            MouseEvent.Move    : &#34;Move&#34;,
+            MouseEvent.Up      : &#34;Up&#34;,
+            MouseEvent.Down    : &#34;Down&#34;,
+        }.get(self.evt, &#34;Undefined&#34;)
+
+    def __str__(self):
+        return f&#34;MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} - {self.raw}&#34;
+
+class Input:
+    class _nonblocking(object):
+        &#34;&#34;&#34;Set nonblocking mode for device&#34;&#34;&#34;
+        def __init__(self, stream: TextIO):
+            self.stream = stream
+            self.fd = self.stream.fileno()
+        def __enter__(self):
+            self.orig_fl = fcntl.fcntl(self.fd, fcntl.F_GETFL)
+            fcntl.fcntl(self.fd, fcntl.F_SETFL, self.orig_fl | os.O_NONBLOCK)
+        def __exit__(self, *args):
+            fcntl.fcntl(self.fd, fcntl.F_SETFL, self.orig_fl)
+
+    class _raw(object):
+        &#34;&#34;&#34;Set raw input mode for device&#34;&#34;&#34;
+        def __init__(self, stream: TextIO):
+            self.stream = stream
+            self.fd = self.stream.fileno()
+        def __enter__(self):
+            self.original_stty = termios.tcgetattr(self.stream)
+            tty.setcbreak(self.stream)
+        def __exit__(self, type, value, traceback):
+            termios.tcsetattr(self.stream, termios.TCSANOW, self.original_stty)
+
+    @staticmethod
+    def get_key(callback=None):
+        input_key: str = &#34;&#34;
+        mouse_re = re.compile(r&#34;\033\[&lt;(\d+);(\d+);(\d+)([mM])&#34;)
+
+        while not False:
+            with Input._raw(sys.stdin):
+                #if not select([sys.stdin], [], [], 0.1)[0]:     #* Wait 100ms for input on stdin then restart loop to check for stop flag
+                #    continue
+                input_key += sys.stdin.read(1)                  #* Read 1 key safely with blocking on
+                if input_key == &#34;\033&#34;:                         #* If first character is a escape sequence keep reading
+                    with Input._nonblocking(sys.stdin):                #* Set non blocking to prevent read stall
+                        input_key += sys.stdin.read(20)
+                        if input_key.startswith(&#34;\033[&lt;&#34;):
+                            _ = sys.stdin.read(1000)
+                # TTkLog.debug(&#34;INPUT: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                mevt = None
+                kevt = KeyEvent.parse(input_key)
+                if kevt is None and \
+                   input_key.startswith(&#34;\033[&lt;&#34;):
+                    # Mouse Event
+                    m = mouse_re.match(input_key)
+                    if not m:
+                        # TODO: Return Error
+                        TTkLog.error(&#34;UNHANDLED: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                        continue
+                    code = int(m.group(1))
+                    x = int(m.group(2))-1
+                    y = int(m.group(3))-1
+                    state = m.group(4)
+                    key = MouseEvent.NoButton
+                    evt = MouseEvent.NoEvent
+                    if code == 0x00:
+                        key = MouseEvent.LeftButton
+                        evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                    elif code == 0x01:
+                        key = MouseEvent.MidButton
+                        evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                    elif code == 0x02:
+                        key = MouseEvent.RightButton
+                        evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                    elif code == 0x20:
+                        key = MouseEvent.LeftButton
+                        evt = MouseEvent.Drag
+                    elif code == 0x21:
+                        key = MouseEvent.MidButton
+                        evt = MouseEvent.Drag
+                    elif code == 0x22:
+                        key = MouseEvent.RightButton
+                        evt = MouseEvent.Drag
+                    elif code == 0x40:
+                        key = MouseEvent.Wheel
+                        evt = MouseEvent.Up
+                    elif code == 0x41:
+                        key = MouseEvent.Wheel
+                        evt = MouseEvent.Down
+                    mevt = MouseEvent(x, y, key, evt, m.group(0).replace(&#34;\033&#34;, &#34;&lt;ESC&gt;&#34;))
+                if kevt is None and mevt is None:
+                    TTkLog.error(&#34;UNHANDLED: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                input_key = &#34;&#34;
+                if callback is not None:
+                    if not callback(kevt, mevt):
+                        break
+
+def main():
+    print(&#34;Retrieve Keyboard, Mouse press/drag/wheel Events&#34;)
+    print(&#34;Press q or &lt;ESC&gt; to exit&#34;)
+    import term as t
+
+    t.Term.push(t.Term.mouse_on)
+    t.Term.echo(False)
+
+    def callback(kevt=None, mevt=None):
+        if kevt is not None:
+            print(f&#34;Key Event: {kevt}&#34;)
+        if mevt is not None:
+            print(f&#34;Mouse Event: {mevt}&#34;)
+
+    Input.get_key(callback)
+
+    t.Term.push(t.Term.mouse_off, t.Term.mouse_direct_off)
+    t.Term.echo(True)
+
+if __name__ == &#34;__main__&#34;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="TermTk.libbpytop.input.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    print(&#34;Retrieve Keyboard, Mouse press/drag/wheel Events&#34;)
+    print(&#34;Press q or &lt;ESC&gt; to exit&#34;)
+    import term as t
+
+    t.Term.push(t.Term.mouse_on)
+    t.Term.echo(False)
+
+    def callback(kevt=None, mevt=None):
+        if kevt is not None:
+            print(f&#34;Key Event: {kevt}&#34;)
+        if mevt is not None:
+            print(f&#34;Mouse Event: {mevt}&#34;)
+
+    Input.get_key(callback)
+
+    t.Term.push(t.Term.mouse_off, t.Term.mouse_direct_off)
+    t.Term.echo(True)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="TermTk.libbpytop.input.Input"><code class="flex name class">
+<span>class <span class="ident">Input</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Input:
+    class _nonblocking(object):
+        &#34;&#34;&#34;Set nonblocking mode for device&#34;&#34;&#34;
+        def __init__(self, stream: TextIO):
+            self.stream = stream
+            self.fd = self.stream.fileno()
+        def __enter__(self):
+            self.orig_fl = fcntl.fcntl(self.fd, fcntl.F_GETFL)
+            fcntl.fcntl(self.fd, fcntl.F_SETFL, self.orig_fl | os.O_NONBLOCK)
+        def __exit__(self, *args):
+            fcntl.fcntl(self.fd, fcntl.F_SETFL, self.orig_fl)
+
+    class _raw(object):
+        &#34;&#34;&#34;Set raw input mode for device&#34;&#34;&#34;
+        def __init__(self, stream: TextIO):
+            self.stream = stream
+            self.fd = self.stream.fileno()
+        def __enter__(self):
+            self.original_stty = termios.tcgetattr(self.stream)
+            tty.setcbreak(self.stream)
+        def __exit__(self, type, value, traceback):
+            termios.tcsetattr(self.stream, termios.TCSANOW, self.original_stty)
+
+    @staticmethod
+    def get_key(callback=None):
+        input_key: str = &#34;&#34;
+        mouse_re = re.compile(r&#34;\033\[&lt;(\d+);(\d+);(\d+)([mM])&#34;)
+
+        while not False:
+            with Input._raw(sys.stdin):
+                #if not select([sys.stdin], [], [], 0.1)[0]:     #* Wait 100ms for input on stdin then restart loop to check for stop flag
+                #    continue
+                input_key += sys.stdin.read(1)                  #* Read 1 key safely with blocking on
+                if input_key == &#34;\033&#34;:                         #* If first character is a escape sequence keep reading
+                    with Input._nonblocking(sys.stdin):                #* Set non blocking to prevent read stall
+                        input_key += sys.stdin.read(20)
+                        if input_key.startswith(&#34;\033[&lt;&#34;):
+                            _ = sys.stdin.read(1000)
+                # TTkLog.debug(&#34;INPUT: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                mevt = None
+                kevt = KeyEvent.parse(input_key)
+                if kevt is None and \
+                   input_key.startswith(&#34;\033[&lt;&#34;):
+                    # Mouse Event
+                    m = mouse_re.match(input_key)
+                    if not m:
+                        # TODO: Return Error
+                        TTkLog.error(&#34;UNHANDLED: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                        continue
+                    code = int(m.group(1))
+                    x = int(m.group(2))-1
+                    y = int(m.group(3))-1
+                    state = m.group(4)
+                    key = MouseEvent.NoButton
+                    evt = MouseEvent.NoEvent
+                    if code == 0x00:
+                        key = MouseEvent.LeftButton
+                        evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                    elif code == 0x01:
+                        key = MouseEvent.MidButton
+                        evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                    elif code == 0x02:
+                        key = MouseEvent.RightButton
+                        evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                    elif code == 0x20:
+                        key = MouseEvent.LeftButton
+                        evt = MouseEvent.Drag
+                    elif code == 0x21:
+                        key = MouseEvent.MidButton
+                        evt = MouseEvent.Drag
+                    elif code == 0x22:
+                        key = MouseEvent.RightButton
+                        evt = MouseEvent.Drag
+                    elif code == 0x40:
+                        key = MouseEvent.Wheel
+                        evt = MouseEvent.Up
+                    elif code == 0x41:
+                        key = MouseEvent.Wheel
+                        evt = MouseEvent.Down
+                    mevt = MouseEvent(x, y, key, evt, m.group(0).replace(&#34;\033&#34;, &#34;&lt;ESC&gt;&#34;))
+                if kevt is None and mevt is None:
+                    TTkLog.error(&#34;UNHANDLED: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                input_key = &#34;&#34;
+                if callback is not None:
+                    if not callback(kevt, mevt):
+                        break</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="TermTk.libbpytop.input.Input.get_key"><code class="name flex">
+<span>def <span class="ident">get_key</span></span>(<span>callback=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def get_key(callback=None):
+    input_key: str = &#34;&#34;
+    mouse_re = re.compile(r&#34;\033\[&lt;(\d+);(\d+);(\d+)([mM])&#34;)
+
+    while not False:
+        with Input._raw(sys.stdin):
+            #if not select([sys.stdin], [], [], 0.1)[0]:     #* Wait 100ms for input on stdin then restart loop to check for stop flag
+            #    continue
+            input_key += sys.stdin.read(1)                  #* Read 1 key safely with blocking on
+            if input_key == &#34;\033&#34;:                         #* If first character is a escape sequence keep reading
+                with Input._nonblocking(sys.stdin):                #* Set non blocking to prevent read stall
+                    input_key += sys.stdin.read(20)
+                    if input_key.startswith(&#34;\033[&lt;&#34;):
+                        _ = sys.stdin.read(1000)
+            # TTkLog.debug(&#34;INPUT: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+            mevt = None
+            kevt = KeyEvent.parse(input_key)
+            if kevt is None and \
+               input_key.startswith(&#34;\033[&lt;&#34;):
+                # Mouse Event
+                m = mouse_re.match(input_key)
+                if not m:
+                    # TODO: Return Error
+                    TTkLog.error(&#34;UNHANDLED: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+                    continue
+                code = int(m.group(1))
+                x = int(m.group(2))-1
+                y = int(m.group(3))-1
+                state = m.group(4)
+                key = MouseEvent.NoButton
+                evt = MouseEvent.NoEvent
+                if code == 0x00:
+                    key = MouseEvent.LeftButton
+                    evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                elif code == 0x01:
+                    key = MouseEvent.MidButton
+                    evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                elif code == 0x02:
+                    key = MouseEvent.RightButton
+                    evt = MouseEvent.Press if state==&#34;M&#34; else MouseEvent.Release
+                elif code == 0x20:
+                    key = MouseEvent.LeftButton
+                    evt = MouseEvent.Drag
+                elif code == 0x21:
+                    key = MouseEvent.MidButton
+                    evt = MouseEvent.Drag
+                elif code == 0x22:
+                    key = MouseEvent.RightButton
+                    evt = MouseEvent.Drag
+                elif code == 0x40:
+                    key = MouseEvent.Wheel
+                    evt = MouseEvent.Up
+                elif code == 0x41:
+                    key = MouseEvent.Wheel
+                    evt = MouseEvent.Down
+                mevt = MouseEvent(x, y, key, evt, m.group(0).replace(&#34;\033&#34;, &#34;&lt;ESC&gt;&#34;))
+            if kevt is None and mevt is None:
+                TTkLog.error(&#34;UNHANDLED: &#34;+input_key.replace(&#34;\033&#34;,&#34;&lt;ESC&gt;&#34;))
+            input_key = &#34;&#34;
+            if callback is not None:
+                if not callback(kevt, mevt):
+                    break</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent"><code class="flex name class">
+<span>class <span class="ident">MouseEvent</span></span>
+<span>(</span><span>x: int, y: int, key: int, evt: int, raw: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MouseEvent:
+    # Keys
+    NoButton      = TTkK.NoButton     # The button state does not refer to any button (see QMouseEvent::button()).
+    AllButtons    = TTkK.AllButtons   # This value corresponds to a mask of all possible mouse buttons. Use to set the &#39;acceptedButtons&#39; property of a MouseArea to accept ALL mouse buttons.
+    LeftButton    = TTkK.LeftButton   # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
+    RightButton   = TTkK.RightButton  # The right button.
+    MidButton     = TTkK.MidButton    # The middle button.
+    MiddleButton  = TTkK.MiddleButton # The middle button.
+    Wheel         = TTkK.Wheel
+
+    # Events
+    NoEvent = TTkK.NoEvent
+    Press   = TTkK.Press
+    Release = TTkK.Release
+    Drag    = TTkK.Drag
+    Move    = TTkK.Move
+    Up      = TTkK.WHEEL_Up
+    Down    = TTkK.WHEEL_Down
+
+    __slots__ = (&#39;x&#39;,&#39;y&#39;,&#39;key&#39;,&#39;evt&#39;,&#39;raw&#39;)
+    def __init__(self, x: int, y: int, key: int, evt: int, raw: str):
+        self.x = x
+        self.y = y
+        self.key = key
+        self.evt = evt
+        self.raw = raw
+
+    def clone(self, pos=None):
+        x,y = pos if pos != None else (self.x, self.y)
+        return MouseEvent(x, y, self.key, self.evt, self.raw)
+
+    def key2str(self):
+        return {
+            MouseEvent.NoButton     : &#34;NoButton&#34;,
+            MouseEvent.AllButtons   : &#34;AllButtons&#34;,
+            MouseEvent.LeftButton   : &#34;LeftButton&#34;,
+            MouseEvent.RightButton  : &#34;RightButton&#34;,
+            MouseEvent.MidButton    : &#34;MidButton&#34;,
+            MouseEvent.MiddleButton : &#34;MiddleButton&#34;,
+            MouseEvent.Wheel        : &#34;Wheel&#34;,
+        }.get(self.key, &#34;Undefined&#34;)
+
+    def evt2str(self):
+        return {
+            MouseEvent.NoEvent : &#34;NoEvent&#34;,
+            MouseEvent.Press   : &#34;Press&#34;,
+            MouseEvent.Release : &#34;Release&#34;,
+            MouseEvent.Drag    : &#34;Drag&#34;,
+            MouseEvent.Move    : &#34;Move&#34;,
+            MouseEvent.Up      : &#34;Up&#34;,
+            MouseEvent.Down    : &#34;Down&#34;,
+        }.get(self.evt, &#34;Undefined&#34;)
+
+    def __str__(self):
+        return f&#34;MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} - {self.raw}&#34;</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="TermTk.libbpytop.input.MouseEvent.AllButtons"><code class="name">var <span class="ident">AllButtons</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Down"><code class="name">var <span class="ident">Down</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Drag"><code class="name">var <span class="ident">Drag</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.LeftButton"><code class="name">var <span class="ident">LeftButton</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.MidButton"><code class="name">var <span class="ident">MidButton</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.MiddleButton"><code class="name">var <span class="ident">MiddleButton</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Move"><code class="name">var <span class="ident">Move</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.NoButton"><code class="name">var <span class="ident">NoButton</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.NoEvent"><code class="name">var <span class="ident">NoEvent</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Press"><code class="name">var <span class="ident">Press</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Release"><code class="name">var <span class="ident">Release</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.RightButton"><code class="name">var <span class="ident">RightButton</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Up"><code class="name">var <span class="ident">Up</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.Wheel"><code class="name">var <span class="ident">Wheel</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="TermTk.libbpytop.input.MouseEvent.evt"><code class="name">var <span class="ident">evt</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.key"><code class="name">var <span class="ident">key</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.raw"><code class="name">var <span class="ident">raw</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.x"><code class="name">var <span class="ident">x</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.y"><code class="name">var <span class="ident">y</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="TermTk.libbpytop.input.MouseEvent.clone"><code class="name flex">
+<span>def <span class="ident">clone</span></span>(<span>self, pos=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clone(self, pos=None):
+    x,y = pos if pos != None else (self.x, self.y)
+    return MouseEvent(x, y, self.key, self.evt, self.raw)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.evt2str"><code class="name flex">
+<span>def <span class="ident">evt2str</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def evt2str(self):
+    return {
+        MouseEvent.NoEvent : &#34;NoEvent&#34;,
+        MouseEvent.Press   : &#34;Press&#34;,
+        MouseEvent.Release : &#34;Release&#34;,
+        MouseEvent.Drag    : &#34;Drag&#34;,
+        MouseEvent.Move    : &#34;Move&#34;,
+        MouseEvent.Up      : &#34;Up&#34;,
+        MouseEvent.Down    : &#34;Down&#34;,
+    }.get(self.evt, &#34;Undefined&#34;)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.libbpytop.input.MouseEvent.key2str"><code class="name flex">
+<span>def <span class="ident">key2str</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def key2str(self):
+    return {
+        MouseEvent.NoButton     : &#34;NoButton&#34;,
+        MouseEvent.AllButtons   : &#34;AllButtons&#34;,
+        MouseEvent.LeftButton   : &#34;LeftButton&#34;,
+        MouseEvent.RightButton  : &#34;RightButton&#34;,
+        MouseEvent.MidButton    : &#34;MidButton&#34;,
+        MouseEvent.MiddleButton : &#34;MiddleButton&#34;,
+        MouseEvent.Wheel        : &#34;Wheel&#34;,
+    }.get(self.key, &#34;Undefined&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="TermTk.libbpytop" href="index.html">TermTk.libbpytop</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="TermTk.libbpytop.input.main" href="#TermTk.libbpytop.input.main">main</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="TermTk.libbpytop.input.Input" href="#TermTk.libbpytop.input.Input">Input</a></code></h4>
+<ul class="">
+<li><code><a title="TermTk.libbpytop.input.Input.get_key" href="#TermTk.libbpytop.input.Input.get_key">get_key</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="TermTk.libbpytop.input.MouseEvent" href="#TermTk.libbpytop.input.MouseEvent">MouseEvent</a></code></h4>
+<ul class="two-column">
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.AllButtons" href="#TermTk.libbpytop.input.MouseEvent.AllButtons">AllButtons</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Down" href="#TermTk.libbpytop.input.MouseEvent.Down">Down</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Drag" href="#TermTk.libbpytop.input.MouseEvent.Drag">Drag</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.LeftButton" href="#TermTk.libbpytop.input.MouseEvent.LeftButton">LeftButton</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.MidButton" href="#TermTk.libbpytop.input.MouseEvent.MidButton">MidButton</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.MiddleButton" href="#TermTk.libbpytop.input.MouseEvent.MiddleButton">MiddleButton</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Move" href="#TermTk.libbpytop.input.MouseEvent.Move">Move</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.NoButton" href="#TermTk.libbpytop.input.MouseEvent.NoButton">NoButton</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.NoEvent" href="#TermTk.libbpytop.input.MouseEvent.NoEvent">NoEvent</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Press" href="#TermTk.libbpytop.input.MouseEvent.Press">Press</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Release" href="#TermTk.libbpytop.input.MouseEvent.Release">Release</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.RightButton" href="#TermTk.libbpytop.input.MouseEvent.RightButton">RightButton</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Up" href="#TermTk.libbpytop.input.MouseEvent.Up">Up</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.Wheel" href="#TermTk.libbpytop.input.MouseEvent.Wheel">Wheel</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.clone" href="#TermTk.libbpytop.input.MouseEvent.clone">clone</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.evt" href="#TermTk.libbpytop.input.MouseEvent.evt">evt</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.evt2str" href="#TermTk.libbpytop.input.MouseEvent.evt2str">evt2str</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.key" href="#TermTk.libbpytop.input.MouseEvent.key">key</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.key2str" href="#TermTk.libbpytop.input.MouseEvent.key2str">key2str</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.raw" href="#TermTk.libbpytop.input.MouseEvent.raw">raw</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.x" href="#TermTk.libbpytop.input.MouseEvent.x">x</a></code></li>
+<li><code><a title="TermTk.libbpytop.input.MouseEvent.y" href="#TermTk.libbpytop.input.MouseEvent.y">y</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
