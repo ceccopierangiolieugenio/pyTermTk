@@ -26,6 +26,14 @@ build: .venv
 	rm -rf dist
 	python3 -m build
 
+deployDoc:
+	git checkout gh-pages
+	cp -a docs/html/TermTk/*
+	find index.html TTk* libbpytop -name "*.html" | xargs git add
+	git commit -m "Doc Updated"
+	git push origin gh-pages
+	git checkout main
+
 testDeploy: .venv
 	. .venv/bin/activate
 	python3 -m twine upload --repository testpypi dist/* --verbose
