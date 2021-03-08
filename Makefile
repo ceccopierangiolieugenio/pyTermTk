@@ -28,7 +28,8 @@ build: .venv
 
 deployDoc:
 	git checkout gh-pages
-	cp -a docs/html/TermTk/*
+	find index.html TTk* libbpytop -name "*.html" | rm -rf
+	cp -a docs/html/TermTk/* .
 	find index.html TTk* libbpytop -name "*.html" | xargs git add
 	git commit -m "Doc Updated"
 	git push origin gh-pages
