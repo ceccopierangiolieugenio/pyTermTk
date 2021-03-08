@@ -22,17 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
 import TermTk as ttk
 
-    # Set the HBoxLayout as defaut in the terminal widget
 root = ttk.TTk()
-root.setLayout(ttk.TTkHBoxLayout())
 
-    # Attach 4 buttons to the root widget
-ttk.TTkButton(parent=root, border=True, text="Button1")
-ttk.TTkButton(parent=root, border=True, text="Button2")
-ttk.TTkButton(parent=root, border=True, text="Button3")
-ttk.TTkButton(parent=root, border=True, text="Button4")
+    # Create a window and attach it to the root (parent=root)
+logWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(80,20), title="LogViewer Window", border=True, layout=ttk.TTkVBoxLayout())
 
+    # Define the Label and attach it to the window (parent=helloWin)
+ttk.TTkLogViewer(parent=logWin)
+
+ttk.TTkLog.info(    "Test Info Messgae")
+ttk.TTkLog.debug(   "Test Debug Messgae")
+ttk.TTkLog.error(   "Test Error Messgae")
+ttk.TTkLog.warn(    "Test Warning Messgae")
+ttk.TTkLog.critical("Test Critical Messgae")
+ttk.TTkLog.fatal(   "Test Fatal Messgae")
+
+    # Start the Main loop
 root.mainloop()

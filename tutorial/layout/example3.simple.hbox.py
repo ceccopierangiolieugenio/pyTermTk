@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
 import TermTk as ttk
 
-    # Set the VBoxLayout as defaut in the terminal widget
-root = ttk.TTk(layout=ttk.TTkVBoxLayout())
+    # Set the HBoxLayout as defaut in the terminal widget
+root = ttk.TTk()
+root.setLayout(ttk.TTkHBoxLayout())
 
     # Attach 4 buttons to the root widget
 ttk.TTkButton(parent=root, border=True, text="Button1")

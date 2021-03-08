@@ -22,29 +22,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
 import TermTk as ttk
 
-    # Set the GridLayout as defaut in the terminal widget
-root = ttk.TTk()
+    # define the callback used to process the log message
+def message_handler(mode, context, message):
+    msgType = "NONE"
+    if mode == ttk.TTkLog.InfoMsg:       msgType = "[INFO]"
+    elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
+    elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
+    elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
+    elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+    print(f"{msgType} {context.file} {message}")
 
-gridLayout = ttk.TTkGridLayout()
-root.setLayout(gridLayout)
+    # Register the callback to the message handler
+ttk.TTkLog.installMessageHandler(message_handler)
 
-    # Attach 2 buttons to the root widget using the default method
-    # this will append them to the first row
-    # NOTE: it is not recommended to use this legacy method in a gridLayout
-ttk.TTkButton(parent=root, border=True, text="Button1")
-ttk.TTkButton(parent=root, border=True, text="Button2")
-    # Attach 2 buttons to a specific position in the grid
-gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 1,2)
-gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 2,4)
-
-    # Create a VBoxLayout and add it to the gridLayout
-vboxLayout = ttk.TTkVBoxLayout()
-gridLayout.addItem(vboxLayout,1,3)
-    # Attach 2 buttons to the vBoxLayout
-vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button5"))
-vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button6"))
-
-root.mainloop()
+ttk.TTkLog.info(    "Test Info Messgae")
+ttk.TTkLog.debug(   "Test Debug Messgae")
+ttk.TTkLog.error(   "Test Error Messgae")
+ttk.TTkLog.warn(    "Test Warning Messgae")
+ttk.TTkLog.critical("Test Critical Messgae")
+ttk.TTkLog.fatal(   "Test Fatal Messgae")

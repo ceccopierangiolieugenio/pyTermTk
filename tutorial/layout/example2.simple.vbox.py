@@ -24,6 +24,13 @@
 
 import TermTk as ttk
 
-root = ttk.TTk()
-ttk.TTkLabel(parent=root, pos=(5,2), text="Hello World")
+    # Set the VBoxLayout as defaut in the terminal widget
+root = ttk.TTk(layout=ttk.TTkVBoxLayout())
+
+    # Attach 4 buttons to the root widget
+ttk.TTkButton(parent=root, border=True, text="Button1")
+ttk.TTkButton(parent=root, border=True, text="Button2")
+ttk.TTkButton(parent=root, border=True, text="Button3")
+ttk.TTkButton(parent=root, border=True, text="Button4")
+
 root.mainloop()

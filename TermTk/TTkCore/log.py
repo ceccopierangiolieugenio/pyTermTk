@@ -61,7 +61,7 @@ class TTkLog:
         log(f"{context.file}:{context.line} {message}")
 
     @staticmethod
-    def use_default_file_logging():
+    def use_default_file_logging(file="session.log"):
         logging.basicConfig(level=logging.DEBUG,
                     filename='session.log',
                     format='%(levelname)s:(%(threadName)-9s) %(message)s',)

@@ -24,6 +24,13 @@
 
 import TermTk as ttk
 
-root = ttk.TTk()
-ttk.TTkLabel(parent=root, pos=(5,2), text="Hello World")
-root.mainloop()
+    # session.log is used by default
+ttk.TTkLog.use_default_file_logging()
+
+ttk.TTkLog.info(    "Test Info Messgae")
+ttk.TTkLog.debug(   "Test Debug Messgae")
+ttk.TTkLog.error(   "Test Error Messgae")
+ttk.TTkLog.warn(    "Test Warning Messgae")
+ttk.TTkLog.critical("Test Critical Messgae")
+ttk.TTkLog.fatal(   "Test Fatal Messgae")
+

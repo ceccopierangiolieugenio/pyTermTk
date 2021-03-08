@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
 import TermTk as ttk
 
     # Set the GridLayout as defaut in the terminal widget
@@ -30,7 +29,7 @@ gridLayout = ttk.TTkGridLayout(columnMinHeight=0,columnMinWidth=2)
 root = ttk.TTk(layout=gridLayout)
 
     # Attach 2 buttons to the root widget using the default method
-    # this wil append them to the first row
+    # this will append them to the first row
 ttk.TTkButton(parent=root, border=True, text="Button1")
 ttk.TTkButton(parent=root, border=True, text="Button2")
     # Attach 2 buttons to a specific position in the grid

@@ -69,11 +69,42 @@ TTkGridLayout        ┌┐ columnMinWidth
 
 
 
-## Example 1 - Simple [TTkVBoxLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkVBoxLayout)
-Following is the code to execute [VBox Example](layout/example1.simple.vbox.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+## Example 1 - Simple [TTkLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/layout.html#TermTk.TTkLayouts.layout.TTkLayout)
+Following is the code to execute [VBox Example](layout/example1.simple.layout.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
 ```python
-import sys, os
+import TermTk as ttk
+
+    # TTkLayout is used by default
+root = ttk.TTk()
+
+    # Attach 4 buttons to the root widget
+ttk.TTkButton(parent=root, pos=(0,0),  size=(15,5), border=True, text="Button1")
+ttk.TTkButton(parent=root, pos=(0,5),  size=(10,4), border=True, text="Button2")
+ttk.TTkButton(parent=root, pos=(10,6), size=(10,3), border=True, text="Button3")
+ttk.TTkButton(parent=root, pos=(13,1), size=(15,3), border=True, text="Button4")
+
+root.mainloop()
+```
+
+The above code produces the following output
+```text
+┌─────────────┐
+│            ┌─────────────┐
+│   Button1  │   Button4   │
+│            ╘═════════════╛
+╘═════════════╛
+┌────────┐
+│Button2 │┌────────┐
+│        ││Button3 │
+╘════════╛╘════════╛
+
+```
+
+## Example 2 - Simple [TTkVBoxLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkVBoxLayout)
+Following is the code to execute [VBox Example](layout/example2.simple.vbox.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+
+```python
 import TermTk as ttk
 
     # Set the VBoxLayout as defaut in the terminal widget
@@ -112,11 +143,10 @@ The above code produces the following output
 ╘═══════════════════════════════════════════════════════════╛
 ```
 
-## Example 2 - Simple [TTkHBoxLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkHBoxLayout)
-Following is the code to execute [HBox Example](layout/example2.simple.hbox.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+## Example 3 - Simple [TTkHBoxLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkHBoxLayout)
+Following is the code to execute [HBox Example](layout/example3.simple.hbox.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
 ```python
-import sys, os
 import TermTk as ttk
 
     # Set the HBoxLayout as defaut in the terminal widget
@@ -156,11 +186,10 @@ The above code produces the following output
 
 ```
 
-## Example 3 - Simple [TTkGridLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.gridlayout.TTkGridLayout)
-Following is the code to execute [HBox Example](layout/example3.simple.grid.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+## Example 4 - Simple [TTkGridLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/gridlayout.html#TermTk.TTkLayouts.gridlayout.TTkGridLayout)
+Following is the code to execute [HBox Example](layout/example4.simple.grid.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
 ```python
-import sys, os
 import TermTk as ttk
 
     # Set the GridLayout as defaut in the terminal widget
@@ -204,11 +233,10 @@ root.mainloop()
                                         ╘═════════════════╛
 ```
 
-## Example 4 - Nested Layouts
-Following is the code to execute [Nested Layouts Example](layout/example4.nested.layouts.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+## Example 5 - Nested Layouts
+Following is the code to execute [Nested Layouts Example](layout/example5.nested.layouts.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
 ```python
-import sys, os
 import TermTk as ttk
 
     # Set the GridLayout as defaut in the terminal widget

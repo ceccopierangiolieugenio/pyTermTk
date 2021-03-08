@@ -11,7 +11,6 @@
 Following is the code to execute [Hello World program](helloworld/helloworld.001.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) −
 
 ```python
-import sys, os
 import TermTk as ttk
 
 root = ttk.TTk()
@@ -32,7 +31,6 @@ The above code produces the following output
 Following is the code to execute [Hello World program](helloworld/helloworld.002.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) −
 
 ```python
-import sys, os
 import TermTk as ttk
 
     # Create a root object (it is a widget that represent the terminal)
