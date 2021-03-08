@@ -28,75 +28,7 @@
 </summary>
 <pre><code class="python">from .layout import *
 from .gridlayout import *
-from .boxlayout import *
-
-&#39;&#39;&#39;
-### [TTkLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/layout.html#TermTk.TTkLayouts.layout.TTkLayout)
-This is the base class for all the different layouts.
-It allows free placement of the widgets in the layout area.
-Used mainly to have free range moving [windows](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkWidgets/window.html) because the widgets are not automatically replaced after a layout event
-```text
-TTkLayout
- ╔════════════════════════════╗
- ║   pos(4,2)                 ║
- ║   ┌───────┐   pos(16,4)    ║
- ║   │Widget1│   ┌─────────┐  ║
- ║   │       │   │ Widget2 │  ║
- ║   │       │   └─────────┘  ║
- ║   │       │                ║
- ║   └───────┘                ║
- ║                            ║
- ╚════════════════════════════╝
-```
-
-### [TTkHBoxLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkHBoxLayout)
-This layout allow an automatic place all the widgets horizontally
-```text
-TTkHBoxLayout
- ╔═════════╤═════════╤═════════╗
- ║ Widget1 │ Widget2 │ Widget3 ║
- ║         │         │         ║
- ║         │         │         ║
- ║         │         │         ║
- ║         │         │         ║
- ║         │         │         ║
- ╚═════════╧═════════╧═════════╝
-```
-
-### [TTkVBoxLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkVBoxLayout)
-This layout allow an automatic place all the widgets vertically
-```text
-TTkVBoxLayout
- ╔═════════════════════════════╗
- ║         Widget 1            ║
- ╟─────────────────────────────╢
- ║         Widget 2            ║
- ╟─────────────────────────────╢
- ║         Widget 3            ║
- ╟─────────────────────────────╢
- ║         Widget 4            ║
- ╚═════════════════════════════╝
-```
-
-### [TTkGridLayout](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/gridlayout.html#TermTk.TTkLayouts.gridlayout.TTkGridLayout)
-This layout allow an automatic place all the widgets in a grid
-the empty rows/cols are resized to the &#34;columnMinHeight,columnMinWidth&#34; parameters
-```
-TTkGridLayout        ┌┐ columnMinWidth
- ╔═════════╤═════════╤╤═════════╗
- ║ Widget1 │ Widget2 ││ Widget3 ║
- ║ (0,0)   │ (0,1)   ││ (0,3)   ║
- ╟─────────┼─────────┼┼─────────╢ ┐ columnMinHeight
- ╟─────────┼─────────┼┼─────────╢ ┘
- ║ Widget4 │         ││         ║
- ║ (2,0)   │         ││         ║
- ╟─────────┼─────────┼┼─────────╢
- ║         │         ││ Widget5 ║
- ║         │         ││ (3,3)   ║
- ╚═════════╧═════════╧╧═════════╝
-```
-
-&#39;&#39;&#39;</code></pre>
+from .boxlayout import *</code></pre>
 </details>
 </section>
 <section>
