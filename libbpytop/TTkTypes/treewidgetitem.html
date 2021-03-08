@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>TermTk.TTkCore.signal API documentation</title>
-<meta name="description" content="[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/003-signalslots.md)" />
+<title>TermTk.TTkTypes.treewidgetitem API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,10 +19,9 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>TermTk.TTkCore.signal</code></h1>
+<h1 class="title">Module <code>TermTk.TTkTypes.treewidgetitem</code></h1>
 </header>
 <section id="section-intro">
-<p><a href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/003-signalslots.md">Tutorial</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -51,70 +50,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html
-#      https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuSignal.py
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
-&#39;&#39;&#39;
-[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/003-signalslots.md)
-&#39;&#39;&#39;
-def pyTTkSlot(*args, **kwargs):
-    def pyTTkSlot_d(func):
-        # Add signature attributes to the function
-        func._TTkslot_attr = args
-        return func
-    return pyTTkSlot_d
-
-def pyTTkSignal(*args, **kwargs):
-    return _pyTTkSignal_obj(*args, **kwargs)
-
-class _pyTTkSignal_obj():
-    __slots__ = (&#39;_types&#39;, &#39;_name&#39;, &#39;_revision&#39;, &#39;_connected_slots&#39;)
+class TTkTreeWidgetItem():
+    __slots__ = (&#39;_parent&#39;, &#39;_data&#39;, &#39;_childs&#39;, &#39;_expand&#39;)
     def __init__(self, *args, **kwargs):
-        # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
+        self._data = args[0]
+        self._childs = []
+        self._expand = False
+        self._parent = kwargs.get(&#34;parent&#34;, None)
 
-        # PyQt5.QtCore.pyqtSignal(types[, name[, revision=0[, arguments=[]]]])
-        #    Create one or more overloaded unbound signals as a class attribute.
+    def setExpand(self, status):
+        self._expand = status
 
-        #    Parameters:
-        #    types - the types that define the C++ signature of the signal. Each type may be a Python type object or a string that is the name of a C++ type. Alternatively each may be a sequence of type arguments. In this case each sequence defines the signature of a different signal overload. The first overload will be the default.
-        #    name - the name of the signal. If it is omitted then the name of the class attribute is used. This may only be given as a keyword argument.
-        #    revision - the revision of the signal that is exported to QML. This may only be given as a keyword argument.
-        #    arguments - the sequence of the names of the signal&#39;s arguments that is exported to QML. This may only be given as a keyword argument.
-        #    Return type:
-        #        an unbound signal
-        self._types = args
-        self._name = kwargs.get(&#39;name&#39;, None)
-        self._revision = kwargs.get(&#39;revision&#39;, 0)
-        self._connected_slots = []
+    def expand(self):
+        return self._expand
 
-    def connect(self, slot):
-        # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
+    def addChild(self, item):
+        self._childs.append(item)
+        item._parent = self
 
-        # connect(slot[, type=PyQt5.QtCore.Qt.AutoConnection[, no_receiver_check=False]]) -&gt; PyQt5.QtCore.QMetaObject.Connection
-        #    Connect a signal to a slot. An exception will be raised if the connection failed.
+    def data(self):
+        return self._data
 
-        #    Parameters:
-        #    slot - the slot to connect to, either a Python callable or another bound signal.
-        #    type - the type of the connection to make.
-        #    no_receiver_check - suppress the check that the underlying C++ receiver instance still exists and deliver the signal anyway.
-        #    Returns:
-        #        a Connection object which can be passed to disconnect(). This is the only way to disconnect a connection to a lambda function.
-        if hasattr(slot, &#39;_TTkslot_attr&#39;) and slot._TTkslot_attr != self._types:
-            error = &#34;Decorated slot has no signature compatible: &#34;+slot.__name__+str(slot._TTkslot_attr)+&#34; != signal&#34;+str(self._types)
-            raise TypeError(error)
-        if slot not in self._connected_slots:
-            self._connected_slots.append(slot)
+    def parent(self):
+        return self._parent
 
-    def disconnect(self, *args, **kwargs):
-        for slot in args:
-            self._connected_slots.remove(slot)
-
-    def emit(self, *args, **kwargs):
-        if len(args) != len(self._types):
-            error = &#34;func&#34;+str(self._types)+&#34; signal has &#34;+str(len(self._types))+&#34; argument(s) but &#34;+str(len(args))+&#34; provided&#34;
-            raise TypeError(error)
-        for slot in self._connected_slots:
-            slot(*args, **kwargs)</code></pre>
+    def childs(self):
+        return self._childs</code></pre>
 </details>
 </section>
 <section>
@@ -122,10 +88,13 @@ class _pyTTkSignal_obj():
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="TermTk.TTkCore.signal.pyTTkSignal"><code class="name flex">
-<span>def <span class="ident">pyTTkSignal</span></span>(<span>*args, **kwargs)</span>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem"><code class="flex name class">
+<span>class <span class="ident">TTkTreeWidgetItem</span></span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -133,12 +102,51 @@ class _pyTTkSignal_obj():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def pyTTkSignal(*args, **kwargs):
-    return _pyTTkSignal_obj(*args, **kwargs)</code></pre>
+<pre><code class="python">class TTkTreeWidgetItem():
+    __slots__ = (&#39;_parent&#39;, &#39;_data&#39;, &#39;_childs&#39;, &#39;_expand&#39;)
+    def __init__(self, *args, **kwargs):
+        self._data = args[0]
+        self._childs = []
+        self._expand = False
+        self._parent = kwargs.get(&#34;parent&#34;, None)
+
+    def setExpand(self, status):
+        self._expand = status
+
+    def expand(self):
+        return self._expand
+
+    def addChild(self, item):
+        self._childs.append(item)
+        item._parent = self
+
+    def data(self):
+        return self._data
+
+    def parent(self):
+        return self._parent
+
+    def childs(self):
+        return self._childs</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.addChild"><code class="name flex">
+<span>def <span class="ident">addChild</span></span>(<span>self, item)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addChild(self, item):
+    self._childs.append(item)
+    item._parent = self</code></pre>
 </details>
 </dd>
-<dt id="TermTk.TTkCore.signal.pyTTkSlot"><code class="name flex">
-<span>def <span class="ident">pyTTkSlot</span></span>(<span>*args, **kwargs)</span>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.childs"><code class="name flex">
+<span>def <span class="ident">childs</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -146,17 +154,65 @@ class _pyTTkSignal_obj():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def pyTTkSlot(*args, **kwargs):
-    def pyTTkSlot_d(func):
-        # Add signature attributes to the function
-        func._TTkslot_attr = args
-        return func
-    return pyTTkSlot_d</code></pre>
+<pre><code class="python">def childs(self):
+    return self._childs</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.data"><code class="name flex">
+<span>def <span class="ident">data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data(self):
+    return self._data</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.expand"><code class="name flex">
+<span>def <span class="ident">expand</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def expand(self):
+    return self._expand</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.parent"><code class="name flex">
+<span>def <span class="ident">parent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parent(self):
+    return self._parent</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.setExpand"><code class="name flex">
+<span>def <span class="ident">setExpand</span></span>(<span>self, status)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setExpand(self, status):
+    self._expand = status</code></pre>
 </details>
 </dd>
 </dl>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -167,13 +223,22 @@ class _pyTTkSignal_obj():
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="TermTk.TTkCore" href="index.html">TermTk.TTkCore</a></code></li>
+<li><code><a title="TermTk.TTkTypes" href="index.html">TermTk.TTkTypes</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="TermTk.TTkCore.signal.pyTTkSignal" href="#TermTk.TTkCore.signal.pyTTkSignal">pyTTkSignal</a></code></li>
-<li><code><a title="TermTk.TTkCore.signal.pyTTkSlot" href="#TermTk.TTkCore.signal.pyTTkSlot">pyTTkSlot</a></code></li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem">TTkTreeWidgetItem</a></code></h4>
+<ul class="two-column">
+<li><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.addChild" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.addChild">addChild</a></code></li>
+<li><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.childs" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.childs">childs</a></code></li>
+<li><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.data" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.data">data</a></code></li>
+<li><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.expand" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.expand">expand</a></code></li>
+<li><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.parent" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.parent">parent</a></code></li>
+<li><code><a title="TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.setExpand" href="#TermTk.TTkTypes.treewidgetitem.TTkTreeWidgetItem.setExpand">setExpand</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

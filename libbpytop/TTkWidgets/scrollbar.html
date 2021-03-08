@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>TermTk.TTkWidgets.scrollbar API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>TermTk.TTkWidgets.scrollbar</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the &#34;Software&#34;), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import math
+
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkWidgets.widget import TTkWidget
+
+&#39;&#39;&#39;
+    ref: https://doc.qt.io/qt-5/qscrollbar.html
+&#39;&#39;&#39;
+class TTkScrollBar(TTkWidget):
+    __slots__ = (
+        &#39;_orientation&#39;,
+        &#39;_minimum&#39;, &#39;_maximum&#39;,
+        &#39;_singlestep&#39;, &#39;_pagestep&#39;,
+        &#39;_value&#39;, &#39;_color&#39;, &#39;_focusColor&#39;,
+        &#39;_draggable&#39;, &#39;_mouseDelta&#39;,
+        # Those Vars are required to handle the mouseclick
+        #  |-----|           Screen Pg Down
+        #        |---|       Screen Scroller
+        #            |-----| Screen Pg Up
+        # &lt;------|XXX|-----&gt;
+        &#39;_screenPgDown&#39;,&#39;_screenPgUp&#39;,&#39;_screenScroller&#39;,
+        # Signals
+        &#39;valueChanged&#39;, &#39;rangeChanged&#39;, &#39;sliderMoved&#39;
+        )
+
+    def __init__(self, *args, **kwargs):
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get(&#39;name&#39; , &#39;TTkScrollBar&#39; )
+        # Define Signals
+        self.valueChanged = pyTTkSignal(int) #  Value
+        self.rangeChanged = pyTTkSignal(int, int) # Min, Max
+        self.sliderMoved  = pyTTkSignal(int) # Value
+
+        self._orientation = kwargs.get(&#39;orientation&#39; , TTkK.VERTICAL )
+        if self._orientation == TTkK.VERTICAL:
+            self.setMaximumWidth(1)
+            self.setMinimumSize(1,3)
+        else:
+            self.setMaximumHeight(1)
+            self.setMinimumSize(3,1)
+        self._minimum = kwargs.get(&#39;minimum&#39; , 0 )
+        self._maximum = kwargs.get(&#39;maximum&#39; , 99 )
+        self._singlestep = kwargs.get(&#39;singlestep&#39; , 1 )
+        self._pagestep = kwargs.get(&#39;pagestep&#39; , 10 )
+        self._value = kwargs.get(&#39;value&#39; , 0 )
+        self._color = kwargs.get(&#39;color&#39;, TTkColor.RST )
+        self._focusColor = kwargs.get(&#39;focusColor&#39;, TTkColor.fg(&#39;#cccc00&#39;) )
+        self._screenPgDown = (0,0)
+        self._screenPgUp = (0,0)
+        self._screenScroller = (0,0)
+        self._draggable = False
+        self._mouseDelta = 0
+        self.setFocusPolicy(TTkK.ClickFocus)
+
+    &#39;&#39;&#39;
+         | min        | max
+        &lt;-----XXXXX--------&gt;   scrollbar
+        |------------------|   size = widt or height
+         |----------------|   size2 = widt or height - 2 (removed the ending arrows)
+         |------------|     workingSize = max - min
+         |----------------| drawingSize = max - min + pagestep
+              a---b            slider = [a=value-min, b=a+pagestep]
+              |---|            pagestep, asciiStep (step size in ascii)
+
+    &#39;&#39;&#39;
+    def paintEvent(self):
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+        else:
+            size=self._width
+
+        if self.hasFocus():
+            color = self.focusColor
+        else:
+            color = self.color
+        if self._maximum == self._minimum:
+            # Special case where no scroll is needed
+            aa=0
+            bb=size-2
+        else:
+            size2 = size-2
+            asciiStep = size2 * self._pagestep // (self._maximum - self._minimum + self._pagestep)
+            if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
+            asciiDrawingSize = size2 - asciiStep
+            a = self._value - self._minimum
+            # covert i screen coordinates
+            aa = asciiDrawingSize * a // (self._maximum - self._minimum)
+            bb = aa + asciiStep
+        self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
+        # Update the screen position coordinates
+        self._screenPgDown =   ( 1 ,    aa+1     )
+        self._screenScroller = ( aa+1 , bb+1)
+        self._screenPgUp =     ( bb+1 , size-1 )
+        # TTkLog.debug(f&#34;aa:{aa} bb:{bb}, a:{a}, size2:{size2}&#34;)
+
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Up:
+            self.value = self.value - self.pagestep
+        else:
+            self.value = self.value + self.pagestep
+        self.sliderMoved.emit(self.value)
+        return True
+
+    def mousePressEvent(self, evt):
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+            mouse = evt.y
+        else:
+            size=self._width
+            mouse = evt.x
+
+        if mouse == 0: # left/up arrow pressed
+            self.value = self.value - self.singlestep
+            self.update()
+        elif mouse == size-1: # right/down arrow pressed
+            self.value = self.value + self.singlestep
+            self.update()
+        elif self._screenPgDown[0] &lt;= mouse &lt; self._screenPgDown[1]:
+            self.value = self.value - self.pagestep
+            self.update()
+        elif self._screenPgUp[0] &lt;= mouse &lt; self._screenPgUp[1]:
+            self.value = self.value + self.pagestep
+            self.update()
+        elif self._screenScroller[0] &lt;= mouse &lt; self._screenScroller[1]:
+            self._mouseDelta = mouse-self._screenScroller[0]
+            self._draggable = True
+            self.update()
+        else:
+            return False
+        self.sliderMoved.emit(self.value)
+        # TTkLog.debug(f&#34;m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}&#34;)
+        return True
+
+    def mouseDragEvent(self, evt):
+        if not self._draggable: return False
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+            mouse = evt.y
+        else:
+            size=self._width
+            mouse = evt.x
+        aa = mouse-self._mouseDelta
+
+        size2 = size-2
+        asciiStep = self._screenScroller[1] - self._screenScroller[0]
+        asciiDrawingSize = size2 - asciiStep
+
+        a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
+        self.value = a + self._minimum
+        self.sliderMoved.emit(self.value)
+
+        # TTkLog.debug(f&#34;m={mouse}, md:{self._mouseDelta}, aa:{aa}&#34;)
+        return True
+
+
+    def focusInEvent(self):
+        self.update()
+
+    def focusOutEvent(self):
+        self.update()
+
+    @pyTTkSlot(int)
+    def setPageStep(self, pageStep):
+        self._pagestep = pageStep
+
+    @pyTTkSlot(int)
+    def setRangeTo(self, max):
+        self.setRange(0,max)
+
+    @pyTTkSlot(int, int)
+    def setRange(self, min, max):
+        if self._minimum == min and \
+           self._maximum == max :
+            return
+        self.minimum = min
+        self.maximum = max
+        self.rangeChanged.emit(min, max)
+
+    @pyTTkSlot(int)
+    def setValue(self, v):
+        self.value = v
+
+    @property
+    def minimum(self): return self._minimum
+    @minimum.setter
+    def minimum(self, v):
+        if v == self._minimum:
+            return
+        if v &gt; self._maximum:
+            v = self._maximum
+        self._minimum = v
+        self.update()
+
+    @property
+    def maximum(self): return self._maximum
+    @minimum.setter
+    def maximum(self, v):
+        if v == self._maximum:
+            return
+        if v &lt; self._minimum:
+            v = self._minimum
+        self._maximum = v
+        self.update()
+
+    @property
+    def singlestep(self): return self._singlestep
+    @singlestep.setter
+    def singlestep(self, v): self._singlestep = v; self.update()
+
+    @property
+    def pagestep(self): return self._pagestep
+    @pagestep.setter
+    def pagestep(self, v): self._pagestep = v; self.update()
+
+    @property
+    def value(self): return self._value
+    @value.setter
+    def value(self, v):
+        if self._value == v:
+            return
+        if v &gt; self._maximum: v = self._maximum
+        if v &lt; self._minimum: v = self._minimum
+        if self._value == v: return
+        self._value = v
+        self.valueChanged.emit(v)
+        self.update()
+
+    @property
+    def color(self):
+        return self._color
+    @color.setter
+    def color(self, color):
+        if self.color != color:
+            self._color = color
+            self.update()
+
+    @property
+    def focusColor(self):
+        return self._focusColor
+    @focusColor.setter
+    def focusColor(self, color):
+        if self.focusColor != color:
+            self._focusColor = color
+            self.update()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar"><code class="flex name class">
+<span>class <span class="ident">TTkScrollBar</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><h3 id="widget-layout-sizes">Widget Layout sizes:</h3>
+<pre><code>Terminal window
+┌─────────────────────────────────────────┐
+│                                         │
+│    TTkWidget     width                  │
+│ (x,y)┌─────────────────────────┐        │
+│      │      padt               │        │
+│      │    ┌───────────────┐    │ height │
+│      │padl│ Layout/childs │padr│        │
+│      │    └───────────────┘    │        │
+│      │      padl               │        │
+│      └─────────────────────────┘        │
+└─────────────────────────────────────────┘
+</code></pre>
+<p>TTkWidget constructor</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>the name of the widget</dd>
+<dt><strong><code>parent</code></strong> :&ensp;<code>[<a title="TermTk.TTkWidgets.widget.TTkWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a>]</code>, optional</dt>
+<dd>the parent widget</dd>
+<dt><strong><code>x</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the x position</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the y position</dd>
+<dt><strong><code>pos</code></strong> :&ensp;<code>[int,int]</code>, optional, default=<code>[0,0]</code></dt>
+<dd>the [x,y] position (override the previously defined x, y)</dd>
+<dt><strong><code>width</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the width of the widget</dd>
+<dt><strong><code>height</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the height of the widget</dd>
+<dt><strong><code>size</code></strong> :&ensp;<code>[int,int]</code>, optional, default=<code>[0,0]</code></dt>
+<dd>the size [width, height] of the widget (override the previously defined sizes)</dd>
+<dt><strong><code>padding</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the padding (top, bottom, left, right) of the widget</dd>
+<dt><strong><code>paddingTop</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Top padding, override Top padding if already defined</dd>
+<dt><strong><code>paddingBottom</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Bottom padding, override Bottom padding if already defined</dd>
+<dt><strong><code>paddingLeft</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Left padding, override Left padding if already defined</dd>
+<dt><strong><code>paddingRight</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Right padding, override Right padding if already defined</dd>
+<dt><strong><code>maxWidth</code></strong> :&ensp;<code>int</code>, optional, default=<code>0x10000</code></dt>
+<dd>the maxWidth of the widget</dd>
+<dt><strong><code>maxHeight</code></strong> :&ensp;<code>int</code>, optional, default=<code>0x10000</code></dt>
+<dd>the maxHeight of the widget</dd>
+<dt><strong><code>maxSize</code></strong> :&ensp;<code>[int,int]</code>, optional</dt>
+<dd>the max [width,height] of the widget</dd>
+<dt><strong><code>minWidth</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the minWidth of the widget</dd>
+<dt><strong><code>minHeight</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the minHeight of the widget</dd>
+<dt><strong><code>minSize</code></strong> :&ensp;<code>[int,int]</code>, optional</dt>
+<dd>the minSize [width,height] of the widget</dd>
+<dt><strong><code>visible</code></strong> :&ensp;<code>bool</code>, optional, default=<code>True</code></dt>
+<dd>the visibility</dd>
+<dt><strong><code>layout</code></strong> :&ensp;<code>[<a title="TermTk.TTkLayouts" href="../TTkLayouts/index.html">TermTk.TTkLayouts</a>]</code>, optional, default=<code>[<a title="TermTk.TTkLayouts.layout.TTkLayout" href="../TTkLayouts/layout.html#TermTk.TTkLayouts.layout.TTkLayout">TTkLayout</a>]</code></dt>
+<dd>the layout of this widget</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TTkScrollBar(TTkWidget):
+    __slots__ = (
+        &#39;_orientation&#39;,
+        &#39;_minimum&#39;, &#39;_maximum&#39;,
+        &#39;_singlestep&#39;, &#39;_pagestep&#39;,
+        &#39;_value&#39;, &#39;_color&#39;, &#39;_focusColor&#39;,
+        &#39;_draggable&#39;, &#39;_mouseDelta&#39;,
+        # Those Vars are required to handle the mouseclick
+        #  |-----|           Screen Pg Down
+        #        |---|       Screen Scroller
+        #            |-----| Screen Pg Up
+        # &lt;------|XXX|-----&gt;
+        &#39;_screenPgDown&#39;,&#39;_screenPgUp&#39;,&#39;_screenScroller&#39;,
+        # Signals
+        &#39;valueChanged&#39;, &#39;rangeChanged&#39;, &#39;sliderMoved&#39;
+        )
+
+    def __init__(self, *args, **kwargs):
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get(&#39;name&#39; , &#39;TTkScrollBar&#39; )
+        # Define Signals
+        self.valueChanged = pyTTkSignal(int) #  Value
+        self.rangeChanged = pyTTkSignal(int, int) # Min, Max
+        self.sliderMoved  = pyTTkSignal(int) # Value
+
+        self._orientation = kwargs.get(&#39;orientation&#39; , TTkK.VERTICAL )
+        if self._orientation == TTkK.VERTICAL:
+            self.setMaximumWidth(1)
+            self.setMinimumSize(1,3)
+        else:
+            self.setMaximumHeight(1)
+            self.setMinimumSize(3,1)
+        self._minimum = kwargs.get(&#39;minimum&#39; , 0 )
+        self._maximum = kwargs.get(&#39;maximum&#39; , 99 )
+        self._singlestep = kwargs.get(&#39;singlestep&#39; , 1 )
+        self._pagestep = kwargs.get(&#39;pagestep&#39; , 10 )
+        self._value = kwargs.get(&#39;value&#39; , 0 )
+        self._color = kwargs.get(&#39;color&#39;, TTkColor.RST )
+        self._focusColor = kwargs.get(&#39;focusColor&#39;, TTkColor.fg(&#39;#cccc00&#39;) )
+        self._screenPgDown = (0,0)
+        self._screenPgUp = (0,0)
+        self._screenScroller = (0,0)
+        self._draggable = False
+        self._mouseDelta = 0
+        self.setFocusPolicy(TTkK.ClickFocus)
+
+    &#39;&#39;&#39;
+         | min        | max
+        &lt;-----XXXXX--------&gt;   scrollbar
+        |------------------|   size = widt or height
+         |----------------|   size2 = widt or height - 2 (removed the ending arrows)
+         |------------|     workingSize = max - min
+         |----------------| drawingSize = max - min + pagestep
+              a---b            slider = [a=value-min, b=a+pagestep]
+              |---|            pagestep, asciiStep (step size in ascii)
+
+    &#39;&#39;&#39;
+    def paintEvent(self):
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+        else:
+            size=self._width
+
+        if self.hasFocus():
+            color = self.focusColor
+        else:
+            color = self.color
+        if self._maximum == self._minimum:
+            # Special case where no scroll is needed
+            aa=0
+            bb=size-2
+        else:
+            size2 = size-2
+            asciiStep = size2 * self._pagestep // (self._maximum - self._minimum + self._pagestep)
+            if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
+            asciiDrawingSize = size2 - asciiStep
+            a = self._value - self._minimum
+            # covert i screen coordinates
+            aa = asciiDrawingSize * a // (self._maximum - self._minimum)
+            bb = aa + asciiStep
+        self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
+        # Update the screen position coordinates
+        self._screenPgDown =   ( 1 ,    aa+1     )
+        self._screenScroller = ( aa+1 , bb+1)
+        self._screenPgUp =     ( bb+1 , size-1 )
+        # TTkLog.debug(f&#34;aa:{aa} bb:{bb}, a:{a}, size2:{size2}&#34;)
+
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Up:
+            self.value = self.value - self.pagestep
+        else:
+            self.value = self.value + self.pagestep
+        self.sliderMoved.emit(self.value)
+        return True
+
+    def mousePressEvent(self, evt):
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+            mouse = evt.y
+        else:
+            size=self._width
+            mouse = evt.x
+
+        if mouse == 0: # left/up arrow pressed
+            self.value = self.value - self.singlestep
+            self.update()
+        elif mouse == size-1: # right/down arrow pressed
+            self.value = self.value + self.singlestep
+            self.update()
+        elif self._screenPgDown[0] &lt;= mouse &lt; self._screenPgDown[1]:
+            self.value = self.value - self.pagestep
+            self.update()
+        elif self._screenPgUp[0] &lt;= mouse &lt; self._screenPgUp[1]:
+            self.value = self.value + self.pagestep
+            self.update()
+        elif self._screenScroller[0] &lt;= mouse &lt; self._screenScroller[1]:
+            self._mouseDelta = mouse-self._screenScroller[0]
+            self._draggable = True
+            self.update()
+        else:
+            return False
+        self.sliderMoved.emit(self.value)
+        # TTkLog.debug(f&#34;m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}&#34;)
+        return True
+
+    def mouseDragEvent(self, evt):
+        if not self._draggable: return False
+        if self._orientation == TTkK.VERTICAL:
+            size=self._height
+            mouse = evt.y
+        else:
+            size=self._width
+            mouse = evt.x
+        aa = mouse-self._mouseDelta
+
+        size2 = size-2
+        asciiStep = self._screenScroller[1] - self._screenScroller[0]
+        asciiDrawingSize = size2 - asciiStep
+
+        a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
+        self.value = a + self._minimum
+        self.sliderMoved.emit(self.value)
+
+        # TTkLog.debug(f&#34;m={mouse}, md:{self._mouseDelta}, aa:{aa}&#34;)
+        return True
+
+
+    def focusInEvent(self):
+        self.update()
+
+    def focusOutEvent(self):
+        self.update()
+
+    @pyTTkSlot(int)
+    def setPageStep(self, pageStep):
+        self._pagestep = pageStep
+
+    @pyTTkSlot(int)
+    def setRangeTo(self, max):
+        self.setRange(0,max)
+
+    @pyTTkSlot(int, int)
+    def setRange(self, min, max):
+        if self._minimum == min and \
+           self._maximum == max :
+            return
+        self.minimum = min
+        self.maximum = max
+        self.rangeChanged.emit(min, max)
+
+    @pyTTkSlot(int)
+    def setValue(self, v):
+        self.value = v
+
+    @property
+    def minimum(self): return self._minimum
+    @minimum.setter
+    def minimum(self, v):
+        if v == self._minimum:
+            return
+        if v &gt; self._maximum:
+            v = self._maximum
+        self._minimum = v
+        self.update()
+
+    @property
+    def maximum(self): return self._maximum
+    @minimum.setter
+    def maximum(self, v):
+        if v == self._maximum:
+            return
+        if v &lt; self._minimum:
+            v = self._minimum
+        self._maximum = v
+        self.update()
+
+    @property
+    def singlestep(self): return self._singlestep
+    @singlestep.setter
+    def singlestep(self, v): self._singlestep = v; self.update()
+
+    @property
+    def pagestep(self): return self._pagestep
+    @pagestep.setter
+    def pagestep(self, v): self._pagestep = v; self.update()
+
+    @property
+    def value(self): return self._value
+    @value.setter
+    def value(self, v):
+        if self._value == v:
+            return
+        if v &gt; self._maximum: v = self._maximum
+        if v &lt; self._minimum: v = self._minimum
+        if self._value == v: return
+        self._value = v
+        self.valueChanged.emit(v)
+        self.update()
+
+    @property
+    def color(self):
+        return self._color
+    @color.setter
+    def color(self, color):
+        if self.color != color:
+            self._color = color
+            self.update()
+
+    @property
+    def focusColor(self):
+        return self._focusColor
+    @focusColor.setter
+    def focusColor(self, color):
+        if self.focusColor != color:
+            self._focusColor = color
+            self.update()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="TermTk.TTkWidgets.widget.TTkWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a></li>
+<li><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents">TMouseEvents</a></li>
+<li><a title="TermTk.TTkTemplates.keyevents.TKeyEvents" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents">TKeyEvents</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.color"><code class="name">var <span class="ident">color</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def color(self):
+    return self._color</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusColor"><code class="name">var <span class="ident">focusColor</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def focusColor(self):
+    return self._focusColor</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.maximum"><code class="name">var <span class="ident">maximum</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def minimum(self): return self._minimum</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.minimum"><code class="name">var <span class="ident">minimum</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def minimum(self): return self._minimum</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.pagestep"><code class="name">var <span class="ident">pagestep</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def pagestep(self): return self._pagestep</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.rangeChanged"><code class="name">var <span class="ident">rangeChanged</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.singlestep"><code class="name">var <span class="ident">singlestep</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def singlestep(self): return self._singlestep</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.sliderMoved"><code class="name">var <span class="ident">sliderMoved</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.value"><code class="name">var <span class="ident">value</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def value(self): return self._value</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.valueChanged"><code class="name">var <span class="ident">valueChanged</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusInEvent"><code class="name flex">
+<span>def <span class="ident">focusInEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusInEvent(self):
+    self.update()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusOutEvent"><code class="name flex">
+<span>def <span class="ident">focusOutEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusOutEvent(self):
+    self.update()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setPageStep"><code class="name flex">
+<span>def <span class="ident">setPageStep</span></span>(<span>self, pageStep)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pyTTkSlot(int)
+def setPageStep(self, pageStep):
+    self._pagestep = pageStep</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setRange"><code class="name flex">
+<span>def <span class="ident">setRange</span></span>(<span>self, min, max)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pyTTkSlot(int, int)
+def setRange(self, min, max):
+    if self._minimum == min and \
+       self._maximum == max :
+        return
+    self.minimum = min
+    self.maximum = max
+    self.rangeChanged.emit(min, max)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setRangeTo"><code class="name flex">
+<span>def <span class="ident">setRangeTo</span></span>(<span>self, max)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pyTTkSlot(int)
+def setRangeTo(self, max):
+    self.setRange(0,max)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setValue"><code class="name flex">
+<span>def <span class="ident">setValue</span></span>(<span>self, v)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@pyTTkSlot(int)
+def setValue(self, v):
+    self.value = v</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="TermTk.TTkWidgets.widget.TTkWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a></b></code>:
+<ul class="hlist">
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.addWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.addWidget">addWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.enterEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.enterEvent">enterEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.getPadding" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.getPadding">getPadding</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.keyEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyEvent">keyEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.keyPressEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyPressEvent">keyPressEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.keyReleaseEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyReleaseEvent">keyReleaseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.leaveEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.leaveEvent">leaveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mouseDoubleClickEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDoubleClickEvent">mouseDoubleClickEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mouseDragEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDragEvent">mouseDragEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mouseEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.mouseEvent">mouseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mouseMoveEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseMoveEvent">mouseMoveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mousePressEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mousePressEvent">mousePressEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.mouseReleaseEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseReleaseEvent">mouseReleaseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.move" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.move">move</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.moveEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent">paintNotifyParent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.removeWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resize" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resize">resize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resizeEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">resizeEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setGeometry" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.setGeometry">setGeometry</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.setPadding" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.setPadding">setPadding</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.wheelEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.wheelEvent">wheelEvent</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="TermTk.TTkWidgets" href="index.html">TermTk.TTkWidgets</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar">TTkScrollBar</a></code></h4>
+<ul class="two-column">
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.color" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.color">color</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusColor" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusColor">focusColor</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusInEvent" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusInEvent">focusInEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusOutEvent" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.focusOutEvent">focusOutEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.maximum" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.maximum">maximum</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.minimum" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.minimum">minimum</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.pagestep" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.pagestep">pagestep</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.rangeChanged" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.rangeChanged">rangeChanged</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setPageStep" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.setPageStep">setPageStep</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setRange" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.setRange">setRange</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setRangeTo" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.setRangeTo">setRangeTo</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.setValue" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.setValue">setValue</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.singlestep" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.singlestep">singlestep</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.sliderMoved" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.sliderMoved">sliderMoved</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.value" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.value">value</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar.valueChanged" href="#TermTk.TTkWidgets.scrollbar.TTkScrollBar.valueChanged">valueChanged</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
