@@ -72,7 +72,7 @@ root = ttk.TTk()
     # Create a window and attach it to the root (parent=root)
 logWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(80,20), title="LogViewer Window", border=True, layout=ttk.TTkVBoxLayout())
 
-    # Define the Label and attach it to the window (parent=helloWin)
+    # Attach the logViewer widget to the window
 ttk.TTkLogViewer(parent=logWin)
 
 ttk.TTkLog.info(    "Test Info Messgae")

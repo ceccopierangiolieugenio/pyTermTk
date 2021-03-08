@@ -34,17 +34,17 @@ clone git@github.com:ceccopierangiolieugenio/pyTermTk.git
 cd pyTermTk
 ```
 
-#### Run Basic input test
+#### Run Basic (non ui) input test
 ```shell
 python3 tests/test.input.py
 ```
 
-#### Run Terminal resize test
+#### Run demo
 ```shell
 # Press CTRL-C to exit
 # the logs are written to "session.log"
 make runDemo
-# or
+  # or
 python3 demo/demo.py -f
 
 # Try gittk

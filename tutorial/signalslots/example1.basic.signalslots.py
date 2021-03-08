@@ -24,20 +24,35 @@
 
 import TermTk as ttk
 
-root = ttk.TTk()
+ttk.TTkLog.use_default_stdout_logging()
 
-    # Create a window and attach it to the root (parent=root)
-logWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(80,20), title="LogViewer Window", border=True, layout=ttk.TTkVBoxLayout())
+    # define 2 signals with different signatures
+signal = ttk.pyTTkSignal()
+otherSignal = ttk.pyTTkSignal(int)
 
-    # Attach the logViewer widget to the window
-ttk.TTkLogViewer(parent=logWin)
 
-ttk.TTkLog.info(    "Test Info Messgae")
-ttk.TTkLog.debug(   "Test Debug Messgae")
-ttk.TTkLog.error(   "Test Error Messgae")
-ttk.TTkLog.warn(    "Test Warning Messgae")
-ttk.TTkLog.critical("Test Critical Messgae")
-ttk.TTkLog.fatal(   "Test Fatal Messgae")
+    # Define a slot with no input as signature
+@ttk.pyTTkSlot()
+def slot():
+    ttk.TTkLog.debug("Received a simple signal")
 
-    # Start the Main loop
-root.mainloop()
+    # Define 2 slots with "int" as input signature
+@ttk.pyTTkSlot(int)
+def otherSlot(val):
+    ttk.TTkLog.debug(f"[otherSlot] Received a valued signal, val:{val}")
+
+@ttk.pyTTkSlot(int)
+def anotherSlot(val):
+    ttk.TTkLog.debug(f"[anootherSlot] Received a valued signal, val:{val}")
+
+
+    # connect the signals to the proper slot
+signal.connect(slot)
+otherSignal.connect(otherSlot)
+otherSignal.connect(anotherSlot)
+
+    # Test the signals
+ttk.TTkLog.debug("Emit a simple signal")
+signal.emit()
+ttk.TTkLog.debug("Emit a valued signal")
+otherSignal.emit(123)
