@@ -23,6 +23,7 @@ runDemo: .venv
 
 build: .venv
 	. .venv/bin/activate
+	rm -rf dist
 	python3 -m build
 
 testDeploy: .venv
@@ -31,4 +32,4 @@ testDeploy: .venv
 
 deploy: .venv
 	. .venv/bin/activate
-	python3 -m twine upload --repository TermTk dist/*
+	python3 -m twine upload dist/*

@@ -9,7 +9,7 @@ out = subprocess.Popen(
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
 version, stderr = out.communicate()
-version = version.decode("utf-8").strip()
+version = "".join(version.decode("utf-8").strip().split('-')[:2])
 
 print(f"Version: {version}")
 
@@ -17,7 +17,7 @@ setuptools.setup(
     name='pyTermTk',
     # name='example-pkg-ceccopierangiolieugenio',
     version=version,
-    # version="0.1.0a2",
+    # version="0.1.0a1",
     author='Eugenio Parodi',
     author_email='ceccopierangiolieugenio@googlemail.com',
     # packages=['TermTk'],
