@@ -67,7 +67,16 @@ class TTk(TTkWidget):
             self.time  = curtime
 
     def mainloop(self):
-        TTkLog.debug("Starting Main Loop...")
+        TTkLog.debug( "" )
+        TTkLog.debug( "████████╗███████╗██████╗ ███╗   ███╗████████╗██╗  ██╗" )
+        TTkLog.debug( "╚══██╔══╝██╔════╝██╔══██╗████╗ ████║╚══██╔══╝██║ ██╔╝" )
+        TTkLog.debug( "   ██║   █████╗  ██████╔╝██╔████╔██║   ██║   █████╔╝ " )
+        TTkLog.debug( "   ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║   ██║   ██╔═██╗ " )
+        TTkLog.debug( "py ██║   ███████╗██║  ██║██║ ╚═╝ ██║   ██║   ██║  ██╗" )
+        TTkLog.debug( "   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝   ╚═╝   ╚═╝  ╚═╝" )
+        TTkLog.debug(f"  Version: {TTkCfg.version}" )
+        TTkLog.debug( "" )
+        TTkLog.debug( "Starting Main Loop..." )
         # Register events
         try:
             signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z

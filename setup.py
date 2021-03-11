@@ -1,26 +1,21 @@
-import setuptools, os, subprocess
+import setuptools, os
+from tmp.TermTk.TTkCore.cfg import TTkCfg
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# Retrieve the version
-out = subprocess.Popen(
-        ['git','describe'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-version, stderr = out.communicate()
-version = "".join(version.decode("utf-8").strip().split('-')[:2])
-
-print(f"Version: {version}")
+print(f"Version: {TTkCfg.version}")
+print(f"Name: {TTkCfg.name}")
 
 setuptools.setup(
-    name='pyTermTk',
+    # name='pyTermTk',
     # name='example-pkg-ceccopierangiolieugenio',
-    version=version,
+    # version=version,
     # version="0.1.0a1",
+    name=TTkCfg.name,
+    version=TTkCfg.version,
     author='Eugenio Parodi',
     author_email='ceccopierangiolieugenio@googlemail.com',
-    # packages=['TermTk'],
     description='Python Terminal Toolkit',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -37,8 +32,7 @@ setuptools.setup(
         "Topic :: Terminals",
         "Topic :: Software Development :: User Interfaces"],
     # packages=setuptools.find_packages(),
-    packages = setuptools.find_packages(),
-        #where = '.',
-        #include = ['TermTk',]),
+    packages = setuptools.find_packages(where="tmp"),
+    package_dir = {"":"tmp"},
     python_requires=">=3.6",
 )

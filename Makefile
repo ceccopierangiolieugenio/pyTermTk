@@ -1,4 +1,4 @@
-.PHONY: doc, runGittk, runDemo, build, testdeploy, deploy
+.PHONY: doc, runGittk, runDemo, build,  deploy, buildTest, deployTest,
 
 .venv:
 	python3 -m venv .venv
@@ -24,6 +24,13 @@ runDemo: .venv
 build: .venv
 	. .venv/bin/activate
 	rm -rf dist
+	tools/prepareBuild.sh release
+	python3 -m build
+
+buildTest: .venv
+	. .venv/bin/activate
+	rm -rf dist
+	tools/prepareBuild.sh test
 	python3 -m build
 
 deployDoc:
@@ -35,7 +42,7 @@ deployDoc:
 	git push origin gh-pages
 	git checkout main
 
-testDeploy: .venv
+deployTest: .venv
 	. .venv/bin/activate
 	python3 -m twine upload --repository testpypi dist/* --verbose
 

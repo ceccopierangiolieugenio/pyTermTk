@@ -24,6 +24,9 @@
 
 from TermTk.TTkCore.constant import TTkK
 class TTkCfg:
+    version="__VERSION__"
+    name="__NAME__"
+
     color_depth: int = TTkK.DEP_24
 
     maxFps = 35

@@ -37,8 +37,15 @@ from TermTk.TTkWidgets.widget import *
             <-->           Offset
 '''
 class TTkLineEdit(TTkWidget):
-    __slots__ = ('_text', '_cursorPos', '_offset', '_replace', '_inputType')
+    __slots__ = (
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType',
+        # Signals
+        'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, *args, **kwargs):
+        # Signals
+        self.returnPressed = pyTTkSignal()
+        self.textChanged =  pyTTkSignal(str)
+        self.textEdited =  pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkLineEdit' )
         self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
@@ -51,6 +58,14 @@ class TTkLineEdit(TTkWidget):
         self.setMaximumHeight(1)
         self.setMinimumSize(10,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
+    def setText(self, text):
+        if text != self._text:
+            self.textChanged.emit(text)
+            self._text = text
+
+    def text(self):
+        return self._text
 
     def _pushCursor(self):
         TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)
@@ -114,6 +129,9 @@ class TTkLineEdit(TTkWidget):
             elif self._cursorPos - self._offset < 0:
                 self._offset = self._cursorPos
             self._pushCursor()
+
+            if evt.key == TTkK.Key_Enter:
+                self.returnPressed.emit()
         else:
             if self._inputType & TTkK.Input_Number and \
                not evt.key.isdigit():
@@ -126,12 +144,13 @@ class TTkLineEdit(TTkWidget):
                 post = text[self._cursorPos:]
 
             text = pre + evt.key + post
-            self._text = text
+            self.setText(text)
             self._cursorPos += 1
             # Scroll to the right if reached the edge
             if self._cursorPos - self._offset > w:
                 self._offset += 1
             self._pushCursor()
+            self.textEdited.emit(self._text)
 
     def focusInEvent(self):
         self._pushCursor()

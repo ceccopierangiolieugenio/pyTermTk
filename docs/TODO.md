@@ -106,6 +106,7 @@
  - [ ] Snap on min/max sizes
  - [ ] Events (Signal/Slots)
  - [x] Themes
+ - [ ] Support addItem
 #### Tab Widget
  - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
@@ -124,6 +125,6 @@
  - [ ] Events (Signal/Slots)
  - [x] Themes
 #### Header Menu
- - [ ] Basic Implementation
- - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Basic Implementation
+ - [x] Events (Signal/Slots)
+ - [x] Themes
