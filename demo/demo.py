@@ -47,7 +47,7 @@ def getWord():
 def getSentence(a,b):
     return " ".join([getWord() for i in range(0,random.randint(a,b))])
 
-def demoShowcase(root= None, border=True):
+def demoShowcase(root=None, border=True):
     tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
     tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
@@ -142,12 +142,12 @@ def main():
 
     table3.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 
-
-
-
-
     root.mainloop()
 
 if __name__ == "__main__":
     main()
 
+def test_demo():
+    root = ttk.TTk()
+    assert demoShowcase(root) != None
+    root.quit()
