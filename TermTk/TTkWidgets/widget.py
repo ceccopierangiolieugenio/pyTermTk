@@ -186,7 +186,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             for child in item.zSortedItems:
                 ix, iy, iw, ih = item.geometry()
                 # child outside the bound
-                if ix+iw < lx and ix > lx+lw and iy+ih < ly and y > ly+lh: continue
+                if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
                 # Reduce the bound to the minimum visible
                 bx = max(ix,lx)
                 by = max(iy,ly)

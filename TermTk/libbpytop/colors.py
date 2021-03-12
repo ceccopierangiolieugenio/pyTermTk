@@ -29,6 +29,7 @@ except Exception as e:
 from TermTk.libbpytop.term import Term
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.log import TTkLog
 
 
 # Ansi Escape Codes:
@@ -71,7 +72,7 @@ class Color:
                     else:
                         color = f'{Color.truecolor_to_256(rgb=(int(hexa[1:3], base=16), int(hexa[3:5], base=16), int(hexa[5:7], base=16)), depth=depth)}'
             except ValueError as e:
-                ttk.TTkLog.error(f'{e}')
+                TTkLog.error(f'{e}')
 
         else:
             if TTkCfg.color_depth is TTkK.DEP_24:

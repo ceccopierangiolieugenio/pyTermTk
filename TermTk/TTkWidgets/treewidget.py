@@ -130,7 +130,7 @@ class TTkTreeWidget(TTkTableView):
         if item.parent() is None:
             self._topLevelItems.addChild(item)
         displayedItems = item.data().copy()
-        displayTreeItem =  _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
+        displayTreeItem = _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
         displayTreeItem._clicked.connect(self._controlClicked)
         displayedItems[0] = displayTreeItem
         if index == -1:

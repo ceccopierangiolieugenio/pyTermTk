@@ -89,10 +89,12 @@ class _FileBuffer():
         return indexes
 
 class _FileViewer(TTkAbstractScrollView):
-    __slots__ = ('_fileBuffer', '_indexes', '_indexesMark')
+    __slots__ = ('_fileBuffer', '_indexes', '_indexesMark', '_indexexSearched', '_selected')
     def __init__(self, *args, **kwargs):
         self._indexes = None
         self._indexesMark = []
+        self._indexesSearched = []
+        self._selected = None
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_FileViewer' )
         self._fileBuffer = kwargs.get('filebuffer')
@@ -110,6 +112,9 @@ class _FileViewer(TTkAbstractScrollView):
         self._indexesMark = indexes
         self.viewChanged.emit()
 
+    def searchedIndexes(self, indexes):
+        self._indexesSearched = indexes
+        self.viewChanged.emit()
 
     def viewFullAreaSize(self) -> (int, int):
         if self._indexes is None:
@@ -123,11 +128,16 @@ class _FileViewer(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
+    def mousePressEvent(self, evt):
+        x,y = evt.x, evt.y
+        ox,oy = self.getViewOffsets()
+        return False
+
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
         if self._indexes is None:
-            for i in range(self.height()):
-                if (i+oy) in self._indexesMark:
+            for i in range(min(self.height(),self._fileBuffer.getLen()-oy)):
+                if (i+oy) in self._indexesSearched:
                     color = TTkColor.fg("#ff0000")
                 else:
                     color = TTkColor.fg("#0000ff")
@@ -135,7 +145,7 @@ class _FileViewer(TTkAbstractScrollView):
                 self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','') )
         else:
             for i in range(min(self.height(),len(self._indexes))):
-                if self._indexes[i+oy] in self._indexesMark:
+                if self._indexes[i+oy] in self._indexesSearched:
                     color = TTkColor.fg("#ff0000")
                 else:
                     color = TTkColor.fg("#0000ff")
@@ -209,8 +219,8 @@ def main():
                 searchtext = self.tb.text()
                 indexes = self.fb.search(searchtext)
                 self.bvp.showIndexes(indexes)
-                self.bvp.markIndexes(indexes)
-                self.tvp.markIndexes(indexes)
+                self.bvp.searchedIndexes(indexes)
+                self.tvp.searchedIndexes(indexes)
         _s = _search(bls_textbox,fileBuffer,topViewer.viewport(),bottomViewport)
         bls_search.clicked.connect(_s.search)
         bls_textbox.returnPressed.connect(_s.search)

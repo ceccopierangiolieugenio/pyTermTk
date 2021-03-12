@@ -1,16 +1,26 @@
+
 # [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+
+![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux)
+![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)
+![Python](https://img.shields.io/badge/Python-v3.8%5E-green?logo=python)
+![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)
+[![Test Status](https://img.shields.io/github/workflow/status/ceccopierangiolieugenio/pyTermTk/Testing?label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
+[![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
+
 #### Python Terminal Toolkit
 Text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface))
 Evolved from the discontinued project [pyCuT](https://github.com/ceccopierangiolieugenio/pyCuT)
 and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/),[GTK](https://pygobject.readthedocs.io/en/latest/), and [tkinter](https://docs.python.org/3/library/tkinter.html) api definition with a touch of personal interpretation
 
-![](https://github.com/ceccopierangiolieugenio/binaryRepo/blob/master/pyTermTk/demo.001.gif?raw=true)
+[![screenshot](https://github.com/ceccopierangiolieugenio/binaryRepo/blob/master/pyTermTk/demo.001.gif?raw=true)](https://pypi.org/project/pyTermTk)
 
 ## Features
-- [x] Basic widgets for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
-- [x] Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
-- [x] QT Like Layout system to help arrange the widgets in the terminal
-- [ ] UTF-8 and true color support
+- Basic widgets for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
+- Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
+- QT Like Layout system to help arrange the widgets in the terminal
+- True color support
+- [TBD] Fullsize/Halfsize UTF-8 characters
 
 ## Limitations
 - Only the key combinations forwarded by the terminal emulator used are detected (ALT,CTRL may not be handled)
