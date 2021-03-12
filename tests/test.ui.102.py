@@ -29,7 +29,7 @@ import time
 sys.path.append(os.path.join(sys.path[0],'..'))
 from TermTk import TTkLog
 
-from TermTk import TTk
+from TermTk import ttk
 
 class Demo1:
     def __init__(self, master):
