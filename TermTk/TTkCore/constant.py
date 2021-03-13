@@ -64,10 +64,23 @@ class TTkConstant:
     HORIZONTAL = 0x01
     VERTICAL   = 0x02
 
-    # Scroll Bar Policy
-    ScrollBarAsNeeded  =  0x00
-    ScrollBarAlwaysOff =  0x01
-    ScrollBarAlwaysOn  =  0x02
+    class ScrollBarPolicy:
+        ScrollBarAsNeeded  =  0x00
+        ScrollBarAlwaysOff =  0x01
+        ScrollBarAlwaysOn  =  0x02
+
+    ScrollBarAsNeeded  = ScrollBarPolicy.ScrollBarAsNeeded
+    ScrollBarAlwaysOff = ScrollBarPolicy.ScrollBarAlwaysOff
+    ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
+
+    class CheckState:
+        Unchecked        = 0x00
+        PartiallyChecked = 0x01
+        Checked          = 0x02
+
+    Unchecked        = CheckState.Unchecked
+    PartiallyChecked = CheckState.PartiallyChecked
+    Checked          = CheckState.Checked
 
 
     # Keys

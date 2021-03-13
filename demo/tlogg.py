@@ -42,14 +42,43 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
+
+
+'''
+             w1   w3   w2   w5
+    Buffer |----|----|----|----|
+             |      \ /       \
+             |       x         \
+             |      / \         \
+    File   |----|----|----|----|----|----|
+             w1   w2   w3   w4   w5   w6
+'''
 class _FileBuffer():
-    __slots__ = ('_filename', '_indexes', '_fd', '_lastline')
-    def __init__(self, filename, window):
+    class _Page:
+        __slots__ = ('_page', '_size', '_buffer')
+        def __init__(self, page, size):
+            self._page = page
+            self._size = size
+            self._buffer = [""]*self._size
+            #TTkLog.debug(f"{self._buffer}")
+        @property
+        def buffer(self):
+            return self._buffer
+        @property
+        def page(self):
+            return self._page
+
+    __slots__ = ('_filename', '_indexes', '_fd', '_lastline', '_pages', '_buffer', '_window', '_numW', '_width')
+    def __init__(self, filename, window, numWindows):
+        self._window = window
+        self._numW = numWindows
         self._filename = filename
         self._indexes = []
+        self._width=0
         self.createIndex()
+        self._buffer = [None]*self._numW
+        self._pages = [None]*(1+self.getLen()//window)
         self._fd = open(self._filename,'r')
-        self._lastline = {'line':0, 'txt':self._fd.readline()}
 
     def __del__(self):
         self._fd.close()
@@ -57,13 +86,38 @@ class _FileBuffer():
     def getLen(self):
         return len(self._indexes)
 
+    def getWidth(self, indexes=None):
+       return self._width
+
+    def getLineDirect(self, line):
+        if line >= self.getLen():
+            return ""
+        self._fd.seek(self._indexes[line])
+        return self._fd.readline()
+
     def getLine(self, line):
         if line >= self.getLen():
             return ""
-        if self._lastline['line'] != line :
+        page = line//self._window
+        offset = line%self._window
+        if self._pages[page] == None:
+            # Dispose of the pages to the bottom
+            dispose = self._buffer.pop(0)
+            if dispose is not None:
+                self._pages[dispose.page] = None
+            self._pages[page] = self._Page(page, self._window)
+            self._buffer.append(self._pages[page])
             self._fd.seek(self._indexes[line])
-            self._lastline = {'line':line, 'txt':self._fd.readline()}
-        return self._lastline['txt']
+            buffer = self._pages[page].buffer
+            for i in range(self._window):
+                buffer[i] = self._fd.readline()
+                self._width = max(self._width,len(buffer[i]))
+        else:
+            # Push the page to the top of the buffer
+            i = self._buffer.index(self._pages[page])
+            p = self._buffer.pop(i)
+            self._buffer.append(p)
+        return self._pages[page].buffer[offset]
 
 
     def createIndex(self):
@@ -76,7 +130,7 @@ class _FileBuffer():
                 self._indexes.append(offset)
                 offset += len(line)
 
-    def search(self, regex):
+    def searchRe(self, regex):
         indexes = []
         id = 0
         rr = re.compile(regex)
@@ -84,6 +138,16 @@ class _FileBuffer():
             for line in infile:
                 ma = rr.match(line)
                 if ma:
+                    indexes.append(id)
+                id += 1
+        return indexes
+
+    def search(self, txt):
+        indexes = []
+        id = 0
+        with open(self._filename,'r') as infile:
+            for line in infile:
+                if txt in line:
                     indexes.append(id)
                 id += 1
         return indexes
@@ -118,10 +182,10 @@ class _FileViewer(TTkAbstractScrollView):
 
     def viewFullAreaSize(self) -> (int, int):
         if self._indexes is None:
-            w = 300
+            w = 2+self._fileBuffer.getWidth()
             h = self._fileBuffer.getLen()
         else:
-            w = 300
+            w = 2+self._fileBuffer.getWidth(self._indexes)
             h = len(self._indexes)
         return w , h
 
@@ -141,18 +205,18 @@ class _FileViewer(TTkAbstractScrollView):
                     color = TTkColor.fg("#ff0000")
                 else:
                     color = TTkColor.fg("#0000ff")
-                self.getCanvas().drawText(pos=(0,i), text="⏺", color=color)
-                self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','') )
+                self.getCanvas().drawText(pos=(0,i), text="●", color=color)
+                self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','')[ox:] )
         else:
             for i in range(min(self.height(),len(self._indexes))):
                 if self._indexes[i+oy] in self._indexesSearched:
                     color = TTkColor.fg("#ff0000")
                 else:
                     color = TTkColor.fg("#0000ff")
-                self.getCanvas().drawText(pos=(0,i), text="⏺", color=color)
+                self.getCanvas().drawText(pos=(0,i), text="●", color=color)
                 self.getCanvas().drawText(
                                     pos=(2,i),
-                                    text=self._fileBuffer.getLine(self._indexes[i+oy]).replace('\t','    ').replace('\n','') )
+                                    text=self._fileBuffer.getLineDirect(self._indexes[i+oy]).replace('\t','    ').replace('\n','')[ox:] )
 
 
 
@@ -190,18 +254,22 @@ def main():
 
         # Define the bottom layout widgets
         bottomLayoutSearch = TTkHBoxLayout()
-        bls_label   = TTkLabel(text="Text:", maxWidth=6)
+        bls_label_1 = TTkLabel(text="Text:", maxWidth=6)
         bls_textbox = TTkLineEdit()
-        bls_search  = TTkButton(text="Search", maxWidth=7)
+        bls_label_2 = TTkLabel(text="re:", maxWidth=3)
+        bls_cb_re   = TTkCheckbox(maxWidth=3)
+        bls_search  = TTkButton(text="Search", maxWidth=10)
 
-        bottomLayoutSearch.addWidget(bls_label)
+        bottomLayoutSearch.addWidget(bls_label_2)
+        bottomLayoutSearch.addWidget(bls_cb_re)
+        bottomLayoutSearch.addWidget(bls_label_1)
         bottomLayoutSearch.addWidget(bls_textbox)
         bottomLayoutSearch.addWidget(bls_search)
 
         bottomFrame.layout().addItem(bottomLayoutSearch)
 
         # Define the main file Viewer
-        fileBuffer = _FileBuffer(file, 5000)
+        fileBuffer = _FileBuffer(file, 0x1000, 0x10)
         topViewer = FileViewer(parent=topFrame, filebuffer=fileBuffer)
         # Define the Search Viewer
         bottomViewer = FileViewer(parent=bottomFrame, filebuffer=fileBuffer)
@@ -210,18 +278,22 @@ def main():
         bottomViewport.showIndexes([])
 
         class _search:
-            def __init__(self,tb,fb,tvp,bvp):
+            def __init__(self,tb,fb,cb,tvp,bvp):
                 self.tb=tb
                 self.fb=fb
+                self.cb=cb
                 self.tvp=tvp
                 self.bvp=bvp
             def search(self):
                 searchtext = self.tb.text()
-                indexes = self.fb.search(searchtext)
+                if self.cb.checkState() == TTkK.Checked:
+                    indexes = self.fb.searchRe(searchtext)
+                else:
+                    indexes = self.fb.search(searchtext)
                 self.bvp.showIndexes(indexes)
                 self.bvp.searchedIndexes(indexes)
                 self.tvp.searchedIndexes(indexes)
-        _s = _search(bls_textbox,fileBuffer,topViewer.viewport(),bottomViewport)
+        _s = _search(bls_textbox,fileBuffer,bls_cb_re,topViewer.viewport(),bottomViewport)
         bls_search.clicked.connect(_s.search)
         bls_textbox.returnPressed.connect(_s.search)
 

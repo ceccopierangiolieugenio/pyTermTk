@@ -73,7 +73,7 @@ class _TTkDisplayedTreeItem(TTkWidget):
 
     def paintEvent(self):
         if self._isLeaf:
-            self._canvas.drawText(pos=(self._depth, 0), text="⏺")
+            self._canvas.drawText(pos=(self._depth, 0), text="•")
         self._canvas.drawText(pos=(self._depth+2, 0), text=self._text)
 
 
