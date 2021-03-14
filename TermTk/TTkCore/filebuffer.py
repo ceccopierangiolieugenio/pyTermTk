@@ -28,11 +28,12 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 '''
              w1   w3   w2   w5
-    Buffer |----|----|----|----|
+    Buffer |----|----|----|----|            cache buffer
              |      \ /       \
              |       x         \
              |      / \         \
-    File   |----|----|----|----|----|----|
+    Pages  | 0  | 2  | 1  |None| 3  |None|  index to buffer
+    File   |----|----|----|----|----|----|  view as list of windows
              w1   w2   w3   w4   w5   w6
 '''
 class TTkFileBuffer():
