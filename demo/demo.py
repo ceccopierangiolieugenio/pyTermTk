@@ -82,65 +82,8 @@ def main():
     else:
         winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
         border = True
+
     demoShowcase(winTabbed1, border)
-
-
-    win_table1 = ttk.TTkWindow(parent=root,pos = (3,3), size=(150,40), title="Test Table 1", layout=ttk.TTkHBoxLayout(), border=True)
-    table1 = ttk.TTkTable(parent=win_table1, selectColor=ttk.TTkColor.bg('#882200'))
-
-    win_table2 = ttk.TTkWindow(parent=root,pos = (15,5), size=(100,30), title="Test Table 2 Default", layout=ttk.TTkHBoxLayout(), border=True)
-    table2 = ttk.TTkTable(parent=win_table2)
-
-    win_table3 = ttk.TTkWindow(parent=root,pos = (15,5), size=(130,40), title="Test Table 2 Default", layout=ttk.TTkHBoxLayout(), border=True)
-    table3 = ttk.TTkTable(parent=win_table3, showHeader=False)
-
-    table1.setColumnSize((5,10,-1,10,20))
-    table1.setAlignment((
-            ttk.TTkK.LEFT_ALIGN,
-            ttk.TTkK.RIGHT_ALIGN,
-            ttk.TTkK.LEFT_ALIGN,
-            ttk.TTkK.LEFT_ALIGN,
-            ttk.TTkK.CENTER_ALIGN
-        ))
-    table1.setHeader(("id","Name","Sentence","Word","center"))
-    table1.setColumnColors((
-            ttk.TTkColor.fg('#888800', modifier=ttk.TTkColorGradient(increment=6)),
-            ttk.TTkColor.RST,
-            ttk.TTkColor.fg('#00dddd', modifier=ttk.TTkColorGradient(increment=-4)),
-            ttk.TTkColor.RST,
-            ttk.TTkColor.fg('#cccccc', modifier=ttk.TTkColorGradient(increment=-2))
-        ))
-
-    table2.setColumnSize((5,10,-1,10,20))
-    table2.setHeader(("id","Name","Sentence","Word",""))
-
-    table3.setColumnSize((5,10,-1,10,20))
-    table3.setAlignment((
-            ttk.TTkK.LEFT_ALIGN,
-            ttk.TTkK.RIGHT_ALIGN,
-            ttk.TTkK.LEFT_ALIGN,
-            ttk.TTkK.LEFT_ALIGN,
-            ttk.TTkK.CENTER_ALIGN
-        ))
-    table3.setHeader(("id","Name","Sentence","Word","center"))
-    table3.setColumnColors((
-            ttk.TTkColor.fg('#ffff00', modifier=ttk.TTkColorGradient(increment=6)),
-            ttk.TTkColor.fg('#ff0000', modifier=ttk.TTkColorGradient(increment=6)),
-            ttk.TTkColor.fg('#00ffff', modifier=ttk.TTkColorGradient(increment=-8)),
-            ttk.TTkColor.fg('#00ff00', modifier=ttk.TTkColorGradient(increment=-4)),
-            ttk.TTkColor.fg('#cccccc', modifier=ttk.TTkColorGradient(increment=-2))
-        ))
-
-
-    table3.appendItem((" - ","","You see it's all clear, You were meant to be here, From the beginning","",""))
-    for i in range(0, 5):
-        table1.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
-    for i in range(0, 5):
-        table2.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
-    for i in range(0, 35):
-        table3.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
-
-    table3.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 
     root.mainloop()
 

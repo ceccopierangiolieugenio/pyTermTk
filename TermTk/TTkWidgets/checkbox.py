@@ -29,17 +29,23 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkCheckbox(TTkWidget):
-    __slots__ = ('_checked', 'clicked')
+    __slots__ = ('_checked', 'clicked', 'stateChanged')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
         # Define Signals
-        # self.cehcked = pyTTkSignal()
+        self.stateChanged = pyTTkSignal(int)
         self.clicked = pyTTkSignal(bool)
         self._checked = kwargs.get('checked', False )
         self.setMinimumSize(3, 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
+    def checkState(self):
+        if self._checked:
+            return TTkK.Checked
+        else:
+            return TTkK.Unchecked
 
     def paintEvent(self):
         if self.hasFocus():
@@ -58,5 +64,6 @@ class TTkCheckbox(TTkWidget):
     def mousePressEvent(self, evt):
         self._checked = not self._checked
         self.clicked.emit(self._checked)
+        self.stateChanged.emit(self.checkState())
         self.update()
         return True

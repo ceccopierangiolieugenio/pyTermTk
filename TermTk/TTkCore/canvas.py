@@ -181,6 +181,8 @@ class TTkCanvas:
             elif alignment == TTkK.JUSTIFY:
                 # TODO: Text Justification
                 text = text + " "*pad
+        else:
+            text=text[:width]
 
         arr = list(text)
         for i in range(0, len(arr)):
