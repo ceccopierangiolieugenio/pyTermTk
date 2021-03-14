@@ -35,6 +35,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.ttk import TTk
+from TermTk.TTkCore.filebuffer import TTkFileBuffer
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkTemplates.color import TColor
 from TermTk.TTkTemplates.text  import TText
@@ -42,122 +43,13 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-
-
-'''
-             w1   w3   w2   w5
-    Buffer |----|----|----|----|
-             |      \ /       \
-             |       x         \
-             |      / \         \
-    File   |----|----|----|----|----|----|
-             w1   w2   w3   w4   w5   w6
-'''
-class _FileBuffer():
-    class _Page:
-        __slots__ = ('_page', '_size', '_buffer')
-        def __init__(self, page, size):
-            self._page = page
-            self._size = size
-            self._buffer = [""]*self._size
-            #TTkLog.debug(f"{self._buffer}")
-        @property
-        def buffer(self):
-            return self._buffer
-        @property
-        def page(self):
-            return self._page
-
-    __slots__ = ('_filename', '_indexes', '_fd', '_lastline', '_pages', '_buffer', '_window', '_numW', '_width')
-    def __init__(self, filename, window, numWindows):
-        self._window = window
-        self._numW = numWindows
-        self._filename = filename
-        self._indexes = []
-        self._width=0
-        self.createIndex()
-        self._buffer = [None]*self._numW
-        self._pages = [None]*(1+self.getLen()//window)
-        self._fd = open(self._filename,'r')
-
-    def __del__(self):
-        self._fd.close()
-
-    def getLen(self):
-        return len(self._indexes)
-
-    def getWidth(self, indexes=None):
-       return self._width
-
-    def getLineDirect(self, line):
-        if line >= self.getLen():
-            return ""
-        self._fd.seek(self._indexes[line])
-        return self._fd.readline()
-
-    def getLine(self, line):
-        if line >= self.getLen():
-            return ""
-        page = line//self._window
-        offset = line%self._window
-        if self._pages[page] == None:
-            # Dispose of the pages to the bottom
-            dispose = self._buffer.pop(0)
-            if dispose is not None:
-                self._pages[dispose.page] = None
-            self._pages[page] = self._Page(page, self._window)
-            self._buffer.append(self._pages[page])
-            self._fd.seek(self._indexes[line])
-            buffer = self._pages[page].buffer
-            for i in range(self._window):
-                buffer[i] = self._fd.readline()
-                self._width = max(self._width,len(buffer[i]))
-        else:
-            # Push the page to the top of the buffer
-            i = self._buffer.index(self._pages[page])
-            p = self._buffer.pop(i)
-            self._buffer.append(p)
-        return self._pages[page].buffer[offset]
-
-
-    def createIndex(self):
-        self._indexes = []
-        lines = 0
-        offset = 0
-        with open(self._filename,'r') as infile:
-            for line in infile:
-                lines += 1
-                self._indexes.append(offset)
-                offset += len(line)
-
-    def searchRe(self, regex):
-        indexes = []
-        id = 0
-        rr = re.compile(regex)
-        with open(self._filename,'r') as infile:
-            for line in infile:
-                ma = rr.match(line)
-                if ma:
-                    indexes.append(id)
-                id += 1
-        return indexes
-
-    def search(self, txt):
-        indexes = []
-        id = 0
-        with open(self._filename,'r') as infile:
-            for line in infile:
-                if txt in line:
-                    indexes.append(id)
-                id += 1
-        return indexes
-
 class _FileViewer(TTkAbstractScrollView):
-    __slots__ = ('_fileBuffer', '_indexes', '_indexesMark', '_indexexSearched', '_selected')
+    __slots__ = ('_fileBuffer', '_indexes', '_indexesMark', '_indexexSearched', '_selected', '_indexing')
     def __init__(self, *args, **kwargs):
         self._indexes = None
         self._indexesMark = []
         self._indexesSearched = []
+        self._indexing = None
         self._selected = None
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_FileViewer' )
@@ -167,6 +59,16 @@ class _FileViewer(TTkAbstractScrollView):
     @pyTTkSlot()
     def _viewChangedHandler(self):
         self.update()
+
+    @pyTTkSlot(float)
+    def fileIndexing(self, percentage):
+        self._indexing = percentage
+        self.viewChanged.emit()
+
+    @pyTTkSlot()
+    def fileIndexed(self):
+        self._indexing = None
+        self.viewChanged.emit()
 
     def showIndexes(self, indexes):
         self._indexes = indexes
@@ -217,7 +119,8 @@ class _FileViewer(TTkAbstractScrollView):
                 self.getCanvas().drawText(
                                     pos=(2,i),
                                     text=self._fileBuffer.getLineDirect(self._indexes[i+oy]).replace('\t','    ').replace('\n','')[ox:] )
-
+        if self._indexing is not None:
+            self.getCanvas().drawText(pos=(0,0), text=f" [ Indexed: {int(100*self._indexing)}% ] ")
 
 
 class FileViewer(TTkAbstractScrollArea):
@@ -269,8 +172,10 @@ def main():
         bottomFrame.layout().addItem(bottomLayoutSearch)
 
         # Define the main file Viewer
-        fileBuffer = _FileBuffer(file, 0x1000, 0x10)
+        fileBuffer = TTkFileBuffer(file, 0x1000, 0x10)
         topViewer = FileViewer(parent=topFrame, filebuffer=fileBuffer)
+        fileBuffer.indexUpdated.connect(topViewer.viewport().fileIndexing)
+        fileBuffer.indexed.connect(topViewer.viewport().fileIndexed)
         # Define the Search Viewer
         bottomViewer = FileViewer(parent=bottomFrame, filebuffer=fileBuffer)
         bottomViewport = bottomViewer.viewport()
