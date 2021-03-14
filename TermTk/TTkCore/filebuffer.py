@@ -22,7 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import threading, os
+import os
+import re
+import threading
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
@@ -105,7 +107,7 @@ class TTkFileBuffer():
             self._pages[page] = self._Page(page, self._window)
             self._buffer.append(self._pages[page])
             self._indexesMutex.acquire()
-            self._fd.seek(self._indexes[line])
+            self._fd.seek(self._indexes[line-offset])
             self._indexesMutex.release()
             buffer = self._pages[page].buffer
             for i in range(self._window):
@@ -118,6 +120,11 @@ class TTkFileBuffer():
             self._buffer.append(p)
         return self._pages[page].buffer[offset]
 
+    def getSlice(self, line, length):
+        ret = []
+        for i in range(line, line+length):
+            ret.append(self.getLine(i))
+        return ret
 
     def createIndex(self):
         TTkLog.debug(f"Start Indexing {self._filename}")

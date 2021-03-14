@@ -44,13 +44,18 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _FileViewer(TTkAbstractScrollView):
-    __slots__ = ('_fileBuffer', '_indexes', '_indexesMark', '_indexexSearched', '_selected', '_indexing')
+    __slots__ = (
+        '_fileBuffer', '_indexes', '_indexesMark', '_indexexSearched', '_selected', '_indexing',
+        # Signals
+        'selected')
     def __init__(self, *args, **kwargs):
         self._indexes = None
         self._indexesMark = []
         self._indexesSearched = []
         self._indexing = None
-        self._selected = None
+        self._selected = -1
+        # Signals
+        self.selected = pyTTkSignal(int)
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_FileViewer' )
         self._fileBuffer = kwargs.get('filebuffer')
@@ -97,7 +102,25 @@ class _FileViewer(TTkAbstractScrollView):
     def mousePressEvent(self, evt):
         x,y = evt.x, evt.y
         ox,oy = self.getViewOffsets()
+        if self._indexes is None:
+            if oy+y<self._fileBuffer.getLen():
+                self._selected = oy+y
+                self.update()
+                self.selected.emit(self._selected)
+                return True
+        else:
+            if oy+y<len(self._indexes):
+                self._selected = oy+y
+                self.update()
+                self.selected.emit(self._indexes[self._selected])
+                return True
         return False
+
+    @pyTTkSlot(int)
+    def selectAndMove(self, line):
+        self._selected = line
+        ox,_ = self.getViewOffsets()
+        self.viewMoveTo(ox, line)
 
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
@@ -107,18 +130,32 @@ class _FileViewer(TTkAbstractScrollView):
                     color = TTkColor.fg("#ff0000")
                 else:
                     color = TTkColor.fg("#0000ff")
+                if i+oy == self._selected:
+                    selectedColor = TTkColor.bg("#008844")
+                else:
+                    selectedColor = TTkColor.RST
                 self.getCanvas().drawText(pos=(0,i), text="●", color=color)
-                self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','')[ox:] )
+                self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','')[ox:], color=selectedColor )
         else:
             for i in range(min(self.height(),len(self._indexes))):
                 if self._indexes[i+oy] in self._indexesSearched:
                     color = TTkColor.fg("#ff0000")
+                    numberColor = TTkColor.bg("#444444")
                 else:
                     color = TTkColor.fg("#0000ff")
+                    numberColor = TTkColor.bg("#444444")
+                if i+oy == self._selected:
+                    selectedColor = TTkColor.bg("#008844")
+                else:
+                    selectedColor = TTkColor.RST
+                lenLineNumber = len(str(self._indexes[-1]))
                 self.getCanvas().drawText(pos=(0,i), text="●", color=color)
+                # Draw Linenumber
                 self.getCanvas().drawText(
-                                    pos=(2,i),
-                                    text=self._fileBuffer.getLineDirect(self._indexes[i+oy]).replace('\t','    ').replace('\n','')[ox:] )
+                                    pos=(3+lenLineNumber,i),
+                                    text=self._fileBuffer.getLineDirect(self._indexes[i+oy]).replace('\t','    ').replace('\n','')[ox:], color=selectedColor )
+                # Draw Line
+                self.getCanvas().drawText(pos=(2,i), text=str(self._indexes[i+oy])+" "*lenLineNumber, width=lenLineNumber, color=numberColor)
         if self._indexing is not None:
             self.getCanvas().drawText(pos=(0,0), text=f" [ Indexed: {int(100*self._indexing)}% ] ")
 
@@ -179,6 +216,7 @@ def main():
         # Define the Search Viewer
         bottomViewer = FileViewer(parent=bottomFrame, filebuffer=fileBuffer)
         bottomViewport = bottomViewer.viewport()
+        bottomViewport.selected.connect(topViewer.viewport().selectAndMove)
         # indexes = fileBuffer.search(r'.*1234.*')
         bottomViewport.showIndexes([])
 
