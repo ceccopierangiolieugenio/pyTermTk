@@ -198,15 +198,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         ''' .. caution:: Don't touch this! '''
         TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
 
-    #def paintNotifyParent(self):
-    #    ''' .. caution:: Don't touch this! '''
-    #    parent = self._parent
-    #    while parent is not None:
-    #        parent._canvas.clean()
-    #        parent.paintEvent()
-    #        parent.paintChildCanvas()
-    #        parent = parent._parent
-
     def moveEvent(self, x: int, y: int):
         ''' Event Callback triggered after a successful move'''
         pass
@@ -479,15 +470,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if self._minw == minw: return
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
-
-    #@staticmethod
-    #def _showHandle(layout):
-    #    for i in range(layout.count()):
-    #        item = layout.itemAt(i)
-    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
-    #            item.widget().show()
-    #        elif isinstance(item, CuLayout):
-    #            CuWidget._showHandle(item)
 
     @staticmethod
     def _propagateShowToLayout(layout):
