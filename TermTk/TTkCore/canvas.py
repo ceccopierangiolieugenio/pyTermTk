@@ -537,6 +537,7 @@ class TTkCanvas:
         oldData, oldColors = self._bufferedData, self._bufferedColors
         lastcolor = TTkColor.RST
         empty = True
+        ansi = ""
         for y in range(0, self._height):
             for x in range(0, self._width):
                 if self._data[y][x] == oldData[y][x] and \
