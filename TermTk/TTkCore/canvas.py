@@ -27,7 +27,7 @@ import math
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.color import *
 from TermTk.TTkCore.helper import *
 from TermTk.TTkGui.theme import *
@@ -90,6 +90,18 @@ class TTkCanvas:
             for ix in range(x,x+w):
                 self._data[iy][ix] = ' '
                 self._colors[iy][ix] = TTkColor.RST
+    
+    def copy(self):
+        w,h = self._width, self._height
+        retData = [[]]*h
+        retColors = [[]]*h
+        for iy in range(h):
+            retData[iy] = [' ']*w
+            retColors[iy] = [TTkColor.RST]*w
+            for ix in range(w):
+                retData[iy][ix] = self._data[iy][ix]
+                retColors[iy][ix] = self._colors[iy][ix]
+        return retData, retColors
 
     def hide(self):
         self._visible = False
@@ -507,3 +519,29 @@ class TTkCanvas:
                     lastcolor = color
                 ansi+=ch
             lbt.Term.push(ansi)
+
+    def pushToTerminalBuffered(self, x, y, w, h, oldData, oldColors):
+        # TTkLog.debug("pushToTerminal")
+        lastcolor = TTkColor.RST
+        empty = True
+        for y in range(0, self._height):
+            for x in range(0, self._width):
+                if self._data[y][x] == oldData[y][x] and \
+                   self._colors[y][x] == oldColors[y][x]:
+                    if not empty:
+                        lbt.Term.push(ansi)
+                        empty=True
+                    continue
+                ch = self._data[y][x]
+                color = self._colors[y][x]
+                if empty:
+                    ansi = color+lbt.Mv.t(y+1,x+1)
+                    lastcolor = color
+                    empty = False
+                if color != lastcolor:
+                    ansi += color-lastcolor
+                    lastcolor = color
+                ansi+=ch
+            if not empty:
+                lbt.Term.push(ansi)
+                empty=True

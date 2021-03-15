@@ -198,14 +198,14 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         ''' .. caution:: Don't touch this! '''
         TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
 
-    def paintNotifyParent(self):
-        ''' .. caution:: Don't touch this! '''
-        parent = self._parent
-        while parent is not None:
-            parent._canvas.clean()
-            parent.paintEvent()
-            parent.paintChildCanvas()
-            parent = parent._parent
+    #def paintNotifyParent(self):
+    #    ''' .. caution:: Don't touch this! '''
+    #    parent = self._parent
+    #    while parent is not None:
+    #        parent._canvas.clean()
+    #        parent.paintEvent()
+    #        parent.paintChildCanvas()
+    #        parent = parent._parent
 
     def moveEvent(self, x: int, y: int):
         ''' Event Callback triggered after a successful move'''
