@@ -24,8 +24,8 @@
 
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.constant import *
+from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
+from TermTk.TTkCore.constant import TTkK
 
 class TTkHelper:
     # TODO: Add Setter/Getter
@@ -85,6 +85,7 @@ class TTkHelper:
     @staticmethod
     def registerRootCanvas(canvas):
         TTkHelper._rootCanvas = canvas
+        TTkHelper._rootCanvas.enableDoubleBuffer()
         TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
 
@@ -124,6 +125,7 @@ class TTkHelper:
         '''
         if TTkHelper._rootCanvas is None:
             return
+
         # Build a list of buffers to be repainted
         updateBuffers = TTkHelper._updateBuffer.copy()
         updateWidgets = TTkHelper._updateWidget.copy()
@@ -178,12 +180,14 @@ class TTkHelper:
         if pushToTerminal:
             if TTkHelper._cursor:
                 lbt.Term.hideCursor()
-            TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+            if TTkCfg.doubleBuffer:
+                TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+            else:
+                TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             if TTkHelper._cursor:
                 x,y = TTkHelper._cursorPos
                 lbt.Term.push(lbt.Mv.to(y+1,x+1))
                 lbt.Term.showCursor(TTkHelper._cursorType)
-
 
     @staticmethod
     def widgetDepth(widget) -> int:

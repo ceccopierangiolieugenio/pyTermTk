@@ -27,10 +27,9 @@ import math
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.color import *
-from TermTk.TTkCore.helper import *
-from TermTk.TTkGui.theme import *
+from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.helper import TTkHelper
 
 class TTkCanvas:
     '''
@@ -49,10 +48,17 @@ class TTkCanvas:
       in  w = the width of the new canvas
       in  h = the height of the new canvas
     '''
-    __slots__ = ('_widget', '_width', '_height', '_newWidth', '_newHeight','_theme', '_data', '_colors', '_visible')
+    __slots__ = (
+        '_widget',
+        '_width', '_height', '_newWidth', '_newHeight',
+        '_theme',
+        '_data', '_colors',
+        '_bufferedData', '_bufferedColors',
+        '_visible', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
         self._widget = kwargs.get('widget', None)
         self._visible = True
+        self._doubleBuffer = False
         self._width = 0
         self._height = 0
         self._data = [[0]]
@@ -64,6 +70,10 @@ class TTkCanvas:
         # TTkLog.debug((self._width, self._height))
 
     def getWidget(self): return self._widget
+
+    def enableDoubleBuffer(self):
+        self._doubleBuffer = True
+        self._bufferedData, self._bufferedColors = self.copy()
 
     def updateSize(self):
         if not self._visible: return
@@ -77,6 +87,8 @@ class TTkCanvas:
             self._colors[i] = [TTkColor.RST]*w
         self._width  = w
         self._height = h
+        if self._doubleBuffer:
+            self._bufferedData, self._bufferedColors = self.copy()
 
     def resize(self, w, h):
         self._newWidth = w
@@ -90,6 +102,18 @@ class TTkCanvas:
             for ix in range(x,x+w):
                 self._data[iy][ix] = ' '
                 self._colors[iy][ix] = TTkColor.RST
+
+    def copy(self):
+        w,h = self._width, self._height
+        retData = [[]]*h
+        retColors = [[]]*h
+        for iy in range(h):
+            retData[iy] = [' ']*w
+            retColors[iy] = [TTkColor.RST]*w
+            for ix in range(w):
+                retData[iy][ix] = self._data[iy][ix]
+                retColors[iy][ix] = self._colors[iy][ix]
+        return retData, retColors
 
     def hide(self):
         self._visible = False
@@ -507,3 +531,34 @@ class TTkCanvas:
                     lastcolor = color
                 ansi+=ch
             lbt.Term.push(ansi)
+
+    def pushToTerminalBuffered(self, x, y, w, h):
+        # TTkLog.debug("pushToTerminal")
+        oldData, oldColors = self._bufferedData, self._bufferedColors
+        lastcolor = TTkColor.RST
+        empty = True
+        ansi = ""
+        for y in range(0, self._height):
+            for x in range(0, self._width):
+                if self._data[y][x] == oldData[y][x] and \
+                   self._colors[y][x] == oldColors[y][x]:
+                    if not empty:
+                        lbt.Term.push(ansi)
+                        empty=True
+                    continue
+                ch = self._data[y][x]
+                color = self._colors[y][x]
+                if empty:
+                    ansi = color+lbt.Mv.t(y+1,x+1)
+                    lastcolor = color
+                    empty = False
+                if color != lastcolor:
+                    ansi += color-lastcolor
+                    lastcolor = color
+                ansi+=ch
+            if not empty:
+                lbt.Term.push(ansi)
+                empty=True
+        # Switch the buffer
+        self._bufferedData, self._bufferedColors = self._data, self._colors
+        self._data, self._colors = oldData, oldColors
