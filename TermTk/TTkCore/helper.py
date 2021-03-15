@@ -126,7 +126,6 @@ class TTkHelper:
         '''
         if TTkHelper._rootCanvas is None:
             return
-        TTkHelper._rootCanvas.updateSize()
 
         # Build a list of buffers to be repainted
         updateBuffers = TTkHelper._updateBuffer.copy()

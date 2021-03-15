@@ -28,9 +28,8 @@ import TermTk.libbpytop as lbt
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
-from TermTk.TTkCore.color import *
-from TermTk.TTkCore.helper import *
-from TermTk.TTkGui.theme import *
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.helper import TTkHelper
 
 class TTkCanvas:
     '''
