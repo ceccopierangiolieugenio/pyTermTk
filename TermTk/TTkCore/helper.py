@@ -86,6 +86,7 @@ class TTkHelper:
     @staticmethod
     def registerRootCanvas(canvas):
         TTkHelper._rootCanvas = canvas
+        TTkHelper._rootCanvas.enableDoubleBuffer()
         TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
 
@@ -126,7 +127,6 @@ class TTkHelper:
         if TTkHelper._rootCanvas is None:
             return
         TTkHelper._rootCanvas.updateSize()
-        bufferData, bufferColors = TTkHelper._rootCanvas.copy()
 
         # Build a list of buffers to be repainted
         updateBuffers = TTkHelper._updateBuffer.copy()
@@ -182,31 +182,14 @@ class TTkHelper:
         if pushToTerminal:
             if TTkHelper._cursor:
                 lbt.Term.hideCursor()
-            # TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h, bufferData, bufferColors)
-            # TTkHelper.pushToTerminal(TTkHelper._rootCanvas, bufferData, bufferColors )
+            if TTkCfg.doubleBuffer:
+                TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+            else:
+                TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             if TTkHelper._cursor:
                 x,y = TTkHelper._cursorPos
                 lbt.Term.push(lbt.Mv.to(y+1,x+1))
                 lbt.Term.showCursor(TTkHelper._cursorType)
-
-    @staticmethod
-    def pushToTerminal(canvas, bufferData, bufferColors):
-        from TermTk.TTkCore.color import TTkColor
-        # TTkLog.debug("pushToTerminal")
-        data = canvas._data
-        colors = canvas._colors
-        lastcolor = TTkColor.RST
-        for y in range(0, self._height):
-            ansi = TTkColor.RST+lbt.Mv.t(y+1,1)
-            for x in range(0, self._width):
-                ch = data[y][x]
-                color = colors[y][x]
-                if color != lastcolor:
-                    ansi += color-lastcolor
-                    lastcolor = color
-                ansi+=ch
-            lbt.Term.push(ansi)
 
     @staticmethod
     def widgetDepth(widget) -> int:
