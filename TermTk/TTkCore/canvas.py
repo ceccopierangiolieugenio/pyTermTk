@@ -85,10 +85,14 @@ class TTkCanvas:
         for i in range(0,h):
             self._data[i] = [' ']*w
             self._colors[i] = [TTkColor.RST]*w
-        self._width  = w
-        self._height = h
         if self._doubleBuffer:
-            self._bufferedData, self._bufferedColors = self.copy()
+            self._bufferedData = [[]]*h
+            self._bufferedColors = [[]]*h
+            for i in range(0,h):
+                self._bufferedData[i] = ['']*w
+                self._bufferedColors[i] = [TTkColor.RST]*w
+        self._height = h
+        self._width  = w
 
     def resize(self, w, h):
         self._newWidth = w
@@ -550,7 +554,7 @@ class TTkCanvas:
                 color = self._colors[y][x]
                 if empty:
                     ansi = color+lbt.Mv.t(y+1,x+1)
-                    lastcolor = color
+                    #lastcolor = color
                     empty = False
                 if color != lastcolor:
                     ansi += color-lastcolor

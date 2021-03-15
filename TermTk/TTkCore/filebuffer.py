@@ -69,7 +69,7 @@ class TTkFileBuffer():
         self._window = window
         self._numW = numWindows
         self._filename = filename
-        self._indexes = []
+        self._indexes = [0]
         self._indexesMutex = threading.Lock()
         self._width=0
         self._buffer = [None]*self._numW
@@ -132,27 +132,24 @@ class TTkFileBuffer():
         lines = 0
         offset = 0
         fileSize = os.stat(self._filename).st_size
-        linesToRead = 100000
+        chunkSize = 0x1000000 # ~16M
         with open(self._filename,'r') as infile:
-            for line in infile:
-                lines += 1
-                indexes.append(offset)
-                offset += len(line)
-                if len(indexes) == linesToRead:
-                    self._indexesMutex.acquire()
-                    self._indexes += indexes
-                    self._pages += [None]*(1+(self.getLen()//self._window)-(len(self._pages)))
-                    self._indexesMutex.release()
-                    indexes = []
-                    # TTkLog.debug(f"{self._filename}: Indexed {int(100*offset/fileSize)}% {len(self._indexes)} ...")
-                    self.indexUpdated.emit(offset/fileSize)
-        self._indexesMutex.acquire()
-        self._indexes += indexes
-        self._pages += [None]*(1+(self.getLen()//self._window)-(len(self._pages)))
-        self._indexesMutex.release()
-        # TTkLog.debug(f"{self._filename}: Indexed {len(self._indexes)} END")
+            while (chunk:=infile.read(chunkSize)):
+                start = 0
+                while (index:=chunk.find('\n',start))!=-1:
+                    indexes.append(index+offset+1)
+                    start = index+1
+                self._indexesMutex.acquire()
+                self._indexes += indexes
+                self._pages += [None]*(1+(self.getLen()//self._window)-(len(self._pages)))
+                self._indexesMutex.release()
+                indexes = []
+                offset+=len(chunk)
+                self.indexUpdated.emit(offset/fileSize)
+                # TTkLog.debug(f"{self._filename} {offset/fileSize} ...")
         self.indexUpdated.emit(1.0)
         self.indexed.emit()
+        # TTkLog.debug(f"{self._filename} {offset/fileSize} END")
 
     def searchRe(self, regex):
         indexes = []
