@@ -513,15 +513,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._canvas.show()
         self._propagateShow()
 
-    #@staticmethod
-    #def _hideHandle(layout):
-    #    for i in range(layout.count()):
-    #        item = layout.itemAt(i)
-    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
-    #            item.widget().hide()
-    #        elif isinstance(item, CuLayout):
-    #            CuWidget._hideHandle(item)
-
     @pyTTkSlot()
     def hide(self):
         if not self._visible: return

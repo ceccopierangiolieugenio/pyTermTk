@@ -27,7 +27,6 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 
-
 class TTkHelper:
     # TODO: Add Setter/Getter
     _focusWidget = None
