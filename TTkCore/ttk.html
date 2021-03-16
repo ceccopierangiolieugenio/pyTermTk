@@ -80,6 +80,9 @@ class TTk(TTkWidget):
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
         self.setFocusPolicy(TTkK.ClickFocus)
+        self.hide()
+        size = os.get_terminal_size()
+        self.setGeometry(0,0,size.columns,size.lines)
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootCanvas(self._canvas)
 
@@ -95,7 +98,18 @@ class TTk(TTkWidget):
             self.time  = curtime
 
     def mainloop(self):
-        TTkLog.debug(&#34;Starting Main Loop...&#34;)
+        TTkLog.debug( &#34;&#34; )
+        TTkLog.debug( &#34;         ████████╗            ████████╗    &#34; )
+        TTkLog.debug( &#34;         ╚══██╔══╝            ╚══██╔══╝    &#34; )
+        TTkLog.debug( &#34;            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  &#34; )
+        TTkLog.debug( &#34;    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   &#34; )
+        TTkLog.debug( &#34;    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  &#34; )
+        TTkLog.debug( &#34;    ▌    ▐  ╚═╝                  ╚═╝       &#34; )
+        TTkLog.debug( &#34;      ▚▄▄▘                                 &#34; )
+        TTkLog.debug( &#34;&#34; )
+        TTkLog.debug(f&#34;  Version: {TTkCfg.version}&#34; )
+        TTkLog.debug( &#34;&#34; )
+        TTkLog.debug( &#34;Starting Main Loop...&#34; )
         # Register events
         try:
             signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
@@ -154,13 +168,15 @@ class TTk(TTkWidget):
                     TTkHelper.execShortcut(kevt.key)
                 pass
             elif evt is TTkK.TIME_EVENT:
+                size = os.get_terminal_size()
+                self.setGeometry(0,0,size.columns,size.lines)
                 TTkHelper.paintAll()
                 self._timer.start(1/TTkCfg.maxFps)
                 self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-                #TTkLog.info(f&#34;Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}&#34;)
+                TTkLog.info(f&#34;Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}&#34;)
             elif evt is TTkK.QUIT_EVENT:
                 TTkLog.debug(f&#34;Quit.&#34;)
                 break
@@ -311,6 +327,9 @@ class TTk(TTkWidget):
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
         self.setFocusPolicy(TTkK.ClickFocus)
+        self.hide()
+        size = os.get_terminal_size()
+        self.setGeometry(0,0,size.columns,size.lines)
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootCanvas(self._canvas)
 
@@ -326,7 +345,18 @@ class TTk(TTkWidget):
             self.time  = curtime
 
     def mainloop(self):
-        TTkLog.debug(&#34;Starting Main Loop...&#34;)
+        TTkLog.debug( &#34;&#34; )
+        TTkLog.debug( &#34;         ████████╗            ████████╗    &#34; )
+        TTkLog.debug( &#34;         ╚══██╔══╝            ╚══██╔══╝    &#34; )
+        TTkLog.debug( &#34;            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  &#34; )
+        TTkLog.debug( &#34;    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   &#34; )
+        TTkLog.debug( &#34;    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  &#34; )
+        TTkLog.debug( &#34;    ▌    ▐  ╚═╝                  ╚═╝       &#34; )
+        TTkLog.debug( &#34;      ▚▄▄▘                                 &#34; )
+        TTkLog.debug( &#34;&#34; )
+        TTkLog.debug(f&#34;  Version: {TTkCfg.version}&#34; )
+        TTkLog.debug( &#34;&#34; )
+        TTkLog.debug( &#34;Starting Main Loop...&#34; )
         # Register events
         try:
             signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
@@ -385,13 +415,15 @@ class TTk(TTkWidget):
                     TTkHelper.execShortcut(kevt.key)
                 pass
             elif evt is TTkK.TIME_EVENT:
+                size = os.get_terminal_size()
+                self.setGeometry(0,0,size.columns,size.lines)
                 TTkHelper.paintAll()
                 self._timer.start(1/TTkCfg.maxFps)
                 self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-                #TTkLog.info(f&#34;Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}&#34;)
+                TTkLog.info(f&#34;Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}&#34;)
             elif evt is TTkK.QUIT_EVENT:
                 TTkLog.debug(f&#34;Quit.&#34;)
                 break
@@ -498,7 +530,18 @@ class TTk(TTkWidget):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def mainloop(self):
-    TTkLog.debug(&#34;Starting Main Loop...&#34;)
+    TTkLog.debug( &#34;&#34; )
+    TTkLog.debug( &#34;         ████████╗            ████████╗    &#34; )
+    TTkLog.debug( &#34;         ╚══██╔══╝            ╚══██╔══╝    &#34; )
+    TTkLog.debug( &#34;            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  &#34; )
+    TTkLog.debug( &#34;    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   &#34; )
+    TTkLog.debug( &#34;    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  &#34; )
+    TTkLog.debug( &#34;    ▌    ▐  ╚═╝                  ╚═╝       &#34; )
+    TTkLog.debug( &#34;      ▚▄▄▘                                 &#34; )
+    TTkLog.debug( &#34;&#34; )
+    TTkLog.debug(f&#34;  Version: {TTkCfg.version}&#34; )
+    TTkLog.debug( &#34;&#34; )
+    TTkLog.debug( &#34;Starting Main Loop...&#34; )
     # Register events
     try:
         signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
@@ -557,13 +600,15 @@ class TTk(TTkWidget):
                 TTkHelper.execShortcut(kevt.key)
             pass
         elif evt is TTkK.TIME_EVENT:
+            size = os.get_terminal_size()
+            self.setGeometry(0,0,size.columns,size.lines)
             TTkHelper.paintAll()
             self._timer.start(1/TTkCfg.maxFps)
             self._fps()
             pass
         elif evt is TTkK.SCREEN_EVENT:
             self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-            #TTkLog.info(f&#34;Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}&#34;)
+            TTkLog.info(f&#34;Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}&#34;)
         elif evt is TTkK.QUIT_EVENT:
             TTkLog.debug(f&#34;Quit.&#34;)
             break
@@ -610,7 +655,6 @@ class TTk(TTkWidget):
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.moveEvent" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintEvent" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
-<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent">paintNotifyParent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.removeWidget" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resize" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.resize">resize</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resizeEvent" href="../TTkWidgets/widget.html#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">resizeEvent</a></code></li>

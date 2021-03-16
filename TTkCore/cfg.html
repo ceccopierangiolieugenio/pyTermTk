@@ -52,9 +52,13 @@
 
 from TermTk.TTkCore.constant import TTkK
 class TTkCfg:
+    version=&#34;__VERSION__&#34;
+    name=&#34;__NAME__&#34;
+
     color_depth: int = TTkK.DEP_24
 
     maxFps = 35
+    doubleBuffer = True
 
     scrollDelta = 5
     theme = None
@@ -83,9 +87,13 @@ class TTkGlbl:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TTkCfg:
+    version=&#34;__VERSION__&#34;
+    name=&#34;__NAME__&#34;
+
     color_depth: int = TTkK.DEP_24
 
     maxFps = 35
+    doubleBuffer = True
 
     scrollDelta = 5
     theme = None</code></pre>
@@ -96,7 +104,15 @@ class TTkGlbl:
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkCore.cfg.TTkCfg.doubleBuffer"><code class="name">var <span class="ident">doubleBuffer</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkCore.cfg.TTkCfg.maxFps"><code class="name">var <span class="ident">maxFps</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.cfg.TTkCfg.name"><code class="name">var <span class="ident">name</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -105,6 +121,10 @@ class TTkGlbl:
 <div class="desc"></div>
 </dd>
 <dt id="TermTk.TTkCore.cfg.TTkCfg.theme"><code class="name">var <span class="ident">theme</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.cfg.TTkCfg.version"><code class="name">var <span class="ident">version</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -153,11 +173,14 @@ class TTkGlbl:
 <ul>
 <li>
 <h4><code><a title="TermTk.TTkCore.cfg.TTkCfg" href="#TermTk.TTkCore.cfg.TTkCfg">TTkCfg</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="TermTk.TTkCore.cfg.TTkCfg.color_depth" href="#TermTk.TTkCore.cfg.TTkCfg.color_depth">color_depth</a></code></li>
+<li><code><a title="TermTk.TTkCore.cfg.TTkCfg.doubleBuffer" href="#TermTk.TTkCore.cfg.TTkCfg.doubleBuffer">doubleBuffer</a></code></li>
 <li><code><a title="TermTk.TTkCore.cfg.TTkCfg.maxFps" href="#TermTk.TTkCore.cfg.TTkCfg.maxFps">maxFps</a></code></li>
+<li><code><a title="TermTk.TTkCore.cfg.TTkCfg.name" href="#TermTk.TTkCore.cfg.TTkCfg.name">name</a></code></li>
 <li><code><a title="TermTk.TTkCore.cfg.TTkCfg.scrollDelta" href="#TermTk.TTkCore.cfg.TTkCfg.scrollDelta">scrollDelta</a></code></li>
 <li><code><a title="TermTk.TTkCore.cfg.TTkCfg.theme" href="#TermTk.TTkCore.cfg.TTkCfg.theme">theme</a></code></li>
+<li><code><a title="TermTk.TTkCore.cfg.TTkCfg.version" href="#TermTk.TTkCore.cfg.TTkCfg.version">version</a></code></li>
 </ul>
 </li>
 <li>

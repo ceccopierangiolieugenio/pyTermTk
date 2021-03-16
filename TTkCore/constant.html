@@ -92,10 +92,23 @@ class TTkConstant:
     HORIZONTAL = 0x01
     VERTICAL   = 0x02
 
-    # Scroll Bar Policy
-    ScrollBarAsNeeded  =  0x00
-    ScrollBarAlwaysOff =  0x01
-    ScrollBarAlwaysOn  =  0x02
+    class ScrollBarPolicy:
+        ScrollBarAsNeeded  =  0x00
+        ScrollBarAlwaysOff =  0x01
+        ScrollBarAlwaysOn  =  0x02
+
+    ScrollBarAsNeeded  = ScrollBarPolicy.ScrollBarAsNeeded
+    ScrollBarAlwaysOff = ScrollBarPolicy.ScrollBarAlwaysOff
+    ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
+
+    class CheckState:
+        Unchecked        = 0x00
+        PartiallyChecked = 0x01
+        Checked          = 0x02
+
+    Unchecked        = CheckState.Unchecked
+    PartiallyChecked = CheckState.PartiallyChecked
+    Checked          = CheckState.Checked
 
 
     # Keys
@@ -679,10 +692,23 @@ class TTkK(TTkConstant): pass</code></pre>
     HORIZONTAL = 0x01
     VERTICAL   = 0x02
 
-    # Scroll Bar Policy
-    ScrollBarAsNeeded  =  0x00
-    ScrollBarAlwaysOff =  0x01
-    ScrollBarAlwaysOn  =  0x02
+    class ScrollBarPolicy:
+        ScrollBarAsNeeded  =  0x00
+        ScrollBarAlwaysOff =  0x01
+        ScrollBarAlwaysOn  =  0x02
+
+    ScrollBarAsNeeded  = ScrollBarPolicy.ScrollBarAsNeeded
+    ScrollBarAlwaysOff = ScrollBarPolicy.ScrollBarAlwaysOff
+    ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
+
+    class CheckState:
+        Unchecked        = 0x00
+        PartiallyChecked = 0x01
+        Checked          = 0x02
+
+    Unchecked        = CheckState.Unchecked
+    PartiallyChecked = CheckState.PartiallyChecked
+    Checked          = CheckState.Checked
 
 
     # Keys
@@ -1224,6 +1250,14 @@ class TTkK(TTkConstant): pass</code></pre>
 <div class="desc"></div>
 </dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.Character"><code class="name">var <span class="ident">Character</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.CheckState"><code class="name">var <span class="ident">CheckState</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.Checked"><code class="name">var <span class="ident">Checked</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -3251,6 +3285,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.PartiallyChecked"><code class="name">var <span class="ident">PartiallyChecked</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.Press"><code class="name">var <span class="ident">Press</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -3291,6 +3329,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.ScrollBarPolicy"><code class="name">var <span class="ident">ScrollBarPolicy</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.SingleSelection"><code class="name">var <span class="ident">SingleSelection</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -3308,6 +3350,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <div class="desc"></div>
 </dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.TabFocus"><code class="name">var <span class="ident">TabFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.Unchecked"><code class="name">var <span class="ident">Unchecked</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -3396,6 +3442,8 @@ class TTkK(TTkConstant): pass</code></pre>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.CENTER" href="#TermTk.TTkCore.constant.TTkConstant.CENTER">CENTER</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.CENTER_ALIGN" href="#TermTk.TTkCore.constant.TTkConstant.CENTER_ALIGN">CENTER_ALIGN</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Character" href="#TermTk.TTkCore.constant.TTkConstant.Character">Character</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.CheckState" href="#TermTk.TTkCore.constant.TTkConstant.CheckState">CheckState</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.Checked" href="#TermTk.TTkCore.constant.TTkConstant.Checked">Checked</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ClickFocus" href="#TermTk.TTkCore.constant.TTkConstant.ClickFocus">ClickFocus</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ContiguousSelection" href="#TermTk.TTkCore.constant.TTkConstant.ContiguousSelection">ContiguousSelection</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Cursor_Blinking_Bar" href="#TermTk.TTkCore.constant.TTkConstant.Cursor_Blinking_Bar">Cursor_Blinking_Bar</a></code></li>
@@ -3902,6 +3950,7 @@ class TTkK(TTkConstant): pass</code></pre>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.NoEvent" href="#TermTk.TTkCore.constant.TTkConstant.NoEvent">NoEvent</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.NoFocus" href="#TermTk.TTkCore.constant.TTkConstant.NoFocus">NoFocus</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.NoSelection" href="#TermTk.TTkCore.constant.TTkConstant.NoSelection">NoSelection</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.PartiallyChecked" href="#TermTk.TTkCore.constant.TTkConstant.PartiallyChecked">PartiallyChecked</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Press" href="#TermTk.TTkCore.constant.TTkConstant.Press">Press</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.QUIT_EVENT" href="#TermTk.TTkCore.constant.TTkConstant.QUIT_EVENT">QUIT_EVENT</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.RIGHT" href="#TermTk.TTkCore.constant.TTkConstant.RIGHT">RIGHT</a></code></li>
@@ -3912,11 +3961,13 @@ class TTkK(TTkConstant): pass</code></pre>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ScrollBarAlwaysOff" href="#TermTk.TTkCore.constant.TTkConstant.ScrollBarAlwaysOff">ScrollBarAlwaysOff</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ScrollBarAlwaysOn" href="#TermTk.TTkCore.constant.TTkConstant.ScrollBarAlwaysOn">ScrollBarAlwaysOn</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ScrollBarAsNeeded" href="#TermTk.TTkCore.constant.TTkConstant.ScrollBarAsNeeded">ScrollBarAsNeeded</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.ScrollBarPolicy" href="#TermTk.TTkCore.constant.TTkConstant.ScrollBarPolicy">ScrollBarPolicy</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.SingleSelection" href="#TermTk.TTkCore.constant.TTkConstant.SingleSelection">SingleSelection</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.SpecialKey" href="#TermTk.TTkCore.constant.TTkConstant.SpecialKey">SpecialKey</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.TIME_EVENT" href="#TermTk.TTkCore.constant.TTkConstant.TIME_EVENT">TIME_EVENT</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.TOP" href="#TermTk.TTkCore.constant.TTkConstant.TOP">TOP</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.TabFocus" href="#TermTk.TTkCore.constant.TTkConstant.TabFocus">TabFocus</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.Unchecked" href="#TermTk.TTkCore.constant.TTkConstant.Unchecked">Unchecked</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.VERTICAL" href="#TermTk.TTkCore.constant.TTkConstant.VERTICAL">VERTICAL</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.WHEEL_Down" href="#TermTk.TTkCore.constant.TTkConstant.WHEEL_Down">WHEEL_Down</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.WHEEL_Up" href="#TermTk.TTkCore.constant.TTkConstant.WHEEL_Up">WHEEL_Up</a></code></li>

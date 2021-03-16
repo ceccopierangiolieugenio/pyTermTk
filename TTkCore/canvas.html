@@ -55,10 +55,9 @@ import math
 import TermTk.libbpytop as lbt
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.color import *
-from TermTk.TTkCore.helper import *
-from TermTk.TTkGui.theme import *
+from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.helper import TTkHelper
 
 class TTkCanvas:
     &#39;&#39;&#39;
@@ -77,10 +76,17 @@ class TTkCanvas:
       in  w = the width of the new canvas
       in  h = the height of the new canvas
     &#39;&#39;&#39;
-    __slots__ = (&#39;_widget&#39;, &#39;_width&#39;, &#39;_height&#39;, &#39;_newWidth&#39;, &#39;_newHeight&#39;,&#39;_theme&#39;, &#39;_data&#39;, &#39;_colors&#39;, &#39;_visible&#39;)
+    __slots__ = (
+        &#39;_widget&#39;,
+        &#39;_width&#39;, &#39;_height&#39;, &#39;_newWidth&#39;, &#39;_newHeight&#39;,
+        &#39;_theme&#39;,
+        &#39;_data&#39;, &#39;_colors&#39;,
+        &#39;_bufferedData&#39;, &#39;_bufferedColors&#39;,
+        &#39;_visible&#39;, &#39;_doubleBuffer&#39;)
     def __init__(self, *args, **kwargs):
         self._widget = kwargs.get(&#39;widget&#39;, None)
         self._visible = True
+        self._doubleBuffer = False
         self._width = 0
         self._height = 0
         self._data = [[0]]
@@ -93,6 +99,10 @@ class TTkCanvas:
 
     def getWidget(self): return self._widget
 
+    def enableDoubleBuffer(self):
+        self._doubleBuffer = True
+        self._bufferedData, self._bufferedColors = self.copy()
+
     def updateSize(self):
         if not self._visible: return
         w,h = self._newWidth, self._newHeight
@@ -103,8 +113,14 @@ class TTkCanvas:
         for i in range(0,h):
             self._data[i] = [&#39; &#39;]*w
             self._colors[i] = [TTkColor.RST]*w
-        self._width  = w
+        if self._doubleBuffer:
+            self._bufferedData = [[]]*h
+            self._bufferedColors = [[]]*h
+            for i in range(0,h):
+                self._bufferedData[i] = [&#39;&#39;]*w
+                self._bufferedColors[i] = [TTkColor.RST]*w
         self._height = h
+        self._width  = w
 
     def resize(self, w, h):
         self._newWidth = w
@@ -118,6 +134,18 @@ class TTkCanvas:
             for ix in range(x,x+w):
                 self._data[iy][ix] = &#39; &#39;
                 self._colors[iy][ix] = TTkColor.RST
+
+    def copy(self):
+        w,h = self._width, self._height
+        retData = [[]]*h
+        retColors = [[]]*h
+        for iy in range(h):
+            retData[iy] = [&#39; &#39;]*w
+            retColors[iy] = [TTkColor.RST]*w
+            for ix in range(w):
+                retData[iy][ix] = self._data[iy][ix]
+                retColors[iy][ix] = self._colors[iy][ix]
+        return retData, retColors
 
     def hide(self):
         self._visible = False
@@ -209,6 +237,8 @@ class TTkCanvas:
             elif alignment == TTkK.JUSTIFY:
                 # TODO: Text Justification
                 text = text + &#34; &#34;*pad
+        else:
+            text=text[:width]
 
         arr = list(text)
         for i in range(0, len(arr)):
@@ -532,7 +562,40 @@ class TTkCanvas:
                     ansi += color-lastcolor
                     lastcolor = color
                 ansi+=ch
-            lbt.Term.push(ansi)</code></pre>
+            lbt.Term.push(ansi)
+
+    def pushToTerminalBuffered(self, x, y, w, h):
+        # TTkLog.debug(&#34;pushToTerminal&#34;)
+        oldData, oldColors = self._bufferedData, self._bufferedColors
+        lastcolor = TTkColor.RST
+        empty = True
+        ansi = &#34;&#34;
+        for y in range(0, self._height):
+            for x in range(0, self._width):
+                if self._data[y][x] == oldData[y][x] and \
+                   self._colors[y][x] == oldColors[y][x]:
+                    if not empty:
+                        lbt.Term.push(ansi)
+                        empty=True
+                    continue
+                ch = self._data[y][x]
+                color = self._colors[y][x]
+                if empty:
+                    ansi = color+lbt.Mv.t(y+1,x+1)
+                    #lastcolor = color
+                    empty = False
+                if color != lastcolor:
+                    ansi += color-lastcolor
+                    lastcolor = color
+                ansi+=ch
+            if not empty:
+                lbt.Term.push(ansi)
+                empty=True
+        # Reset the color at the end
+        lbt.Term.push(TTkColor.RST)
+        # Switch the buffer
+        self._bufferedData, self._bufferedColors = self._data, self._colors
+        self._data, self._colors = oldData, oldColors</code></pre>
 </details>
 </section>
 <section>
@@ -584,10 +647,17 @@ h = the height of the new canvas</p></div>
       in  w = the width of the new canvas
       in  h = the height of the new canvas
     &#39;&#39;&#39;
-    __slots__ = (&#39;_widget&#39;, &#39;_width&#39;, &#39;_height&#39;, &#39;_newWidth&#39;, &#39;_newHeight&#39;,&#39;_theme&#39;, &#39;_data&#39;, &#39;_colors&#39;, &#39;_visible&#39;)
+    __slots__ = (
+        &#39;_widget&#39;,
+        &#39;_width&#39;, &#39;_height&#39;, &#39;_newWidth&#39;, &#39;_newHeight&#39;,
+        &#39;_theme&#39;,
+        &#39;_data&#39;, &#39;_colors&#39;,
+        &#39;_bufferedData&#39;, &#39;_bufferedColors&#39;,
+        &#39;_visible&#39;, &#39;_doubleBuffer&#39;)
     def __init__(self, *args, **kwargs):
         self._widget = kwargs.get(&#39;widget&#39;, None)
         self._visible = True
+        self._doubleBuffer = False
         self._width = 0
         self._height = 0
         self._data = [[0]]
@@ -600,6 +670,10 @@ h = the height of the new canvas</p></div>
 
     def getWidget(self): return self._widget
 
+    def enableDoubleBuffer(self):
+        self._doubleBuffer = True
+        self._bufferedData, self._bufferedColors = self.copy()
+
     def updateSize(self):
         if not self._visible: return
         w,h = self._newWidth, self._newHeight
@@ -610,8 +684,14 @@ h = the height of the new canvas</p></div>
         for i in range(0,h):
             self._data[i] = [&#39; &#39;]*w
             self._colors[i] = [TTkColor.RST]*w
-        self._width  = w
+        if self._doubleBuffer:
+            self._bufferedData = [[]]*h
+            self._bufferedColors = [[]]*h
+            for i in range(0,h):
+                self._bufferedData[i] = [&#39;&#39;]*w
+                self._bufferedColors[i] = [TTkColor.RST]*w
         self._height = h
+        self._width  = w
 
     def resize(self, w, h):
         self._newWidth = w
@@ -625,6 +705,18 @@ h = the height of the new canvas</p></div>
             for ix in range(x,x+w):
                 self._data[iy][ix] = &#39; &#39;
                 self._colors[iy][ix] = TTkColor.RST
+
+    def copy(self):
+        w,h = self._width, self._height
+        retData = [[]]*h
+        retColors = [[]]*h
+        for iy in range(h):
+            retData[iy] = [&#39; &#39;]*w
+            retColors[iy] = [TTkColor.RST]*w
+            for ix in range(w):
+                retData[iy][ix] = self._data[iy][ix]
+                retColors[iy][ix] = self._colors[iy][ix]
+        return retData, retColors
 
     def hide(self):
         self._visible = False
@@ -716,6 +808,8 @@ h = the height of the new canvas</p></div>
             elif alignment == TTkK.JUSTIFY:
                 # TODO: Text Justification
                 text = text + &#34; &#34;*pad
+        else:
+            text=text[:width]
 
         arr = list(text)
         for i in range(0, len(arr)):
@@ -1039,7 +1133,40 @@ h = the height of the new canvas</p></div>
                     ansi += color-lastcolor
                     lastcolor = color
                 ansi+=ch
-            lbt.Term.push(ansi)</code></pre>
+            lbt.Term.push(ansi)
+
+    def pushToTerminalBuffered(self, x, y, w, h):
+        # TTkLog.debug(&#34;pushToTerminal&#34;)
+        oldData, oldColors = self._bufferedData, self._bufferedColors
+        lastcolor = TTkColor.RST
+        empty = True
+        ansi = &#34;&#34;
+        for y in range(0, self._height):
+            for x in range(0, self._width):
+                if self._data[y][x] == oldData[y][x] and \
+                   self._colors[y][x] == oldColors[y][x]:
+                    if not empty:
+                        lbt.Term.push(ansi)
+                        empty=True
+                    continue
+                ch = self._data[y][x]
+                color = self._colors[y][x]
+                if empty:
+                    ansi = color+lbt.Mv.t(y+1,x+1)
+                    #lastcolor = color
+                    empty = False
+                if color != lastcolor:
+                    ansi += color-lastcolor
+                    lastcolor = color
+                ansi+=ch
+            if not empty:
+                lbt.Term.push(ansi)
+                empty=True
+        # Reset the color at the end
+        lbt.Term.push(TTkColor.RST)
+        # Switch the buffer
+        self._bufferedData, self._bufferedColors = self._data, self._colors
+        self._data, self._colors = oldData, oldColors</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -1060,6 +1187,28 @@ h = the height of the new canvas</p></div>
         for ix in range(x,x+w):
             self._data[iy][ix] = &#39; &#39;
             self._colors[iy][ix] = TTkColor.RST</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkCore.canvas.TTkCanvas.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def copy(self):
+    w,h = self._width, self._height
+    retData = [[]]*h
+    retColors = [[]]*h
+    for iy in range(h):
+        retData[iy] = [&#39; &#39;]*w
+        retColors[iy] = [TTkColor.RST]*w
+        for ix in range(w):
+            retData[iy][ix] = self._data[iy][ix]
+            retColors[iy][ix] = self._colors[iy][ix]
+    return retData, retColors</code></pre>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.canvas.TTkCanvas.drawBox"><code class="name flex">
@@ -1493,6 +1642,8 @@ h = the height of the new canvas</p></div>
         elif alignment == TTkK.JUSTIFY:
             # TODO: Text Justification
             text = text + &#34; &#34;*pad
+    else:
+        text=text[:width]
 
     arr = list(text)
     for i in range(0, len(arr)):
@@ -1517,6 +1668,20 @@ h = the height of the new canvas</p></div>
     if size &gt; 2:
         for i in range(1,size-1):
             self._set(y+i, x, ln[1], color)</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkCore.canvas.TTkCanvas.enableDoubleBuffer"><code class="name flex">
+<span>def <span class="ident">enableDoubleBuffer</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enableDoubleBuffer(self):
+    self._doubleBuffer = True
+    self._bufferedData, self._bufferedColors = self.copy()</code></pre>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.canvas.TTkCanvas.execPaint"><code class="name flex">
@@ -1628,6 +1793,49 @@ h = the height of the new canvas</p></div>
         lbt.Term.push(ansi)</code></pre>
 </details>
 </dd>
+<dt id="TermTk.TTkCore.canvas.TTkCanvas.pushToTerminalBuffered"><code class="name flex">
+<span>def <span class="ident">pushToTerminalBuffered</span></span>(<span>self, x, y, w, h)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pushToTerminalBuffered(self, x, y, w, h):
+    # TTkLog.debug(&#34;pushToTerminal&#34;)
+    oldData, oldColors = self._bufferedData, self._bufferedColors
+    lastcolor = TTkColor.RST
+    empty = True
+    ansi = &#34;&#34;
+    for y in range(0, self._height):
+        for x in range(0, self._width):
+            if self._data[y][x] == oldData[y][x] and \
+               self._colors[y][x] == oldColors[y][x]:
+                if not empty:
+                    lbt.Term.push(ansi)
+                    empty=True
+                continue
+            ch = self._data[y][x]
+            color = self._colors[y][x]
+            if empty:
+                ansi = color+lbt.Mv.t(y+1,x+1)
+                #lastcolor = color
+                empty = False
+            if color != lastcolor:
+                ansi += color-lastcolor
+                lastcolor = color
+            ansi+=ch
+        if not empty:
+            lbt.Term.push(ansi)
+            empty=True
+    # Reset the color at the end
+    lbt.Term.push(TTkColor.RST)
+    # Switch the buffer
+    self._bufferedData, self._bufferedColors = self._data, self._colors
+    self._data, self._colors = oldData, oldColors</code></pre>
+</details>
+</dd>
 <dt id="TermTk.TTkCore.canvas.TTkCanvas.resize"><code class="name flex">
 <span>def <span class="ident">resize</span></span>(<span>self, w, h)</span>
 </code></dt>
@@ -1674,8 +1882,14 @@ h = the height of the new canvas</p></div>
     for i in range(0,h):
         self._data[i] = [&#39; &#39;]*w
         self._colors[i] = [TTkColor.RST]*w
-    self._width  = w
-    self._height = h</code></pre>
+    if self._doubleBuffer:
+        self._bufferedData = [[]]*h
+        self._bufferedColors = [[]]*h
+        for i in range(0,h):
+            self._bufferedData[i] = [&#39;&#39;]*w
+            self._bufferedColors[i] = [TTkColor.RST]*w
+    self._height = h
+    self._width  = w</code></pre>
 </details>
 </dd>
 </dl>
@@ -1698,8 +1912,9 @@ h = the height of the new canvas</p></div>
 <ul>
 <li>
 <h4><code><a title="TermTk.TTkCore.canvas.TTkCanvas" href="#TermTk.TTkCore.canvas.TTkCanvas">TTkCanvas</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.clean" href="#TermTk.TTkCore.canvas.TTkCanvas.clean">clean</a></code></li>
+<li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.copy" href="#TermTk.TTkCore.canvas.TTkCanvas.copy">copy</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawBox" href="#TermTk.TTkCore.canvas.TTkCanvas.drawBox">drawBox</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawBoxTitle" href="#TermTk.TTkCore.canvas.TTkCanvas.drawBoxTitle">drawBoxTitle</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawButtonBox" href="#TermTk.TTkCore.canvas.TTkCanvas.drawButtonBox">drawButtonBox</a></code></li>
@@ -1713,11 +1928,13 @@ h = the height of the new canvas</p></div>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawTableLine" href="#TermTk.TTkCore.canvas.TTkCanvas.drawTableLine">drawTableLine</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawText" href="#TermTk.TTkCore.canvas.TTkCanvas.drawText">drawText</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawVLine" href="#TermTk.TTkCore.canvas.TTkCanvas.drawVLine">drawVLine</a></code></li>
+<li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.enableDoubleBuffer" href="#TermTk.TTkCore.canvas.TTkCanvas.enableDoubleBuffer">enableDoubleBuffer</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.execPaint" href="#TermTk.TTkCore.canvas.TTkCanvas.execPaint">execPaint</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.getWidget" href="#TermTk.TTkCore.canvas.TTkCanvas.getWidget">getWidget</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.hide" href="#TermTk.TTkCore.canvas.TTkCanvas.hide">hide</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.paintCanvas" href="#TermTk.TTkCore.canvas.TTkCanvas.paintCanvas">paintCanvas</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.pushToTerminal" href="#TermTk.TTkCore.canvas.TTkCanvas.pushToTerminal">pushToTerminal</a></code></li>
+<li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.pushToTerminalBuffered" href="#TermTk.TTkCore.canvas.TTkCanvas.pushToTerminalBuffered">pushToTerminalBuffered</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.resize" href="#TermTk.TTkCore.canvas.TTkCanvas.resize">resize</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.show" href="#TermTk.TTkCore.canvas.TTkCanvas.show">show</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.updateSize" href="#TermTk.TTkCore.canvas.TTkCanvas.updateSize">updateSize</a></code></li>

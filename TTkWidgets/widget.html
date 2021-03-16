@@ -214,7 +214,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             for child in item.zSortedItems:
                 ix, iy, iw, ih = item.geometry()
                 # child outside the bound
-                if ix+iw &lt; lx and ix &gt; lx+lw and iy+ih &lt; ly and y &gt; ly+lh: continue
+                if ix+iw &lt; lx and ix &gt; lx+lw and iy+ih &lt; ly and iy &gt; ly+lh: continue
                 # Reduce the bound to the minimum visible
                 bx = max(ix,lx)
                 by = max(iy,ly)
@@ -225,15 +225,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
     def paintChildCanvas(self):
         &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
         TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
-
-    def paintNotifyParent(self):
-        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
-        parent = self._parent
-        while parent is not None:
-            parent._canvas.clean()
-            parent.paintEvent()
-            parent.paintChildCanvas()
-            parent = parent._parent
 
     def moveEvent(self, x: int, y: int):
         &#39;&#39;&#39; Event Callback triggered after a successful move&#39;&#39;&#39;
@@ -508,15 +499,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
 
-    #@staticmethod
-    #def _showHandle(layout):
-    #    for i in range(layout.count()):
-    #        item = layout.itemAt(i)
-    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
-    #            item.widget().show()
-    #        elif isinstance(item, CuLayout):
-    #            CuWidget._showHandle(item)
-
     @staticmethod
     def _propagateShowToLayout(layout):
         &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
@@ -540,15 +522,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._visible = True
         self._canvas.show()
         self._propagateShow()
-
-    #@staticmethod
-    #def _hideHandle(layout):
-    #    for i in range(layout.count()):
-    #        item = layout.itemAt(i)
-    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
-    #            item.widget().hide()
-    #        elif isinstance(item, CuLayout):
-    #            CuWidget._hideHandle(item)
 
     @pyTTkSlot()
     def hide(self):
@@ -860,7 +833,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             for child in item.zSortedItems:
                 ix, iy, iw, ih = item.geometry()
                 # child outside the bound
-                if ix+iw &lt; lx and ix &gt; lx+lw and iy+ih &lt; ly and y &gt; ly+lh: continue
+                if ix+iw &lt; lx and ix &gt; lx+lw and iy+ih &lt; ly and iy &gt; ly+lh: continue
                 # Reduce the bound to the minimum visible
                 bx = max(ix,lx)
                 by = max(iy,ly)
@@ -871,15 +844,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
     def paintChildCanvas(self):
         &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
         TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
-
-    def paintNotifyParent(self):
-        &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
-        parent = self._parent
-        while parent is not None:
-            parent._canvas.clean()
-            parent.paintEvent()
-            parent.paintChildCanvas()
-            parent = parent._parent
 
     def moveEvent(self, x: int, y: int):
         &#39;&#39;&#39; Event Callback triggered after a successful move&#39;&#39;&#39;
@@ -1154,15 +1118,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
 
-    #@staticmethod
-    #def _showHandle(layout):
-    #    for i in range(layout.count()):
-    #        item = layout.itemAt(i)
-    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
-    #            item.widget().show()
-    #        elif isinstance(item, CuLayout):
-    #            CuWidget._showHandle(item)
-
     @staticmethod
     def _propagateShowToLayout(layout):
         &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
@@ -1186,15 +1141,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._visible = True
         self._canvas.show()
         self._propagateShow()
-
-    #@staticmethod
-    #def _hideHandle(layout):
-    #    for i in range(layout.count()):
-    #        item = layout.itemAt(i)
-    #        if isinstance(item, CuWidgetItem) and not item.isEmpty():
-    #            item.widget().hide()
-    #        elif isinstance(item, CuLayout):
-    #            CuWidget._hideHandle(item)
 
     @pyTTkSlot()
     def hide(self):
@@ -1802,27 +1748,6 @@ ths need to be overridden in the widget.</p></div>
     pass</code></pre>
 </details>
 </dd>
-<dt id="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent"><code class="name flex">
-<span>def <span class="ident">paintNotifyParent</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><div class="admonition caution">
-<p class="admonition-title">Caution:&ensp;Don't touch this!</p>
-</div></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def paintNotifyParent(self):
-    &#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;
-    parent = self._parent
-    while parent is not None:
-        parent._canvas.clean()
-        parent.paintEvent()
-        parent.paintChildCanvas()
-        parent = parent._parent</code></pre>
-</details>
-</dd>
 <dt id="TermTk.TTkWidgets.widget.TTkWidget.parentWidget"><code class="name flex">
 <span>def <span class="ident">parentWidget</span></span>(<span>self)</span>
 </code></dt>
@@ -2327,7 +2252,6 @@ def show(self):
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.moveEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas" href="#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintEvent" href="#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
-<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent" href="#TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent">paintNotifyParent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.parentWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.parentWidget">parentWidget</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.pos" href="#TermTk.TTkWidgets.widget.TTkWidget.pos">pos</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.raiseWidget" href="#TermTk.TTkWidgets.widget.TTkWidget.raiseWidget">raiseWidget</a></code></li>

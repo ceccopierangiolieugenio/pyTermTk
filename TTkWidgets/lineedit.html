@@ -65,8 +65,15 @@ from TermTk.TTkWidgets.widget import *
             &lt;--&gt;           Offset
 &#39;&#39;&#39;
 class TTkLineEdit(TTkWidget):
-    __slots__ = (&#39;_text&#39;, &#39;_cursorPos&#39;, &#39;_offset&#39;, &#39;_replace&#39;, &#39;_inputType&#39;)
+    __slots__ = (
+        &#39;_text&#39;, &#39;_cursorPos&#39;, &#39;_offset&#39;, &#39;_replace&#39;, &#39;_inputType&#39;,
+        # Signals
+        &#39;returnPressed&#39;, &#39;textChanged&#39;, &#39;textEdited&#39;     )
     def __init__(self, *args, **kwargs):
+        # Signals
+        self.returnPressed = pyTTkSignal()
+        self.textChanged =  pyTTkSignal(str)
+        self.textEdited =  pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get(&#39;name&#39; , &#39;TTkLineEdit&#39; )
         self._inputType = kwargs.get(&#39;inputType&#39; , TTkK.Input_Text )
@@ -79,6 +86,14 @@ class TTkLineEdit(TTkWidget):
         self.setMaximumHeight(1)
         self.setMinimumSize(10,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
+    def setText(self, text):
+        if text != self._text:
+            self.textChanged.emit(text)
+            self._text = text
+
+    def text(self):
+        return self._text
 
     def _pushCursor(self):
         TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)
@@ -142,6 +157,9 @@ class TTkLineEdit(TTkWidget):
             elif self._cursorPos - self._offset &lt; 0:
                 self._offset = self._cursorPos
             self._pushCursor()
+
+            if evt.key == TTkK.Key_Enter:
+                self.returnPressed.emit()
         else:
             if self._inputType &amp; TTkK.Input_Number and \
                not evt.key.isdigit():
@@ -154,12 +172,13 @@ class TTkLineEdit(TTkWidget):
                 post = text[self._cursorPos:]
 
             text = pre + evt.key + post
-            self._text = text
+            self.setText(text)
             self._cursorPos += 1
             # Scroll to the right if reached the edge
             if self._cursorPos - self._offset &gt; w:
                 self._offset += 1
             self._pushCursor()
+            self.textEdited.emit(self._text)
 
     def focusInEvent(self):
         self._pushCursor()
@@ -248,8 +267,15 @@ class TTkLineEdit(TTkWidget):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TTkLineEdit(TTkWidget):
-    __slots__ = (&#39;_text&#39;, &#39;_cursorPos&#39;, &#39;_offset&#39;, &#39;_replace&#39;, &#39;_inputType&#39;)
+    __slots__ = (
+        &#39;_text&#39;, &#39;_cursorPos&#39;, &#39;_offset&#39;, &#39;_replace&#39;, &#39;_inputType&#39;,
+        # Signals
+        &#39;returnPressed&#39;, &#39;textChanged&#39;, &#39;textEdited&#39;     )
     def __init__(self, *args, **kwargs):
+        # Signals
+        self.returnPressed = pyTTkSignal()
+        self.textChanged =  pyTTkSignal(str)
+        self.textEdited =  pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get(&#39;name&#39; , &#39;TTkLineEdit&#39; )
         self._inputType = kwargs.get(&#39;inputType&#39; , TTkK.Input_Text )
@@ -262,6 +288,14 @@ class TTkLineEdit(TTkWidget):
         self.setMaximumHeight(1)
         self.setMinimumSize(10,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
+    def setText(self, text):
+        if text != self._text:
+            self.textChanged.emit(text)
+            self._text = text
+
+    def text(self):
+        return self._text
 
     def _pushCursor(self):
         TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)
@@ -325,6 +359,9 @@ class TTkLineEdit(TTkWidget):
             elif self._cursorPos - self._offset &lt; 0:
                 self._offset = self._cursorPos
             self._pushCursor()
+
+            if evt.key == TTkK.Key_Enter:
+                self.returnPressed.emit()
         else:
             if self._inputType &amp; TTkK.Input_Number and \
                not evt.key.isdigit():
@@ -337,12 +374,13 @@ class TTkLineEdit(TTkWidget):
                 post = text[self._cursorPos:]
 
             text = pre + evt.key + post
-            self._text = text
+            self.setText(text)
             self._cursorPos += 1
             # Scroll to the right if reached the edge
             if self._cursorPos - self._offset &gt; w:
                 self._offset += 1
             self._pushCursor()
+            self.textEdited.emit(self._text)
 
     def focusInEvent(self):
         self._pushCursor()
@@ -357,6 +395,21 @@ class TTkLineEdit(TTkWidget):
 <li><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents">TMouseEvents</a></li>
 <li><a title="TermTk.TTkTemplates.keyevents.TKeyEvents" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents">TKeyEvents</a></li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="TermTk.TTkWidgets.lineedit.TTkLineEdit.returnPressed"><code class="name">var <span class="ident">returnPressed</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.TTkWidgets.lineedit.TTkLineEdit.textChanged"><code class="name">var <span class="ident">textChanged</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.TTkWidgets.lineedit.TTkLineEdit.textEdited"><code class="name">var <span class="ident">textEdited</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="TermTk.TTkWidgets.lineedit.TTkLineEdit.focusInEvent"><code class="name flex">
@@ -386,6 +439,34 @@ class TTkLineEdit(TTkWidget):
     self.update()</code></pre>
 </details>
 </dd>
+<dt id="TermTk.TTkWidgets.lineedit.TTkLineEdit.setText"><code class="name flex">
+<span>def <span class="ident">setText</span></span>(<span>self, text)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setText(self, text):
+    if text != self._text:
+        self.textChanged.emit(text)
+        self._text = text</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.lineedit.TTkLineEdit.text"><code class="name flex">
+<span>def <span class="ident">text</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def text(self):
+    return self._text</code></pre>
+</details>
+</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -408,7 +489,6 @@ class TTkLineEdit(TTkWidget):
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.moveEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
-<li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent">paintNotifyParent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.removeWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resize" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resize">resize</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.widget.TTkWidget.resizeEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">resizeEvent</a></code></li>
@@ -437,9 +517,14 @@ class TTkLineEdit(TTkWidget):
 <ul>
 <li>
 <h4><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit">TTkLineEdit</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.focusInEvent" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.focusInEvent">focusInEvent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.focusOutEvent" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.focusOutEvent">focusOutEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.returnPressed" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.returnPressed">returnPressed</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.setText" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.setText">setText</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.text" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.text">text</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.textChanged" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.textChanged">textChanged</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit.textEdited" href="#TermTk.TTkWidgets.lineedit.TTkLineEdit.textEdited">textEdited</a></code></li>
 </ul>
 </li>
 </ul>

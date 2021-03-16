@@ -101,7 +101,7 @@ class _TTkDisplayedTreeItem(TTkWidget):
 
     def paintEvent(self):
         if self._isLeaf:
-            self._canvas.drawText(pos=(self._depth, 0), text=&#34;⏺&#34;)
+            self._canvas.drawText(pos=(self._depth, 0), text=&#34;•&#34;)
         self._canvas.drawText(pos=(self._depth+2, 0), text=self._text)
 
 
@@ -158,7 +158,7 @@ class TTkTreeWidget(TTkTableView):
         if item.parent() is None:
             self._topLevelItems.addChild(item)
         displayedItems = item.data().copy()
-        displayTreeItem =  _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
+        displayTreeItem = _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
         displayTreeItem._clicked.connect(self._controlClicked)
         displayedItems[0] = displayTreeItem
         if index == -1:
@@ -306,7 +306,7 @@ class TTkTreeWidget(TTkTableView):
         if item.parent() is None:
             self._topLevelItems.addChild(item)
         displayedItems = item.data().copy()
-        displayTreeItem =  _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
+        displayTreeItem = _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
         displayTreeItem._clicked.connect(self._controlClicked)
         displayedItems[0] = displayTreeItem
         if index == -1:
@@ -383,7 +383,6 @@ class TTkTreeWidget(TTkTableView):
 <li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.moveEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.paintChildCanvas" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.paintEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
-<li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.paintNotifyParent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintNotifyParent">paintNotifyParent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.removeWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.resize" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resize">resize</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.tableview.TTkTableView.resizeEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">resizeEvent</a></code></li>
