@@ -52,6 +52,9 @@ class TTk(TTkWidget):
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
         self.setFocusPolicy(TTkK.ClickFocus)
+        self.hide()
+        size = os.get_terminal_size()
+        self.setGeometry(0,0,size.columns,size.lines)
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootCanvas(self._canvas)
 
@@ -137,13 +140,15 @@ class TTk(TTkWidget):
                     TTkHelper.execShortcut(kevt.key)
                 pass
             elif evt is TTkK.TIME_EVENT:
+                size = os.get_terminal_size()
+                self.setGeometry(0,0,size.columns,size.lines)
                 TTkHelper.paintAll()
                 self._timer.start(1/TTkCfg.maxFps)
                 self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-                #TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
+                TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
             elif evt is TTkK.QUIT_EVENT:
                 TTkLog.debug(f"Quit.")
                 break

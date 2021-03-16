@@ -128,7 +128,7 @@ class _FileViewer(TTkAbstractScrollView):
                 symbol='●'
             else:
                 color = TTkColor.fg("#0000ff")
-                symbol='●'
+                symbol='○'
             if i+oy == self._selected:
                 selectedColor = TTkColor.bg("#008844")
             else:
@@ -192,7 +192,7 @@ class _FileViewerSearch(_FileViewer):
         ox,oy = self.getViewOffsets()
         if self._indexes:
             allIndexes = self._indexes
-            for i in range(min(self.height(),len(allIndexes))):
+            for i in range(min(self.height(),len(allIndexes)-oy)):
                 if allIndexes[i+oy] in self._indexesMark:
                     color = TTkColor.fg("#00ffff")
                     numberColor = TTkColor.bg("#444444")
@@ -204,7 +204,7 @@ class _FileViewerSearch(_FileViewer):
                 else:
                     color = TTkColor.fg("#0000ff")
                     numberColor = TTkColor.bg("#444444")
-                    symbol='●'
+                    symbol='○'
                 if i+oy == self._selected:
                     selectedColor = TTkColor.bg("#008844")
                 else:

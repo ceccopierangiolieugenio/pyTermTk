@@ -29,11 +29,16 @@ from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.frame import *
 
 class TTkSplitter(TTkFrame):
-    __slots__ = ('_splitterInitialized', '_orientation','_separators', '_separatorSelected', '_mouseDelta')
+    __slots__ = (
+        '_splitterInitialized', '_orientation',
+        '_separators', '_separatorsRef', '_sizeRef',
+        '_separatorSelected', '_mouseDelta')
     def __init__(self, *args, **kwargs):
         self._splitterInitialized = False
         # self._splitterInitialized = True
         self._separators = []
+        self._separatorsRef = []
+        self._sizeRef = 0
         self._separatorSelected = None
         self._orientation = TTkK.HORIZONTAL
         TTkFrame.__init__(self, *args, **kwargs)
@@ -58,6 +63,8 @@ class TTkSplitter(TTkFrame):
             newSep = -1
         self._separators.append(newSep)
         self._updateGeometries()
+        self._separatorsRef = self._separators
+        self._sizeRef = fullSize
 
     def _minMaxSizeBefore(self, index):
         if self._separatorSelected is None:
@@ -141,7 +148,19 @@ class TTkSplitter(TTkFrame):
         for i in range(selected, len(sep)):
             _processGeometry(i, True)
 
+        if self._separatorSelected is not None or self._sizeRef==0:
+            self._separatorsRef = self._separators
+            self._sizeRef = size
+
     def resizeEvent(self, w, h):
+        # Adjust separators to the new size;
+        self._separatorSelected = None
+        if self._sizeRef > 0:
+            if self._orientation == TTkK.HORIZONTAL:
+                diff = w/self._sizeRef
+            else:
+                diff = h/self._sizeRef
+            self._separators = [int(i*diff) for i in self._separatorsRef]
         self._updateGeometries()
 
     def paintEvent(self):
