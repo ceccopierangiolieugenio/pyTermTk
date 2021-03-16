@@ -43,19 +43,20 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
+
 class _FileViewer(TTkAbstractScrollView):
     __slots__ = (
-        '_fileBuffer', '_indexes', '_indexesMark', '_indexexSearched', '_selected', '_indexing',
+        '_fileBuffer', '_indexesMark', '_indexesSearched', '_selected', '_indexing',
         # Signals
-        'selected')
+        'selected', 'marked')
     def __init__(self, *args, **kwargs):
-        self._indexes = None
         self._indexesMark = []
         self._indexesSearched = []
         self._indexing = None
         self._selected = -1
         # Signals
         self.selected = pyTTkSignal(int)
+        self.marked = pyTTkSignal(list)
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_FileViewer' )
         self._fileBuffer = kwargs.get('filebuffer')
@@ -75,10 +76,6 @@ class _FileViewer(TTkAbstractScrollView):
         self._indexing = None
         self.viewChanged.emit()
 
-    def showIndexes(self, indexes):
-        self._indexes = indexes
-        self.viewChanged.emit()
-
     def markIndexes(self, indexes):
         self._indexesMark = indexes
         self.viewChanged.emit()
@@ -86,6 +83,81 @@ class _FileViewer(TTkAbstractScrollView):
     def searchedIndexes(self, indexes):
         self._indexesSearched = indexes
         self.viewChanged.emit()
+
+    def viewFullAreaSize(self) -> (int, int):
+        w = 2+self._fileBuffer.getWidth()
+        h = self._fileBuffer.getLen()
+        return w , h
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+    def mousePressEvent(self, evt):
+        x,y = evt.x, evt.y
+        ox,oy = self.getViewOffsets()
+        index = oy+y
+        if oy+y<self._fileBuffer.getLen():
+            if x<3:
+                if index in self._indexesMark:
+                    self._indexesMark.pop(self._indexesMark.index(index))
+                else:
+                    self._indexesMark.append(index)
+                self.marked.emit(self._indexesMark)
+            else:
+                self._selected = index
+                self.selected.emit(self._selected)
+            self.update()
+            return True
+        return False
+
+    @pyTTkSlot(int)
+    def selectAndMove(self, line):
+        self._selected = line
+        ox,_ = self.getViewOffsets()
+        self.viewMoveTo(ox, max(0,line-self.height()//2))
+        self.update()
+
+    def paintEvent(self):
+        ox,oy = self.getViewOffsets()
+        for i in range(min(self.height(),self._fileBuffer.getLen()-oy)):
+            if (i+oy) in self._indexesMark:
+                color = TTkColor.fg("#00ffff")
+                symbol='❥'
+            elif (i+oy) in self._indexesSearched:
+                color = TTkColor.fg("#ff0000")
+                symbol='●'
+            else:
+                color = TTkColor.fg("#0000ff")
+                symbol='●'
+            if i+oy == self._selected:
+                selectedColor = TTkColor.bg("#008844")
+            else:
+                selectedColor = TTkColor.RST
+            self.getCanvas().drawText(pos=(0,i), text=symbol, color=color)
+            self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','')[ox:], color=selectedColor )
+        if self._indexing is not None:
+            self.getCanvas().drawText(pos=(0,0), text=f" [ Indexed: {int(100*self._indexing)}% ] ")
+
+class _FileViewerSearch(_FileViewer):
+    __slots__ = ('_indexes')
+    def __init__(self, *args, **kwargs):
+        self._indexes = []
+        _FileViewer.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_FileViewerSearch' )
+
+    def markIndexes(self, indexes):
+        self._indexesMark = indexes
+        self._indexes = [i for i in set(sorted(self._indexesSearched+self._indexesMark))]
+        ox,oy = self.getViewOffsets()
+        self.viewMoveTo(ox,oy)
+        self.update()
+
+    def searchedIndexes(self, indexes):
+        self._indexesSearched = indexes
+        self._indexes = [i for i in set(sorted(self._indexesSearched+self._indexesMark))]
+        ox,_ = self.getViewOffsets()
+        self.viewMoveTo(ox, 0)
+        self.update()
 
     def viewFullAreaSize(self) -> (int, int):
         if self._indexes is None:
@@ -96,69 +168,57 @@ class _FileViewer(TTkAbstractScrollView):
             h = len(self._indexes)
         return w , h
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
     def mousePressEvent(self, evt):
         x,y = evt.x, evt.y
         ox,oy = self.getViewOffsets()
-        if self._indexes is None:
-            if oy+y<self._fileBuffer.getLen():
-                self._selected = oy+y
-                self.update()
-                self.selected.emit(self._selected)
-                return True
-        else:
-            if oy+y<len(self._indexes):
-                self._selected = oy+y
-                self.update()
+        index = oy+y
+        if index<len(self._indexes):
+            if x<3:
+                index = self._indexes[oy+y]
+                if index in self._indexesMark:
+                    self._indexesMark.pop(self._indexesMark.index(index))
+                else:
+                    self._indexesMark.append(index)
+                self.markIndexes(self._indexesMark)
+                self.marked.emit(self._indexesMark)
+            else:
+                self._selected = index
                 self.selected.emit(self._indexes[self._selected])
-                return True
+            self.update()
+            return True
         return False
-
-    @pyTTkSlot(int)
-    def selectAndMove(self, line):
-        self._selected = line
-        ox,_ = self.getViewOffsets()
-        self.viewMoveTo(ox, line)
 
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
-        if self._indexes is None:
-            for i in range(min(self.height(),self._fileBuffer.getLen()-oy)):
-                if (i+oy) in self._indexesSearched:
+        if self._indexes:
+            allIndexes = self._indexes
+            for i in range(min(self.height(),len(allIndexes))):
+                if allIndexes[i+oy] in self._indexesMark:
+                    color = TTkColor.fg("#00ffff")
+                    numberColor = TTkColor.bg("#444444")
+                    symbol='❥'
+                elif allIndexes[i+oy] in self._indexesSearched:
                     color = TTkColor.fg("#ff0000")
+                    numberColor = TTkColor.bg("#444444")
+                    symbol='●'
                 else:
                     color = TTkColor.fg("#0000ff")
+                    numberColor = TTkColor.bg("#444444")
+                    symbol='●'
                 if i+oy == self._selected:
                     selectedColor = TTkColor.bg("#008844")
                 else:
                     selectedColor = TTkColor.RST
-                self.getCanvas().drawText(pos=(0,i), text="●", color=color)
-                self.getCanvas().drawText(pos=(2,i), text=self._fileBuffer.getLine(i+oy).replace('\t','    ').replace('\n','')[ox:], color=selectedColor )
-        else:
-            for i in range(min(self.height(),len(self._indexes))):
-                if self._indexes[i+oy] in self._indexesSearched:
-                    color = TTkColor.fg("#ff0000")
-                    numberColor = TTkColor.bg("#444444")
-                else:
-                    color = TTkColor.fg("#0000ff")
-                    numberColor = TTkColor.bg("#444444")
-                if i+oy == self._selected:
-                    selectedColor = TTkColor.bg("#008844")
-                else:
-                    selectedColor = TTkColor.RST
-                lenLineNumber = len(str(self._indexes[-1]))
-                self.getCanvas().drawText(pos=(0,i), text="●", color=color)
+                lenLineNumber = len(str(allIndexes[-1]))
+                self.getCanvas().drawText(pos=(0,i), text=symbol, color=color)
                 # Draw Linenumber
                 self.getCanvas().drawText(
                                     pos=(3+lenLineNumber,i),
-                                    text=self._fileBuffer.getLineDirect(self._indexes[i+oy]).replace('\t','    ').replace('\n','')[ox:], color=selectedColor )
+                                    text=self._fileBuffer.getLineDirect(allIndexes[i+oy]).replace('\t','    ').replace('\n','')[ox:], color=selectedColor )
                 # Draw Line
-                self.getCanvas().drawText(pos=(2,i), text=str(self._indexes[i+oy])+" "*lenLineNumber, width=lenLineNumber, color=numberColor)
+                self.getCanvas().drawText(pos=(2,i), text=str(allIndexes[i+oy])+" "*lenLineNumber, width=lenLineNumber, color=numberColor)
         if self._indexing is not None:
             self.getCanvas().drawText(pos=(0,0), text=f" [ Indexed: {int(100*self._indexing)}% ] ")
-
 
 class FileViewer(TTkAbstractScrollArea):
     __slots__ = ('_fileView')
@@ -166,7 +226,7 @@ class FileViewer(TTkAbstractScrollArea):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'FileViewer' )
         if 'parent' in kwargs: kwargs.pop('parent')
-        self._fileView = _FileViewer(filebuffer=kwargs.get('filebuffer'))
+        self._fileView = kwargs.get('fileView')
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._fileView)
 
@@ -210,15 +270,16 @@ def main():
 
         # Define the main file Viewer
         fileBuffer = TTkFileBuffer(file, 0x1000, 0x10)
-        topViewer = FileViewer(parent=topFrame, filebuffer=fileBuffer)
-        fileBuffer.indexUpdated.connect(topViewer.viewport().fileIndexing)
-        fileBuffer.indexed.connect(topViewer.viewport().fileIndexed)
+        topViewport = _FileViewer(filebuffer=fileBuffer)
+        topViewer = FileViewer(parent=topFrame, fileView=topViewport)
+        fileBuffer.indexUpdated.connect(topViewport.fileIndexing)
+        fileBuffer.indexed.connect(topViewport.fileIndexed)
         # Define the Search Viewer
-        bottomViewer = FileViewer(parent=bottomFrame, filebuffer=fileBuffer)
-        bottomViewport = bottomViewer.viewport()
-        bottomViewport.selected.connect(topViewer.viewport().selectAndMove)
-        # indexes = fileBuffer.search(r'.*1234.*')
-        bottomViewport.showIndexes([])
+        bottomViewport = _FileViewerSearch(filebuffer=fileBuffer)
+        bottomViewer = FileViewer(parent=bottomFrame, fileView=bottomViewport)
+        bottomViewport.selected.connect(topViewport.selectAndMove)
+        bottomViewport.marked.connect(topViewport.markIndexes)
+        topViewport.marked.connect(bottomViewport.markIndexes)
 
         class _search:
             def __init__(self,tb,fb,cb,tvp,bvp):
@@ -233,10 +294,9 @@ def main():
                     indexes = self.fb.searchRe(searchtext)
                 else:
                     indexes = self.fb.search(searchtext)
-                self.bvp.showIndexes(indexes)
                 self.bvp.searchedIndexes(indexes)
                 self.tvp.searchedIndexes(indexes)
-        _s = _search(bls_textbox,fileBuffer,bls_cb_re,topViewer.viewport(),bottomViewport)
+        _s = _search(bls_textbox,fileBuffer,bls_cb_re,topViewport,bottomViewport)
         bls_search.clicked.connect(_s.search)
         bls_textbox.returnPressed.connect(_s.search)
 

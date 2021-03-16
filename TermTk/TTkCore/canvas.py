@@ -563,6 +563,8 @@ class TTkCanvas:
             if not empty:
                 lbt.Term.push(ansi)
                 empty=True
+        # Reset the color at the end
+        lbt.Term.push(TTkColor.RST)
         # Switch the buffer
         self._bufferedData, self._bufferedColors = self._data, self._colors
         self._data, self._colors = oldData, oldColors

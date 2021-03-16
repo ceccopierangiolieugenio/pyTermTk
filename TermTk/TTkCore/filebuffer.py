@@ -112,7 +112,7 @@ class TTkFileBuffer():
             buffer = self._pages[page].buffer
             for i in range(self._window):
                 buffer[i] = self._fd.readline()
-                self._width = max(self._width,len(buffer[i]))
+                #self._width = max(self._width,len(buffer[i]))
         else:
             # Push the page to the top of the buffer
             i = self._buffer.index(self._pages[page])
@@ -131,6 +131,7 @@ class TTkFileBuffer():
         indexes = []
         lines = 0
         offset = 0
+        width = 0
         fileSize = os.stat(self._filename).st_size
         chunkSize = 0x1000000 # ~16M
         with open(self._filename,'r') as infile:
@@ -147,6 +148,7 @@ class TTkFileBuffer():
                 offset+=len(chunk)
                 self.indexUpdated.emit(offset/fileSize)
                 # TTkLog.debug(f"{self._filename} {offset/fileSize} ...")
+        self._width = max([ (self._indexes[i+1]-self._indexes[i]) for i in range(len(self._indexes)-1) ])
         self.indexUpdated.emit(1.0)
         self.indexed.emit()
         # TTkLog.debug(f"{self._filename} {offset/fileSize} END")
