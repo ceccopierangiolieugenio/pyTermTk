@@ -7,6 +7,7 @@
 	pip3 install --upgrade GitPython
 	pip3 install --upgrade build
 	pip3 install --upgrade twine
+	pip3 install --upgrade pytest flake8
 
 doc: .venv
 	. .venv/bin/activate
@@ -49,3 +50,8 @@ deployTest: .venv
 deploy: .venv
 	. .venv/bin/activate
 	python3 -m twine upload dist/*
+
+test: .venv
+	. .venv/bin/activate
+	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp
+	pytest demo/demo.py
