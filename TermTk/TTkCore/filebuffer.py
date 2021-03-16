@@ -127,7 +127,7 @@ class TTkFileBuffer():
         return ret
 
     def createIndex(self):
-        TTkLog.debug(f"Start Indexing {self._filename}")
+        # TTkLog.debug(f"Start Indexing {self._filename}")
         indexes = []
         lines = 0
         offset = 0

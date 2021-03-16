@@ -1,5 +1,4 @@
 
-# [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
 ![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux)
 ![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)
@@ -8,7 +7,19 @@
 [![Test Status](https://img.shields.io/github/workflow/status/ceccopierangiolieugenio/pyTermTk/Testing?label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
 
-#### Python Terminal Toolkit
+
+```text
+     ████████╗            ████████╗
+     ╚══██╔══╝            ╚══██╔══╝
+        ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖
+▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘
+▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄
+▌    ▐  ╚═╝                  ╚═╝
+  ▚▄▄▘
+```
+
+## [python Terminal Toolkit](https://github.com/ceccopierangiolieugenio/pyTermTk)
+
 Text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface))
 Evolved from the discontinued project [pyCuT](https://github.com/ceccopierangiolieugenio/pyCuT)
 and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/),[GTK](https://pygobject.readthedocs.io/en/latest/), and [tkinter](https://docs.python.org/3/library/tkinter.html) api definition with a touch of personal interpretation
