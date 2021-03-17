@@ -53,8 +53,11 @@ class TTk(TTkWidget):
         self.screen_events = queue.Queue()
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
-        size = os.get_terminal_size()
-        self.setGeometry(0,0,size.columns,size.lines)
+        try:
+            size = os.get_terminal_size()
+            self.setGeometry(0,0,size.columns,size.lines)
+        except OSError as e:
+            print(f'ERROR: {e}')
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootCanvas(self._canvas)
 
