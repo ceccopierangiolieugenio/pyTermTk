@@ -50,3 +50,4 @@ with open(filename, 'a') as out:
 			out.write( "TEST;%d:%02d:%02d;COL1\tCOL2     COL3  c:COL4;LIN=%05X\tRND=%f %s %s\n" % (h, m, s, i, random.random(), getSentence(3,20), " Fill" * random.randint(1,5)) )
 		else:
 			out.write( "TEST;%d:%02d:%02d;COL1 --- (BROKEN LINE) --- LIN=%05X\tRND=%f %s %s\n" % (h, m, s, i, random.random(), getSentence(3,20), " Fill" * random.randint(1,5)) )
+	out.write( "    END LINE (No Newline)" )
