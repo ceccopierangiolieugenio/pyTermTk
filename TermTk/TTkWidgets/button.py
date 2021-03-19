@@ -29,7 +29,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):
-    __slots__ = ('_text', '_border', '_pressed', 'clicked')
+    __slots__ = ('_text', '_border', '_pressed', 'clicked', '_borderColor', '_textColor')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         # Define Signals
@@ -38,6 +38,8 @@ class TTkButton(TTkWidget):
         self._name = kwargs.get('name' , 'TTkButton' )
         self._text = kwargs.get('text', "" )
         self._border = kwargs.get('border', False )
+        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.buttonBorderColor )
+        self._textColor   = kwargs.get('color',       TTkCfg.theme.buttonTextColor )
         self._pressed = False
         if self._border:
             self.setMinimumSize(2+len(self._text), 3)
@@ -52,8 +54,8 @@ class TTkButton(TTkWidget):
             textColor   = TTkCfg.theme.buttonTextColorClicked
             grid = TTkCfg.theme.buttonBoxGridClicked
         else:
-            borderColor = TTkCfg.theme.buttonBorderColor
-            textColor   = TTkCfg.theme.buttonTextColor
+            borderColor = self._borderColor
+            textColor   = self._textColor
             grid = TTkCfg.theme.buttonBoxGrid
         text = self._text
         w = self.width()-2

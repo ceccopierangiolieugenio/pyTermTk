@@ -23,3 +23,4 @@ from .treeview    import *
 from .treewidget  import *
 from .graph       import *
 from .menubar     import *
+from .TTkPickers  import *

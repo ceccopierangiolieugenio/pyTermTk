@@ -48,8 +48,9 @@
 
 ### Layout
 - [ ] Add Weight in V and H Layout
-- [ ] Add addLayout method - Nested layouts
+- [x] Add addLayout (adDItem) method - Nested layouts
 - [x] Add Grid Layout
+  - [ ] Add ColSpan / RowSpan
 
 ### AbstractScrollArea
 - [x] Implement something that mimic the QAbstactScrollArea
@@ -111,6 +112,8 @@
  - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [x] Themes
+ - [ ] Align Selected to center
+ - [ ] Add Menu
  - [ ] Keyboard events
 #### Spin Box
  - [ ] Basic Implementation
@@ -128,3 +131,13 @@
  - [x] Basic Implementation
  - [x] Events (Signal/Slots)
  - [x] Themes
+
+### Pickers
+#### Color Picker
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### File Picker
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes

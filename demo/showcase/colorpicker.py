@@ -22,22 +22,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+import sys, os
 
-class TColor():
-    #__slots__ = ('_color')
-    def __init__(self, *args, **kwargs):
-        self._color = kwargs.get('color', TTkColor.RST )
+sys.path.append(os.path.join(sys.path[0],'../..'))
+import TermTk as ttk
 
-    def colorUpdated(self, color): pass
 
-    @property
-    def color(self):
-        return self._color
+def demoWindows(root=None):
+    frame = ttk.TTkFrame(parent=root, border=False)
 
-    @color.setter
-    def color(self, color):
-        if self.color != color:
-            self._color = color
-            self.colorUpdated(color)
+    win2_2 = ttk.TTkWindow(parent=frame,pos = (0,0), size=(40,20), title="Test Window 2.2", border=True)
+    win2_2.setLayout(ttk.TTkHBoxLayout())
+    ttk.TTkTestWidget(parent=win2_2, border=False)
+
+    win2_1 = ttk.TTkColorPicker(parent=frame,pos = (3,3), size=(110,40), title="Test Color Picker", border=True)
+
+    return frame
+
+def main():
+    ttk.TTkLog.use_default_file_logging()
+    root = ttk.TTk()
+    win1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(120,50), title="Test Window 1", border=True, layout=ttk.TTkGridLayout())
+    demoWindows(win1)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
