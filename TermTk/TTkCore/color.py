@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 
 # Ansi Escape Codes:
@@ -69,6 +70,35 @@ class _TTkColor:
         self._bg  = bg
         self._mod = mod
         self._colorMod = colorMod
+
+    def colorType(self):
+        return \
+            ( TTkK.Foreground if self._fg  != "" else TTkK.NONE ) | \
+            ( TTkK.Background if self._bg  != "" else TTkK.NONE ) | \
+            ( TTkK.Modifier   if self._mod != "" else TTkK.NONE )
+
+    def getHex(self, ctype):
+        if ctype == TTkK.Foreground:
+            r,g,b = self.fgToRGB()
+        else:
+            r,g,b = self.bgToRGB()
+        return "#{:06x}".format(r<<16|g<<8|b)
+
+    def fgToRGB(self):
+        if self._fg == "": return 0xff,0xff,0xff
+        cc = self._fg.split(';')
+        r = int(cc[2])
+        g = int(cc[3])
+        b = int(cc[4][:-1])
+        return r,g,b
+
+    def bgToRGB(self):
+        if self._bg == "": return 0,0,0
+        cc = self._bg.split(';')
+        r = int(cc[2])
+        g = int(cc[3])
+        b = int(cc[4][:-1])
+        return r,g,b
 
     def __str__(self):
         return self._fg+self._bg+self._mod

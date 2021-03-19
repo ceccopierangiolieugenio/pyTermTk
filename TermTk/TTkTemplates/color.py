@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 class TColor():
     #__slots__ = ('_color')

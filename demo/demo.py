@@ -40,6 +40,7 @@ from  showcase.formwidgets  import demoFormWidgets
 from  showcase.scrollarea   import demoScrollArea
 from  showcase.list         import demoList
 from  showcase.menubar      import demoMenuBar
+from  showcase.colorpicker  import demoColorPicker
 
 words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
 def getWord():
@@ -56,6 +57,7 @@ def demoShowcase(root=None, border=True):
     tabWidget1.addTab(demoMenuBar(),     " MenuBar Test ")
     tabWidget1.addTab(demoFormWidgets(), " Form Test ")
     tabWidget1.addTab(demoList(),        " List Test ")
+    tabWidget1.addTab(demoColorPicker(), " Color Picker ")
     tabWidget1.addTab(demoGraph(),       " Graph Test ")
     tabWidget1.addTab(demoTable(),       " Table Test ")
     tabWidget1.addTab(demoTree(),        " Tree Test ")

@@ -189,6 +189,11 @@ class TTkCanvas:
                 self.drawText(pos=(x,y), text=line, color=color)
                 x += w + 1
 
+    def drawChar(self, pos, char, color=TTkColor.RST):
+        if not self._visible: return
+        x,y = pos
+        self._set(y, x, char, color)
+
     def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
         if not self._visible: return
         lentxt = len(text)
@@ -327,7 +332,7 @@ class TTkCanvas:
     def drawTab(
             self, pos, size,
             labels, labelsPos, selected,
-            offset,  leftScroller, rightScroller, slim=False,
+            offset,  leftScroller, rightScroller, slim=False, menu=False,
             color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
         x,y = pos
         w,h = size

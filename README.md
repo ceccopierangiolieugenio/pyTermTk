@@ -6,7 +6,7 @@
 ![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)
 [![Test Status](https://img.shields.io/github/workflow/status/ceccopierangiolieugenio/pyTermTk/Testing?label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
-[![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click)
+[![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 
 [![screenshot](https://github.com/ceccopierangiolieugenio/binaryRepo/blob/master/pyTermTk/Logo.retroterm.001.png?raw=true)](https://pypi.org/project/pyTermTk)
 

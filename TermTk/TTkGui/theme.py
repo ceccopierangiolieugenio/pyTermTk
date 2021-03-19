@@ -130,6 +130,10 @@ class TTkTheme():
         ┌──────╔══════╗──────┬──────┐      ╭─┌──────╔══════╗──────┬──────┐─╮
         │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│
       ╞════════╩══════╩══════════════════╡ ╞════════╩══════╩═══════════════╡
+      # Menu Prototype:
+      ╭──┌──────╔══════╗──────┬──────┐   ╭──┬─┌──────╔══════╗──────┬──────┐─╮
+      │⣿⣿│Label1║Label2║Label3│Label4│   │⣿⣿│◀│Label1║Label2║Label3│Label4│▶│
+      ╞═════════╩══════╩═══════════════╡ ╞══╧════════╩══════╩═══════════════╡
         ┌──────┲━━━━━━┱──────┬──────┐
         │Label1┃Label2┃Label3│Label4│
       ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥
@@ -142,7 +146,7 @@ class TTkTheme():
       #11  12  13  14  15  16  17  18  19  20
       '╞','═','╧','╩','╡','╘','╛','└','─','┘',
       #21  22  23  24  25  26  27  28  29  30
-      '╚','╝','╰','╯','X','X','X','X','X','X',
+      '╚','╝','╰','╯','⣿','⣿','X','X','X','X',
       #31  32
       '◀','▶'
     )
@@ -191,14 +195,18 @@ class TTkTheme():
     frameBorderColor = TTkColor.RST
     frameTitleColor  = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
 
+    windowBorderColor = TTkColor.RST
+    windowBorderColorFocus = TTkColor.fg("#ffff55")
+
     buttonBoxGrid = 1
     buttonBoxGridClicked = 0
     buttonTextColor   = TTkColor.fg("#dddd88")+TTkColor.bg("#000044")
-    buttonBorderColor = TTkColor.fg("#dddd88")
+    buttonBorderColor = TTkColor.RST
     buttonTextColorClicked   = TTkColor.fg("#ffffdd")+TTkColor.BOLD
     buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
-    buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
+    buttonBorderColorFocus   = TTkColor.fg("#ffff00") + TTkColor.BOLD
+
 
     menuButtonShortcutColor = TTkColor.fg("#dddddd") + TTkColor.UNDERLINE
     menuButtonColor = TTkColor.BOLD
