@@ -63,6 +63,7 @@ class TTkLineEdit(TTkWidget):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = text
+            self.update()
 
     def text(self):
         return self._text

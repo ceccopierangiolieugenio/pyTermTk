@@ -29,6 +29,15 @@ class TTkConstant:
     DEP_8: int  = 0x08
     DEP_24: int = 0x18
 
+    # Color Type
+    class ColorType:
+        Foreground = 0x01
+        Background = 0x02
+        Modifier   = 0x03
+    Foreground = ColorType.Foreground
+    Background = ColorType.Background
+    Modifier   = ColorType.Modifier
+
     # Focus Policies
     NoFocus    = 0x0000
     ClickFocus = 0x0001

@@ -195,14 +195,18 @@ class TTkTheme():
     frameBorderColor = TTkColor.RST
     frameTitleColor  = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
 
+    windowBorderColor = TTkColor.RST
+    windowBorderColorFocus = TTkColor.fg("#ffff55")
+
     buttonBoxGrid = 1
     buttonBoxGridClicked = 0
     buttonTextColor   = TTkColor.fg("#dddd88")+TTkColor.bg("#000044")
-    buttonBorderColor = TTkColor.fg("#dddd88")
+    buttonBorderColor = TTkColor.RST
     buttonTextColorClicked   = TTkColor.fg("#ffffdd")+TTkColor.BOLD
     buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
-    buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
+    buttonBorderColorFocus   = TTkColor.fg("#ffff00") + TTkColor.BOLD
+
 
     menuButtonShortcutColor = TTkColor.fg("#dddddd") + TTkColor.UNDERLINE
     menuButtonColor = TTkColor.BOLD

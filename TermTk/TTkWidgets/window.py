@@ -22,8 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.constant import *
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
@@ -44,9 +44,9 @@ class TTkWindow(TTkResizableFrame):
 
     def paintEvent(self):
         if self.hasFocus():
-            color = TTkColor.fg("#ffff55")
+            color = TTkCfg.theme.windowBorderColorFocus
         else:
-            color = TTkColor.RST
+            color = TTkCfg.theme.windowBorderColor
         self._canvas.drawText(pos=(2,1),text=self._title)
         self._canvas.drawGrid(
                     color=color,
