@@ -5,9 +5,12 @@
 - [ ] Remove Duplicate functionalities (i.e. Widget)
   - [ ] Use @property/@setter when possible
   - [ ] Uniform the setter/getter/signal/slots
-  - [ ] [UTF-8] Handle "Fullwidth" forms characters
-        https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
-        https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
+- [ ] [UTF-8] Handle "Fullwidth" forms characters
+      https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
+      https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
+- [ ] Support Hyperlink: (gnome-terminal)
+      https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+
 - [x] Process child events before parent
 
 ## Terminal Helper
@@ -27,6 +30,9 @@
   https://www.pythontutorial.net/tkinter/tkinter-event-binding/
   - [x] Keyboard
   - [x] Mouse
+    - [ ] Implement the different Escape codes
+          (Check https://github.com/vercel/hyper)
+          https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Mouse-Tracking
 
 ## Colors
 - [ ] Allow dynamic depth change
