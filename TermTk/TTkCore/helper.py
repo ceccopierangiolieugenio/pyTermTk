@@ -105,7 +105,11 @@ class TTkHelper:
     @staticmethod
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx+x,wy+y,widget))
+        w,h = widget.size()
+        # Try to keep the overlay widget inside the terminal
+        wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
+        wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
+        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget))
 
     @staticmethod
     def getOverlay():

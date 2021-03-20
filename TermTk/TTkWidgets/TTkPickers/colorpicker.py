@@ -248,7 +248,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
 
         paletteFrame = TTkFrame(border=True, layout=TTkGridLayout(), title="Basic colors")
         customFrame  = TTkFrame(border=True, layout=TTkGridLayout(), title="Custom colors")
-        controlFrame = TTkFrame(border=True, minSize=(26,9) ,title="Conrols")
+        controlFrame = TTkFrame(border=True, minSize=(26,7) ,title="Conrols")
 
         # Color Layout Widgets
         self._colorCanvas = _TTkColorCanvas()
@@ -258,17 +258,17 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self._hueCanvas.colorPicked.connect(self._colorCanvas.setHue)
 
         # Control
-        sc = _TTkShowColor(pos=(1,3), size=(5,5), parent=controlFrame, color=TTkColor.bg('#ffffff'))
-        TTkLabel(pos=(1,1), parent=controlFrame,text="rgb:")
-        TTkLabel(pos=(7,3), parent=controlFrame,text="HTML:")
-        leR = TTkSpinBox(pos=(6,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
-        leG = TTkSpinBox(pos=(12,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
-        leB = TTkSpinBox(pos=(18,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
+        sc = _TTkShowColor(pos=(1,2), size=(5,4), parent=controlFrame, color=TTkColor.bg('#ffffff'))
+        TTkLabel(pos=(2,1), parent=controlFrame,text="rgb:")
+        TTkLabel(pos=(7,2), parent=controlFrame,text="HTML:")
+        leR = TTkSpinBox(pos=(7,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
+        leG = TTkSpinBox(pos=(13,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
+        leB = TTkSpinBox(pos=(19,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
 
-        leHTML = TTkLineEdit(pos=(13,3), size=(8,1), parent=controlFrame, text="#FFFFFF")
+        leHTML = TTkLineEdit(pos=(13,2), size=(8,1), parent=controlFrame, text="#FFFFFF")
 
-        okButton     = TTkButton(pos=(7,5),  size=(6,3), text="OK",     parent=controlFrame, border=True)
-        cancelButton = TTkButton(pos=(14,5), size=(10,3), text="CANCEL", parent=controlFrame, border=True)
+        okButton     = TTkButton(pos=(7,3),  size=(6,3), text="OK",     parent=controlFrame, border=True)
+        cancelButton = TTkButton(pos=(14,3), size=(10,3), text="CANCEL", parent=controlFrame, border=True)
 
         TTkLabel(pos=(3,20), parent=controlFrame,text="Seriously?")
 
@@ -425,7 +425,7 @@ class TTkColorButtonPicker(_TTkColorButton):
 
     @pyTTkSlot()
     def _colorClicked(self):
-        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,30), color=self._textColor, title="Test Color Picker", border=True)
+        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,28), color=self._textColor, title="Test Color Picker", border=True)
         colorPicker.colorSelected.connect(self.colorSelected)
         TTkHelper.overlay(self, colorPicker, -1,-1)
 
