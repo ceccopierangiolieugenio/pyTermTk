@@ -57,15 +57,27 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):
-    __slots__ = (&#39;_text&#39;, &#39;_border&#39;, &#39;_pressed&#39;, &#39;clicked&#39;)
+    __slots__ = (
+        &#39;_text&#39;, &#39;_border&#39;, &#39;_pressed&#39;, &#39;clicked&#39;,
+        &#39;_borderColor&#39;,        &#39;_textColor&#39;,
+        &#39;_borderColorClicked&#39;, &#39;_textColorClicked&#39;,
+        &#39;_borderColorFocus&#39;,   &#39;_textColorFocus&#39;
+        )
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get(&#39;name&#39; , &#39;TTkButton&#39; )
         # Define Signals
         self.clicked = pyTTkSignal()
 
-        self._name = kwargs.get(&#39;name&#39; , &#39;TTkButton&#39; )
         self._text = kwargs.get(&#39;text&#39;, &#34;&#34; )
         self._border = kwargs.get(&#39;border&#39;, False )
+        self._borderColor = kwargs.get(&#39;borderColor&#39;, TTkCfg.theme.buttonBorderColor )
+        self._textColor   = kwargs.get(&#39;color&#39;,       TTkCfg.theme.buttonTextColor )
+        self._borderColorClicked = TTkCfg.theme.buttonBorderColorClicked
+        self._textColorClicked   = TTkCfg.theme.buttonTextColorClicked
+        self._borderColorFocus   = TTkCfg.theme.buttonBorderColorFocus
+        self._textColorFocus     = TTkCfg.theme.buttonTextColorFocus
+
         self._pressed = False
         if self._border:
             self.setMinimumSize(2+len(self._text), 3)
@@ -76,12 +88,16 @@ class TTkButton(TTkWidget):
 
     def paintEvent(self):
         if self._pressed:
-            borderColor = TTkCfg.theme.buttonBorderColorClicked
-            textColor   = TTkCfg.theme.buttonTextColorClicked
+            borderColor = self._borderColorClicked
+            textColor   = self._textColorClicked
             grid = TTkCfg.theme.buttonBoxGridClicked
+        elif self.hasFocus():
+            borderColor = self._borderColorFocus
+            textColor   = self._textColorFocus
+            grid = TTkCfg.theme.buttonBoxGrid
         else:
-            borderColor = TTkCfg.theme.buttonBorderColor
-            textColor   = TTkCfg.theme.buttonTextColor
+            borderColor = self._borderColor
+            textColor   = self._textColor
             grid = TTkCfg.theme.buttonBoxGrid
         text = self._text
         w = self.width()-2
@@ -205,15 +221,27 @@ class TTkButton(TTkWidget):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TTkButton(TTkWidget):
-    __slots__ = (&#39;_text&#39;, &#39;_border&#39;, &#39;_pressed&#39;, &#39;clicked&#39;)
+    __slots__ = (
+        &#39;_text&#39;, &#39;_border&#39;, &#39;_pressed&#39;, &#39;clicked&#39;,
+        &#39;_borderColor&#39;,        &#39;_textColor&#39;,
+        &#39;_borderColorClicked&#39;, &#39;_textColorClicked&#39;,
+        &#39;_borderColorFocus&#39;,   &#39;_textColorFocus&#39;
+        )
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get(&#39;name&#39; , &#39;TTkButton&#39; )
         # Define Signals
         self.clicked = pyTTkSignal()
 
-        self._name = kwargs.get(&#39;name&#39; , &#39;TTkButton&#39; )
         self._text = kwargs.get(&#39;text&#39;, &#34;&#34; )
         self._border = kwargs.get(&#39;border&#39;, False )
+        self._borderColor = kwargs.get(&#39;borderColor&#39;, TTkCfg.theme.buttonBorderColor )
+        self._textColor   = kwargs.get(&#39;color&#39;,       TTkCfg.theme.buttonTextColor )
+        self._borderColorClicked = TTkCfg.theme.buttonBorderColorClicked
+        self._textColorClicked   = TTkCfg.theme.buttonTextColorClicked
+        self._borderColorFocus   = TTkCfg.theme.buttonBorderColorFocus
+        self._textColorFocus     = TTkCfg.theme.buttonTextColorFocus
+
         self._pressed = False
         if self._border:
             self.setMinimumSize(2+len(self._text), 3)
@@ -224,12 +252,16 @@ class TTkButton(TTkWidget):
 
     def paintEvent(self):
         if self._pressed:
-            borderColor = TTkCfg.theme.buttonBorderColorClicked
-            textColor   = TTkCfg.theme.buttonTextColorClicked
+            borderColor = self._borderColorClicked
+            textColor   = self._textColorClicked
             grid = TTkCfg.theme.buttonBoxGridClicked
+        elif self.hasFocus():
+            borderColor = self._borderColorFocus
+            textColor   = self._textColorFocus
+            grid = TTkCfg.theme.buttonBoxGrid
         else:
-            borderColor = TTkCfg.theme.buttonBorderColor
-            textColor   = TTkCfg.theme.buttonTextColor
+            borderColor = self._borderColor
+            textColor   = self._textColor
             grid = TTkCfg.theme.buttonBoxGrid
         text = self._text
         w = self.width()-2
@@ -281,6 +313,7 @@ class TTkButton(TTkWidget):
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
+<li>TermTk.TTkWidgets.TTkPickers.colorpicker._TTkColorButton</li>
 <li>TermTk.TTkWidgets.menubar._TTkMenuButton</li>
 </ul>
 <h3>Instance variables</h3>

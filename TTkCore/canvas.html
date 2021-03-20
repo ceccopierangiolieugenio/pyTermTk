@@ -217,6 +217,11 @@ class TTkCanvas:
                 self.drawText(pos=(x,y), text=line, color=color)
                 x += w + 1
 
+    def drawChar(self, pos, char, color=TTkColor.RST):
+        if not self._visible: return
+        x,y = pos
+        self._set(y, x, char, color)
+
     def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
         if not self._visible: return
         lentxt = len(text)
@@ -355,7 +360,7 @@ class TTkCanvas:
     def drawTab(
             self, pos, size,
             labels, labelsPos, selected,
-            offset,  leftScroller, rightScroller, slim=False,
+            offset,  leftScroller, rightScroller, slim=False, menu=False,
             color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
         x,y = pos
         w,h = size
@@ -788,6 +793,11 @@ h = the height of the new canvas</p></div>
                 self.drawText(pos=(x,y), text=line, color=color)
                 x += w + 1
 
+    def drawChar(self, pos, char, color=TTkColor.RST):
+        if not self._visible: return
+        x,y = pos
+        self._set(y, x, char, color)
+
     def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
         if not self._visible: return
         lentxt = len(text)
@@ -926,7 +936,7 @@ h = the height of the new canvas</p></div>
     def drawTab(
             self, pos, size,
             labels, labelsPos, selected,
-            offset,  leftScroller, rightScroller, slim=False,
+            offset,  leftScroller, rightScroller, slim=False, menu=False,
             color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
         x,y = pos
         w,h = size
@@ -1284,6 +1294,21 @@ h = the height of the new canvas</p></div>
             self._set(i, x+w-1, gg[5], color)</code></pre>
 </details>
 </dd>
+<dt id="TermTk.TTkCore.canvas.TTkCanvas.drawChar"><code class="name flex">
+<span>def <span class="ident">drawChar</span></span>(<span>self, pos, char, color=&lt;TermTk.TTkCore.color._TTkColor object&gt;)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def drawChar(self, pos, char, color=TTkColor.RST):
+    if not self._visible: return
+    x,y = pos
+    self._set(y, x, char, color)</code></pre>
+</details>
+</dd>
 <dt id="TermTk.TTkCore.canvas.TTkCanvas.drawGrid"><code class="name flex">
 <span>def <span class="ident">drawGrid</span></span>(<span>self, pos, size, hlines=[], vlines=[], color=&lt;TermTk.TTkCore.color._TTkColor object&gt;, grid=0)</span>
 </code></dt>
@@ -1496,7 +1521,7 @@ h = the height of the new canvas</p></div>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.canvas.TTkCanvas.drawTab"><code class="name flex">
-<span>def <span class="ident">drawTab</span></span>(<span>self, pos, size, labels, labelsPos, selected, offset, leftScroller, rightScroller, slim=False, color=&lt;TermTk.TTkCore.color._TTkColor object&gt;, borderColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;, selectColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;)</span>
+<span>def <span class="ident">drawTab</span></span>(<span>self, pos, size, labels, labelsPos, selected, offset, leftScroller, rightScroller, slim=False, menu=False, color=&lt;TermTk.TTkCore.color._TTkColor object&gt;, borderColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;, selectColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1507,7 +1532,7 @@ h = the height of the new canvas</p></div>
 <pre><code class="python">def drawTab(
         self, pos, size,
         labels, labelsPos, selected,
-        offset,  leftScroller, rightScroller, slim=False,
+        offset,  leftScroller, rightScroller, slim=False, menu=False,
         color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
     x,y = pos
     w,h = size
@@ -1918,6 +1943,7 @@ h = the height of the new canvas</p></div>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawBox" href="#TermTk.TTkCore.canvas.TTkCanvas.drawBox">drawBox</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawBoxTitle" href="#TermTk.TTkCore.canvas.TTkCanvas.drawBoxTitle">drawBoxTitle</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawButtonBox" href="#TermTk.TTkCore.canvas.TTkCanvas.drawButtonBox">drawButtonBox</a></code></li>
+<li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawChar" href="#TermTk.TTkCore.canvas.TTkCanvas.drawChar">drawChar</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawGrid" href="#TermTk.TTkCore.canvas.TTkCanvas.drawGrid">drawGrid</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawHChart" href="#TermTk.TTkCore.canvas.TTkCanvas.drawHChart">drawHChart</a></code></li>
 <li><code><a title="TermTk.TTkCore.canvas.TTkCanvas.drawHLine" href="#TermTk.TTkCore.canvas.TTkCanvas.drawHLine">drawHLine</a></code></li>

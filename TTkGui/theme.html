@@ -158,6 +158,10 @@ class TTkTheme():
         ┌──────╔══════╗──────┬──────┐      ╭─┌──────╔══════╗──────┬──────┐─╮
         │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│
       ╞════════╩══════╩══════════════════╡ ╞════════╩══════╩═══════════════╡
+      # Menu Prototype:
+      ╭──┌──────╔══════╗──────┬──────┐   ╭──┬─┌──────╔══════╗──────┬──────┐─╮
+      │⣿⣿│Label1║Label2║Label3│Label4│   │⣿⣿│◀│Label1║Label2║Label3│Label4│▶│
+      ╞═════════╩══════╩═══════════════╡ ╞══╧════════╩══════╩═══════════════╡
         ┌──────┲━━━━━━┱──────┬──────┐
         │Label1┃Label2┃Label3│Label4│
       ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥
@@ -170,7 +174,7 @@ class TTkTheme():
       #11  12  13  14  15  16  17  18  19  20
       &#39;╞&#39;,&#39;═&#39;,&#39;╧&#39;,&#39;╩&#39;,&#39;╡&#39;,&#39;╘&#39;,&#39;╛&#39;,&#39;└&#39;,&#39;─&#39;,&#39;┘&#39;,
       #21  22  23  24  25  26  27  28  29  30
-      &#39;╚&#39;,&#39;╝&#39;,&#39;╰&#39;,&#39;╯&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,
+      &#39;╚&#39;,&#39;╝&#39;,&#39;╰&#39;,&#39;╯&#39;,&#39;⣿&#39;,&#39;⣿&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,
       #31  32
       &#39;◀&#39;,&#39;▶&#39;
     )
@@ -219,14 +223,18 @@ class TTkTheme():
     frameBorderColor = TTkColor.RST
     frameTitleColor  = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.bg(&#34;#222222&#34;)
 
+    windowBorderColor = TTkColor.RST
+    windowBorderColorFocus = TTkColor.fg(&#34;#ffff55&#34;)
+
     buttonBoxGrid = 1
     buttonBoxGridClicked = 0
     buttonTextColor   = TTkColor.fg(&#34;#dddd88&#34;)+TTkColor.bg(&#34;#000044&#34;)
-    buttonBorderColor = TTkColor.fg(&#34;#dddd88&#34;)
+    buttonBorderColor = TTkColor.RST
     buttonTextColorClicked   = TTkColor.fg(&#34;#ffffdd&#34;)+TTkColor.BOLD
     buttonBorderColorClicked = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.BOLD
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
-    buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
+    buttonBorderColorFocus   = TTkColor.fg(&#34;#ffff00&#34;) + TTkColor.BOLD
+
 
     menuButtonShortcutColor = TTkColor.fg(&#34;#dddddd&#34;) + TTkColor.UNDERLINE
     menuButtonColor = TTkColor.BOLD
@@ -410,6 +418,10 @@ class TTkTheme():
         ┌──────╔══════╗──────┬──────┐      ╭─┌──────╔══════╗──────┬──────┐─╮
         │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│
       ╞════════╩══════╩══════════════════╡ ╞════════╩══════╩═══════════════╡
+      # Menu Prototype:
+      ╭──┌──────╔══════╗──────┬──────┐   ╭──┬─┌──────╔══════╗──────┬──────┐─╮
+      │⣿⣿│Label1║Label2║Label3│Label4│   │⣿⣿│◀│Label1║Label2║Label3│Label4│▶│
+      ╞═════════╩══════╩═══════════════╡ ╞══╧════════╩══════╩═══════════════╡
         ┌──────┲━━━━━━┱──────┬──────┐
         │Label1┃Label2┃Label3│Label4│
       ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥
@@ -422,7 +434,7 @@ class TTkTheme():
       #11  12  13  14  15  16  17  18  19  20
       &#39;╞&#39;,&#39;═&#39;,&#39;╧&#39;,&#39;╩&#39;,&#39;╡&#39;,&#39;╘&#39;,&#39;╛&#39;,&#39;└&#39;,&#39;─&#39;,&#39;┘&#39;,
       #21  22  23  24  25  26  27  28  29  30
-      &#39;╚&#39;,&#39;╝&#39;,&#39;╰&#39;,&#39;╯&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,
+      &#39;╚&#39;,&#39;╝&#39;,&#39;╰&#39;,&#39;╯&#39;,&#39;⣿&#39;,&#39;⣿&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,&#39;X&#39;,
       #31  32
       &#39;◀&#39;,&#39;▶&#39;
     )
@@ -471,14 +483,18 @@ class TTkTheme():
     frameBorderColor = TTkColor.RST
     frameTitleColor  = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.bg(&#34;#222222&#34;)
 
+    windowBorderColor = TTkColor.RST
+    windowBorderColorFocus = TTkColor.fg(&#34;#ffff55&#34;)
+
     buttonBoxGrid = 1
     buttonBoxGridClicked = 0
     buttonTextColor   = TTkColor.fg(&#34;#dddd88&#34;)+TTkColor.bg(&#34;#000044&#34;)
-    buttonBorderColor = TTkColor.fg(&#34;#dddd88&#34;)
+    buttonBorderColor = TTkColor.RST
     buttonTextColorClicked   = TTkColor.fg(&#34;#ffffdd&#34;)+TTkColor.BOLD
     buttonBorderColorClicked = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.BOLD
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
-    buttonBorderColorFocus   = buttonBorderColor + TTkColor.BOLD
+    buttonBorderColorFocus   = TTkColor.fg(&#34;#ffff00&#34;) + TTkColor.BOLD
+
 
     menuButtonShortcutColor = TTkColor.fg(&#34;#dddddd&#34;) + TTkColor.UNDERLINE
     menuButtonColor = TTkColor.BOLD
@@ -714,7 +730,13 @@ box1
 ╭─┌──────╔══════╗──────┬──────┐─╮
 │Label1║Label2║Label3│Label4│
 │◀│Label1║Label2║Label3│Label4│▶│
-╞════════╩══════╩══════════════════╡ ╞════════╩══════╩═══════════════╡
+╞════════╩══════╩══════════════════╡ ╞════════╩══════╩═══════════════╡</p>
+<h1 id="menu-prototype">Menu Prototype:</h1>
+<p>╭──┌──────╔══════╗──────┬──────┐
+╭──┬─┌──────╔══════╗──────┬──────┐─╮
+│⣿⣿│Label1║Label2║Label3│Label4│
+│⣿⣿│◀│Label1║Label2║Label3│Label4│▶│
+╞═════════╩══════╩═══════════════╡ ╞══╧════════╩══════╩═══════════════╡
 ┌──────┲━━━━━━┱──────┬──────┐
 │Label1┃Label2┃Label3│Label4│
 ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥</p></div>
@@ -801,6 +823,14 @@ box1
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.windowBorderColor"><code class="name">var <span class="ident">windowBorderColor</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.windowBorderColorFocus"><code class="name">var <span class="ident">windowBorderColorFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -864,6 +894,8 @@ box1
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabSelectColor" href="#TermTk.TTkGui.theme.TTkTheme.tabSelectColor">tabSelectColor</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.vline" href="#TermTk.TTkGui.theme.TTkTheme.vline">vline</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.vscroll" href="#TermTk.TTkGui.theme.TTkTheme.vscroll">vscroll</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.windowBorderColor" href="#TermTk.TTkGui.theme.TTkTheme.windowBorderColor">windowBorderColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.windowBorderColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.windowBorderColorFocus">windowBorderColorFocus</a></code></li>
 </ul>
 </li>
 </ul>

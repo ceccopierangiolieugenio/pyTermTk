@@ -57,6 +57,15 @@ class TTkConstant:
     DEP_8: int  = 0x08
     DEP_24: int = 0x18
 
+    # Color Type
+    class ColorType:
+        Foreground = 0x01
+        Background = 0x02
+        Modifier   = 0x03
+    Foreground = ColorType.Foreground
+    Background = ColorType.Background
+    Modifier   = ColorType.Modifier
+
     # Focus Policies
     NoFocus    = 0x0000
     ClickFocus = 0x0001
@@ -657,6 +666,15 @@ class TTkK(TTkConstant): pass</code></pre>
     DEP_8: int  = 0x08
     DEP_24: int = 0x18
 
+    # Color Type
+    class ColorType:
+        Foreground = 0x01
+        Background = 0x02
+        Modifier   = 0x03
+    Foreground = ColorType.Foreground
+    Background = ColorType.Background
+    Modifier   = ColorType.Modifier
+
     # Focus Policies
     NoFocus    = 0x0000
     ClickFocus = 0x0001
@@ -1241,6 +1259,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.Background"><code class="name">var <span class="ident">Background</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.CENTER"><code class="name">var <span class="ident">CENTER</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -1262,6 +1284,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <div class="desc"></div>
 </dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.ClickFocus"><code class="name">var <span class="ident">ClickFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.ColorType"><code class="name">var <span class="ident">ColorType</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1322,6 +1348,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <div class="desc"></div>
 </dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.FILLED"><code class="name">var <span class="ident">FILLED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.Foreground"><code class="name">var <span class="ident">Foreground</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -3257,6 +3287,10 @@ class TTkK(TTkConstant): pass</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkCore.constant.TTkConstant.Modifier"><code class="name">var <span class="ident">Modifier</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkCore.constant.TTkConstant.Move"><code class="name">var <span class="ident">Move</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -3439,12 +3473,14 @@ class TTkK(TTkConstant): pass</code></pre>
 <ul class="">
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.AllButtons" href="#TermTk.TTkCore.constant.TTkConstant.AllButtons">AllButtons</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.BOTTOM" href="#TermTk.TTkCore.constant.TTkConstant.BOTTOM">BOTTOM</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.Background" href="#TermTk.TTkCore.constant.TTkConstant.Background">Background</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.CENTER" href="#TermTk.TTkCore.constant.TTkConstant.CENTER">CENTER</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.CENTER_ALIGN" href="#TermTk.TTkCore.constant.TTkConstant.CENTER_ALIGN">CENTER_ALIGN</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Character" href="#TermTk.TTkCore.constant.TTkConstant.Character">Character</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.CheckState" href="#TermTk.TTkCore.constant.TTkConstant.CheckState">CheckState</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Checked" href="#TermTk.TTkCore.constant.TTkConstant.Checked">Checked</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ClickFocus" href="#TermTk.TTkCore.constant.TTkConstant.ClickFocus">ClickFocus</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.ColorType" href="#TermTk.TTkCore.constant.TTkConstant.ColorType">ColorType</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ContiguousSelection" href="#TermTk.TTkCore.constant.TTkConstant.ContiguousSelection">ContiguousSelection</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Cursor_Blinking_Bar" href="#TermTk.TTkCore.constant.TTkConstant.Cursor_Blinking_Bar">Cursor_Blinking_Bar</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Cursor_Blinking_Block" href="#TermTk.TTkCore.constant.TTkConstant.Cursor_Blinking_Block">Cursor_Blinking_Block</a></code></li>
@@ -3460,6 +3496,7 @@ class TTkK(TTkConstant): pass</code></pre>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Drag" href="#TermTk.TTkCore.constant.TTkConstant.Drag">Drag</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.ExtendedSelection" href="#TermTk.TTkCore.constant.TTkConstant.ExtendedSelection">ExtendedSelection</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.FILLED" href="#TermTk.TTkCore.constant.TTkConstant.FILLED">FILLED</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.Foreground" href="#TermTk.TTkCore.constant.TTkConstant.Foreground">Foreground</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.HORIZONTAL" href="#TermTk.TTkCore.constant.TTkConstant.HORIZONTAL">HORIZONTAL</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Input_Number" href="#TermTk.TTkCore.constant.TTkConstant.Input_Number">Input_Number</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Input_Password" href="#TermTk.TTkCore.constant.TTkConstant.Input_Password">Input_Password</a></code></li>
@@ -3943,6 +3980,7 @@ class TTkK(TTkConstant): pass</code></pre>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.MOUSE_EVENT" href="#TermTk.TTkCore.constant.TTkConstant.MOUSE_EVENT">MOUSE_EVENT</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.MidButton" href="#TermTk.TTkCore.constant.TTkConstant.MidButton">MidButton</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.MiddleButton" href="#TermTk.TTkCore.constant.TTkConstant.MiddleButton">MiddleButton</a></code></li>
+<li><code><a title="TermTk.TTkCore.constant.TTkConstant.Modifier" href="#TermTk.TTkCore.constant.TTkConstant.Modifier">Modifier</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.Move" href="#TermTk.TTkCore.constant.TTkConstant.Move">Move</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.MultiSelection" href="#TermTk.TTkCore.constant.TTkConstant.MultiSelection">MultiSelection</a></code></li>
 <li><code><a title="TermTk.TTkCore.constant.TTkConstant.NONE" href="#TermTk.TTkCore.constant.TTkConstant.NONE">NONE</a></code></li>
