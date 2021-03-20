@@ -33,8 +33,14 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
 class TTkSpinBox(TTkWidget):
-    __slots__= ('_lineEdit', '_value', '_maximum', '_minimum', '_mouseDelta', '_valueDelta', '_draggable')
+    __slots__= (
+        '_lineEdit', '_value', '_maximum', '_minimum',
+        '_mouseDelta', '_valueDelta', '_draggable',
+        # Signals
+        'valueChanged')
     def __init__(self, *args, **kwargs):
+        # Signals
+        self.valueChanged=pyTTkSignal(int)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkSpinBox' )
         self._value = kwargs.get("value",0)
@@ -53,29 +59,31 @@ class TTkSpinBox(TTkWidget):
     def value(self):
         return self._value
 
-    def setValue(val):
+    @pyTTkSlot(int)
+    def setValue(self, value):
+        value = min(value,self._maximum)
+        value = max(value,self._minimum)
+        if self._value == value: return
         self._value = value
+        self._lineEdit.setText(str(self._value))
+        self.valueChanged.emit(value)
 
     @pyTTkSlot(str)
     def _textEdited(self, text):
-        self._value = int(text)
-        self._value = min(self._value,self._maximum)
-        self._value = max(self._value,self._minimum)
-        self._lineEdit.setText(str(self._value))
+        self.setValue(int(text))
 
     def mousePressEvent(self, evt):
         x,y = evt.x, evt.y
         w = self.width()
+        value = self._value
         self._draggable = False
         if x==w-2:
             self._draggable = True
-            self._value += 1
+            value += 1
         if x==w-1:
             self._draggable = True
-            self._value -= 1
-        self._value = min(self._value,self._maximum)
-        self._value = max(self._value,self._minimum)
-        self._lineEdit.setText(str(self._value))
+            value -= 1
+        self.setValue(value)
         self._mouseDelta = y
         self._valueDelta = self._value
         return True
@@ -83,10 +91,7 @@ class TTkSpinBox(TTkWidget):
     def mouseDragEvent(self, evt):
         y = evt.y
         if self._draggable:
-            self._value = self._valueDelta + self._mouseDelta - y
-            self._value = min(self._value,self._maximum)
-            self._value = max(self._value,self._minimum)
-            self._lineEdit.setText(str(self._value))
+            self.setValue(self._valueDelta + self._mouseDelta - y)
             return True
 
     def paintEvent(self):

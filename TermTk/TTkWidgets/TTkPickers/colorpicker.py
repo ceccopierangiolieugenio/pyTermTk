@@ -36,6 +36,7 @@ from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
+from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkTemplates.color import TColor
 
@@ -247,7 +248,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
 
         paletteFrame = TTkFrame(border=True, layout=TTkGridLayout(), title="Basic colors")
         customFrame  = TTkFrame(border=True, layout=TTkGridLayout(), title="Custom colors")
-        controlFrame = TTkFrame(border=True, minSize=(26,10) ,title="Conrols")
+        controlFrame = TTkFrame(border=True, minSize=(26,9) ,title="Conrols")
 
         # Color Layout Widgets
         self._colorCanvas = _TTkColorCanvas()
@@ -257,17 +258,17 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self._hueCanvas.colorPicked.connect(self._colorCanvas.setHue)
 
         # Control
-        sc = _TTkShowColor(pos=(1,1), size=(5,8), parent=controlFrame, color=TTkColor.bg('#ffffff'))
-        TTkLabel(pos=(7,2), parent=controlFrame,text="rgb:")
-        TTkLabel(pos=(7,4), parent=controlFrame,text="HTML:")
-        leR = TTkLineEdit(pos=(13,2), size=(3,1), parent=controlFrame, text="255", inputType=TTkK.Input_Number)
-        leG = TTkLineEdit(pos=(17,2), size=(3,1), parent=controlFrame, text="255", inputType=TTkK.Input_Number)
-        leB = TTkLineEdit(pos=(21,2), size=(3,1), parent=controlFrame, text="255", inputType=TTkK.Input_Number)
+        sc = _TTkShowColor(pos=(1,3), size=(5,5), parent=controlFrame, color=TTkColor.bg('#ffffff'))
+        TTkLabel(pos=(1,1), parent=controlFrame,text="rgb:")
+        TTkLabel(pos=(7,3), parent=controlFrame,text="HTML:")
+        leR = TTkSpinBox(pos=(6,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
+        leG = TTkSpinBox(pos=(12,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
+        leB = TTkSpinBox(pos=(18,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
 
-        leHTML = TTkLineEdit(pos=(13,4), size=(8,1), parent=controlFrame, text="#FFFFFF")
+        leHTML = TTkLineEdit(pos=(13,3), size=(8,1), parent=controlFrame, text="#FFFFFF")
 
-        okButton     = TTkButton(pos=(7,6),  size=(6,3), text="OK",     parent=controlFrame, border=True)
-        cancelButton = TTkButton(pos=(14,6), size=(10,3), text="CANCEL", parent=controlFrame, border=True)
+        okButton     = TTkButton(pos=(7,5),  size=(6,3), text="OK",     parent=controlFrame, border=True)
+        cancelButton = TTkButton(pos=(14,5), size=(10,3), text="CANCEL", parent=controlFrame, border=True)
 
         TTkLabel(pos=(3,20), parent=controlFrame,text="Seriously?")
 
@@ -287,9 +288,9 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         @pyTTkSlot(int)
         def _controlSetRGBColor(color):
             sc.setRGBColor(color)
-            leR.setText(str((color&0xff0000)>>16))
-            leG.setText(str((color&0x00ff00)>> 8))
-            leB.setText(str((color&0x0000ff)>> 0))
+            leR.setValue((color&0xff0000)>>16)
+            leG.setValue((color&0x00ff00)>> 8)
+            leB.setValue((color&0x0000ff)>> 0)
             leHTML.setText("#{:06X}".format(color))
 
         @pyTTkSlot(TTkColor)
@@ -306,17 +307,17 @@ class TTkColorDialogPicker(TTkWindow,TColor):
 
         leHTML.returnPressed.connect(_leHTMLChanged)
 
-        @pyTTkSlot()
-        def _leRGBChanged():
-            r = int(leR.text())
-            g = int(leG.text())
-            b = int(leB.text())
+        @pyTTkSlot(int)
+        def _leRGBChanged(value):
+            r = leR.value()
+            g = leG.value()
+            b = leB.value()
             if r&(~0xff) or r&(~0xff) or r&(~0xff): return
             _controlSetRGBColor(r<<16|g<<8|b)
 
-        leR.returnPressed.connect(_leRGBChanged)
-        leG.returnPressed.connect(_leRGBChanged)
-        leB.returnPressed.connect(_leRGBChanged)
+        leR.valueChanged.connect(_leRGBChanged)
+        leG.valueChanged.connect(_leRGBChanged)
+        leB.valueChanged.connect(_leRGBChanged)
 
         _controlSetColor(self.color)
 
@@ -424,7 +425,7 @@ class TTkColorButtonPicker(_TTkColorButton):
 
     @pyTTkSlot()
     def _colorClicked(self):
-        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,31), color=self._textColor, title="Test Color Picker", border=True)
+        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,30), color=self._textColor, title="Test Color Picker", border=True)
         colorPicker.colorSelected.connect(self.colorSelected)
         TTkHelper.overlay(self, colorPicker, -1,-1)
 

@@ -59,6 +59,7 @@ class TTkLineEdit(TTkWidget):
         self.setMinimumSize(10,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
+    @pyTTkSlot(str)
     def setText(self, text):
         if text != self._text:
             self.textChanged.emit(text)

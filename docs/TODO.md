@@ -143,7 +143,7 @@
  - [x] Basic Implementation
  - [x] Events (Signal/Slots)
  - [ ] Themes
- - [ ] Use Spinbox for R G B
+ - [x] Use Spinbox for R G B
 #### File Picker
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
