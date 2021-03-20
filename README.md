@@ -33,7 +33,7 @@ Works better on [repl.it](https://repl.it/@EugenioP/pyTermTk)
 
 But you can try it here:
 (the console has some terminal size issues, better to run on the **shell** `python3 demo/demo.py -f`)
-<iframe frameborder="0" width="100%" height="500px" src="https://repl.it/@EugenioP/pyTermTk?lite=true&outputonly=true"></iframe>
+<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@EugenioP/pyTermTk?v=1"></iframe>
 
 ## [Tutorial](tutorial)
 Be inspired by the [tutorial examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial)
