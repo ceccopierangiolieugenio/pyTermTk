@@ -24,3 +24,4 @@ from .treewidget  import *
 from .graph       import *
 from .menubar     import *
 from .TTkPickers  import *
+from .spinbox     import *

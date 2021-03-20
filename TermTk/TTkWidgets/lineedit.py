@@ -51,7 +51,7 @@ class TTkLineEdit(TTkWidget):
         self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
         self._text = kwargs.get('text' , '' )
         if self._inputType & TTkK.Input_Number and\
-           not self._text.isdigit(): self._text = ""
+           not self._text.lstrip('-').isdigit(): self._text = ""
         self._offset = 0
         self._cursorPos = 0
         self._replace=False
@@ -134,9 +134,6 @@ class TTkLineEdit(TTkWidget):
             if evt.key == TTkK.Key_Enter:
                 self.returnPressed.emit()
         else:
-            if self._inputType & TTkK.Input_Number and \
-               not evt.key.isdigit():
-                return
             text = self._text
             pre = text[:self._cursorPos]
             if self._replace:
@@ -145,6 +142,9 @@ class TTkLineEdit(TTkWidget):
                 post = text[self._cursorPos:]
 
             text = pre + evt.key + post
+            if self._inputType & TTkK.Input_Number and \
+               not text.lstrip('-').isdigit():
+                return
             self.setText(text)
             self._cursorPos += 1
             # Scroll to the right if reached the edge

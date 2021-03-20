@@ -122,7 +122,7 @@
  - [ ] Add Menu
  - [ ] Keyboard events
 #### Spin Box
- - [ ] Basic Implementation
+ - [x] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [ ] Themes
 #### Progress Bar
@@ -145,6 +145,10 @@
  - [ ] Themes
  - [ ] Use Spinbox for R G B
 #### File Picker
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+#### Yes/No Ok/Cancel Picker
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [ ] Themes

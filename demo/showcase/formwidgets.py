@@ -71,6 +71,11 @@ def demoFormWidgets(root=None):
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Number Password'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Password', inputType=ttk.TTkK.Input_Password+ttk.TTkK.Input_Number),row,2)
 
+    row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Spinbox (default [0,99])'),row,0)
+    win_form1_grid_layout.addWidget(ttk.TTkSpinBox(),row,2)
+    row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Spinbox (-20, [-50,+50])'),row,0)
+    win_form1_grid_layout.addWidget(ttk.TTkSpinBox(value=-20, maximum=50, minimum=-50),row,2)
+
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Checkbox'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkCheckbox(),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Checkbox Checked'),row,0)

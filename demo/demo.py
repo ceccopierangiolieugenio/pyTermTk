@@ -66,7 +66,6 @@ def demoShowcase(root=None, border=True):
     tabWidget1.addTab(demoTab(),         " Tab Test ")
     tabWidget1.addTab(demoScrollArea(),  " Scroll Area ")
 
-
     return tabWidget1
 
 def main():

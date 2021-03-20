@@ -79,6 +79,7 @@ class TTkWindow(TTkResizableFrame):
         self.update()
 
     def focusOutEvent(self):
+        self._draggable = False
         if self._menubarTop:
             self._menubarTop.setBorderColor(TTkColor.RST)
         self.update()
