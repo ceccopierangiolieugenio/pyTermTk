@@ -60,7 +60,7 @@ class TTk(TTkWidget):
         except OSError as e:
             print(f'ERROR: {e}')
         TTkCfg.theme = TTkTheme()
-        TTkHelper.registerRootCanvas(self._canvas)
+        TTkHelper.registerRootWidget(self)
 
     frame = 0
     time = time.time()

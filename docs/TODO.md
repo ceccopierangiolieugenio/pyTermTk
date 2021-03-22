@@ -68,8 +68,8 @@
 - [ ] Implement the focus policy
 
 ### Overlay widget
-- [ ] Use the nested layout for the overlay
-- [ ] Rewrite the Handling (ttk.py)
+- [x] Use the nested layout for the overlay
+- [x] Rewrite the Handling (ttk.py)
       It would be nice to have it as child outside the layout
 - [ ] Enable mouse move on overlay
 
