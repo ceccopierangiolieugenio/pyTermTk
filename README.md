@@ -29,11 +29,7 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 - Only the key combinations forwarded by the terminal emulator used are detected (ALT,CTRL may not be handled)
 
 ## Try
-Works better on [repl.it](https://replit.com/@EugenioP/pyTermTk?v=1)
-
-But you can try it here:
-(the console has some terminal size issues, better to run on the **shell** `python3 demo/demo.py -f`)
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@EugenioP/pyTermTk?v=1"></iframe>
+[![screenshot](https://github.com/ceccopierangiolieugenio/binaryRepo/blob/master/pyTermTk/replit.pytermtk.banner.png?raw=true)](https://replit.com/@EugenioP/pyTermTk?v=1)
 
 ## [Tutorial](tutorial)
 Be inspired by the [tutorial examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial)
