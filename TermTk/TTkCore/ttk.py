@@ -47,6 +47,7 @@ class TTk(TTkWidget):
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTk' )
         self.events = queue.Queue()
         self.key_events = queue.Queue()
         self.mouse_events = queue.Queue()
@@ -130,9 +131,17 @@ class TTk(TTkWidget):
                     self.mouseEvent(mevt)
             elif evt is TTkK.KEY_EVENT:
                 kevt = self.key_events.get()
+                TTkLog.debug(f"Key: {kevt}")
                 focusWidget = TTkHelper.getFocus()
                 overlayWidget = TTkHelper.getOverlay()
                 TTkLog.debug(f"{focusWidget}")
+                if kevt.key == TTkK.Key_Tab:
+                    # TODO: Handle here if the widget accept the Tab input
+                    if kevt.mod == TTkK.NoModifier:
+                        TTkHelper.nextFocus(focusWidget if focusWidget else self)
+                    if kevt.mod == TTkK.ShiftModifier:
+                        TTkHelper.prevFocus(focusWidget if focusWidget else self)
+                    continue
                 if focusWidget is not None:
                     TTkHelper.execShortcut(kevt.key,focusWidget)
                     focusWidget.keyEvent(kevt)

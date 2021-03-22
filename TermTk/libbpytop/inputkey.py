@@ -25,57 +25,96 @@
 from TermTk.TTkCore.constant import TTkK
 
 class KeyEvent:
-    __slots__ = ('type', 'key', 'code')
-    def __init__(self, type:int, key: str, code: str):
+    __slots__ = ('type', 'key', 'code', 'mod')
+    def __init__(self, type:int, key: str, code: str, mod: int):
         self.type = type
         self.key = key
+        self.mod = mod
         self.code = code
     def __str__(self):
         code = self.code.replace('\033','<ESC>')
-        return f"KeyEvent: {self.key} {key2str(self.key)} {code}"
+        return f"KeyEvent: {self.key} {key2str(self.key)} {mod2str(self.mod)} {code}"
 
     @staticmethod
     def parse(input_key):  # from: Space           except "DEL"
         if len(input_key) == 1 and "\040" <= input_key != "\177":
-            return KeyEvent(TTkK.Character, input_key, input_key)
+            return KeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
         else:
-            key = _translate_key(input_key)
+            key, mod = _translate_key(input_key)
             if key is not None:
-                return KeyEvent(TTkK.SpecialKey, key, input_key)
+                return KeyEvent(TTkK.SpecialKey, key, input_key, mod)
         return None
 
 def _translate_key(key):
-    if   key == "\177"   : return TTkK.Key_Backspace
-    elif key == "\t"     : return TTkK.Key_Tab
-    elif key == "\n"     : return TTkK.Key_Enter
-    elif key == "\033[A" : return TTkK.Key_Up
-    elif key == "\033[B" : return TTkK.Key_Down
-    elif key == "\033[C" : return TTkK.Key_Right
-    elif key == "\033[D" : return TTkK.Key_Left
-    elif key == "\033[5~": return TTkK.Key_PageUp
-    elif key == "\033[6~": return TTkK.Key_PageDown
+    if   key == "\177"      : return TTkK.Key_Backspace , TTkK.NoModifier
+    elif key == "\t"        : return TTkK.Key_Tab       , TTkK.NoModifier
+    elif key == "\033[Z"    : return TTkK.Key_Tab       , TTkK.ShiftModifier
+    elif key == "\n"        : return TTkK.Key_Enter     , TTkK.NoModifier
+    elif key == "\033[A"    : return TTkK.Key_Up        , TTkK.NoModifier
+    elif key == "\033[B"    : return TTkK.Key_Down      , TTkK.NoModifier
+    elif key == "\033[C"    : return TTkK.Key_Right     , TTkK.NoModifier
+    elif key == "\033[D"    : return TTkK.Key_Left      , TTkK.NoModifier
+    elif key == "\033[5~"   : return TTkK.Key_PageUp    , TTkK.NoModifier
+    elif key == "\033[6~"   : return TTkK.Key_PageDown  , TTkK.NoModifier
     # Xterm
-    elif key == "\033[F" : return TTkK.Key_End
-    elif key == "\033[H" : return TTkK.Key_Home
+    elif key == "\033[F"    : return TTkK.Key_End       , TTkK.NoModifier
+    elif key == "\033[H"    : return TTkK.Key_Home      , TTkK.NoModifier
     # Terminator + tmux
-    elif key == "\033[4~": return TTkK.Key_End
-    elif key == "\033[1~": return TTkK.Key_Home
-    elif key == "\033[2~": return TTkK.Key_Insert
-    elif key == "\033[3~": return TTkK.Key_Delete
-    elif key == "\033": return TTkK.Key_Escape
-    elif key == "\033OP": return TTkK.Key_F1
-    elif key == "\033OQ": return TTkK.Key_F2
-    elif key == "\033OR": return TTkK.Key_F3
-    elif key == "\033OS": return TTkK.Key_F4
-    elif key == "\033[15~": return TTkK.Key_F5
-    elif key == "\033[17~": return TTkK.Key_F6
-    elif key == "\033[18~": return TTkK.Key_F7
-    elif key == "\033[19~": return TTkK.Key_F8
-    elif key == "\033[20~": return TTkK.Key_F9
-    elif key == "\033[21~": return TTkK.Key_F10
-    elif key == "\033[23~": return TTkK.Key_F11
-    elif key == "\033[24~": return TTkK.Key_F12
-    return None
+    elif key == "\033[4~"   : return TTkK.Key_End       , TTkK.NoModifier
+    elif key == "\033[1~"   : return TTkK.Key_Home      , TTkK.NoModifier
+    elif key == "\033[2~"   : return TTkK.Key_Insert    , TTkK.NoModifier
+    elif key == "\033[3~"   : return TTkK.Key_Delete    , TTkK.NoModifier
+    elif key == "\033"      : return TTkK.Key_Escape    , TTkK.NoModifier
+    # Function Key
+    elif key == "\033OP"    : return TTkK.Key_F1        , TTkK.NoModifier
+    elif key == "\033OQ"    : return TTkK.Key_F2        , TTkK.NoModifier
+    elif key == "\033OR"    : return TTkK.Key_F3        , TTkK.NoModifier
+    elif key == "\033OS"    : return TTkK.Key_F4        , TTkK.NoModifier
+    elif key == "\033[15~"  : return TTkK.Key_F5        , TTkK.NoModifier
+    elif key == "\033[17~"  : return TTkK.Key_F6        , TTkK.NoModifier
+    elif key == "\033[18~"  : return TTkK.Key_F7        , TTkK.NoModifier
+    elif key == "\033[19~"  : return TTkK.Key_F8        , TTkK.NoModifier
+    elif key == "\033[20~"  : return TTkK.Key_F9        , TTkK.NoModifier
+    elif key == "\033[21~"  : return TTkK.Key_F10       , TTkK.NoModifier
+    elif key == "\033[23~"  : return TTkK.Key_F11       , TTkK.NoModifier
+    elif key == "\033[24~"  : return TTkK.Key_F12       , TTkK.NoModifier
+    elif key == "\033[1;2P" : return TTkK.Key_F1        , TTkK.ShiftModifier
+    elif key == "\033[1;2Q" : return TTkK.Key_F2        , TTkK.ShiftModifier
+    elif key == "\033[1;2R" : return TTkK.Key_F3        , TTkK.ShiftModifier
+    elif key == "\033[1;2S" : return TTkK.Key_F4        , TTkK.ShiftModifier
+    elif key == "\033[15;2~": return TTkK.Key_F5        , TTkK.ShiftModifier
+    elif key == "\033[17;2~": return TTkK.Key_F6        , TTkK.ShiftModifier
+    elif key == "\033[18;2~": return TTkK.Key_F7        , TTkK.ShiftModifier
+    elif key == "\033[19;2~": return TTkK.Key_F8        , TTkK.ShiftModifier
+    elif key == "\033[20;2~": return TTkK.Key_F9        , TTkK.ShiftModifier
+    elif key == "\033[21;2~": return TTkK.Key_F10       , TTkK.ShiftModifier
+    elif key == "\033[23;2~": return TTkK.Key_F11       , TTkK.ShiftModifier
+    elif key == "\033[24;2~": return TTkK.Key_F12       , TTkK.ShiftModifier
+    elif key == "\033[1;5P" : return TTkK.Key_F1        , TTkK.ControlModifier
+    elif key == "\033[1;5Q" : return TTkK.Key_F2        , TTkK.ControlModifier
+    elif key == "\033[1;5R" : return TTkK.Key_F3        , TTkK.ControlModifier
+    elif key == "\033[1;5S" : return TTkK.Key_F4        , TTkK.ControlModifier
+    elif key == "\033[15;5~": return TTkK.Key_F5        , TTkK.ControlModifier
+    elif key == "\033[17;5~": return TTkK.Key_F6        , TTkK.ControlModifier
+    elif key == "\033[18;5~": return TTkK.Key_F7        , TTkK.ControlModifier
+    elif key == "\033[19;5~": return TTkK.Key_F8        , TTkK.ControlModifier
+    elif key == "\033[20;5~": return TTkK.Key_F9        , TTkK.ControlModifier
+    elif key == "\033[21;5~": return TTkK.Key_F10       , TTkK.ControlModifier
+    elif key == "\033[23;5~": return TTkK.Key_F11       , TTkK.ControlModifier
+    elif key == "\033[24;5~": return TTkK.Key_F12       , TTkK.ControlModifier
+    # elif key == "\033[1;3P" : return TTkK.Key_F1        , TTkK.AltModifier
+    # elif key == "\033[1;3Q" : return TTkK.Key_F2        , TTkK.AltModifier
+    elif key == "\033[1;3R" : return TTkK.Key_F3        , TTkK.AltModifier
+    #elif key == "\033[1;3S" : return TTkK.Key_F4        , TTkK.AltModifier
+    #elif key == "\033[15;3~": return TTkK.Key_F5        , TTkK.AltModifier
+    elif key == "\033[17;3~": return TTkK.Key_F6        , TTkK.AltModifier
+    #elif key == "\033[18;3~": return TTkK.Key_F7        , TTkK.AltModifier
+    #elif key == "\033[19;3~": return TTkK.Key_F8        , TTkK.AltModifier
+    elif key == "\033[20;3~": return TTkK.Key_F9        , TTkK.AltModifier
+    #elif key == "\033[21;3~": return TTkK.Key_F10       , TTkK.AltModifier
+    elif key == "\033[23;3~": return TTkK.Key_F11       , TTkK.AltModifier
+    elif key == "\033[24;3~": return TTkK.Key_F12       , TTkK.AltModifier
+    return None, None
 
     # # elif key == "\033": return TTkK.Key_Tab
     # if True: return None
@@ -129,6 +168,16 @@ def _translate_key(key):
     # elif key == "\033": return TTkK.Key_Space
     # elif key == "\033": return TTkK.Key_Any
     # return TTkK.NONE
+
+def mod2str(k):
+    if k == TTkK.NoModifier          : return "NoModifier"
+    if k == TTkK.ShiftModifier       : return "ShiftModifier"
+    if k == TTkK.ControlModifier     : return "ControlModifier"
+    if k == TTkK.AltModifier         : return "AltModifier"
+    if k == TTkK.MetaModifier        : return "MetaModifier"
+    if k == TTkK.KeypadModifier      : return "KeypadModifier"
+    if k == TTkK.GroupSwitchModifier : return "GroupSwitchModifier"
+    return "NONE!!!"
 
 def key2str(k):
     if k == TTkK.Key_Escape                   : return "Key_Escape"

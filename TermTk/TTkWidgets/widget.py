@@ -289,7 +289,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                     mouseEvent = True
                     wx,wy,ww,wh = widget.geometry()
                     # Skip the mouse event if outside this widget
-                    if x >= wx and x<wx+ww and y>=wy and y<wy+wh:
+                    if wx <= x < wx+ww and wy <= y < wy+wh:
                         wevt = evt.clone(pos=(x-wx, y-wy))
                 if mouseEvent:
                     if wevt is not None:
@@ -544,6 +544,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def setFocus(self):
         tmp = TTkHelper.getFocus()
+        if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
             tmp.focusOutEvent()

@@ -211,6 +211,60 @@ class TTkHelper:
             return (0, 0)
         return TTkHelper.absPos(widget.parentWidget())
 
+
+    def _iterWidgets(item):
+        for child in item.children():
+            if child.layoutItemType == TTkK.WidgetItem:
+                if not child.widget().isVisible(): continue
+                yield child.widget()
+                for i in TTkHelper._iterWidgets(child.widget().rootLayout()):
+                    yield i
+            if child.layoutItemType == TTkK.LayoutItem:
+                for i in TTkHelper._iterWidgets(child):
+                    yield i
+
+    def nextFocus(widget, prevFocus=False):
+        rootWidget = TTkHelper.getOverlay()
+        if not rootWidget:
+            rootWidget = TTkHelper._rootCanvas.getWidget()
+        if widget == rootWidget:
+            widget = None
+        first = None
+        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+            if not first and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
+                first = w
+            TTkLog.debug(f"{w._name} {widget}")
+            if widget:
+                if w == widget:
+                    widget=None
+                continue
+            if w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
+                w.setFocus()
+                w.update()
+                return
+        if first:
+            first.setFocus()
+            first.update()
+
+    def prevFocus(widget):
+        rootWidget = TTkHelper.getOverlay()
+        if not rootWidget:
+            rootWidget = TTkHelper._rootCanvas.getWidget()
+        if widget == rootWidget:
+            widget = None
+        prev = None
+        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+            TTkLog.debug(f"{w._name} {widget}")
+            if w == widget:
+                widget=None
+                if prev:
+                    break
+            if w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
+                prev = w
+        if prev:
+            prev.setFocus()
+            prev.update()
+
     @staticmethod
     def setFocus(widget):
         TTkHelper._focusWidget = widget

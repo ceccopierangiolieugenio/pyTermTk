@@ -10,7 +10,6 @@
       https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
 - [ ] Support Hyperlink: (gnome-terminal)
       https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
-
 - [x] Process child events before parent
 
 ## Terminal Helper
@@ -25,6 +24,10 @@
 - [x] Handle Special Keys (UP, Down, . . .)
 - [ ] Handle CTRL-Mouse
 - [ ] Handle CTRL,ALT,SHIFT + Key (Tab, UP, Down, . . .)
+  - [x] Handle  SHIFT + Tab
+    - [x] Handle Tab Focus
+  - [x] Handle  CTRL,ALT,SHIFT + (F1 -> F12)
+  - [ ] Handle  CTRL,ALT,SHIFT + (Up, Down, Left Right)
 - [ ] Events
   https://tkinterexamples.com/events/events.html
   https://www.pythontutorial.net/tkinter/tkinter-event-binding/
@@ -110,7 +113,7 @@
  - [x] Themes
 #### Splitter widget
  - [x] Basic Implementation
- - [ ] Snap on min/max sizes
+ - [x] Snap on min/max sizes
  - [ ] Events (Signal/Slots)
  - [x] Themes
  - [ ] Support addItem
@@ -123,7 +126,7 @@
  - [ ] Keyboard events
 #### Spin Box
  - [x] Basic Implementation
- - [ ] Events (Signal/Slots)
+ - [x] Events (Signal/Slots)
  - [ ] Themes
 #### Progress Bar
  - [ ] Basic Implementation
@@ -139,7 +142,7 @@
  - [x] Themes
 
 ### Pickers
-#### Color Picker
+#### Color Picker~/github/Varie/pyTermTk~/github/Varie/pyTermTk
  - [x] Basic Implementation
  - [x] Events (Signal/Slots)
  - [ ] Themes

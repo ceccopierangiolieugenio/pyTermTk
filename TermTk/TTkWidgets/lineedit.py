@@ -56,7 +56,7 @@ class TTkLineEdit(TTkWidget):
         self._cursorPos = 0
         self._replace=False
         self.setMaximumHeight(1)
-        self.setMinimumSize(10,1)
+        self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot(str)
