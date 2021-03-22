@@ -223,7 +223,7 @@ class TTkHelper:
     def nextFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:
-            TTkHelper._rootWidget
+            rootWidget =  TTkHelper._rootWidget
         if widget == rootWidget:
             widget = None
         first = None
@@ -246,7 +246,7 @@ class TTkHelper:
     def prevFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:
-            TTkHelper._rootWidget
+            rootWidget = TTkHelper._rootWidget
         if widget == rootWidget:
             widget = None
         prev = None

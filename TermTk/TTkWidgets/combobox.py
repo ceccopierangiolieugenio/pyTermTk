@@ -48,8 +48,13 @@ class TTkComboBox(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def paintEvent(self):
-        color       = TTkCfg.theme.comboboxContentColor
-        borderColor = TTkCfg.theme.comboboxBorderColor
+
+        if self.hasFocus():
+            borderColor = TTkCfg.theme.comboboxBorderColorFocus
+            color       = TTkCfg.theme.comboboxContentColorFocus
+        else:
+            borderColor = TTkCfg.theme.comboboxBorderColor
+            color       = TTkCfg.theme.comboboxContentColor
         if self._id == -1:
             text = "- select -"
         else:
@@ -66,7 +71,7 @@ class TTkComboBox(TTkWidget):
         self.setFocus()
         self.update()
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         frameHeight = len(self._list) + 2
         frameWidth = self.width()
         if frameHeight > 20: frameHeight = 20
@@ -81,3 +86,14 @@ class TTkComboBox(TTkWidget):
         TTkHelper.overlay(self, frame, 0, 0)
         self.update()
         return True
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
+        return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==" " ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False

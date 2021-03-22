@@ -30,7 +30,7 @@ from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):
     __slots__ = (
-        '_text', '_border', '_pressed', 'clicked',
+        '_text', '_border', '_pressed', 'clicked', '_keyPressed',
         '_borderColor',        '_textColor',
         '_borderColorClicked', '_textColorClicked',
         '_borderColorFocus',   '_textColorFocus'
@@ -51,6 +51,7 @@ class TTkButton(TTkWidget):
         self._textColorFocus     = TTkCfg.theme.buttonTextColorFocus
 
         self._pressed = False
+        self._keyPressed = False
         if self._border:
             self.setMinimumSize(2+len(self._text), 3)
         else:
@@ -89,6 +90,10 @@ class TTkButton(TTkWidget):
             self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
             self._canvas.drawText(pos=(1+len(text),y), color=borderColor ,text=']')
             self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
+        if self._keyPressed:
+            self._keyPressed = False
+            self._pressed = False
+            self.update()
 
     def mousePressEvent(self, evt):
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
@@ -102,6 +107,18 @@ class TTkButton(TTkWidget):
         self.update()
         self.clicked.emit()
         return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==" " ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._keyPressed = True
+            self._pressed = True
+            self.update()
+            self.clicked.emit()
+            return True
+
+        return False
+
 
     @property
     def text(self):

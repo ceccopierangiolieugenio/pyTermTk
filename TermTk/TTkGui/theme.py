@@ -222,6 +222,8 @@ class TTkTheme():
 
     comboboxContentColor      = TTkColor.fg("#dddd88")+TTkColor.bg("#111111")
     comboboxBorderColor       = buttonBorderColor
+    comboboxContentColorFocus      = TTkColor.fg("#dddd88")+TTkColor.bg("#111111")
+    comboboxBorderColorFocus       = buttonBorderColorFocus
 
     checkboxContentColor      = buttonTextColor
     checkboxBorderColor       = buttonBorderColor

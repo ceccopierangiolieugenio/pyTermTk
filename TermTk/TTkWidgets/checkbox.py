@@ -61,9 +61,20 @@ class TTkCheckbox(TTkWidget):
             self._canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
             self._canvas.drawText(pos=(1,0), color=color ,text=" ")
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         self._checked = not self._checked
         self.clicked.emit(self._checked)
         self.stateChanged.emit(self.checkState())
         self.update()
         return True
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
+        return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==" " ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False

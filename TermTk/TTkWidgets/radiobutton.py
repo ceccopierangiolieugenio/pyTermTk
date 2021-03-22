@@ -59,7 +59,7 @@ class TTkRadioButton(TTkWidget):
             self._canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
             self._canvas.drawText(pos=(1,0), color=color ,text=" ")
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         # Uncheck the radio already checked;
         for radio in TTkRadioButton._radioLists[self._name]:
             if self != radio != None:
@@ -68,4 +68,14 @@ class TTkRadioButton(TTkWidget):
                     radio.update()
         self._checked = True
         self.update()
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
         return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==" " ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False
