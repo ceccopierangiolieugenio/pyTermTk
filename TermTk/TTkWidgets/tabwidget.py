@@ -43,7 +43,8 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
 class TTkTabWidget(TTkFrame):
     __slots__ = (
         '_viewport',
-         '_tabColor', '_tabBorderColor', '_tabSelectColor',
+        '_tabColor', '_tabBorderColor', '_tabSelectColor', '_tabOffsetColor',
+        '_tabColorFocus', '_tabBorderColorFocus', '_tabSelectColorFocus', '_tabOffsetColorFocus',
         '_tabWidgets', '_labels', '_labelsPos',
         '_offset', '_currentIndex',
         '_leftScroller', '_rightScroller',
@@ -59,9 +60,14 @@ class TTkTabWidget(TTkFrame):
         self._tabClosable = False
         self._leftScroller = False
         self._rightScroller = False
-        self._tabColor = TTkCfg.theme.tabColor
+        self._tabColor       = TTkCfg.theme.tabColor
         self._tabBorderColor = TTkCfg.theme.tabBorderColor
         self._tabSelectColor = TTkCfg.theme.tabSelectColor
+        self._tabOffsetColor = TTkCfg.theme.tabOffsetColor
+        self._tabColorFocus       = TTkCfg.theme.tabColorFocus
+        self._tabBorderColorFocus = TTkCfg.theme.tabBorderColorFocus
+        self._tabSelectColorFocus = TTkCfg.theme.tabSelectColorFocus
+        self._tabOffsetColorFocus = TTkCfg.theme.tabOffsetColorFocus
         TTkFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTabWidget')
         self.setLayout(TTkGridLayout())
@@ -69,13 +75,11 @@ class TTkTabWidget(TTkFrame):
         self.layout().addWidget(self._viewport,0,0)
         #self.layout().addWidget(TTkSpacer(),0,1)
         #self.layout().addWidget(TTkSpacer(),1,0)
-
-
         if self.border():
             self.setPadding(3,1,1,1)
         else:
             self.setPadding(2,0,0,0)
-        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
 
     def addTab(self, widget, label):
@@ -165,13 +169,39 @@ class TTkTabWidget(TTkFrame):
         self._updateTabs()
         return True
 
+    def keyEvent(self, evt):
+        if evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Right:
+            self._offset = min(self._offset+1,len(self._labels)-1)
+            self._updateTabs()
+            return True
+        if evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Left:
+            self._offset = max(self._offset-1,0)
+            self._updateTabs()
+            return True
+        if ( evt.type == TTkK.Character and evt.key==" " ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._currentIndex = self._offset
+            self._updateTabs()
+            return True
+        return False
+
     def paintEvent(self):
+        if self.hasFocus():
+            tabColor       = self._tabColorFocus
+            tabBorderColor = self._tabBorderColorFocus
+            tabSelectColor = self._tabSelectColorFocus
+            tabOffsetColor = self._tabOffsetColorFocus
+        else:
+            tabColor       = self._tabColor
+            tabBorderColor = self._tabBorderColor
+            tabSelectColor = self._tabSelectColor
+            tabOffsetColor = self._tabOffsetColor
         if self.border():
-            self._canvas.drawBox(pos=(0,2),size=(self._width,self._height-2), color=self._borderColor, grid=9)
+            self._canvas.drawBox(pos=(0,2),size=(self._width,self._height-2), color=tabBorderColor, grid=9)
         self._canvas.drawTab(
                 pos=(0,0), size=self.size(), slim=not self.border(),
                 labels=self._labels, labelsPos=self._labelsPos,
                 selected=self._currentIndex, offset=self._offset,
                 leftScroller=self._leftScroller, rightScroller=self._rightScroller,
-                color=self._tabColor, borderColor=self._tabBorderColor, selectColor=self._tabSelectColor)
+                color=tabColor, borderColor=tabBorderColor, selectColor=tabSelectColor, offsetColor=tabOffsetColor)
 

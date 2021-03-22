@@ -333,7 +333,7 @@ class TTkCanvas:
             self, pos, size,
             labels, labelsPos, selected,
             offset,  leftScroller, rightScroller, slim=False, menu=False,
-            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
+            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST):
         x,y = pos
         w,h = size
         tt = TTkCfg.theme.tab
@@ -344,7 +344,7 @@ class TTkCanvas:
         else:
             bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
             bottomPos = y+2
-        self.drawText(pos=(x,bottomPos),text=bottomBar)
+        self.drawText(pos=(x,bottomPos),text=bottomBar, color=borderColor)
         # phase 1 - Draw From left  to 'Selected'
         # phase 2 - Draw From right to 'Selected'
         def _drawTabSlim(x,y,a,b,c,d,e,txt,txtColor,borderColor):
@@ -380,7 +380,7 @@ class TTkCanvas:
             i = offset
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, color, borderColor, slim)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, offsetColor, borderColor, slim)
         # phase 4 - Draw left right tilt
         if leftScroller:
             top =    tt[7]+tt[1]

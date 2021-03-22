@@ -222,7 +222,7 @@ class TTkTheme():
 
     comboboxContentColor      = TTkColor.fg("#dddd88")+TTkColor.bg("#111111")
     comboboxBorderColor       = buttonBorderColor
-    comboboxContentColorFocus      = TTkColor.fg("#dddd88")+TTkColor.bg("#111111")
+    comboboxContentColorFocus      = TTkColor.fg("#ffff88")+TTkColor.bg("#111111")
     comboboxBorderColorFocus       = buttonBorderColorFocus
 
     checkboxContentColor      = buttonTextColor
@@ -235,6 +235,11 @@ class TTkTheme():
     radioButtonContentColorFocus = buttonTextColorFocus
     radioButtonBorderColorFocus  = buttonBorderColorFocus
 
-    tabColor = TTkColor.fg("#aaaaaa")
+    tabColor       = TTkColor.fg("#aaaaaa")
+    tabOffsetColor = TTkColor.RST
     tabBorderColor = frameBorderColor
     tabSelectColor = TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD
+    tabColorFocus       = TTkColor.fg("#aaaaaa")
+    tabOffsetColorFocus = tabOffsetColor
+    tabBorderColorFocus = TTkColor.fg("#ffff88")
+    tabSelectColorFocus = TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD

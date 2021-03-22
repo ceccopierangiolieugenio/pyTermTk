@@ -119,38 +119,30 @@ class TTk(TTkWidget):
                     x,y = TTkHelper.absPos(focusWidget)
                     nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
                     focusWidget.mouseEvent(nmevt)
-                elif overlayWidget is not None:
-                    x,y,w,h=overlayWidget.geometry()
-                    if x <= mevt.x < x+w and y <= mevt.y < y+h:
-                        px,py = TTkHelper.absPos(overlayWidget)
-                        nmevt = mevt.clone(pos=(mevt.x-px, mevt.y-py))
-                        overlayWidget.mouseEvent(nmevt)
-                    else:
-                        self.mouseEvent(mevt)
                 else:
                     self.mouseEvent(mevt)
             elif evt is TTkK.KEY_EVENT:
+                keyHandled = False
                 kevt = self.key_events.get()
                 TTkLog.debug(f"Key: {kevt}")
                 focusWidget = TTkHelper.getFocus()
                 overlayWidget = TTkHelper.getOverlay()
                 TTkLog.debug(f"{focusWidget}")
-                if kevt.key == TTkK.Key_Tab:
-                    # TODO: Handle here if the widget accept the Tab input
-                    if kevt.mod == TTkK.NoModifier:
-                        TTkHelper.nextFocus(focusWidget if focusWidget else self)
-                    if kevt.mod == TTkK.ShiftModifier:
-                        TTkHelper.prevFocus(focusWidget if focusWidget else self)
-                    continue
                 if focusWidget is not None:
                     TTkHelper.execShortcut(kevt.key,focusWidget)
-                    focusWidget.keyEvent(kevt)
-                elif overlayWidget is not None:
-                    TTkHelper.execShortcut(kevt.key,overlayWidget)
-                    overlayWidget.keyEvent(kevt)
+                    keyHandled = focusWidget.keyEvent(kevt)
                 else:
                     TTkHelper.execShortcut(kevt.key)
-                pass
+                # Handle Next Focus Key Binding
+                if not keyHandled and \
+                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
+                   ( kevt.key == TTkK.Key_Right )):
+                        TTkHelper.nextFocus(focusWidget if focusWidget else self)
+                # Handle Prev Focus Key Binding
+                if not keyHandled and \
+                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
+                   ( kevt.key == TTkK.Key_Left )):
+                        TTkHelper.prevFocus(focusWidget if focusWidget else self)
             elif evt is TTkK.TIME_EVENT:
                 size = os.get_terminal_size()
                 self.setGeometry(0,0,size.columns,size.lines)

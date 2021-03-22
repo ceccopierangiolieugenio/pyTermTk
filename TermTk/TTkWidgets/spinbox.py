@@ -32,6 +32,7 @@ from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
+
 class TTkSpinBox(TTkWidget):
     __slots__= (
         '_lineEdit', '_value', '_maximum', '_minimum',
@@ -53,7 +54,8 @@ class TTkSpinBox(TTkWidget):
         self._valueDelta = 0
         self._draggable = False
         self._lineEdit = TTkLineEdit(parent=self, text=str(self._value), inputType=TTkK.Input_Number)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self._lineEdit.keyEvent = self.keyEvent
+        self.setFocusPolicy(TTkK.ClickFocus)
         self._lineEdit.textEdited.connect(self._textEdited)
 
     def value(self):
@@ -71,6 +73,17 @@ class TTkSpinBox(TTkWidget):
     @pyTTkSlot(str)
     def _textEdited(self, text):
         self.setValue(int(text))
+        self._lineEdit.setText(str(self._value))
+
+    def keyEvent(self, evt):
+        if evt.type == TTkK.SpecialKey:
+            if evt.key == TTkK.Key_Up:
+                self.setValue(self._value+1)
+                return True
+            elif evt.key == TTkK.Key_Down:
+                self.setValue(self._value-1)
+                return True
+        return TTkLineEdit.keyEvent(self._lineEdit, evt)
 
     def mousePressEvent(self, evt):
         x,y = evt.x, evt.y
