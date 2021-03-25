@@ -230,7 +230,7 @@ class TTkHelper:
         for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
             if not first and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 first = w
-            TTkLog.debug(f"{w._name} {widget}")
+            # TTkLog.debug(f"{w._name} {widget}")
             if widget:
                 if w == widget:
                     widget=None
@@ -251,7 +251,7 @@ class TTkHelper:
             widget = None
         prev = None
         for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
-            TTkLog.debug(f"{w._name} {widget}")
+            # TTkLog.debug(f"{w._name} {widget}")
             if w == widget:
                 widget=None
                 if prev:

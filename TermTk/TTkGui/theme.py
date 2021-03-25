@@ -214,8 +214,9 @@ class TTkTheme():
     menuButtonColorClicked =  TTkColor.fg("#ffff88")
     menuButtonBorderColorClicked = frameBorderColor
 
-    listColor          = TTkColor.RST
-    listColorSelected  = TTkColor.fg("#ffffdd")+TTkColor.bg("#000044") + TTkColor.BOLD
+    listColor            = TTkColor.RST
+    listColorSelected    = TTkColor.fg("#ffffdd")+TTkColor.bg("#000044") + TTkColor.BOLD
+    listColorHighlighted = TTkColor.bg("#000088") + TTkColor.BOLD
 
     lineEditTextColor       = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")
     lineEditTextColorFocus  = TTkColor.fg("#dddddd")+TTkColor.bg("#000044")

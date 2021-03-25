@@ -84,6 +84,7 @@ class TTkComboBox(TTkWidget):
         for item in self._list:
             listw.addItem(item)
         TTkHelper.overlay(self, frame, 0, 0)
+        listw.viewport().setFocus()
         self.update()
         return True
 
@@ -93,7 +94,8 @@ class TTkComboBox(TTkWidget):
 
     def keyEvent(self, evt):
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Down ):
             self._pressEvent()
             return True
         return False

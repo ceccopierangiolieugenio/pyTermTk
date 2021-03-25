@@ -543,6 +543,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.layoutUpdated()
 
     def setFocus(self):
+        TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
         if tmp == self: return
         if tmp is not None:

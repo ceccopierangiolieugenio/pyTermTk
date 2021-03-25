@@ -116,9 +116,7 @@ class TTkButton(TTkWidget):
             self.update()
             self.clicked.emit()
             return True
-
         return False
-
 
     @property
     def text(self):

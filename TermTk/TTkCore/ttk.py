@@ -124,7 +124,7 @@ class TTk(TTkWidget):
             elif evt is TTkK.KEY_EVENT:
                 keyHandled = False
                 kevt = self.key_events.get()
-                TTkLog.debug(f"Key: {kevt}")
+                # TTkLog.debug(f"Key: {kevt}")
                 focusWidget = TTkHelper.getFocus()
                 overlayWidget = TTkHelper.getOverlay()
                 TTkLog.debug(f"{focusWidget}")

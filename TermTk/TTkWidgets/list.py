@@ -36,10 +36,11 @@ class TTkList(TTkAbstractScrollArea):
         self._name = kwargs.get('name' , 'TTkList' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._listView = TTkListWidget(*args, **kwargs)
-        self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._listView)
         self.itemClicked = self._listView.itemClicked
         self.textClicked = self._listView.textClicked
+        # self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
 
     def addItem(self, *args, **kwargs):
         return self._listView.addItem(*args, **kwargs)
