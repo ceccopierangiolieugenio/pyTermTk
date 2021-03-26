@@ -86,9 +86,11 @@ class MouseEvent:
         self.evt = evt
         self.raw = raw
 
-    def clone(self, pos=None):
+    def clone(self, pos=None, evt=None):
         x,y = pos if pos != None else (self.x, self.y)
-        return MouseEvent(x, y, self.key, self.evt, self.raw)
+        if not evt:
+            evt = self.evt
+        return MouseEvent(x, y, self.key, evt, self.raw)
 
     def key2str(self):
         return {
@@ -477,9 +479,11 @@ def get_key(callback=None):
         self.evt = evt
         self.raw = raw
 
-    def clone(self, pos=None):
+    def clone(self, pos=None, evt=None):
         x,y = pos if pos != None else (self.x, self.y)
-        return MouseEvent(x, y, self.key, self.evt, self.raw)
+        if not evt:
+            evt = self.evt
+        return MouseEvent(x, y, self.key, evt, self.raw)
 
     def key2str(self):
         return {
@@ -591,7 +595,7 @@ def get_key(callback=None):
 <h3>Methods</h3>
 <dl>
 <dt id="TermTk.libbpytop.input.MouseEvent.clone"><code class="name flex">
-<span>def <span class="ident">clone</span></span>(<span>self, pos=None)</span>
+<span>def <span class="ident">clone</span></span>(<span>self, pos=None, evt=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -599,9 +603,11 @@ def get_key(callback=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def clone(self, pos=None):
+<pre><code class="python">def clone(self, pos=None, evt=None):
     x,y = pos if pos != None else (self.x, self.y)
-    return MouseEvent(x, y, self.key, self.evt, self.raw)</code></pre>
+    if not evt:
+        evt = self.evt
+    return MouseEvent(x, y, self.key, evt, self.raw)</code></pre>
 </details>
 </dd>
 <dt id="TermTk.libbpytop.input.MouseEvent.evt2str"><code class="name flex">

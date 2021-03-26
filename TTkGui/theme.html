@@ -242,14 +242,17 @@ class TTkTheme():
     menuButtonColorClicked =  TTkColor.fg(&#34;#ffff88&#34;)
     menuButtonBorderColorClicked = frameBorderColor
 
-    listColor          = TTkColor.RST
-    listColorSelected  = TTkColor.fg(&#34;#ffffdd&#34;)+TTkColor.bg(&#34;#000044&#34;) + TTkColor.BOLD
+    listColor            = TTkColor.RST
+    listColorSelected    = TTkColor.fg(&#34;#ffffdd&#34;)+TTkColor.bg(&#34;#000044&#34;) + TTkColor.BOLD
+    listColorHighlighted = TTkColor.bg(&#34;#000088&#34;) + TTkColor.BOLD
 
     lineEditTextColor       = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.bg(&#34;#222222&#34;)
     lineEditTextColorFocus  = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.bg(&#34;#000044&#34;)
 
     comboboxContentColor      = TTkColor.fg(&#34;#dddd88&#34;)+TTkColor.bg(&#34;#111111&#34;)
     comboboxBorderColor       = buttonBorderColor
+    comboboxContentColorFocus      = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#111111&#34;)
+    comboboxBorderColorFocus       = buttonBorderColorFocus
 
     checkboxContentColor      = buttonTextColor
     checkboxBorderColor       = buttonBorderColor
@@ -261,9 +264,14 @@ class TTkTheme():
     radioButtonContentColorFocus = buttonTextColorFocus
     radioButtonBorderColorFocus  = buttonBorderColorFocus
 
-    tabColor = TTkColor.fg(&#34;#aaaaaa&#34;)
+    tabColor       = TTkColor.fg(&#34;#aaaaaa&#34;)
+    tabOffsetColor = TTkColor.RST
     tabBorderColor = frameBorderColor
-    tabSelectColor = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#000066&#34;)+TTkColor.BOLD</code></pre>
+    tabSelectColor = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#000066&#34;)+TTkColor.BOLD
+    tabColorFocus       = TTkColor.fg(&#34;#aaaaaa&#34;)
+    tabOffsetColorFocus = tabOffsetColor
+    tabBorderColorFocus = TTkColor.fg(&#34;#ffff88&#34;)
+    tabSelectColorFocus = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#000066&#34;)+TTkColor.BOLD</code></pre>
 </details>
 </section>
 <section>
@@ -502,14 +510,17 @@ class TTkTheme():
     menuButtonColorClicked =  TTkColor.fg(&#34;#ffff88&#34;)
     menuButtonBorderColorClicked = frameBorderColor
 
-    listColor          = TTkColor.RST
-    listColorSelected  = TTkColor.fg(&#34;#ffffdd&#34;)+TTkColor.bg(&#34;#000044&#34;) + TTkColor.BOLD
+    listColor            = TTkColor.RST
+    listColorSelected    = TTkColor.fg(&#34;#ffffdd&#34;)+TTkColor.bg(&#34;#000044&#34;) + TTkColor.BOLD
+    listColorHighlighted = TTkColor.bg(&#34;#000088&#34;) + TTkColor.BOLD
 
     lineEditTextColor       = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.bg(&#34;#222222&#34;)
     lineEditTextColorFocus  = TTkColor.fg(&#34;#dddddd&#34;)+TTkColor.bg(&#34;#000044&#34;)
 
     comboboxContentColor      = TTkColor.fg(&#34;#dddd88&#34;)+TTkColor.bg(&#34;#111111&#34;)
     comboboxBorderColor       = buttonBorderColor
+    comboboxContentColorFocus      = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#111111&#34;)
+    comboboxBorderColorFocus       = buttonBorderColorFocus
 
     checkboxContentColor      = buttonTextColor
     checkboxBorderColor       = buttonBorderColor
@@ -521,9 +532,14 @@ class TTkTheme():
     radioButtonContentColorFocus = buttonTextColorFocus
     radioButtonBorderColorFocus  = buttonBorderColorFocus
 
-    tabColor = TTkColor.fg(&#34;#aaaaaa&#34;)
+    tabColor       = TTkColor.fg(&#34;#aaaaaa&#34;)
+    tabOffsetColor = TTkColor.RST
     tabBorderColor = frameBorderColor
-    tabSelectColor = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#000066&#34;)+TTkColor.BOLD</code></pre>
+    tabSelectColor = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#000066&#34;)+TTkColor.BOLD
+    tabColorFocus       = TTkColor.fg(&#34;#aaaaaa&#34;)
+    tabOffsetColorFocus = tabOffsetColor
+    tabBorderColorFocus = TTkColor.fg(&#34;#ffff88&#34;)
+    tabSelectColorFocus = TTkColor.fg(&#34;#ffff88&#34;)+TTkColor.bg(&#34;#000066&#34;)+TTkColor.BOLD</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -672,7 +688,15 @@ F
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.comboboxBorderColorFocus"><code class="name">var <span class="ident">comboboxBorderColorFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkGui.theme.TTkTheme.comboboxContentColor"><code class="name">var <span class="ident">comboboxContentColor</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.comboboxContentColorFocus"><code class="name">var <span class="ident">comboboxContentColorFocus</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -712,6 +736,10 @@ box1
 <div class="desc"></div>
 </dd>
 <dt id="TermTk.TTkGui.theme.TTkTheme.listColor"><code class="name">var <span class="ident">listColor</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.listColorHighlighted"><code class="name">var <span class="ident">listColorHighlighted</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -807,11 +835,31 @@ box1
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.tabBorderColorFocus"><code class="name">var <span class="ident">tabBorderColorFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkGui.theme.TTkTheme.tabColor"><code class="name">var <span class="ident">tabColor</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.tabColorFocus"><code class="name">var <span class="ident">tabColorFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.tabOffsetColor"><code class="name">var <span class="ident">tabOffsetColor</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.tabOffsetColorFocus"><code class="name">var <span class="ident">tabOffsetColorFocus</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="TermTk.TTkGui.theme.TTkTheme.tabSelectColor"><code class="name">var <span class="ident">tabSelectColor</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TermTk.TTkGui.theme.TTkTheme.tabSelectColorFocus"><code class="name">var <span class="ident">tabSelectColorFocus</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -868,7 +916,9 @@ box1
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.checkboxContentColor" href="#TermTk.TTkGui.theme.TTkTheme.checkboxContentColor">checkboxContentColor</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.checkboxContentColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.checkboxContentColorFocus">checkboxContentColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.comboboxBorderColor" href="#TermTk.TTkGui.theme.TTkTheme.comboboxBorderColor">comboboxBorderColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.comboboxBorderColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.comboboxBorderColorFocus">comboboxBorderColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.comboboxContentColor" href="#TermTk.TTkGui.theme.TTkTheme.comboboxContentColor">comboboxContentColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.comboboxContentColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.comboboxContentColorFocus">comboboxContentColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.frameBorderColor" href="#TermTk.TTkGui.theme.TTkTheme.frameBorderColor">frameBorderColor</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.frameTitleColor" href="#TermTk.TTkGui.theme.TTkTheme.frameTitleColor">frameTitleColor</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.grid" href="#TermTk.TTkGui.theme.TTkTheme.grid">grid</a></code></li>
@@ -877,6 +927,7 @@ box1
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.lineEditTextColor" href="#TermTk.TTkGui.theme.TTkTheme.lineEditTextColor">lineEditTextColor</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.lineEditTextColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.lineEditTextColorFocus">lineEditTextColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.listColor" href="#TermTk.TTkGui.theme.TTkTheme.listColor">listColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.listColorHighlighted" href="#TermTk.TTkGui.theme.TTkTheme.listColorHighlighted">listColorHighlighted</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.listColorSelected" href="#TermTk.TTkGui.theme.TTkTheme.listColorSelected">listColorSelected</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.menuBar" href="#TermTk.TTkGui.theme.TTkTheme.menuBar">menuBar</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.menuButtonBorderColor" href="#TermTk.TTkGui.theme.TTkTheme.menuButtonBorderColor">menuButtonBorderColor</a></code></li>
@@ -890,8 +941,13 @@ box1
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.radioButtonContentColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.radioButtonContentColorFocus">radioButtonContentColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.tab" href="#TermTk.TTkGui.theme.TTkTheme.tab">tab</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabBorderColor" href="#TermTk.TTkGui.theme.TTkTheme.tabBorderColor">tabBorderColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabBorderColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.tabBorderColorFocus">tabBorderColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabColor" href="#TermTk.TTkGui.theme.TTkTheme.tabColor">tabColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.tabColorFocus">tabColorFocus</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabOffsetColor" href="#TermTk.TTkGui.theme.TTkTheme.tabOffsetColor">tabOffsetColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabOffsetColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.tabOffsetColorFocus">tabOffsetColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabSelectColor" href="#TermTk.TTkGui.theme.TTkTheme.tabSelectColor">tabSelectColor</a></code></li>
+<li><code><a title="TermTk.TTkGui.theme.TTkTheme.tabSelectColorFocus" href="#TermTk.TTkGui.theme.TTkTheme.tabSelectColorFocus">tabSelectColorFocus</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.vline" href="#TermTk.TTkGui.theme.TTkTheme.vline">vline</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.vscroll" href="#TermTk.TTkGui.theme.TTkTheme.vscroll">vscroll</a></code></li>
 <li><code><a title="TermTk.TTkGui.theme.TTkTheme.windowBorderColor" href="#TermTk.TTkGui.theme.TTkTheme.windowBorderColor">windowBorderColor</a></code></li>

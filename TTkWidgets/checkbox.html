@@ -89,12 +89,23 @@ class TTkCheckbox(TTkWidget):
             self._canvas.drawText(pos=(0,0), color=borderColor ,text=&#34;[ ]&#34;)
             self._canvas.drawText(pos=(1,0), color=color ,text=&#34; &#34;)
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         self._checked = not self._checked
         self.clicked.emit(self._checked)
         self.stateChanged.emit(self.checkState())
         self.update()
-        return True</code></pre>
+        return True
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
+        return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==&#34; &#34; ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False</code></pre>
 </details>
 </section>
 <section>
@@ -208,12 +219,23 @@ class TTkCheckbox(TTkWidget):
             self._canvas.drawText(pos=(0,0), color=borderColor ,text=&#34;[ ]&#34;)
             self._canvas.drawText(pos=(1,0), color=color ,text=&#34; &#34;)
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         self._checked = not self._checked
         self.clicked.emit(self._checked)
         self.stateChanged.emit(self.checkState())
         self.update()
-        return True</code></pre>
+        return True
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
+        return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==&#34; &#34; ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

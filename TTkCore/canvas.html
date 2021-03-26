@@ -361,7 +361,7 @@ class TTkCanvas:
             self, pos, size,
             labels, labelsPos, selected,
             offset,  leftScroller, rightScroller, slim=False, menu=False,
-            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
+            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST):
         x,y = pos
         w,h = size
         tt = TTkCfg.theme.tab
@@ -372,7 +372,7 @@ class TTkCanvas:
         else:
             bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
             bottomPos = y+2
-        self.drawText(pos=(x,bottomPos),text=bottomBar)
+        self.drawText(pos=(x,bottomPos),text=bottomBar, color=borderColor)
         # phase 1 - Draw From left  to &#39;Selected&#39;
         # phase 2 - Draw From right to &#39;Selected&#39;
         def _drawTabSlim(x,y,a,b,c,d,e,txt,txtColor,borderColor):
@@ -408,7 +408,7 @@ class TTkCanvas:
             i = offset
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, color, borderColor, slim)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, offsetColor, borderColor, slim)
         # phase 4 - Draw left right tilt
         if leftScroller:
             top =    tt[7]+tt[1]
@@ -496,7 +496,7 @@ class TTkCanvas:
             self.drawText(pos=(x+1,y), color=color ,text=text)
             off = 1
         else:
-            self.drawText(pos=(x,y), color=color ,text=text)
+            self.drawText(pos=(x,y), width=width, color=color ,text=text)
             if submenu:
                 self._set(y,x+width-1, mb[5], color)
             off = 0
@@ -526,7 +526,7 @@ class TTkCanvas:
         if not self._visible: return
         if not canvas._visible: return
         if canvas._width==0 or canvas._height==0: return
-        if x+w &lt; bx or y+h&lt;by or bx+bw&lt;x or by+bh&lt;y:
+        if x+w &lt; bx or y+h&lt;by or bx+bw-1&lt;x or by+bh-1&lt;y:
             return
 
         x = min(x,self._width-1)
@@ -937,7 +937,7 @@ h = the height of the new canvas</p></div>
             self, pos, size,
             labels, labelsPos, selected,
             offset,  leftScroller, rightScroller, slim=False, menu=False,
-            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
+            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST):
         x,y = pos
         w,h = size
         tt = TTkCfg.theme.tab
@@ -948,7 +948,7 @@ h = the height of the new canvas</p></div>
         else:
             bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
             bottomPos = y+2
-        self.drawText(pos=(x,bottomPos),text=bottomBar)
+        self.drawText(pos=(x,bottomPos),text=bottomBar, color=borderColor)
         # phase 1 - Draw From left  to &#39;Selected&#39;
         # phase 2 - Draw From right to &#39;Selected&#39;
         def _drawTabSlim(x,y,a,b,c,d,e,txt,txtColor,borderColor):
@@ -984,7 +984,7 @@ h = the height of the new canvas</p></div>
             i = offset
             text = labels[i]
             posx = labelsPos[i]
-            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, color, borderColor, slim)
+            _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, offsetColor, borderColor, slim)
         # phase 4 - Draw left right tilt
         if leftScroller:
             top =    tt[7]+tt[1]
@@ -1072,7 +1072,7 @@ h = the height of the new canvas</p></div>
             self.drawText(pos=(x+1,y), color=color ,text=text)
             off = 1
         else:
-            self.drawText(pos=(x,y), color=color ,text=text)
+            self.drawText(pos=(x,y), width=width, color=color ,text=text)
             if submenu:
                 self._set(y,x+width-1, mb[5], color)
             off = 0
@@ -1102,7 +1102,7 @@ h = the height of the new canvas</p></div>
         if not self._visible: return
         if not canvas._visible: return
         if canvas._width==0 or canvas._height==0: return
-        if x+w &lt; bx or y+h&lt;by or bx+bw&lt;x or by+bh&lt;y:
+        if x+w &lt; bx or y+h&lt;by or bx+bw-1&lt;x or by+bh-1&lt;y:
             return
 
         x = min(x,self._width-1)
@@ -1482,7 +1482,7 @@ h = the height of the new canvas</p></div>
         self.drawText(pos=(x+1,y), color=color ,text=text)
         off = 1
     else:
-        self.drawText(pos=(x,y), color=color ,text=text)
+        self.drawText(pos=(x,y), width=width, color=color ,text=text)
         if submenu:
             self._set(y,x+width-1, mb[5], color)
         off = 0
@@ -1521,7 +1521,7 @@ h = the height of the new canvas</p></div>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.canvas.TTkCanvas.drawTab"><code class="name flex">
-<span>def <span class="ident">drawTab</span></span>(<span>self, pos, size, labels, labelsPos, selected, offset, leftScroller, rightScroller, slim=False, menu=False, color=&lt;TermTk.TTkCore.color._TTkColor object&gt;, borderColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;, selectColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;)</span>
+<span>def <span class="ident">drawTab</span></span>(<span>self, pos, size, labels, labelsPos, selected, offset, leftScroller, rightScroller, slim=False, menu=False, color=&lt;TermTk.TTkCore.color._TTkColor object&gt;, borderColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;, selectColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;, offsetColor=&lt;TermTk.TTkCore.color._TTkColor object&gt;)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1533,7 +1533,7 @@ h = the height of the new canvas</p></div>
         self, pos, size,
         labels, labelsPos, selected,
         offset,  leftScroller, rightScroller, slim=False, menu=False,
-        color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST):
+        color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST):
     x,y = pos
     w,h = size
     tt = TTkCfg.theme.tab
@@ -1544,7 +1544,7 @@ h = the height of the new canvas</p></div>
     else:
         bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
         bottomPos = y+2
-    self.drawText(pos=(x,bottomPos),text=bottomBar)
+    self.drawText(pos=(x,bottomPos),text=bottomBar, color=borderColor)
     # phase 1 - Draw From left  to &#39;Selected&#39;
     # phase 2 - Draw From right to &#39;Selected&#39;
     def _drawTabSlim(x,y,a,b,c,d,e,txt,txtColor,borderColor):
@@ -1580,7 +1580,7 @@ h = the height of the new canvas</p></div>
         i = offset
         text = labels[i]
         posx = labelsPos[i]
-        _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, color, borderColor, slim)
+        _drawTab(x+posx,y,tt[0],tt[1],tt[3],tt[9],tt[9],tt[13],tt[12],tt[13],tt[9],tt[9],tt[18],tt[19],tt[20], text, offsetColor, borderColor, slim)
     # phase 4 - Draw left right tilt
     if leftScroller:
         top =    tt[7]+tt[1]
@@ -1764,7 +1764,7 @@ h = the height of the new canvas</p></div>
     if not self._visible: return
     if not canvas._visible: return
     if canvas._width==0 or canvas._height==0: return
-    if x+w &lt; bx or y+h&lt;by or bx+bw&lt;x or by+bh&lt;y:
+    if x+w &lt; bx or y+h&lt;by or bx+bw-1&lt;x or by+bh-1&lt;y:
         return
 
     x = min(x,self._width-1)

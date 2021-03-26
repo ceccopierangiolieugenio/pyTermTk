@@ -53,57 +53,96 @@
 from TermTk.TTkCore.constant import TTkK
 
 class KeyEvent:
-    __slots__ = (&#39;type&#39;, &#39;key&#39;, &#39;code&#39;)
-    def __init__(self, type:int, key: str, code: str):
+    __slots__ = (&#39;type&#39;, &#39;key&#39;, &#39;code&#39;, &#39;mod&#39;)
+    def __init__(self, type:int, key: str, code: str, mod: int):
         self.type = type
         self.key = key
+        self.mod = mod
         self.code = code
     def __str__(self):
         code = self.code.replace(&#39;\033&#39;,&#39;&lt;ESC&gt;&#39;)
-        return f&#34;KeyEvent: {self.key} {key2str(self.key)} {code}&#34;
+        return f&#34;KeyEvent: {self.key} {key2str(self.key)} {mod2str(self.mod)} {code}&#34;
 
     @staticmethod
     def parse(input_key):  # from: Space           except &#34;DEL&#34;
         if len(input_key) == 1 and &#34;\040&#34; &lt;= input_key != &#34;\177&#34;:
-            return KeyEvent(TTkK.Character, input_key, input_key)
+            return KeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
         else:
-            key = _translate_key(input_key)
+            key, mod = _translate_key(input_key)
             if key is not None:
-                return KeyEvent(TTkK.SpecialKey, key, input_key)
+                return KeyEvent(TTkK.SpecialKey, key, input_key, mod)
         return None
 
 def _translate_key(key):
-    if   key == &#34;\177&#34;   : return TTkK.Key_Backspace
-    elif key == &#34;\t&#34;     : return TTkK.Key_Tab
-    elif key == &#34;\n&#34;     : return TTkK.Key_Enter
-    elif key == &#34;\033[A&#34; : return TTkK.Key_Up
-    elif key == &#34;\033[B&#34; : return TTkK.Key_Down
-    elif key == &#34;\033[C&#34; : return TTkK.Key_Right
-    elif key == &#34;\033[D&#34; : return TTkK.Key_Left
-    elif key == &#34;\033[5~&#34;: return TTkK.Key_PageUp
-    elif key == &#34;\033[6~&#34;: return TTkK.Key_PageDown
+    if   key == &#34;\177&#34;      : return TTkK.Key_Backspace , TTkK.NoModifier
+    elif key == &#34;\t&#34;        : return TTkK.Key_Tab       , TTkK.NoModifier
+    elif key == &#34;\033[Z&#34;    : return TTkK.Key_Tab       , TTkK.ShiftModifier
+    elif key == &#34;\n&#34;        : return TTkK.Key_Enter     , TTkK.NoModifier
+    elif key == &#34;\033[A&#34;    : return TTkK.Key_Up        , TTkK.NoModifier
+    elif key == &#34;\033[B&#34;    : return TTkK.Key_Down      , TTkK.NoModifier
+    elif key == &#34;\033[C&#34;    : return TTkK.Key_Right     , TTkK.NoModifier
+    elif key == &#34;\033[D&#34;    : return TTkK.Key_Left      , TTkK.NoModifier
+    elif key == &#34;\033[5~&#34;   : return TTkK.Key_PageUp    , TTkK.NoModifier
+    elif key == &#34;\033[6~&#34;   : return TTkK.Key_PageDown  , TTkK.NoModifier
     # Xterm
-    elif key == &#34;\033[F&#34; : return TTkK.Key_End
-    elif key == &#34;\033[H&#34; : return TTkK.Key_Home
+    elif key == &#34;\033[F&#34;    : return TTkK.Key_End       , TTkK.NoModifier
+    elif key == &#34;\033[H&#34;    : return TTkK.Key_Home      , TTkK.NoModifier
     # Terminator + tmux
-    elif key == &#34;\033[4~&#34;: return TTkK.Key_End
-    elif key == &#34;\033[1~&#34;: return TTkK.Key_Home
-    elif key == &#34;\033[2~&#34;: return TTkK.Key_Insert
-    elif key == &#34;\033[3~&#34;: return TTkK.Key_Delete
-    elif key == &#34;\033&#34;: return TTkK.Key_Escape
-    elif key == &#34;\033OP&#34;: return TTkK.Key_F1
-    elif key == &#34;\033OQ&#34;: return TTkK.Key_F2
-    elif key == &#34;\033OR&#34;: return TTkK.Key_F3
-    elif key == &#34;\033OS&#34;: return TTkK.Key_F4
-    elif key == &#34;\033[15~&#34;: return TTkK.Key_F5
-    elif key == &#34;\033[17~&#34;: return TTkK.Key_F6
-    elif key == &#34;\033[18~&#34;: return TTkK.Key_F7
-    elif key == &#34;\033[19~&#34;: return TTkK.Key_F8
-    elif key == &#34;\033[20~&#34;: return TTkK.Key_F9
-    elif key == &#34;\033[21~&#34;: return TTkK.Key_F10
-    elif key == &#34;\033[23~&#34;: return TTkK.Key_F11
-    elif key == &#34;\033[24~&#34;: return TTkK.Key_F12
-    return None
+    elif key == &#34;\033[4~&#34;   : return TTkK.Key_End       , TTkK.NoModifier
+    elif key == &#34;\033[1~&#34;   : return TTkK.Key_Home      , TTkK.NoModifier
+    elif key == &#34;\033[2~&#34;   : return TTkK.Key_Insert    , TTkK.NoModifier
+    elif key == &#34;\033[3~&#34;   : return TTkK.Key_Delete    , TTkK.NoModifier
+    elif key == &#34;\033&#34;      : return TTkK.Key_Escape    , TTkK.NoModifier
+    # Function Key
+    elif key == &#34;\033OP&#34;    : return TTkK.Key_F1        , TTkK.NoModifier
+    elif key == &#34;\033OQ&#34;    : return TTkK.Key_F2        , TTkK.NoModifier
+    elif key == &#34;\033OR&#34;    : return TTkK.Key_F3        , TTkK.NoModifier
+    elif key == &#34;\033OS&#34;    : return TTkK.Key_F4        , TTkK.NoModifier
+    elif key == &#34;\033[15~&#34;  : return TTkK.Key_F5        , TTkK.NoModifier
+    elif key == &#34;\033[17~&#34;  : return TTkK.Key_F6        , TTkK.NoModifier
+    elif key == &#34;\033[18~&#34;  : return TTkK.Key_F7        , TTkK.NoModifier
+    elif key == &#34;\033[19~&#34;  : return TTkK.Key_F8        , TTkK.NoModifier
+    elif key == &#34;\033[20~&#34;  : return TTkK.Key_F9        , TTkK.NoModifier
+    elif key == &#34;\033[21~&#34;  : return TTkK.Key_F10       , TTkK.NoModifier
+    elif key == &#34;\033[23~&#34;  : return TTkK.Key_F11       , TTkK.NoModifier
+    elif key == &#34;\033[24~&#34;  : return TTkK.Key_F12       , TTkK.NoModifier
+    elif key == &#34;\033[1;2P&#34; : return TTkK.Key_F1        , TTkK.ShiftModifier
+    elif key == &#34;\033[1;2Q&#34; : return TTkK.Key_F2        , TTkK.ShiftModifier
+    elif key == &#34;\033[1;2R&#34; : return TTkK.Key_F3        , TTkK.ShiftModifier
+    elif key == &#34;\033[1;2S&#34; : return TTkK.Key_F4        , TTkK.ShiftModifier
+    elif key == &#34;\033[15;2~&#34;: return TTkK.Key_F5        , TTkK.ShiftModifier
+    elif key == &#34;\033[17;2~&#34;: return TTkK.Key_F6        , TTkK.ShiftModifier
+    elif key == &#34;\033[18;2~&#34;: return TTkK.Key_F7        , TTkK.ShiftModifier
+    elif key == &#34;\033[19;2~&#34;: return TTkK.Key_F8        , TTkK.ShiftModifier
+    elif key == &#34;\033[20;2~&#34;: return TTkK.Key_F9        , TTkK.ShiftModifier
+    elif key == &#34;\033[21;2~&#34;: return TTkK.Key_F10       , TTkK.ShiftModifier
+    elif key == &#34;\033[23;2~&#34;: return TTkK.Key_F11       , TTkK.ShiftModifier
+    elif key == &#34;\033[24;2~&#34;: return TTkK.Key_F12       , TTkK.ShiftModifier
+    elif key == &#34;\033[1;5P&#34; : return TTkK.Key_F1        , TTkK.ControlModifier
+    elif key == &#34;\033[1;5Q&#34; : return TTkK.Key_F2        , TTkK.ControlModifier
+    elif key == &#34;\033[1;5R&#34; : return TTkK.Key_F3        , TTkK.ControlModifier
+    elif key == &#34;\033[1;5S&#34; : return TTkK.Key_F4        , TTkK.ControlModifier
+    elif key == &#34;\033[15;5~&#34;: return TTkK.Key_F5        , TTkK.ControlModifier
+    elif key == &#34;\033[17;5~&#34;: return TTkK.Key_F6        , TTkK.ControlModifier
+    elif key == &#34;\033[18;5~&#34;: return TTkK.Key_F7        , TTkK.ControlModifier
+    elif key == &#34;\033[19;5~&#34;: return TTkK.Key_F8        , TTkK.ControlModifier
+    elif key == &#34;\033[20;5~&#34;: return TTkK.Key_F9        , TTkK.ControlModifier
+    elif key == &#34;\033[21;5~&#34;: return TTkK.Key_F10       , TTkK.ControlModifier
+    elif key == &#34;\033[23;5~&#34;: return TTkK.Key_F11       , TTkK.ControlModifier
+    elif key == &#34;\033[24;5~&#34;: return TTkK.Key_F12       , TTkK.ControlModifier
+    # elif key == &#34;\033[1;3P&#34; : return TTkK.Key_F1        , TTkK.AltModifier
+    # elif key == &#34;\033[1;3Q&#34; : return TTkK.Key_F2        , TTkK.AltModifier
+    elif key == &#34;\033[1;3R&#34; : return TTkK.Key_F3        , TTkK.AltModifier
+    #elif key == &#34;\033[1;3S&#34; : return TTkK.Key_F4        , TTkK.AltModifier
+    #elif key == &#34;\033[15;3~&#34;: return TTkK.Key_F5        , TTkK.AltModifier
+    elif key == &#34;\033[17;3~&#34;: return TTkK.Key_F6        , TTkK.AltModifier
+    #elif key == &#34;\033[18;3~&#34;: return TTkK.Key_F7        , TTkK.AltModifier
+    #elif key == &#34;\033[19;3~&#34;: return TTkK.Key_F8        , TTkK.AltModifier
+    elif key == &#34;\033[20;3~&#34;: return TTkK.Key_F9        , TTkK.AltModifier
+    #elif key == &#34;\033[21;3~&#34;: return TTkK.Key_F10       , TTkK.AltModifier
+    elif key == &#34;\033[23;3~&#34;: return TTkK.Key_F11       , TTkK.AltModifier
+    elif key == &#34;\033[24;3~&#34;: return TTkK.Key_F12       , TTkK.AltModifier
+    return None, None
 
     # # elif key == &#34;\033&#34;: return TTkK.Key_Tab
     # if True: return None
@@ -157,6 +196,16 @@ def _translate_key(key):
     # elif key == &#34;\033&#34;: return TTkK.Key_Space
     # elif key == &#34;\033&#34;: return TTkK.Key_Any
     # return TTkK.NONE
+
+def mod2str(k):
+    if k == TTkK.NoModifier          : return &#34;NoModifier&#34;
+    if k == TTkK.ShiftModifier       : return &#34;ShiftModifier&#34;
+    if k == TTkK.ControlModifier     : return &#34;ControlModifier&#34;
+    if k == TTkK.AltModifier         : return &#34;AltModifier&#34;
+    if k == TTkK.MetaModifier        : return &#34;MetaModifier&#34;
+    if k == TTkK.KeypadModifier      : return &#34;KeypadModifier&#34;
+    if k == TTkK.GroupSwitchModifier : return &#34;GroupSwitchModifier&#34;
+    return &#34;NONE!!!&#34;
 
 def key2str(k):
     if k == TTkK.Key_Escape                   : return &#34;Key_Escape&#34;
@@ -1122,6 +1171,26 @@ def key2str(k):
     return &#34;NONE!!!&#34;</code></pre>
 </details>
 </dd>
+<dt id="TermTk.libbpytop.inputkey.mod2str"><code class="name flex">
+<span>def <span class="ident">mod2str</span></span>(<span>k)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mod2str(k):
+    if k == TTkK.NoModifier          : return &#34;NoModifier&#34;
+    if k == TTkK.ShiftModifier       : return &#34;ShiftModifier&#34;
+    if k == TTkK.ControlModifier     : return &#34;ControlModifier&#34;
+    if k == TTkK.AltModifier         : return &#34;AltModifier&#34;
+    if k == TTkK.MetaModifier        : return &#34;MetaModifier&#34;
+    if k == TTkK.KeypadModifier      : return &#34;KeypadModifier&#34;
+    if k == TTkK.GroupSwitchModifier : return &#34;GroupSwitchModifier&#34;
+    return &#34;NONE!!!&#34;</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -1129,7 +1198,7 @@ def key2str(k):
 <dl>
 <dt id="TermTk.libbpytop.inputkey.KeyEvent"><code class="flex name class">
 <span>class <span class="ident">KeyEvent</span></span>
-<span>(</span><span>type: int, key: str, code: str)</span>
+<span>(</span><span>type: int, key: str, code: str, mod: int)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1138,23 +1207,24 @@ def key2str(k):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class KeyEvent:
-    __slots__ = (&#39;type&#39;, &#39;key&#39;, &#39;code&#39;)
-    def __init__(self, type:int, key: str, code: str):
+    __slots__ = (&#39;type&#39;, &#39;key&#39;, &#39;code&#39;, &#39;mod&#39;)
+    def __init__(self, type:int, key: str, code: str, mod: int):
         self.type = type
         self.key = key
+        self.mod = mod
         self.code = code
     def __str__(self):
         code = self.code.replace(&#39;\033&#39;,&#39;&lt;ESC&gt;&#39;)
-        return f&#34;KeyEvent: {self.key} {key2str(self.key)} {code}&#34;
+        return f&#34;KeyEvent: {self.key} {key2str(self.key)} {mod2str(self.mod)} {code}&#34;
 
     @staticmethod
     def parse(input_key):  # from: Space           except &#34;DEL&#34;
         if len(input_key) == 1 and &#34;\040&#34; &lt;= input_key != &#34;\177&#34;:
-            return KeyEvent(TTkK.Character, input_key, input_key)
+            return KeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
         else:
-            key = _translate_key(input_key)
+            key, mod = _translate_key(input_key)
             if key is not None:
-                return KeyEvent(TTkK.SpecialKey, key, input_key)
+                return KeyEvent(TTkK.SpecialKey, key, input_key, mod)
         return None</code></pre>
 </details>
 <h3>Static methods</h3>
@@ -1171,11 +1241,11 @@ def key2str(k):
 <pre><code class="python">@staticmethod
 def parse(input_key):  # from: Space           except &#34;DEL&#34;
     if len(input_key) == 1 and &#34;\040&#34; &lt;= input_key != &#34;\177&#34;:
-        return KeyEvent(TTkK.Character, input_key, input_key)
+        return KeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
     else:
-        key = _translate_key(input_key)
+        key, mod = _translate_key(input_key)
         if key is not None:
-            return KeyEvent(TTkK.SpecialKey, key, input_key)
+            return KeyEvent(TTkK.SpecialKey, key, input_key, mod)
     return None</code></pre>
 </details>
 </dd>
@@ -1187,6 +1257,10 @@ def parse(input_key):  # from: Space           except &#34;DEL&#34;
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="TermTk.libbpytop.inputkey.KeyEvent.key"><code class="name">var <span class="ident">key</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.libbpytop.inputkey.KeyEvent.mod"><code class="name">var <span class="ident">mod</span></code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1213,6 +1287,7 @@ def parse(input_key):  # from: Space           except &#34;DEL&#34;
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="TermTk.libbpytop.inputkey.key2str" href="#TermTk.libbpytop.inputkey.key2str">key2str</a></code></li>
+<li><code><a title="TermTk.libbpytop.inputkey.mod2str" href="#TermTk.libbpytop.inputkey.mod2str">mod2str</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -1222,6 +1297,7 @@ def parse(input_key):  # from: Space           except &#34;DEL&#34;
 <ul class="">
 <li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.code" href="#TermTk.libbpytop.inputkey.KeyEvent.code">code</a></code></li>
 <li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.key" href="#TermTk.libbpytop.inputkey.KeyEvent.key">key</a></code></li>
+<li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.mod" href="#TermTk.libbpytop.inputkey.KeyEvent.mod">mod</a></code></li>
 <li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.parse" href="#TermTk.libbpytop.inputkey.KeyEvent.parse">parse</a></code></li>
 <li><code><a title="TermTk.libbpytop.inputkey.KeyEvent.type" href="#TermTk.libbpytop.inputkey.KeyEvent.type">type</a></code></li>
 </ul>

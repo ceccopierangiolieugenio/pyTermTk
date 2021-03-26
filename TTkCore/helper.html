@@ -59,6 +59,7 @@ class TTkHelper:
     # TODO: Add Setter/Getter
     _focusWidget = None
     _rootCanvas = None
+    _rootWidget = None
     _updateWidget = []
     _updateBuffer  = []
     _cursorPos = [0,0]
@@ -69,7 +70,7 @@ class TTkHelper:
         def __init__(self,x,y,widget):
             self._widget = widget
             widget.move(x,y)
-
+    _savedFocus = None
     _overlay = []
 
     class _Shortcut():
@@ -111,29 +112,44 @@ class TTkHelper:
                 TTkHelper._updateBuffer.append(canvas)
 
     @staticmethod
-    def registerRootCanvas(canvas):
-        TTkHelper._rootCanvas = canvas
+    def registerRootWidget(widget):
+        TTkHelper._rootCanvas = widget.getCanvas()
+        TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
         TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
 
     @staticmethod
-    def isOverlay(widget):
+    def rootOverlay(widget):
         if widget is None:
-            return False
+            return None
         if not TTkHelper._overlay:
-            return False
+            return None
         overlayWidgets = [o._widget for o in TTkHelper._overlay]
         while widget is not None:
             if widget in overlayWidgets:
-                return True
+                return widget
             widget = widget.parentWidget()
-        return False
+        return None
+
+    @staticmethod
+    def isOverlay(widget):
+         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx+x,wy+y,widget))
+        w,h = widget.size()
+        if not TTkHelper._savedFocus and \
+           not TTkHelper.isOverlay(TTkHelper._focusWidget):
+            TTkHelper._savedFocus = TTkHelper._focusWidget
+        # Try to keep the overlay widget inside the terminal
+        wx = max(0, wx+x if wx+x+w &lt; TTkGlbl.term_w else TTkGlbl.term_w-w )
+        wy = max(0, wy+y if wy+y+h &lt; TTkGlbl.term_h else TTkGlbl.term_h-h )
+        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget))
+        TTkHelper._rootWidget.rootLayout().addWidget(widget)
+        widget.setFocus()
+        widget.raiseWidget()
 
     @staticmethod
     def getOverlay():
@@ -143,7 +159,27 @@ class TTkHelper:
 
     @staticmethod
     def removeOverlay():
+        for widget in TTkHelper._overlay:
+            TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
         TTkHelper._overlay = []
+        if TTkHelper._focusWidget:
+            TTkHelper._focusWidget.clearFocus()
+        if TTkHelper._savedFocus:
+            bk = TTkHelper._savedFocus
+            TTkHelper._savedFocus = None
+            bk.setFocus()
+
+    @staticmethod
+    def removeSingleOverlay(widget):
+        if len(TTkHelper._overlay) &lt;= 1:
+            return TTkHelper.removeOverlay()
+        rootWidget = TTkHelper.rootOverlay(widget)
+        rootWidget
+        for o in TTkHelper._overlay:
+            if o._widget == rootWidget:
+                TTkHelper._overlay.remove(o)
+        TTkHelper._rootWidget.rootLayout().removeWidget(rootWidget)
+        TTkHelper._overlay[-1]._widget.setFocus()
 
     @staticmethod
     def paintAll():
@@ -192,19 +228,6 @@ class TTkHelper:
             pushToTerminal = True
             widget.paintChildCanvas()
 
-        if TTkHelper._overlay:
-            TTkHelper._rootCanvas.clean()
-            TTkHelper._rootCanvas.getWidget().paintChildCanvas()
-            lx,ly,lw,lh = (0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            for o in TTkHelper._overlay:
-                child =o._widget
-                cx,cy,cw,ch = child.geometry()
-                TTkHelper._rootCanvas.paintCanvas(
-                                    child.getCanvas(),
-                                    (cx,  cy,  cw, ch),
-                                    (0,0,cw,ch),
-                                    (lx, ly, lw, lh))
-
         if pushToTerminal:
             if TTkHelper._cursor:
                 lbt.Term.hideCursor()
@@ -234,6 +257,60 @@ class TTkHelper:
         if widget is None or widget.parentWidget() is None:
             return (0, 0)
         return TTkHelper.absPos(widget.parentWidget())
+
+
+    def _iterWidgets(item):
+        for child in item.children():
+            if child.layoutItemType == TTkK.WidgetItem:
+                if not child.widget().isVisible(): continue
+                yield child.widget()
+                for i in TTkHelper._iterWidgets(child.widget().rootLayout()):
+                    yield i
+            if child.layoutItemType == TTkK.LayoutItem:
+                for i in TTkHelper._iterWidgets(child):
+                    yield i
+
+    def nextFocus(widget):
+        rootWidget = TTkHelper.rootOverlay(widget)
+        if not rootWidget:
+            rootWidget =  TTkHelper._rootWidget
+        if widget == rootWidget:
+            widget = None
+        first = None
+        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+            if not first and w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+                first = w
+            # TTkLog.debug(f&#34;{w._name} {widget}&#34;)
+            if widget:
+                if w == widget:
+                    widget=None
+                continue
+            if w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+                w.setFocus()
+                w.update()
+                return
+        if first:
+            first.setFocus()
+            first.update()
+
+    def prevFocus(widget):
+        rootWidget = TTkHelper.rootOverlay(widget)
+        if not rootWidget:
+            rootWidget = TTkHelper._rootWidget
+        if widget == rootWidget:
+            widget = None
+        prev = None
+        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+            # TTkLog.debug(f&#34;{w._name} {widget}&#34;)
+            if w == widget:
+                widget=None
+                if prev:
+                    break
+            if w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+                prev = w
+        if prev:
+            prev.setFocus()
+            prev.update()
 
     @staticmethod
     def setFocus(widget):
@@ -296,6 +373,7 @@ class TTkHelper:
     # TODO: Add Setter/Getter
     _focusWidget = None
     _rootCanvas = None
+    _rootWidget = None
     _updateWidget = []
     _updateBuffer  = []
     _cursorPos = [0,0]
@@ -306,7 +384,7 @@ class TTkHelper:
         def __init__(self,x,y,widget):
             self._widget = widget
             widget.move(x,y)
-
+    _savedFocus = None
     _overlay = []
 
     class _Shortcut():
@@ -348,29 +426,44 @@ class TTkHelper:
                 TTkHelper._updateBuffer.append(canvas)
 
     @staticmethod
-    def registerRootCanvas(canvas):
-        TTkHelper._rootCanvas = canvas
+    def registerRootWidget(widget):
+        TTkHelper._rootCanvas = widget.getCanvas()
+        TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
         TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
 
     @staticmethod
-    def isOverlay(widget):
+    def rootOverlay(widget):
         if widget is None:
-            return False
+            return None
         if not TTkHelper._overlay:
-            return False
+            return None
         overlayWidgets = [o._widget for o in TTkHelper._overlay]
         while widget is not None:
             if widget in overlayWidgets:
-                return True
+                return widget
             widget = widget.parentWidget()
-        return False
+        return None
+
+    @staticmethod
+    def isOverlay(widget):
+         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx+x,wy+y,widget))
+        w,h = widget.size()
+        if not TTkHelper._savedFocus and \
+           not TTkHelper.isOverlay(TTkHelper._focusWidget):
+            TTkHelper._savedFocus = TTkHelper._focusWidget
+        # Try to keep the overlay widget inside the terminal
+        wx = max(0, wx+x if wx+x+w &lt; TTkGlbl.term_w else TTkGlbl.term_w-w )
+        wy = max(0, wy+y if wy+y+h &lt; TTkGlbl.term_h else TTkGlbl.term_h-h )
+        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget))
+        TTkHelper._rootWidget.rootLayout().addWidget(widget)
+        widget.setFocus()
+        widget.raiseWidget()
 
     @staticmethod
     def getOverlay():
@@ -380,7 +473,27 @@ class TTkHelper:
 
     @staticmethod
     def removeOverlay():
+        for widget in TTkHelper._overlay:
+            TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
         TTkHelper._overlay = []
+        if TTkHelper._focusWidget:
+            TTkHelper._focusWidget.clearFocus()
+        if TTkHelper._savedFocus:
+            bk = TTkHelper._savedFocus
+            TTkHelper._savedFocus = None
+            bk.setFocus()
+
+    @staticmethod
+    def removeSingleOverlay(widget):
+        if len(TTkHelper._overlay) &lt;= 1:
+            return TTkHelper.removeOverlay()
+        rootWidget = TTkHelper.rootOverlay(widget)
+        rootWidget
+        for o in TTkHelper._overlay:
+            if o._widget == rootWidget:
+                TTkHelper._overlay.remove(o)
+        TTkHelper._rootWidget.rootLayout().removeWidget(rootWidget)
+        TTkHelper._overlay[-1]._widget.setFocus()
 
     @staticmethod
     def paintAll():
@@ -429,19 +542,6 @@ class TTkHelper:
             pushToTerminal = True
             widget.paintChildCanvas()
 
-        if TTkHelper._overlay:
-            TTkHelper._rootCanvas.clean()
-            TTkHelper._rootCanvas.getWidget().paintChildCanvas()
-            lx,ly,lw,lh = (0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            for o in TTkHelper._overlay:
-                child =o._widget
-                cx,cy,cw,ch = child.geometry()
-                TTkHelper._rootCanvas.paintCanvas(
-                                    child.getCanvas(),
-                                    (cx,  cy,  cw, ch),
-                                    (0,0,cw,ch),
-                                    (lx, ly, lw, lh))
-
         if pushToTerminal:
             if TTkHelper._cursor:
                 lbt.Term.hideCursor()
@@ -471,6 +571,60 @@ class TTkHelper:
         if widget is None or widget.parentWidget() is None:
             return (0, 0)
         return TTkHelper.absPos(widget.parentWidget())
+
+
+    def _iterWidgets(item):
+        for child in item.children():
+            if child.layoutItemType == TTkK.WidgetItem:
+                if not child.widget().isVisible(): continue
+                yield child.widget()
+                for i in TTkHelper._iterWidgets(child.widget().rootLayout()):
+                    yield i
+            if child.layoutItemType == TTkK.LayoutItem:
+                for i in TTkHelper._iterWidgets(child):
+                    yield i
+
+    def nextFocus(widget):
+        rootWidget = TTkHelper.rootOverlay(widget)
+        if not rootWidget:
+            rootWidget =  TTkHelper._rootWidget
+        if widget == rootWidget:
+            widget = None
+        first = None
+        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+            if not first and w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+                first = w
+            # TTkLog.debug(f&#34;{w._name} {widget}&#34;)
+            if widget:
+                if w == widget:
+                    widget=None
+                continue
+            if w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+                w.setFocus()
+                w.update()
+                return
+        if first:
+            first.setFocus()
+            first.update()
+
+    def prevFocus(widget):
+        rootWidget = TTkHelper.rootOverlay(widget)
+        if not rootWidget:
+            rootWidget = TTkHelper._rootWidget
+        if widget == rootWidget:
+            widget = None
+        prev = None
+        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+            # TTkLog.debug(f&#34;{w._name} {widget}&#34;)
+            if w == widget:
+                widget=None
+                if prev:
+                    break
+            if w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+                prev = w
+        if prev:
+            prev.setFocus()
+            prev.update()
 
     @staticmethod
     def setFocus(widget):
@@ -691,16 +845,7 @@ def hideCursor():
 </summary>
 <pre><code class="python">@staticmethod
 def isOverlay(widget):
-    if widget is None:
-        return False
-    if not TTkHelper._overlay:
-        return False
-    overlayWidgets = [o._widget for o in TTkHelper._overlay]
-    while widget is not None:
-        if widget in overlayWidgets:
-            return True
-        widget = widget.parentWidget()
-    return False</code></pre>
+     return TTkHelper.rootOverlay(widget) is not None</code></pre>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.helper.TTkHelper.isParent"><code class="name flex">
@@ -747,7 +892,17 @@ def moveCursor(widget, x, y):
 <pre><code class="python">@staticmethod
 def overlay(caller, widget, x, y):
     wx, wy = TTkHelper.absPos(caller)
-    TTkHelper._overlay.append(TTkHelper._Overlay(wx+x,wy+y,widget))</code></pre>
+    w,h = widget.size()
+    if not TTkHelper._savedFocus and \
+       not TTkHelper.isOverlay(TTkHelper._focusWidget):
+        TTkHelper._savedFocus = TTkHelper._focusWidget
+    # Try to keep the overlay widget inside the terminal
+    wx = max(0, wx+x if wx+x+w &lt; TTkGlbl.term_w else TTkGlbl.term_w-w )
+    wy = max(0, wy+y if wy+y+h &lt; TTkGlbl.term_h else TTkGlbl.term_h-h )
+    TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget))
+    TTkHelper._rootWidget.rootLayout().addWidget(widget)
+    widget.setFocus()
+    widget.raiseWidget()</code></pre>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.helper.TTkHelper.paintAll"><code class="name flex">
@@ -807,19 +962,6 @@ def paintAll():
         pushToTerminal = True
         widget.paintChildCanvas()
 
-    if TTkHelper._overlay:
-        TTkHelper._rootCanvas.clean()
-        TTkHelper._rootCanvas.getWidget().paintChildCanvas()
-        lx,ly,lw,lh = (0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-        for o in TTkHelper._overlay:
-            child =o._widget
-            cx,cy,cw,ch = child.geometry()
-            TTkHelper._rootCanvas.paintCanvas(
-                                child.getCanvas(),
-                                (cx,  cy,  cw, ch),
-                                (0,0,cw,ch),
-                                (lx, ly, lw, lh))
-
     if pushToTerminal:
         if TTkHelper._cursor:
             lbt.Term.hideCursor()
@@ -833,8 +975,8 @@ def paintAll():
             lbt.Term.showCursor(TTkHelper._cursorType)</code></pre>
 </details>
 </dd>
-<dt id="TermTk.TTkCore.helper.TTkHelper.registerRootCanvas"><code class="name flex">
-<span>def <span class="ident">registerRootCanvas</span></span>(<span>canvas)</span>
+<dt id="TermTk.TTkCore.helper.TTkHelper.registerRootWidget"><code class="name flex">
+<span>def <span class="ident">registerRootWidget</span></span>(<span>widget)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -843,8 +985,9 @@ def paintAll():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def registerRootCanvas(canvas):
-    TTkHelper._rootCanvas = canvas
+def registerRootWidget(widget):
+    TTkHelper._rootCanvas = widget.getCanvas()
+    TTkHelper._rootWidget = widget
     TTkHelper._rootCanvas.enableDoubleBuffer()
     TTkHelper._updateBuffer = []
     TTkHelper._updateWidget = []</code></pre>
@@ -861,7 +1004,60 @@ def registerRootCanvas(canvas):
 </summary>
 <pre><code class="python">@staticmethod
 def removeOverlay():
-    TTkHelper._overlay = []</code></pre>
+    for widget in TTkHelper._overlay:
+        TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
+    TTkHelper._overlay = []
+    if TTkHelper._focusWidget:
+        TTkHelper._focusWidget.clearFocus()
+    if TTkHelper._savedFocus:
+        bk = TTkHelper._savedFocus
+        TTkHelper._savedFocus = None
+        bk.setFocus()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkCore.helper.TTkHelper.removeSingleOverlay"><code class="name flex">
+<span>def <span class="ident">removeSingleOverlay</span></span>(<span>widget)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def removeSingleOverlay(widget):
+    if len(TTkHelper._overlay) &lt;= 1:
+        return TTkHelper.removeOverlay()
+    rootWidget = TTkHelper.rootOverlay(widget)
+    rootWidget
+    for o in TTkHelper._overlay:
+        if o._widget == rootWidget:
+            TTkHelper._overlay.remove(o)
+    TTkHelper._rootWidget.rootLayout().removeWidget(rootWidget)
+    TTkHelper._overlay[-1]._widget.setFocus()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkCore.helper.TTkHelper.rootOverlay"><code class="name flex">
+<span>def <span class="ident">rootOverlay</span></span>(<span>widget)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def rootOverlay(widget):
+    if widget is None:
+        return None
+    if not TTkHelper._overlay:
+        return None
+    overlayWidgets = [o._widget for o in TTkHelper._overlay]
+    while widget is not None:
+        if widget in overlayWidgets:
+            return widget
+        widget = widget.parentWidget()
+    return None</code></pre>
 </details>
 </dd>
 <dt id="TermTk.TTkCore.helper.TTkHelper.setFocus"><code class="name flex">
@@ -917,6 +1113,71 @@ def widgetDepth(widget) -&gt; int:
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="TermTk.TTkCore.helper.TTkHelper.nextFocus"><code class="name flex">
+<span>def <span class="ident">nextFocus</span></span>(<span>widget)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nextFocus(widget):
+    rootWidget = TTkHelper.rootOverlay(widget)
+    if not rootWidget:
+        rootWidget =  TTkHelper._rootWidget
+    if widget == rootWidget:
+        widget = None
+    first = None
+    for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+        if not first and w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+            first = w
+        # TTkLog.debug(f&#34;{w._name} {widget}&#34;)
+        if widget:
+            if w == widget:
+                widget=None
+            continue
+        if w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+            w.setFocus()
+            w.update()
+            return
+    if first:
+        first.setFocus()
+        first.update()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkCore.helper.TTkHelper.prevFocus"><code class="name flex">
+<span>def <span class="ident">prevFocus</span></span>(<span>widget)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prevFocus(widget):
+    rootWidget = TTkHelper.rootOverlay(widget)
+    if not rootWidget:
+        rootWidget = TTkHelper._rootWidget
+    if widget == rootWidget:
+        widget = None
+    prev = None
+    for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+        # TTkLog.debug(f&#34;{w._name} {widget}&#34;)
+        if w == widget:
+            widget=None
+            if prev:
+                break
+        if w.focusPolicy() &amp; TTkK.TabFocus == TTkK.TabFocus:
+            prev = w
+    if prev:
+        prev.setFocus()
+        prev.update()</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -952,10 +1213,14 @@ def widgetDepth(widget) -&gt; int:
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.isOverlay" href="#TermTk.TTkCore.helper.TTkHelper.isOverlay">isOverlay</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.isParent" href="#TermTk.TTkCore.helper.TTkHelper.isParent">isParent</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.moveCursor" href="#TermTk.TTkCore.helper.TTkHelper.moveCursor">moveCursor</a></code></li>
+<li><code><a title="TermTk.TTkCore.helper.TTkHelper.nextFocus" href="#TermTk.TTkCore.helper.TTkHelper.nextFocus">nextFocus</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.overlay" href="#TermTk.TTkCore.helper.TTkHelper.overlay">overlay</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.paintAll" href="#TermTk.TTkCore.helper.TTkHelper.paintAll">paintAll</a></code></li>
-<li><code><a title="TermTk.TTkCore.helper.TTkHelper.registerRootCanvas" href="#TermTk.TTkCore.helper.TTkHelper.registerRootCanvas">registerRootCanvas</a></code></li>
+<li><code><a title="TermTk.TTkCore.helper.TTkHelper.prevFocus" href="#TermTk.TTkCore.helper.TTkHelper.prevFocus">prevFocus</a></code></li>
+<li><code><a title="TermTk.TTkCore.helper.TTkHelper.registerRootWidget" href="#TermTk.TTkCore.helper.TTkHelper.registerRootWidget">registerRootWidget</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.removeOverlay" href="#TermTk.TTkCore.helper.TTkHelper.removeOverlay">removeOverlay</a></code></li>
+<li><code><a title="TermTk.TTkCore.helper.TTkHelper.removeSingleOverlay" href="#TermTk.TTkCore.helper.TTkHelper.removeSingleOverlay">removeSingleOverlay</a></code></li>
+<li><code><a title="TermTk.TTkCore.helper.TTkHelper.rootOverlay" href="#TermTk.TTkCore.helper.TTkHelper.rootOverlay">rootOverlay</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.setFocus" href="#TermTk.TTkCore.helper.TTkHelper.setFocus">setFocus</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.showCursor" href="#TermTk.TTkCore.helper.TTkHelper.showCursor">showCursor</a></code></li>
 <li><code><a title="TermTk.TTkCore.helper.TTkHelper.widgetDepth" href="#TermTk.TTkCore.helper.TTkHelper.widgetDepth">widgetDepth</a></code></li>

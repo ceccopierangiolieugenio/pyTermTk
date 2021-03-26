@@ -87,7 +87,7 @@ class TTkRadioButton(TTkWidget):
             self._canvas.drawText(pos=(0,0), color=borderColor ,text=&#34;( )&#34;)
             self._canvas.drawText(pos=(1,0), color=color ,text=&#34; &#34;)
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         # Uncheck the radio already checked;
         for radio in TTkRadioButton._radioLists[self._name]:
             if self != radio != None:
@@ -96,7 +96,17 @@ class TTkRadioButton(TTkWidget):
                     radio.update()
         self._checked = True
         self.update()
-        return True</code></pre>
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
+        return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==&#34; &#34; ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False</code></pre>
 </details>
 </section>
 <section>
@@ -208,7 +218,7 @@ class TTkRadioButton(TTkWidget):
             self._canvas.drawText(pos=(0,0), color=borderColor ,text=&#34;( )&#34;)
             self._canvas.drawText(pos=(1,0), color=color ,text=&#34; &#34;)
 
-    def mousePressEvent(self, evt):
+    def _pressEvent(self):
         # Uncheck the radio already checked;
         for radio in TTkRadioButton._radioLists[self._name]:
             if self != radio != None:
@@ -217,7 +227,17 @@ class TTkRadioButton(TTkWidget):
                     radio.update()
         self._checked = True
         self.update()
-        return True</code></pre>
+
+    def mousePressEvent(self, evt):
+        self._pressEvent()
+        return True
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.Character and evt.key==&#34; &#34; ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._pressEvent()
+            return True
+        return False</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

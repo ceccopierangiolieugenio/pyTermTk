@@ -59,25 +59,73 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-class _TTkListWidgetText(TTkLabel):
-    __slots__ = (&#39;selected&#39;, &#39;_selected&#39;)
+class TTkAbstractListItem(TTkLabel):
+    __slots__ = (&#39;_pressed&#39;, &#39;_selected&#39;, &#39;_highlighted&#39;, &#39;listItemClicked&#39;)
     def __init__(self, *args, **kwargs):
         TTkLabel.__init__(self, *args, **kwargs)
-        self._name = kwargs.get(&#39;name&#39; , &#39;_TTkListWidgetText&#39; )
+        self._name = kwargs.get(&#39;name&#39; , &#39;TTkAbstractListItem&#39; )
         # Define Signals
-        self.selected = pyTTkSignal(_TTkListWidgetText)
+        self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
         self._selected = False
+        self._pressed = False
+        self._highlighted = False
+        self.setFocusPolicy(TTkK.ClickFocus)
 
-    def mouseReleaseEvent(self, evt):
-        self.selected.emit(self)
+    def _updateColor(self):
+        if self._highlighted:
+            if self._selected:
+                self.color = TTkCfg.theme.listColorHighlighted + TTkColor.UNDERLINE
+            else:
+                self.color = TTkCfg.theme.listColorHighlighted
+        elif self._selected:
+            self.color = TTkCfg.theme.listColorSelected
+        else:
+            self.color = TTkCfg.theme.listColor
+
+    def keyEvent(self, evt):
+        return self.parentWidget().keyEvent(evt)
+
+    def mousePressEvent(self, evt):
+        self._pressed = True
+        self.highlighted = True
+        self.update()
         return True
 
+    def mouseReleaseEvent(self, evt):
+        self._pressed = False
+        self.listItemClicked.emit(self)
+        self.update()
+        return True
+
+    @property
+    def selected(self):
+        return self._selected
+
+    @selected.setter
+    def selected(self, selected):
+        if self._selected != selected:
+            self._selected = selected
+            self._updateColor()
+
+    @property
+    def highlighted(self):
+        return self._highlighted
+
+    @highlighted.setter
+    def highlighted(self, highlighted):
+        if self._highlighted != highlighted:
+            self._highlighted = highlighted
+            self._updateColor()
+
+
 class TTkListWidget(TTkAbstractScrollView):
-    __slots__ = (&#39;itemClicked&#39;, &#39;textClicked&#39;, &#39;_color&#39;, &#39;_selectedColor&#39;, &#39;_selectedItems&#39;, &#39;_selectionMode&#39;)
+    __slots__ = (&#39;itemClicked&#39;, &#39;textClicked&#39;, &#39;_color&#39;, &#39;_selectedColor&#39;, &#39;_selectedItems&#39;, &#39;_selectionMode&#39;, &#39;_highlighted&#39;, &#39;_items&#39;)
     def __init__(self, *args, **kwargs):
         # Default Class Specific Values
         self._selectionMode = kwargs.get(&#34;selectionMode&#34;, TTkK.SingleSelection)
         self._selectedItems = []
+        self._items = []
+        self._highlighted = None
         self._color = TTkCfg.theme.listColor
         self._selectedColor = TTkCfg.theme.listColorSelected
         # Signals
@@ -87,30 +135,34 @@ class TTkListWidget(TTkAbstractScrollView):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get(&#39;name&#39; , &#39;TTkListWidget&#39; )
         self.viewChanged.connect(self._viewChangedHandler)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot()
     def _viewChangedHandler(self):
         x,y = self.getViewOffsets()
         self.layout().groupMoveTo(-x,-y)
 
-    @pyTTkSlot(_TTkListWidgetText)
+    @pyTTkSlot(TTkAbstractListItem)
     def _labelSelectedHandler(self, label):
         if self._selectionMode == TTkK.SingleSelection:
-            for i in self._selectedItems:
-                i._selected = False
-                i.color = TTkCfg.theme.listColor
-            label._selected = True
+            for item in self._selectedItems:
+                item.selected = False
+                item.highlighted = False
+            self._selectedItems = [label]
+            label.selected = True
         elif self._selectionMode == TTkK.MultiSelection:
-            label._selected = not label._selected
-        if label._selected:
-            self._selectedItems.append(label)
-        else:
-            self._selectedItems.remove(label)
-        if label._selected:
-            label.color = TTkCfg.theme.listColorSelected
-        else:
-            label.color = TTkCfg.theme.listColor
-
+            for item in self._selectedItems:
+                item.highlighted = False
+            label.selected = not label.selected
+            if label.selected:
+                self._selectedItems.append(label)
+            else:
+                self._selectedItems.remove(label)
+        if self._highlighted:
+            self._highlighted.highlighted = False
+        label.highlighted = True
+        self._highlighted = label
+        self.setFocus()
         self.textClicked.emit(label.text)
 
     def setSelectionMode(self, mode):
@@ -138,9 +190,10 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def addItem(self, item):
         if isinstance(item, str):
-            label = _TTkListWidgetText(text=item, width=max(len(item),self.width()))
-            label.selected.connect(self._labelSelectedHandler)
+            label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
+            label.listItemClicked.connect(self._labelSelectedHandler)
             return self.addItem(label)
+        self._items.append(item)
         _,y,_,h = self.layout().fullWidgetAreaGeometry()
         self.addWidget(item)
         item.move(0,y+h)
@@ -149,7 +202,66 @@ class TTkListWidget(TTkAbstractScrollView):
         for item in self.layout().children():
             x,y,_,h = item.geometry()
             item.setGeometry(x,y,max(w-1,fw),h)
-        self.viewChanged.emit()</code></pre>
+        self.viewChanged.emit()
+
+    def _moveToHighlighted(self):
+        index = self._items.index(self._highlighted)
+        h = self.height()
+        offx,offy = self.getViewOffsets()
+        if index &gt;= h+offy-1:
+            TTkLog.debug(f&#34;{index} {h} {offy}&#34;)
+            self.viewMoveTo(offx, index-h+1)
+        elif index &lt;= offy:
+            self.viewMoveTo(offx, index)
+
+    def keyEvent(self, evt):
+        if not self._highlighted: return False
+        if ( evt.type == TTkK.Character and evt.key==&#34; &#34; ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            if self._highlighted:
+                # TTkLog.debug(self._highlighted)
+                self._highlighted.listItemClicked.emit(self._highlighted)
+            return True
+        elif evt.type == TTkK.SpecialKey:
+            if evt.key == TTkK.Key_Tab:
+                return False
+            index = self._items.index(self._highlighted)
+            offx,offy = self.getViewOffsets()
+            h = self.height()
+            if evt.key == TTkK.Key_Up:
+                index = max(0, index-1)
+            elif evt.key == TTkK.Key_Down:
+                index = min(len(self._items)-1, index+1)
+            elif evt.key == TTkK.Key_PageUp:
+                index = max(0, index-h)
+            elif evt.key == TTkK.Key_PageDown:
+                index = min(len(self._items)-1, index+h)
+            elif evt.key == TTkK.Key_Right:
+                self.viewMoveTo(offx+1, offy)
+            elif evt.key == TTkK.Key_Left:
+                self.viewMoveTo(offx-1, offy)
+            elif evt.key == TTkK.Key_Home:
+                self.viewMoveTo(0, offy)
+            elif evt.key == TTkK.Key_End:
+                self.viewMoveTo(0x10000, offy)
+
+            self._highlighted.highlighted = False
+            self._highlighted = self._items[index]
+            self._highlighted.highlighted = True
+            self._moveToHighlighted()
+            return True
+        return False
+
+    def focusInEvent(self):
+        if not self._items: return
+        if not self._highlighted:
+            self._highlighted = self._items[0]
+        self._highlighted.highlighted=True
+        self._moveToHighlighted()
+
+    def focusOutEvent(self):
+        if self._highlighted:
+            self._highlighted.highlighted=False</code></pre>
 </details>
 </section>
 <section>
@@ -161,6 +273,209 @@ class TTkListWidget(TTkAbstractScrollView):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem"><code class="flex name class">
+<span>class <span class="ident">TTkAbstractListItem</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><h3 id="widget-layout-sizes">Widget Layout sizes:</h3>
+<pre><code>Terminal window
+┌─────────────────────────────────────────┐
+│                                         │
+│    TTkWidget     width                  │
+│ (x,y)┌─────────────────────────┐        │
+│      │      padt               │        │
+│      │    ┌───────────────┐    │ height │
+│      │padl│ Layout/childs │padr│        │
+│      │    └───────────────┘    │        │
+│      │      padl               │        │
+│      └─────────────────────────┘        │
+└─────────────────────────────────────────┘
+</code></pre>
+<p>TTkWidget constructor</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>the name of the widget</dd>
+<dt><strong><code>parent</code></strong> :&ensp;<code>[<a title="TermTk.TTkWidgets.widget.TTkWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a>]</code>, optional</dt>
+<dd>the parent widget</dd>
+<dt><strong><code>x</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the x position</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the y position</dd>
+<dt><strong><code>pos</code></strong> :&ensp;<code>[int,int]</code>, optional, default=<code>[0,0]</code></dt>
+<dd>the [x,y] position (override the previously defined x, y)</dd>
+<dt><strong><code>width</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the width of the widget</dd>
+<dt><strong><code>height</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the height of the widget</dd>
+<dt><strong><code>size</code></strong> :&ensp;<code>[int,int]</code>, optional, default=<code>[0,0]</code></dt>
+<dd>the size [width, height] of the widget (override the previously defined sizes)</dd>
+<dt><strong><code>padding</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the padding (top, bottom, left, right) of the widget</dd>
+<dt><strong><code>paddingTop</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Top padding, override Top padding if already defined</dd>
+<dt><strong><code>paddingBottom</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Bottom padding, override Bottom padding if already defined</dd>
+<dt><strong><code>paddingLeft</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Left padding, override Left padding if already defined</dd>
+<dt><strong><code>paddingRight</code></strong> :&ensp;<code>int</code>, optional, default=<code>padding</code></dt>
+<dd>the Right padding, override Right padding if already defined</dd>
+<dt><strong><code>maxWidth</code></strong> :&ensp;<code>int</code>, optional, default=<code>0x10000</code></dt>
+<dd>the maxWidth of the widget</dd>
+<dt><strong><code>maxHeight</code></strong> :&ensp;<code>int</code>, optional, default=<code>0x10000</code></dt>
+<dd>the maxHeight of the widget</dd>
+<dt><strong><code>maxSize</code></strong> :&ensp;<code>[int,int]</code>, optional</dt>
+<dd>the max [width,height] of the widget</dd>
+<dt><strong><code>minWidth</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the minWidth of the widget</dd>
+<dt><strong><code>minHeight</code></strong> :&ensp;<code>int</code>, optional, default=<code>0</code></dt>
+<dd>the minHeight of the widget</dd>
+<dt><strong><code>minSize</code></strong> :&ensp;<code>[int,int]</code>, optional</dt>
+<dd>the minSize [width,height] of the widget</dd>
+<dt><strong><code>visible</code></strong> :&ensp;<code>bool</code>, optional, default=<code>True</code></dt>
+<dd>the visibility</dd>
+<dt><strong><code>layout</code></strong> :&ensp;<code>[<a title="TermTk.TTkLayouts" href="../TTkLayouts/index.html">TermTk.TTkLayouts</a>]</code>, optional, default=<code>[<a title="TermTk.TTkLayouts.layout.TTkLayout" href="../TTkLayouts/layout.html#TermTk.TTkLayouts.layout.TTkLayout">TTkLayout</a>]</code></dt>
+<dd>the layout of this widget</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TTkAbstractListItem(TTkLabel):
+    __slots__ = (&#39;_pressed&#39;, &#39;_selected&#39;, &#39;_highlighted&#39;, &#39;listItemClicked&#39;)
+    def __init__(self, *args, **kwargs):
+        TTkLabel.__init__(self, *args, **kwargs)
+        self._name = kwargs.get(&#39;name&#39; , &#39;TTkAbstractListItem&#39; )
+        # Define Signals
+        self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
+        self._selected = False
+        self._pressed = False
+        self._highlighted = False
+        self.setFocusPolicy(TTkK.ClickFocus)
+
+    def _updateColor(self):
+        if self._highlighted:
+            if self._selected:
+                self.color = TTkCfg.theme.listColorHighlighted + TTkColor.UNDERLINE
+            else:
+                self.color = TTkCfg.theme.listColorHighlighted
+        elif self._selected:
+            self.color = TTkCfg.theme.listColorSelected
+        else:
+            self.color = TTkCfg.theme.listColor
+
+    def keyEvent(self, evt):
+        return self.parentWidget().keyEvent(evt)
+
+    def mousePressEvent(self, evt):
+        self._pressed = True
+        self.highlighted = True
+        self.update()
+        return True
+
+    def mouseReleaseEvent(self, evt):
+        self._pressed = False
+        self.listItemClicked.emit(self)
+        self.update()
+        return True
+
+    @property
+    def selected(self):
+        return self._selected
+
+    @selected.setter
+    def selected(self, selected):
+        if self._selected != selected:
+            self._selected = selected
+            self._updateColor()
+
+    @property
+    def highlighted(self):
+        return self._highlighted
+
+    @highlighted.setter
+    def highlighted(self, highlighted):
+        if self._highlighted != highlighted:
+            self._highlighted = highlighted
+            self._updateColor()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="TermTk.TTkWidgets.label.TTkLabel" href="label.html#TermTk.TTkWidgets.label.TTkLabel">TTkLabel</a></li>
+<li><a title="TermTk.TTkWidgets.widget.TTkWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a></li>
+<li><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents">TMouseEvents</a></li>
+<li><a title="TermTk.TTkTemplates.keyevents.TKeyEvents" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents">TKeyEvents</a></li>
+<li><a title="TermTk.TTkTemplates.color.TColor" href="../TTkTemplates/color.html#TermTk.TTkTemplates.color.TColor">TColor</a></li>
+<li><a title="TermTk.TTkTemplates.text.TText" href="../TTkTemplates/text.html#TermTk.TTkTemplates.text.TText">TText</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>TermTk.TTkWidgets.menubar._TTkMenuButton</li>
+<li>TermTk.TTkWidgets.menubar._TTkMenuSpacer</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.highlighted"><code class="name">var <span class="ident">highlighted</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def highlighted(self):
+    return self._highlighted</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.listItemClicked"><code class="name">var <span class="ident">listItemClicked</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.selected"><code class="name">var <span class="ident">selected</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def selected(self):
+    return self._selected</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="TermTk.TTkWidgets.label.TTkLabel" href="label.html#TermTk.TTkWidgets.label.TTkLabel">TTkLabel</a></b></code>:
+<ul class="hlist">
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.addWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.addWidget">addWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.enterEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.enterEvent">enterEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.getPadding" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.getPadding">getPadding</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.keyEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyEvent">keyEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.keyPressEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyPressEvent">keyPressEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.keyReleaseEvent" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents.keyReleaseEvent">keyReleaseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.leaveEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.leaveEvent">leaveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.mouseDoubleClickEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDoubleClickEvent">mouseDoubleClickEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.mouseDragEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseDragEvent">mouseDragEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.mouseEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.mouseEvent">mouseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.mouseMoveEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseMoveEvent">mouseMoveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.mousePressEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mousePressEvent">mousePressEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.mouseReleaseEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.mouseReleaseEvent">mouseReleaseEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.move" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.move">move</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.moveEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.paintChildCanvas" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">paintChildCanvas</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.paintEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">paintEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.removeWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.resize" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resize">resize</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.resizeEvent" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">resizeEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.setGeometry" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.setGeometry">setGeometry</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.setPadding" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget.setPadding">setPadding</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.label.TTkLabel.wheelEvent" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents.wheelEvent">wheelEvent</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="TermTk.TTkWidgets.listwidget.TTkListWidget"><code class="flex name class">
 <span>class <span class="ident">TTkListWidget</span></span>
 <span>(</span><span>*args, **kwargs)</span>
@@ -231,11 +546,13 @@ class TTkListWidget(TTkAbstractScrollView):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TTkListWidget(TTkAbstractScrollView):
-    __slots__ = (&#39;itemClicked&#39;, &#39;textClicked&#39;, &#39;_color&#39;, &#39;_selectedColor&#39;, &#39;_selectedItems&#39;, &#39;_selectionMode&#39;)
+    __slots__ = (&#39;itemClicked&#39;, &#39;textClicked&#39;, &#39;_color&#39;, &#39;_selectedColor&#39;, &#39;_selectedItems&#39;, &#39;_selectionMode&#39;, &#39;_highlighted&#39;, &#39;_items&#39;)
     def __init__(self, *args, **kwargs):
         # Default Class Specific Values
         self._selectionMode = kwargs.get(&#34;selectionMode&#34;, TTkK.SingleSelection)
         self._selectedItems = []
+        self._items = []
+        self._highlighted = None
         self._color = TTkCfg.theme.listColor
         self._selectedColor = TTkCfg.theme.listColorSelected
         # Signals
@@ -245,30 +562,34 @@ class TTkListWidget(TTkAbstractScrollView):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get(&#39;name&#39; , &#39;TTkListWidget&#39; )
         self.viewChanged.connect(self._viewChangedHandler)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot()
     def _viewChangedHandler(self):
         x,y = self.getViewOffsets()
         self.layout().groupMoveTo(-x,-y)
 
-    @pyTTkSlot(_TTkListWidgetText)
+    @pyTTkSlot(TTkAbstractListItem)
     def _labelSelectedHandler(self, label):
         if self._selectionMode == TTkK.SingleSelection:
-            for i in self._selectedItems:
-                i._selected = False
-                i.color = TTkCfg.theme.listColor
-            label._selected = True
+            for item in self._selectedItems:
+                item.selected = False
+                item.highlighted = False
+            self._selectedItems = [label]
+            label.selected = True
         elif self._selectionMode == TTkK.MultiSelection:
-            label._selected = not label._selected
-        if label._selected:
-            self._selectedItems.append(label)
-        else:
-            self._selectedItems.remove(label)
-        if label._selected:
-            label.color = TTkCfg.theme.listColorSelected
-        else:
-            label.color = TTkCfg.theme.listColor
-
+            for item in self._selectedItems:
+                item.highlighted = False
+            label.selected = not label.selected
+            if label.selected:
+                self._selectedItems.append(label)
+            else:
+                self._selectedItems.remove(label)
+        if self._highlighted:
+            self._highlighted.highlighted = False
+        label.highlighted = True
+        self._highlighted = label
+        self.setFocus()
         self.textClicked.emit(label.text)
 
     def setSelectionMode(self, mode):
@@ -296,9 +617,10 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def addItem(self, item):
         if isinstance(item, str):
-            label = _TTkListWidgetText(text=item, width=max(len(item),self.width()))
-            label.selected.connect(self._labelSelectedHandler)
+            label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
+            label.listItemClicked.connect(self._labelSelectedHandler)
             return self.addItem(label)
+        self._items.append(item)
         _,y,_,h = self.layout().fullWidgetAreaGeometry()
         self.addWidget(item)
         item.move(0,y+h)
@@ -307,7 +629,66 @@ class TTkListWidget(TTkAbstractScrollView):
         for item in self.layout().children():
             x,y,_,h = item.geometry()
             item.setGeometry(x,y,max(w-1,fw),h)
-        self.viewChanged.emit()</code></pre>
+        self.viewChanged.emit()
+
+    def _moveToHighlighted(self):
+        index = self._items.index(self._highlighted)
+        h = self.height()
+        offx,offy = self.getViewOffsets()
+        if index &gt;= h+offy-1:
+            TTkLog.debug(f&#34;{index} {h} {offy}&#34;)
+            self.viewMoveTo(offx, index-h+1)
+        elif index &lt;= offy:
+            self.viewMoveTo(offx, index)
+
+    def keyEvent(self, evt):
+        if not self._highlighted: return False
+        if ( evt.type == TTkK.Character and evt.key==&#34; &#34; ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            if self._highlighted:
+                # TTkLog.debug(self._highlighted)
+                self._highlighted.listItemClicked.emit(self._highlighted)
+            return True
+        elif evt.type == TTkK.SpecialKey:
+            if evt.key == TTkK.Key_Tab:
+                return False
+            index = self._items.index(self._highlighted)
+            offx,offy = self.getViewOffsets()
+            h = self.height()
+            if evt.key == TTkK.Key_Up:
+                index = max(0, index-1)
+            elif evt.key == TTkK.Key_Down:
+                index = min(len(self._items)-1, index+1)
+            elif evt.key == TTkK.Key_PageUp:
+                index = max(0, index-h)
+            elif evt.key == TTkK.Key_PageDown:
+                index = min(len(self._items)-1, index+h)
+            elif evt.key == TTkK.Key_Right:
+                self.viewMoveTo(offx+1, offy)
+            elif evt.key == TTkK.Key_Left:
+                self.viewMoveTo(offx-1, offy)
+            elif evt.key == TTkK.Key_Home:
+                self.viewMoveTo(0, offy)
+            elif evt.key == TTkK.Key_End:
+                self.viewMoveTo(0x10000, offy)
+
+            self._highlighted.highlighted = False
+            self._highlighted = self._items[index]
+            self._highlighted.highlighted = True
+            self._moveToHighlighted()
+            return True
+        return False
+
+    def focusInEvent(self):
+        if not self._items: return
+        if not self._highlighted:
+            self._highlighted = self._items[0]
+        self._highlighted.highlighted=True
+        self._moveToHighlighted()
+
+    def focusOutEvent(self):
+        if self._highlighted:
+            self._highlighted.highlighted=False</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -315,6 +696,10 @@ class TTkListWidget(TTkAbstractScrollView):
 <li><a title="TermTk.TTkWidgets.widget.TTkWidget" href="widget.html#TermTk.TTkWidgets.widget.TTkWidget">TTkWidget</a></li>
 <li><a title="TermTk.TTkTemplates.mouseevents.TMouseEvents" href="../TTkTemplates/mouseevents.html#TermTk.TTkTemplates.mouseevents.TMouseEvents">TMouseEvents</a></li>
 <li><a title="TermTk.TTkTemplates.keyevents.TKeyEvents" href="../TTkTemplates/keyevents.html#TermTk.TTkTemplates.keyevents.TKeyEvents">TKeyEvents</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>TermTk.TTkWidgets.menubar._TTkMenuListWidget</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
@@ -340,9 +725,10 @@ class TTkListWidget(TTkAbstractScrollView):
 </summary>
 <pre><code class="python">def addItem(self, item):
     if isinstance(item, str):
-        label = _TTkListWidgetText(text=item, width=max(len(item),self.width()))
-        label.selected.connect(self._labelSelectedHandler)
+        label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
+        label.listItemClicked.connect(self._labelSelectedHandler)
         return self.addItem(label)
+    self._items.append(item)
     _,y,_,h = self.layout().fullWidgetAreaGeometry()
     self.addWidget(item)
     item.move(0,y+h)
@@ -352,6 +738,37 @@ class TTkListWidget(TTkAbstractScrollView):
         x,y,_,h = item.geometry()
         item.setGeometry(x,y,max(w-1,fw),h)
     self.viewChanged.emit()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.listwidget.TTkListWidget.focusInEvent"><code class="name flex">
+<span>def <span class="ident">focusInEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusInEvent(self):
+    if not self._items: return
+    if not self._highlighted:
+        self._highlighted = self._items[0]
+    self._highlighted.highlighted=True
+    self._moveToHighlighted()</code></pre>
+</details>
+</dd>
+<dt id="TermTk.TTkWidgets.listwidget.TTkListWidget.focusOutEvent"><code class="name flex">
+<span>def <span class="ident">focusOutEvent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def focusOutEvent(self):
+    if self._highlighted:
+        self._highlighted.highlighted=False</code></pre>
 </details>
 </dd>
 <dt id="TermTk.TTkWidgets.listwidget.TTkListWidget.selectedLabels"><code class="name flex">
@@ -459,9 +876,19 @@ class TTkListWidget(TTkAbstractScrollView):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="TermTk.TTkWidgets.listwidget.TTkAbstractListItem" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem">TTkAbstractListItem</a></code></h4>
+<ul class="">
+<li><code><a title="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.highlighted" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.highlighted">highlighted</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.listItemClicked" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.listItemClicked">listItemClicked</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.selected" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.selected">selected</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget" href="#TermTk.TTkWidgets.listwidget.TTkListWidget">TTkListWidget</a></code></h4>
 <ul class="two-column">
 <li><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget.addItem" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.addItem">addItem</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget.focusInEvent" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.focusInEvent">focusInEvent</a></code></li>
+<li><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget.focusOutEvent" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.focusOutEvent">focusOutEvent</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget.itemClicked" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.itemClicked">itemClicked</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget.selectedLabels" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.selectedLabels">selectedLabels</a></code></li>
 <li><code><a title="TermTk.TTkWidgets.listwidget.TTkListWidget.setSelectionMode" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.setSelectionMode">setSelectionMode</a></code></li>

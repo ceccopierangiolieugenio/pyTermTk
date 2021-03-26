@@ -63,11 +63,12 @@ class TTkList(TTkAbstractScrollArea):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         self._name = kwargs.get(&#39;name&#39; , &#39;TTkList&#39; )
         if &#39;parent&#39; in kwargs: kwargs.pop(&#39;parent&#39;)
-        self._listView = TTkListWidget(*args, **kwargs)
-        self.setFocusPolicy(TTkK.ClickFocus)
+        self._listView = kwargs.get(&#39;listWidget&#39;,TTkListWidget(*args, **kwargs))
         self.setViewport(self._listView)
         self.itemClicked = self._listView.itemClicked
         self.textClicked = self._listView.textClicked
+        # self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
 
     def addItem(self, *args, **kwargs):
         return self._listView.addItem(*args, **kwargs)
@@ -161,11 +162,12 @@ class TTkList(TTkAbstractScrollArea):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         self._name = kwargs.get(&#39;name&#39; , &#39;TTkList&#39; )
         if &#39;parent&#39; in kwargs: kwargs.pop(&#39;parent&#39;)
-        self._listView = TTkListWidget(*args, **kwargs)
-        self.setFocusPolicy(TTkK.ClickFocus)
+        self._listView = kwargs.get(&#39;listWidget&#39;,TTkListWidget(*args, **kwargs))
         self.setViewport(self._listView)
         self.itemClicked = self._listView.itemClicked
         self.textClicked = self._listView.textClicked
+        # self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
 
     def addItem(self, *args, **kwargs):
         return self._listView.addItem(*args, **kwargs)

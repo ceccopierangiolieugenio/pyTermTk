@@ -84,7 +84,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         &#39;_padt&#39;, &#39;_padb&#39;, &#39;_padl&#39;, &#39;_padr&#39;,
         &#39;_maxw&#39;, &#39;_maxh&#39;, &#39;_minw&#39;, &#39;_minh&#39;,
         &#39;_focus&#39;,&#39;_focus_policy&#39;,
-        &#39;_layout&#39;, &#39;_canvas&#39;, &#39;_visible&#39;, &#39;_transparent&#39;)
+        &#39;_layout&#39;, &#39;_canvas&#39;, &#39;_visible&#39;, &#39;_transparent&#39;,
+        &#39;_pendingMouseRelease&#39;)
 
     def __init__(self, *args, **kwargs):
         &#39;&#39;&#39;
@@ -119,6 +120,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         &#39;&#39;&#39;
         self._name = kwargs.get(&#39;name&#39;, &#39;TTkWidget&#39; )
         self._parent = kwargs.get(&#39;parent&#39;, None )
+
+        self._pendingMouseRelease = False
 
         self._x = kwargs.get(&#39;x&#39;, 0 )
         self._y = kwargs.get(&#39;y&#39;, 0 )
@@ -317,7 +320,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                     mouseEvent = True
                     wx,wy,ww,wh = widget.geometry()
                     # Skip the mouse event if outside this widget
-                    if x &gt;= wx and x&lt;wx+ww and y&gt;=wy and y&lt;wy+wh:
+                    if wx &lt;= x &lt; wx+ww and wy &lt;= y &lt; wy+wh:
                         wevt = evt.clone(pos=(x-wx, y-wy))
                 if mouseEvent:
                     if wevt is not None:
@@ -362,6 +365,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if evt.evt == TTkK.Release:
             #if self.hasFocus():
             #    self.clearFocus()
+            self._pendingMouseRelease = False
             if self.mouseReleaseEvent(evt):
                 return True
 
@@ -371,6 +375,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.raiseWidget()
             if self.mousePressEvent(evt):
                 # TTkLog.debug(f&#34;Click {self._name}&#34;)
+                self._pendingMouseRelease = True
                 return True
 
         if evt.key == TTkK.Wheel:
@@ -571,7 +576,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.layoutUpdated()
 
     def setFocus(self):
+        if self._focus: return
+        TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
+        if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
             tmp.focusOutEvent()
@@ -583,6 +591,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self.focusInEvent()
 
     def clearFocus(self):
+        if not self._focus: return
         TTkHelper.clearFocus()
         self._focus = False
         self.focusOutEvent()
@@ -703,7 +712,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         &#39;_padt&#39;, &#39;_padb&#39;, &#39;_padl&#39;, &#39;_padr&#39;,
         &#39;_maxw&#39;, &#39;_maxh&#39;, &#39;_minw&#39;, &#39;_minh&#39;,
         &#39;_focus&#39;,&#39;_focus_policy&#39;,
-        &#39;_layout&#39;, &#39;_canvas&#39;, &#39;_visible&#39;, &#39;_transparent&#39;)
+        &#39;_layout&#39;, &#39;_canvas&#39;, &#39;_visible&#39;, &#39;_transparent&#39;,
+        &#39;_pendingMouseRelease&#39;)
 
     def __init__(self, *args, **kwargs):
         &#39;&#39;&#39;
@@ -738,6 +748,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         &#39;&#39;&#39;
         self._name = kwargs.get(&#39;name&#39;, &#39;TTkWidget&#39; )
         self._parent = kwargs.get(&#39;parent&#39;, None )
+
+        self._pendingMouseRelease = False
 
         self._x = kwargs.get(&#39;x&#39;, 0 )
         self._y = kwargs.get(&#39;y&#39;, 0 )
@@ -936,7 +948,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                     mouseEvent = True
                     wx,wy,ww,wh = widget.geometry()
                     # Skip the mouse event if outside this widget
-                    if x &gt;= wx and x&lt;wx+ww and y&gt;=wy and y&lt;wy+wh:
+                    if wx &lt;= x &lt; wx+ww and wy &lt;= y &lt; wy+wh:
                         wevt = evt.clone(pos=(x-wx, y-wy))
                 if mouseEvent:
                     if wevt is not None:
@@ -981,6 +993,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if evt.evt == TTkK.Release:
             #if self.hasFocus():
             #    self.clearFocus()
+            self._pendingMouseRelease = False
             if self.mouseReleaseEvent(evt):
                 return True
 
@@ -990,6 +1003,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.raiseWidget()
             if self.mousePressEvent(evt):
                 # TTkLog.debug(f&#34;Click {self._name}&#34;)
+                self._pendingMouseRelease = True
                 return True
 
         if evt.key == TTkK.Wheel:
@@ -1190,7 +1204,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.layoutUpdated()
 
     def setFocus(self):
+        if self._focus: return
+        TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
+        if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
             tmp.focusOutEvent()
@@ -1202,6 +1219,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self.focusInEvent()
 
     def clearFocus(self):
+        if not self._focus: return
         TTkHelper.clearFocus()
         self._focus = False
         self.focusOutEvent()
@@ -1242,10 +1260,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 <li><a title="TermTk.TTkWidgets.graph.TTkGraph" href="graph.html#TermTk.TTkWidgets.graph.TTkGraph">TTkGraph</a></li>
 <li><a title="TermTk.TTkWidgets.label.TTkLabel" href="label.html#TermTk.TTkWidgets.label.TTkLabel">TTkLabel</a></li>
 <li><a title="TermTk.TTkWidgets.lineedit.TTkLineEdit" href="lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit">TTkLineEdit</a></li>
-<li>TermTk.TTkWidgets.menubar._TTkMenuSpacer</li>
 <li><a title="TermTk.TTkWidgets.radiobutton.TTkRadioButton" href="radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton">TTkRadioButton</a></li>
 <li><a title="TermTk.TTkWidgets.scrollbar.TTkScrollBar" href="scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar">TTkScrollBar</a></li>
 <li><a title="TermTk.TTkWidgets.spacer.TTkSpacer" href="spacer.html#TermTk.TTkWidgets.spacer.TTkSpacer">TTkSpacer</a></li>
+<li><a title="TermTk.TTkWidgets.spinbox.TTkSpinBox" href="spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox">TTkSpinBox</a></li>
 <li>TermTk.TTkWidgets.tableview._TTkTableViewHeader</li>
 <li>TermTk.TTkWidgets.treewidget._TTkDisplayedTreeItem</li>
 </ul>
@@ -1288,6 +1306,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def clearFocus(self):
+    if not self._focus: return
     TTkHelper.clearFocus()
     self._focus = False
     self.focusOutEvent()</code></pre>
@@ -1649,6 +1668,7 @@ def hide(self):
     if evt.evt == TTkK.Release:
         #if self.hasFocus():
         #    self.clearFocus()
+        self._pendingMouseRelease = False
         if self.mouseReleaseEvent(evt):
             return True
 
@@ -1658,6 +1678,7 @@ def hide(self):
             self.raiseWidget()
         if self.mousePressEvent(evt):
             # TTkLog.debug(f&#34;Click {self._name}&#34;)
+            self._pendingMouseRelease = True
             return True
 
     if evt.key == TTkK.Wheel:
@@ -1886,7 +1907,10 @@ ths need to be overridden in the widget.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def setFocus(self):
+    if self._focus: return
+    TTkLog.debug(self._name)
     tmp = TTkHelper.getFocus()
+    if tmp == self: return
     if tmp is not None:
         tmp.clearFocus()
         tmp.focusOutEvent()

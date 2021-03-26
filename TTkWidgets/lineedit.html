@@ -79,18 +79,20 @@ class TTkLineEdit(TTkWidget):
         self._inputType = kwargs.get(&#39;inputType&#39; , TTkK.Input_Text )
         self._text = kwargs.get(&#39;text&#39; , &#39;&#39; )
         if self._inputType &amp; TTkK.Input_Number and\
-           not self._text.isdigit(): self._text = &#34;&#34;
+           not self._text.lstrip(&#39;-&#39;).isdigit(): self._text = &#34;&#34;
         self._offset = 0
         self._cursorPos = 0
         self._replace=False
         self.setMaximumHeight(1)
-        self.setMinimumSize(10,1)
+        self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
+    @pyTTkSlot(str)
     def setText(self, text):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = text
+            self._cursorPos = min(len(text)-1,self._cursorPos)
             self.update()
 
     def text(self):
@@ -130,6 +132,9 @@ class TTkLineEdit(TTkWidget):
     def keyEvent(self, evt):
         w = self.width()
         if evt.type == TTkK.SpecialKey:
+            # Don&#39;t Handle the special tab key
+            if evt.key == TTkK.Key_Tab:
+                return False
             if evt.key == TTkK.Key_Up: pass
             elif evt.key == TTkK.Key_Down: pass
             elif evt.key == TTkK.Key_Left:
@@ -162,9 +167,6 @@ class TTkLineEdit(TTkWidget):
             if evt.key == TTkK.Key_Enter:
                 self.returnPressed.emit()
         else:
-            if self._inputType &amp; TTkK.Input_Number and \
-               not evt.key.isdigit():
-                return
             text = self._text
             pre = text[:self._cursorPos]
             if self._replace:
@@ -173,6 +175,9 @@ class TTkLineEdit(TTkWidget):
                 post = text[self._cursorPos:]
 
             text = pre + evt.key + post
+            if self._inputType &amp; TTkK.Input_Number and \
+               not text.lstrip(&#39;-&#39;).isdigit():
+                return
             self.setText(text)
             self._cursorPos += 1
             # Scroll to the right if reached the edge
@@ -180,6 +185,7 @@ class TTkLineEdit(TTkWidget):
                 self._offset += 1
             self._pushCursor()
             self.textEdited.emit(self._text)
+        return True
 
     def focusInEvent(self):
         self._pushCursor()
@@ -282,18 +288,20 @@ class TTkLineEdit(TTkWidget):
         self._inputType = kwargs.get(&#39;inputType&#39; , TTkK.Input_Text )
         self._text = kwargs.get(&#39;text&#39; , &#39;&#39; )
         if self._inputType &amp; TTkK.Input_Number and\
-           not self._text.isdigit(): self._text = &#34;&#34;
+           not self._text.lstrip(&#39;-&#39;).isdigit(): self._text = &#34;&#34;
         self._offset = 0
         self._cursorPos = 0
         self._replace=False
         self.setMaximumHeight(1)
-        self.setMinimumSize(10,1)
+        self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
+    @pyTTkSlot(str)
     def setText(self, text):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = text
+            self._cursorPos = min(len(text)-1,self._cursorPos)
             self.update()
 
     def text(self):
@@ -333,6 +341,9 @@ class TTkLineEdit(TTkWidget):
     def keyEvent(self, evt):
         w = self.width()
         if evt.type == TTkK.SpecialKey:
+            # Don&#39;t Handle the special tab key
+            if evt.key == TTkK.Key_Tab:
+                return False
             if evt.key == TTkK.Key_Up: pass
             elif evt.key == TTkK.Key_Down: pass
             elif evt.key == TTkK.Key_Left:
@@ -365,9 +376,6 @@ class TTkLineEdit(TTkWidget):
             if evt.key == TTkK.Key_Enter:
                 self.returnPressed.emit()
         else:
-            if self._inputType &amp; TTkK.Input_Number and \
-               not evt.key.isdigit():
-                return
             text = self._text
             pre = text[:self._cursorPos]
             if self._replace:
@@ -376,6 +384,9 @@ class TTkLineEdit(TTkWidget):
                 post = text[self._cursorPos:]
 
             text = pre + evt.key + post
+            if self._inputType &amp; TTkK.Input_Number and \
+               not text.lstrip(&#39;-&#39;).isdigit():
+                return
             self.setText(text)
             self._cursorPos += 1
             # Scroll to the right if reached the edge
@@ -383,6 +394,7 @@ class TTkLineEdit(TTkWidget):
                 self._offset += 1
             self._pushCursor()
             self.textEdited.emit(self._text)
+        return True
 
     def focusInEvent(self):
         self._pushCursor()
@@ -450,10 +462,12 @@ class TTkLineEdit(TTkWidget):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def setText(self, text):
+<pre><code class="python">@pyTTkSlot(str)
+def setText(self, text):
     if text != self._text:
         self.textChanged.emit(text)
         self._text = text
+        self._cursorPos = min(len(text)-1,self._cursorPos)
         self.update()</code></pre>
 </details>
 </dd>
