@@ -120,6 +120,10 @@ class TTk(TTkWidget):
                     nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
                     focusWidget.mouseEvent(nmevt)
                 else:
+                    # Sometimes the release event is not retrieved
+                    if focusWidget and focusWidget._pendingMouseRelease:
+                        focusWidget.mouseEvent(nmevt.clone(evt=TTkK.Release))
+                        focusWidget._pendingMouseRelease = False
                     self.mouseEvent(mevt)
             elif evt is TTkK.KEY_EVENT:
                 keyHandled = False

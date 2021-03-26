@@ -28,6 +28,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.button import TTkButton
+from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 
@@ -45,10 +46,10 @@ class _TTkMenuSpacer(TTkWidget):
         TTkLog.debug("pippo")
         self._canvas.drawText(pos=(0,0), text="-"*self.width())
 
-class _TTkMenuButton(TTkButton):
-    __slot__ = ('_color', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked')
+class _TTkMenuButton(TTkAbstractListItem):
+    __slots__ = ('_color', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked')
     def __init__(self, *args, **kwargs):
-        TTkButton.__init__(self, *args, **kwargs)
+        TTkAbstractListItem.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkMenuButton' )
         # signals
         self.menuButtonClicked = pyTTkSignal(TTkButton)
@@ -66,7 +67,7 @@ class _TTkMenuButton(TTkButton):
         self.resize(txtlen,1)
         self.setMinimumSize(txtlen+2,1)
         self.setMaximumSize(txtlen+2,1)
-        self.clicked.connect(self.menuButtonEvent)
+        self.listItemClicked.connect(self.menuButtonEvent)
 
     def addMenu(self, text):
         button = _TTkMenuButton(text=text, borderColor=self._borderColor, border=False)
@@ -96,8 +97,8 @@ class _TTkMenuButton(TTkButton):
         self.setFocus()
         self.update()
 
-    @pyTTkSlot()
-    def menuButtonEvent(self):
+    @pyTTkSlot(TTkAbstractListItem)
+    def menuButtonEvent(self, listItem=None):
         if not self._menu:
             self.menuButtonClicked.emit(self)
             return

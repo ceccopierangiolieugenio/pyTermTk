@@ -56,7 +56,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         '_padt', '_padb', '_padl', '_padr',
         '_maxw', '_maxh', '_minw', '_minh',
         '_focus','_focus_policy',
-        '_layout', '_canvas', '_visible', '_transparent')
+        '_layout', '_canvas', '_visible', '_transparent',
+        '_pendingMouseRelease')
 
     def __init__(self, *args, **kwargs):
         '''
@@ -91,6 +92,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         '''
         self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
+
+        self._pendingMouseRelease = False
 
         self._x = kwargs.get('x', 0 )
         self._y = kwargs.get('y', 0 )
@@ -334,6 +337,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if evt.evt == TTkK.Release:
             #if self.hasFocus():
             #    self.clearFocus()
+            self._pendingMouseRelease = False
             if self.mouseReleaseEvent(evt):
                 return True
 
@@ -343,6 +347,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.raiseWidget()
             if self.mousePressEvent(evt):
                 # TTkLog.debug(f"Click {self._name}")
+                self._pendingMouseRelease = True
                 return True
 
         if evt.key == TTkK.Wheel:

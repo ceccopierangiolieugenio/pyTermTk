@@ -31,15 +31,17 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-class _TTkListWidgetText(TTkLabel):
-    __slots__ = ('clicked', '_selected', '_highlighted')
+class TTkAbstractListItem(TTkLabel):
+    __slots__ = ('_pressed', '_selected', '_highlighted', 'listItemClicked')
     def __init__(self, *args, **kwargs):
         TTkLabel.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkListWidgetText' )
+        self._name = kwargs.get('name' , 'TTkAbstractListItem' )
         # Define Signals
-        self.clicked = pyTTkSignal(_TTkListWidgetText)
+        self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
         self._selected = False
+        self._pressed = False
         self._highlighted = False
+        self.setFocusPolicy(TTkK.ClickFocus)
 
     def _updateColor(self):
         if self._highlighted:
@@ -52,8 +54,18 @@ class _TTkListWidgetText(TTkLabel):
         else:
             self.color = TTkCfg.theme.listColor
 
+    def keyEvent(self, evt):
+        return self.parentWidget().keyEvent(evt)
+
+    def mousePressEvent(self, evt):
+        self._pressed = True
+        self.highlighted = True
+        return True
+
     def mouseReleaseEvent(self, evt):
-        self.clicked.emit(self)
+        self._pressed = False
+        self.listItemClicked.emit(self)
+        self.update()
         return True
 
     @property
@@ -101,19 +113,25 @@ class TTkListWidget(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().groupMoveTo(-x,-y)
 
-    @pyTTkSlot(_TTkListWidgetText)
+    @pyTTkSlot(TTkAbstractListItem)
     def _labelSelectedHandler(self, label):
         if self._selectionMode == TTkK.SingleSelection:
-            for i in self._selectedItems:
-                i.selected = False
-                i.color = TTkCfg.theme.listColor
+            for item in self._selectedItems:
+                item.selected = False
+                item.highlighted = False
+            self._selectedItems = [label]
             label.selected = True
         elif self._selectionMode == TTkK.MultiSelection:
+            for item in self._selectedItems:
+                item.highlighted = False
             label.selected = not label.selected
-        if label.selected:
-            self._selectedItems.append(label)
-        else:
-            self._selectedItems.remove(label)
+            if label.selected:
+                self._selectedItems.append(label)
+            else:
+                self._selectedItems.remove(label)
+        if self._highlighted:
+            self._highlighted.highlighted = False
+        label.highlighted = True
         self._highlighted = label
         self.setFocus()
         self.textClicked.emit(label.text)
@@ -143,8 +161,8 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def addItem(self, item):
         if isinstance(item, str):
-            label = _TTkListWidgetText(text=item, width=max(len(item),self.width()))
-            label.clicked.connect(self._labelSelectedHandler)
+            label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
+            label.listItemClicked.connect(self._labelSelectedHandler)
             return self.addItem(label)
         self._items.append(item)
         _,y,_,h = self.layout().fullWidgetAreaGeometry()
@@ -172,21 +190,23 @@ class TTkListWidget(TTkAbstractScrollView):
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             if self._highlighted:
-               self._highlighted.clicked.emit(self._highlighted)
+                TTkLog.debug(self._highlighted)
+                self._highlighted.listItemClicked.emit(self._highlighted)
             return True
         elif evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Tab:
                 return False
             index = self._items.index(self._highlighted)
             offx,offy = self.getViewOffsets()
+            h = self.height()
             if evt.key == TTkK.Key_Up:
                 index = max(0, index-1)
             elif evt.key == TTkK.Key_Down:
                 index = min(len(self._items)-1, index+1)
             elif evt.key == TTkK.Key_PageUp:
-                index = 0
+                index = max(0, index-h)
             elif evt.key == TTkK.Key_PageDown:
-                index = len(self._items)-1
+                index = min(len(self._items)-1, index+h)
             elif evt.key == TTkK.Key_Right:
                 self.viewMoveTo(offx+1, offy)
             elif evt.key == TTkK.Key_Left:
