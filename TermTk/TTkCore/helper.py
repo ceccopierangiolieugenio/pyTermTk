@@ -112,7 +112,8 @@ class TTkHelper:
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
-        if not TTkHelper._savedFocus:
+        if not TTkHelper._savedFocus and \
+           not TTkHelper.isOverlay(TTkHelper._focusWidget):
             TTkHelper._savedFocus = TTkHelper._focusWidget
         # Try to keep the overlay widget inside the terminal
         wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )

@@ -49,7 +49,7 @@ def demoMenuBar(root=None):
     frameTop.menubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
 
     window = ttk.TTkWindow(title="Test MenuBar", parent=frameTop,pos=(1,1), size=(60,10), border=True)
-    fileMenu2 = window.menubarTop().addMenu("&File")
+    fileMenu2 = window.menubarTop().addMenu("&Fi&le")
     fileMenu2.addMenu("New File")
     fileMenu2.addMenu("Old File")
     fileMenu2.addSpacer()
@@ -69,7 +69,7 @@ def demoMenuBar(root=None):
     fileMenu2.addSpacer()
     fileMenu2.addMenu("Exit")
 
-    editMenu2 = window.menubarTop().addMenu("&Edit")
+    editMenu2 = window.menubarTop().addMenu("&E&dit")
     editMenu2.addMenu("Undo")
     editMenu2.addMenu("Redo")
     editMenu2.addMenu("Cut")

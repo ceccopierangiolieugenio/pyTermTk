@@ -38,7 +38,7 @@ class _TTkMenuListWidget(TTkListWidget):
     def __init__(self, *args, **kwargs):
         TTkListWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkMenuListWidget' )
-        self._previous = kwargs.get('previous',None)
+        self._previous = kwargs.get('previous',TTkHelper.getFocus())
 
     def keyEvent(self, evt):
         if evt.type == TTkK.SpecialKey:
@@ -49,6 +49,7 @@ class _TTkMenuListWidget(TTkListWidget):
                 return True
             elif evt.key == TTkK.Key_Right:
                 if self._highlighted and \
+                   isinstance(self._highlighted,_TTkMenuButton) and \
                    self._highlighted._menu:
                     self._highlighted.menuButtonEvent()
                 return True
@@ -137,7 +138,7 @@ class _TTkMenuButton(TTkAbstractListItem):
         else:
             frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self._text, titleAlign=TTkK.LEFT_ALIGN)
             pos = (-1, 0)
-        menuListWidget = _TTkMenuListWidget(previous=self)
+        menuListWidget = _TTkMenuListWidget()
         listw = TTkList(parent=frame, listWidget = menuListWidget)
         # listw.textClicked.connect(self._menuCallback)
         # listw.textClicked.connect(self._menuCallback)
