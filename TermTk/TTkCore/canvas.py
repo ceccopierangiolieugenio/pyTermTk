@@ -468,7 +468,7 @@ class TTkCanvas:
             self.drawText(pos=(x+1,y), color=color ,text=text)
             off = 1
         else:
-            self.drawText(pos=(x,y), color=color ,text=text)
+            self.drawText(pos=(x,y), width=width, color=color ,text=text)
             if submenu:
                 self._set(y,x+width-1, mb[5], color)
             off = 0

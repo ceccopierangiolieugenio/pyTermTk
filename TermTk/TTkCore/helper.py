@@ -42,6 +42,7 @@ class TTkHelper:
         def __init__(self,x,y,widget):
             self._widget = widget
             widget.move(x,y)
+    _savedFocus = None
     _overlay = []
 
     class _Shortcut():
@@ -111,6 +112,9 @@ class TTkHelper:
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
+        if not TTkHelper._savedFocus and \
+           not TTkHelper.isOverlay(TTkHelper._focusWidget):
+            TTkHelper._savedFocus = TTkHelper._focusWidget
         # Try to keep the overlay widget inside the terminal
         wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
         wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
@@ -130,6 +134,24 @@ class TTkHelper:
         for widget in TTkHelper._overlay:
             TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
         TTkHelper._overlay = []
+        if TTkHelper._focusWidget:
+            TTkHelper._focusWidget.clearFocus()
+        if TTkHelper._savedFocus:
+            bk = TTkHelper._savedFocus
+            TTkHelper._savedFocus = None
+            bk.setFocus()
+
+    @staticmethod
+    def removeSingleOverlay(widget):
+        if len(TTkHelper._overlay) <= 1:
+            return TTkHelper.removeOverlay()
+        rootWidget = TTkHelper.rootOverlay(widget)
+        rootWidget
+        for o in TTkHelper._overlay:
+            if o._widget == rootWidget:
+                TTkHelper._overlay.remove(o)
+        TTkHelper._rootWidget.rootLayout().removeWidget(rootWidget)
+        TTkHelper._overlay[-1]._widget.setFocus()
 
     @staticmethod
     def paintAll():

@@ -35,7 +35,7 @@ class TTkList(TTkAbstractScrollArea):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkList' )
         if 'parent' in kwargs: kwargs.pop('parent')
-        self._listView = TTkListWidget(*args, **kwargs)
+        self._listView = kwargs.get('listWidget',TTkListWidget(*args, **kwargs))
         self.setViewport(self._listView)
         self.itemClicked = self._listView.itemClicked
         self.textClicked = self._listView.textClicked

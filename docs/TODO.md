@@ -147,6 +147,10 @@
  - [x] Events (Signal/Slots)
  - [ ] Themes
  - [x] Use Spinbox for R G B
+#### Date Picker
+ - [ ] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
 #### File Picker
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
