@@ -548,6 +548,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.layoutUpdated()
 
     def setFocus(self):
+        if self._focus: return
         TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
         if tmp == self: return
@@ -562,6 +563,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self.focusInEvent()
 
     def clearFocus(self):
+        if not self._focus: return
         TTkHelper.clearFocus()
         self._focus = False
         self.focusOutEvent()

@@ -60,6 +60,7 @@ class TTkAbstractListItem(TTkLabel):
     def mousePressEvent(self, evt):
         self._pressed = True
         self.highlighted = True
+        self.update()
         return True
 
     def mouseReleaseEvent(self, evt):
@@ -186,11 +187,11 @@ class TTkListWidget(TTkAbstractScrollView):
             self.viewMoveTo(offx, index)
 
     def keyEvent(self, evt):
-        if not self._highlighted: return
+        if not self._highlighted: return False
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             if self._highlighted:
-                TTkLog.debug(self._highlighted)
+                # TTkLog.debug(self._highlighted)
                 self._highlighted.listItemClicked.emit(self._highlighted)
             return True
         elif evt.type == TTkK.SpecialKey:
