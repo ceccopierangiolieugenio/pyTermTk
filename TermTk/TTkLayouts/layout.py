@@ -34,6 +34,7 @@ class TTkLayoutItem:
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',
         '_row','_col',
+        '_rowspan', '_colspan',
         '_sMax', '_sMaxVal',
         '_sMin', '_sMinVal',
         '_alignment',
@@ -43,6 +44,8 @@ class TTkLayoutItem:
         self._z = kwargs.get('z',0)
         self._row = kwargs.get('row', 0)
         self._col = kwargs.get('col', 0)
+        self._rowspan = kwargs.get('rowspan', 1)
+        self._colspan = kwargs.get('colspan', 1)
         self._layoutItemType = kwargs.get('layoutItemType', TTkK.NONE)
         self._alignment =  kwargs.get('alignment', TTkK.NONE)
         self._w, self._h = 0, 0
@@ -54,12 +57,33 @@ class TTkLayoutItem:
     def minDimension(self,o)-> int: return 0
     def minimumHeight(self) -> int: return 0
     def minimumWidth(self)  -> int: return 0
+    def minimumHeightSpan(self,pos) -> int: return 0
+    def minimumWidthSpan(self,pos)  -> int: return 0
 
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
     def maxDimension(self,o)-> int: return 0x1000
     def maximumHeight(self) -> int: return 0x10000
     def maximumWidth(self)  -> int: return 0x10000
+    def maximumHeightSpan(self,pos) -> int: return 0x10000
+    def maximumWidthSpan(self,pos)  -> int: return 0x10000
+
+    @staticmethod
+    def _calcSpanValue(value, pos, curpos, span):
+        if pos==curpos:
+            return value - (value//span) * (span-1)
+        else:
+            return value//span
+
+    def minimumHeightSpan(self,pos) -> int:
+        return TTkLayoutItem._calcSpanValue(self.minimumHeight(),pos,self._row,self._rowspan)
+    def minimumWidthSpan(self,pos)  -> int:
+        return TTkLayoutItem._calcSpanValue(self.minimumWidth(), pos,self._col,self._colspan)
+    def maximumHeightSpan(self,pos) -> int:
+        return TTkLayoutItem._calcSpanValue(self.maximumHeight(),pos,self._row,self._rowspan)
+    def maximumWidthSpan(self,pos)  -> int:
+        return TTkLayoutItem._calcSpanValue(self.maximumWidth(), pos,self._col,self._colspan)
+
 
     def geometry(self):
         return self._x, self._y, self._w, self._h

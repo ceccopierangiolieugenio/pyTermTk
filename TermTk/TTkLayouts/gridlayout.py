@@ -48,7 +48,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
 class TTkGridLayout(TTkLayout):
-    __slots__ = ('_gridItems','_columnMinWidth','_columnMinHeight')
+    __slots__ = ('_gridItems','_columnMinWidth','_columnMinHeight', '_rows', '_cols')
     def __init__(self, *args, **kwargs):
         '''
         TTkGridLayout constructor
@@ -57,26 +57,26 @@ class TTkGridLayout(TTkLayout):
             columnMinWidth (int, optional, default=0): the minimum width of the column
             columnMinHeight (int, optional, default=0): the minimum height of the column
         '''
+        self._rows = 0
+        self._cols = 0
         TTkLayout.__init__(self, *args, **kwargs)
         self._gridItems = [[]]
         self._columnMinWidth = kwargs.get('columnMinWidth',0)
         self._columnMinHeight = kwargs.get('columnMinHeight',0)
 
     def _gridUsedsize(self):
-        rows = 1
+        rows = 0
         cols = 0
-        for gridRow in range(len(self._gridItems)):
-            if rows  < gridRow:
-                rows = gridRow
-            for gridCol in range(len(self._gridItems[0])):
-                if self._gridItems[gridRow][gridCol] is not None:
-                    if cols < gridCol:
-                        cols = gridCol
-        return (rows+1, cols+1)
+        for gridRow in range(self._rows):
+            for gridCol in range(self._cols):
+                if item:=self._gridItems[gridRow][gridCol]:
+                    rows = max(rows, gridRow+item._rowspan)
+                    cols = max(cols, gridCol+item._colspan)
+        return (rows, cols)
 
     def _reshapeGrid(self, size):
-        rows = size[0]
-        cols = size[1]
+        rows, cols = size
+        self._rows, self._cols = size
 
         # remove extra rows
         if   rows < len(self._gridItems):
@@ -94,39 +94,29 @@ class TTkGridLayout(TTkLayout):
             elif cols > sizeRow:
                 self._gridItems[gridRow] += [None]*(cols-sizeRow)
 
+
     # addWidget(self, widget, row, col)
-    def addWidget(self, *args, **kwargs):
-        widget = args[0]
+    def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1):
         self.removeWidget(widget)
         item = TTkWidgetItem(widget=widget)
-        if len(args) == 3:
-            TTkGridLayout.addItem(self, item, args[1], args[2])
-        else:
-            TTkGridLayout.addItem(self, item)
+        TTkGridLayout.addItem(self, item, row, col, rowspan, colspan)
         widget.update()
 
     def replaceItem(self, item, index): pass
 
-    def addItem(self, *args, **kwargs):
-        item = args[0]
+    def addItem(self, item, row=None, col=None, rowspan=1, colspan=1):
         self.removeItem(item)
-        if len(args) == 3:
-            row = args[1]
-            col = args[2]
-        else:
+        if row is None and col is None:
             # Append The widget at the end
             row = 0
-            col = len(self._gridItems[0])
+            col = self._cols
 
         #retrieve the max col/rows to reshape the grid
-        maxrow = row
-        maxcol = col
+        maxrow = row + rowspan
+        maxcol = col + colspan
         for child in self.children():
-            if maxrow < child._row: maxrow = child._row
-            if maxcol < child._col: maxcol = child._col
-        # reshape the gridItems
-        maxrow += 1
-        maxcol += 1
+            maxrow = max(maxrow, child._row + child._rowspan)
+            maxcol = max(maxcol, child._col + child._colspan)
 
         # TODO: This is RUBBISH!!!
         self._reshapeGrid(size=(maxrow,maxcol))
@@ -137,21 +127,24 @@ class TTkGridLayout(TTkLayout):
 
         item._row = row
         item._col = col
+        item._rowspan = rowspan
+        item._colspan = colspan
+
         self._gridItems[row][col] = item
         TTkLayout.addItem(self, item)
 
     def removeItem(self, item):
         TTkLayout.removeItem(self, item)
-        for gridRow in range(len(self._gridItems)):
-            for gridCol in range(len(self._gridItems[0])):
+        for gridRow in range(self._rows):
+            for gridCol in range(self._cols):
                 if self._gridItems[gridRow][gridCol] == item:
                     self._gridItems[gridRow][gridCol] = None
         self._reshapeGrid(self._gridUsedsize())
 
     def removeWidget(self, widget):
         TTkLayout.removeWidget(self, widget)
-        for gridRow in range(len(self._gridItems)):
-            for gridCol in range(len(self._gridItems[0])):
+        for gridRow in range(self._rows):
+            for gridCol in range(self._cols):
                 if self._gridItems[gridRow][gridCol] is not None and \
                    self._gridItems[gridRow][gridCol].layoutItemType == TTkK.WidgetItem and \
                    self._gridItems[gridRow][gridCol].widget() == widget:
@@ -159,20 +152,26 @@ class TTkGridLayout(TTkLayout):
         self._reshapeGrid(self._gridUsedsize())
 
     def itemAtPosition(self, row: int, col: int):
-        if row >= len(self._gridItems) or \
-           col >= len(self._gridItems[0]):
+        if row >= self._rows or \
+           col >= self._cols:
             return None
-        return self._gridItems[row][col]
+        if item := self._gridItems[row][col]:
+            return item
+        for item in self.children():
+            if item._row + item._rowspan > row >= item._row and \
+               item._col + item._colspan > col >= item._col :
+                return item
+        return None
 
     def minimumColWidth(self, gridCol: int) -> int:
         colw = 0
         anyItem = False
-        for gridRow in range(len(self._gridItems)):
-            item = self._gridItems[gridRow][gridCol]
+        for gridRow in range(self._rows):
+            item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
                ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
                     anyItem = True
-                    w = item.minimumWidth()
+                    w = item.minimumWidthSpan(gridCol)
                     if colw < w:
                         colw = w
         if not anyItem:
@@ -182,11 +181,12 @@ class TTkGridLayout(TTkLayout):
     def minimumRowHeight(self, gridRow: int):
         rowh = 0
         anyItem = False
-        for item in self._gridItems[gridRow]:
+        for gridCol in range(self._cols):
+            item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
                ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
                     anyItem = True
-                    h = item.minimumHeight()
+                    h = item.minimumHeightSpan(gridRow)
                     if rowh < h:
                         rowh = h
         if not anyItem:
@@ -196,12 +196,12 @@ class TTkGridLayout(TTkLayout):
     def maximumColWidth(self, gridCol: int) -> int:
         colw = 0x10000
         anyItem = False
-        for gridRow in range(len(self._gridItems)):
-            item = self._gridItems[gridRow][gridCol]
+        for gridRow in range(self._rows):
+            item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
                ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
                     anyItem = True
-                    w = item.maximumWidth()
+                    w = item.maximumWidthSpan(gridCol)
                     if colw > w:
                         colw = w
         if not anyItem:
@@ -211,11 +211,12 @@ class TTkGridLayout(TTkLayout):
     def maximumRowHeight(self, gridRow: int):
         rowh = 0x10000
         anyItem = False
-        for item in self._gridItems[gridRow]:
+        for gridCol in range(self._cols):
+            item = self.itemAtPosition(gridRow,gridCol)
             if item is not None and \
                ( item.layoutItemType == TTkK.LayoutItem or item.isVisible() ):
                     anyItem = True
-                    h = item.maximumHeight()
+                    h = item.maximumHeightSpan(gridRow)
                     if rowh > h:
                         rowh = h
         if not anyItem:
@@ -225,32 +226,32 @@ class TTkGridLayout(TTkLayout):
     def minimumWidth(self) -> int:
         ''' process the widgets and get the min size '''
         minw = 0
-        for gridCol in range(len(self._gridItems[0])):
+        for gridCol in range(self._cols):
             minw += self.minimumColWidth(gridCol)
         return minw
 
     def minimumHeight(self) -> int:
         ''' process the widgets and get the min size '''
         minh = 0
-        for gridRow in range(len(self._gridItems)):
+        for gridRow in range(self._rows):
             minh += self.minimumRowHeight(gridRow)
         return minh
 
     def maximumWidth(self) -> int:
         ''' process the widgets and get the min size '''
-        if not self._gridItems[0]:
+        if not self._rows:
             return 0x1000
         maxw = 0
-        for gridCol in range(len(self._gridItems[0])):
+        for gridCol in range(self._cols):
             maxw += self.maximumColWidth(gridCol)
         return maxw
 
     def maximumHeight(self) -> int:
         ''' process the widgets and get the min size '''
-        if not self._gridItems[0]:
+        if not self._cols:
             return 0x1000
         maxh = 0
-        for gridRow in range(len(self._gridItems)):
+        for gridRow in range(self._rows):
             maxh += self.maximumRowHeight(gridRow)
         return maxh
 
@@ -262,8 +263,8 @@ class TTkGridLayout(TTkLayout):
         # Sorted List of minimum heights
         #                    min                        max                       val
         #  content IDs     0 1                          2                         3
-        sortedHeights = [ [i, self.minimumRowHeight(i), self.maximumRowHeight(i), -1] for i in range(len(self._gridItems)) ]
-        sortedWidths  = [ [i, self.minimumColWidth(i),  self.maximumColWidth(i),  -1] for i in range(len(self._gridItems[0])) ]
+        sortedHeights = [ [i, self.minimumRowHeight(i), self.maximumRowHeight(i), -1] for i in range(self._rows) ]
+        sortedWidths  = [ [i, self.minimumColWidth(i),  self.maximumColWidth(i),  -1] for i in range(self._cols) ]
         sortedHeights = sorted(sortedHeights, key=lambda h: h[1])
         sortedWidths  = sorted(sortedWidths,  key=lambda w: w[1])
 
@@ -275,8 +276,8 @@ class TTkGridLayout(TTkLayout):
         if h < minHeight: h = minHeight
         if w < minWidth:  w = minWidth
 
-        #TTkLog.debug(f"w,h:({w,h}) mh:{minHeight} sh:{sortedHeights}")
-        #TTkLog.debug(f"w,h:({w,h}) mw:{minWidth}  sw:{sortedWidths}")
+        # TTkLog.debug(f"Height: w,h:({w,h}) mh:{minHeight} sh:{sortedHeights}")
+        # TTkLog.debug(f"width:  w,h:({w,h}) mw:{minWidth}  sw:{sortedWidths}")
 
         def parseSizes(sizes, space, out):
             iterate = True
@@ -321,15 +322,16 @@ class TTkGridLayout(TTkLayout):
             i[0] = newy
             newy += i[1]
 
-        #TTkLog.debug(f"h:{horSizes} v:{vertSizes}")
+        # TTkLog.debug(f"h:{horSizes} v:{vertSizes}")
 
         # loop and set the geometry of any item
         for item in self.children():
             col = item._col
             row = item._row
-            item.setGeometry(
-                    horSizes[col][0], vertSizes[row][0] ,
-                    horSizes[col][1], vertSizes[row][1] )
+            x,y = horSizes[col][0], vertSizes[row][0]
+            w = sum( [ horSizes[col+i][1]  for i in range(item._colspan) ] )
+            h = sum( [ vertSizes[row+i][1] for i in range(item._rowspan) ] )
+            item.setGeometry(x, y, w, h)
             #TTkLog.debug(f"Children: {item.geometry()}")
             if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
                 #TTkLog.debug(f"Children name: {item.widget()._name}")
