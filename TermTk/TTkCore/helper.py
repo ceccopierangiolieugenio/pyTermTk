@@ -236,11 +236,9 @@ class TTkHelper:
             if child.layoutItemType == TTkK.WidgetItem:
                 if not child.widget().isVisible(): continue
                 yield child.widget()
-                for i in TTkHelper._iterWidgets(child.widget().rootLayout()):
-                    yield i
+                yield from TTkHelper._iterWidgets(child.widget().rootLayout())
             if child.layoutItemType == TTkK.LayoutItem:
-                for i in TTkHelper._iterWidgets(child):
-                    yield i
+                yield from TTkHelper._iterWidgets(child)
 
     def nextFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)

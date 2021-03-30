@@ -115,10 +115,10 @@ class _TTkColor:
         if isinstance(other, str):
             return str(self)+other
         else:
-            fg:  str = self._fg  if other._fg == ""  else other._fg
-            bg:  str = self._bg  if other._bg == ""  else other._bg
+            fg:  str = other._fg or self._fg
+            bg:  str = other._bg or self._bg
             mod: str = self._mod + other._mod
-            colorMod = self._colorMod  if other._colorMod == None  else other._colorMod
+            colorMod = other._colorMod or self._colorMod
             return TTkColor(fg,bg,mod,colorMod)
 
     def __radd__(self, other):
@@ -126,10 +126,10 @@ class _TTkColor:
         if isinstance(other, str):
             return other+str(self)
         else:
-            fg:  str = self._fg  if other._fg == ""  else other._fg
-            bg:  str = self._bg  if other._bg == ""  else other._bg
+            fg:  str = other._fg or self._fg
+            bg:  str = other._bg or self._bg
             mod: self._mod + other._mod
-            colorMod = self._colorMod  if other._colorMod == None  else other._colorMod
+            colorMod = other._colorMod or self._colorMod
             return TTkColor(fg,bg,mod,colorMod)
 
     def __sub__(self, other):

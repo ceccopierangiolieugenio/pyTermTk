@@ -329,8 +329,8 @@ class TTkGridLayout(TTkLayout):
             col = item._col
             row = item._row
             x,y = horSizes[col][0], vertSizes[row][0]
-            w = sum( [ horSizes[col+i][1]  for i in range(item._colspan) ] )
-            h = sum( [ vertSizes[row+i][1] for i in range(item._rowspan) ] )
+            w = sum( horSizes[col+i][1]  for i in range(item._colspan) )
+            h = sum( vertSizes[row+i][1] for i in range(item._rowspan) )
             item.setGeometry(x, y, w, h)
             #TTkLog.debug(f"Children: {item.geometry()}")
             if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():

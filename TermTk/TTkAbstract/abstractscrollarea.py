@@ -52,7 +52,7 @@ class TTkAbstractScrollArea(TTkWidget):
         fw, fh = self._viewport.viewFullAreaSize()
         dw, dh = self._viewport.viewDisplayedSize()
         ox, oy = self._viewport.getViewOffsets()
-        if fw==0 or fh==0 or dw==0 or dh==0:
+        if 0 in [fw,fh,dw,dh]:
             return
         hpage = dw
         vpage = dh

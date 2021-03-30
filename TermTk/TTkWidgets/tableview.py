@@ -155,8 +155,7 @@ class _TTkTableView(TTkAbstractScrollView):
 
         widgetsToHide = self._shownWidgets
         self._shownWidgets = []
-        y=0
-        for it in range(itemFrom, itemTo):
+        for y, it in enumerate(range(itemFrom, itemTo)):
             x = 0
             item = self._tableDataWidget[it]
             for iw, widget in enumerate(item):
@@ -168,7 +167,6 @@ class _TTkTableView(TTkAbstractScrollView):
                     widget.show()
                     self._shownWidgets.append(widget)
                 x+=size+1
-            y+=1
         for widget in widgetsToHide:
             if widget not in self._shownWidgets:
                 widget.hide()
@@ -297,8 +295,7 @@ class _TTkTableView(TTkAbstractScrollView):
         if itemTo > maxItems: itemTo = maxItems
         # TTkLog.debug(f"moveto:{self._moveTo}, maxItems:{maxItems}, f:{itemFrom}, t{itemTo}, h:{h}, sel:{self._selected}")
 
-        y = 0
-        for it in range(itemFrom, itemTo):
+        for y, it in enumerate(range(itemFrom, itemTo)):
             item = self._tableDataText[it]
             if self._selected > 0:
                 val = self._selected - itemFrom
@@ -312,7 +309,6 @@ class _TTkTableView(TTkAbstractScrollView):
             else:
                 colors = [c.modParam(val=-val) for c in self._columnColors]
                 self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
-            y+=1
 
 class TTkTableView(TTkAbstractScrollView):
     __slots__ = ( '_header', '_tableView', '_showHeader', 'activated')

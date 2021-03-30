@@ -59,7 +59,7 @@
 - [ ] Add Weight in V and H Layout
 - [x] Add addLayout (adDItem) method - Nested layouts
 - [x] Add Grid Layout
-  - [ ] Add ColSpan / RowSpan
+  - [x] Add ColSpan / RowSpan
 
 ### AbstractScrollArea
 - [x] Implement something that mimic the QAbstactScrollArea

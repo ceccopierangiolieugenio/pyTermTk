@@ -61,10 +61,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
     def paintEvent(self):
         _, oy = self.getViewOffsets()
-        y = 0
-        for t in self._lines[oy:]:
+        for y, t in enumerate(self._lines[oy:]):
             self._canvas.drawText(pos=(0,y), text=t[1], color=t[0])
-            y+=1
 
 class TTkTextEdit(TTkAbstractScrollArea):
     __slots__ = ('_textEditView')

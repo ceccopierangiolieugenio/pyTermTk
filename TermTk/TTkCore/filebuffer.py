@@ -167,10 +167,8 @@ class TTkFileBuffer():
 
     def search(self, txt):
         indexes = []
-        id = 0
         with open(self._filename,'r') as infile:
-            for line in infile:
+            for id, line in enumerate(infile):
                 if txt in line:
                     indexes.append(id)
-                id += 1
         return indexes

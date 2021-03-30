@@ -74,10 +74,9 @@ class _TTkLogViewer(TTkAbstractScrollView):
 
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
-        y = 0
         _,h = self.size()
         offset = max(0,ox)
-        for message in self._messages[oy:]:
+        for y, message in enumerate(self._messages[oy:]):
             self._canvas.drawText(pos=(0,y),text=message[ox:])
             c = TTkColor.RST
             if   message.startswith("INFO ") : c = TTkColor.fg("#00ff00")
@@ -85,7 +84,6 @@ class _TTkLogViewer(TTkAbstractScrollView):
             elif message.startswith("ERROR") : c = TTkColor.fg("#ff0000")
             elif message.startswith("FATAL") : c = TTkColor.fg("#ff0000")
             self._canvas.drawText(pos=(-ox,y),text=message[:5], color=c)
-            y+=1
 
 class TTkLogViewer(TTkAbstractScrollArea):
     __slots__ = ('_logView')

@@ -101,7 +101,7 @@ class TTkCanvas:
     def clean(self, pos=(0, 0), size=None):
         if not self._visible: return
         x,y = pos
-        w,h = size if size is not None else (self._width, self._height)
+        w,h = size or (self._width, self._height)
         for iy in range(y,y+h):
             for ix in range(x,x+w):
                 self._data[iy][ix] = ' '
@@ -175,7 +175,7 @@ class TTkCanvas:
                     line += txt[0:w]
                 else:
                     pad = w-lentxt
-                    if align == TTkK.NONE or align == TTkK.LEFT_ALIGN:
+                    if align in [TTkK.NONE,TTkK.LEFT_ALIGN]:
                         line += txt + " "*pad
                     elif align == TTkK.RIGHT_ALIGN:
                         line += " "*pad + txt
@@ -203,7 +203,7 @@ class TTkCanvas:
 
         if lentxt < width:
             pad = width-lentxt
-            if alignment == TTkK.NONE or alignment == TTkK.LEFT_ALIGN:
+            if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
                 text = text + " "*pad
             elif alignment == TTkK.RIGHT_ALIGN:
                 text = " "*pad + text
