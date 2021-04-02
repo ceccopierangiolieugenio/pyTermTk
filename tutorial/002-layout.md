@@ -206,31 +206,23 @@ gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button4"), 3,
 
 root.mainloop()
 ```
-
-
-
-
+The above code produces the following output
 ```text
-┌─────────────────┐┌─────────────────┐
-│                 ││                 │
-│     Button1     ││     Button2     │
-│                 ││                 │
-│                 ││                 │
-╘═════════════════╛╘═════════════════╛
-                   ┌─────────────────┐
-                   │                 │
-                   │                 │
-                   │     Button3     │
-                   │                 │
-                   │                 │
-                   ╘═════════════════╛
-                                        ┌─────────────────┐
-                                        │                 │
-                                        │                 │
-                                        │     Button4     │
-                                        │                 │
-                                        │                 │
-                                        ╘═════════════════╛
+┌───────────┐┌───────────┐
+│           ││           │
+│  Button1  ││  Button2  │
+│           ││           │
+╘═══════════╛╘═══════════╛
+                          ┌───────────┐
+                          │           │
+                          │  Button3  │
+                          │           │
+                          ╘═══════════╛
+                                         ┌───────────┐
+                                         │           │
+                                         │  Button4  │
+                                         │           │
+                                         ╘═══════════╛
 ```
 
 ## Example 5 - Nested Layouts
@@ -263,29 +255,72 @@ vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button6"))
 
 root.mainloop()
 ```
-
-
-
-
+The above code produces the following output
 ```text
-┌─────────────┐┌─────────────┐
-│             ││             │
-│   Button1   ││   Button2   │
-│             ││             │
-│             ││             │
-╘═════════════╛╘═════════════╛
-               ┌─────────────┐┌─────────────┐
-               │             ││   Button5   │
-               │             │╘═════════════╛
-               │   Button3   │┌─────────────┐
-               │             ││   Button6   │
-               │             ││             │
-               ╘═════════════╛╘═════════════╛
-                                             ┌──────────────┐
-                                             │              │
-                                             │              │
-                                             │   Button4    │
-                                             │              │
-                                             │              │
-                                             ╘══════════════╛
+┌─────────┐┌─────────┐
+│         ││         │
+│ Button1 ││ Button2 │
+│         ││         │
+╘═════════╛╘═════════╛
+                      ┌─────────┐┌─────────┐
+                      │         ││ Button5 │
+                      │ Button3 │╘═════════╛
+                      │         │┌─────────┐
+                      │         ││ Button6 │
+                      ╘═════════╛╘═════════╛
+                                            ┌─────────┐
+                                            │         │
+                                            │ Button4 │
+                                            │         │
+                                            ╘═════════╛
+```
+
+
+## Example 6 - Rowspan/Colspan in Grid Layout
+Following is the code to execute [Nested Layouts Example](layout/example6.grid.span.py) in [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+
+```python
+import TermTk as ttk
+
+root = ttk.TTk()
+
+gridLayout = ttk.TTkGridLayout()
+root.setLayout(gridLayout)
+
+# | x = 0   | x = 1 | x = 2   |
+# |         |       |         |
+# ┌────────────────┐┌─────────┐ ──────
+# │y=0 x=0 h=1 w=2 ││y=0 x=2  │  y = 0
+# │    Button1     ││h=2 w=1  │
+# ╘════════════════╛│         │ ──────
+# ┌─────────┐       │ Button2 │  y = 1
+# │y=1 x=0  │       ╘═════════╛
+# │h=2 w=1  │┌────────────────┐ ──────
+# │         ││y=2 x=1 h=1 w=2 |  y = 2
+# │ Button3 ││    Button4     │
+# ╘═════════╛╘════════════════╛ ──────
+
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button1"), 0,0, 1,2)
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button2"), 0,2, 2,1)
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 1,0, 2,1)
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 2,1, 1,2)
+
+root.mainloop()
+```
+The above code produces the following output
+```text
+┌───────────────────────┐┌───────────┐
+│                       ││           │
+│        Button1        ││           │
+│                       ││           │
+╘═══════════════════════╛│  Button2  │
+┌───────────┐            │           │
+│           │            │           │
+│           │            │           │
+│           │            ╘═══════════╛
+│  Button3  │┌───────────────────────┐
+│           ││                       │
+│           ││        Button4        │
+│           ││                       │
+╘═══════════╛╘═══════════════════════╛
 ```
