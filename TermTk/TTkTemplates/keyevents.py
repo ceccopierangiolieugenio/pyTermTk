@@ -26,7 +26,9 @@ class TKeyEvents():
     def keyPressEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive key press events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -36,7 +38,9 @@ class TKeyEvents():
     def keyReleaseEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive key release events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -47,7 +51,9 @@ class TKeyEvents():
     def keyEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive key events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:

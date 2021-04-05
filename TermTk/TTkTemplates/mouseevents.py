@@ -26,7 +26,9 @@ class TMouseEvents():
     def mouseDoubleClickEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -37,7 +39,9 @@ class TMouseEvents():
     def mouseMoveEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse move events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -48,7 +52,9 @@ class TMouseEvents():
     def mouseDragEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse drag events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -59,7 +65,9 @@ class TMouseEvents():
     def mousePressEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -70,7 +78,9 @@ class TMouseEvents():
     def mouseReleaseEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse release events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -81,7 +91,9 @@ class TMouseEvents():
     def wheelEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse wheel events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -92,7 +104,9 @@ class TMouseEvents():
     def enterEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse enter events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:
@@ -103,7 +117,9 @@ class TMouseEvents():
     def leaveEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse leave events for the widget.
+
         .. note:: Reimplement this function to handle this event
+
         Args:
             evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
         Returns:

@@ -23,6 +23,10 @@
 # SOFTWARE.
 
 class TTkConstant:
+    '''Class container of all the constants used in :mod:`~TermTk`'''
+
+    NONE = 0x0000
+
     # Color Depth
     DEP_2: int  = 0x02
     DEP_4: int  = 0x04
@@ -125,15 +129,45 @@ class TTkConstant:
     Input_Password  = 0x04
 
     # Alignment
-    NONE   = 0x0000
-    LEFT_ALIGN   = 0x0001
-    RIGHT_ALIGN  = 0x0002
-    CENTER_ALIGN = 0x0003
-    JUSTIFY      = 0x0004
+    class Alignment:
+        ''' This class type is used to describe alignment.
+
+        .. autosummary::
+          NONE
+          LEFT_ALIGN
+          RIGHT_ALIGN
+          CENTER_ALIGN
+          JUSTIFY
+          pippo
+        '''
+        NONE         = 0x0000
+        ''' No Alignment'''
+        LEFT_ALIGN   = 0x0001
+        ''' Aligns with the left edge.'''
+        RIGHT_ALIGN  = 0x0002
+        ''' Aligns with the right edge.'''
+        CENTER_ALIGN = 0x0004
+        ''' Centers horizontally in the available space.'''
+        JUSTIFY      = 0x0008
+        ''' Justifies the text in the available space.'''
+
+    LEFT_ALIGN   = Alignment.LEFT_ALIGN
+    RIGHT_ALIGN  = Alignment.RIGHT_ALIGN
+    CENTER_ALIGN = Alignment.CENTER_ALIGN
+    JUSTIFY      = Alignment.JUSTIFY
+
 
     # LayoutItem Types
-    LayoutItem = 0x01
-    WidgetItem = 0x02
+    class LayoutItemTypes:
+        '''Types used internally in :mod:`~TermTk.TTkLayouts`'''
+        LayoutItem = 0x01
+        '''Item Type Layout'''
+        WidgetItem = 0x02
+        '''Item Type Widget'''
+
+
+    LayoutItem = LayoutItemTypes.LayoutItem
+    WidgetItem = LayoutItemTypes.WidgetItem
 
     Character  = 0x0001
     SpecialKey = 0x0002

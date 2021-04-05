@@ -35,20 +35,51 @@ import TermTk.libbpytop       as lbt
 
 
 class TTkWidget(TMouseEvents,TKeyEvents):
-    '''
-    ### Widget Layout sizes:
-        Terminal window
+    ''' Widget Layout sizes:
+    ::
+        Terminal area (i.e. XTerm)
         ┌─────────────────────────────────────────┐
         │                                         │
         │    TTkWidget     width                  │
         │ (x,y)┌─────────────────────────┐        │
-        │      │      padt               │        │
+        │      │      padt (Top Padding) │        │
         │      │    ┌───────────────┐    │ height │
         │      │padl│ Layout/childs │padr│        │
         │      │    └───────────────┘    │        │
-        │      │      padl               │        │
+        │      │      padb (Bottom Pad.) │        │
         │      └─────────────────────────┘        │
         └─────────────────────────────────────────┘
+
+    The TTkWidget class is the base class of all user interface objects
+
+    :param str name: the name of the widget, defaults to ""
+    :type name: str, optional
+    :param parent: the parent widget, defaults to None
+    :type parent: :class:`TTkWidget`, optional
+
+    :param int x: the x position, defaults to 0
+    :param int y: the y position, defaults to 0
+    :param [int,int] pos: the [x,y] position (override the previously defined x, y), optional, default=[0,0]
+
+    :param int width: the width of the widget, defaults to 0
+    :param int height: the height of the widget, defaults to 0
+    :param [int,int] size: the size [width, height] of the widget (override the previously defined sizes), optional, default=[0,0]
+
+    :param int padding: the padding (top, bottom, left, right) of the widget, defaults to 0
+    :param int paddingTop: the Top padding, override Top padding if already defined, optional, default=padding
+    :param int paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=padding
+    :param int paddingLeft: the Left padding, override Left padding if already defined, optional, default=padding
+    :param int paddingRight: the Right padding, override Right padding if already defined, optional, default=padding
+    :param int maxWidth: the maxWidth of the widget, optional, defaults to 0x10000
+    :param int maxHeight: the maxHeight of the widget, optional, defaults to 0x10000
+    :param [int,int] maxSize: the max [width,height] of the widget, optional
+    :param int minWidth: the minWidth of the widget, defaults to 0
+    :param int minHeight: the minHeight of the widget, defaults to 0
+    :param [int,int] minSize: the minSize [width,height] of the widget, optional
+
+    :param bool,optional visible: the visibility, optional, defaults to True
+    :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
+    :type layout: :mod:`TermTk.TTkLayouts`
     '''
     __slots__ = (
         '_name', '_parent',
@@ -60,36 +91,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         '_pendingMouseRelease')
 
     def __init__(self, *args, **kwargs):
-        '''
-        TTkWidget constructor
 
-        Args:
-            name (str, optional): the name of the widget
-            parent ([TermTk.TTkWidgets.widget.TTkWidget], optional): the parent widget
-
-            x (int, optional, default=0): the x position
-            y (int, optional, default=0): the y position
-            pos ([int,int], optional, default=[0,0]): the [x,y] position (override the previously defined x, y)
-
-            width (int, optional, default=0): the width of the widget
-            height (int, optional, default=0): the height of the widget
-            size ([int,int], optional, default=[0,0]): the size [width, height] of the widget (override the previously defined sizes)
-
-            padding (int, optional, default=0): the padding (top, bottom, left, right) of the widget
-            paddingTop (int, optional, default=padding): the Top padding, override Top padding if already defined
-            paddingBottom (int, optional, default=padding): the Bottom padding, override Bottom padding if already defined
-            paddingLeft (int, optional, default=padding): the Left padding, override Left padding if already defined
-            paddingRight (int, optional, default=padding): the Right padding, override Right padding if already defined
-            maxWidth (int, optional, default=0x10000): the maxWidth of the widget
-            maxHeight (int, optional, default=0x10000): the maxHeight of the widget
-            maxSize ([int,int], optional): the max [width,height] of the widget
-            minWidth (int, optional, default=0): the minWidth of the widget
-            minHeight (int, optional, default=0): the minHeight of the widget
-            minSize ([int,int], optional): the minSize [width,height] of the widget
-
-            visible (bool, optional, default=True): the visibility
-            layout ([TermTk.TTkLayouts], optional, default=[TermTk.TTkLayouts.layout.TTkLayout]): the layout of this widget
-        '''
         self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
 
@@ -143,11 +145,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             self._parent = None
 
     def addWidget(self, widget):
-        '''
-        Add a child widget to the layout
+        ''' Add a child widget to the layout
 
-        Args:
-            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be added
+        :param widget: the widget to be added
+        :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
         '''
         widget._parent = self
         if self.layout() is not None:
@@ -156,11 +157,9 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         # widget.show()
 
     def removeWidget(self, widget):
-        '''
-        Remove the child widget from the layout
+        ''' Remove the child widget from the layout
 
-        Args:
-            widget ([TermTk.TTkWidgets.widget.TTkWidget]): the widget to be removed
+        :param widget: (:class:`~TermTk.TTkWidgets.widget.TTkWidget`): the widget to be removed
         '''
         if self.layout() is not None:
             self.layout().removeWidget(widget)
@@ -209,11 +208,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         pass
 
     def move(self, x: int, y: int):
-        '''
-        Move the widget
-        Args:
-            x (int): x position
-            y (int): y position
+        ''' Move the widget
+
+        :param int x: x position
+        :param int y: y position
         '''
         if x==self._x and y==self._y: return
         self._x = x
@@ -222,11 +220,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self.moveEvent(x,y)
 
     def resize(self, w: int, h: int):
-        '''
-        Resize the widget
-        Args:
-            w (int): the new width
-            h (int): the new height
+        ''' Resize the widget
+
+        :param int w: the new width
+        :param int h: the new height
         '''
         # TTkLog.debug(f"resize: {w,h} {self._name}")
         if w!=self._width or h!=self._height:
@@ -237,33 +234,30 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self.resizeEvent(w,h)
 
     def setGeometry(self, x: int, y: int, w: int, h: int):
-        '''
-        Resize and move the widget
-        Args:
-            x (int): x position
-            y (int): y position
-            w (int): the new width
-            h (int): the new height
+        ''' Resize and move the widget
+
+        :param int x: x position
+        :param int y: y position
+        :param int w: the new width
+        :param int h: the new height
         '''
         self.resize(w, h)
         self.move(x, y)
 
     def getPadding(self) -> (int, int, int, int):
-        '''
-        Retrieve the widget padding sizes
-        Returns:
-            List[top, bottom, left, right]: the 4 padding sizes
+        ''' Retrieve the widget padding sizes
+
+        :return: list[top, bottom, left, right]: the 4 padding sizes
         '''
         return self._padt, self._padb, self._padl, self._padr
 
     def setPadding(self, top, bottom, left, right):
-        '''
-       set the padding of the widget
-        Args:
-            top (int): top padding
-            bottom (int): bottom padding
-            left (int): left padding
-            right (int): right padding
+        ''' Set the padding of the widget
+
+        :param int top: top padding
+        :param int bottom: bottom padding
+        :param int left: left padding
+        :param int right: right padding
         '''
         if self._padt == top  and self._padb == bottom and \
            self._padl == left and self._padr == right: return

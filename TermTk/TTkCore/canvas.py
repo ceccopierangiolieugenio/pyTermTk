@@ -32,21 +32,10 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.helper import TTkHelper
 
 class TTkCanvas:
-    '''
-    TTkCanvas
-    canvas window primitives
-    ...
-    Attributes
-    ----------
-    Methods
-    -------
-    __init__({})
-      input obj{ width, height}
+    ''' Init the Canvas object
 
-    resize(w, h)
-      - resize the canvas keeping or cutting the current one
-      in  w = the width of the new canvas
-      in  h = the height of the new canvas
+    :param  width: the width of the Canvas
+    :param  height: the height of the Canvas
     '''
     __slots__ = (
         '_widget',
@@ -56,6 +45,7 @@ class TTkCanvas:
         '_bufferedData', '_bufferedColors',
         '_visible', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
+
         self._widget = kwargs.get('widget', None)
         self._visible = True
         self._doubleBuffer = False
@@ -95,6 +85,11 @@ class TTkCanvas:
         self._width  = w
 
     def resize(self, w, h):
+        ''' resize the canvas keeping or cutting the current one
+
+        :param  w: the width of the new canvas
+        :param  h: the height of the new canvas
+        '''
         self._newWidth = w
         self._newHeight = h
 

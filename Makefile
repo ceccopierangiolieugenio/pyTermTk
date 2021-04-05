@@ -2,17 +2,23 @@
 
 .venv:
 	python3 -m venv .venv
-	. .venv/bin/activate
-	pip3 install --upgrade pdoc3
-	pip3 install --upgrade GitPython
-	pip3 install --upgrade build
-	pip3 install --upgrade twine
-	pip3 install --upgrade pytest flake8
+	. .venv/bin/activate ; \
+	pip install -r docs/requirements.txt
+	#  Regen requirements;
+	#    pip freeze > docs/requirements.txt
+
 
 doc: .venv
-	. .venv/bin/activate
-	rm -rf docs/html
-	pdoc --html TermTk -o docs/html
+	# old doc gen, using pdoc3 ; \
+	# . .venv/bin/activate ; \
+	# rm -rf docs/html ; \
+	# pdoc --html TermTk -o docs/html ; \
+	. .venv/bin/activate ; \
+	rm -rf docs/html ; \
+	rm -rf docs/source/autogen.* ; \
+	# sphinx-apidoc -o docs/source/TermTk/ -e TermTk/ ; \
+	make -C docs/ clean ; \
+	make -C docs/ html ;
 
 runGittk: .venv
 	. .venv/bin/activate

@@ -23,14 +23,24 @@
 # SOFTWARE.
 
 '''
-### Layout
-[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
+### Layout - [Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
 '''
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:
+    ''' :class:`~TTkLayoutItem` is the base class of layout Items inherited by :class:`~TTkLayout`, :class:`~TTkWidgetItem`, and all the derived layout managers.
+
+    :param int row:     (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the row of the grid,   optional, defaults to None
+    :param int col:     (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the col of the grid,   optional, defaults to None
+    :param int rowspan: (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the rows used by this, optional, defaults to 1
+    :param int colspan: (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the cols used by this, optional, defaults to 1
+    :param layoutItemType: The Type of this class, optional, defaults to TTkK.NONE
+    :type  layoutItemType: :class:`~TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes`
+    :param alignment: The alignment of this item in the layout (not yet used)
+    :type  alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+    '''
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',
         '_row','_col',
@@ -57,16 +67,12 @@ class TTkLayoutItem:
     def minDimension(self,o)-> int: return 0
     def minimumHeight(self) -> int: return 0
     def minimumWidth(self)  -> int: return 0
-    def minimumHeightSpan(self,pos) -> int: return 0
-    def minimumWidthSpan(self,pos)  -> int: return 0
 
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
     def maxDimension(self,o)-> int: return 0x1000
     def maximumHeight(self) -> int: return 0x10000
     def maximumWidth(self)  -> int: return 0x10000
-    def maximumHeightSpan(self,pos) -> int: return 0x10000
-    def maximumWidthSpan(self,pos)  -> int: return 0x10000
 
     @staticmethod
     def _calcSpanValue(value, pos, curpos, span):
@@ -106,6 +112,22 @@ class TTkLayoutItem:
 
 
 class TTkLayout(TTkLayoutItem):
+    ''' The :class:`TTkLayout` class is the base class of geometry managers. <br/>
+    It allows free placement of the widgets in the layout area. <br/>
+    Used mainly to have free range moving :class:`~TermTk.TTkWidgets.window.TTkWindow` because the widgets are not automatically rearranged after a layout event
+    ```
+        ╔════════════════════════════╗
+        ║   pos(4,2)                 ║
+        ║   ┌───────┐   pos(16,4)    ║
+        ║   │Widget1│   ┌─────────┐  ║
+        ║   │       │   │ Widget2 │  ║
+        ║   │       │   └─────────┘  ║
+        ║   │       │                ║
+        ║   └───────┘                ║
+        ║                            ║
+        ╚════════════════════════════╝
+    ```
+    '''
     __slots__ = ('_items', '_zSortedItems', '_parent')
     def __init__(self, *args, **kwargs):
         TTkLayoutItem.__init__(self, args, kwargs)

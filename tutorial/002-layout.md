@@ -303,7 +303,8 @@ root.setLayout(gridLayout)
 gridLayout.addWidget(ttk.TTkButton(border=True, text="Button1"), 0,0, 1,2)
 gridLayout.addWidget(ttk.TTkButton(border=True, text="Button2"), 0,2, 2,1)
 gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 1,0, 2,1)
-gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 2,1, 1,2)
+# It is possible to expand the names
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), row=2, col=1, rowspan=1, colspan=2)
 
 root.mainloop()
 ```
