@@ -1,0 +1,8 @@
+
+TermTk.TTkWidgets.filetree
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.filetree
+
+.. currentmodule:: TermTk.TTkWidgets.filetree
+

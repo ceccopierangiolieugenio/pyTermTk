@@ -1,0 +1,8 @@
+
+TermTk.TTkTemplates.text
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTemplates.text
+
+.. currentmodule:: TermTk.TTkTemplates.text
+

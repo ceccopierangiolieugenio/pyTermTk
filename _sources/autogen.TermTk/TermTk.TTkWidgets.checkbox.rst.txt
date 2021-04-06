@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.checkbox
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.checkbox
+
+.. currentmodule:: TermTk.TTkWidgets.checkbox
+
+
+
+TTkCheckbox
+===========
+
+.. autoclass:: TTkCheckbox
+   :members:

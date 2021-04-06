@@ -1,0 +1,21 @@
+
+API Reference
+~~~~~~~~~~~~~
+
+.. automodule:: TermTk
+
+.. currentmodule:: TermTk
+
+
+.. autosummary::
+  :toctree: ./
+
+  TermTk.TTkAbstract
+  TermTk.TTkCore
+  TermTk.TTkGui
+  TermTk.TTkLayouts
+  TermTk.TTkTemplates
+  TermTk.TTkTestWidgets
+  TermTk.TTkTypes
+  TermTk.TTkWidgets
+  TermTk.libbpytop

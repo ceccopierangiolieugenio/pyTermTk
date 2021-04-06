@@ -1,0 +1,15 @@
+
+TermTk.TTkTestWidgets
+~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTestWidgets
+
+.. currentmodule:: TermTk.TTkTestWidgets
+
+
+.. autosummary::
+  :toctree: ./
+
+  TermTk.TTkTestWidgets.logviewer
+  TermTk.TTkTestWidgets.testwidget
+  TermTk.TTkTestWidgets.testwidgetsizes

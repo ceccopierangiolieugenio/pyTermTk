@@ -1,0 +1,15 @@
+
+TermTk.TTkGui.theme
+~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkGui.theme
+
+.. currentmodule:: TermTk.TTkGui.theme
+
+
+
+TTkTheme
+========
+
+.. autoclass:: TTkTheme
+   :members:

@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.log
+~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.log
+
+.. currentmodule:: TermTk.TTkCore.log
+

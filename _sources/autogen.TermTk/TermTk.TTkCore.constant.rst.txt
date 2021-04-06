@@ -1,0 +1,22 @@
+
+TermTk.TTkCore.constant
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.constant
+
+.. currentmodule:: TermTk.TTkCore.constant
+
+
+
+TTkConstant
+===========
+
+.. autoclass:: TTkConstant
+   :members:
+
+
+TTkK
+====
+
+.. autoclass:: TTkK
+   :members:

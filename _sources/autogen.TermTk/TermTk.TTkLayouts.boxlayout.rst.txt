@@ -1,0 +1,22 @@
+
+TermTk.TTkLayouts.boxlayout
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkLayouts.boxlayout
+
+.. currentmodule:: TermTk.TTkLayouts.boxlayout
+
+
+
+TTkHBoxLayout
+=============
+
+.. autoclass:: TTkHBoxLayout
+   :members:
+
+
+TTkVBoxLayout
+=============
+
+.. autoclass:: TTkVBoxLayout
+   :members:

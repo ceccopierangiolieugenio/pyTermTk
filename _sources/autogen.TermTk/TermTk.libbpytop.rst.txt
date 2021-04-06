@@ -1,0 +1,16 @@
+
+TermTk.libbpytop
+~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.libbpytop
+
+.. currentmodule:: TermTk.libbpytop
+
+
+.. autosummary::
+  :toctree: ./
+
+  TermTk.libbpytop.colors
+  TermTk.libbpytop.input
+  TermTk.libbpytop.inputkey
+  TermTk.libbpytop.term

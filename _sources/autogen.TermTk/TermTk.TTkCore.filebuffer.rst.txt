@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.filebuffer
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.filebuffer
+
+.. currentmodule:: TermTk.TTkCore.filebuffer
+

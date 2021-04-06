@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.lineedit
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.lineedit
+
+.. currentmodule:: TermTk.TTkWidgets.lineedit
+
+
+
+TTkLineEdit
+===========
+
+.. autoclass:: TTkLineEdit
+   :members:

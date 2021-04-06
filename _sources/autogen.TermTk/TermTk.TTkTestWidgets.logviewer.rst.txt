@@ -1,0 +1,15 @@
+
+TermTk.TTkTestWidgets.logviewer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTestWidgets.logviewer
+
+.. currentmodule:: TermTk.TTkTestWidgets.logviewer
+
+
+
+TTkLogViewer
+============
+
+.. autoclass:: TTkLogViewer
+   :members:

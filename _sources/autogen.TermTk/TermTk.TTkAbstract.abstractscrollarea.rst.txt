@@ -1,0 +1,15 @@
+
+TermTk.TTkAbstract.abstractscrollarea
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkAbstract.abstractscrollarea
+
+.. currentmodule:: TermTk.TTkAbstract.abstractscrollarea
+
+
+
+TTkAbstractScrollArea
+=====================
+
+.. autoclass:: TTkAbstractScrollArea
+   :members:

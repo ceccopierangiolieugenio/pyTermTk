@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.resizableframe
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.resizableframe
+
+.. currentmodule:: TermTk.TTkWidgets.resizableframe
+
+
+
+TTkResizableFrame
+=================
+
+.. autoclass:: TTkResizableFrame
+   :members:

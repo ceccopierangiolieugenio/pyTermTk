@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.texedit
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.texedit
+
+.. currentmodule:: TermTk.TTkWidgets.texedit
+
+
+
+TTkTextEdit
+===========
+
+.. autoclass:: TTkTextEdit
+   :members:

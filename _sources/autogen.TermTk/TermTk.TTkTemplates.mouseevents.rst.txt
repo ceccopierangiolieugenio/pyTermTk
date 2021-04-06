@@ -1,0 +1,8 @@
+
+TermTk.TTkTemplates.mouseevents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTemplates.mouseevents
+
+.. currentmodule:: TermTk.TTkTemplates.mouseevents
+

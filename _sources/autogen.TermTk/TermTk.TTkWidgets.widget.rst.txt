@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.widget
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.widget
+
+.. currentmodule:: TermTk.TTkWidgets.widget
+
+
+
+TTkWidget
+=========
+
+.. autoclass:: TTkWidget
+   :members:

@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.spacer
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.spacer
+
+.. currentmodule:: TermTk.TTkWidgets.spacer
+
+
+
+TTkSpacer
+=========
+
+.. autoclass:: TTkSpacer
+   :members:

@@ -1,0 +1,16 @@
+
+TermTk.TTkTemplates
+~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTemplates
+
+.. currentmodule:: TermTk.TTkTemplates
+
+
+.. autosummary::
+  :toctree: ./
+
+  TermTk.TTkTemplates.color
+  TermTk.TTkTemplates.keyevents
+  TermTk.TTkTemplates.mouseevents
+  TermTk.TTkTemplates.text

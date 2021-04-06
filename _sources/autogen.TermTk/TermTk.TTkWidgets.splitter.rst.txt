@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.splitter
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.splitter
+
+.. currentmodule:: TermTk.TTkWidgets.splitter
+
+
+
+TTkSplitter
+===========
+
+.. autoclass:: TTkSplitter
+   :members:

@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.cfg
+~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.cfg
+
+.. currentmodule:: TermTk.TTkCore.cfg
+

@@ -1,0 +1,8 @@
+
+TermTk.TTkAbstract.abstractitemmodel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkAbstract.abstractitemmodel
+
+.. currentmodule:: TermTk.TTkAbstract.abstractitemmodel
+

@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.menubar
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.menubar
+
+.. currentmodule:: TermTk.TTkWidgets.menubar
+
+
+
+TTkMenuLayout
+=============
+
+.. autoclass:: TTkMenuLayout
+   :members:

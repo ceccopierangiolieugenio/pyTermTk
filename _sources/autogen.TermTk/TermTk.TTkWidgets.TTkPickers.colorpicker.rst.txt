@@ -1,0 +1,22 @@
+
+TermTk.TTkWidgets.TTkPickers.colorpicker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkPickers.colorpicker
+
+.. currentmodule:: TermTk.TTkWidgets.TTkPickers.colorpicker
+
+
+
+TTkColorDialogPicker
+====================
+
+.. autoclass:: TTkColorDialogPicker
+   :members:
+
+
+TTkColorButtonPicker
+====================
+
+.. autoclass:: TTkColorButtonPicker
+   :members:

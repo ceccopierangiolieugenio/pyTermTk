@@ -1,0 +1,8 @@
+
+TermTk.libbpytop.colors
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.libbpytop.colors
+
+.. currentmodule:: TermTk.libbpytop.colors
+
