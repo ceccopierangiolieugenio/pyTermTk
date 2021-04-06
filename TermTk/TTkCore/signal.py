@@ -27,7 +27,35 @@
 #      https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuSignal.py
 
 '''
-[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/003-signalslots.md)
+Signals & Slots [`Tutorial <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/003-signalslots.md>`_]
+=========================
+
+  Signals and slots are used for communication between objects.
+
+Intro
+=====
+
+|  The :mod:`TermTk.TTkCore.signal` is more than heavily inspired by `Qt5 Signal&Slots <(https://www.riverbankcomputing.com/static/Docs/PyQt5/signals_slots.html>`_
+|  https://doc.qt.io/qt-5/signalsandslots.html
+
+|  In GUI programming, when we change one widget, we often want another widget to be notified.
+|  More generally, we want objects of any kind to be able to communicate with one another.
+|  For example, if a user clicks a Close button, we probably want the window's close() function to be called.
+
+Signal and Slots
+================
+
+|  A signal is emitted when a particular event occurs.
+|  A slot is a function that is called in response to a particular signal.
+|  `TermTk <https://github.com/ceccopierangiolieugenio/pyTermTk>`_'s :mod:`~TermTk.TTkWidgets` have many predefined signals/slots, but it is possible to subclass any :mod:`~TermTk.TTkWidgets` and add our own signals/slots to them.
+
+.. image:: /../_static/Signal.Slots.001.svg
+
+Methods
+=======
+
+.. autofunction:: TermTk.pyTTkSignal
+.. autodecorator:: TermTk.pyTTkSlot
 '''
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):

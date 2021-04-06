@@ -167,7 +167,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def paintEvent(self):
         '''
-        Pain Event callback,
+        Paint Event callback,
         ths need to be overridden in the widget.
         '''
         pass

@@ -12,11 +12,6 @@ Welcome to pyTermTk's documentation!
 
    autogen.TermTk/TermTk.rst
 
-TermTk main
-===================
-.. autoclass:: TermTk.TTkButton
-.. autodecorator:: TermTk.pyTTkSlot
-
 Indices and tables
 ==================
 

@@ -45,7 +45,6 @@ class TTkCanvas:
         '_bufferedData', '_bufferedColors',
         '_visible', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
-
         self._widget = kwargs.get('widget', None)
         self._visible = True
         self._doubleBuffer = False

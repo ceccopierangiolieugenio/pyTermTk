@@ -138,7 +138,6 @@ class TTkConstant:
           RIGHT_ALIGN
           CENTER_ALIGN
           JUSTIFY
-          pippo
         '''
         NONE         = 0x0000
         ''' No Alignment'''
