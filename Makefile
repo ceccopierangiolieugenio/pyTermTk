@@ -42,8 +42,7 @@ buildTest: .venv
 
 deployDoc:
 	git checkout gh-pages
-	find index.html TTk* libbpytop -name "*.html" | rm -rf
-	# cp -a docs/html/TermTk/* .
+	rm -rf *.inv *.html *.js _* autogen.*
 	cp -a docs/build/html/* .
 	find *.html *.inv *.js autogen.TermTk _* | xargs git add
 	git commit -m "Doc Updated"
