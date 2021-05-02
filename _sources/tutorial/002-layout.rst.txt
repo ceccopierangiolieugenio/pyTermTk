@@ -1,11 +1,11 @@
 .. _pyTermTk:       https://github.com/ceccopierangiolieugenio/pyTermTk
-.. _windows:        https://ceccopierangiolieugenio.github.io/pyTermTk/TTkWidgets/window.html
-.. _TTkLabel:       https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.label.html#TermTk.TTkWidgets.label.TTkLabel
-.. _TTkLayouts:     https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/index.html
-.. _TTkLayout:      https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/layout.html#TermTk.TTkLayouts.layout.TTkLayout
-.. _TTkHBoxLayout:  https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkHBoxLayout
-.. _TTkVBoxLayout:  https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkVBoxLayout
-.. _TTkGridLayout:  https://ceccopierangiolieugenio.github.io/pyTermTk/TTkLayouts/gridlayout.html#TermTk.TTkLayouts.gridlayout.TTkGridLayout
+.. _windows:        https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.window.html
+.. _TTkLabel:       https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.label.html
+.. _TTkLayouts:     https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.html
+.. _TTkLayout:      https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.layout.html#ttklayout
+.. _TTkHBoxLayout:  https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.boxlayout.html#ttkhboxlayout
+.. _TTkVBoxLayout:  https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.boxlayout.html#ttkvboxlayout
+.. _TTkGridLayout:  https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.gridlayout.html#ttkgridlayout
 
 .. _Layout Example:         https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example1.simple.layout.py
 .. _VBox Example:           https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example2.simple.vbox.py

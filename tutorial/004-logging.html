@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pyTermTk - Logging &mdash; pyTermTk 0.2.0a documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TermTk.libbpytop" href="../autogen.TermTk/TermTk.libbpytop.html" />
+    <link rel="prev" title="pyTermTk - Signal &amp; Slots" href="003-signalslots.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pyTermTk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pyTermTk - Logging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#intro">Intro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-log-to-file">Example 1 - Log to file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-log-to-stdout">Example 2 - Log to stdout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3-custom-logging">Example 3 - custom logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-4-use-ttllogviewer-widget">Example 4 - Use TTlLogViewer widget</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyTermTk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>pyTermTk - Logging</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorial/004-logging.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="pytermtk-logging">
+<h1><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> - Logging<a class="headerlink" href="#pytermtk-logging" title="Permalink to this headline">¶</a></h1>
+<section id="intro">
+<h2>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkCore.log.html">TTkLog</a> class provide a set of api to allow and configure the logging.</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<section id="example-1-log-to-file">
+<h3>Example 1 - Log to file<a class="headerlink" href="#example-1-log-to-file" title="Permalink to this headline">¶</a></h3>
+<p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example1.logtofile.py">example1.logtofile.py</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">TermTk</span> <span class="k">as</span> <span class="nn">ttk</span>
+
+    <span class="c1"># session.log is used by default</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">use_default_file_logging</span><span class="p">()</span>
+
+    <span class="c1"># Push some Debug messages</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>    <span class="s2">&quot;Test Info Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>   <span class="s2">&quot;Test Debug Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>   <span class="s2">&quot;Test Error Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>    <span class="s2">&quot;Test Warning Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Test Critical Message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-log-to-stdout">
+<h3>Example 2 - Log to stdout<a class="headerlink" href="#example-2-log-to-stdout" title="Permalink to this headline">¶</a></h3>
+<p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example2.logtostdout.py">example2.logtostdout.py</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">TermTk</span> <span class="k">as</span> <span class="nn">ttk</span>
+
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">use_default_stdout_logging</span><span class="p">()</span>
+
+    <span class="c1"># Push some Debug messages</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>    <span class="s2">&quot;Test Info Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>   <span class="s2">&quot;Test Debug Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>   <span class="s2">&quot;Test Error Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>    <span class="s2">&quot;Test Warning Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Test Critical Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>   <span class="s2">&quot;Test Fatal Message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-custom-logging">
+<h3>Example 3 - custom logging<a class="headerlink" href="#example-3-custom-logging" title="Permalink to this headline">¶</a></h3>
+<p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example3.customlogging.py">example3.customlogging.py</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">TermTk</span> <span class="k">as</span> <span class="nn">ttk</span>
+
+    <span class="c1"># define the callback used to process the log message</span>
+<span class="k">def</span> <span class="nf">message_handler</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="n">msgType</span> <span class="o">=</span> <span class="s2">&quot;NONE&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">InfoMsg</span><span class="p">:</span>       <span class="n">msgType</span> <span class="o">=</span> <span class="s2">&quot;[INFO]&quot;</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">WarningMsg</span><span class="p">:</span>  <span class="n">msgType</span> <span class="o">=</span> <span class="s2">&quot;[WARNING]&quot;</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">CriticalMsg</span><span class="p">:</span> <span class="n">msgType</span> <span class="o">=</span> <span class="s2">&quot;[CRITICAL]&quot;</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">FatalMsg</span><span class="p">:</span>    <span class="n">msgType</span> <span class="o">=</span> <span class="s2">&quot;[FATAL]&quot;</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">ErrorMsg</span><span class="p">:</span>    <span class="n">msgType</span> <span class="o">=</span> <span class="s2">&quot;[ERROR]&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msgType</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Register the callback to the message handler</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">installMessageHandler</span><span class="p">(</span><span class="n">message_handler</span><span class="p">)</span>
+
+    <span class="c1"># Push some Debug messages</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>    <span class="s2">&quot;Test Info Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>   <span class="s2">&quot;Test Debug Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>   <span class="s2">&quot;Test Error Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>    <span class="s2">&quot;Test Warning Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Test Critical Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>   <span class="s2">&quot;Test Fatal Message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-4-use-ttllogviewer-widget">
+<h3>Example 4 - Use <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkTestWidgets.logviewer.html">TTlLogViewer</a> widget<a class="headerlink" href="#example-4-use-ttllogviewer-widget" title="Permalink to this headline">¶</a></h3>
+<p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example4.ttklogviewer.py">example4.ttklogviewer.py</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">TermTk</span> <span class="k">as</span> <span class="nn">ttk</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTk</span><span class="p">()</span>
+
+    <span class="c1"># Create a window and attach it to the root (parent=root)</span>
+<span class="n">logWin</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkWindow</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">root</span><span class="p">,</span><span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;LogViewer Window&quot;</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">ttk</span><span class="o">.</span><span class="n">TTkVBoxLayout</span><span class="p">())</span>
+
+    <span class="c1"># Attach the logViewer widget to the window</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLogViewer</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">logWin</span><span class="p">)</span>
+
+    <span class="c1"># Push some Debug messages</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>    <span class="s2">&quot;Test Info Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>   <span class="s2">&quot;Test Debug Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>   <span class="s2">&quot;Test Error Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>    <span class="s2">&quot;Test Warning Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Test Critical Message&quot;</span><span class="p">)</span>
+<span class="n">ttk</span><span class="o">.</span><span class="n">TTkLog</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>   <span class="s2">&quot;Test Fatal Message&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Start the Main loop</span>
+<span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The above code produces the following output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>╔══════════════════════════════════════════════════════════════════════════════╗
+║ LogViewer Window                                                             ║
+╟──────────────────────────────────────────────────────────────────────────────╢
+║                                                                              ║
+║INFO : tutorial/logging/example4.ttklogviewer.py:36 Test Info Message         ║
+║DEBUG: tutorial/logging/example4.ttklogviewer.py:37 Test Debug Message        ║
+║ERROR: tutorial/logging/example4.ttklogviewer.py:38 Test Error Message        ║
+║WARNING : tutorial/logging/example4.ttklogviewer.py:39 Test Warning Message   ║
+║CRITICAL: tutorial/logging/example4.ttklogviewer.py:40 Test Critical Message  ║
+║FATAL: tutorial/logging/example4.ttklogviewer.py:41 Test Fatal Message        ║
+║DEBUG: _/.venv/lib/python3.8/site-packages/TermTk/TTkCore/ttk.py:70 Starting M║
+║DEBUG: _/.venv/lib/python3.8/site-packages/TermTk/TTkCore/ttk.py:80 Signal Eve║
+║DEBUG: _/.venv/lib/python3.8/site-packages/TermTk/TTkCore/ttk.py:65 fps: 33   ║
+║DEBUG: _/.venv/lib/python3.8/site-packages/TermTk/TTkCore/ttk.py:65 fps: 34   ║
+║DEBUG: _/.venv/lib/python3.8/site-packages/TermTk/TTkCore/ttk.py:65 fps: 34   ║
+║                                                                              ║
+║                                                                              ║
+║                                                                              ║
+║◀▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┄┄┄┄┄┄┄┄┄┄┄▶║
+╚══════════════════════════════════════════════════════════════════════════════╝
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../autogen.TermTk/TermTk.libbpytop.html" class="btn btn-neutral float-right" title="TermTk.libbpytop" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="003-signalslots.html" class="btn btn-neutral float-left" title="pyTermTk - Signal &amp; Slots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Eugenio Parodi.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
