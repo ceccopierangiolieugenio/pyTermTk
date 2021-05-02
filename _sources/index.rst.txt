@@ -11,7 +11,7 @@
 .. _GTK:     https://pygobject.readthedocs.io/en/latest/
 .. _tkinter: https://docs.python.org/3/library/tkinter.html
 
-Welcome to pyTermTk's documentation!
+Welcome to pyTermTk_'s documentation!
 ====================================
 
 Intro
