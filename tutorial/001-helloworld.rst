@@ -23,7 +23,7 @@ Examples
 Example 1
 ---------
 
-Following is the code to execute `helloworld.001.py <helloworld/helloworld.001.py>`_ in pyTermTk_:
+Following is the code to execute `helloworld.001.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/helloworld/helloworld.001.py>`_ in pyTermTk_:
 
 .. code:: python
 
@@ -42,7 +42,7 @@ The above code produces the following output
 Example 2 - Your first Window
 -----------------------------
 
-Following is the code to execute `helloworld.002.py <helloworld/helloworld.002.py>`_ in pyTermTk_:
+Following is the code to execute `helloworld.002.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/helloworld/helloworld.002.py>`_ in pyTermTk_:
 
 .. code:: python
 

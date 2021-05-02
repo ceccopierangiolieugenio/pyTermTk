@@ -17,8 +17,9 @@ Welcome to pyTermTk's documentation!
 Intro
 -----
 
-pyTermTk_ is a Text-based user interface library (TUI_)
-Evolved from the discontinued project pyCuT_ and inspired by a mix of Qt5_, GTK_, and tkinter_ api definition with a touch of personal interpretation
+| pyTermTk_ is a Text-based user interface library (TUI_)
+| Evolved from the discontinued project pyCuT_ and inspired by
+| a mix of Qt5_, GTK_, and tkinter_ api definition with a touch of personal interpretation
 
 
 .. toctree::

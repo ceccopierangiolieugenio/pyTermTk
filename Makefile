@@ -42,9 +42,9 @@ buildTest: .venv
 
 deployDoc:
 	git checkout gh-pages
-	rm -rf *.inv *.html *.js _* autogen.*
+	rm -rf *.inv *.html *.js _* autogen.* tutorial
 	cp -a docs/build/html/* .
-	find *.html *.inv *.js autogen.TermTk _* | xargs git add
+	find *.html *.inv *.js autogen.TermTk _* tutorial | xargs git add
 	git commit -m "Doc Updated"
 	git push origin gh-pages
 	git checkout main
