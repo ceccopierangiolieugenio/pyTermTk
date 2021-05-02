@@ -197,8 +197,9 @@ class _TTkColorButton(TTkButton):
         self.colorClicked.emit(self._textColor)
 
 class TTkColorDialogPicker(TTkWindow,TColor):
-    '''
-    ### Color Picker Layout sizes:
+    ''' Color Picker Layout sizes:
+
+    ::
         Terminal window (More or less, It is too annoying to redraw this)
         ┌────────────────────────────────────────────────┐
         │┌──────[Palette]───────┐┌────[Color]───────────┐│

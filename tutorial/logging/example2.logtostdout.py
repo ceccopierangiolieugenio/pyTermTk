@@ -26,9 +26,9 @@ import TermTk as ttk
 
 ttk.TTkLog.use_default_stdout_logging()
 
-ttk.TTkLog.info(    "Test Info Messgae")
-ttk.TTkLog.debug(   "Test Debug Messgae")
-ttk.TTkLog.error(   "Test Error Messgae")
-ttk.TTkLog.warn(    "Test Warning Messgae")
-ttk.TTkLog.critical("Test Critical Messgae")
-ttk.TTkLog.fatal(   "Test Fatal Messgae")
+ttk.TTkLog.info(    "Test Info Message")
+ttk.TTkLog.debug(   "Test Debug Message")
+ttk.TTkLog.error(   "Test Error Message")
+ttk.TTkLog.warn(    "Test Warning Message")
+ttk.TTkLog.critical("Test Critical Message")
+ttk.TTkLog.fatal(   "Test Fatal Message")

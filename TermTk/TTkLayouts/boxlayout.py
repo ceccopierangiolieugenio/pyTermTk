@@ -23,17 +23,45 @@
 # SOFTWARE.
 
 '''
-### Box Layout
-[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
+### Box Layout - [Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
 '''
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkHBoxLayout(TTkGridLayout):
+    ''' The TTkHBoxLayout class lines up widgets horizontally
+
+    ::
+
+        TTkHBoxLayout
+         ╔═════════╤═════════╤═════════╗
+         ║ Widget1 │ Widget2 │ Widget3 ║
+         ║         │         │         ║
+         ║         │         │         ║
+         ║         │         │         ║
+         ║         │         │         ║
+         ║         │         │         ║
+         ╚═════════╧═════════╧═════════╝
+    '''
     pass
 
 class TTkVBoxLayout(TTkGridLayout):
+    ''' The TTkVBoxLayout class lines up widgets vertically
+
+    ::
+
+        TTkVBoxLayout
+         ╔═════════════════════════════╗
+         ║         Widget 1            ║
+         ╟─────────────────────────────╢
+         ║         Widget 2            ║
+         ╟─────────────────────────────╢
+         ║         Widget 3            ║
+         ╟─────────────────────────────╢
+         ║         Widget 4            ║
+         ╚═════════════════════════════╝
+    '''
     def addItem(self, item):
         TTkGridLayout.addItem(self, item, self.count(), 0)
     def addWidget(self, widget):

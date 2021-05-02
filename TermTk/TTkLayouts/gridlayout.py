@@ -23,24 +23,7 @@
 # SOFTWARE.
 
 '''
-### Grid Layout
-[Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
-
-The grid layout allows an automatic place all the widgets in a grid
-the empty rows/cols are resized to the "columnMinHeight,columnMinWidth" parameters
-
-    TTkGridLayout        ┌┐ columnMinWidth
-     ╔═════════╤═════════╤╤═════════╗
-     ║ Widget1 │ Widget2 ││ Widget3 ║
-     ║ (0,0)   │ (0,1)   ││ (0,3)   ║
-     ╟─────────┼─────────┼┼─────────╢ ┐ columnMinHeight
-     ╟─────────┼─────────┼┼─────────╢ ┘
-     ║ Widget4 │         ││         ║
-     ║ (2,0)   │         ││         ║
-     ╟─────────┼─────────┼┼─────────╢
-     ║         │         ││ Widget5 ║
-     ║         │         ││ (3,3)   ║
-     ╚═════════╧═════════╧╧═════════╝
+### Grid Layout - [Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
 '''
 
 from TermTk.TTkCore.constant import TTkK
@@ -48,15 +31,31 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 
 class TTkGridLayout(TTkLayout):
+    '''
+    The grid layout allows an automatic place all the widgets in a grid, <br/>
+    the empty rows/cols are resized to the "columnMinHeight,columnMinWidth" parameters
+
+    ::
+
+        TTkGridLayout        ┌┐ columnMinWidth
+         ╔═════════╤═════════╤╤═════════╗
+         ║ Widget1 │ Widget2 ││ Widget3 ║
+         ║ (0,0)   │ (0,1)   ││ (0,3)   ║
+         ╟─────────┼─────────┼┼─────────╢ ┐ columnMinHeight
+         ╟─────────┼─────────┼┼─────────╢ ┘
+         ║ Widget4 │         ││         ║
+         ║ (2,0)   │         ││         ║
+         ╟─────────┼─────────┼┼─────────╢
+         ║         │         ││ Widget5 ║
+         ║         │         ││ (3,3)   ║
+         ╚═════════╧═════════╧╧═════════╝
+
+    :param int columnMinWidth: the minimum width of the column, optional, defaults to 0
+    :param int columnMinHeight: the minimum height of the column, optional, defaults to 0
+    '''
+
     __slots__ = ('_gridItems','_columnMinWidth','_columnMinHeight', '_rows', '_cols')
     def __init__(self, *args, **kwargs):
-        '''
-        TTkGridLayout constructor
-
-        Args:
-            columnMinWidth (int, optional, default=0): the minimum width of the column
-            columnMinHeight (int, optional, default=0): the minimum height of the column
-        '''
         self._rows = 0
         self._cols = 0
         TTkLayout.__init__(self, *args, **kwargs)
@@ -97,6 +96,15 @@ class TTkGridLayout(TTkLayout):
 
     # addWidget(self, widget, row, col)
     def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1):
+        '''Add the widget to this :class:`TTkGridLayout`, this function uses :meth:`~addItem`
+
+        :param widget: the widget to be added
+        :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
+        :param int row:     the row of the grid, optional, defaults to None
+        :param int col:     the col of the grid, optional, defaults to None
+        :param int rowspan: the rows used by the widget, optional, defaults to 1
+        :param int colspan: the cols used by the widget, optional, defaults to 1
+        '''
         self.removeWidget(widget)
         item = TTkWidgetItem(widget=widget)
         TTkGridLayout.addItem(self, item, row, col, rowspan, colspan)
@@ -105,6 +113,16 @@ class TTkGridLayout(TTkLayout):
     def replaceItem(self, item, index): pass
 
     def addItem(self, item, row=None, col=None, rowspan=1, colspan=1):
+        '''Add the item to this :class:`TTkGridLayout`
+
+        :param item: the item to be added
+        :type item: :class:`~TermTk.TTkLayouts.layout.TTkLayoutItem`
+        :param int row:     the row of the grid, optional, defaults to None
+        :param int col:     the col of the grid, optional, defaults to None
+        :param int rowspan: the rows used by the item, optional, defaults to 1
+        :param int colspan: the cols used by the item, optional, defaults to 1
+
+        '''
         self.removeItem(item)
         if row is None and col is None:
             # Append The widget at the end

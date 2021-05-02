@@ -63,6 +63,8 @@ class TTkGraph(TTkWidget, TColor):
         i=0
         data = self._data[-w*2:]
         # TTkLog.debug(data)
+        # TODO: use deep unpacking technique to grab couples of values
+        # https://mathspp.com/blog/pydonts/enumerate-me#deep-unpacking
         mv = max(max(map(max,data)),-min(map(min,data)))
         zoom = 2*h/mv if mv>0 else 1.0
         for i in range(len(data)):
