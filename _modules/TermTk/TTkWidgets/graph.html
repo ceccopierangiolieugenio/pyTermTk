@@ -83,9 +83,24 @@
               
             
             
-              <p><span class="caption-text">Contents:</span></p>
+              <p><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+</ul>
+<p><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
 </ul>
 
             
@@ -217,6 +232,8 @@
         <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="o">-</span><span class="n">w</span><span class="o">*</span><span class="mi">2</span><span class="p">:]</span>
         <span class="c1"># TTkLog.debug(data)</span>
+        <span class="c1"># TODO: use deep unpacking technique to grab couples of values</span>
+        <span class="c1"># https://mathspp.com/blog/pydonts/enumerate-me#deep-unpacking</span>
         <span class="n">mv</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">max</span><span class="p">,</span><span class="n">data</span><span class="p">)),</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span><span class="n">data</span><span class="p">)))</span>
         <span class="n">zoom</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="n">mv</span> <span class="k">if</span> <span class="n">mv</span><span class="o">&gt;</span><span class="mi">0</span> <span class="k">else</span> <span class="mf">1.0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>

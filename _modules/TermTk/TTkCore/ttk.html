@@ -83,9 +83,24 @@
               
             
             
-              <p><span class="caption-text">Contents:</span></p>
+              <p><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+</ul>
+<p><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
 </ul>
 
             
@@ -227,7 +242,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time</span>  <span class="o">=</span> <span class="n">curtime</span>
 
-    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTk.mainloop"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.ttk.html#TermTk.TTkCore.ttk.TTk.mainloop">[docs]</a>    <span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.&#39;&#39;&#39;</span>
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span>
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span> <span class="s2">&quot;         ████████╗            ████████╗    &quot;</span> <span class="p">)</span>
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span> <span class="s2">&quot;         ╚══██╔══╝            ╚══██╔══╝    &quot;</span> <span class="p">)</span>
@@ -317,7 +333,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unhandled Event </span><span class="si">{</span><span class="n">evt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
-        <span class="n">lbt</span><span class="o">.</span><span class="n">Term</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="n">lbt</span><span class="o">.</span><span class="n">Term</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_time_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">TIME_EVENT</span><span class="p">)</span>
@@ -342,10 +358,11 @@
     <span class="k">def</span> <span class="nf">_canvas_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTk.quit"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.ttk.html#TermTk.TTkCore.ttk.TTk.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Tells the application to exit with a return code.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">QUIT_EVENT</span><span class="p">)</span>
         <span class="n">TTkTimer</span><span class="o">.</span><span class="n">quitAll</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="k">def</span> <span class="nf">_SIGSTOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset terminal settings and stop background input read before putting to sleep&quot;&quot;&quot;</span>

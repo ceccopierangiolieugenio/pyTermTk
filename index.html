@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="autogen.TermTk/TermTk.html" /> 
+    <link rel="next" title="pyTermTk - Hello World" href="tutorial/001-helloworld.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,9 +85,24 @@
               
             
             
-              <p><span class="caption-text">Contents:</span></p>
+              <p><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/004-logging.html">pyTermTk - Logging</a></li>
+</ul>
+<p><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
 </ul>
 
             
@@ -157,23 +172,34 @@
             
   <section id="welcome-to-pytermtk-s-documentation">
 <h1>Welcome to pyTermTk’s documentation!<a class="headerlink" href="#welcome-to-pytermtk-s-documentation" title="Permalink to this headline">¶</a></h1>
+<section id="intro">
+<h2>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> is a Text-based user interface library (<a class="reference external" href="https://en.wikipedia.org/wiki/Text-based_user_interface">TUI</a>)
+Evolved from the discontinued project <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyCuT">pyCuT</a> and inspired by a mix of <a class="reference external" href="https://www.riverbankcomputing.com/static/Docs/PyQt5/">Qt5</a>, <a class="reference external" href="https://pygobject.readthedocs.io/en/latest/">GTK</a>, and <a class="reference external" href="https://docs.python.org/3/library/tkinter.html">tkinter</a> api definition with a touch of personal interpretation</p>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Contents:</span></p>
+<p><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/004-logging.html">pyTermTk - Logging</a></li>
 </ul>
 </div>
+<div class="toctree-wrapper compound">
+<p><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+</ul>
+</div>
+</section>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -190,7 +216,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="autogen.TermTk/TermTk.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorial/001-helloworld.html" class="btn btn-neutral float-right" title="pyTermTk - Hello World" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

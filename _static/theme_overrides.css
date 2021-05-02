@@ -1,4 +1,4 @@
-/* In a bid to be "mobile-friendly" by default about 1/3 of the horizontal space is wasted; 
+/* In a bid to be "mobile-friendly" by default about 1/3 of the horizontal space is wasted;
 	this CSS removes the wasted space. */
 .wy-nav-content {
     max-width: none;
@@ -17,6 +17,19 @@
 
    .wy-table-responsive {
       overflow: visible !important;
+   }
+
+   .wy-menu p {
+      color: #55a5d9;
+      height: 32px;
+      line-height: 32px;
+      padding: 0 1.618em;
+      margin: 12px 0 0;
+      display: block;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 85%;
+      white-space: nowrap;
    }
 }
 

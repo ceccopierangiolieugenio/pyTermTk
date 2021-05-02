@@ -1,6 +1,6 @@
 
-API Reference
-~~~~~~~~~~~~~
+TermTk
+~~~~~~
 
 .. automodule:: TermTk
 
