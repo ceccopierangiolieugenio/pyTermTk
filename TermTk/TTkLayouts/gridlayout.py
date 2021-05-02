@@ -35,7 +35,8 @@ class TTkGridLayout(TTkLayout):
     The grid layout allows an automatic place all the widgets in a grid, <br/>
     the empty rows/cols are resized to the "columnMinHeight,columnMinWidth" parameters
 
-    ```
+    ::
+
         TTkGridLayout        ┌┐ columnMinWidth
          ╔═════════╤═════════╤╤═════════╗
          ║ Widget1 │ Widget2 ││ Widget3 ║
@@ -48,7 +49,7 @@ class TTkGridLayout(TTkLayout):
          ║         │         ││ Widget5 ║
          ║         │         ││ (3,3)   ║
          ╚═════════╧═════════╧╧═════════╝
-    ```
+
     :param int columnMinWidth: the minimum width of the column, optional, defaults to 0
     :param int columnMinHeight: the minimum height of the column, optional, defaults to 0
     '''

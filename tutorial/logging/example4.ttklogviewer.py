@@ -32,12 +32,12 @@ logWin = ttk.TTkWindow(parent=root,pos = (1,1), size=(80,20), title="LogViewer W
     # Attach the logViewer widget to the window
 ttk.TTkLogViewer(parent=logWin)
 
-ttk.TTkLog.info(    "Test Info Messgae")
-ttk.TTkLog.debug(   "Test Debug Messgae")
-ttk.TTkLog.error(   "Test Error Messgae")
-ttk.TTkLog.warn(    "Test Warning Messgae")
-ttk.TTkLog.critical("Test Critical Messgae")
-ttk.TTkLog.fatal(   "Test Fatal Messgae")
+ttk.TTkLog.info(    "Test Info Message")
+ttk.TTkLog.debug(   "Test Debug Message")
+ttk.TTkLog.error(   "Test Error Message")
+ttk.TTkLog.warn(    "Test Warning Message")
+ttk.TTkLog.critical("Test Critical Message")
+ttk.TTkLog.fatal(   "Test Fatal Message")
 
     # Start the Main loop
 root.mainloop()

@@ -112,10 +112,13 @@ class TTkLayoutItem:
 
 
 class TTkLayout(TTkLayoutItem):
-    ''' The :class:`TTkLayout` class is the base class of geometry managers. <br/>
-    It allows free placement of the widgets in the layout area. <br/>
-    Used mainly to have free range moving :class:`~TermTk.TTkWidgets.window.TTkWindow` because the widgets are not automatically rearranged after a layout event
-    ```
+    '''
+    | The :class:`TTkLayout` class is the base class of geometry managers. <br/>
+    | It allows free placement of the widgets in the layout area. <br/>
+    | Used mainly to have free range moving :class:`~TermTk.TTkWidgets.window.TTkWindow` because the widgets are not automatically rearranged after a layout event
+
+    ::
+
         ╔════════════════════════════╗
         ║   pos(4,2)                 ║
         ║   ┌───────┐   pos(16,4)    ║
@@ -126,7 +129,6 @@ class TTkLayout(TTkLayoutItem):
         ║   └───────┘                ║
         ║                            ║
         ╚════════════════════════════╝
-    ```
     '''
     __slots__ = ('_items', '_zSortedItems', '_parent')
     def __init__(self, *args, **kwargs):

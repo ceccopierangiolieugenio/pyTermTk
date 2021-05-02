@@ -39,6 +39,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
 	'sphinx_epytext',
     'sphinxcontrib_autodocgen',
+    #'sphinxcontrib.fulltoc',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -81,7 +82,7 @@ html_context = {'css_files': [
 	'_static/theme_overrides.css',  # override wide tables in RTD theme
 ]}
 
-# html_theme = 'groundwork'
+# html_theme = 'bizstyle'
 
 #html_theme_options = {
 #    "sidebar_width": '240px',
@@ -93,16 +94,16 @@ html_context = {'css_files': [
 #}
 
 
-import m2r
-
-def docstring(app, what, name, obj, options, lines):
-    md  = '\n'.join(lines)
-    rst = m2r.convert(md)
-    lines.clear()
-    lines += rst.splitlines()
-
-def setup(app):
-    app.connect('autodoc-process-docstring', docstring)
+# import m2r
+#
+# def docstring(app, what, name, obj, options, lines):
+#     md  = '\n'.join(lines)
+#     rst = m2r.convert(md)
+#     lines.clear()
+#     lines += rst.splitlines()
+#
+# def setup(app):
+#     app.connect('autodoc-process-docstring', docstring)
 
 import TermTk
 
@@ -129,5 +130,5 @@ autodocgen_config = {
         },
 
         # choose a different title for specific modules, e.g. the toplevel one
-        'module_title_decider': lambda modulename: 'API Reference' if modulename=='TermTk' else modulename,
+        #'module_title_decider': lambda modulename: 'API Reference' if modulename=='TermTk' else modulename,
 }

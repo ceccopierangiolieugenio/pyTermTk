@@ -20,7 +20,7 @@ A list of frequently used modules is given below:
  - [TTkTestWidgets](https://ceccopierangiolieugenio.github.io/pyTermTk/TTkTestWidgets) − Classes with basic testing widgets
 
 ## Tutorials
-- **[Hello World](001-helloworld.md)**
-- **[Logging](004-logging.md)**
-- **[Layout](002-layout.md)**
-- **[Signals and Slots](003-signalslots.md)**
+- **[Hello World](001-helloworld.rst)**
+- **[Logging](004-logging.rst)**
+- **[Layout](002-layout.rst)**
+- **[Signals and Slots](003-signalslots.rst)**

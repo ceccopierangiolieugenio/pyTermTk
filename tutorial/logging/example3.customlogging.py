@@ -37,9 +37,9 @@ def message_handler(mode, context, message):
     # Register the callback to the message handler
 ttk.TTkLog.installMessageHandler(message_handler)
 
-ttk.TTkLog.info(    "Test Info Messgae")
-ttk.TTkLog.debug(   "Test Debug Messgae")
-ttk.TTkLog.error(   "Test Error Messgae")
-ttk.TTkLog.warn(    "Test Warning Messgae")
-ttk.TTkLog.critical("Test Critical Messgae")
-ttk.TTkLog.fatal(   "Test Fatal Messgae")
+ttk.TTkLog.info(    "Test Info Message")
+ttk.TTkLog.debug(   "Test Debug Message")
+ttk.TTkLog.error(   "Test Error Message")
+ttk.TTkLog.warn(    "Test Warning Message")
+ttk.TTkLog.critical("Test Critical Message")
+ttk.TTkLog.fatal(   "Test Fatal Message")

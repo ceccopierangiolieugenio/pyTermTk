@@ -36,6 +36,7 @@ import TermTk.libbpytop       as lbt
 
 class TTkWidget(TMouseEvents,TKeyEvents):
     ''' Widget Layout sizes:
+
     ::
         Terminal area (i.e. XTerm)
         ┌─────────────────────────────────────────┐

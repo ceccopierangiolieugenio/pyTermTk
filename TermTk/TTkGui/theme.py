@@ -27,6 +27,7 @@ from TermTk.TTkCore.color import TTkColor
 
 class TTkTheme():
     ''' from: https://en.wikipedia.org/wiki/Box-drawing_character
+
     ::
         ┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕
         │ ││  ║ ║║  ║ ║║  │ ││
@@ -84,6 +85,7 @@ class TTkTheme():
       (), # TODO: Grid 10
         )
     ''' Grid Types
+
     ::
         grid0  grid1  grid2  grid3
         ┌─┬┐   ╔═╦╗   ╔═╤╗   ┌─╥┐
@@ -143,6 +145,7 @@ class TTkTheme():
       '◀','▶'
     )
     ''' Tab Examples
+
     ::
           ┌──────╔══════╗──────┬──────┐      ┌─┌──────╔══════╗──────┬──────┐─┐
           │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│

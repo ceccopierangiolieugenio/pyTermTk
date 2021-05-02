@@ -31,7 +31,9 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkHBoxLayout(TTkGridLayout):
     ''' The TTkHBoxLayout class lines up widgets horizontally
-    ```text
+
+    ::
+
         TTkHBoxLayout
          ╔═════════╤═════════╤═════════╗
          ║ Widget1 │ Widget2 │ Widget3 ║
@@ -41,13 +43,14 @@ class TTkHBoxLayout(TTkGridLayout):
          ║         │         │         ║
          ║         │         │         ║
          ╚═════════╧═════════╧═════════╝
-    ```
     '''
     pass
 
 class TTkVBoxLayout(TTkGridLayout):
     ''' The TTkVBoxLayout class lines up widgets vertically
-    ```text
+
+    ::
+
         TTkVBoxLayout
          ╔═════════════════════════════╗
          ║         Widget 1            ║
@@ -58,7 +61,6 @@ class TTkVBoxLayout(TTkGridLayout):
          ╟─────────────────────────────╢
          ║         Widget 4            ║
          ╚═════════════════════════════╝
-    ```
     '''
     def addItem(self, item):
         TTkGridLayout.addItem(self, item, self.count(), 0)

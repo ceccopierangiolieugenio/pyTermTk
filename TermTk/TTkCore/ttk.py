@@ -74,6 +74,7 @@ class TTk(TTkWidget):
             self.time  = curtime
 
     def mainloop(self):
+        '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
         TTkLog.debug( "" )
         TTkLog.debug( "         ████████╗            ████████╗    " )
         TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
@@ -189,6 +190,7 @@ class TTk(TTkWidget):
         pass
 
     def quit(self):
+        '''Tells the application to exit with a return code.'''
         self.events.put(TTkK.QUIT_EVENT)
         TTkTimer.quitAll()
         self.running = False
