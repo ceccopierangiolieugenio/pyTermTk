@@ -151,16 +151,16 @@ class TTkListWidget(TTkAbstractScrollView):
         for item in self.layout().children():
             x,y,_,h = item.geometry()
             item.setGeometry(x,y,maxw,h)
-        self.viewChanged.emit()
+        TTkAbstractScrollView.resizeEvent(self, w, h)
 
     def viewFullAreaSize(self) -> (int, int):
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        return w , h
+        return w, h
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def addItem(self, item):
+    def addItem(self, item, ):
         if isinstance(item, str):
             label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
             label.listItemClicked.connect(self._labelSelectedHandler)
@@ -175,6 +175,14 @@ class TTkListWidget(TTkAbstractScrollView):
             x,y,_,h = item.geometry()
             item.setGeometry(x,y,max(w-1,fw),h)
         self.viewChanged.emit()
+
+    def setCurrentRow(self, row):
+        if row<len(self._items):
+            item = self._items[row]
+            self.setCurrentItem(item)
+
+    def setCurrentItem(self, item):
+        item.listItemClicked.emit(item)
 
     def _moveToHighlighted(self):
         index = self._items.index(self._highlighted)

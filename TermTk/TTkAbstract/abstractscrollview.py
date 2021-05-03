@@ -81,6 +81,7 @@ class TTkAbstractScrollView(TTkWidget):
         return True
 
     def resizeEvent(self, w, h):
+        self.viewMoveTo(self._viewOffsetX, self._viewOffsetY)
         self.viewSizeChanged.emit(w,h)
         self.viewChanged.emit()
 

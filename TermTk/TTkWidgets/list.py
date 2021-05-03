@@ -41,11 +41,14 @@ class TTkList(TTkAbstractScrollArea):
         self.textClicked = self._listView.textClicked
         # self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-
     def addItem(self, *args, **kwargs):
         return self._listView.addItem(*args, **kwargs)
     def setSelectionMode(self, *args, **kwargs):
         return self._listView.setSelectionMode(*args, **kwargs)
     def selectedLabels(self, *args, **kwargs):
         return self._listView.selectedLabels(*args, **kwargs)
+    def setCurrentRow(self, *args, **kwargs):
+        return self._listView.setCurrentRow(*args, **kwargs)
+    def setCurrentItem(self, *args, **kwargs):
+        return self._listView.setCurrentItem(*args, **kwargs)
 

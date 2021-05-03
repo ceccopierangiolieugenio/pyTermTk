@@ -50,75 +50,25 @@ def getSentence(a,b):
     return " ".join([getWord() for i in range(0,random.randint(a,b))])
 
 def demoShowcase(root=None, border=True):
-    splitter = ttk.TTkSplitter(parent=root)
+    tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
+    tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
+    tabWidget1.addTab(demoLayout(),      " Layout Test ")
+    tabWidget1.addTab(demoLayoutNested()," Nested Layout Test ")
+    tabWidget1.addTab(demoLayoutSpan(),  " Layout Span Test ")
+    tabWidget1.addTab(demoMenuBar(),     " MenuBar Test ")
+    tabWidget1.addTab(demoFormWidgets(), " Form Test ")
+    tabWidget1.addTab(demoList(),        " List Test ")
+    tabWidget1.addTab(demoColorPicker(), " Color Picker ")
+    tabWidget1.addTab(demoGraph(),       " Graph Test ")
+    tabWidget1.addTab(demoTable(),       " Table Test ")
+    tabWidget1.addTab(demoTree(),        " Tree Test ")
+    tabWidget1.addTab(demoSplitter(),    " Splitter Test ")
+    tabWidget1.addTab(demoWindows(),     " Windows Test ")
+    tabWidget1.addTab(demoTab(),         " Tab Test ")
+    tabWidget1.addTab(demoScrollArea(),  " Scroll Area ")
 
-    listMenu = ttk.TTkList(parent=splitter, maxWidth=15, minWidth=10)
-
-    mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
-
-    listMenu.addItem(f"Test")
-    tabTest = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabTest.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
-    tabTest.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
-
-    listMenu.addItem(f"Layouts")
-    tabLayouts = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabLayouts.addTab(demoLayout(),      " Layout Test ")
-    tabLayouts.addTab(demoLayoutNested()," Nested Layout Test ")
-    tabLayouts.addTab(demoLayoutSpan(),  " Layout Span Test ")
-    tabLayouts.addTab(demoSplitter(),    " Splitter Test ")
-
-    listMenu.addItem(f"MenuBar")
-    tabMenuBar = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabMenuBar.addTab(demoMenuBar(),     " MenuBar Test ")
-
-    listMenu.addItem(f"Widgets")
-    tabWidgets = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabWidgets.addTab(demoFormWidgets(), " Form Test ")
-    tabWidgets.addTab(demoList(),        " List Test ")
-    tabWidgets.addTab(demoTable(),       " Table Test ")
-    tabWidgets.addTab(demoTree(),        " Tree Test ")
-    tabWidgets.addTab(demoTab(),         " Tab Test ")
-
-    listMenu.addItem(f"Pickers")
-    tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabPickers.addTab(demoColorPicker(), " Color Picker ")
-
-    listMenu.addItem(f"Graphs")
-    tabGraphs = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabGraphs.addTab(demoGraph(),       " Graph Test ")
-
-    listMenu.addItem(f"Windows")
-    tabWindows = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabWindows.addTab(demoWindows(),     " Windows Test ")
-
-    listMenu.addItem(f"Area")
-    tabArea = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabArea.addTab(demoScrollArea(),  " Scroll Area ")
-
-    @ttk.pyTTkSlot(str)
-    def _listCallback(label):
-        widget = None
-        if   label == "Test":    widget = tabTest
-        elif label == "Layouts": widget = tabLayouts
-        elif label == "MenuBar": widget = tabMenuBar
-        elif label == "Widgets": widget = tabWidgets
-        elif label == "Pickers": widget = tabPickers
-        elif label == "Graphs":  widget = tabGraphs
-        elif label == "Windows": widget = tabWindows
-        elif label == "Area":    widget = tabArea
-        if widget:
-            if _listCallback.active:
-                _listCallback.active.hide()
-            widget.show()
-            _listCallback.active = widget
-    _listCallback.active = None
-
-    listMenu.textClicked.connect(_listCallback)
-
-    listMenu.setCurrentRow(1)
-
-    return splitter
+    return tabWidget1
 
 def main():
     parser = argparse.ArgumentParser()
