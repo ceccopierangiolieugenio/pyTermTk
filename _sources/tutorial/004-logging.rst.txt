@@ -2,7 +2,7 @@
 .. _TermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
 
 .. _TTkLog:       https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkCore.log.html
-.. _TTlLogViewer: https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkTestWidgets.logviewer.html
+.. _TTkLogViewer: https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkTestWidgets.logviewer.html
 
 ===================
 pyTermTk_ - Logging
@@ -85,7 +85,7 @@ From `example3.customlogging.py <https://github.com/ceccopierangiolieugenio/pyTe
     ttk.TTkLog.critical("Test Critical Message")
     ttk.TTkLog.fatal(   "Test Fatal Message")
 
-Example 4 - Use TTlLogViewer_ widget
+Example 4 - Use TTkLogViewer_ widget
 --------------------------------------------------
 
 From `example4.ttklogviewer.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example4.ttklogviewer.py>`_
