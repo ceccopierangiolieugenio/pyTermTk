@@ -38,6 +38,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
     ''' Widget Layout sizes:
 
     ::
+
         Terminal area (i.e. XTerm)
         ┌─────────────────────────────────────────┐
         │                                         │

@@ -12,7 +12,7 @@
 .. _tkinter: https://docs.python.org/3/library/tkinter.html
 
 Welcome to pyTermTk_'s documentation!
-====================================
+=====================================
 
 Intro
 -----

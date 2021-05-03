@@ -44,7 +44,7 @@ Signal and Slots
 |  A slot is a function that is called in response to a particular signal.
 |  TermTk_'s TTkWidgets_ have many predefined signals/slots, but it is possible to subclass any TTkWidgets_ and add our own signals/slots to them.
 
-.. image:: /_static/Signal.Slots.001.svg
+.. image:: https://ceccopierangiolieugenio.github.io/pyTermTk/_images/Signal.Slots.001.svg
 
 Examples
 ========
