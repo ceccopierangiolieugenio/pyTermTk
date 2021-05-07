@@ -37,6 +37,7 @@ from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
+from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkTemplates.color import TColor
 
@@ -245,11 +246,16 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self.setLayout(TTkGridLayout())
 
         colorLayout = TTkGridLayout() # Right
-        leftLayout =  TTkGridLayout() # Left
+        # leftLayout   = TTkFrame(border=False, transparent=True, minSize=(25,20), maxWidth=25) # Left
+        leftLayout   = TTkLayout(minSize=(25,20), maxWidth=25) # Left
 
-        paletteFrame = TTkFrame(border=True, layout=TTkGridLayout(), title="Basic colors")
-        customFrame  = TTkFrame(border=True, layout=TTkGridLayout(), title="Custom colors")
-        controlFrame = TTkFrame(border=True, minSize=(26,7) ,title="Conrols")
+        #paletteLayout = TTkFrame(border=True, layout=TTkGridLayout(), title="Basic colors")
+        #customLayout  = TTkFrame(border=True, layout=TTkGridLayout(), title="Custom colors")
+        #controlLayout = TTkFrame(border=True, minSize=(26,7) ,        title="Conrols")
+
+        paletteLayout = TTkGridLayout(pos=(0,0),  size=(24,9))
+        customLayout  = TTkGridLayout(pos=(0,10), size=(24,4))
+        controlLayout = TTkLayout(    pos=(0,15), size=(24,30))
 
         # Color Layout Widgets
         self._colorCanvas = _TTkColorCanvas()
@@ -259,19 +265,21 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self._hueCanvas.colorPicked.connect(self._colorCanvas.setHue)
 
         # Control
-        sc = _TTkShowColor(pos=(1,2), size=(5,4), parent=controlFrame, color=TTkColor.bg('#ffffff'))
-        TTkLabel(pos=(2,1), parent=controlFrame,text="rgb:")
-        TTkLabel(pos=(7,2), parent=controlFrame,text="HTML:")
-        leR = TTkSpinBox(pos=(7,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
-        leG = TTkSpinBox(pos=(13,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
-        leB = TTkSpinBox(pos=(19,1), size=(5,1), parent=controlFrame, value=255, minimum=0, maximum=255)
+        controlLayout.addWidget( sc := _TTkShowColor(pos=(1,2), size=(5,4),  color=TTkColor.bg('#ffffff')) )
+        controlLayout.addWidget( TTkLabel(pos=(2,1), text="rgb:") )
+        controlLayout.addWidget( TTkLabel(pos=(7,2), text="HTML:") )
+        controlLayout.addWidget( leR := TTkSpinBox(pos=(7,1), size=(5,1),  value=255, minimum=0, maximum=255) )
+        controlLayout.addWidget( leG := TTkSpinBox(pos=(13,1), size=(5,1),  value=255, minimum=0, maximum=255) )
+        controlLayout.addWidget( leB := TTkSpinBox(pos=(19,1), size=(5,1),  value=255, minimum=0, maximum=255) )
 
-        leHTML = TTkLineEdit(pos=(13,2), size=(8,1), parent=controlFrame, text="#FFFFFF")
+        controlLayout.addWidget( leHTML := TTkLineEdit(pos=(13,2), size=(8,1),  text="#FFFFFF") )
 
-        okButton     = TTkButton(pos=(7,3),  size=(6,3), text="OK",     parent=controlFrame, border=True)
-        cancelButton = TTkButton(pos=(14,3), size=(10,3), text="CANCEL", parent=controlFrame, border=True)
+        controlLayout.addWidget( okButton :=     TTkButton(pos=(7,3),  size=(6,3), text="OK",      border=True) )
+        controlLayout.addWidget( cancelButton := TTkButton(pos=(14,3), size=(10,3), text="CANCEL",  border=True) )
 
-        TTkLabel(pos=(3,20), parent=controlFrame,text="Seriously?")
+        controlLayout.addWidget( TTkLabel(pos=(3,20), text="Seriously?") )
+        # TODO: Get Rid of groupMove
+        #controlLayout.groupMoveTo(1, 15)
 
         @pyTTkSlot()
         def _okPressed():
@@ -323,39 +331,34 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         _controlSetColor(self.color)
 
         # Palette Layout Widgets
-        basicColorsLayout = TTkGridLayout()
-        basicColorsLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ff0000'), border=True, maxSize=(8,3)),0,0)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ff0000'), border=True, maxSize=(8,3)),0,0,1,2)
         b.colorClicked.connect(_controlSetColor)
-        basicColorsLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ffff00'), border=True, maxSize=(8,3)),0,1)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ffff00'), border=True, maxSize=(8,3)),0,2,1,2)
         b.colorClicked.connect(_controlSetColor)
-        basicColorsLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#00ff00'), border=True, maxSize=(8,3)),0,2)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#00ff00'), border=True, maxSize=(8,3)),0,4,1,2)
         b.colorClicked.connect(_controlSetColor)
-        basicColorsLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#00ffff'), border=True, maxSize=(8,3)),1,0)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#00ffff'), border=True, maxSize=(8,3)),1,0,1,2)
         b.colorClicked.connect(_controlSetColor)
-        basicColorsLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#0000ff'), border=True, maxSize=(8,3)),1,1)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#0000ff'), border=True, maxSize=(8,3)),1,2,1,2)
         b.colorClicked.connect(_controlSetColor)
-        basicColorsLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ff00ff'), border=True, maxSize=(8,3)),1,2)
-        b.colorClicked.connect(_controlSetColor)
-
-        shadesOfGreyLayout  = TTkGridLayout()
-        shadesOfGreyLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ffffff'), border=True, maxSize=(4,3)),2,0)
-        b.colorClicked.connect(_controlSetColor)
-        shadesOfGreyLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#dddddd'), border=True, maxSize=(4,3)),2,1)
-        b.colorClicked.connect(_controlSetColor)
-        shadesOfGreyLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#aaaaaa'), border=True, maxSize=(4,3)),2,2)
-        b.colorClicked.connect(_controlSetColor)
-        shadesOfGreyLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#666666'), border=True, maxSize=(4,3)),2,3)
-        b.colorClicked.connect(_controlSetColor)
-        shadesOfGreyLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#333333'), border=True, maxSize=(4,3)),2,4)
-        b.colorClicked.connect(_controlSetColor)
-        shadesOfGreyLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#000000'), border=True, maxSize=(4,3)),2,5)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ff00ff'), border=True, maxSize=(8,3)),1,4,1,2)
         b.colorClicked.connect(_controlSetColor)
 
-        paletteFrame.layout().addItem(basicColorsLayout,0,0)
-        paletteFrame.layout().addItem(shadesOfGreyLayout,1,0)
+        # Shades of Grey
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ffffff'), border=True, maxSize=(4,3)),2,0)
+        b.colorClicked.connect(_controlSetColor)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#dddddd'), border=True, maxSize=(4,3)),2,1)
+        b.colorClicked.connect(_controlSetColor)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#aaaaaa'), border=True, maxSize=(4,3)),2,2)
+        b.colorClicked.connect(_controlSetColor)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#666666'), border=True, maxSize=(4,3)),2,3)
+        b.colorClicked.connect(_controlSetColor)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#333333'), border=True, maxSize=(4,3)),2,4)
+        b.colorClicked.connect(_controlSetColor)
+        paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#000000'), border=True, maxSize=(4,3)),2,5)
+        b.colorClicked.connect(_controlSetColor)
 
         # Custom frame
-        customButtonsLayout = TTkGridLayout()
         if TTkColorDialogPicker.customButtons is None:
             TTkColorDialogPicker.customButtons = (
                     _TTkColorButton(color=TTkColor.bg('#ffffff'), custom=True, border=True, maxSize=(3,3)) ,
@@ -368,25 +371,25 @@ class TTkColorDialogPicker(TTkWindow,TColor):
                     _TTkColorButton(color=TTkColor.bg('#ffffff'), custom=True, border=True, maxSize=(3,3)) )
 
 
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[0],0,0)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[0],0,0)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[1],0,1)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[1],0,1)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[2],0,2)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[2],0,2)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[3],0,3)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[3],0,3)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[4],0,4)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[4],0,4)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[5],0,5)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[5],0,5)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[6],0,6)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[6],0,6)
         b.colorClicked.connect(_controlSetColor)
-        customButtonsLayout.addWidget(b:=TTkColorDialogPicker.customButtons[7],0,7)
+        customLayout.addWidget(b:=TTkColorDialogPicker.customButtons[7],0,7)
         b.colorClicked.connect(_controlSetColor)
 
-        customFrame.layout().addItem(customButtonsLayout,0,0)
-        customFrame.layout().addWidget(b:=TTkButton(border=False, text='Add to Custom Colors'),1,0)
+        customLayout.addWidget(b:=TTkButton(border=False, text='Add to Custom Colors'),1,0,1,8)
+
         @pyTTkSlot()
         def _addCustomPressed():
             btn = _TTkColorButton.lastClicked
@@ -401,11 +404,33 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self._colorCanvas.colorPicked.connect(_controlSetRGBColor)
 
         self.layout().addItem(leftLayout ,0,0)
-        self.layout().addItem(colorLayout,0,1)
+        self.layout().addItem(colorLayout ,0,1)
 
-        leftLayout.addWidget(paletteFrame,0,0)
-        leftLayout.addWidget(customFrame ,1,0)
-        leftLayout.addWidget(controlFrame,2,0)
+        leftLayout.addItem(paletteLayout)
+        leftLayout.addItem(customLayout)
+        leftLayout.addItem(controlLayout)
+        # TODO: Get Rid of groupMove
+        leftLayout.groupMoveTo(1,3)
+        controlLayout.groupMoveTo(2, 18)
+
+
+    def paintEvent(self):
+        TTkWindow.paintEvent(self)
+        if self.hasFocus():
+            color = TTkCfg.theme.windowBorderColorFocus
+        else:
+            color = TTkCfg.theme.windowBorderColor
+        self._canvas.drawGrid(
+            pos=(0,2),size=(26,self._height-2),
+            hlines=(10,15), vlines=(),
+            color=color, grid=6)
+        gg = TTkCfg.theme.grid[6]
+        self._canvas.drawChar(pos=(0,2),  char=gg[0x08], color=color)
+        self._canvas.drawChar(pos=(25,2), char=gg[0x02], color=color)
+        self._canvas.drawChar(pos=(25,self._height-1), char=gg[0x0E], color=color)
+        self._canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=" Basic colors ", align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        self._canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=" Custom colors ", align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        self._canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=" Conrols ", align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
 
 class TTkColorButtonPicker(_TTkColorButton):
     __slots__ = ('_type')
@@ -426,7 +451,7 @@ class TTkColorButtonPicker(_TTkColorButton):
 
     @pyTTkSlot()
     def _colorClicked(self):
-        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,28), color=self._textColor, title="Test Color Picker", border=True)
+        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,24), color=self._textColor, title="Test Color Picker", border=True)
         colorPicker.colorSelected.connect(self.colorSelected)
         TTkHelper.overlay(self, colorPicker, -1,-1)
 

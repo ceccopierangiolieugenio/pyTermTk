@@ -60,6 +60,7 @@
 - [x] Add addLayout (adDItem) method - Nested layouts
 - [x] Add Grid Layout
   - [x] Add ColSpan / RowSpan
+- [ ] Get rid of groupMoveTo
 
 ### AbstractScrollArea
 - [x] Implement something that mimic the QAbstactScrollArea

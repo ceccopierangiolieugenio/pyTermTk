@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+import sys, os, argparse
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
@@ -51,10 +51,21 @@ def demoColorPicker(root=None):
     return frame
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Full Screen', action='store_true')
+    args = parser.parse_args()
+
     ttk.TTkLog.use_default_file_logging()
+
     root = ttk.TTk()
-    win1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(120,50), title="Test Color Picker", border=True, layout=ttk.TTkGridLayout())
-    demoColorPicker(win1)
+    if args.f:
+        root.setLayout(ttk.TTkGridLayout())
+        winColor1 = root
+    else:
+        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(120,50), title="Test Color Picker", border=True, layout=ttk.TTkGridLayout())
+
+    demoColorPicker(winColor1)
+
     root.mainloop()
 
 if __name__ == "__main__":

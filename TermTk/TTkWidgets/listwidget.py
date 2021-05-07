@@ -160,7 +160,7 @@ class TTkListWidget(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def addItem(self, item, ):
+    def addItem(self, item):
         if isinstance(item, str):
             label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
             label.listItemClicked.connect(self._labelSelectedHandler)

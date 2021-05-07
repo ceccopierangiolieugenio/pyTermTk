@@ -21,24 +21,24 @@ doc: .venv
 	make -C docs/ html ;
 
 runGittk: .venv
-	. .venv/bin/activate
+	. .venv/bin/activate ; \
 	demo/gittk.py -f
 
 runDemo: .venv
-	. .venv/bin/activate
+	. .venv/bin/activate ; \
 	demo/demo.py -f
 
 build: .venv
-	. .venv/bin/activate
-	rm -rf dist
-	tools/prepareBuild.sh release
+	. .venv/bin/activate ; \
+	rm -rf dist ; \
+	tools/prepareBuild.sh release ; \
 	python3 -m build
 
 buildTest: .venv
-	. .venv/bin/activate
-	rm -rf dist
-	tools/prepareBuild.sh test
-	python3 -m build
+	. .venv/bin/activate ; \
+	rm -rf dist ; \
+	tools/prepareBuild.sh test ; \
+	python3 -m build ; \
 
 deployDoc:
 	git checkout gh-pages
@@ -50,14 +50,14 @@ deployDoc:
 	git checkout main
 
 deployTest: .venv
-	. .venv/bin/activate
+	. .venv/bin/activate ; \
 	python3 -m twine upload --repository testpypi dist/* --verbose
 
 deploy: .venv
-	. .venv/bin/activate
+	. .venv/bin/activate ; \
 	python3 -m twine upload dist/*
 
 test: .venv
-	. .venv/bin/activate
-	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp
+	. .venv/bin/activate ; \
+	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp ; \
 	pytest demo/demo.py

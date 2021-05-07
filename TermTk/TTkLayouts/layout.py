@@ -43,6 +43,7 @@ class TTkLayoutItem:
     '''
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',
+        '_maxw', '_maxh', '_minw', '_minh',
         '_row','_col',
         '_rowspan', '_colspan',
         '_sMax', '_sMaxVal',
@@ -50,7 +51,12 @@ class TTkLayoutItem:
         '_alignment',
         '_layoutItemType')
     def __init__(self, *args, **kwargs):
-        self._x, self._y = 0, 0
+        self._x = kwargs.get('x', 0 )
+        self._y = kwargs.get('y', 0 )
+        self._x, self._y = kwargs.get('pos', (self._x, self._y))
+        self._w  = kwargs.get('width' , 0 )
+        self._h = kwargs.get('height', 0 )
+        self._w, self._h = kwargs.get('size', (self._w, self._h))
         self._z = kwargs.get('z',0)
         self._row = kwargs.get('row', 0)
         self._col = kwargs.get('col', 0)
@@ -58,21 +64,27 @@ class TTkLayoutItem:
         self._colspan = kwargs.get('colspan', 1)
         self._layoutItemType = kwargs.get('layoutItemType', TTkK.NONE)
         self._alignment =  kwargs.get('alignment', TTkK.NONE)
-        self._w, self._h = 0, 0
         self._sMax,    self._sMin    = False, False
         self._sMaxVal, self._sMinVal = 0, 0
+        self._maxw = kwargs.get('maxWidth',  0x10000)
+        self._maxh = kwargs.get('maxHeight', 0x10000)
+        self._maxw, self._maxh = kwargs.get('maxSize', (self._maxw, self._maxh))
+        self._minw = kwargs.get('minWidth',  0x00000)
+        self._minh = kwargs.get('minHeight', 0x00000)
+        self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
+
 
     def minimumSize(self):
         return self.minimumWidth(), self.minimumHeight()
-    def minDimension(self,o)-> int: return 0
-    def minimumHeight(self) -> int: return 0
-    def minimumWidth(self)  -> int: return 0
+    def minDimension(self,o)-> int: return self._minh if o == TTkK.HORIZONTAL else self._minw
+    def minimumHeight(self) -> int: return self._minh
+    def minimumWidth(self)  -> int: return self._minw
 
     def maximumSize(self):
         return self.maximumWidth(), self.maximumHeight()
-    def maxDimension(self,o)-> int: return 0x1000
-    def maximumHeight(self) -> int: return 0x10000
-    def maximumWidth(self)  -> int: return 0x10000
+    def maxDimension(self,o)-> int: return self._maxh if o == TTkK.HORIZONTAL else self._maxw
+    def maximumHeight(self) -> int: return self._maxh
+    def maximumWidth(self)  -> int: return self._maxw
 
     @staticmethod
     def _calcSpanValue(value, pos, curpos, span):
@@ -132,7 +144,7 @@ class TTkLayout(TTkLayoutItem):
     '''
     __slots__ = ('_items', '_zSortedItems', '_parent')
     def __init__(self, *args, **kwargs):
-        TTkLayoutItem.__init__(self, args, kwargs)
+        TTkLayoutItem.__init__(self, *args, **kwargs)
         self._items = []
         self._zSortedItems = []
         self._parent = None
