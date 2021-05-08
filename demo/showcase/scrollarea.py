@@ -37,9 +37,12 @@ class graphTimerEvent():
         self.timer.start(1)
     @ttk.pyTTkSlot()
     def timerEvent(self):
-        plot = [ math.sin( self.val         *math.pi/40)*4*10 ,
-                math.sin((self.val+15)*math.pi/40)*4*7,
-                math.sin((self.val+20)*math.pi/30)*4*5,]
+        plot = [
+            math.sin((self.val+10)*math.pi/30)*
+            math.sin((self.val+15)*math.pi/40)*4*7,
+            math.sin( self.val    *math.pi/40)*4*10 ,
+            math.sin((self.val+20)*math.pi/30)*4*5,
+            ]
         self.val+=1
         self.w.addValue(plot)
         self.timer.start(self.delay)

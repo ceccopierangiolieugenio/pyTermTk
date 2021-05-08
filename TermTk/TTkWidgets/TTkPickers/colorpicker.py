@@ -265,17 +265,17 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self._hueCanvas.colorPicked.connect(self._colorCanvas.setHue)
 
         # Control
-        controlLayout.addWidget( sc := _TTkShowColor(pos=(1,2), size=(5,4),  color=TTkColor.bg('#ffffff')) )
-        controlLayout.addWidget( TTkLabel(pos=(2,1), text="rgb:") )
-        controlLayout.addWidget( TTkLabel(pos=(7,2), text="HTML:") )
-        controlLayout.addWidget( leR := TTkSpinBox(pos=(7,1), size=(5,1),  value=255, minimum=0, maximum=255) )
-        controlLayout.addWidget( leG := TTkSpinBox(pos=(13,1), size=(5,1),  value=255, minimum=0, maximum=255) )
-        controlLayout.addWidget( leB := TTkSpinBox(pos=(19,1), size=(5,1),  value=255, minimum=0, maximum=255) )
+        controlLayout.addWidget( sc := _TTkShowColor(pos=(1,1), size=(4,4),  color=TTkColor.bg('#ffffff')) )
+        controlLayout.addWidget( TTkLabel(pos=(1,0), text="rgb:") )
+        controlLayout.addWidget( TTkLabel(pos=(6,1), text="HTML:") )
+        controlLayout.addWidget( leR := TTkSpinBox(pos=(7,0), size=(5,1),  value=255, minimum=0, maximum=255) )
+        controlLayout.addWidget( leG := TTkSpinBox(pos=(12,0), size=(5,1),  value=255, minimum=0, maximum=255) )
+        controlLayout.addWidget( leB := TTkSpinBox(pos=(18,0), size=(5,1),  value=255, minimum=0, maximum=255) )
 
-        controlLayout.addWidget( leHTML := TTkLineEdit(pos=(13,2), size=(8,1),  text="#FFFFFF") )
+        controlLayout.addWidget( leHTML := TTkLineEdit(pos=(12,1), size=(8,1),  text="#FFFFFF") )
 
-        controlLayout.addWidget( okButton :=     TTkButton(pos=(7,3),  size=(6,3), text="OK",      border=True) )
-        controlLayout.addWidget( cancelButton := TTkButton(pos=(14,3), size=(10,3), text="CANCEL",  border=True) )
+        controlLayout.addWidget( okButton :=     TTkButton(pos=(6,2),  size=(6,3), text="OK",      border=True) )
+        controlLayout.addWidget( cancelButton := TTkButton(pos=(13,2), size=(10,3), text="CANCEL",  border=True) )
 
         controlLayout.addWidget( TTkLabel(pos=(3,20), text="Seriously?") )
         # TODO: Get Rid of groupMove
@@ -410,8 +410,8 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         leftLayout.addItem(customLayout)
         leftLayout.addItem(controlLayout)
         # TODO: Get Rid of groupMove
-        leftLayout.groupMoveTo(1,3)
-        controlLayout.groupMoveTo(2, 18)
+        # leftLayout.groupMoveTo(1,3)
+        # controlLayout.groupMoveTo(2, 18)
 
 
     def paintEvent(self):

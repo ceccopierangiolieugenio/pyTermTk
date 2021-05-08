@@ -106,7 +106,7 @@ class TTkGridLayout(TTkLayout):
         :param int colspan: the cols used by the widget, optional, defaults to 1
         '''
         self.removeWidget(widget)
-        item = TTkWidgetItem(widget=widget)
+        item = widget.widgetItem()
         TTkGridLayout.addItem(self, item, row, col, rowspan, colspan)
         widget.update()
 
@@ -275,8 +275,8 @@ class TTkGridLayout(TTkLayout):
 
 
     def update(self, *args, **kwargs):
-        x, y, w, h = self.geometry()
-        newx, newy = x, y
+        _, _, w, h = self.geometry()
+        newx, newy = 0, 0
 
         # Sorted List of minimum heights
         #                    min                        max                       val

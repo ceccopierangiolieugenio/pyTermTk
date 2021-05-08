@@ -220,16 +220,13 @@ class TTkHelper:
 
     @staticmethod
     def absPos(widget) -> (int,int):
-        ppos = TTkHelper.absParentPos(widget)
-        wpos = widget.pos()
-        return (wpos[0]+ppos[0], wpos[1]+ppos[1])
-
-    @staticmethod
-    def absParentPos(widget) -> (int,int):
-        if widget is None or widget.parentWidget() is None:
-            return (0, 0)
-        return TTkHelper.absPos(widget.parentWidget())
-
+        wx, wy = 0,0
+        layout = widget.widgetItem()
+        while layout:
+            px, py = layout.pos()
+            wx, wy = wx+px, wy+py
+            layout = layout.parent()
+        return (wx, wy)
 
     def _iterWidgets(item):
         for child in item.children():
