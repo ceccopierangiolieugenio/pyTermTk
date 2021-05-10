@@ -1,4 +1,4 @@
-.PHONY: doc, runGittk, runDemo, build, deploy, buildTest, deployTest,
+.PHONY: doc runGittk runDemo build deploy buildTest deployTest
 
 .venv:
 	python3 -m venv .venv
