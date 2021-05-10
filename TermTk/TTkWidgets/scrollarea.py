@@ -38,7 +38,7 @@ class _TTkAreaWidget(TTkAbstractScrollView):
     @pyTTkSlot()
     def _viewChangedHandler(self):
         x,y = self.getViewOffsets()
-        self.layout().groupMoveTo(-x,-y)
+        self.layout().setOffset(-x,-y)
 
     def viewFullAreaSize(self) -> (int, int):
         _,_,w,h = self.layout().fullWidgetAreaGeometry()

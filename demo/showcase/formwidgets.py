@@ -106,7 +106,7 @@ def main():
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    winForm = ttk.TTkWindow(parent=root,pos=(1,1), size=(60,40), title="Test Window 1", layout=ttk.TTkVBoxLayout(), border=True)
+    winForm = ttk.TTkWindow(parent=root,pos=(1,2), size=(60,40), title="Test Window 1", layout=ttk.TTkVBoxLayout(), border=True)
     demoFormWidgets(winForm)
     root.mainloop()
 

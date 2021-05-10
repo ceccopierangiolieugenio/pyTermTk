@@ -43,11 +43,13 @@ class TTkLayoutItem:
     '''
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',
+        '_xOffset', '_yOffset',
         '_maxw', '_maxh', '_minw', '_minh',
         '_row','_col',
         '_rowspan', '_colspan',
         '_sMax', '_sMaxVal',
         '_sMin', '_sMinVal',
+        '_parent',
         '_alignment',
         '_layoutItemType')
     def __init__(self, *args, **kwargs):
@@ -58,6 +60,8 @@ class TTkLayoutItem:
         self._h = kwargs.get('height', 0 )
         self._w, self._h = kwargs.get('size', (self._w, self._h))
         self._z = kwargs.get('z',0)
+        self._xOffset = 0
+        self._yOffset = 0
         self._row = kwargs.get('row', 0)
         self._col = kwargs.get('col', 0)
         self._rowspan = kwargs.get('rowspan', 1)
@@ -72,6 +76,7 @@ class TTkLayoutItem:
         self._minw = kwargs.get('minWidth',  0x00000)
         self._minh = kwargs.get('minHeight', 0x00000)
         self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
+        self._parent = None
 
 
     def minimumSize(self):
@@ -102,15 +107,25 @@ class TTkLayoutItem:
     def maximumWidthSpan(self,pos)  -> int:
         return TTkLayoutItem._calcSpanValue(self.maximumWidth(), pos,self._col,self._colspan)
 
+    def offset(self):   return self._xOffset, self._yOffset
+    def pos(self):      return self._x, self._y
+    def size(self):     return self._w, self._h
+    def geometry(self): return self._x, self._y, self._w, self._h
 
-    def geometry(self):
-        return self._x, self._y, self._w, self._h
+    def setOffset(self, x, y):
+        self._xOffset = x
+        self._yOffset = y
 
     def setGeometry(self, x, y, w, h):
         self._x = x
         self._y = y
         self._w = w
         self._h = h
+
+    def parent(self): return self._parent
+
+    def setParent(self, parent):
+        self._parent = parent
 
     @property
     def z(self): return self._z
@@ -142,12 +157,11 @@ class TTkLayout(TTkLayoutItem):
         ║                            ║
         ╚════════════════════════════╝
     '''
-    __slots__ = ('_items', '_zSortedItems', '_parent')
+    __slots__ = ('_items', '_zSortedItems')
     def __init__(self, *args, **kwargs):
         TTkLayoutItem.__init__(self, *args, **kwargs)
         self._items = []
         self._zSortedItems = []
-        self._parent = None
         self.layoutItemType = TTkK.LayoutItem
 
     def children(self):
@@ -165,11 +179,10 @@ class TTkLayout(TTkLayoutItem):
         if isinstance(parent, TTkLayoutItem):
             self._parent = parent
         else:
-            self._parent = TTkWidgetItem(widget=parent)
+            self._parent = parent.widgetItem()
         for item in self._items:
-            if item.layoutItemType == TTkK.LayoutItem:
-                item.setParent(self)
-            else:
+            item.setParent(self)
+            if item.layoutItemType == TTkK.WidgetItem:
                 item.widget().setParent(self.parentWidget())
 
     def parentWidget(self):
@@ -189,9 +202,8 @@ class TTkLayout(TTkLayoutItem):
         self._items[index] = item
         self._zSortItems()
         self.update()
-        if item.layoutItemType == TTkK.LayoutItem:
-            item.setParent(self)
-        else:
+        item.setParent(self)
+        if item.layoutItemType == TTkK.WidgetItem:
             item.widget().setParent(self.parentWidget())
         if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
@@ -200,9 +212,8 @@ class TTkLayout(TTkLayoutItem):
         self._items.append(item)
         self._zSortItems()
         self.update()
-        if item.layoutItemType == TTkK.LayoutItem:
-            item.setParent(self)
-        else:
+        item.setParent(self)
+        if item.layoutItemType == TTkK.WidgetItem:
             item.widget().setParent(self.parentWidget())
         if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
@@ -210,7 +221,7 @@ class TTkLayout(TTkLayoutItem):
     def addWidget(self, widget):
         if widget.parentWidget() is not None:
             widget.parentWidget().removeWidget(self)
-        self.addItem(TTkWidgetItem(widget=widget))
+        self.addItem(widget.widgetItem())
 
     def removeItem(self, item):
         if item in self._items:
@@ -259,14 +270,6 @@ class TTkLayout(TTkLayoutItem):
         TTkLayoutItem.setGeometry(self, x, y, w, h)
         self.update(repaint=True, updateLayout=True)
 
-    def groupMoveTo(self, x, y):
-        ox,oy,_,_ = self.fullWidgetAreaGeometry()
-        dx = x-ox
-        dy = y-oy
-        for item in self._items:
-            x,y,w,h = item.geometry()
-            item.setGeometry(x+dx,y+dy,w,h)
-
     def fullWidgetAreaGeometry(self):
         if not self._items: return 0,0,0,0
         minx,miny,maxx,maxy = 0x10000,0x10000,-0x10000,-0x10000
@@ -296,8 +299,7 @@ class TTkWidgetItem(TTkLayoutItem):
         self._widget = kwargs.get('widget', None)
         self.layoutItemType = TTkK.WidgetItem
 
-    def widget(self):
-        return self._widget
+    def widget(self): return self._widget
 
     def isVisible(self): return self._widget.isVisible()
 
@@ -312,7 +314,9 @@ class TTkWidgetItem(TTkLayoutItem):
     def maximumHeight(self) -> int: return self._widget.maximumHeight()
     def maximumWidth(self)  -> int: return self._widget.maximumWidth()
 
-    def geometry(self):      return self._widget.geometry()
+    def pos(self):      return self._widget.pos()
+    def size(self):     return self._widget.size()
+    def geometry(self): return self._widget.geometry()
 
     def setGeometry(self, x, y, w, h):
         self._widget.setGeometry(x, y, w, h)

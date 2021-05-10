@@ -21,7 +21,7 @@ from select import select
 from time import time, sleep, strftime, localtime
 from typing import List, Set, Dict, Tuple, Optional, Union, Any, Callable, ContextManager, Iterable, Type, NamedTuple
 
-try: import fcntl, termios, tty, pwd
+try: import termios
 except Exception as e:
     print(f'ERROR: {e}')
     exit(1)

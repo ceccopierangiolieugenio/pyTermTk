@@ -89,7 +89,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         '_padt', '_padb', '_padl', '_padr',
         '_maxw', '_maxh', '_minw', '_minh',
         '_focus','_focus_policy',
-        '_layout', '_canvas', '_visible', '_transparent',
+        '_layout', '_canvas', '_widgetItem',
+        '_visible', '_transparent',
         '_pendingMouseRelease')
 
     def __init__(self, *args, **kwargs):
@@ -124,6 +125,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._focus = False
         self._focus_policy = TTkK.NoFocus
 
+        self._widgetItem = TTkWidgetItem(widget=self)
+
         self._layout = TTkLayout() # root layout
         self._layout.setParent(self)
         self._layout.addItem(kwargs.get('layout',TTkLayout())) # main layout
@@ -133,6 +136,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                             width  = self._width  ,
                             height = self._height )
 
+
         if self._parent is not None:
             self._parent.addWidget(self)
             self._parent.update(repaint=True, updateLayout=True)
@@ -141,10 +145,12 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def __del__(self):
         ''' .. caution:: Don't touch this! '''
-        TTkLog.debug("DESTRUCTOR")
+        # TTkLog.debug("DESTRUCTOR")
         if self._parent is not None:
             self._parent.removeWidget(self)
             self._parent = None
+
+    def widgetItem(self): return self._widgetItem
 
     def addWidget(self, widget):
         ''' Add a child widget to the layout
@@ -153,7 +159,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
         '''
         widget._parent = self
-        if self.layout() is not None:
+        if self.layout():
             self.layout().addWidget(widget)
             self.update(repaint=True, updateLayout=True)
         # widget.show()
@@ -175,20 +181,26 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         pass
 
     @staticmethod
-    def _paintChildCanvas(canvas, item, geometry):
+    def _paintChildCanvas(canvas, item, geometry, offset):
         ''' .. caution:: Don't touch this! '''
         lx,ly,lw,lh = geometry
+        ox, oy = offset
         if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
             child = item.widget()
             cx,cy,cw,ch = child.geometry()
             canvas.paintCanvas(
                         child.getCanvas(),
-                        (cx,  cy,  cw, ch), # geometry
-                        (0,0,cw,ch),        # slice
-                        (lx, ly, lw, lh))   # bound
+                        (cx+ox, cy+oy, cw, ch), # geometry
+                        (    0,     0, cw, ch), # slice
+                        (   lx,    ly, lw, lh)) # bound
         else:
             for child in item.zSortedItems:
                 ix, iy, iw, ih = item.geometry()
+                iox, ioy = item.offset()
+                ix+=ox+iox
+                iy+=oy+ioy
+                iw-=iox
+                ih-=ioy
                 # child outside the bound
                 if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
                 # Reduce the bound to the minimum visible
@@ -196,11 +208,11 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 by = max(iy,ly)
                 bw = min(ix+iw,lx+lw)-bx
                 bh = min(iy+ih,ly+lh)-by
-                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh))
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix,iy))
 
     def paintChildCanvas(self):
         ''' .. caution:: Don't touch this! '''
-        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry())
+        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry(), self.rootLayout().pos())
 
     def moveEvent(self, x: int, y: int):
         ''' Event Callback triggered after a successful move'''
@@ -274,9 +286,13 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         ''' .. caution:: Don't touch this! '''
         x, y = evt.x, evt.y
         lx,ly,lw,lh =layout.geometry()
+        lox, loy = layout.offset()
+        lx,ly,lw,lh = lx+lox, ly+loy, lw-lox, lh-loy
         # opt of bounds
-        if x<lx or x>lx+lw or y<ly or y>lh+ly:
+        if x<lx or x>=lx+lw or y<ly or y>=lh+ly:
             return False
+        x-=lx
+        y-=ly
         for item in reversed(layout.zSortedItems):
         # for item in layout.zSortedItems:
             if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
@@ -545,7 +561,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def setFocus(self):
         if self._focus: return
-        TTkLog.debug(self._name)
+        # TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
         if tmp == self: return
         if tmp is not None:
