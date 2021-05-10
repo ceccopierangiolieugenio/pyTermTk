@@ -275,7 +275,7 @@
 <span class="sd">        :param int colspan: the cols used by the widget, optional, defaults to 1</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-        <span class="n">item</span> <span class="o">=</span> <span class="n">TTkWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">)</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
         <span class="n">TTkGridLayout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">rowspan</span><span class="p">,</span> <span class="n">colspan</span><span class="p">)</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
@@ -444,8 +444,8 @@
 
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
-        <span class="n">newx</span><span class="p">,</span> <span class="n">newy</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+        <span class="n">newx</span><span class="p">,</span> <span class="n">newy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
 
         <span class="c1"># Sorted List of minimum heights</span>
         <span class="c1">#                    min                        max                       val</span>

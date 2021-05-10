@@ -11,3 +11,4 @@ TermTk.TTkWidgets.TTkPickers
   :toctree: ./
 
   TermTk.TTkWidgets.TTkPickers.colorpicker
+  TermTk.TTkWidgets.TTkPickers.dateTimePicker

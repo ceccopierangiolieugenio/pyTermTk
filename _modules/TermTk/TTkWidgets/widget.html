@@ -258,7 +258,8 @@
         <span class="s1">&#39;_padt&#39;</span><span class="p">,</span> <span class="s1">&#39;_padb&#39;</span><span class="p">,</span> <span class="s1">&#39;_padl&#39;</span><span class="p">,</span> <span class="s1">&#39;_padr&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_maxw&#39;</span><span class="p">,</span> <span class="s1">&#39;_maxh&#39;</span><span class="p">,</span> <span class="s1">&#39;_minw&#39;</span><span class="p">,</span> <span class="s1">&#39;_minh&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_focus&#39;</span><span class="p">,</span><span class="s1">&#39;_focus_policy&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_layout&#39;</span><span class="p">,</span> <span class="s1">&#39;_canvas&#39;</span><span class="p">,</span> <span class="s1">&#39;_visible&#39;</span><span class="p">,</span> <span class="s1">&#39;_transparent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_layout&#39;</span><span class="p">,</span> <span class="s1">&#39;_canvas&#39;</span><span class="p">,</span> <span class="s1">&#39;_widgetItem&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_visible&#39;</span><span class="p">,</span> <span class="s1">&#39;_transparent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_pendingMouseRelease&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -293,6 +294,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus_policy</span> <span class="o">=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">NoFocus</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetItem</span> <span class="o">=</span> <span class="n">TTkWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">TTkLayout</span><span class="p">()</span> <span class="c1"># root layout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;layout&#39;</span><span class="p">,</span><span class="n">TTkLayout</span><span class="p">()))</span> <span class="c1"># main layout</span>
@@ -302,6 +305,7 @@
                             <span class="n">width</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span>  <span class="p">,</span>
                             <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="p">)</span>
 
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -310,10 +314,12 @@
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;</span>
-        <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;DESTRUCTOR&quot;</span><span class="p">)</span>
+        <span class="c1"># TTkLog.debug(&quot;DESTRUCTOR&quot;)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">widgetItem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetItem</span>
 
 <div class="viewcode-block" id="TTkWidget.addWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.addWidget">[docs]</a>    <span class="k">def</span> <span class="nf">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Add a child widget to the layout</span>
@@ -322,7 +328,7 @@
 <span class="sd">        :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
         <span class="c1"># widget.show()</span>
@@ -344,20 +350,26 @@
         <span class="k">pass</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_paintChildCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_paintChildCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;</span>
         <span class="n">lx</span><span class="p">,</span><span class="n">ly</span><span class="p">,</span><span class="n">lw</span><span class="p">,</span><span class="n">lh</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="n">offset</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
             <span class="n">child</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
             <span class="n">cx</span><span class="p">,</span><span class="n">cy</span><span class="p">,</span><span class="n">cw</span><span class="p">,</span><span class="n">ch</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
             <span class="n">canvas</span><span class="o">.</span><span class="n">paintCanvas</span><span class="p">(</span>
                         <span class="n">child</span><span class="o">.</span><span class="n">getCanvas</span><span class="p">(),</span>
-                        <span class="p">(</span><span class="n">cx</span><span class="p">,</span>  <span class="n">cy</span><span class="p">,</span>  <span class="n">cw</span><span class="p">,</span> <span class="n">ch</span><span class="p">),</span> <span class="c1"># geometry</span>
-                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">cw</span><span class="p">,</span><span class="n">ch</span><span class="p">),</span>        <span class="c1"># slice</span>
-                        <span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">ly</span><span class="p">,</span> <span class="n">lw</span><span class="p">,</span> <span class="n">lh</span><span class="p">))</span>   <span class="c1"># bound</span>
+                        <span class="p">(</span><span class="n">cx</span><span class="o">+</span><span class="n">ox</span><span class="p">,</span> <span class="n">cy</span><span class="o">+</span><span class="n">oy</span><span class="p">,</span> <span class="n">cw</span><span class="p">,</span> <span class="n">ch</span><span class="p">),</span> <span class="c1"># geometry</span>
+                        <span class="p">(</span>    <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span> <span class="n">cw</span><span class="p">,</span> <span class="n">ch</span><span class="p">),</span> <span class="c1"># slice</span>
+                        <span class="p">(</span>   <span class="n">lx</span><span class="p">,</span>    <span class="n">ly</span><span class="p">,</span> <span class="n">lw</span><span class="p">,</span> <span class="n">lh</span><span class="p">))</span> <span class="c1"># bound</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">zSortedItems</span><span class="p">:</span>
                 <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iw</span><span class="p">,</span> <span class="n">ih</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+                <span class="n">iox</span><span class="p">,</span> <span class="n">ioy</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">offset</span><span class="p">()</span>
+                <span class="n">ix</span><span class="o">+=</span><span class="n">ox</span><span class="o">+</span><span class="n">iox</span>
+                <span class="n">iy</span><span class="o">+=</span><span class="n">oy</span><span class="o">+</span><span class="n">ioy</span>
+                <span class="n">iw</span><span class="o">-=</span><span class="n">iox</span>
+                <span class="n">ih</span><span class="o">-=</span><span class="n">ioy</span>
                 <span class="c1"># child outside the bound</span>
                 <span class="k">if</span> <span class="n">ix</span><span class="o">+</span><span class="n">iw</span> <span class="o">&lt;</span> <span class="n">lx</span> <span class="ow">and</span> <span class="n">ix</span> <span class="o">&gt;</span> <span class="n">lx</span><span class="o">+</span><span class="n">lw</span> <span class="ow">and</span> <span class="n">iy</span><span class="o">+</span><span class="n">ih</span> <span class="o">&lt;</span> <span class="n">ly</span> <span class="ow">and</span> <span class="n">iy</span> <span class="o">&gt;</span> <span class="n">ly</span><span class="o">+</span><span class="n">lh</span><span class="p">:</span> <span class="k">continue</span>
                 <span class="c1"># Reduce the bound to the minimum visible</span>
@@ -365,11 +377,11 @@
                 <span class="n">by</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">iy</span><span class="p">,</span><span class="n">ly</span><span class="p">)</span>
                 <span class="n">bw</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ix</span><span class="o">+</span><span class="n">iw</span><span class="p">,</span><span class="n">lx</span><span class="o">+</span><span class="n">lw</span><span class="p">)</span><span class="o">-</span><span class="n">bx</span>
                 <span class="n">bh</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">iy</span><span class="o">+</span><span class="n">ih</span><span class="p">,</span><span class="n">ly</span><span class="o">+</span><span class="n">lh</span><span class="p">)</span><span class="o">-</span><span class="n">by</span>
-                <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_paintChildCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="p">(</span><span class="n">bx</span><span class="p">,</span><span class="n">by</span><span class="p">,</span><span class="n">bw</span><span class="p">,</span><span class="n">bh</span><span class="p">))</span>
+                <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_paintChildCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="p">(</span><span class="n">bx</span><span class="p">,</span><span class="n">by</span><span class="p">,</span><span class="n">bw</span><span class="p">,</span><span class="n">bh</span><span class="p">),</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">))</span>
 
 <div class="viewcode-block" id="TTkWidget.paintChildCanvas"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">[docs]</a>    <span class="k">def</span> <span class="nf">paintChildCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;</span>
-        <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_paintChildCanvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">geometry</span><span class="p">())</span></div>
+        <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_paintChildCanvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">geometry</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="TTkWidget.moveEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">[docs]</a>    <span class="k">def</span> <span class="nf">moveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Event Callback triggered after a successful move&#39;&#39;&#39;</span>
@@ -443,9 +455,13 @@
         <span class="sd">&#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span>
         <span class="n">lx</span><span class="p">,</span><span class="n">ly</span><span class="p">,</span><span class="n">lw</span><span class="p">,</span><span class="n">lh</span> <span class="o">=</span><span class="n">layout</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+        <span class="n">lox</span><span class="p">,</span> <span class="n">loy</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">offset</span><span class="p">()</span>
+        <span class="n">lx</span><span class="p">,</span><span class="n">ly</span><span class="p">,</span><span class="n">lw</span><span class="p">,</span><span class="n">lh</span> <span class="o">=</span> <span class="n">lx</span><span class="o">+</span><span class="n">lox</span><span class="p">,</span> <span class="n">ly</span><span class="o">+</span><span class="n">loy</span><span class="p">,</span> <span class="n">lw</span><span class="o">-</span><span class="n">lox</span><span class="p">,</span> <span class="n">lh</span><span class="o">-</span><span class="n">loy</span>
         <span class="c1"># opt of bounds</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">lx</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;</span><span class="n">lx</span><span class="o">+</span><span class="n">lw</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&lt;</span><span class="n">ly</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&gt;</span><span class="n">lh</span><span class="o">+</span><span class="n">ly</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">lx</span> <span class="ow">or</span> <span class="n">x</span><span class="o">&gt;=</span><span class="n">lx</span><span class="o">+</span><span class="n">lw</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&lt;</span><span class="n">ly</span> <span class="ow">or</span> <span class="n">y</span><span class="o">&gt;=</span><span class="n">lh</span><span class="o">+</span><span class="n">ly</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">x</span><span class="o">-=</span><span class="n">lx</span>
+        <span class="n">y</span><span class="o">-=</span><span class="n">ly</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">zSortedItems</span><span class="p">):</span>
         <span class="c1"># for item in layout.zSortedItems:</span>
             <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
@@ -714,7 +730,7 @@
 
     <span class="k">def</span> <span class="nf">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">:</span> <span class="k">return</span>
-        <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+        <span class="c1"># TTkLog.debug(self._name)</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span> <span class="k">return</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
