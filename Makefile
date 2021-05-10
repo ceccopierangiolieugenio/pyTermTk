@@ -14,11 +14,12 @@ doc: .venv
 	# rm -rf docs/html ; \
 	# pdoc --html TermTk -o docs/html ; \
 	. .venv/bin/activate ; \
-	rm -rf docs/html ; \
+	rm -rf docs/build ; \
 	rm -rf docs/source/autogen.* ; \
 	# sphinx-apidoc -o docs/source/TermTk/ -e TermTk/ ; \
 	make -C docs/ clean ; \
-	make -C docs/ html ;
+	make -C docs/ html ; \
+	cp -a docs/images docs/build/html/_images ;
 
 runGittk: .venv
 	. .venv/bin/activate ; \
