@@ -142,7 +142,7 @@ class _TTkMenuButton(TTkAbstractListItem):
         listw = TTkList(parent=frame, listWidget = menuListWidget)
         # listw.textClicked.connect(self._menuCallback)
         # listw.textClicked.connect(self._menuCallback)
-        TTkLog.debug(f"{self._menu}")
+        # TTkLog.debug(f"{self._menu}")
         for item in self._menu:
             listw.addItem(item)
         TTkHelper.overlay(self, frame, pos[0], pos[1])

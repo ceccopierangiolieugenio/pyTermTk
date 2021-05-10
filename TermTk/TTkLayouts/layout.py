@@ -43,6 +43,7 @@ class TTkLayoutItem:
     '''
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',
+        '_xOffset', '_yOffset',
         '_maxw', '_maxh', '_minw', '_minh',
         '_row','_col',
         '_rowspan', '_colspan',
@@ -59,6 +60,8 @@ class TTkLayoutItem:
         self._h = kwargs.get('height', 0 )
         self._w, self._h = kwargs.get('size', (self._w, self._h))
         self._z = kwargs.get('z',0)
+        self._xOffset = 0
+        self._yOffset = 0
         self._row = kwargs.get('row', 0)
         self._col = kwargs.get('col', 0)
         self._rowspan = kwargs.get('rowspan', 1)
@@ -104,9 +107,14 @@ class TTkLayoutItem:
     def maximumWidthSpan(self,pos)  -> int:
         return TTkLayoutItem._calcSpanValue(self.maximumWidth(), pos,self._col,self._colspan)
 
+    def offset(self):   return self._xOffset, self._yOffset
     def pos(self):      return self._x, self._y
     def size(self):     return self._w, self._h
     def geometry(self): return self._x, self._y, self._w, self._h
+
+    def setOffset(self, x, y):
+        self._xOffset = x
+        self._yOffset = y
 
     def setGeometry(self, x, y, w, h):
         self._x = x
@@ -261,14 +269,6 @@ class TTkLayout(TTkLayoutItem):
         if ax==x and ay==y and aw==w and ah==h: return
         TTkLayoutItem.setGeometry(self, x, y, w, h)
         self.update(repaint=True, updateLayout=True)
-
-    def groupMoveTo(self, x, y):
-        ox,oy,_,_ = self.fullWidgetAreaGeometry()
-        dx = x-ox
-        dy = y-oy
-        for item in self._items:
-            x,y,w,h = item.geometry()
-            item.setGeometry(x+dx,y+dy,w,h)
 
     def fullWidgetAreaGeometry(self):
         if not self._items: return 0,0,0,0

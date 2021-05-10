@@ -49,14 +49,15 @@ class graphTimerEvent():
 
 def demoScrollArea(root= None):
     scrollArea = ttk.TTkScrollArea(parent=root)
-    ttk.TTkTestWidgetSizes(pos=(0,0)   , size=(50,25), parent=scrollArea.viewport(), border=True)
+    ttk.TTkTestWidget(pos=(0,0)   , size=(50,25), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(10,25) , size=(40,20), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(20,50) , size=(60,10), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(50,0)  , size=(40,10), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(100,0) , size=(40,10), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(150,0) , size=(40,10), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(50,31) , size=(60,10), parent=scrollArea.viewport(), border=True)
-    graph = ttk.TTkGraph(  pos=(50,11) , size=(150,20), parent=scrollArea.viewport(), color=ttk.TTkColor.fg('#ff8800', modifier=ttk.TTkColorGradient(increment= 40)))
+    ttk.TTkTestWidget(pos=(110,15) , size=(60,40), parent=scrollArea.viewport(), border=True)
+    graph = ttk.TTkGraph(  pos=(50,11) , size=(60,20), parent=scrollArea.viewport(), color=ttk.TTkColor.fg('#ff8800', modifier=ttk.TTkColorGradient(increment= 40)))
     graphTimerEvent(graph, 0.1)
     return scrollArea
 

@@ -246,12 +246,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self.setLayout(TTkGridLayout())
 
         colorLayout = TTkGridLayout() # Right
-        # leftLayout   = TTkFrame(border=False, transparent=True, minSize=(25,20), maxWidth=25) # Left
         leftLayout   = TTkLayout(minSize=(25,20), maxWidth=25) # Left
-
-        #paletteLayout = TTkFrame(border=True, layout=TTkGridLayout(), title="Basic colors")
-        #customLayout  = TTkFrame(border=True, layout=TTkGridLayout(), title="Custom colors")
-        #controlLayout = TTkFrame(border=True, minSize=(26,7) ,        title="Conrols")
 
         paletteLayout = TTkGridLayout(pos=(0,0),  size=(24,9))
         customLayout  = TTkGridLayout(pos=(0,10), size=(24,4))
@@ -278,8 +273,6 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         controlLayout.addWidget( cancelButton := TTkButton(pos=(13,2), size=(10,3), text="CANCEL",  border=True) )
 
         controlLayout.addWidget( TTkLabel(pos=(3,20), text="Seriously?") )
-        # TODO: Get Rid of groupMove
-        #controlLayout.groupMoveTo(1, 15)
 
         @pyTTkSlot()
         def _okPressed():
@@ -409,10 +402,6 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         leftLayout.addItem(paletteLayout)
         leftLayout.addItem(customLayout)
         leftLayout.addItem(controlLayout)
-        # TODO: Get Rid of groupMove
-        # leftLayout.groupMoveTo(1,3)
-        # controlLayout.groupMoveTo(2, 18)
-
 
     def paintEvent(self):
         TTkWindow.paintEvent(self)

@@ -112,7 +112,7 @@ class TTkListWidget(TTkAbstractScrollView):
     @pyTTkSlot()
     def _viewChangedHandler(self):
         x,y = self.getViewOffsets()
-        self.layout().groupMoveTo(-x,-y)
+        self.layout().setOffset(-x,-y)
 
     @pyTTkSlot(TTkAbstractListItem)
     def _labelSelectedHandler(self, label):

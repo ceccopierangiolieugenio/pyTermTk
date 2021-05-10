@@ -145,7 +145,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def __del__(self):
         ''' .. caution:: Don't touch this! '''
-        TTkLog.debug("DESTRUCTOR")
+        # TTkLog.debug("DESTRUCTOR")
         if self._parent is not None:
             self._parent.removeWidget(self)
             self._parent = None
@@ -196,8 +196,11 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         else:
             for child in item.zSortedItems:
                 ix, iy, iw, ih = item.geometry()
-                ix+=ox
-                iy+=oy
+                iox, ioy = item.offset()
+                ix+=ox+iox
+                iy+=oy+ioy
+                iw-=iox
+                ih-=ioy
                 # child outside the bound
                 if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
                 # Reduce the bound to the minimum visible
@@ -283,6 +286,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         ''' .. caution:: Don't touch this! '''
         x, y = evt.x, evt.y
         lx,ly,lw,lh =layout.geometry()
+        lox, loy = layout.offset()
+        lx,ly,lw,lh = lx+lox, ly+loy, lw-lox, lh-loy
         # opt of bounds
         if x<lx or x>=lx+lw or y<ly or y>=lh+ly:
             return False
@@ -556,7 +561,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def setFocus(self):
         if self._focus: return
-        TTkLog.debug(self._name)
+        # TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
         if tmp == self: return
         if tmp is not None:
