@@ -29,12 +29,16 @@ import TermTk as ttk
 
 def demoTab(root= None):
     tabWidget1 = ttk.TTkTabWidget(parent=root, border=True)
-    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), "Label 1.1")
-    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.2"), "Label 1.2")
-    tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.3"), "Label Test 1.3")
-    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.4"), "Label 1.4")
-    tabWidget1.addTab(ttk.TTkTestWidget(border=True, title="Frame1.5"), "Label Test 1.5")
-    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.6"), "Label 1.6")
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"),  "Label 1.1")
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.2"),  "Label 1.2")
+    tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.3"),  "Label Test 1.3")
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.4"),  "Label 1.4")
+    tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.5"),  "Label Test 1.5")
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.6"),  "Label 1.6")
+    tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.7"),  "Label Test 1.7")
+    tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.8"),  "Label 1.8")
+    #tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.9"),  "Label Test 1.9")
+    #tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.10"), "Label 1.10")
     return tabWidget1
 
 def main():

@@ -58,6 +58,7 @@ def demoShowcase(root=None, border=True):
 
     listMenu.addItem(f"Test")
     tabTest = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
+    tabTest.addTab(ttk.TTkLogViewer(), " LogViewer ")
     tabTest.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), " Label 1.1 ")
     tabTest.addTab(ttk.TTkTestWidget(border=True, title="Frame1.2"), " Label Test 1.2 ")
 
@@ -116,7 +117,7 @@ def demoShowcase(root=None, border=True):
 
     listMenu.textClicked.connect(_listCallback)
 
-    listMenu.setCurrentRow(1)
+    listMenu.setCurrentRow(0)
 
     return splitter
 

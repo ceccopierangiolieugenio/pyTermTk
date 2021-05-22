@@ -49,7 +49,7 @@ class _TTkMenuListWidget(TTkListWidget):
                 return True
             elif evt.key == TTkK.Key_Right:
                 if self._highlighted and \
-                   isinstance(self._highlighted,_TTkMenuButton) and \
+                   isinstance(self._highlighted,TTkMenuButton) and \
                    self._highlighted._menu:
                     self._highlighted.menuButtonEvent()
                 return True
@@ -65,11 +65,11 @@ class _TTkMenuSpacer(TTkAbstractListItem):
     def paintEvent(self):
         self._canvas.drawText(pos=(0,0), text="-"*self.width())
 
-class _TTkMenuButton(TTkAbstractListItem):
+class TTkMenuButton(TTkAbstractListItem):
     __slots__ = ('_border', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked')
     def __init__(self, *args, **kwargs):
         TTkAbstractListItem.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkMenuButton' )
+        self._name = kwargs.get('name' , 'TTkMenuButton' )
         # signals
         self.menuButtonClicked = pyTTkSignal(TTkButton)
         self._color = kwargs.get('color', TTkCfg.theme.menuButtonColor )
@@ -90,7 +90,7 @@ class _TTkMenuButton(TTkAbstractListItem):
         self.listItemClicked.connect(self.menuButtonEvent)
 
     def addMenu(self, text):
-        button = _TTkMenuButton(text=text, borderColor=self._borderColor, border=False)
+        button = TTkMenuButton(text=text, borderColor=self._borderColor, border=False)
         button.menuButtonClicked.connect(self._menuCallback)
         self._menu.append(button)
         return button
@@ -196,7 +196,7 @@ class TTkMenuLayout(TTkHBoxLayout):
         self.update()
 
     def addMenu(self, text, alignment=TTkK.LEFT_ALIGN):
-        button = _TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
+        button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
         if  alignment == TTkK.LEFT_ALIGN:
             self._itemsLeft.addWidget(button)
         elif alignment == TTkK.CENTER_ALIGN:
