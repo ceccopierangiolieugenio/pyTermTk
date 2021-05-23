@@ -22,12 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+import sys, os, argparse
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-def demoTab(root= None):
+def demoTab(root=None):
     tabWidget1 = ttk.TTkTabWidget(parent=root, border=True)
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"),  "Label 1.1")
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.2"),  "Label 1.2")
@@ -42,12 +42,14 @@ def demoTab(root= None):
     return tabWidget1
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Full Screen', action='store_true')
+    args = parser.parse_args()
+
     ttk.TTkLog.use_default_file_logging()
 
-    fullscreen = False
-
     root = ttk.TTk()
-    if fullscreen:
+    if args.f:
         rootTab = root
         root.setLayout(ttk.TTkGridLayout())
     else:
