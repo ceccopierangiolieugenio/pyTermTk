@@ -66,7 +66,7 @@ class _TTkMenuSpacer(TTkAbstractListItem):
         self._canvas.drawText(pos=(0,0), text="-"*self.width())
 
 class TTkMenuButton(TTkAbstractListItem):
-    __slots__ = ('_border', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked')
+    __slots__ = ('_border', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked', '_menuOffset')
     def __init__(self, *args, **kwargs):
         TTkAbstractListItem.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkMenuButton' )
@@ -75,6 +75,7 @@ class TTkMenuButton(TTkAbstractListItem):
         self._color = kwargs.get('color', TTkCfg.theme.menuButtonColor )
         self._border = kwargs.get('border', TTkCfg.theme.menuButtonColor )
         self._borderColor = kwargs.get('borderColor', TTkCfg.theme.menuButtonBorderColor )
+        self._menuOffset = kwargs.get('menuOffset', (-1,0) )
         self._shortcut = []
         self._menu = []
         while self._text.find('&') != -1:
@@ -137,7 +138,7 @@ class TTkMenuButton(TTkAbstractListItem):
             pos = (self.width(), -1)
         else:
             frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self._text, titleAlign=TTkK.LEFT_ALIGN)
-            pos = (-1, 0)
+            pos = self._menuOffset
         menuListWidget = _TTkMenuListWidget()
         listw = TTkList(parent=frame, listWidget = menuListWidget)
         # listw.textClicked.connect(self._menuCallback)

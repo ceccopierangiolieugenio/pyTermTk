@@ -29,9 +29,35 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkWidgets.menubar import TTkMenuButton
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
+
+class _TTkTabMenuButton(TTkMenuButton):
+    def __init__(self, *args, **kwargs):
+        TTkMenuButton.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_TTkTabMenuButton')
+        self.setMaximumHeight(0x1000)
+        
+    def paintEvent(self):
+        if self._pressed:
+            borderColor = self._borderColor
+            textColor   = TTkCfg.theme.menuButtonColorClicked
+            scColor     = TTkCfg.theme.menuButtonShortcutColor
+        else:
+            borderColor = self._borderColor
+            textColor   = self._color
+            scColor     =  TTkCfg.theme.menuButtonShortcutColor
+        self._canvas.drawMenuBarButton(
+                        pos=(0,1),text=self._text,
+                        width=self.width(),
+                        shortcuts=self._shortcut,
+                        border=self._border,
+                        submenu=len(self._menu)>0,
+                        color=textColor,
+                        borderColor=borderColor,
+                        shortcutColor=scColor )
 
 '''
 _curentIndex =              2
@@ -41,7 +67,6 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
                 ╞═══════════╩══════╩═══════════════╡
                  leftscroller                     rightScroller
 '''
-
 class _TTkTabs(TTkWidget):
     __slots__ = (
         '_tabColor', '_tabBorderColor', '_tabSelectColor', '_tabOffsetColor',
@@ -84,6 +109,10 @@ class _TTkTabs(TTkWidget):
     def insertTab(self, index, label):
         self._labels.insert(index, label)
         self._updateTabs()
+    
+    def setBorderColor(self, color):
+        self._tabBorderColor      = color
+        self._tabBorderColorFocus = color
 
     def _updateTabs(self):
         xpos = 0+2
@@ -194,7 +223,7 @@ class _TTkTabs(TTkWidget):
            ┌────────────────────────────┐
            │ Root Layout                │
            │┌────────┬────────┬────────┐│
-           ││Right M │ TABS   │ Left M ││
+           ││ Left M │ TABS   │ RightM ││
            │└────────┴────────┴────────┘│
            │┌──────────────────────────┐│
            ││ Layout                   ││
@@ -205,7 +234,7 @@ class _TTkTabs(TTkWidget):
 
 class TTkTabWidget(TTkFrame):
     __slots__ = (
-        '_tabBarTopLayout', '_tabBar',
+        '_tabBarTopLayout', '_tabBar', '_topLeftLayout', '_topRightLayout',
         '_tabColor', '_tabBorderColor', '_tabSelectColor', '_tabOffsetColor',
         '_tabColorFocus', '_tabBorderColorFocus', '_tabSelectColorFocus', '_tabOffsetColorFocus',
         '_tabWidgets', '_labels', '_labelsPos',
@@ -233,8 +262,11 @@ class TTkTabWidget(TTkFrame):
         self._tabOffsetColorFocus = TTkCfg.theme.tabOffsetColorFocus
         self._tabBar = _TTkTabs()
         self._tabBar.currentChanged.connect(self._tabChanged)
-        self._tabBarTopLayout = TTkHBoxLayout()
-        self._tabBarTopLayout.addWidget(self._tabBar)
+        self._tabBar.focusChanged.connect(self._focusChanged)
+        self._tabBarTopLayout = TTkGridLayout()
+        self._topLeftLayout   = None
+        self._topRightLayout  = None
+        self._tabBarTopLayout.addWidget(self._tabBar,0,1)
         TTkFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTabWidget')
         self.setLayout(TTkGridLayout())
@@ -252,6 +284,34 @@ class TTkTabWidget(TTkFrame):
                 widget.show()
             else:
                 widget.hide()
+    
+    @pyTTkSlot(bool)
+    def _focusChanged(self, focus):
+        if focus:
+            tabBorderColor = self._tabBorderColorFocus
+        else:
+            tabBorderColor = self._tabBorderColor
+
+        for widget in self._tabBarTopLayout.iterWidgets():
+            widget.setBorderColor(tabBorderColor)
+            widget.update()
+    
+
+    def addMenu(self, text, position=TTkK.LEFT):
+        button = _TTkTabMenuButton(text=text, borderColor=self._tabBorderColor, menuOffset=(-1,1))
+        button.focusChanged.connect(self._focusChanged)
+        if position==TTkK.LEFT:
+            if not self._topLeftLayout:
+                self._topLeftLayout = TTkHBoxLayout()
+                self._tabBarTopLayout.addItem(self._topLeftLayout,0,0)
+            layout = self._topLeftLayout
+        else:
+            if not self._topRightLayout:
+                self._topRightLayout = TTkHBoxLayout()
+                self._tabBarTopLayout.addItem(self._topRightLayout,0,2)
+            layout = self._topRightLayout
+        layout.addWidget(button)
+        return button
 
     def addTab(self, widget, label):
         widget.hide()
@@ -269,7 +329,7 @@ class TTkTabWidget(TTkFrame):
         self._tabBarTopLayout.setGeometry(0,0,w,self._padt)
 
     def paintEvent(self):
-        if self.hasFocus():
+        if any(w.hasFocus() for w in self._tabBarTopLayout.iterWidgets()):
             tabBorderColor = self._tabBorderColorFocus
         else:
             tabBorderColor = self._tabBorderColor

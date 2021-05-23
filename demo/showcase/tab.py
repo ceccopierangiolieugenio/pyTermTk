@@ -27,8 +27,8 @@ import sys, os, argparse
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-def demoTab(root=None):
-    tabWidget1 = ttk.TTkTabWidget(parent=root, border=True)
+def demoTab(root=None, border=True):
+    tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"),  "Label 1.1")
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.2"),  "Label 1.2")
     tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.3"),  "Label Test 1.3")
@@ -39,6 +39,14 @@ def demoTab(root=None):
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.8"),  "Label 1.8")
     #tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.9"),  "Label Test 1.9")
     #tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.10"), "Label 1.10")
+
+    fileMenu = tabWidget1.addMenu("XX")
+    fileMenu.addMenu("Open")
+    fileMenu.addMenu("Close")
+    fileMenu.addMenu("Exit")
+
+    tabWidget1.addMenu("RIGHT", ttk.TTkK.RIGHT)    
+
     return tabWidget1
 
 def main():
@@ -52,9 +60,11 @@ def main():
     if args.f:
         rootTab = root
         root.setLayout(ttk.TTkGridLayout())
+        border=False
     else:
         rootTab = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
-    demoTab(rootTab)
+        border=True
+    demoTab(rootTab, border)
     root.mainloop()
 
 if __name__ == "__main__":
