@@ -192,6 +192,15 @@ class TTkLayout(TTkLayoutItem):
         else:
             return self._parent.parentWidget()
 
+    def iterWidgets(self):
+        for child in self._items:
+            if child.layoutItemType == TTkK.WidgetItem:
+                if not child.widget().isVisible(): continue
+                yield child.widget()
+                yield from child.widget().rootLayout().iterWidgets()
+            if child.layoutItemType == TTkK.LayoutItem:
+                yield from child.iterWidgets()
+
     def _zSortItems(self):
         self._zSortedItems = sorted(self._items, key=lambda item: item.z)
 

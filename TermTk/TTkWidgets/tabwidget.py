@@ -190,7 +190,6 @@ class _TTkTabs(TTkWidget):
                 leftScroller=self._leftScroller, rightScroller=self._rightScroller,
                 color=tabColor, borderColor=tabBorderColor, selectColor=tabSelectColor, offsetColor=tabOffsetColor)
 
-
 '''
            ┌────────────────────────────┐
            │ Root Layout                │
@@ -245,7 +244,6 @@ class TTkTabWidget(TTkFrame):
             self.setPadding(2,0,0,0)
         self.rootLayout().addItem(self._tabBarTopLayout)
         self._tabBarTopLayout.setGeometry(0,0,self._width,self._padt)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot(int)
     def _tabChanged(self, index):
