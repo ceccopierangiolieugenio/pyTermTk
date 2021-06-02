@@ -30,7 +30,11 @@ from TermTk.TTkWidgets.listwidget import TTkListWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkList(TTkAbstractScrollArea):
-    __slots__ = ('_listView', 'itemClicked', 'textClicked')
+    __slots__ = (
+        '_listView', 'itemClicked', 'textClicked',
+        # Forwarded Methods
+        'addItem', 'setSelectionMode', 'selectedLabels', 'setCurrentRow', 'setCurrentItem' )
+
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkList' )
@@ -41,14 +45,10 @@ class TTkList(TTkAbstractScrollArea):
         self.textClicked = self._listView.textClicked
         # self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-    def addItem(self, *args, **kwargs):
-        return self._listView.addItem(*args, **kwargs)
-    def setSelectionMode(self, *args, **kwargs):
-        return self._listView.setSelectionMode(*args, **kwargs)
-    def selectedLabels(self, *args, **kwargs):
-        return self._listView.selectedLabels(*args, **kwargs)
-    def setCurrentRow(self, *args, **kwargs):
-        return self._listView.setCurrentRow(*args, **kwargs)
-    def setCurrentItem(self, *args, **kwargs):
-        return self._listView.setCurrentItem(*args, **kwargs)
+        # Forwearded Methods
+        self.addItem          = self._listView.addItem
+        self.setSelectionMode = self._listView.setSelectionMode
+        self.selectedLabels   = self._listView.selectedLabels
+        self.setCurrentRow    = self._listView.setCurrentRow
+        self.setCurrentItem   = self._listView.setCurrentItem
 
