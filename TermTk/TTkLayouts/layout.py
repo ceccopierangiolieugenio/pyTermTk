@@ -192,10 +192,10 @@ class TTkLayout(TTkLayoutItem):
         else:
             return self._parent.parentWidget()
 
-    def iterWidgets(self):
+    def iterWidgets(self, onlyVisible=True):
         for child in self._items:
             if child.layoutItemType == TTkK.WidgetItem:
-                if not child.widget().isVisible(): continue
+                if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
                 yield from child.widget().rootLayout().iterWidgets()
             if child.layoutItemType == TTkK.LayoutItem:

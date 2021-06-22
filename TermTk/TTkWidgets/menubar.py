@@ -78,13 +78,13 @@ class TTkMenuButton(TTkAbstractListItem):
         self._menuOffset = kwargs.get('menuOffset', (-1,0) )
         self._shortcut = []
         self._menu = []
-        while self._text.find('&') != -1:
-            index = self._text.find('&')
-            shortcut = self._text[index+1]
+        while self.text.find('&') != -1:
+            index = self.text.find('&')
+            shortcut = self.text[index+1]
             TTkHelper.addShortcut(self, shortcut)
             self._shortcut.append(index)
-            self._text = self._text[:index]+self._text[index+1:]
-        txtlen = len(self._text)
+            self.text = self.text[:index]+self.text[index+1:]
+        txtlen = len(self.text)
         self.resize(txtlen,1)
         self.setMinimumSize(txtlen+2,1)
         self.setMaximumSize(txtlen+2,1)
@@ -113,7 +113,7 @@ class TTkMenuButton(TTkAbstractListItem):
     @pyTTkSlot(TTkButton)
     def _menuCallback(self, button):
         #self._id = self._list.index(label)
-        TTkLog.debug(f"Bind Clicked {button._text}")
+        TTkLog.debug(f"Bind Clicked {button.text}")
         self.menuButtonClicked.emit(button)
         TTkHelper.removeOverlay()
         self.update()
@@ -137,7 +137,7 @@ class TTkMenuButton(TTkAbstractListItem):
             frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight))
             pos = (self.width(), -1)
         else:
-            frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self._text, titleAlign=TTkK.LEFT_ALIGN)
+            frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self.text, titleAlign=TTkK.LEFT_ALIGN)
             pos = self._menuOffset
         menuListWidget = _TTkMenuListWidget()
         listw = TTkList(parent=frame, listWidget = menuListWidget)
@@ -160,7 +160,7 @@ class TTkMenuButton(TTkAbstractListItem):
             textColor   = self._color
             scColor     =  TTkCfg.theme.menuButtonShortcutColor
         self._canvas.drawMenuBarButton(
-                        pos=(0,0),text=self._text,
+                        pos=(0,0),text=self.text,
                         width=self.width(),
                         shortcuts=self._shortcut,
                         border=self._border,

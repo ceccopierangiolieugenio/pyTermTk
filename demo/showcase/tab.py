@@ -40,12 +40,18 @@ def demoTab(root=None, border=True):
     #tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.9"),  "Label Test 1.9")
     #tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.10"), "Label 1.10")
 
-    fileMenu = tabWidget1.addMenu("XX")
-    fileMenu.addMenu("Open")
-    fileMenu.addMenu("Close")
-    fileMenu.addMenu("Exit")
+    fileMenu1 = tabWidget1.addMenu("XX")
+    fileMenu1.addMenu("Open")
+    fileMenu1.addMenu("Close")
+    fileMenu1.addMenu("Exit")
 
-    tabWidget1.addMenu("RIGHT", ttk.TTkK.RIGHT)    
+    fileMenu2 = tabWidget1.addMenu("YY")
+    fileMenu2.addMenu("Open")
+    fileMenu2.addMenu("Close")
+    fileMenu2.addMenu("Exit")
+
+    tabWidget1.addMenu("ZZ", ttk.TTkK.RIGHT)
+    tabWidget1.addMenu("KK", ttk.TTkK.RIGHT)
 
     return tabWidget1
 
