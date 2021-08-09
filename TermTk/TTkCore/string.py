@@ -25,8 +25,45 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.color import TTkColor
 
-class TTkString(threading.Thread):
+class TTkString():
+    __slots__ = ('_text','_colors')
     def __init__(self):
-        pass
+        self._text = ""
+        self._colors = [TTkColor.RST]
 
+    def __str__(self):
+        return self._text
+
+    def __add__(self, other):
+        ret = TTkString()
+        if   isinstance(other, TTkString):
+            ret._text   += other._text
+            ret._colors += other._colors
+        elif isinstance(other, TTkColor):
+            ret._colors[-1] = other
+        elif isinstance(other, str):
+            ret._text   += other
+            ret._colors += [TTkColor.RST]*len(other)
+        return ret
+
+    def __radd__(self, other):
+        ret = TTkString()
+        if  isinstance(other, TTkString):
+            ret._text   = other._text   + ret._text
+            ret._colors = other._colors + ret._colors
+        elif isinstance(other, str):
+            ret._text   = other + ret._text
+            ret._colors = [TTkColor.RST]*len(other) + ret._colors
+        return ret
+
+    def ansiString(self):
+        out   = ""
+        color = none
+        for ch, col in zip(self._text, self._color):
+            if col != color
+                color = col
+                out += str(color)
+            out += ch
+        return out
