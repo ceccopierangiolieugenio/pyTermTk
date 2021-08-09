@@ -227,7 +227,7 @@ class TTkColor(_TTkColor):
             color = args[0]
         else:
             color = kwargs.get('color', "" )
-        return _TTkColor(fg=TTkHelper.Color.fg(color), colorMod=mod)
+        return TTkColor(fg=TTkHelper.Color.fg(color), colorMod=mod)
 
     @staticmethod
     def bg(*args, **kwargs):
@@ -236,5 +236,5 @@ class TTkColor(_TTkColor):
             color = args[0]
         else:
             color = kwargs.get('color', "" )
-        return _TTkColor(bg=TTkHelper.Color.bg(color), colorMod=mod)
+        return TTkColor(bg=TTkHelper.Color.bg(color), colorMod=mod)
 

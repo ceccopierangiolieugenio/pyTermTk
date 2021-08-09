@@ -28,42 +28,47 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 
 class TTkString():
-    __slots__ = ('_text','_colors')
+    __slots__ = ('_text','_colors','_baseColor')
     def __init__(self):
+        self._baseColor = TTkColor.RST
         self._text = ""
-        self._colors = [TTkColor.RST]
+        self._colors = []
 
     def __str__(self):
         return self._text
 
     def __add__(self, other):
         ret = TTkString()
+        ret._baseColor = self._baseColor
         if   isinstance(other, TTkString):
-            ret._text   += other._text
-            ret._colors += other._colors
-        elif isinstance(other, TTkColor):
-            ret._colors[-1] = other
+            ret._text   = self._text   + other._text
+            ret._colors = self._colors + other._colors
         elif isinstance(other, str):
-            ret._text   += other
-            ret._colors += [TTkColor.RST]*len(other)
+            ret._text   = self._text   + other
+            ret._colors = self._colors + [self._baseColor]*len(other)
+        elif isinstance(other, TTkColor):
+            ret._text   = self._text
+            ret._colors = self._colors
+            ret._baseColor = other
         return ret
 
     def __radd__(self, other):
         ret = TTkString()
+        ret._baseColor = self._baseColor
         if  isinstance(other, TTkString):
-            ret._text   = other._text   + ret._text
-            ret._colors = other._colors + ret._colors
+            ret._text   = other._text   + self._text
+            ret._colors = other._colors + self._colors
         elif isinstance(other, str):
-            ret._text   = other + ret._text
-            ret._colors = [TTkColor.RST]*len(other) + ret._colors
+            ret._text   = other + self._text
+            ret._colors = [self._baseColor]*len(other) + self._colors
         return ret
 
-    def ansiString(self):
+    def toAansi(self):
         out   = ""
-        color = none
-        for ch, col in zip(self._text, self._color):
-            if col != color
+        color = None
+        for ch, col in zip(self._text, self._colors):
+            if col != color:
                 color = col
-                out += str(color)
+                out += str(TTkColor.RST) + str(color)
             out += ch
         return out
