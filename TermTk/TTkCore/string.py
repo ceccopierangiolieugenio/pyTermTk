@@ -34,6 +34,9 @@ class TTkString():
         self._text = ""
         self._colors = []
 
+    def __len__(self):
+        return len(self._text)
+
     def __str__(self):
         return self._text
 

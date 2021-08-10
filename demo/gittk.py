@@ -93,8 +93,8 @@ def _tableCallback(val):
             color = ttk.TTkColor.fg('#ff0000')
         elif line.startswith('@@'):
             color = ttk.TTkColor.fg('#0088ff')
-        lines.append((color,line))
-    diffText.setColoredLines(lines)
+        lines.append(ttk.TTkString() + color + line)
+    diffText.setLines(lines)
 
 tableCommit.activated.connect(_tableCallback)
 

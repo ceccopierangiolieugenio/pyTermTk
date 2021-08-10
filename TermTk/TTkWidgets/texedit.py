@@ -27,6 +27,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
@@ -41,13 +42,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot(str)
     def setText(self, text):
-        self._lines = [(TTkColor.RST, line) for line in text.split('\n')]
+        self._lines = [line for line in text.split('\n')]
         self.viewMoveTo(0, 0)
         self.viewChanged.emit()
         self.update()
 
     @pyTTkSlot(str)
-    def setColoredLines(self, lines):
+    def setLines(self, lines):
         self._lines = lines
         self.viewMoveTo(0, 0)
         self.viewChanged.emit()
@@ -62,7 +63,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def paintEvent(self):
         _, oy = self.getViewOffsets()
         for y, t in enumerate(self._lines[oy:]):
-            self._canvas.drawText(pos=(0,y), text=t[1], color=t[0])
+            self._canvas.drawText(pos=(0,y), text=t)
 
 class TTkTextEdit(TTkAbstractScrollArea):
     __slots__ = ('_textEditView', 'setText', 'setColoredLines')
@@ -72,4 +73,4 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._textEditView = _TTkTextEditView()
         self.setViewport(self._textEditView)
         self.setText = self._textEditView.setText
-        self.setColoredLines = self._textEditView.setColoredLines
+        self.setLines = self._textEditView.setLines
