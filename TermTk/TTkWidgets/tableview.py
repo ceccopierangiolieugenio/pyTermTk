@@ -311,7 +311,10 @@ class _TTkTableView(TTkAbstractScrollView):
                 self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
 
 class TTkTableView(TTkAbstractScrollView):
-    __slots__ = ( '_header', '_tableView', '_showHeader', 'activated')
+    __slots__ = (
+        '_header', '_tableView', '_showHeader', 'activated',
+        # Forwarded Methods
+        'setHeader', 'setColumnColors', 'appendItem', 'indexOf', 'insertItem', 'removeItem', 'removeItemAt', 'removeItemsFrom')
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -331,6 +334,16 @@ class TTkTableView(TTkAbstractScrollView):
         if not self._showHeader:
             self._header.hide()
 
+        # Forward Methods
+        self.setHeader       = self._header.setHeader
+        self.setColumnColors = self._tableView.setColumnColors
+        self.appendItem      = self._tableView.appendItem
+        self.indexOf         = self._tableView.indexOf
+        self.insertItem      = self._tableView.insertItem
+        self.removeItem      = self._tableView.removeItem
+        self.removeItemAt    = self._tableView.removeItemAt
+        self.removeItemsFrom = self._tableView.removeItemsFrom
+
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x, y):
         self._tableView.viewMoveTo(x, y)
@@ -347,22 +360,6 @@ class TTkTableView(TTkAbstractScrollView):
     def setAlignment(self, *args, **kwargs)   :
         self._tableView.setAlignment(*args, **kwargs)
         self._header.setAlignment(*args, **kwargs)
-    def setHeader(self, *args, **kwargs)      :
-        self._header.setHeader(*args, **kwargs)
     def setColumnSize(self, *args, **kwargs)  :
         self._tableView.setColumnSize(*args, **kwargs)
         self._header.setColumnSize(*args, **kwargs)
-    def setColumnColors(self, *args, **kwargs):
-        self._tableView.setColumnColors(*args, **kwargs)
-    def appendItem(self, *args, **kwargs)     :
-        self._tableView.appendItem(*args, **kwargs)
-    def indexOf(self, *args, **kwargs)  :
-        return self._tableView.indexOf(*args, **kwargs)
-    def insertItem(self, *args, **kwargs)  :
-        self._tableView.insertItem(*args, **kwargs)
-    def removeItem(self, *args, **kwargs)  :
-        self._tableView.removeItem(*args, **kwargs)
-    def removeItemAt(self, *args, **kwargs)  :
-        self._tableView.removeItemAt(*args, **kwargs)
-    def removeItemsFrom(self, *args, **kwargs)  :
-        self._tableView.removeItemsFrom(*args, **kwargs)
