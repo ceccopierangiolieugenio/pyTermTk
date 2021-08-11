@@ -81,3 +81,35 @@ class TTkString():
                 out += str(TTkColor.RST) + str(color)
             out += ch
         return out
+
+    def align(self, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
+        lentxt = len(self._text)
+        if not width or width == lentxt: return self
+
+        ret = TTKString()
+
+        if lentxt < width:
+            pad = width-lentxt
+            if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
+                ret._text   = self._text   + " "    *pad
+                ret._colors = self._colors + [color]*pad
+            elif alignment == TTkK.RIGHT_ALIGN:
+                ret._text   = " "    *pad + self._text
+                ret._colors = [color]*pad + self._colors
+            elif alignment == TTkK.CENTER_ALIGN:
+                p1 = pad//2
+                p2 = pad-p1
+                ret._text   = " "    *p1 + self._text   + " "    *p2
+                ret._colors = [color]*p1 + self._colors + [color]*p2
+            elif alignment == TTkK.JUSTIFY:
+                # TODO: Text Justification
+                ret._text   = self._text   + " "    *pad
+                ret._colors = self._colors + [color]*pad
+        else:
+            ret._text   =  self._text[:width]
+            ret._colors =  self._colors[:width]
+
+        return ret
+
+    def getData(self):
+        return (self._text,self._colors)

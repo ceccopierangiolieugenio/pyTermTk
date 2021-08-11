@@ -29,6 +29,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.helper import TTkHelper
 
 class TTkCanvas:
@@ -120,9 +121,8 @@ class TTkCanvas:
         self._visible = True
 
     def _set(self, _y, _x, _ch, _col=TTkColor.RST):
-        if _y < self._height  and \
-           _x < self._width and \
-           _x >= 0 and _y >=0 :
+        if 0 <= _y < self._height and \
+           0 <= _x < self._width  :
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
 
@@ -190,30 +190,38 @@ class TTkCanvas:
 
     def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
         if not self._visible: return
+        x,y = pos
+        if x<0 or x>=self._width or \
+           y<0 or y>=self._height : return
         lentxt = len(text)
         if width is None or width<0:
             width = lentxt
-        x,y = pos
 
-        if lentxt < width:
-            pad = width-lentxt
-            if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
-                text = text + " "*pad
-            elif alignment == TTkK.RIGHT_ALIGN:
-                text = " "*pad + text
-            elif alignment == TTkK.CENTER_ALIGN:
-                p1 = pad//2
-                p2 = pad-p1
-                text = " "*p1 + text+" "*p2
-            elif alignment == TTkK.JUSTIFY:
-                # TODO: Text Justification
-                text = text + " "*pad
+        if isinstance(text, TTkString):
+            text = text.align(width=width, alignment=alignment, color=color)
+            txt, colors = text.getData()
+            for i in range(x,min(self._width,x+len(txt))):
+                self._set(y, i, txt[i-x], colors[i-x])
         else:
-            text=text[:width]
+            if lentxt < width:
+                pad = width-lentxt
+                if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
+                    text = text + " "*pad
+                elif alignment == TTkK.RIGHT_ALIGN:
+                    text = " "*pad + text
+                elif alignment == TTkK.CENTER_ALIGN:
+                    p1 = pad//2
+                    p2 = pad-p1
+                    text = " "*p1 + text+" "*p2
+                elif alignment == TTkK.JUSTIFY:
+                    # TODO: Text Justification
+                    text = text + " "*pad
+            else:
+                text=text[:width]
 
-        arr = list(text)
-        for i in range(0, len(arr)):
-            self._set(y, x+i, arr[i], color)
+            arr = list(text)
+            for i in range(0, len(arr)):
+                self._set(y, x+i, arr[i], color)
 
     def drawBoxTitle(self, pos, size, text, align=TTkK.CENTER_ALIGN, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
         if not self._visible: return
