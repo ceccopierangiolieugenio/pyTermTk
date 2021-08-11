@@ -167,8 +167,11 @@ class TTkFileBuffer():
 
     def search(self, txt):
         indexes = []
+        words = txt.split('|')
         with open(self._filename,'r') as infile:
             for id, line in enumerate(infile):
-                if txt in line:
-                    indexes.append(id)
+                for word in words:
+                    if word in line:
+                        indexes.append(id)
+                        break
         return indexes
