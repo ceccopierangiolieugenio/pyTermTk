@@ -66,6 +66,12 @@ class TTkString():
             ret._colors = [self._baseColor]*len(other) + self._colors
         return ret
 
+    def __setitem__(self, index, value):
+        raise NotImplementedError()
+
+    def __getitem__(self, index):
+        raise NotImplementedError()
+
     def toAansi(self):
         out   = ""
         color = None
