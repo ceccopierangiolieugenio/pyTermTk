@@ -317,7 +317,7 @@
       <span class="c1">#11  12  13  14  15  16  17  18  19  20</span>
       <span class="s1">&#39;╞&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╧&#39;</span><span class="p">,</span><span class="s1">&#39;╩&#39;</span><span class="p">,</span><span class="s1">&#39;╡&#39;</span><span class="p">,</span><span class="s1">&#39;╘&#39;</span><span class="p">,</span><span class="s1">&#39;╛&#39;</span><span class="p">,</span><span class="s1">&#39;└&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┘&#39;</span><span class="p">,</span>
       <span class="c1">#21  22  23  24  25  26  27  28  29  30</span>
-      <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;╝&#39;</span><span class="p">,</span><span class="s1">&#39;╰&#39;</span><span class="p">,</span><span class="s1">&#39;╯&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;╝&#39;</span><span class="p">,</span><span class="s1">&#39;╰&#39;</span><span class="p">,</span><span class="s1">&#39;╯&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">,</span><span class="s1">&#39;╒&#39;</span><span class="p">,</span><span class="s1">&#39;╕&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span>
       <span class="c1">#31  32</span>
       <span class="s1">&#39;◀&#39;</span><span class="p">,</span><span class="s1">&#39;▶&#39;</span>
     <span class="p">)</span>
@@ -325,16 +325,19 @@
 
 <span class="sd">    ::</span>
 
-<span class="sd">          ┌──────╔══════╗──────┬──────┐      ┌─┌──────╔══════╗──────┬──────┐─┐</span>
-<span class="sd">          │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│</span>
-<span class="sd">        ╞═╧══════╩══════╩══════╧══════╧════╡ ╞═╧══════╩══════╩══════╧══════╧═╡</span>
-<span class="sd">          ┌──────╔══════╗──────┬──────┐      ╭─┌──────╔══════╗──────┬──────┐─╮</span>
-<span class="sd">          │Label1║Label2║Label3│Label4│      │◀│Label1║Label2║Label3│Label4│▶│</span>
-<span class="sd">        ╞════════╩══════╩══════════════════╡ ╞════════╩══════╩═══════════════╡</span>
+<span class="sd">          ┌──────╔══════╗──────┬──────┐           ┌─┌──────╔══════╗──────┬──────┐─┐</span>
+<span class="sd">          │Label1║Label2║Label3│Label4│           │◀│Label1║Label2║Label3│Label4│▶│</span>
+<span class="sd">        ╞═╧══════╩══════╩══════╧══════╧════╡      ╞═╧══════╩══════╩══════╧══════╧═╡</span>
+<span class="sd">          ┌──────╔══════╗──────┬──────┐           ╭─┌──────╔══════╗──────┬──────┐─╮</span>
+<span class="sd">          │Label1║Label2║Label3│Label4│           │◀│Label1║Label2║Label3│Label4│▶│</span>
+<span class="sd">        ╞════════╩══════╩══════════════════╡      ╞════════╩══════╩═══════════════╡</span>
 <span class="sd">        # Menu Prototype:</span>
-<span class="sd">        ╭──┌──────╔══════╗──────┬──────┐   ╭──┬─┌──────╔══════╗──────┬──────┐─╮</span>
-<span class="sd">        │⣿⣿│Label1║Label2║Label3│Label4│   │⣿⣿│◀│Label1║Label2║Label3│Label4│▶│</span>
-<span class="sd">        ╞═════════╩══════╩═══════════════╡ ╞══╧════════╩══════╩═══════════════╡</span>
+<span class="sd">        ╭──┌──────╔══════╗──────┬──────┐          ╭──┬─┌──────╔══════╗──────┬──────┐─╮</span>
+<span class="sd">        │XX│Label1║Label2║Label3│Label4│          │XX│◀│Label1║Label2║Label3│Label4│▶│</span>
+<span class="sd">        ╞═════════╩══════╩═══════════════╡        ╞══╧════════╩══════╩═══════════════╡</span>
+<span class="sd">              ┌──────╔══════╗──────┬──────┐             ╭─┌──────╔══════╗──────┬──────┐─╮</span>
+<span class="sd">         XX YY│Label1║Label2║Label3│Label4│JJ KK   XX YY│◀│Label1║Label2║Label3│Label4│▶│JJ KK</span>
+<span class="sd">        ╞════════════╩══════╩═══════════════════╡ ╞═════╧════════╩══════╩═══════════════╧═════╡</span>
 <span class="sd">          ┌──────┲━━━━━━┱──────┬──────┐</span>
 <span class="sd">          │Label1┃Label2┃Label3│Label4│</span>
 <span class="sd">        ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥</span>

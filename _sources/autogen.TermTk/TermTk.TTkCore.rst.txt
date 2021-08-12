@@ -19,5 +19,6 @@ TermTk.TTkCore
   TermTk.TTkCore.helper
   TermTk.TTkCore.log
   TermTk.TTkCore.signal
+  TermTk.TTkCore.string
   TermTk.TTkCore.timer
   TermTk.TTkCore.ttk

@@ -8,6 +8,13 @@ TermTk.TTkWidgets.menubar
 
 
 
+TTkMenuButton
+=============
+
+.. autoclass:: TTkMenuButton
+   :members:
+
+
 TTkMenuLayout
 =============
 

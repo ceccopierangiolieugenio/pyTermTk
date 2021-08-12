@@ -260,9 +260,13 @@
         <span class="s1">&#39;_focus&#39;</span><span class="p">,</span><span class="s1">&#39;_focus_policy&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_layout&#39;</span><span class="p">,</span> <span class="s1">&#39;_canvas&#39;</span><span class="p">,</span> <span class="s1">&#39;_widgetItem&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_visible&#39;</span><span class="p">,</span> <span class="s1">&#39;_transparent&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_pendingMouseRelease&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;_pendingMouseRelease&#39;</span><span class="p">,</span>
+        <span class="c1">#Signals</span>
+        <span class="s1">&#39;focusChanged&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#Signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;TTkWidget&#39;</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
@@ -477,21 +481,10 @@
                         <span class="n">wevt</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">wx</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="n">wy</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">mouseEvent</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">wevt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="c1">#if not widget._data[&#39;mouse&#39;][&#39;underMouse&#39;]:</span>
-                        <span class="c1">#    widget._data[&#39;mouse&#39;][&#39;underMouse&#39;] = True</span>
-                        <span class="c1">#    widget.enterEvent(wevt)</span>
                         <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">mouseEvent</span><span class="p">(</span><span class="n">wevt</span><span class="p">):</span>
                             <span class="k">return</span> <span class="kc">True</span>
-                    <span class="c1">#else:</span>
-                    <span class="c1">#    if widget._data[&#39;mouse&#39;][&#39;underMouse&#39;]:</span>
-                    <span class="c1">#        widget._data[&#39;mouse&#39;][&#39;underMouse&#39;] = False</span>
-                    <span class="c1">#        widget.leaveEvent(evt)</span>
-                    <span class="c1">#    if widget._data[&#39;layout&#39;] is not None:</span>
-                    <span class="c1">#        CuWidget._broadcastLeaveEvent(evt, widget._data[&#39;layout&#39;])</span>
                     <span class="k">continue</span>
 
-                <span class="c1">#if widget.event(evt):</span>
-                <span class="c1">#    return True</span>
             <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
                 <span class="n">levt</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_mouseEventLayoutHandle</span><span class="p">(</span><span class="n">levt</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
@@ -516,8 +509,6 @@
                 <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span><span class="p">:</span>
-            <span class="c1">#if self.hasFocus():</span>
-            <span class="c1">#    self.clearFocus()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -534,38 +525,8 @@
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Wheel</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wheelEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
-            <span class="c1">#if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:</span>
-            <span class="c1">#    self.setFocus()</span>
-        <span class="c1">#elif evt.type() == CuEvent.KeyPress:</span>
-        <span class="c1">#    self.keyPressEvent(evt)</span>
-        <span class="c1">#elif evt.type() == CuEvent.KeyRelease:</span>
-        <span class="c1">#    self.keyReleaseEvent(evt)</span>
-        <span class="c1"># Trigger this event to the childs</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
 
-    <span class="c1">#def event(self, evt):</span>
-    <span class="c1">#    pass</span>
-<span class="c1">#        # handle own events</span>
-<span class="c1">#        if evt.type() == CuEvent.MouseMove:</span>
-<span class="c1">#            if evt.button() == CuT.NoButton:</span>
-<span class="c1">#                self.mouseMoveEvent(evt)</span>
-<span class="c1">#        elif   evt.type() == CuEvent.MouseButtonRelease:</span>
-<span class="c1">#            self.mouseReleaseEvent(evt)</span>
-<span class="c1">#        elif evt.type() == CuEvent.MouseButtonPress:</span>
-<span class="c1">#            self.mousePressEvent(evt)</span>
-<span class="c1">#            if self.focusPolicy() &amp; CuT.ClickFocus == CuT.ClickFocus:</span>
-<span class="c1">#                self.setFocus()</span>
-<span class="c1">#        elif evt.type() == CuEvent.Wheel:</span>
-<span class="c1">#            self.wheelEvent(evt)</span>
-<span class="c1">#            if self.focusPolicy() &amp; CuT.WheelFocus == CuT.WheelFocus:</span>
-<span class="c1">#                self.setFocus()</span>
-<span class="c1">#        elif evt.type() == CuEvent.KeyPress:</span>
-<span class="c1">#            self.keyPressEvent(evt)</span>
-<span class="c1">#        elif evt.type() == CuEvent.KeyRelease:</span>
-<span class="c1">#            self.keyReleaseEvent(evt)</span>
-<span class="c1">#        # Trigger this event to the childs</span>
-<span class="c1">#        if self.layout() is not None:</span>
-<span class="c1">#            return CuWidget._eventLayoutHandle(evt, self.layout())</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="k">def</span> <span class="nf">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">replaceItem</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -729,25 +690,27 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">layoutUpdated</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TTkLog.debug(f&quot;setFocus: {self._name} - {self._focus}&quot;)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">:</span> <span class="k">return</span>
-        <span class="c1"># TTkLog.debug(self._name)</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span> <span class="k">return</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tmp</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
-            <span class="n">tmp</span><span class="o">.</span><span class="n">focusOutEvent</span><span class="p">()</span>
-            <span class="n">tmp</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlay</span><span class="p">()</span>
+            <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlay</span><span class="p">(</span><span class="n">refocus</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focusInEvent</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">clearFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TTkLog.debug(f&quot;clearFocus: {self._name} - {self._focus}&quot;)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">:</span> <span class="k">return</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focusOutEvent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">hasFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span>
