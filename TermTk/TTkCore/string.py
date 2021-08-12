@@ -86,7 +86,7 @@ class TTkString():
         lentxt = len(self._text)
         if not width or width == lentxt: return self
 
-        ret = TTKString()
+        ret = TTkString()
 
         if lentxt < width:
             pad = width-lentxt
