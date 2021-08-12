@@ -91,9 +91,13 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         '_focus','_focus_policy',
         '_layout', '_canvas', '_widgetItem',
         '_visible', '_transparent',
-        '_pendingMouseRelease')
+        '_pendingMouseRelease',
+        #Signals
+        'focusChanged')
 
     def __init__(self, *args, **kwargs):
+        #Signals
+        self.focusChanged = pyTTkSignal(bool)
 
         self._name = kwargs.get('name', 'TTkWidget' )
         self._parent = kwargs.get('parent', None )
@@ -308,21 +312,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                         wevt = evt.clone(pos=(x-wx, y-wy))
                 if mouseEvent:
                     if wevt is not None:
-                        #if not widget._data['mouse']['underMouse']:
-                        #    widget._data['mouse']['underMouse'] = True
-                        #    widget.enterEvent(wevt)
                         if widget.mouseEvent(wevt):
                             return True
-                    #else:
-                    #    if widget._data['mouse']['underMouse']:
-                    #        widget._data['mouse']['underMouse'] = False
-                    #        widget.leaveEvent(evt)
-                    #    if widget._data['layout'] is not None:
-                    #        CuWidget._broadcastLeaveEvent(evt, widget._data['layout'])
                     continue
 
-                #if widget.event(evt):
-                #    return True
             elif item.layoutItemType == TTkK.LayoutItem:
                 levt = evt.clone(pos=(x, y))
                 if TTkWidget._mouseEventLayoutHandle(levt, item):
@@ -347,8 +340,6 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 return True
 
         if evt.evt == TTkK.Release:
-            #if self.hasFocus():
-            #    self.clearFocus()
             self._pendingMouseRelease = False
             if self.mouseReleaseEvent(evt):
                 return True
@@ -365,38 +356,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if evt.key == TTkK.Wheel:
             if self.wheelEvent(evt):
                 return True
-            #if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
-            #    self.setFocus()
-        #elif evt.type() == CuEvent.KeyPress:
-        #    self.keyPressEvent(evt)
-        #elif evt.type() == CuEvent.KeyRelease:
-        #    self.keyReleaseEvent(evt)
-        # Trigger this event to the childs
-        return False
 
-    #def event(self, evt):
-    #    pass
-#        # handle own events
-#        if evt.type() == CuEvent.MouseMove:
-#            if evt.button() == CuT.NoButton:
-#                self.mouseMoveEvent(evt)
-#        elif   evt.type() == CuEvent.MouseButtonRelease:
-#            self.mouseReleaseEvent(evt)
-#        elif evt.type() == CuEvent.MouseButtonPress:
-#            self.mousePressEvent(evt)
-#            if self.focusPolicy() & CuT.ClickFocus == CuT.ClickFocus:
-#                self.setFocus()
-#        elif evt.type() == CuEvent.Wheel:
-#            self.wheelEvent(evt)
-#            if self.focusPolicy() & CuT.WheelFocus == CuT.WheelFocus:
-#                self.setFocus()
-#        elif evt.type() == CuEvent.KeyPress:
-#            self.keyPressEvent(evt)
-#        elif evt.type() == CuEvent.KeyRelease:
-#            self.keyReleaseEvent(evt)
-#        # Trigger this event to the childs
-#        if self.layout() is not None:
-#            return CuWidget._eventLayoutHandle(evt, self.layout())
+        return False
 
     def setLayout(self, layout):
         self._layout.replaceItem(layout, 0)
@@ -570,6 +531,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             TTkHelper.removeOverlay(refocus=False)
         TTkHelper.setFocus(self)
         self._focus = True
+        self.focusChanged.emit(self._focus)
         self.focusInEvent()
 
     def clearFocus(self):
@@ -577,6 +539,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if not self._focus: return
         TTkHelper.clearFocus()
         self._focus = False
+        self.focusChanged.emit(self._focus)
         self.focusOutEvent()
         self.update(repaint=True, updateLayout=False)
 

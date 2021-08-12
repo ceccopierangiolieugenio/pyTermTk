@@ -229,15 +229,6 @@ class TTkHelper:
             layout = layout.parent()
         return (wx, wy)
 
-    def _iterWidgets(item):
-        for child in item.children():
-            if child.layoutItemType == TTkK.WidgetItem:
-                if not child.widget().isVisible(): continue
-                yield child.widget()
-                yield from TTkHelper._iterWidgets(child.widget().rootLayout())
-            if child.layoutItemType == TTkK.LayoutItem:
-                yield from TTkHelper._iterWidgets(child)
-
     def nextFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:
@@ -245,7 +236,7 @@ class TTkHelper:
         if widget == rootWidget:
             widget = None
         first = None
-        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+        for w in rootWidget.rootLayout().iterWidgets():
             if not first and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 first = w
             # TTkLog.debug(f"{w._name} {widget}")
@@ -268,7 +259,7 @@ class TTkHelper:
         if widget == rootWidget:
             widget = None
         prev = None
-        for w in TTkHelper._iterWidgets(rootWidget.rootLayout()):
+        for w in rootWidget.rootLayout().iterWidgets():
             # TTkLog.debug(f"{w._name} {widget}")
             if w == widget:
                 widget=None

@@ -342,11 +342,29 @@ class TTkCanvas:
             self._set(y+size-1,x, TTkCfg.theme.vscroll[3], color) # Down Arrow
         pass
 
+    def drawTabMenuButton(
+            self, pos, size, text, slim=False,
+            color=TTkColor.RST, borderColor=TTkColor.RST,
+            sideBorder=TTkK.LEFT|TTkK.RIGHT):
+        x,y = pos
+        w,h = size
+        textPos = pos
+        tt = TTkCfg.theme.tab
+        # phase 0 - Draw the Bottom bar
+        if not slim:
+            borderLeft  = tt[27] if sideBorder & TTkK.LEFT  else  tt[12]
+            borderRight = tt[28] if sideBorder & TTkK.RIGHT else  tt[12]
+            bottomBar = borderLeft+tt[12]*(w-2)+borderRight
+            self.drawText(pos=(x,y+2), text=bottomBar, color=borderColor)
+            textPos = (x,y+1)
+        self.drawText(pos=textPos, text=text, color=color)
+
     def drawTab(
             self, pos, size,
             labels, labelsPos, selected,
             offset,  leftScroller, rightScroller, slim=False, menu=False,
-            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST):
+            color=TTkColor.RST, borderColor=TTkColor.RST, selectColor=TTkColor.RST, offsetColor=TTkColor.RST,
+            sideBorder=TTkK.LEFT|TTkK.RIGHT):
         x,y = pos
         w,h = size
         tt = TTkCfg.theme.tab
@@ -355,7 +373,9 @@ class TTkCanvas:
             bottomBar = tt[18]+tt[19]*(w-2)+tt[20]
             bottomPos = y+1
         else:
-            bottomBar = tt[11]+tt[12]*(w-2)+tt[15]
+            borderLeft  = tt[11] if sideBorder & TTkK.LEFT  else tt[13] if leftScroller  else tt[12]
+            borderRight = tt[15] if sideBorder & TTkK.RIGHT else tt[13] if rightScroller else tt[12]
+            bottomBar = borderLeft+tt[12]*(w-2)+borderRight
             bottomPos = y+2
         self.drawText(pos=(x,bottomPos),text=bottomBar, color=borderColor)
         # phase 1 - Draw From left  to 'Selected'
