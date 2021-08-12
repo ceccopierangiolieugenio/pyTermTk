@@ -32,7 +32,7 @@ from TermTk.TTkWidgets.frame import *
 class _TestContent(TTkWidget):
     def paintEvent(self):
         # TTkLog.debug(f"Test Paint - {self._name}")
-        y=0;  self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff0000"),text="Lorem ipsum dolor sit amet,")
+        y=0;  self._canvas.drawText(pos=(-5,y),color=TTkColor.fg("#ff0000"),text="     Lorem ipsum dolor sit amet,")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff8800"),text="consectetur adipiscing elit,")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ffff00"),text="sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
         y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#00ff00"),text="Ut enim ad minim veniam,")

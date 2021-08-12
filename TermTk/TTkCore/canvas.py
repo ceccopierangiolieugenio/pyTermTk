@@ -189,19 +189,30 @@ class TTkCanvas:
         self._set(y, x, char, color)
 
     def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
+        '''
+            NOTE:
+            drawText is one of the most abused functions,
+            there is some reduntant code here in order to reduce the footprint
+        '''
         if not self._visible: return
+
+        # Check the size and bounds
         x,y = pos
-        if x<0 or x>=self._width or \
-           y<0 or y>=self._height : return
+        if y<0 or y>=self._height : return
+
         lentxt = len(text)
         if width is None or width<0:
             width = lentxt
 
+        if x+width<0 or x>=self._width : return
+
         if isinstance(text, TTkString):
             text = text.align(width=width, alignment=alignment, color=color)
             txt, colors = text.getData()
-            for i in range(x,min(self._width,x+len(txt))):
-                self._set(y, i, txt[i-x], colors[i-x])
+            for i in range(0, min(len(txt),self._width-x)):
+                #self._set(y, x+i, txt[i-x], colors[i-x])
+                self._data[y][x+i] = txt[i]
+                self._colors[y][x+i] =  colors[i].mod(x+i,y)
         else:
             if lentxt < width:
                 pad = width-lentxt
@@ -220,7 +231,7 @@ class TTkCanvas:
                 text=text[:width]
 
             arr = list(text)
-            for i in range(0, len(arr)):
+            for i in range(0, min(len(arr),self._width-x)):
                 self._set(y, x+i, arr[i], color)
 
     def drawBoxTitle(self, pos, size, text, align=TTkK.CENTER_ALIGN, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
