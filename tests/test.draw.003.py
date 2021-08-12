@@ -41,7 +41,8 @@ TTkLog.info("Starting")
 s1 = TTkString()                              + "Text "                          + "Text 1"
 s2 = TTkString() +   TTkColor.fg("#ff0000")   + "Test "                          + "Text 2"
 s3 = TTkString() +   TTkColor.bg("#550088")   + "Test "                          + "Text 3"
-s4 = TTkString() + ( TTkColor.fg("#00ff00") +
+s4 = TTkString() + ( TTkColor.UNDERLINE     +
+                     TTkColor.fg("#00ff00") +
                      TTkColor.bg("#555500") ) + "Test " + TTkColor.bg("#880055") + "Text 4"
 
 Term.push(

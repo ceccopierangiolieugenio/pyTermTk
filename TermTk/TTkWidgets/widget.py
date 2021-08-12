@@ -560,25 +560,25 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 self.layoutUpdated()
 
     def setFocus(self):
+        # TTkLog.debug(f"setFocus: {self._name} - {self._focus}")
         if self._focus: return
-        # TTkLog.debug(self._name)
         tmp = TTkHelper.getFocus()
         if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
-            tmp.focusOutEvent()
-            tmp.update(repaint=True, updateLayout=False)
         if not TTkHelper.isOverlay(self):
-            TTkHelper.removeOverlay()
+            TTkHelper.removeOverlay(refocus=False)
         TTkHelper.setFocus(self)
         self._focus = True
         self.focusInEvent()
 
     def clearFocus(self):
+        # TTkLog.debug(f"clearFocus: {self._name} - {self._focus}")
         if not self._focus: return
         TTkHelper.clearFocus()
         self._focus = False
         self.focusOutEvent()
+        self.update(repaint=True, updateLayout=False)
 
     def hasFocus(self):
         return self._focus

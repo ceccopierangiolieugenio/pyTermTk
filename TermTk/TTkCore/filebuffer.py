@@ -170,8 +170,6 @@ class TTkFileBuffer():
         words = txt.split('|')
         with open(self._filename,'r') as infile:
             for id, line in enumerate(infile):
-                for word in words:
-                    if word in line:
-                        indexes.append(id)
-                        break
+                if any([word in line for word in words]):
+                    indexes.append(id)
         return indexes

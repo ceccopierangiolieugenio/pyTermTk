@@ -130,7 +130,7 @@ class TTkHelper:
         return None
 
     @staticmethod
-    def removeOverlay():
+    def removeOverlay(refocus=True):
         for widget in TTkHelper._overlay:
             TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
         TTkHelper._overlay = []
@@ -139,7 +139,8 @@ class TTkHelper:
         if TTkHelper._savedFocus:
             bk = TTkHelper._savedFocus
             TTkHelper._savedFocus = None
-            bk.setFocus()
+            if refocus:
+                bk.setFocus()
 
     @staticmethod
     def removeSingleOverlay(widget):
