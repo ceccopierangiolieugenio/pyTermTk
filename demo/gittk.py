@@ -62,8 +62,8 @@ gittkVsplitter = ttk.TTkSplitter(parent=gittk, orientation=ttk.TTkK.VERTICAL)
 tableCommit = ttk.TTkTable(parent=gittkVsplitter, selectColor=ttk.TTkColor.bg('#882200'))
 gittkHsplitter = ttk.TTkSplitter(parent=gittkVsplitter, orientation=ttk.TTkK.HORIZONTAL)
 diffText = ttk.TTkTextEdit(parent=gittkHsplitter)
-ttk.TTkTestWidgetSizes(parent=gittkHsplitter ,border=True, title="Details")
-ttk.TTkLogViewer(parent=gittkVsplitter)
+gittkHsplitter.addWidget(ttk.TTkTestWidgetSizes(border=True, title="Details"),20)
+gittkVsplitter.addWidget(ttk.TTkLogViewer(),3)
 
 tableCommit.setColumnSize((-1,20,20))
 

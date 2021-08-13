@@ -31,7 +31,7 @@ from TermTk.TTkWidgets.frame import *
 class TTkSplitter(TTkFrame):
     __slots__ = (
         '_splitterInitialized', '_orientation',
-        '_separators', '_separatorsRef', '_sizeRef',
+        '_separators', '_separatorsRef', '_sizeRef', '_initSizes',
         '_separatorSelected', '_mouseDelta')
     def __init__(self, *args, **kwargs):
         self._splitterInitialized = False
@@ -39,6 +39,7 @@ class TTkSplitter(TTkFrame):
         self._separators = []
         self._separatorsRef = []
         self._sizeRef = 0
+        self._initSizes = []
         self._separatorSelected = None
         self._orientation = TTkK.HORIZONTAL
         TTkFrame.__init__(self, *args, **kwargs)
@@ -58,6 +59,7 @@ class TTkSplitter(TTkFrame):
         else:
             fullSize = h
         # assign the same slice to all the widgets
+        self._initSizes.append(size)
         self._separators = [fullSize*i//numW for i in range(1,numW+1)]
         self._updateGeometries()
         self._separatorsRef = self._separators
@@ -156,6 +158,21 @@ class TTkSplitter(TTkFrame):
             self._sizeRef = size
 
     def resizeEvent(self, w, h):
+        if w==h==0: return
+        if not self._sizeRef:
+            # This is the first resize (w,h != 0 and previous reference size was 0)
+            # I need to define the initial position of all the widgets
+            if self._orientation == TTkK.HORIZONTAL:
+                self._sizeRef = w
+            else:
+                self._sizeRef = h
+            # get the sum of the fixed sizes
+            fixSize = sum(filter(None, self._initSizes))
+            numVarSizes = len([x for x in self._initSizes if x is None])
+            avalSize = self._sizeRef-fixSize
+            sizes = [avalSize//numVarSizes if s is None else s for s in self._initSizes]
+            self._separatorsRef = [sum(sizes[:i+1]) for i in range(len(sizes))]
+
         # Adjust separators to the new size;
         self._separatorSelected = None
         if self._sizeRef > 0:

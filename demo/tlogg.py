@@ -243,7 +243,7 @@ def main():
     root = TTk(layout=TTkGridLayout())
     splitter = TTkSplitter(parent=root, orientation=TTkK.VERTICAL)
     tab = TTkTabWidget(parent=splitter, border=False)
-    TTkLogViewer(parent=splitter)
+    splitter.addWidget(TTkLogViewer(),3)
 
     for file in args.filename:
         tabSplitter = TTkSplitter(orientation=TTkK.VERTICAL)
