@@ -5,4 +5,4 @@ from .ttk import *
 from .color import *
 from .string import *
 from .timer import *
-from .fileBuffer import *
+from .filebuffer import *
