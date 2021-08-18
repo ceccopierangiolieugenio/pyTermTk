@@ -351,7 +351,12 @@ class TTkCanvas:
         textPos = pos
         tt = TTkCfg.theme.tab
         # phase 0 - Draw the Bottom bar
-        if not slim:
+        if slim:
+            borderLeft  = tt[18] if sideBorder & TTkK.LEFT  else  tt[19]
+            borderRight = tt[20] if sideBorder & TTkK.RIGHT else  tt[19]
+            bottomBar = borderLeft+tt[19]*(w-2)+borderRight
+            self.drawText(pos=(x,y+1), text=bottomBar, color=borderColor)
+        else:
             borderLeft  = tt[27] if sideBorder & TTkK.LEFT  else  tt[12]
             borderRight = tt[28] if sideBorder & TTkK.RIGHT else  tt[12]
             bottomBar = borderLeft+tt[12]*(w-2)+borderRight
@@ -370,7 +375,9 @@ class TTkCanvas:
         tt = TTkCfg.theme.tab
         # phase 0 - Draw the Bottom bar
         if slim:
-            bottomBar = tt[18]+tt[19]*(w-2)+tt[20]
+            borderLeft  = tt[18] if sideBorder & TTkK.LEFT  else tt[29] if leftScroller  else tt[19]
+            borderRight = tt[20] if sideBorder & TTkK.RIGHT else tt[29] if rightScroller else tt[19]
+            bottomBar = borderLeft+tt[19]*(w-2)+borderRight
             bottomPos = y+1
         else:
             borderLeft  = tt[11] if sideBorder & TTkK.LEFT  else tt[13] if leftScroller  else tt[12]

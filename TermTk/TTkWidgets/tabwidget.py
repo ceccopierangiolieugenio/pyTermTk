@@ -43,7 +43,7 @@ class _TTkTabMenuButton(TTkMenuButton):
         TTkMenuButton.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTabMenuButton')
         txtlen = len(self.text)
-        self.setMinimumSize(txtlen+1,0x1000)
+        self.setMinimumSize(txtlen+1,0x2)
         self.setMaximumSize(txtlen+1,0x1000)
 
     def setSideBorder(self, border):
@@ -67,6 +67,7 @@ class _TTkTabMenuButton(TTkMenuButton):
             text = f"{self.text} "
         self._canvas.drawTabMenuButton(
                         pos=(0,0),text=text,
+                        slim=(self._height==2),
                         size=self.size(),
                         color=textColor,
                         borderColor=borderColor,
@@ -320,7 +321,7 @@ class TTkTabWidget(TTkFrame):
             widget.update()
 
     def addMenu(self, text, position=TTkK.LEFT):
-        button = _TTkTabMenuButton(text=text, borderColor=self._tabBorderColor, menuOffset=(-1,1), tabPosition=position)
+        button = _TTkTabMenuButton(text=text, borderColor=self._tabBorderColor, menuOffset=(-1,1) if self.border() else (-1,0) , tabPosition=position)
         button.focusChanged.connect(self._focusChanged)
         if position==TTkK.LEFT:
             if not self._topLeftLayout:

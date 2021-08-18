@@ -115,3 +115,6 @@ class _pyTTkSignal_obj():
             raise TypeError(error)
         for slot in self._connected_slots:
             slot(*args, **kwargs)
+
+    def clear(self):
+        self._connected_slots = []

@@ -492,7 +492,12 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             self._parent.lowerWidget()
             self._parent.rootLayout().lowerWidget(self)
 
-    def close(self): pass
+    def close(self):
+        if self._parent is not None and \
+           self._parent.rootLayout() is not None:
+            self._parent.rootLayout().removeWidget(self)
+        TTkHelper.removeSingleOverlay(self)
+
 
     def isVisible(self):
         if self._parent is None:

@@ -30,10 +30,12 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+from TermTk.TTkTemplates.data import TData
 
-class TTkAbstractListItem(TTkLabel):
+class TTkAbstractListItem(TTkLabel, TData):
     __slots__ = ('_pressed', '_selected', '_highlighted', 'listItemClicked')
     def __init__(self, *args, **kwargs):
+        TData.__init__(self, *args, **kwargs)
         TTkLabel.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbstractListItem' )
         # Define Signals
@@ -135,6 +137,7 @@ class TTkListWidget(TTkAbstractScrollView):
         label.highlighted = True
         self._highlighted = label
         self.setFocus()
+        self.itemClicked.emit(label)
         self.textClicked.emit(label.text)
 
     def setSelectionMode(self, mode):
@@ -160,11 +163,13 @@ class TTkListWidget(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def addItem(self, item):
+    def addItem(self, item, data=None):
         if isinstance(item, str):
-            label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
+            #label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
+            label = TTkAbstractListItem(text=item, data=data)
             label.listItemClicked.connect(self._labelSelectedHandler)
             return self.addItem(label)
+        # item.listItemClicked.connect(self._labelSelectedHandler)
         self._items.append(item)
         _,y,_,h = self.layout().fullWidgetAreaGeometry()
         self.addWidget(item)

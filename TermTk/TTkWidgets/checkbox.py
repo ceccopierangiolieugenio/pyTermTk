@@ -47,6 +47,10 @@ class TTkCheckbox(TTkWidget):
         else:
             return TTkK.Unchecked
 
+    def setCheckState(self, state):
+        self._checked = state == TTkK.Checked
+        self.update()
+
     def paintEvent(self):
         if self.hasFocus():
             borderColor = TTkCfg.theme.checkboxBorderColorFocus

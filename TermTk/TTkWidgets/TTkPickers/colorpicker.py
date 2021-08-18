@@ -278,12 +278,14 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         def _okPressed():
             self.color = sc.color
             self.colorSelected.emit(self.color)
+            self.close()
 
         okButton.clicked.connect(_okPressed)
 
         @pyTTkSlot()
         def _cancelPressed():
             self.colorSelected.emit(self.color)
+            self.close()
 
         cancelButton.clicked.connect(_cancelPressed)
 
