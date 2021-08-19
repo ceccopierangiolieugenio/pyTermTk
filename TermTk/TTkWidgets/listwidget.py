@@ -146,6 +146,9 @@ class TTkListWidget(TTkAbstractScrollView):
     def selectedLabels(self):
         return [i.text for i in self._selectedItems]
 
+    def items(self):
+        return self._items
+
     def resizeEvent(self, w, h):
         maxw = 0
         for item in self.layout().children():
