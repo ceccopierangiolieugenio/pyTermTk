@@ -36,20 +36,45 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy')
+    __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy'
+        #signals
+        'editTextChanged')
     def __init__(self, *args, **kwargs):
+        # Define Signals
+        self.editTextChanged = pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
-        # Define Signals
         # self.cehcked = pyTTkSignal()
-        self._list = kwargs.get('list', [] )
-        self._editable = kwargs.get('editable', False )
         self._lineEdit = TTkLineEdit(parent=self)
-        self._lineEdit.hide()
+        self._list = kwargs.get('list', [] )
+        self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
+        self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._id = -1
+        self.setEditable(kwargs.get('editable', False ))
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
+    def _lineEditChanged(self):
+        text = self._lineEdit.text()
+        if self._insertPolicy ==  TTkK.NoInsert:
+            pass
+        elif self._insertPolicy ==  TTkK.InsertAtTop:
+            self._id=0
+            self._list.insert(0,text)
+        # elif self._insertPolicy ==  TTkK.InsertAtCurrent:
+        #     pass
+        elif self._insertPolicy ==  TTkK.InsertAtBottom:
+            self._id=len(self._list)
+            self._list.append(text)
+        # elif self._insertPolicy ==  TTkK.InsertAfterCurrent:
+        #     pass
+        # elif self._insertPolicy ==  TTkK.InsertBeforeCurrent:
+        #     pass
+        # elif self._insertPolicy ==  TTkK.InsertAlphabetically:
+        #     pass
+        else:
+            pass
+        self.editTextChanged.emit(text)
 
     def resizeEvent(self, w: int, h: int):
         w,h = self.size()
@@ -75,12 +100,32 @@ class TTkComboBox(TTkWidget):
         else:
             self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
 
+    def currentText(self):
+        if self._id >= 0:
+            return self._list[self._id]
+        return ""
+
+    def insertPolicy(self):
+        return self._insertPolicy
+
+    def setInsertPolicy(self, ip):
+        self._insertPolicy = ip
+
+    def isEditable(self):
+        return self._editable
+
     def setEditable(self, editable):
         self._editable = editable
-        self._lineEdit.show()
+        if editable:
+            self._lineEdit.show()
+            self.setFocusPolicy(TTkK.ClickFocus)
+        else:
+            self._lineEdit.hide()
+            self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot(str)
     def _callback(self, label):
+        self._lineEdit.setText(label)
         self._id = self._list.index(label)
         self.setFocus()
         self.update()
@@ -112,3 +157,7 @@ class TTkComboBox(TTkWidget):
             self._pressEvent()
             return True
         return False
+
+    def focusInEvent(self):
+        if self._editable:
+            self._lineEdit.setFocus()

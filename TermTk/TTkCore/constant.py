@@ -95,6 +95,22 @@ class TTkConstant:
     PartiallyChecked = CheckState.PartiallyChecked
     Checked          = CheckState.Checked
 
+    class InsertPolicy:
+        NoInsert             = 0x00   # The string will not be inserted into the combobox.
+        InsertAtTop          = 0x01   # The string will be inserted as the first item in the combobox.
+        # InsertAtCurrent      = 0x02   # The current item will be replaced by the string.
+        InsertAtBottom       = 0x03   # The string will be inserted after the last item in the combobox.
+        # InsertAfterCurrent   = 0x04   # The string is inserted after the current item in the combobox.
+        # InsertBeforeCurrent  = 0x05   # The string is inserted before the current item in the combobox.
+        # InsertAlphabetically = 0x06   # The string is inserted in the alphabetic order in the combobox.
+
+    NoInsert             = InsertPolicy.NoInsert
+    InsertAtTop          = InsertPolicy.InsertAtTop
+    # InsertAtCurrent      = InsertPolicy.InsertAtCurrent
+    InsertAtBottom       = InsertPolicy.InsertAtBottom
+    # InsertAfterCurrent   = InsertPolicy.InsertAfterCurrent
+    # InsertBeforeCurrent  = InsertPolicy.InsertBeforeCurrent
+    # InsertAlphabetically = InsertPolicy.InsertAlphabetically
 
     # Keys
     NoButton      = 0x00000000    # The button state does not refer to any button (see QMouseEvent::button()).

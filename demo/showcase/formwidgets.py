@@ -48,14 +48,14 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=['One','Two','Some Long Sentence That Is Not a Written Number','Three']),row,2)
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=[getSentence(1,4) for i in range(100)]),row,2)
-    row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
+    row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo Box Edit. Bottom Insert'),row,0)
     win_form1_grid_layout.addWidget(comboEdit1 := ttk.TTkComboBox(list=[getSentence(1,4) for i in range(10)]),row,2)
-    row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
+    row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo Box Edit. Top Insert'),row,0)
     win_form1_grid_layout.addWidget(comboEdit2 := ttk.TTkComboBox(list=[getSentence(1,4) for i in range(10)]),row,2)
 
     comboEdit1.setEditable(True)
     comboEdit2.setEditable(True)
-    #combo1.setInsertPolicy(QComboBox.InsertAtTop)
+    comboEdit2.setInsertPolicy(ttk.TTkK.InsertAtTop)
 
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 1'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 1'),row,2)
