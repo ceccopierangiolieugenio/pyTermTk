@@ -159,7 +159,7 @@ class TTkFileBuffer():
         rr = re.compile(regex)
         with open(self._filename,'r') as infile:
             for line in infile:
-                ma = rr.match(line)
+                ma = rr.serch(line)
                 if ma:
                     indexes.append(id)
                 id += 1

@@ -103,6 +103,7 @@ class TTkLineEdit(TTkWidget):
 
     def keyEvent(self, evt):
         w = self.width()
+        baseText = self._text
         if evt.type == TTkK.SpecialKey:
             # Don't Handle the special tab key
             if evt.key == TTkK.Key_Tab:
@@ -156,6 +157,8 @@ class TTkLineEdit(TTkWidget):
             if self._cursorPos - self._offset > w:
                 self._offset += 1
             self._pushCursor()
+        # Emit event only if the text changed
+        if baseText != self._text:
             self.textEdited.emit(self._text)
         return True
 

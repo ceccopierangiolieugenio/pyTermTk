@@ -118,3 +118,8 @@ class _pyTTkSignal_obj():
 
     def clear(self):
         self._connected_slots = []
+
+    def forward(self):
+        def _ret(*args, **kwargs):
+            self.emit(*args, **kwargs)
+        return _ret

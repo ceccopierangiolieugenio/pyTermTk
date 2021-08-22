@@ -143,6 +143,9 @@ class TTkListWidget(TTkAbstractScrollView):
     def setSelectionMode(self, mode):
         self._selectionMode = mode
 
+    def selectedItems(self):
+        return self._selectedItems
+
     def selectedLabels(self):
         return [i.text for i in self._selectedItems]
 
@@ -167,22 +170,53 @@ class TTkListWidget(TTkAbstractScrollView):
         return self.size()
 
     def addItem(self, item, data=None):
+        self.addItemAt(item, len(self._items), data)
+
+    def _placeItems(self):
+        minw = self.width()
+        for item in self._items:
+            minw = max(minw,item.minimumWidth())
+        for y,item in enumerate(self._items):            
+            item.setGeometry(0,y,minw,1)
+        self.viewChanged.emit()
+
+    def addItemAt(self, item, pos, data=None):
         if isinstance(item, str):
             #label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
             label = TTkAbstractListItem(text=item, data=data)
             label.listItemClicked.connect(self._labelSelectedHandler)
-            return self.addItem(label)
+            return self.addItemAt(label,pos)
         # item.listItemClicked.connect(self._labelSelectedHandler)
-        self._items.append(item)
-        _,y,_,h = self.layout().fullWidgetAreaGeometry()
+        self._items.insert(pos,item)
         self.addWidget(item)
-        item.move(0,y+h)
-        _,_,fw,_ = self.layout().fullWidgetAreaGeometry()
-        w = self.width()
-        for item in self.layout().children():
-            x,y,_,h = item.geometry()
-            item.setGeometry(x,y,max(w-1,fw),h)
-        self.viewChanged.emit()
+        self._placeItems()
+
+    def indexOf(self, item):
+        for i, it in enumerate(self._items):
+            if it == item:
+                return i
+        return -1
+
+    def itemAt(self, pos):
+        return self._items[pos]
+
+    def moveItem(self, fr, to):
+        fr = max(min(fr,len(self._items)-1),0)
+        to = max(min(to,len(self._items)-1),0)
+        tmp = self._items[to]
+        self._items[to] = self._items[fr]
+        self._items[fr] = tmp
+        self._placeItems()
+
+    def removeItem(self, item):
+        self.removeWidget(item)
+        self._items.remove(item)
+        if item in self._selectedItems:
+            self._selectedItems.remove(item)
+        self._placeItems()
+
+    def removeAt(self, pos):
+        self.removeItem(self._items[pos])
 
     def setCurrentRow(self, row):
         if row<len(self._items):

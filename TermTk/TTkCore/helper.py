@@ -72,6 +72,11 @@ class TTkHelper:
                     return
 
     @staticmethod
+    def updateAll():
+        if TTkHelper._rootWidget:
+            TTkHelper._rootWidget.update(repaint=True, updateLayout=True)
+
+    @staticmethod
     def addUpdateWidget(widget):
         if not widget.isVisible(): return
         if widget not in TTkHelper._updateWidget:
