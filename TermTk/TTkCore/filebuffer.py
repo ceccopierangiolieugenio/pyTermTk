@@ -153,13 +153,13 @@ class TTkFileBuffer():
         self.indexed.emit()
         # TTkLog.debug(f"{self._filename} {offset/fileSize} END")
 
-    def searchRe(self, regex):
+    def searchRe(self, regex, ignoreCase=False):
         indexes = []
         id = 0
-        rr = re.compile(regex)
+        rr = re.compile(regex, re.IGNORECASE if ignoreCase else 0)
         with open(self._filename,'r') as infile:
             for line in infile:
-                ma = rr.serch(line)
+                ma = rr.search(line)
                 if ma:
                     indexes.append(id)
                 id += 1
@@ -167,9 +167,7 @@ class TTkFileBuffer():
 
     def search(self, txt):
         indexes = []
-        words = txt.split('|')
         with open(self._filename,'r') as infile:
-            for id, line in enumerate(infile):
-                if any([word in line for word in words]):
-                    indexes.append(id)
+            if txt in line:
+                indexes.append(id)
         return indexes
