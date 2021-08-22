@@ -32,23 +32,30 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.list import TTkList
+from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id', )
+    __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
         # Define Signals
         # self.cehcked = pyTTkSignal()
         self._list = kwargs.get('list', [] )
+        self._editable = kwargs.get('editable', False )
+        self._lineEdit = TTkLineEdit(parent=self)
+        self._lineEdit.hide()
         self._id = -1
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-    def paintEvent(self):
+    def resizeEvent(self, w: int, h: int):
+        w,h = self.size()
+        self._lineEdit.setGeometry(1,0,w-4,h)
 
+    def paintEvent(self):
         if self.hasFocus():
             borderColor = TTkCfg.theme.comboboxBorderColorFocus
             color       = TTkCfg.theme.comboboxContentColorFocus
@@ -63,7 +70,14 @@ class TTkComboBox(TTkWidget):
 
         self._canvas.drawText(pos=(1,0), text=text, width=w-2, alignment=TTkK.CENTER_ALIGN, color=color)
         self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
-        self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
+        if self._editable:
+            self._canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
+        else:
+            self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
+
+    def setEditable(self, editable):
+        self._editable = editable
+        self._lineEdit.show()
 
     @pyTTkSlot(str)
     def _callback(self, label):

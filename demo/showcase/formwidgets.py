@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+import sys, os, argparse
 import random
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
@@ -48,7 +48,14 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=['One','Two','Some Long Sentence That Is Not a Written Number','Three']),row,2)
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=[getSentence(1,4) for i in range(100)]),row,2)
+    row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
+    win_form1_grid_layout.addWidget(comboEdit1 := ttk.TTkComboBox(list=[getSentence(1,4) for i in range(10)]),row,2)
+    row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
+    win_form1_grid_layout.addWidget(comboEdit2 := ttk.TTkComboBox(list=[getSentence(1,4) for i in range(10)]),row,2)
 
+    comboEdit1.setEditable(True)
+    comboEdit2.setEditable(True)
+    #combo1.setInsertPolicy(QComboBox.InsertAtTop)
 
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 1'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 1'),row,2)
@@ -101,13 +108,20 @@ def demoFormWidgets(root=None):
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkSpacer(),row,0)
     return frame
 
-
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Full Screen', action='store_true')
+    args = parser.parse_args()
+
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    winForm = ttk.TTkWindow(parent=root,pos=(1,2), size=(60,40), title="Test Window 1", layout=ttk.TTkVBoxLayout(), border=True)
-    demoFormWidgets(winForm)
+    if args.f:
+        rootForm = root
+        root.setLayout(ttk.TTkGridLayout())
+    else:
+        rootForm = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test List", border=True, layout=ttk.TTkGridLayout())
+    demoFormWidgets(rootForm)
     root.mainloop()
 
 if __name__ == "__main__":
