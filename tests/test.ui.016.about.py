@@ -24,34 +24,13 @@
 
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'../../tmp'))
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
+ttk.TTkLog.use_default_file_logging()
 
-def demoWindows(root=None):
-    frame = ttk.TTkFrame(parent=root, border=False)
+root = ttk.TTk()
 
-    win2_1 = ttk.TTkWindow(parent=frame,pos = (3,3), size=(40,20), title="Test Window 2.1", border=True)
-    win2_1.setLayout(ttk.TTkHBoxLayout())
-    ttk.TTkTestWidget(parent=win2_1, border=False)
+win = ttk.TTkAbout(parent=root, pos=(1,1))
 
-    win2_2 = ttk.TTkWindow(parent=frame,pos = (5,5), size=(40,20), title="Test Window 2.2", border=True)
-    win2_2.setLayout(ttk.TTkHBoxLayout())
-    ttk.TTkTestWidget(parent=win2_2, border=False)
-
-    ttk.TTkAbout(parent=frame, pos=(7,7))
-
-    return frame
-
-
-
-def main():
-    ttk.TTkLog.use_default_file_logging()
-    root = ttk.TTk()
-    win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(60,30), title="Test Window 1", border=True, layout=ttk.TTkGridLayout())
-    demoWindows(win1)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+root.mainloop()

@@ -35,12 +35,19 @@ class TTkWindow(TTkResizableFrame):
     def __init__(self, *args, **kwargs):
         TTkResizableFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkWindow' )
-        self._title = kwargs.get('title' , 0 )
+        self._title = kwargs.get('title' , '' )
         self.setPadding(3,1,1,1)
         self._mouseDelta = (0,0)
         self.setFocusPolicy(TTkK.ClickFocus)
         self._draggable = False
         self._menubarTopPosition = 2
+
+    def setTitle(self, title):
+        self._title = title
+        self.update()
+
+    def getTitle(self):
+        return self._title
 
     def paintEvent(self):
         if self.hasFocus():

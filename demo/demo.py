@@ -25,6 +25,7 @@
 import sys, os, argparse
 import random
 
+sys.path.append(os.path.join(sys.path[0],'../tmp'))
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 

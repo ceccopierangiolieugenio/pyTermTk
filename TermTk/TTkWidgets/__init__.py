@@ -25,3 +25,5 @@ from .graph       import *
 from .menubar     import *
 from .TTkPickers  import *
 from .spinbox     import *
+from .image       import TTkImage
+from .about       import TTkAbout
