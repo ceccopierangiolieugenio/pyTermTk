@@ -38,10 +38,12 @@ from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 class TTkComboBox(TTkWidget):
     __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy'
         #signals
-        'editTextChanged')
+        'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
     def __init__(self, *args, **kwargs):
         # Define Signals
-        self.editTextChanged = pyTTkSignal(str)
+        self.currentIndexChanged = pyTTkSignal(int)
+        self.currentTextChanged  = pyTTkSignal(str)
+        self.editTextChanged     = pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
         # self.cehcked = pyTTkSignal()
@@ -56,7 +58,10 @@ class TTkComboBox(TTkWidget):
 
     def _lineEditChanged(self):
         text = self._lineEdit.text()
-        if self._insertPolicy ==  TTkK.NoInsert:
+        self._id
+        if text in self._list:
+            self._id = self._list.index(text)
+        elif self._insertPolicy ==  TTkK.NoInsert:
             pass
         elif self._insertPolicy ==  TTkK.InsertAtTop:
             self._id=0
@@ -74,6 +79,8 @@ class TTkComboBox(TTkWidget):
         #     pass
         else:
             pass
+        self.currentIndexChanged.emit(self._id)
+        self.currentTextChanged.emit(text)
         self.editTextChanged.emit(text)
 
     def resizeEvent(self, w: int, h: int):
@@ -142,6 +149,8 @@ class TTkComboBox(TTkWidget):
         TTkLog.debug(f"{self._list}")
         for item in self._list:
             listw.addItem(item)
+        if self._id != -1:
+            listw.setCurrentRow(self._id)
         TTkHelper.overlay(self, frame, 0, 0)
         listw.viewport().setFocus()
         self.update()
