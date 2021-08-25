@@ -40,7 +40,7 @@ from  showcase.splitter      import demoSplitter
 from  showcase.windows       import demoWindows
 from  showcase.formwidgets   import demoFormWidgets
 from  showcase.scrollarea    import demoScrollArea
-from  showcase.list          import demoList
+from  showcase.list_         import demoList
 from  showcase.menubar       import demoMenuBar
 from  showcase.colorpicker   import demoColorPicker
 

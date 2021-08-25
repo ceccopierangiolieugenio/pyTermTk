@@ -31,7 +31,7 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.button import TTkButton
-from TermTk.TTkWidgets.list import TTkList
+from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
@@ -58,7 +58,7 @@ class TTkComboBox(TTkWidget):
 
     def _lineEditChanged(self):
         text = self._lineEdit.text()
-        self._id
+        self._id=-1
         if text in self._list:
             self._id = self._list.index(text)
         elif self._insertPolicy ==  TTkK.NoInsert:
@@ -82,6 +82,23 @@ class TTkComboBox(TTkWidget):
         self.currentIndexChanged.emit(self._id)
         self.currentTextChanged.emit(text)
         self.editTextChanged.emit(text)
+
+    def addItem(self,item):
+        self._list.append(item)
+        self.update()
+
+    def addItems(self,items):
+        for item in items:
+            self.addItem(item)
+
+    def clear(self):
+        self._lineEdit.setText("")
+        self._list = []
+        self._id = -1
+        self.update()
+
+    def lineEdit(self):
+        return self._lineEdit if self._editable else None
 
     def resizeEvent(self, w: int, h: int):
         w,h = self.size()
@@ -111,6 +128,16 @@ class TTkComboBox(TTkWidget):
         if self._id >= 0:
             return self._list[self._id]
         return ""
+
+    def currentIndex(self):
+        return self._id
+
+    @pyTTkSlot(int)
+    def setCurrentIndex(self, index):
+        self._id = index
+        self._lineEdit.setText(self.currentText())
+        self.currentIndexChanged.emit(self._id)
+        self.update()
 
     def insertPolicy(self):
         return self._insertPolicy

@@ -14,7 +14,7 @@ from .scrollbar   import *
 from .scrollarea  import *
 from .window      import *
 from .tabwidget   import *
-from .list        import *
+from .list_       import *
 from .listwidget  import *
 from .table       import *
 from .tableview   import *

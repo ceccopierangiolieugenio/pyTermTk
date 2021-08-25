@@ -124,7 +124,7 @@ class TTkMenuButton(TTkAbstractListItem):
             self.menuButtonClicked.emit(self)
             return
         # Import here to avoid circular import
-        from TermTk.TTkWidgets.list   import TTkList
+        from TermTk.TTkWidgets.list_ import TTkList
         from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
         # Stupid way to find out if I am a submenu

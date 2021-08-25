@@ -33,9 +33,9 @@ class TTkList(TTkAbstractScrollArea):
     __slots__ = (
         '_listView', 'itemClicked', 'textClicked',
         # Forwarded Methods
-        'items', 'addItem', 'addItemAt', 'indexOf', 'itemAt', 
-        'moveItem', 'removeAt', 'removeItem', 
-        'setSelectionMode', 'selectedItems', 'selectedLabels', 
+        'items', 'addItem', 'addItemAt', 'indexOf', 'itemAt',
+        'moveItem', 'removeAt', 'removeItem',
+        'setSelectionMode', 'selectedItems', 'selectedLabels',
         'setCurrentRow', 'setCurrentItem',  )
 
     def __init__(self, *args, **kwargs):

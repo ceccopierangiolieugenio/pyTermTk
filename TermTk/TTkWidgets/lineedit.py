@@ -64,7 +64,7 @@ class TTkLineEdit(TTkWidget):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = text
-            self._cursorPos = min(len(text)-1,self._cursorPos)
+            self._cursorPos = min(len(text),self._cursorPos)
             self.update()
 
     def text(self):
