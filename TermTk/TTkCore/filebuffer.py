@@ -134,10 +134,10 @@ class TTkFileBuffer():
         width = 0
         fileSize = os.stat(self._filename).st_size
         chunkSize = 0x1000000 # ~16M
-        with open(self._filename,'r') as infile:
+        with open(self._filename,'rb') as infile:
             while (chunk:=infile.read(chunkSize)):
                 start = 0
-                while (index:=chunk.find('\n',start))!=-1:
+                while (index:=chunk.find(0x0A,start))!=-1:
                     indexes.append(index+offset+1)
                     start = index+1
                 self._indexesMutex.acquire()
