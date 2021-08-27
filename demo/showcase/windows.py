@@ -32,15 +32,15 @@ import TermTk as ttk
 def demoWindows(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
-    win2_1 = ttk.TTkWindow(parent=frame,pos = (3,3), size=(40,20), title="Test Window 2.1", border=True)
+    win2_1 = ttk.TTkWindow(parent=frame,pos = (0,0), size=(50,25), title="Test Window 2.1", border=True)
     win2_1.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkTestWidget(parent=win2_1, border=False)
 
-    win2_2 = ttk.TTkWindow(parent=frame,pos = (5,5), size=(40,20), title="Test Window 2.2", border=True)
+    win2_2 = ttk.TTkWindow(parent=frame,pos = (23,4), size=(52,20), title="Test Window 2.2", border=True)
     win2_2.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkTestWidget(parent=win2_2, border=False)
 
-    ttk.TTkAbout(parent=frame, pos=(7,7))
+    ttk.TTkAbout(parent=frame, pos=(11,7))
 
     return frame
 

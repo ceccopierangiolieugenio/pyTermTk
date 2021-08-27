@@ -27,9 +27,17 @@
 
 import os
 import sys
+import random
+import argparse
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
+
+words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+def getWord():
+    return random.choice(words)
+def getSentence(a,b):
+    return " ".join([getWord() for i in range(0,random.randint(a,b))])
 
 def demoTree(root=None):
     # tw = ttk.TTkTreeWidget(parent=rootTree1)
@@ -46,8 +54,8 @@ def demoTree(root=None):
     l3   = ttk.TTkTreeWidgetItem(["String AAA", "String BBB", "String CCC"])
     l4   = ttk.TTkTreeWidgetItem(["String AAAA", "String BBBB", "String CCCC"])
     l5   = ttk.TTkTreeWidgetItem(["String AAAAA", "String BBBBB", "String CCCCC"])
-    l2.addChild(l5)
 
+    l2.addChild(l5)
 
     for i in range(3):
         l1_child = ttk.TTkTreeWidgetItem(["Child A" + str(i), "Child B" + str(i), "Child C" + str(i)])
@@ -69,25 +77,41 @@ def demoTree(root=None):
         l5_child = ttk.TTkTreeWidgetItem(["Child AAAAA" + str(j), "Child BBBBB" + str(j), "Child CCCCC" + str(j)])
         l5.addChild(l5_child)
 
+    l6   = ttk.TTkTreeWidgetItem(["RND", "RND", "RND"], childIndicatorPolicy=ttk.TTkK.ShowIndicator)
+
+    def updateChilds(item):
+        if item.childs(): return
+        for _ in range(0,random.randint(3,8)):
+            child = ttk.TTkTreeWidgetItem([getWord(),getWord(),getWord()])
+            if random.randint(0,10)>5:
+                child.setChildIndicatorPolicy(ttk.TTkK.ShowIndicator)
+                child.refreshData.connect(updateChilds)
+            item.addChild(child)
+
+
+    l6.refreshData.connect(updateChilds)
 
     tw.addTopLevelItem(l1)
     tw.addTopLevelItem(l2)
     tw.addTopLevelItem(l3)
     tw.addTopLevelItem(l4)
+    tw.addTopLevelItem(l6)
+
     return tw
 
-
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Full Screen', action='store_true')
+    args = parser.parse_args()
+
     ttk.TTkLog.use_default_file_logging()
 
-    fullscreen = False
-
     root = ttk.TTk()
-    if fullscreen:
+    if args.f:
         rootTree1 = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,50), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
+        rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
     demoTree(rootTree1)
     root.mainloop()
 

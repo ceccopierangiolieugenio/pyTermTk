@@ -58,7 +58,8 @@ class _TTkDisplayedTreeItem(TTkWidget):
         self._text = kwargs.get('text' , "" )
         self._id = kwargs.get('id' , 0 )
         self._treeWidgetItem = kwargs.get('treeWidgetItem', None)
-        self._isLeaf = len(self._treeWidgetItem.childs())==0
+        self._isLeaf  = self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicator
+        self._isLeaf |= self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and not self._treeWidgetItem.childs()
         if self._isLeaf:
             self._control = None
         else:
@@ -69,7 +70,6 @@ class _TTkDisplayedTreeItem(TTkWidget):
     @pyTTkSlot(bool)
     def _controlClicked(self, status):
         self._clicked.emit(status, self, self._treeWidgetItem)
-        pass
 
     def paintEvent(self):
         if self._isLeaf:
@@ -88,6 +88,7 @@ class TTkTreeWidget(TTkTableView):
 
     def _expand(self, item, depth):
         item.setExpand(True)
+        item.refresh()
         toExpand = []
         index = self.indexOf(item.data())+1
         if index != 0:
@@ -102,6 +103,7 @@ class TTkTreeWidget(TTkTableView):
 
     def _shrink(self, item):
         item.setExpand(False)
+        item.refresh()
         index = self.indexOf(item.data())
         parent = item.parent()
         if item == parent.childs()[-1]:

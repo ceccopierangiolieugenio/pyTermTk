@@ -118,7 +118,7 @@ def demoShowcase(root=None, border=True):
 
     listMenu.textClicked.connect(_listCallback)
 
-    listMenu.setCurrentRow(0)
+    listMenu.setCurrentRow(6)
 
     return splitter
 
