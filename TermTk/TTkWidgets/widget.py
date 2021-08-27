@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import time
+
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
@@ -348,7 +350,10 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             if self.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 self.setFocus()
                 self.raiseWidget()
-            if self.mousePressEvent(evt):
+            if evt.doubleClick and self.mouseDoubleClickEvent(evt):
+                self._pendingMouseRelease = True
+                return True
+            if not evt.doubleClick and self.mousePressEvent(evt):
                 # TTkLog.debug(f"Click {self._name}")
                 self._pendingMouseRelease = True
                 return True

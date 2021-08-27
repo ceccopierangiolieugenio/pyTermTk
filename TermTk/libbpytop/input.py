@@ -50,18 +50,19 @@ class MouseEvent:
     Up      = TTkK.WHEEL_Up
     Down    = TTkK.WHEEL_Down
 
-    __slots__ = ('x','y','key','evt','raw')
-    def __init__(self, x: int, y: int, key: int, evt: int, raw: str):
+    __slots__ = ('x','y','key','evt', 'doubleClick', 'raw')
+    def __init__(self, x: int, y: int, key: int, evt: int, doubleClick:bool, raw: str):
         self.x = x
         self.y = y
         self.key = key
         self.evt = evt
         self.raw = raw
+        self.doubleClick = doubleClick
 
     def clone(self, pos=None, evt=None):
         x,y = pos or (self.x, self.y)
         evt = evt or self.evt
-        return MouseEvent(x, y, self.key, evt, self.raw)
+        return MouseEvent(x, y, self.key, evt, self.doubleClick, self.raw)
 
     def key2str(self):
         return {
@@ -86,9 +87,12 @@ class MouseEvent:
         }.get(self.evt, "Undefined")
 
     def __str__(self):
-        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} - {self.raw}"
+        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} dc:{self.doubleClick} - {self.raw}"
 
 class Input:
+    _leftLastTime = 0
+    _midLastTime = 0
+    _rightLastTime = 0
     class _nonblocking(object):
         """Set nonblocking mode for device"""
         def __init__(self, stream: TextIO):
@@ -143,13 +147,20 @@ class Input:
                     state = m.group(4)
                     key = MouseEvent.NoButton
                     evt = MouseEvent.NoEvent
+                    doubleClick = False
                     if code == 0x00:
+                        doubleClick = state=="M" and ((t:=time())-Input._leftLastTime) < 0.3
+                        Input._leftLastTime = t
                         key = MouseEvent.LeftButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x01:
+                        doubleClick = state=="M" and ((t:=time())-Input._midLastTime) < 0.3
+                        Input._midLastTime = t
                         key = MouseEvent.MidButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x02:
+                        doubleClick = state=="M" and ((t:=time())-Input._rightLastTime) < 0.3
+                        Input._rightLastTime = t
                         key = MouseEvent.RightButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x20:
@@ -167,7 +178,7 @@ class Input:
                     elif code == 0x41:
                         key = MouseEvent.Wheel
                         evt = MouseEvent.Down
-                    mevt = MouseEvent(x, y, key, evt, m.group(0).replace("\033", "<ESC>"))
+                    mevt = MouseEvent(x, y, key, evt, doubleClick, m.group(0).replace("\033", "<ESC>"))
                 if kevt is None and mevt is None:
                     TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                 input_key = ""
