@@ -84,6 +84,7 @@ class TTkTreeWidget(TTkTableView):
         super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTreeView' )
         self._topLevelItems = TTkTreeWidgetItem(None)
+        self.doubleClicked.connect(self._doubleClickItem)
         # if 'parent' in kwargs: kwargs.pop('parent')
 
     def _expand(self, item, depth):
@@ -115,6 +116,15 @@ class TTkTreeWidget(TTkTableView):
             for id in reversed(range(index+1,indexTo)):
                 self.removeItemAt(id)
 
+    @pyTTkSlot(int)
+    def _doubleClickItem(self, index):
+        if not (item := self.itemAt(index)): return
+        if item[0]._isLeaf: return
+        if not item[0]._treeWidgetItem.expand(): # we need to expand the TtkTreeWidgetItem
+            self._expand(item=item[0]._treeWidgetItem, depth=item[0]._depth+1)
+        else: # we need to shrink the TtkTreeWidgetItem
+            self._shrink(item=item[0]._treeWidgetItem)
+
 
     @pyTTkSlot(bool, _TTkDisplayedTreeItem, TTkTreeWidgetItem)
     def _controlClicked(self, status, widget, item):
@@ -123,8 +133,6 @@ class TTkTreeWidget(TTkTableView):
             self._expand(item=item, depth=(widget._depth+1))
         else: # we need to shrink the TtkTreeWidgetItem
             self._shrink(item=item)
-
-
 
     def _addTreeWidgetItem(self, item, depth=0, index=-1):
         if not isinstance(item, TTkTreeWidgetItem):

@@ -87,7 +87,7 @@ class _TTkTableView(TTkAbstractScrollView):
             '_tableDataId', '_tableDataText', '_tableDataWidget', '_shownWidgets',
             '_selectColor', '_selected',
             # Signals
-            'activated')
+            'activated', 'doubleClicked')
     def __init__(self, *args, **kwargs):
         self._tableDataId = []
         self._tableDataText = []
@@ -97,6 +97,7 @@ class _TTkTableView(TTkAbstractScrollView):
         self._name = kwargs.get('name' , '_TTkTableView' )
         # define signals
         self.activated = pyTTkSignal(int) # Value
+        self.doubleClicked = pyTTkSignal(int) # Value
 
         self._columns = kwargs.get('columns' , [-1] )
         self._alignments = [TTkK.NONE]*len(self._columns)
@@ -179,7 +180,7 @@ class _TTkTableView(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def items(self): return self._tableDataText
+    # def items(self): return self._tableDataText
 
     def setAlignment(self, alignments):
         if len(alignments) != len(self._columns):
@@ -248,12 +249,36 @@ class _TTkTableView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
+    def itemAt(self, index):
+        if 0 <= index < len(self._tableDataId):
+            if item:=self._tableDataWidget[index]:
+                return item
+            else:
+                return self._tableDataText[index]
+        return None
+
+    def dataAt(self, index):
+        if 0 <= index < len(self._tableDataId):
+            return self._tableDataId[index]
+        return None
+
     def indexOf(self, id) -> int:
         for index, value in enumerate(self._tableDataId):
             if id is value:
                 return index
         return -1
 
+    def mouseDoubleClickEvent(self, evt):
+        _,y = evt.x, evt.y
+        _, oy = self.getViewOffsets()
+        if y >= 0:
+            selected = oy + y
+            if selected >= len(self._tableDataText):
+                selected = -1
+            self._selected = selected
+            self.update()
+            self.doubleClicked.emit(self._selected)
+        return True
 
     def mousePressEvent(self, evt):
         _,y = evt.x, evt.y
@@ -314,7 +339,8 @@ class TTkTableView(TTkAbstractScrollView):
     __slots__ = (
         '_header', '_tableView', '_showHeader', 'activated',
         # Forwarded Methods
-        'setHeader', 'setColumnColors', 'appendItem', 'indexOf', 'insertItem', 'removeItem', 'removeItemAt', 'removeItemsFrom')
+        'setHeader', 'setColumnColors', 'appendItem', 'itemAt', 'dataAt', 'indexOf', 'insertItem',
+        'removeItem', 'removeItemAt', 'removeItemsFrom', 'doubleClicked')
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -329,8 +355,9 @@ class TTkTableView(TTkAbstractScrollView):
         # Forward the tableSignals
         self.viewMovedTo     = self._tableView.viewMovedTo
         self.viewSizeChanged = self._tableView.viewSizeChanged
-        self.activated       = self._tableView.activated
         self.viewChanged     = self._tableView.viewChanged
+        self.activated       = self._tableView.activated
+        self.doubleClicked   = self._tableView.doubleClicked
         if not self._showHeader:
             self._header.hide()
 
@@ -338,6 +365,8 @@ class TTkTableView(TTkAbstractScrollView):
         self.setHeader       = self._header.setHeader
         self.setColumnColors = self._tableView.setColumnColors
         self.appendItem      = self._tableView.appendItem
+        self.dataAt          = self._tableView.dataAt
+        self.itemAt          = self._tableView.itemAt
         self.indexOf         = self._tableView.indexOf
         self.insertItem      = self._tableView.insertItem
         self.removeItem      = self._tableView.removeItem
