@@ -148,19 +148,26 @@ class Input:
                     key = MouseEvent.NoButton
                     evt = MouseEvent.NoEvent
                     doubleClick = False
+
+                    def _checkDoubleClick(lastTime):
+                        if state=="M":
+                            t = time()
+                            if (t-lastTime) < 0.4:
+                                return 0, True
+                            else:
+                                return t, False
+                        return lastTime, False
+
                     if code == 0x00:
-                        doubleClick = state=="M" and ((t:=time())-Input._leftLastTime) < 0.3
-                        Input._leftLastTime = t
+                        Input._leftLastTime, doubleClick = _checkDoubleClick(Input._leftLastTime)
                         key = MouseEvent.LeftButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x01:
-                        doubleClick = state=="M" and ((t:=time())-Input._midLastTime) < 0.3
-                        Input._midLastTime = t
+                        Input._midLastTime, doubleClick = _checkDoubleClick(Input._midLastTime)
                         key = MouseEvent.MidButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x02:
-                        doubleClick = state=="M" and ((t:=time())-Input._rightLastTime) < 0.3
-                        Input._rightLastTime = t
+                        Input._rightLastTime, doubleClick = _checkDoubleClick(Input._rightLastTime)
                         key = MouseEvent.RightButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x20:
