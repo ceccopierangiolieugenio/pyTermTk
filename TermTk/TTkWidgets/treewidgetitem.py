@@ -31,17 +31,24 @@ class TTkTreeWidgetItem():
     __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
         # Signals
         'refreshData')
+
     def __init__(self, *args, **kwargs):
+        self._children = []
+        self._data = args[0] if len(args)>0 and type(args[0])==list else None
         self._parent = kwargs.get('parent', None)
 
     def addChild(self, child):
-        pass
+        self._children.append(child)
+        child._parent = self
 
     def addChildren(self, children):
-        pass
+        for child in children:
+            self.addChild(child)
 
     def child(self, index):
-        pass
+        if 0 <= index < len(self._children):
+            return self._children[index]
+        return None
 
     def children(self):
-        pass
+        return self._children
