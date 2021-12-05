@@ -25,7 +25,7 @@
 from os import walk
 
 from TermTk.TTkWidgets.window import TTkWindow
-from TermTk.TTkTypes.treewidgetitem import TTkFancyTreeWidgetItem
+from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
 
 class _FileWidgetItem(TTkFancyTreeWidgetItem):
     def __init__(self, *args, **kwargs):

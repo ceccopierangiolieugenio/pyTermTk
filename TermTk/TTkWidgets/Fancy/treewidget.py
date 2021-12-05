@@ -29,9 +29,9 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
-from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkTypes.treewidgetitem import TTkFancyTreeWidgetItem
+from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
+from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
 
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
     def __init__(self, *args, **kwargs):
