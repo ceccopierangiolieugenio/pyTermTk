@@ -25,11 +25,11 @@
 from os import walk
 
 from TermTk.TTkWidgets.window import TTkWindow
-from TermTk.TTkTypes.treewidgetitem import TtkFancyTreeWidgetItem
+from TermTk.TTkTypes.treewidgetitem import TTkFancyTreeWidgetItem
 
-class _FileWidgetItem(TtkFancyTreeWidgetItem):
+class _FileWidgetItem(TTkFancyTreeWidgetItem):
     def __init__(self, *args, **kwargs):
-        TtkFancyTreeWidgetItem.__init__(self, *args, **kwargs)
+        TTkFancyTreeWidgetItem.__init__(self, *args, **kwargs)
 
 class TTkFileDialogPicker(TTkWindow):
     def __init__(self, *args, **kwargs):

@@ -29,9 +29,9 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
-from TermTk.TTkWidgets.Fancy.tableview import TtkFancyTableView
+from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkTypes.treewidgetitem import TtkFancyTreeWidgetItem
+from TermTk.TTkTypes.treewidgetitem import TTkFancyTreeWidgetItem
 
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
     def __init__(self, *args, **kwargs):
@@ -51,7 +51,7 @@ class _TTkDisplayedTreeItem(TTkWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
         #Signals
-        self._clicked = pyTTkSignal(bool, _TTkDisplayedTreeItem, TtkFancyTreeWidgetItem)
+        self._clicked = pyTTkSignal(bool, _TTkDisplayedTreeItem, TTkFancyTreeWidgetItem)
 
         self._name = kwargs.get('name' , '_TTkDisplayedTreeItem' )
         self._depth = kwargs.get('depth' , 0 )
@@ -77,13 +77,13 @@ class _TTkDisplayedTreeItem(TTkWidget):
         self._canvas.drawText(pos=(self._depth+2, 0), text=self._text)
 
 
-class TtkFancyTreeWidget(TtkFancyTableView):
+class TTkFancyTreeWidget(TTkFancyTableView):
     __slots__ = ( '_topLevelItems')
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TtkFancyTreeView' )
-        self._topLevelItems = TtkFancyTreeWidgetItem(None)
+        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
+        self._topLevelItems = TTkFancyTreeWidgetItem(None)
         self.doubleClicked.connect(self._doubleClickItem)
         # if 'parent' in kwargs: kwargs.pop('parent')
 
@@ -120,23 +120,23 @@ class TtkFancyTreeWidget(TtkFancyTableView):
     def _doubleClickItem(self, index):
         if not (item := self.itemAt(index)): return
         if item[0]._isLeaf: return
-        if not item[0]._treeWidgetItem.expand(): # we need to expand the TtkFancyTreeWidgetItem
+        if not item[0]._treeWidgetItem.expand(): # we need to expand the TTkFancyTreeWidgetItem
             self._expand(item=item[0]._treeWidgetItem, depth=item[0]._depth+1)
-        else: # we need to shrink the TtkFancyTreeWidgetItem
+        else: # we need to shrink the TTkFancyTreeWidgetItem
             self._shrink(item=item[0]._treeWidgetItem)
 
 
-    @pyTTkSlot(bool, _TTkDisplayedTreeItem, TtkFancyTreeWidgetItem)
+    @pyTTkSlot(bool, _TTkDisplayedTreeItem, TTkFancyTreeWidgetItem)
     def _controlClicked(self, status, widget, item):
         TTkLog.debug(f"{status} {widget._name}")
-        if status: # we need to expand the TtkFancyTreeWidgetItem
+        if status: # we need to expand the TTkFancyTreeWidgetItem
             self._expand(item=item, depth=(widget._depth+1))
-        else: # we need to shrink the TtkFancyTreeWidgetItem
+        else: # we need to shrink the TTkFancyTreeWidgetItem
             self._shrink(item=item)
 
     def _addTreeWidgetItem(self, item, depth=0, index=-1):
-        if not isinstance(item, TtkFancyTreeWidgetItem):
-            raise TypeError("TtkFancyTreeWidgetItem is required in TtkFancyTreeWidget.addTopLevelItem(item)")
+        if not isinstance(item, TTkFancyTreeWidgetItem):
+            raise TypeError("TTkFancyTreeWidgetItem is required in TTkFancyTreeWidget.addTopLevelItem(item)")
         if item.parent() is None:
             self._topLevelItems.addChild(item)
         displayedItems = item.data().copy()

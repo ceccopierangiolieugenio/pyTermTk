@@ -27,13 +27,13 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.Fancy.tableview import TtkFancyTableView
+from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 
-class TtkFancyTreeView(TtkFancyTableView):
+class TTkFancyTreeView(TTkFancyTableView):
     __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TtkFancyTreeView' )
+        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
         # if 'parent' in kwargs: kwargs.pop('parent')
 

@@ -27,11 +27,11 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.Fancy.tableview import TtkFancyTableView
+from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
-class TtkFancyTable(TTkAbstractScrollArea):
+class TTkFancyTable(TTkAbstractScrollArea):
     __slots__ = (
         '_tableView', 'activated',
         # Forwarded Methods
@@ -42,9 +42,9 @@ class TtkFancyTable(TTkAbstractScrollArea):
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TtkFancyTable' )
+        self._name = kwargs.get('name' , 'TTkFancyTable' )
         if 'parent' in kwargs: kwargs.pop('parent')
-        self._tableView = TtkFancyTableView(*args, **kwargs)
+        self._tableView = TTkFancyTableView(*args, **kwargs)
         # Forward the signal
         self.activated = self._tableView.activated
 

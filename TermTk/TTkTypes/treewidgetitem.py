@@ -27,13 +27,13 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
-class TtkFancyTreeWidgetItem():
+class TTkFancyTreeWidgetItem():
     __slots__ = ('_parent', '_data', '_childs', '_expand', '_childIndicatorPolicy',
         # Signals
         'refreshData')
     def __init__(self, *args, **kwargs):
         # Signals
-        self.refreshData = pyTTkSignal(TtkFancyTreeWidgetItem)
+        self.refreshData = pyTTkSignal(TTkFancyTreeWidgetItem)
         self._data = args[0]
         self._childs = []
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)

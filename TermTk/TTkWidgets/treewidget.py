@@ -21,19 +21,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
-
-class TTkFancyTreeView(TTkFancyTableView):
-    __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
-        # if 'parent' in kwargs: kwargs.pop('parent')
-

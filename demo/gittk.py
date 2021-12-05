@@ -59,7 +59,7 @@ else:
     gittk = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,40), title="gittk", border=True, layout=ttk.TTkGridLayout())
 
 gittkVsplitter = ttk.TTkSplitter(parent=gittk, orientation=ttk.TTkK.VERTICAL)
-tableCommit = ttk.TtkFancyTable(parent=gittkVsplitter, selectColor=ttk.TTkColor.bg('#882200'))
+tableCommit = ttk.TTkFancyTable(parent=gittkVsplitter, selectColor=ttk.TTkColor.bg('#882200'))
 gittkHsplitter = ttk.TTkSplitter(parent=gittkVsplitter, orientation=ttk.TTkK.HORIZONTAL)
 diffText = ttk.TTkTextEdit(parent=gittkHsplitter)
 gittkHsplitter.addWidget(ttk.TTkTestWidgetSizes(border=True, title="Details"),20)
