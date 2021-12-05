@@ -196,7 +196,7 @@ class TTkHelper:
             widget.paintEvent()
 
         # Compose all the canvas to the parents
-        # From the deepest childs to the bottom
+        # From the deepest children to the bottom
         pushToTerminal = False
         sortedUpdateWidget = [ (w, TTkHelper.widgetDepth(w)) for w in updateWidgets]
         sortedUpdateWidget = sorted(sortedUpdateWidget, key=lambda w: -w[1])

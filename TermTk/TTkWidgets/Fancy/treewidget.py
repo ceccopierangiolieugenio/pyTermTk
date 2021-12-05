@@ -59,7 +59,7 @@ class _TTkDisplayedTreeItem(TTkWidget):
         self._id = kwargs.get('id' , 0 )
         self._treeWidgetItem = kwargs.get('treeWidgetItem', None)
         self._isLeaf  = self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicator
-        self._isLeaf |= self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and not self._treeWidgetItem.childs()
+        self._isLeaf |= self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and not self._treeWidgetItem.children()
         if self._isLeaf:
             self._control = None
         else:
@@ -93,7 +93,7 @@ class TTkFancyTreeWidget(TTkFancyTableView):
         toExpand = []
         index = self.indexOf(item.data())+1
         if index != 0:
-            for child in item.childs():
+            for child in item.children():
                 self._addTreeWidgetItem(item=child, depth=depth, index=index)
                 index+=1
                 if child.expand():
@@ -107,11 +107,11 @@ class TTkFancyTreeWidget(TTkFancyTableView):
         item.refresh()
         index = self.indexOf(item.data())
         parent = item.parent()
-        if item == parent.childs()[-1]:
+        if item == parent.children()[-1]:
             self.removeItemsFrom(index+1)
         else:
-            nextItemIndex = parent.childs().index(item)
-            nextItem = parent.childs()[nextItemIndex+1]
+            nextItemIndex = parent.children().index(item)
+            nextItem = parent.children()[nextItemIndex+1]
             indexTo = self.indexOf(nextItem.data())
             for id in reversed(range(index+1,indexTo)):
                 self.removeItemAt(id)

@@ -21,3 +21,27 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+
+class TTkTreeWidgetItem():
+    __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
+        # Signals
+        'refreshData')
+    def __init__(self, *args, **kwargs):
+        self._parent = kwargs.get('parent', None)
+
+    def addChild(self, child):
+        pass
+
+    def addChildren(self, children):
+        pass
+
+    def child(self, index):
+        pass
+
+    def children(self):
+        pass

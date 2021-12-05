@@ -28,14 +28,14 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 class TTkFancyTreeWidgetItem():
-    __slots__ = ('_parent', '_data', '_childs', '_expand', '_childIndicatorPolicy',
+    __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
         # Signals
         'refreshData')
     def __init__(self, *args, **kwargs):
         # Signals
         self.refreshData = pyTTkSignal(TTkFancyTreeWidgetItem)
         self._data = args[0]
-        self._childs = []
+        self._children = []
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
         self._expand = False
         self._parent = kwargs.get("parent", None)
@@ -56,7 +56,7 @@ class TTkFancyTreeWidgetItem():
         return self._expand
 
     def addChild(self, item):
-        self._childs.append(item)
+        self._children.append(item)
         item._parent = self
 
     def data(self):
@@ -65,5 +65,5 @@ class TTkFancyTreeWidgetItem():
     def parent(self):
         return self._parent
 
-    def childs(self):
-        return self._childs
+    def children(self):
+        return self._children

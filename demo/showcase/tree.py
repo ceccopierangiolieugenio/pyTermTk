@@ -79,17 +79,17 @@ def demoTree(root=None):
 
     l6   = ttk.TTkFancyTreeWidgetItem(["RND", "RND", "RND"], childIndicatorPolicy=ttk.TTkK.ShowIndicator)
 
-    def updateChilds(item):
-        if item.childs(): return
+    def updateChildren(item):
+        if item.children(): return
         for _ in range(0,random.randint(3,8)):
             child = ttk.TTkFancyTreeWidgetItem([getWord(),getWord(),getWord()])
             if random.randint(0,10)>5:
                 child.setChildIndicatorPolicy(ttk.TTkK.ShowIndicator)
-                child.refreshData.connect(updateChilds)
+                child.refreshData.connect(updateChildren)
             item.addChild(child)
 
 
-    l6.refreshData.connect(updateChilds)
+    l6.refreshData.connect(updateChildren)
 
     tw.addTopLevelItem(l1)
     tw.addTopLevelItem(l2)
