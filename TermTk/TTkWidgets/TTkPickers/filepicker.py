@@ -22,18 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.Fancy.tableview import TtkFancyTableView
+from os import walk
 
-class TtkFancyTreeView(TtkFancyTableView):
-    __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
+from TermTk.TTkWidgets.window import TTkWindow
+from TermTk.TTkTypes.treewidgetitem import TtkFancyTreeWidgetItem
 
+class _FileWidgetItem(TtkFancyTreeWidgetItem):
     def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TtkFancyTreeView' )
-        # if 'parent' in kwargs: kwargs.pop('parent')
+        TtkFancyTreeWidgetItem.__init__(self, *args, **kwargs)
 
+class TTkFileDialogPicker(TTkWindow):
+    def __init__(self, *args, **kwargs):
+        TTkWindow.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkFileDialogPicker' )
+
+'''
+for (dirpath, dirnames, filenames) in walk('/tmp'):
+    print(f"{dirpath} {dirnames} {filenames}")
+    break
+'''

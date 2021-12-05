@@ -16,14 +16,10 @@ from .window      import *
 from .tabwidget   import *
 from .list_       import *
 from .listwidget  import *
-from .table       import *
-from .tableview   import *
-from .tree        import *
-from .treeview    import *
-from .treewidget  import *
 from .graph       import *
 from .menubar     import *
 from .TTkPickers  import *
 from .spinbox     import *
 from .image       import TTkImage
 from .about       import TTkAbout
+from .Fancy       import *

@@ -42,7 +42,7 @@ def demoTable(root=None):
     btn1 = ttk.TTkButton(parent=top, maxHeight=3, border=True, text='Add')
     btn2 = ttk.TTkButton(parent=top, maxHeight=3, border=True, text='Add Many')
 
-    table1 = ttk.TTkTable(parent=frame, selectColor=ttk.TTkColor.bg('#882200'))
+    table1 = ttk.TtkFancyTable(parent=frame, selectColor=ttk.TTkColor.bg('#882200'))
 
     table1.setColumnSize((5,10,-1,10,20))
     table1.setAlignment((
