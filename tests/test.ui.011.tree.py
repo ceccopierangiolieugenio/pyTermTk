@@ -27,22 +27,24 @@
 
 import os
 import sys
+import argparse
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
 ttk.TTkLog.use_default_file_logging()
 
-fullscreen = False
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', help='Full Screen', action='store_true')
+args = parser.parse_args()
 
 root = ttk.TTk()
-if fullscreen:
+if args.f:
     rootTree1 = root
     root.setLayout(ttk.TTkGridLayout())
 else:
-    rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,50), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
+    rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
 
-# tw = ttk.TTkTreeWidget(parent=rootTree1)
 tw = ttk.TTkTree(parent=rootTree1)
 tw.setHeaderLabels(["Column 1", "Column 2", "Column 3"])
 
@@ -79,5 +81,7 @@ tw.addTopLevelItem(l1)
 tw.addTopLevelItem(l2)
 tw.addTopLevelItem(l3)
 tw.addTopLevelItem(l4)
+l1.setExpanded(True)
+l3.setExpanded(True)
 
 root.mainloop()

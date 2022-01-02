@@ -26,20 +26,30 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
-class TTkTreeWidgetItem():
-    __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
+
+class TTkTreeWidgetItem(TTkAbstractItemModel):
+    __slots__ = ('_parent', '_data', '_children', '_expanded', '_childIndicatorPolicy',
         # Signals
         'refreshData')
 
     def __init__(self, *args, **kwargs):
+        # Signals
+        self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
+        super().__init__(self, *args, **kwargs)
         self._children = []
         self._data = args[0] if len(args)>0 and type(args[0])==list else None
         self._parent = kwargs.get('parent', None)
+        self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
+        self._expanded = False
+        self._parent = kwargs.get("parent", None)
 
     def addChild(self, child):
         self._children.append(child)
         child._parent = self
+        child.dataChanged.connect(self.emitDataChanged)
+        self.dataChanged.emit()
 
     def addChildren(self, children):
         for child in children:
@@ -52,3 +62,31 @@ class TTkTreeWidgetItem():
 
     def children(self):
         return self._children
+
+    def data(self, column, role=None):
+        if column >= len(self._data):
+            return None
+        return self._data[column]
+
+    @pyTTkSlot()
+    def emitDataChanged(self):
+        self.dataChanged.emit()
+
+    # def setDisabled(disabled):
+    #    pass
+
+    def setExpanded(self, expand):
+        self._expanded = expand
+        self.emitDataChanged()
+
+    # def isDisabled():
+    #     pass
+
+    def isExpanded(self):
+        return self._expanded
+
+    def size(self):
+        if self._expanded:
+            return 1 + sum([c.size() for c in self._children])
+        else:
+            return 1
