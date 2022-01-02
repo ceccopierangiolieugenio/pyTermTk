@@ -22,12 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from os import walk
 
-class TTkAbstractItemModel():
-    __slots__ = (
-        # Signals
-        'dataChanged'
-    )
+from TermTk.TTkWidgets.window import TTkWindow
+from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
+
+class _FileWidgetItem(TTkFancyTreeWidgetItem):
     def __init__(self, *args, **kwargs):
-        self.dataChanged = pyTTkSignal()
+        TTkFancyTreeWidgetItem.__init__(self, *args, **kwargs)
+
+class TTkFileDialogPicker(TTkWindow):
+    def __init__(self, *args, **kwargs):
+        TTkWindow.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkFileDialogPicker' )
+
+'''
+for (dirpath, dirnames, filenames) in walk('/tmp'):
+    print(f"{dirpath} {dirnames} {filenames}")
+    break
+'''

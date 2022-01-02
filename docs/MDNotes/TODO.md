@@ -93,8 +93,14 @@
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [x] Themes
- #### Table Widget
+ #### Fancy Table Widget
  - [x] Basic Implementation
+ - [ ] Events (Signal/Slots)
+ - [ ] Themes
+
+ #### Tree Widget
+ - [x] Basic Implementation
+ - [ ] Implement cache/pagination for big data
  - [ ] Events (Signal/Slots)
  - [ ] Themes
  #### Window Widget

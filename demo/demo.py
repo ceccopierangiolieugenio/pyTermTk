@@ -32,9 +32,7 @@ import TermTk as ttk
 from  showcase.layout_basic  import demoLayout
 from  showcase.layout_nested import demoLayoutNested
 from  showcase.layout_span   import demoLayoutSpan
-from  showcase.table         import demoTable
 from  showcase.tab           import demoTab
-from  showcase.tree          import demoTree
 from  showcase.graph         import demoGraph
 from  showcase.splitter      import demoSplitter
 from  showcase.windows       import demoWindows
@@ -43,6 +41,9 @@ from  showcase.scrollarea    import demoScrollArea
 from  showcase.list          import demoList
 from  showcase.menubar       import demoMenuBar
 from  showcase.colorpicker   import demoColorPicker
+from  showcase.tree          import demoTree
+from  showcase.fancytable    import demoFancyTable
+from  showcase.fancytree     import demoFancyTree
 
 words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
 def getWord():
@@ -78,9 +79,10 @@ def demoShowcase(root=None, border=True):
     tabWidgets = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabWidgets.addTab(demoFormWidgets(), " Form Test ")
     tabWidgets.addTab(demoList(),        " List Test ")
-    tabWidgets.addTab(demoTable(),       " Table Test ")
-    tabWidgets.addTab(demoTree(),        " Tree Test ")
+    tabWidgets.addTab(demoTree(),        " Tree Test")
     tabWidgets.addTab(demoTab(),         " Tab Test ")
+    tabWidgets.addTab(demoFancyTable(),  " Old Table ")
+    tabWidgets.addTab(demoFancyTree(),   " Old Tree ")
 
     listMenu.addItem(f"Pickers")
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)

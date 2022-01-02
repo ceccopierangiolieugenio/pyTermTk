@@ -22,13 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.treewidget import TTkTreeWidget
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkTree(TTkAbstractScrollArea):
@@ -43,18 +39,18 @@ class TTkTree(TTkAbstractScrollArea):
         if 'parent' in kwargs: kwargs.pop('parent')
         self._treeView = TTkTreeWidget(*args, **kwargs)
         # Forward the signal
-        self.activated = self._treeView.activated
+        # self.activated = self._treeView.activated
 
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._treeView)
 
         # Forwarded Methods
-        self.setAlignment    = self._treeView.setAlignment
-        self.setHeader       = self._treeView.setHeader
+        #self.setAlignment    = self._treeView.setAlignment
+        #self.setHeader       = self._treeView.setHeader
         self.setHeaderLabels = self._treeView.setHeaderLabels
-        self.setColumnSize   = self._treeView.setColumnSize
-        self.setColumnColors = self._treeView.setColumnColors
-        self.appendItem      = self._treeView.appendItem
+        #self.setColumnSize   = self._treeView.setColumnSize
+        #self.setColumnColors = self._treeView.setColumnColors
+        #self.appendItem      = self._treeView.appendItem
         self.addTopLevelItem = self._treeView.addTopLevelItem
 
 

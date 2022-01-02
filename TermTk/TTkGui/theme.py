@@ -115,8 +115,6 @@ class TTkTheme():
         └  ─  ┴  ┘
     '''
 
-
-
     buttonBox = (
       ('┌','─','┐',
        '│',' ','│',
@@ -135,6 +133,10 @@ class TTkTheme():
 
     hscroll = ('◀','┄','▓','▶')
     vscroll = ('▲','┊','▓','▼')
+
+    tree = ('•','▶','▼',' ',
+            '│','╿')
+
 
             #   0   1   2   3   4   5
     menuBar = ('├','─','┤','┄','┄','▶')
@@ -268,3 +270,6 @@ class TTkTheme():
     tabOffsetColorFocus = tabOffsetColor
     tabBorderColorFocus = TTkColor.fg("#ffff88")
     tabSelectColorFocus = TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD
+
+    treeHeaderColor = TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD
+    treeSelectedColor = TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD

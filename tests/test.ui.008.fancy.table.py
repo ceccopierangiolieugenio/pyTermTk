@@ -42,13 +42,13 @@ btn1 = ttk.TTkButton(parent=root, pos=(0,0), size=(5,3), border=True, text='Add'
 btn2 = ttk.TTkButton(parent=root, pos=(5,0), size=(10,3), border=True, text='Add Many')
 
 win_table1 = ttk.TTkWindow(parent=root,pos = (3,3), size=(150,40), title="Test Table 1", layout=ttk.TTkHBoxLayout(), border=True)
-table1 = ttk.TTkTable(parent=win_table1, selectColor=ttk.TTkColor.bg('#882200'))
+table1 = ttk.TTkFancyTable(parent=win_table1, selectColor=ttk.TTkColor.bg('#882200'))
 
 win_table2 = ttk.TTkWindow(parent=root,pos = (15,5), size=(100,30), title="Test Table 2 Default", layout=ttk.TTkHBoxLayout(), border=True)
-table2 = ttk.TTkTable(parent=win_table2)
+table2 = ttk.TTkFancyTable(parent=win_table2)
 
 win_table3 = ttk.TTkWindow(parent=root,pos = (15,5), size=(130,40), title="Test Table 2 Default", layout=ttk.TTkHBoxLayout(), border=True)
-table3 = ttk.TTkTable(parent=win_table3, showHeader=False)
+table3 = ttk.TTkFancyTable(parent=win_table3, showHeader=False)
 
 table1.setColumnSize((5,10,-1,10,20))
 table1.setAlignment((

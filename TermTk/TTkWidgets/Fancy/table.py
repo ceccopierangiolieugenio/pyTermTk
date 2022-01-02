@@ -26,44 +26,37 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
-class TTkTreeWidgetItem():
-    __slots__ = ('_parent', '_data', '_childs', '_expand', '_childIndicatorPolicy',
-        # Signals
-        'refreshData')
+class TTkFancyTable(TTkAbstractScrollArea):
+    __slots__ = (
+        '_tableView', 'activated',
+        # Forwarded Methods
+        'setAlignment', 'setHeader', 'setColumnSize', 'setColumnColors', 'appendItem' )
+
+
+
+
     def __init__(self, *args, **kwargs):
-        # Signals
-        self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
-        self._data = args[0]
-        self._childs = []
-        self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
-        self._expand = False
-        self._parent = kwargs.get("parent", None)
+        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkFancyTable' )
+        if 'parent' in kwargs: kwargs.pop('parent')
+        self._tableView = TTkFancyTableView(*args, **kwargs)
+        # Forward the signal
+        self.activated = self._tableView.activated
 
-    def childIndicatorPolicy(self):
-        return self._childIndicatorPolicy
+        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setViewport(self._tableView)
+        # Forwarded Methods
+        self.setAlignment    = self._tableView.setAlignment
+        self.setHeader       = self._tableView.setHeader
+        self.setColumnSize   = self._tableView.setColumnSize
+        self.setColumnColors = self._tableView.setColumnColors
+        self.appendItem      = self._tableView.appendItem
 
-    def setChildIndicatorPolicy(self, policy):
-        self._childIndicatorPolicy = policy
 
-    def refresh(self):
-        self.refreshData.emit(self)
 
-    def setExpand(self, status):
-        self._expand = status
 
-    def expand(self):
-        return self._expand
-
-    def addChild(self, item):
-        self._childs.append(item)
-        item._parent = self
-
-    def data(self):
-        return self._data
-
-    def parent(self):
-        return self._parent
-
-    def childs(self):
-        return self._childs

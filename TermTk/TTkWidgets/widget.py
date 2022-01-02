@@ -48,7 +48,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         │ (x,y)┌─────────────────────────┐        │
         │      │      padt (Top Padding) │        │
         │      │    ┌───────────────┐    │ height │
-        │      │padl│ Layout/childs │padr│        │
+        │      │padl│ Layout/child  │padr│        │
         │      │    └───────────────┘    │        │
         │      │      padb (Bottom Pad.) │        │
         │      └─────────────────────────┘        │
