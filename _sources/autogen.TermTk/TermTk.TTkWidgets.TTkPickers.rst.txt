@@ -12,3 +12,4 @@ TermTk.TTkWidgets.TTkPickers
 
   TermTk.TTkWidgets.TTkPickers.colorpicker
   TermTk.TTkWidgets.TTkPickers.dateTimePicker
+  TermTk.TTkWidgets.TTkPickers.filepicker

@@ -216,6 +216,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>
 
+    <span class="k">def</span> <span class="nf">setCheckState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="n">state</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
 <div class="viewcode-block" id="TTkCheckbox.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
             <span class="n">borderColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">checkboxBorderColorFocus</span>

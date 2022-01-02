@@ -233,7 +233,7 @@
         <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -272,6 +272,7 @@
 
 <div class="viewcode-block" id="TTkLineEdit.keyEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit.keyEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">baseText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span><span class="p">:</span>
             <span class="c1"># Don&#39;t Handle the special tab key</span>
             <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Tab</span><span class="p">:</span>
@@ -325,6 +326,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">&gt;</span> <span class="n">w</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pushCursor</span><span class="p">()</span>
+        <span class="c1"># Emit event only if the text changed</span>
+        <span class="k">if</span> <span class="n">baseText</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">textEdited</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 

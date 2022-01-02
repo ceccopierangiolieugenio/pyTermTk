@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>TermTk.TTkWidgets.Fancy.table &mdash; pyTermTk 0.2.0a documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TermTk.TTkWidgets.Fancy.tableview" href="TermTk.TTkWidgets.Fancy.tableview.html" />
+    <link rel="prev" title="TermTk.TTkWidgets.Fancy" href="TermTk.TTkWidgets.Fancy.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pyTermTk
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+</ul>
+<p><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="TermTk.libbpytop.html">TermTk.libbpytop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.html">TermTk.TTkWidgets.Fancy</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.Fancy.table</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ttkfancytable">TTkFancyTable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.tableview.html">TermTk.TTkWidgets.Fancy.tableview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.tree.html">TermTk.TTkWidgets.Fancy.tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.treeview.html">TermTk.TTkWidgets.Fancy.treeview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.treewidget.html">TermTk.TTkWidgets.Fancy.treewidget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.treewidgetitem.html">TermTk.TTkWidgets.Fancy.treewidgetitem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.about.html">TermTk.TTkWidgets.about</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.filetree.html">TermTk.TTkWidgets.filetree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.label.html">TermTk.TTkWidgets.label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.lineedit.html">TermTk.TTkWidgets.lineedit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollbar.html">TermTk.TTkWidgets.scrollbar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.spacer.html">TermTk.TTkWidgets.spacer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.spinbox.html">TermTk.TTkWidgets.spinbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.splitter.html">TermTk.TTkWidgets.splitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tabwidget.html">TermTk.TTkWidgets.tabwidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.texedit.html">TermTk.TTkWidgets.texedit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tree.html">TermTk.TTkWidgets.tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.treewidget.html">TermTk.TTkWidgets.treewidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.treewidgetitem.html">TermTk.TTkWidgets.treewidgetitem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.widget.html">TermTk.TTkWidgets.widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.window.html">TermTk.TTkWidgets.window</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyTermTk</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a> &raquo;</li>
+        
+          <li><a href="TermTk.TTkWidgets.Fancy.html">TermTk.TTkWidgets.Fancy</a> &raquo;</li>
+        
+      <li>TermTk.TTkWidgets.Fancy.table</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/autogen.TermTk/TermTk.TTkWidgets.Fancy.table.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-TermTk.TTkWidgets.Fancy.table">
+<span id="termtk-ttkwidgets-fancy-table"></span><h1>TermTk.TTkWidgets.Fancy.table<a class="headerlink" href="#module-TermTk.TTkWidgets.Fancy.table" title="Permalink to this headline">¶</a></h1>
+<section id="ttkfancytable">
+<h2>TTkFancyTable<a class="headerlink" href="#ttkfancytable" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TermTk.TTkWidgets.Fancy.table.TTkFancyTable">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkFancyTable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/Fancy/table.html#TTkFancyTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.table.TTkFancyTable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="TermTk.TTkWidgets.Fancy.tableview.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.Fancy.tableview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkWidgets.Fancy.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.Fancy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Eugenio Parodi.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

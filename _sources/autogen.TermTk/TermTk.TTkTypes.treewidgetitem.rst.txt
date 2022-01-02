@@ -1,8 +1,0 @@
-
-TermTk.TTkTypes.treewidgetitem
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTypes.treewidgetitem
-
-.. currentmodule:: TermTk.TTkTypes.treewidgetitem
-

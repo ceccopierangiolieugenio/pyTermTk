@@ -1,0 +1,8 @@
+
+TermTk.TTkWidgets.Fancy.treewidgetitem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.Fancy.treewidgetitem
+
+.. currentmodule:: TermTk.TTkWidgets.Fancy.treewidgetitem
+

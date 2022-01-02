@@ -264,6 +264,31 @@
     <span class="n">PartiallyChecked</span> <span class="o">=</span> <span class="n">CheckState</span><span class="o">.</span><span class="n">PartiallyChecked</span>
     <span class="n">Checked</span>          <span class="o">=</span> <span class="n">CheckState</span><span class="o">.</span><span class="n">Checked</span>
 
+    <span class="k">class</span> <span class="nc">InsertPolicy</span><span class="p">:</span>
+        <span class="n">NoInsert</span>               <span class="o">=</span> <span class="mh">0x00</span>   <span class="c1"># The string will not be inserted into the combobox.</span>
+        <span class="n">InsertAtTop</span>            <span class="o">=</span> <span class="mh">0x01</span>   <span class="c1"># The string will be inserted as the first item in the combobox.</span>
+        <span class="c1"># InsertAtCurrent      = 0x02   # The current item will be replaced by the string.</span>
+        <span class="n">InsertAtBottom</span>         <span class="o">=</span> <span class="mh">0x03</span>   <span class="c1"># The string will be inserted after the last item in the combobox.</span>
+        <span class="c1"># InsertAfterCurrent   = 0x04   # The string is inserted after the current item in the combobox.</span>
+        <span class="c1"># InsertBeforeCurrent  = 0x05   # The string is inserted before the current item in the combobox.</span>
+        <span class="c1"># InsertAlphabetically = 0x06   # The string is inserted in the alphabetic order in the combobox.</span>
+
+    <span class="k">class</span> <span class="nc">ChildIndicatorPolicy</span><span class="p">:</span>
+        <span class="n">ShowIndicator</span>                  <span class="o">=</span> <span class="mh">0x00</span> <span class="c1">#The controls for expanding and collapsing will be shown for this item even if there are no children.</span>
+        <span class="n">DontShowIndicator</span>              <span class="o">=</span> <span class="mh">0x01</span> <span class="c1">#The controls for expanding and collapsing will never be shown even if there are children. If the node is forced open the user will not be able to expand or collapse the item.</span>
+        <span class="n">DontShowIndicatorWhenChildless</span> <span class="o">=</span> <span class="mh">0x02</span> <span class="c1">#The controls for expanding and collapsing will be shown if the item contains children.</span>
+
+    <span class="n">ShowIndicator</span>                  <span class="o">=</span> <span class="n">ChildIndicatorPolicy</span><span class="o">.</span><span class="n">ShowIndicator</span>
+    <span class="n">DontShowIndicator</span>              <span class="o">=</span> <span class="n">ChildIndicatorPolicy</span><span class="o">.</span><span class="n">DontShowIndicator</span>
+    <span class="n">DontShowIndicatorWhenChildless</span> <span class="o">=</span> <span class="n">ChildIndicatorPolicy</span><span class="o">.</span><span class="n">DontShowIndicatorWhenChildless</span>
+
+    <span class="n">NoInsert</span>             <span class="o">=</span> <span class="n">InsertPolicy</span><span class="o">.</span><span class="n">NoInsert</span>
+    <span class="n">InsertAtTop</span>          <span class="o">=</span> <span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtTop</span>
+    <span class="c1"># InsertAtCurrent      = InsertPolicy.InsertAtCurrent</span>
+    <span class="n">InsertAtBottom</span>       <span class="o">=</span> <span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtBottom</span>
+    <span class="c1"># InsertAfterCurrent   = InsertPolicy.InsertAfterCurrent</span>
+    <span class="c1"># InsertBeforeCurrent  = InsertPolicy.InsertBeforeCurrent</span>
+    <span class="c1"># InsertAlphabetically = InsertPolicy.InsertAlphabetically</span>
 
     <span class="c1"># Keys</span>
     <span class="n">NoButton</span>      <span class="o">=</span> <span class="mh">0x00000000</span>    <span class="c1"># The button state does not refer to any button (see QMouseEvent::button()).</span>

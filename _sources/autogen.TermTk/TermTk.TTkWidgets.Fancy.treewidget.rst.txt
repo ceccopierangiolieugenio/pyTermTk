@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.Fancy.treewidget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.Fancy.treewidget
+
+.. currentmodule:: TermTk.TTkWidgets.Fancy.treewidget
+
+
+
+TTkFancyTreeWidget
+==================
+
+.. autoclass:: TTkFancyTreeWidget
+   :members:

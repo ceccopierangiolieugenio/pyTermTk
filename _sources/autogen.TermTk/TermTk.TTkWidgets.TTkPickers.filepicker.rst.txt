@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.TTkPickers.filepicker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkPickers.filepicker
+
+.. currentmodule:: TermTk.TTkWidgets.TTkPickers.filepicker
+
+
+
+TTkFileDialogPicker
+===================
+
+.. autoclass:: TTkFileDialogPicker
+   :members:

@@ -191,6 +191,8 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="kn">import</span> <span class="nn">time</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span>       <span class="kn">import</span> <span class="n">TTkCfg</span><span class="p">,</span> <span class="n">TTkGlbl</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span>  <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span>       <span class="kn">import</span> <span class="n">TTkLog</span>
@@ -215,7 +217,7 @@
 <span class="sd">        │ (x,y)┌─────────────────────────┐        │</span>
 <span class="sd">        │      │      padt (Top Padding) │        │</span>
 <span class="sd">        │      │    ┌───────────────┐    │ height │</span>
-<span class="sd">        │      │padl│ Layout/childs │padr│        │</span>
+<span class="sd">        │      │padl│ Layout/child  │padr│        │</span>
 <span class="sd">        │      │    └───────────────┘    │        │</span>
 <span class="sd">        │      │      padb (Bottom Pad.) │        │</span>
 <span class="sd">        │      └─────────────────────────┘        │</span>
@@ -517,7 +519,10 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focusPolicy</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">doubleClick</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseDoubleClickEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">evt</span><span class="o">.</span><span class="n">doubleClick</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="c1"># TTkLog.debug(f&quot;Click {self._name}&quot;)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -661,7 +666,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">lowerWidget</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">lowerWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+           <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeSingleOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
 
     <span class="k">def</span> <span class="nf">isVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
