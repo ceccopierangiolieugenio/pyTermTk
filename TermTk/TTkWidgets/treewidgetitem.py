@@ -30,7 +30,8 @@ from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    __slots__ = ('_parent', '_data', '_children', '_expanded', '_childIndicatorPolicy',
+    __slots__ = ('_parent', '_data', '_children', '_expanded', '_selected',
+                 '_childIndicatorPolicy',
         # Signals
         'refreshData')
 
@@ -43,6 +44,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._parent = kwargs.get('parent', None)
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
         self._expanded = False
+        self._selected = False
         self._parent = kwargs.get("parent", None)
 
     def addChild(self, child):
@@ -79,11 +81,17 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._expanded = expand
         self.emitDataChanged()
 
+    def setSelected(self, select):
+        self._selected = select
+
     # def isDisabled():
     #     pass
 
     def isExpanded(self):
         return self._expanded
+
+    def isSelected(self):
+        return self._selected
 
     def size(self):
         if self._expanded:

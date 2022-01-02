@@ -36,7 +36,7 @@ def getSentence(a,b):
 
 table_ii = 1000
 
-def demoTable(root=None):
+def demoFancyTable(root=None):
     frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkVBoxLayout())
     top   = ttk.TTkFrame(parent=frame, border=False, layout=ttk.TTkHBoxLayout())
     btn1 = ttk.TTkButton(parent=top, maxHeight=3, border=True, text='Add')
@@ -88,7 +88,7 @@ def main():
 
     root = ttk.TTk()
     win_table = ttk.TTkWindow(parent=root,pos = (3,3), size=(150,40), title="Test Table 1", layout=ttk.TTkHBoxLayout(), border=True)
-    demoTable(win_table)
+    demoFancyTable(win_table)
     root.mainloop()
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ class TTkSplitter(TTkFrame):
     __slots__ = (
         '_splitterInitialized', '_orientation',
         '_separators', '_separatorsRef', '_sizeRef', '_initSizes',
-        '_separatorSelected', '_mouseDelta')
+        '_separatorSelected')
     def __init__(self, *args, **kwargs):
         self._splitterInitialized = False
         # self._splitterInitialized = True
@@ -194,11 +194,9 @@ class TTkSplitter(TTkFrame):
 
     def mousePressEvent(self, evt):
         self._separatorSelected = None
-        self._mouseDelta = (evt.x, evt.y)
         x,y = evt.x, evt.y
         # TTkLog.debug(f"{self._separators} {evt}")
-        for i in range(len(self._separators)):
-            val = self._separators[i]
+        for i, val in enumerate(self._separators):
             if self._orientation == TTkK.HORIZONTAL:
                 if x == val:
                     self._separatorSelected = i
