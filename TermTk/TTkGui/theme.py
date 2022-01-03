@@ -23,200 +23,55 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.helper import TTkHelper
+import TermTk.TTkGui.fileicon_nerd  as fi_nerd
+import TermTk.TTkGui.fileicon_utf8  as fi_utf8
+import TermTk.TTkGui.fileicon_ascii as fi_ascii
+import TermTk.TTkGui.draw_utf8      as draw_utf8
+import TermTk.TTkGui.draw_ascii     as draw_ascii
 
 
 class TTkTheme():
-    ''' from: https://en.wikipedia.org/wiki/Box-drawing_character
+    NERD  = {'file':fi_nerd,  'draw':draw_utf8}
+    UTF8  = {'file':fi_utf8,  'draw':draw_utf8}
+    ASCII = {'file':fi_ascii, 'draw':draw_ascii}
 
-    ::
+    hline     = draw_utf8.TTkTheme.hline
+    vline     = draw_utf8.TTkTheme.vline
+    box       = draw_utf8.TTkTheme.box
+    grid      = draw_utf8.TTkTheme.grid
+    buttonBox = draw_utf8.TTkTheme.buttonBox
+    hscroll   = draw_utf8.TTkTheme.hscroll
+    vscroll   = draw_utf8.TTkTheme.vscroll
+    tree      = draw_utf8.TTkTheme.tree
+    menuBar   = draw_utf8.TTkTheme.menuBar
+    tab       = draw_utf8.TTkTheme.tab
+    braille   = draw_utf8.TTkTheme.braille
 
-        ┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕
-        │ ││  ║ ║║  ║ ║║  │ ││
-        ├─┼┤  ╠═╬╣  ╟─╫╢  ╞═╪╡
-        └─┴┘  ╚═╩╝  ╙─╨╜  ╘═╧╛
-        ┌───────────────────┐
-        │  ╔═══╗ Some Text  │▒
-        │  ╚═╦═╝ in the box │▒
-        ╞═╤══╩══╤═══════════╡▒
-        │ ├──┬──┤           │▒
-        │ └──┴──┘           │▒
-        └───────────────────┘▒
-         ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-    '''
+    getFileIcon     = fi_utf8.FileIcon.getIcon
+    folderIconClose = fi_utf8.FileIcon.folder_close
+    folderIconOpen  = fi_utf8.FileIcon.folder_open
 
-    hline = ('╞','═','╡')
-    vline = ('╥','║','╨')
+    def loadTheme(theme):
+        TTkTheme.hline     = theme['draw'].TTkTheme.hline
+        TTkTheme.vline     = theme['draw'].TTkTheme.vline
+        TTkTheme.box       = theme['draw'].TTkTheme.box
+        TTkTheme.grid      = theme['draw'].TTkTheme.grid
+        TTkTheme.buttonBox = theme['draw'].TTkTheme.buttonBox
+        TTkTheme.hscroll   = theme['draw'].TTkTheme.hscroll
+        TTkTheme.vscroll   = theme['draw'].TTkTheme.vscroll
+        TTkTheme.tree      = theme['draw'].TTkTheme.tree
+        TTkTheme.menuBar   = theme['draw'].TTkTheme.menuBar
+        TTkTheme.tab       = theme['draw'].TTkTheme.tab
+        TTkTheme.braille   = theme['draw'].TTkTheme.braille
 
-    box = ( '═','║',
-            '╔','╗',
-            '╚','╝')
+        TTkTheme.getFileIcon     = theme['file'].FileIcon.getIcon
+        TTkTheme.folderIconClose = theme['file'].FileIcon.folder_close
+        TTkTheme.folderIconOpen  = theme['file'].FileIcon.folder_open
 
-
-    grid = (
-      ( # Grid 0
-        '┌','─','┬','┐',
-        '│',' ','│','│',
-        '├','─','┼','┤',
-        '└','─','┴','┘'),
-      ( # Grid 1
-        '╔','═','╦','╗',
-        '║',' ','║','║',
-        '╠','═','╬','╣',
-        '╚','═','╩','╝'),
-      ( # Grid 2
-        '╔','═','╤','╗',
-        '║',' ','│','║',
-        '╟','─','┼','╢',
-        '╚','═','╧','╝'),
-      ( # Grid 3
-        '┌','─','╥','┐',
-        '│',' ','║','│',
-        '╞','═','╬','╡',
-        '└','─','╨','┘'),
-      (), # TODO: Grid 4
-      (), # TODO: Grid 5
-      ( # Grid 6
-        '╓','─','┬','┐',
-        '║',' ','│','│',
-        '╟','─','┼','┤',
-        '╚','═','╧','╛'),
-      (), # TODO: Grid 7
-      (), # TODO: Grid 8
-      ( # Grid 9 ╒═╤╕
-        '╒','═','╤','╕',
-        '│',' ','│','│',
-        '├','─','┼','┤',
-        '└','─','┴','┘'),
-      (), # TODO: Grid 10
-        )
-    ''' Grid Types
-
-    ::
-
-        grid0  grid1  grid2  grid3
-        ┌─┬┐   ╔═╦╗   ╔═╤╗   ┌─╥┐
-        │ ││   ║ ║║   ║ │║   │ ║│
-        ├─┼┤   ╠═╬╣   ╟─┼╢   ╞═╬╡
-        └─┴┘   ╚═╩╝   ╚═╧╝   └─╨┘
-        grid4  grid5  grid6  grid7  grid8  grid9
-        ╓─╥╖   ╒═╤╕   ╓─┬┐   ┌─┬╖   ┌─┬┐   ╒═╤╕
-        ║ ║║   │ ││   ║ ││   │ │║   │ ││   │ ││
-        ╟─╫╢   ╞═╪╡   ╟─┼┤   ├─┼╢   ├─┼┤   ├─┼┤
-        ╙─╨╜   ╘═╧╛   ╚═╧╛   ╘═╧╝   ╘═╧╛   └─┴┘
-
-        ids (hex):
-        0  1  2  3
-        ┌  ─  ┬  ┐
-        4  5  6  7
-        │     │  │
-        8  9  A  B
-        ├  ─  ┼  ┤
-        C  D  E  F
-        └  ─  ┴  ┘
-    '''
-
-    buttonBox = (
-      ('┌','─','┐',
-       '│',' ','│',
-       '└','─','┘'),
-      ('┌','─','┐',
-       '│',' ','│',
-       '╘','═','╛'))
-    '''
-    ::
-
-        box0   box1
-        ┌─┐    ┌─┐
-        │ │    │ │
-        └─┘    ╘═╛
-    '''
-
-    hscroll = ('◀','┄','▓','▶')
-    vscroll = ('▲','┊','▓','▼')
-
-    tree = ('•','▶','▼',' ',
-            '│','╿')
+        TTkHelper.updateAll()
 
 
-            #   0   1   2   3   4   5
-    menuBar = ('├','─','┤','┄','┄','▶')
-
-
-    tab = (
-      #0   1   2   3   4   5   6   7   8
-      '┌','─','┬','┐','╔','═','╗','╭','╮',
-      #9   10
-      '│','║',
-      #11  12  13  14  15  16  17  18  19  20
-      '╞','═','╧','╩','╡','╘','╛','└','─','┘',
-      #21  22  23  24  25  26  27  28  29  30
-      '╚','╝','╰','╯','⣿','⣿','╒','╕','┴','X',
-      #31  32  33  34  35  36  37  38  39  40
-      '◀','▶'
-    )
-    ''' Tab Examples
-
-    ::
-
-          ┌──────╔══════╗──────┬──────┐           ┌─┌──────╔══════╗──────┬──────┐─┐
-          │Label1║Label2║Label3│Label4│           │◀│Label1║Label2║Label3│Label4│▶│
-        ╞═╧══════╩══════╩══════╧══════╧════╡      ╞═╧══════╩══════╩══════╧══════╧═╡
-          ┌──────╔══════╗──────┬──────┐           ╭─┌──────╔══════╗──────┬──────┐─╮
-          │Label1║Label2║Label3│Label4│           │◀│Label1║Label2║Label3│Label4│▶│
-        ╞════════╩══════╩══════════════════╡      ╞════════╩══════╩═══════════════╡
-        # Menu Prototype:
-        ╭──┌──────╔══════╗──────┬──────┐          ╭──┬─┌──────╔══════╗──────┬──────┐─╮
-        │XX│Label1║Label2║Label3│Label4│          │XX│◀│Label1║Label2║Label3│Label4│▶│
-        ╞═════════╩══════╩═══════════════╡        ╞══╧════════╩══════╩═══════════════╡
-              ┌──────╔══════╗──────┬──────┐             ╭─┌──────╔══════╗──────┬──────┐─╮
-         XX YY│Label1║Label2║Label3│Label4│JJ KK   XX YY│◀│Label1║Label2║Label3│Label4│▶│JJ KK
-        ╞════════════╩══════╩═══════════════════╡ ╞═════╧════════╩══════╩═══════════════╧═════╡
-          ┌──────┲━━━━━━┱──────┬──────┐
-          │Label1┃Label2┃Label3│Label4│
-        ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥
-    '''
-
-    # ''' bpytop style graph:
-    # ::
-    #         ⢠⢠              ⡇      ⣆⡇  ⢠  ⣰  ⢠
-    #     ⢸⣀⣀⣠⣸⣸⡄     ⡄⣼  ⣀⡀ ⢠⣷⡀  ⣀⣰⣀⣿⣇⡀⢀⣸⡀⣆⣿⣆⣄⣼⣀⣀⣸
-    #     ⣾⣿⣿⣿⣿⣿⣧⣧⣧⣤⣦⣦⣿⣿⣤⣿⣧⣧⣿⣿⣿⣷⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧
-    #     ⢿⣿⣿⣿⣿⣿⡟⠟⠟⠋⠟⠏⡿⣿⠋⣿⡟⡟⢿⣿⡿⠿⡿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡏
-    #     ⢸⠉⠉⠉⢸⢹⠁     ⠃⠹ ⠁  ⠈⡿⠁  ⠈⠸⠉⣿⡏ ⠈⢹⠁⠏⣿⠏⠃⢻⠉ ⠸⠈⠁
-    #         ⠈⠈             ⠇      ⠋⠇  ⠈  ⠘  ⠈
-    # '''
-    # graph_up = (
-    #     (' ','⢀','⢠','⢰','⢸'),
-    #     ('⡀','⣀','⣠','⣰','⣸'),
-    #     ('⡄','⣄','⣤','⣴','⣼'),
-    #     ('⡆','⣆','⣦','⣶','⣾'),
-    #     ('⡇','⣇','⣧','⣷','⣿'))
-    # graph_down=(
-    #     (' ','⠈','⠘','⠸','⢸'),
-    #     ('⠁','⠉','⠙','⠹','⢹'),
-    #     ('⠃','⠋','⠛','⠻','⢻'),
-    #     ('⠇','⠏','⠟','⠿','⢿'),
-    #     ('⡇','⡏','⡟','⡿','⣿'))
-
-    # Generated by:
-    # tests/utf-8/test.braille.py
-    braille=(
-      '⠀','⠈','⠐','⠘','⠠','⠨','⠰','⠸','⢀','⢈','⢐','⢘','⢠','⢨','⢰','⢸',
-      '⠁','⠉','⠑','⠙','⠡','⠩','⠱','⠹','⢁','⢉','⢑','⢙','⢡','⢩','⢱','⢹',
-      '⠂','⠊','⠒','⠚','⠢','⠪','⠲','⠺','⢂','⢊','⢒','⢚','⢢','⢪','⢲','⢺',
-      '⠃','⠋','⠓','⠛','⠣','⠫','⠳','⠻','⢃','⢋','⢓','⢛','⢣','⢫','⢳','⢻',
-      '⠄','⠌','⠔','⠜','⠤','⠬','⠴','⠼','⢄','⢌','⢔','⢜','⢤','⢬','⢴','⢼',
-      '⠅','⠍','⠕','⠝','⠥','⠭','⠵','⠽','⢅','⢍','⢕','⢝','⢥','⢭','⢵','⢽',
-      '⠆','⠎','⠖','⠞','⠦','⠮','⠶','⠾','⢆','⢎','⢖','⢞','⢦','⢮','⢶','⢾',
-      '⠇','⠏','⠗','⠟','⠧','⠯','⠷','⠿','⢇','⢏','⢗','⢟','⢧','⢯','⢷','⢿',
-      '⡀','⡈','⡐','⡘','⡠','⡨','⡰','⡸','⣀','⣈','⣐','⣘','⣠','⣨','⣰','⣸',
-      '⡁','⡉','⡑','⡙','⡡','⡩','⡱','⡹','⣁','⣉','⣑','⣙','⣡','⣩','⣱','⣹',
-      '⡂','⡊','⡒','⡚','⡢','⡪','⡲','⡺','⣂','⣊','⣒','⣚','⣢','⣪','⣲','⣺',
-      '⡃','⡋','⡓','⡛','⡣','⡫','⡳','⡻','⣃','⣋','⣓','⣛','⣣','⣫','⣳','⣻',
-      '⡄','⡌','⡔','⡜','⡤','⡬','⡴','⡼','⣄','⣌','⣔','⣜','⣤','⣬','⣴','⣼',
-      '⡅','⡍','⡕','⡝','⡥','⡭','⡵','⡽','⣅','⣍','⣕','⣝','⣥','⣭','⣵','⣽',
-      '⡆','⡎','⡖','⡞','⡦','⡮','⡶','⡾','⣆','⣎','⣖','⣞','⣦','⣮','⣶','⣾',
-      '⡇','⡏','⡗','⡟','⡧','⡯','⡷','⡿','⣇','⣏','⣗','⣟','⣧','⣯','⣷','⣿')
 
     frameBorderColor = TTkColor.RST
     frameTitleColor  = TTkColor.fg("#dddddd")+TTkColor.bg("#222222")

@@ -30,11 +30,12 @@ from TermTk.TTkWidgets.widget import *
 
 class TTkRadioButton(TTkWidget):
     _radioLists = {}
-    __slots__ = ('_checked')
+    __slots__ = ('_checked', 'clicked')
     def __init__(self, *args, **kwargs):
+        # Define Signals
+        self.clicked = pyTTkSignal()
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkRadioButton' )
-        # Define Signals
         # self.cehcked = pyTTkSignal()
         self._checked = kwargs.get('checked', False )
         self.setMinimumSize(3, 1)
@@ -67,6 +68,7 @@ class TTkRadioButton(TTkWidget):
                     radio._checked = False
                     radio.update()
         self._checked = True
+        self.clicked.emit()
         self.update()
 
     def mousePressEvent(self, evt):

@@ -29,7 +29,9 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkTree(TTkAbstractScrollArea):
     __slots__ = (
-        '_treeView', 'activated',
+        '_treeView',
+        # Forwarded Signals
+        'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemDoubleClicked',
         # Forwarded Methods
         'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem', 'addTopLevelItem' )
 
@@ -39,7 +41,11 @@ class TTkTree(TTkAbstractScrollArea):
         if 'parent' in kwargs: kwargs.pop('parent')
         self._treeView = TTkTreeWidget(*args, **kwargs)
         # Forward the signal
-        # self.activated = self._treeView.activated
+        self.itemActivated     = self._treeView.itemActivated
+        self.itemChanged       = self._treeView.itemChanged
+        self.itemClicked       = self._treeView.itemClicked
+        self.itemExpanded      = self._treeView.itemExpanded
+        self.itemDoubleClicked = self._treeView.itemDoubleClicked
 
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._treeView)

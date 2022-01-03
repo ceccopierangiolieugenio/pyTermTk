@@ -28,14 +28,17 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollView
-from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from dataclasses import dataclass
 
 class TTkTreeWidget(TTkAbstractScrollView):
     __slots__ = ( '_items', '_header', '_columnsPos', '_cache',
                   '_selectedId', '_selected', '_separatorSelected', '_mouseDelta',
-                  '_headerColor', '_selectedColor')
+                  '_headerColor', '_selectedColor',
+                  # Signals
+                  'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemActivated'
+                  )
     @dataclass(frozen=True)
     class _Cache:
         item: TTkTreeWidgetItem
@@ -43,6 +46,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
         data: list
 
     def __init__(self, *args, **kwargs):
+        # Signals
+        self.itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
+        self.itemChanged       = pyTTkSignal(TTkTreeWidgetItem, int)
+        self.itemClicked       = pyTTkSignal(TTkTreeWidgetItem, int)
+        self.itemDoubleClicked = pyTTkSignal(TTkTreeWidgetItem, int)
+        self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
+
         super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTreeView' )
         self._selected = None
@@ -84,17 +94,29 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def mouseDoubleClickEvent(self, evt):
-        _,y = evt.x, evt.y
-        _, oy = self.getViewOffsets()
-        y -= 1-oy
+        x,y = evt.x, evt.y
+        ox, oy = self.getViewOffsets()
+        y += oy-1
+        x += ox
         if 0 <= y < len(self._cache):
             item  = self._cache[y].item
-            item.setExpanded(not item.isExpanded())
+            if item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or \
+               item.childIndicatorPolicy() == TTkK.ShowIndicator:
+                item.setExpanded(not item.isExpanded())
+                if item.isExpanded():
+                    self.itemExpanded.emit(item)
             if self._selected:
                 self._selected.setSelected(False)
             self._selectedId = y
             self._selected = item
             self._selected.setSelected(True)
+            col = -1
+            for i, c in enumerate(self._columnsPos):
+                if x < c:
+                    col = i
+                    break
+            self.itemDoubleClicked.emit(item, col)
+            self.itemActivated.emit(item, col)
 
             self.update()
         return True
@@ -123,14 +145,24 @@ class TTkTreeWidget(TTkAbstractScrollView):
         if 0 <= y < len(self._cache):
             item  = self._cache[y].item
             level = self._cache[y].level
-            if level*2 <= x < level*2+3:
+            if level*2 <= x < level*2+3 and \
+               ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or \
+                 item.childIndicatorPolicy() == TTkK.ShowIndicator ):
                 item.setExpanded(not item.isExpanded())
+                if item.isExpanded():
+                    self.itemExpanded.emit(item)
             else:
                 if self._selected:
                     self._selected.setSelected(False)
                 self._selectedId = y
                 self._selected = item
                 self._selected.setSelected(True)
+            col = -1
+            for i, c in enumerate(self._columnsPos):
+                if x < c:
+                    col = i
+                    break
+            self.itemClicked.emit(item, col)
             self.update()
         return True
 
@@ -181,12 +213,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
             _data = []
             for _il in range(len(self._header)):
                 _data.append(_child.data(_il))
-            if not _child.children():
-                _data[0] = f"{'  '*_level} {tt[0]} {_data[0]}"
-            elif _child.isExpanded():
-                _data[0] = f"{'  '*_level} {tt[2]} {_data[0]}"
+            if _child.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and _child.children() or \
+               _child.childIndicatorPolicy() == TTkK.ShowIndicator:
+                if _child.isExpanded():
+                    _data[0] = f"{'  '*_level} {tt[2]} {_data[0]}"
+                else:
+                    _data[0] = f"{'  '*_level} {tt[1]} {_data[0]}"
             else:
-                _data[0] = f"{'  '*_level} {tt[1]} {_data[0]}"
+                _data[0] = f"{'  '*_level} {tt[0]} {_data[0]}"
             self._cache.append(TTkTreeWidget._Cache(
                                 item  = _child,
                                 level = _level,

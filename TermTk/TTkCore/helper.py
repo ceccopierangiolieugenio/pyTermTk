@@ -75,6 +75,8 @@ class TTkHelper:
     def updateAll():
         if TTkHelper._rootWidget:
             TTkHelper._rootWidget.update(repaint=True, updateLayout=True)
+            for w in TTkHelper._rootWidget.layout().iterWidgets():
+                w.update(repaint=True, updateLayout=True)
 
     @staticmethod
     def addUpdateWidget(widget):

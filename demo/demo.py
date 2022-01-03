@@ -54,9 +54,29 @@ def getSentence(a,b):
 def demoShowcase(root=None, border=True):
     splitter = ttk.TTkSplitter(parent=root)
 
-    listMenu = ttk.TTkList(parent=splitter, maxWidth=15, minWidth=10)
+    leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
+
+    themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkGridLayout(), maxHeight=5, minHeight=5)
+    listMenu = ttk.TTkList(maxWidth=15, minWidth=10)
+
+    leftFrame.layout().addWidget(themesFrame, 0, 0)
+    leftFrame.layout().addWidget(listMenu, 1, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
+
+    # Themes
+    themesFrame.layout().addWidget(r1 := ttk.TTkRadioButton(name="theme",maxWidth=3),0,0)
+    themesFrame.layout().addWidget(ttk.TTkLabel(text='ASCII')            ,0,1)
+    themesFrame.layout().addWidget(r2 := ttk.TTkRadioButton(name="theme",maxWidth=3, checked=True),1,0)
+    themesFrame.layout().addWidget(ttk.TTkLabel(text='UTF-8')            ,1,1)
+    themesFrame.layout().addWidget(r3 := ttk.TTkRadioButton(name="theme",maxWidth=3),2,0)
+    themesFrame.layout().addWidget(ttk.TTkLabel(text='Nerd')             ,2,1)
+
+    r1.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.ASCII))
+    r2.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.UTF8 ))
+    r3.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD ))
+
+    # Menu
 
     listMenu.addItem(f"Test")
     tabTest = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)

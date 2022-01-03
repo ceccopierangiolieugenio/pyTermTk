@@ -33,11 +33,12 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     __slots__ = ('_parent', '_data', '_children', '_expanded', '_selected',
                  '_childIndicatorPolicy',
         # Signals
-        'refreshData')
+        # 'refreshData'
+        )
 
     def __init__(self, *args, **kwargs):
         # Signals
-        self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
+        # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
         super().__init__(self, *args, **kwargs)
         self._children = []
         self._data = args[0] if len(args)>0 and type(args[0])==list else None
@@ -46,6 +47,12 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._expanded = False
         self._selected = False
         self._parent = kwargs.get("parent", None)
+
+    def childIndicatorPolicy(self):
+        return self._childIndicatorPolicy
+
+    def setChildIndicatorPolicy(self, policy):
+        self._childIndicatorPolicy = policy
 
     def addChild(self, child):
         self._children.append(child)
@@ -67,7 +74,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def data(self, column, role=None):
         if column >= len(self._data):
-            return None
+            return ''
         return self._data[column]
 
     @pyTTkSlot()
