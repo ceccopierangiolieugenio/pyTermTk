@@ -28,6 +28,7 @@ import datetime
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.tree import TTkTree
 from TermTk.TTkWidgets.treewidgetitem import TTkTreeWidgetItem
@@ -35,13 +36,20 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 class _FileTreeWidgetItem(TTkTreeWidgetItem):
-    __slots__ = ('_path')
+    FILE = 0x00
+    DIR  = 0x01
+
+    __slots__ = ('_path', '_type')
     def __init__(self, *args, **kwargs):
         TTkTreeWidgetItem.__init__(self, *args, **kwargs)
         self._path = kwargs.get('path', '.')
+        self._type = kwargs.get('type', _FileTreeWidgetItem.FILE)
 
     def getPath(self):
         return self._path
+
+    def getType(self):
+        return self._type
 
 class TTkFileDialogPicker(TTkWindow):
     __slots__ = ('_path', '_filter', '_caption',
@@ -65,6 +73,8 @@ class TTkFileDialogPicker(TTkWindow):
         fileTree = TTkTree()
         fileTree.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
         fileTree.itemExpanded.connect(TTkFileDialogPicker._updateChildren)
+        fileTree.itemExpanded.connect(TTkFileDialogPicker._folderExpanded)
+        fileTree.itemCollapsed.connect(TTkFileDialogPicker._folderCollapsed)
 
         for i in TTkFileDialogPicker._getFileItems(self._path):
             fileTree.addTopLevelItem(i)
@@ -90,15 +100,34 @@ class TTkFileDialogPicker(TTkWindow):
 
             description = [ n, info.st_size, ]
             if os.path.isdir(nodePath):
-                ret.append(_FileTreeWidgetItem([ n, "",   "Dir",  time],path=nodePath, childIndicatorPolicy=TTkK.ShowIndicator))
+                ret.append(_FileTreeWidgetItem(
+                                [ TTkString()+TTkCfg.theme.folderNameColor+n+'/', "",   "Dir",  time],
+                                path=nodePath,
+                                type=_FileTreeWidgetItem.DIR,
+                                icon=TTkCfg.theme.folderIconClose,
+                                childIndicatorPolicy=TTkK.ShowIndicator))
             elif os.path.isfile(nodePath):
-                ret.append(_FileTreeWidgetItem([ n, size, "File", time],path=nodePath, childIndicatorPolicy=TTkK.DontShowIndicator))
+                ret.append(_FileTreeWidgetItem(
+                                [ TTkString()+TTkCfg.theme.fileNameColor+n, size, "File", time],
+                                path=nodePath,
+                                type=_FileTreeWidgetItem.FILE,
+                                icon=TTkCfg.theme.getFileIcon(n),
+                                childIndicatorPolicy=TTkK.DontShowIndicator))
             elif os.path.islink(nodePath):
                 pass
             elif os.path.ismount(nodePath):
                 pass
         return ret
 
+    @staticmethod
+    def _folderExpanded(item):
+        item.setIcon(0, TTkCfg.theme.folderIconOpen)
+
+    @staticmethod
+    def _folderCollapsed(item):
+        item.setIcon(0, TTkCfg.theme.folderIconClose)
+
+    @staticmethod
     def _updateChildren(item):
         if item.children(): return
         for i in TTkFileDialogPicker._getFileItems(item.getPath()):

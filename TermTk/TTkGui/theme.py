@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.string import TTkString
 import TermTk.TTkGui.fileicon_nerd  as fi_nerd
 import TermTk.TTkGui.fileicon_utf8  as fi_utf8
 import TermTk.TTkGui.fileicon_ascii as fi_ascii
@@ -48,10 +49,21 @@ class TTkTheme():
     tab       = draw_utf8.TTkTheme.tab
     braille   = draw_utf8.TTkTheme.braille
 
-    getFileIcon     = fi_utf8.FileIcon.getIcon
-    folderIconClose = fi_utf8.FileIcon.folder_close
-    folderIconOpen  = fi_utf8.FileIcon.folder_open
+    fileNameColor   = TTkColor.RST # Simil NerdTree purple
+    folderNameColor = TTkColor.fg("#AAFFFF") # Yellowish
+    fileIconColor   = TTkColor.fg("#FFAAFF") # Simil NerdTree purple
+    folderIconColor = TTkColor.fg("#FFFFAA") # Yellowish
 
+    getIcon         = fi_utf8.FileIcon.getIcon
+    folderIconClose = TTkString() + folderIconColor + fi_utf8.FileIcon.folder_close + TTkColor.RST
+    folderIconOpen  = TTkString() + folderIconColor + fi_utf8.FileIcon.folder_open + TTkColor.RST
+
+
+    @staticmethod
+    def getFileIcon(file):
+        return TTkString() + TTkTheme.fileIconColor + TTkTheme.getIcon(file) + TTkColor.RST
+
+    @staticmethod
     def loadTheme(theme):
         TTkTheme.hline     = theme['draw'].TTkTheme.hline
         TTkTheme.vline     = theme['draw'].TTkTheme.vline
@@ -65,9 +77,9 @@ class TTkTheme():
         TTkTheme.tab       = theme['draw'].TTkTheme.tab
         TTkTheme.braille   = theme['draw'].TTkTheme.braille
 
-        TTkTheme.getFileIcon     = theme['file'].FileIcon.getIcon
-        TTkTheme.folderIconClose = theme['file'].FileIcon.folder_close
-        TTkTheme.folderIconOpen  = theme['file'].FileIcon.folder_open
+        TTkTheme.getIcon     = theme['file'].FileIcon.getIcon
+        TTkTheme.folderIconClose = TTkString() + TTkTheme.folderIconColor + theme['file'].FileIcon.folder_close + TTkColor.RST
+        TTkTheme.folderIconOpen  = TTkString() + TTkTheme.folderIconColor + theme['file'].FileIcon.folder_open  + TTkColor.RST
 
         TTkHelper.updateAll()
 

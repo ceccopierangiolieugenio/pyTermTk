@@ -24,5 +24,6 @@ class FileIcon():
     folder_close = '-'
     folder_open  = '+'
 
+    @staticmethod
     def getIcon(fileName):
         return ' '

@@ -37,7 +37,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   '_selectedId', '_selected', '_separatorSelected', '_mouseDelta',
                   '_headerColor', '_selectedColor',
                   # Signals
-                  'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemActivated'
+                  'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
                   )
     @dataclass(frozen=True)
     class _Cache:
@@ -52,6 +52,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.itemClicked       = pyTTkSignal(TTkTreeWidgetItem, int)
         self.itemDoubleClicked = pyTTkSignal(TTkTreeWidgetItem, int)
         self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
+        self.itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
         super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTreeView' )
@@ -69,7 +70,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     # Overridden function
     def viewFullAreaSize(self) -> (int, int):
-        w = self._columnsPos[-1] if self._columnsPos else 0
+        w = self._columnsPos[-1]+1 if self._columnsPos else 0
         h = 1+sum([c.size() for c in self._items])
         # TTkLog.debug(f"{w=} {h=}")
         return w,h
@@ -105,6 +106,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 item.setExpanded(not item.isExpanded())
                 if item.isExpanded():
                     self.itemExpanded.emit(item)
+                else:
+                    self.itemCollapsed.emit(item)
             if self._selected:
                 self._selected.setSelected(False)
             self._selectedId = y
@@ -151,6 +154,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 item.setExpanded(not item.isExpanded())
                 if item.isExpanded():
                     self.itemExpanded.emit(item)
+                else:
+                    self.itemCollapsed.emit(item)
             else:
                 if self._selected:
                     self._selected.setSelected(False)
@@ -209,18 +214,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
         '''
         self._cache = []
         def _addToCache(_child, _level):
-            tt = TTkCfg.theme.tree
             _data = []
             for _il in range(len(self._header)):
-                _data.append(_child.data(_il))
-            if _child.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and _child.children() or \
-               _child.childIndicatorPolicy() == TTkK.ShowIndicator:
-                if _child.isExpanded():
-                    _data[0] = f"{'  '*_level} {tt[2]} {_data[0]}"
+                _icon = _child.icon(_il)
+                if _icon:
+                    _icon = ' '+_icon+' '
+                if _il==0:
+                    _data.append('  '*_level+_icon+_child.data(_il))
                 else:
-                    _data[0] = f"{'  '*_level} {tt[1]} {_data[0]}"
-            else:
-                _data[0] = f"{'  '*_level} {tt[0]} {_data[0]}"
+                    _data.append(_icon+_child.data(_il))
+
             self._cache.append(TTkTreeWidget._Cache(
                                 item  = _child,
                                 level = _level,
@@ -254,8 +257,10 @@ class TTkTreeWidget(TTkAbstractScrollView):
             if i-y<0 : continue
             item  = c.item
             level = c.level
-            color = self._selectedColor if item.isSelected() else TTkColor.RST
             for il in range(len(self._header)):
                 lx = 0 if il==0 else self._columnsPos[il-1]+1
                 lx1 = self._columnsPos[il]
-                self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, color=color)
+                if item.isSelected():
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, color=self._selectedColor, forceColor=True)
+                else:
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx)

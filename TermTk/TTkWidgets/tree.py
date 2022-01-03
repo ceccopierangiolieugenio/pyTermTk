@@ -31,7 +31,7 @@ class TTkTree(TTkAbstractScrollArea):
     __slots__ = (
         '_treeView',
         # Forwarded Signals
-        'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemDoubleClicked',
+        'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
         # Forwarded Methods
         'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem', 'addTopLevelItem' )
 
@@ -45,6 +45,7 @@ class TTkTree(TTkAbstractScrollArea):
         self.itemChanged       = self._treeView.itemChanged
         self.itemClicked       = self._treeView.itemClicked
         self.itemExpanded      = self._treeView.itemExpanded
+        self.itemCollapsed      = self._treeView.itemCollapsed
         self.itemDoubleClicked = self._treeView.itemDoubleClicked
 
         self.setFocusPolicy(TTkK.ClickFocus)

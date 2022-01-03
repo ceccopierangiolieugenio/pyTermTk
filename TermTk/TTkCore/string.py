@@ -25,7 +25,7 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.color import TTkColor, _TTkColor
 
 class TTkString():
     __slots__ = ('_text','_colors','_baseColor')
@@ -49,7 +49,7 @@ class TTkString():
         elif isinstance(other, str):
             ret._text   = self._text   + other
             ret._colors = self._colors + [self._baseColor]*len(other)
-        elif isinstance(other, TTkColor):
+        elif isinstance(other, _TTkColor):
             ret._text   = self._text
             ret._colors = self._colors
             ret._baseColor = other
@@ -71,6 +71,9 @@ class TTkString():
 
     def __getitem__(self, index):
         raise NotImplementedError()
+
+    def toAscii(self):
+        return self._text
 
     def toAansi(self):
         out   = ""

@@ -30,6 +30,7 @@
 
 import re
 import os
+from TermTk.TTkCore.color import TTkColor
 
 class FileIcon():
     folder_close = ''
@@ -194,6 +195,7 @@ class FileIcon():
         ('.rproj'       , '鉶'),
         ('.rs'          , ''),
         ('.rss'         , ''),
+        ('.rst'         , ''),
         ('.sass'        , ''),
         ('.scala'       , ''),
         ('.scss'        , ''),
@@ -204,6 +206,7 @@ class FileIcon():
         ('.sql'         , ''),
         ('.styl'        , ''),
         ('.suo'         , ''),
+        ('.svg'         , 'ﰟ'),
         ('.swift'       , ''),
         ('.t'           , ''),
         ('.tex'         , 'ﭨ'),
@@ -222,9 +225,11 @@ class FileIcon():
         ('.yml'         , ''),
         ('.zsh'         , ''))
 
+    @staticmethod
     def getIcon(fileName):
         fileName = os.path.basename(fileName)
 
+        fileName = fileName.lower()
         # Check the exact match
         for m, i in FileIcon.file_node_exact_matches:
           if m == fileName:
@@ -236,9 +241,8 @@ class FileIcon():
             return i
 
         # Check the file extension
-        fileName = fileName.lower()
         for m, i in FileIcon.file_node_extensions:
-          if re.match(m,fileName.endswith()):
+          if fileName.endswith(m):
             return i
 
         return ''

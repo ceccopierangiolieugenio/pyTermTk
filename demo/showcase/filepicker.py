@@ -31,8 +31,8 @@ import TermTk as ttk
 def demoFilePicker(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
-    winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(30,16), title="Test File Pickers", border=True)
-    btn = ttk.TTkButton(parent=winFP, pos=( 0,0), size=(8,3), border=True, text='File' )
+    # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
+    btn = ttk.TTkButton(parent=frame, pos=( 0,0), size=(8,3), border=True, text='File' )
 
     def _showDialog():
         filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Test File Picker", path=".", filter="All Files (*);;Python Files (*.py)")
@@ -49,12 +49,14 @@ def main():
 
     ttk.TTkLog.use_default_file_logging()
 
+    ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
+
     root = ttk.TTk()
     if args.f:
         root.setLayout(ttk.TTkGridLayout())
         winColor1 = root
     else:
-        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(120,50), title="Test File Picker", border=True, layout=ttk.TTkGridLayout())
+        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(50,20), title="Test File Picker", border=True, layout=ttk.TTkGridLayout())
 
     demoFilePicker(winColor1)
 

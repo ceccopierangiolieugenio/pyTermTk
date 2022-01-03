@@ -40,6 +40,7 @@ from  showcase.formwidgets   import demoFormWidgets
 from  showcase.scrollarea    import demoScrollArea
 from  showcase.list          import demoList
 from  showcase.menubar       import demoMenuBar
+from  showcase.filepicker    import demoFilePicker
 from  showcase.colorpicker   import demoColorPicker
 from  showcase.tree          import demoTree
 from  showcase.fancytable    import demoFancyTable
@@ -106,7 +107,9 @@ def demoShowcase(root=None, border=True):
 
     listMenu.addItem(f"Pickers")
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
+    tabPickers.addTab(demoFilePicker(),  " File Picker ")
     tabPickers.addTab(demoColorPicker(), " Color Picker ")
+
 
     listMenu.addItem(f"Graphs")
     tabGraphs = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)

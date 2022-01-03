@@ -188,7 +188,7 @@ class TTkCanvas:
         x,y = pos
         self._set(y, x, char, color)
 
-    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
+    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
             NOTE:
             drawText is one of the most abused functions,
@@ -209,7 +209,9 @@ class TTkCanvas:
         if isinstance(text, TTkString):
             text = text.align(width=width, alignment=alignment, color=color)
             txt, colors = text.getData()
-            for i in range(0, min(len(txt),self._width-x)):
+            if forceColor:
+                colors=[color]*len(colors)
+            for i in range(max(0,-x), min(len(txt),self._width-x)):
                 #self._set(y, x+i, txt[i-x], colors[i-x])
                 self._data[y][x+i] = txt[i]
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)
