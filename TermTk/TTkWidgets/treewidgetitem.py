@@ -30,7 +30,7 @@ from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    __slots__ = ('_parent', '_data', '_children', '_expanded', '_selected',
+    __slots__ = ('_parent', '_data', '_alignment', '_children', '_expanded', '_selected',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon'
         # Signals
         # 'refreshData'
@@ -43,6 +43,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         super().__init__(self, *args, **kwargs)
         self._children = []
         self._data = args[0] if len(args)>0 and type(args[0])==list else None
+        self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
         self._parent = kwargs.get('parent', None)
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
 
@@ -104,10 +105,19 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._icon[col] = icon
         self.dataChanged.emit()
 
-    def data(self, column, role=None):
-        if column >= len(self._data):
+    def textAlignment(self, col):
+        if col >= len(self._alignment):
+            return TTkK.LEFT_ALIGN
+        return self._alignment[col]
+
+    def setTextAlignment(self, col, alignment):
+        self._alignment[col] = alignment
+        self.dataChanged.emit()
+
+    def data(self, col, role=None):
+        if col >= len(self._data):
             return ''
-        return self._data[column]
+        return self._data[col]
 
     @pyTTkSlot()
     def emitDataChanged(self):

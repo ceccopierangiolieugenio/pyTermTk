@@ -140,3 +140,4 @@ class TTkTheme():
 
     treeHeaderColor = TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD
     treeSelectedColor = TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD
+    treeLineColor     = TTkColor.fg("#444444")

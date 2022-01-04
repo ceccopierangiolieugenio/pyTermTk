@@ -22,44 +22,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, argparse
+import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 
-def demoFilePicker(root=None):
-    frame = ttk.TTkFrame(parent=root, border=False)
+def demoSplitter(root=None):
+    vsplitter = ttk.TTkSplitter(parent=root, border=True, orientation=ttk.TTkK.VERTICAL)
+    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.1")
+    hsplitter1 = ttk.TTkSplitter(parent=vsplitter, border=True)
+    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.2")
+    hsplitter2 = ttk.TTkSplitter(parent=vsplitter, border=True)
+    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.3")
+    ttk.TTkFrame(parent=hsplitter1 ,border=True, title="Frame3")
+    ttk.TTkTestWidgetSizes(parent=hsplitter1 ,border=True, title="Frame2", minSize=(33,7), maxSize=(33,7))
+    ttk.TTkFrame(parent=hsplitter1 ,border=True, title="Frame4")
 
-    # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
-    btn = ttk.TTkButton(parent=frame, pos=( 0,0), size=(8,3), border=True, text='File' )
+    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame5")
+    ttk.TTkTestWidgetSizes(parent=hsplitter2 ,border=True, title="Frame6", minSize=(33,7), maxSize=(33,7))
+    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame7")
+    ttk.TTkTestWidgetSizes(parent=hsplitter2 ,border=True, title="Frame8", minSize=(33,7), maxSize=(33,7))
+    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame9")
+    return vsplitter
 
-    def _showDialog():
-        filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick a File", path=".", filter="All Files (*);;Python Files (*.py)")
-        ttk.TTkHelper.overlay(frame, filePicker, 2, 1)
 
-    btn.clicked.connect(_showDialog)
-
-    return frame
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
-    args = parser.parse_args()
-
     ttk.TTkLog.use_default_file_logging()
 
-    ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
-
     root = ttk.TTk()
-    if args.f:
-        root.setLayout(ttk.TTkGridLayout())
-        winColor1 = root
-    else:
-        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(50,20), title="Test File Picker", border=True, layout=ttk.TTkGridLayout())
-
-    demoFilePicker(winColor1)
-
+    winSplitter = ttk.TTkWindow(parent=root,pos = (10,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
+    demoSplitter(winSplitter)
     root.mainloop()
 
 if __name__ == "__main__":

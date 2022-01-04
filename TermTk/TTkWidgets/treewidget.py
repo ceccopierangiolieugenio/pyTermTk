@@ -35,7 +35,7 @@ from dataclasses import dataclass
 class TTkTreeWidget(TTkAbstractScrollView):
     __slots__ = ( '_items', '_header', '_columnsPos', '_cache',
                   '_selectedId', '_selected', '_separatorSelected', '_mouseDelta',
-                  '_headerColor', '_selectedColor',
+                  '_headerColor', '_selectedColor', '_lineColor',
                   # Signals
                   'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
                   )
@@ -63,8 +63,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._header = kwargs.get('header',[])
         self._columnsPos = []
         self._cache = []
-        self._headerColor   = kwargs.get('headerColor',TTkCfg.theme.treeHeaderColor)
-        self._selectedColor = kwargs.get('selectedColor',TTkCfg.theme.treeSelectedColor)
+        self._headerColor   = kwargs.get('headerColor',   TTkCfg.theme.treeHeaderColor)
+        self._selectedColor = kwargs.get('selectedColor', TTkCfg.theme.treeSelectedColor)
+        self._lineColor     = kwargs.get('lineColor',     TTkCfg.theme.treeLineColor)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
 
@@ -191,13 +192,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
             x += ox
             ss = self._separatorSelected
             pos = max((ss+1)*4, x)
-            self._columnsPos[ss] = pos
+            diff = pos - self._columnsPos[ss]
             # Align the previous Separators if pushed
             for i in range(ss):
                 self._columnsPos[i] = min(self._columnsPos[i], pos-(ss-i)*4)
-            # Align the next Separators if pushed
+            # Align all the other Separators relative to the selection
             for i in range(ss, len(self._columnsPos)):
-                self._columnsPos[i] = max(self._columnsPos[i], pos+(i-ss)*4)
+                self._columnsPos[i] += diff
             self.update()
             self.viewChanged.emit()
             return True
@@ -250,7 +251,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for sx in self._columnsPos:
             self._canvas.drawChar(pos=(sx-x,0), char=tt[5], color=self._headerColor)
             for sy in range(1,h):
-                self._canvas.drawChar(pos=(sx-x,sy), char=tt[4])
+                self._canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=self._lineColor)
 
         # Draw cache
         for i, c in enumerate(self._cache):
@@ -261,6 +262,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 lx = 0 if il==0 else self._columnsPos[il-1]+1
                 lx1 = self._columnsPos[il]
                 if item.isSelected():
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, color=self._selectedColor, forceColor=True)
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor, forceColor=True)
                 else:
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx)
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, alignment=item.textAlignment(il))

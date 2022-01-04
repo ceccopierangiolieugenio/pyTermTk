@@ -32,8 +32,29 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.tree import TTkTree
 from TermTk.TTkWidgets.treewidgetitem import TTkTreeWidgetItem
+from TermTk.TTkWidgets.splitter import TTkSplitter
+from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkWidgets.combobox import TTkComboBox
+from TermTk.TTkWidgets.button import TTkButton
+from TermTk.TTkWidgets.label import TTkLabel
+from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+
+
+'''
+::
+
+    +----------------------------------------+
+    |  Look in: [--FULL-PATH-|v] [<] [>] [^] |
+    | +-----------+------------------------+ |
+    | | Bookmarks ║     File Tree          | |
+    | |           ║                        | |
+    | +-----------+------------------------+ |
+    | File name:     [-----------]  [Open  ] |
+    | Files of Type  [-----------]  [Cancel] |
+    +--------------+-------------------------+
+'''
 
 class _FileTreeWidgetItem(TTkTreeWidgetItem):
     FILE = 0x00
@@ -44,6 +65,7 @@ class _FileTreeWidgetItem(TTkTreeWidgetItem):
         TTkTreeWidgetItem.__init__(self, *args, **kwargs)
         self._path = kwargs.get('path', '.')
         self._type = kwargs.get('type', _FileTreeWidgetItem.FILE)
+        self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
 
     def getPath(self):
         return self._path
@@ -66,11 +88,37 @@ class TTkFileDialogPicker(TTkWindow):
         self._path    = kwargs.get('path','.')
         self._filter  = kwargs.get('filter','All Files (*)')
         self._caption = kwargs.get('caption','File Dialog')
-        self.setTitle(self._caption)
 
+        self.setTitle(self._caption)
         self.setLayout(TTkGridLayout())
 
-        fileTree = TTkTree()
+        # Top (absPath)
+        topLayout = TTkGridLayout()
+        self.layout().addItem(topLayout,0,0)
+
+        topLayout.addWidget(TTkLabel(text="Look in:",maxWidth=14),      0,0)
+        topLayout.addWidget(lookPath := TTkComboBox(list=TTkFileDialogPicker._getListLook(self._path)),       0,1)
+        topLayout.addWidget(btnPrev  := TTkButton(text="<",maxWidth=3), 0,2)
+        topLayout.addWidget(btnNext  := TTkButton(text=">",maxWidth=3), 0,3)
+        topLayout.addWidget(btnUp    := TTkButton(text="^",maxWidth=3), 0,4)
+
+        # Bottom (File Name, Controls)
+        bottomLayout = TTkGridLayout()
+        self.layout().addItem(bottomLayout,2,0)
+        bottomLayout.addWidget(TTkLabel(text="File name:"     ,maxWidth=14),      0,0)
+        bottomLayout.addWidget(TTkLabel(text="Files of type:" ,maxWidth=14),      1,0)
+        bottomLayout.addWidget(lookPath := TTkComboBox(),       0,1)
+        bottomLayout.addWidget(lookPath := TTkComboBox(),       1,1)
+        bottomLayout.addWidget(btnOpen   := TTkButton(text="Open",  maxWidth=8), 0,2)
+        bottomLayout.addWidget(btnCancel := TTkButton(text="Cancel",maxWidth=8), 1,2)
+
+        # Center (FileTree, Bookmarks)
+        splitter = TTkSplitter(border=True)
+        self.layout().addWidget(splitter,1,0)
+
+        bookmarks = TTkList(parent=splitter)
+
+        fileTree = TTkTree(parent=splitter)
         fileTree.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
         fileTree.itemExpanded.connect(TTkFileDialogPicker._updateChildren)
         fileTree.itemExpanded.connect(TTkFileDialogPicker._folderExpanded)
@@ -79,8 +127,19 @@ class TTkFileDialogPicker(TTkWindow):
         for i in TTkFileDialogPicker._getFileItems(self._path):
             fileTree.addTopLevelItem(i)
 
-        self.layout().addWidget(fileTree,0,0)
+    @staticmethod
+    def _getListLook(path):
+        path = os.path.abspath(path)
+        ret = [path]
+        while True:
+            path, e = os.path.split(path)
+            if e:
+                ret.append(path)
+            if not path or path=='/':
+                break
+        return ret
 
+    @staticmethod
     def _getFileItems(path):
         path = os.path.abspath(path)
         dir_list = os.listdir(path)
@@ -101,14 +160,16 @@ class TTkFileDialogPicker(TTkWindow):
             description = [ n, info.st_size, ]
             if os.path.isdir(nodePath):
                 ret.append(_FileTreeWidgetItem(
-                                [ TTkString()+TTkCfg.theme.folderNameColor+n+'/', "",   "Dir",  time],
+                                [ TTkString()+TTkCfg.theme.folderNameColor+n+'/', "",   "Folder",  time],
                                 path=nodePath,
                                 type=_FileTreeWidgetItem.DIR,
                                 icon=TTkCfg.theme.folderIconClose,
                                 childIndicatorPolicy=TTkK.ShowIndicator))
             elif os.path.isfile(nodePath):
+                _, ext = os.path.splitext(n)
+                if ext: ext = f"{ext[1:]} "
                 ret.append(_FileTreeWidgetItem(
-                                [ TTkString()+TTkCfg.theme.fileNameColor+n, size, "File", time],
+                                [ TTkString()+TTkCfg.theme.fileNameColor+n, size, f"{ext}File", time],
                                 path=nodePath,
                                 type=_FileTreeWidgetItem.FILE,
                                 icon=TTkCfg.theme.getFileIcon(n),
