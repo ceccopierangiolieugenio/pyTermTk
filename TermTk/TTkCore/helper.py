@@ -38,11 +38,11 @@ class TTkHelper:
     _cursor = False
     _cursorType = lbt.Term.cursor_blinking_block
     class _Overlay():
-        __slots__ = ('_widget','_x','_y')
-        def __init__(self,x,y,widget):
+        __slots__ = ('_widget','_prevFocus','_x','_y')
+        def __init__(self,x,y,widget,prevFocus):
             self._widget = widget
+            self._prevFocus = prevFocus
             widget.move(x,y)
-    _savedFocus = None
     _overlay = []
 
     class _Shortcut():
@@ -119,13 +119,10 @@ class TTkHelper:
     def overlay(caller, widget, x, y):
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
-        if not TTkHelper._savedFocus and \
-           not TTkHelper.isOverlay(TTkHelper._focusWidget):
-            TTkHelper._savedFocus = TTkHelper._focusWidget
         # Try to keep the overlay widget inside the terminal
         wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
         wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget))
+        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
@@ -140,26 +137,55 @@ class TTkHelper:
     def removeOverlay(refocus=True):
         for widget in TTkHelper._overlay:
             TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
+        bkFocus = None
+        if TTkHelper._overlay:
+            bkFocus = TTkHelper._overlay[0]._prevFocus
         TTkHelper._overlay = []
         if TTkHelper._focusWidget:
             TTkHelper._focusWidget.clearFocus()
-        if TTkHelper._savedFocus:
-            bk = TTkHelper._savedFocus
-            TTkHelper._savedFocus = None
-            if refocus:
-                bk.setFocus()
+        if bkFocus:
+            bkFocus.setFocus()
 
     @staticmethod
-    def removeSingleOverlay(widget):
+    def removeOverlayAndChild(widget):
         if len(TTkHelper._overlay) <= 1:
             return TTkHelper.removeOverlay()
         rootWidget = TTkHelper.rootOverlay(widget)
-        rootWidget
+        bkFocus = None
+        found = False
+        newOverlay = []
         for o in TTkHelper._overlay:
             if o._widget == rootWidget:
-                TTkHelper._overlay.remove(o)
-        TTkHelper._rootWidget.rootLayout().removeWidget(rootWidget)
-        TTkHelper._overlay[-1]._widget.setFocus()
+                found = True
+                bkFocus = o._prevFocus
+            if not found:
+                newOverlay.append(o)
+            else:
+                TTkHelper._rootWidget.rootLayout().removeWidget(o._widget)
+        TTkHelper._overlay = newOverlay
+        if bkFocus:
+            bkFocus.setFocus()
+        if not found:
+            TTkHelper.removeOverlay()
+
+    @staticmethod
+    def removeOverlayChild(widget):
+        rootWidget = TTkHelper.rootOverlay(widget)
+        found = False
+        newOverlay = []
+        for o in TTkHelper._overlay:
+            if o._widget == rootWidget:
+                found = True
+                newOverlay.append(o)
+                continue
+            if not found:
+                newOverlay.append(o)
+            else:
+                TTkHelper._rootWidget.rootLayout().removeWidget(o._widget)
+        TTkHelper._overlay = newOverlay
+        if not found:
+            TTkHelper.removeOverlay()
+
 
     @staticmethod
     def paintAll():

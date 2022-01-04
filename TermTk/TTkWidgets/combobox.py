@@ -36,7 +36,7 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy'
+    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy'
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
     def __init__(self, *args, **kwargs):
@@ -52,6 +52,7 @@ class TTkComboBox(TTkWidget):
         self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._id = -1
+        self._popupFrame = None
         self.setEditable(kwargs.get('editable', False ))
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
@@ -162,6 +163,8 @@ class TTkComboBox(TTkWidget):
     def _callback(self, label):
         self._lineEdit.setText(label)
         self._id = self._list.index(label)
+        TTkHelper.removeOverlayAndChild(self._popupFrame)
+        self._popupFrame = None
         self.setFocus()
         self.update()
 
@@ -171,15 +174,15 @@ class TTkComboBox(TTkWidget):
         if frameHeight > 20: frameHeight = 20
         if frameWidth  < 20: frameWidth = 20
 
-        frame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
-        listw = TTkList(parent=frame)
-        listw.textClicked.connect(self._callback)
+        self._popupFrame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
+        TTkHelper.overlay(self, self._popupFrame, 0, 0)
+        listw = TTkList(parent=self._popupFrame)
         TTkLog.debug(f"{self._list}")
         for item in self._list:
             listw.addItem(item)
         if self._id != -1:
             listw.setCurrentRow(self._id)
-        TTkHelper.overlay(self, frame, 0, 0)
+        listw.textClicked.connect(self._callback)
         listw.viewport().setFocus()
         self.update()
         return True

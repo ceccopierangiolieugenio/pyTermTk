@@ -43,7 +43,7 @@ class _TTkMenuListWidget(TTkListWidget):
     def keyEvent(self, evt):
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Left:
-                TTkHelper.removeSingleOverlay(self)
+                TTkHelper.removeOverlayAndChild(self)
                 if self._previous:
                     self._previous.setFocus()
                 return True

@@ -501,7 +501,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             self._parent.rootLayout().removeWidget(self)
-        TTkHelper.removeSingleOverlay(self)
+        TTkHelper.removeOverlayAndChild(self)
 
 
     def isVisible(self):
@@ -537,8 +537,9 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
-        if not TTkHelper.isOverlay(self):
-            TTkHelper.removeOverlay(refocus=False)
+        #if not TTkHelper.isOverlay(self):
+        #    TTkHelper.removeOverlay(refocus=False)
+        TTkHelper.removeOverlayChild(self)
         TTkHelper.setFocus(self)
         self._focus = True
         self.focusChanged.emit(self._focus)
