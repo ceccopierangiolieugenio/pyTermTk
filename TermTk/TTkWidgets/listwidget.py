@@ -27,6 +27,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
@@ -176,12 +177,12 @@ class TTkListWidget(TTkAbstractScrollView):
         minw = self.width()
         for item in self._items:
             minw = max(minw,item.minimumWidth())
-        for y,item in enumerate(self._items):            
+        for y,item in enumerate(self._items):
             item.setGeometry(0,y,minw,1)
         self.viewChanged.emit()
 
     def addItemAt(self, item, pos, data=None):
-        if isinstance(item, str):
+        if isinstance(item, str) or isinstance(item, TTkString):
             #label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
             label = TTkAbstractListItem(text=item, data=data)
             label.listItemClicked.connect(self._labelSelectedHandler)

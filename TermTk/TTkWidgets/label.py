@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkTemplates.color import TColor
@@ -38,8 +39,9 @@ class TTkLabel(TTkWidget, TColor, TText):
         self.textUpdated(self.text)
 
     def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color)
-        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color)
+        forceColor = self.color!=TTkColor.RST
+        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color, forceColor=forceColor)
+        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color, forceColor=forceColor)
 
     def textUpdated(self, text):
         w, h = self.size()

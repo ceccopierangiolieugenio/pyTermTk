@@ -67,14 +67,7 @@ class TTkTheme():
     folderIconColor = TTkColor.fg("#FFFFAA") # Yellowish
     '''Default to **TTkColor.fg("#FFFFAA") # Yellowish**'''
 
-    getIcon         = fi_utf8.FileIcon.getIcon
-    folderIconClose = TTkString() + folderIconColor + fi_utf8.FileIcon.folder_close + TTkColor.RST
-    folderIconOpen  = TTkString() + folderIconColor + fi_utf8.FileIcon.folder_open + TTkColor.RST
-
-
-    @staticmethod
-    def getFileIcon(file):
-        return TTkString() + TTkTheme.fileIconColor + TTkTheme.getIcon(file) + TTkColor.RST
+    fileIcon        = fi_utf8.FileIcon
 
     @staticmethod
     def loadTheme(theme):
@@ -90,10 +83,7 @@ class TTkTheme():
         TTkTheme.tab       = theme['draw'].TTkTheme.tab
         TTkTheme.braille   = theme['draw'].TTkTheme.braille
 
-        TTkTheme.getIcon     = theme['file'].FileIcon.getIcon
-        TTkTheme.folderIconClose = TTkString() + TTkTheme.folderIconColor + theme['file'].FileIcon.folder_close + TTkColor.RST
-        TTkTheme.folderIconOpen  = TTkString() + TTkTheme.folderIconColor + theme['file'].FileIcon.folder_open  + TTkColor.RST
-
+        TTkTheme.fileIcon    = theme['file'].FileIcon
         TTkHelper.updateAll()
 
 

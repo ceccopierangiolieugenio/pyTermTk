@@ -33,8 +33,10 @@ import os
 from TermTk.TTkCore.color import TTkColor
 
 class FileIcon():
-    folder_close = ''
-    folder_open  = ''
+    folderClose = ''
+    folderOpen  = ''
+    home = ''
+    computer = ''
 
     file_node_exact_matches = (
         ('.bashprofile'                     , ''),
