@@ -29,6 +29,33 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):
+    ''' TTkButton:
+
+    Border = True
+    ::
+
+         ┌────────┐
+         │  Text  │
+         ╘════════╛
+
+    Border = False
+    ::
+
+         [  Text  ]
+
+    The TTkWidget class is the base class of all user interface objects
+
+    :param str text: the text shown on the button, defaults to ""
+    :type text: str, optional
+    :param bool border: the border of the button, defaults to "False"
+    :type text: str, optional
+    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonTextColor`
+    :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
+    :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`
+    :type borderColor: :class:`~TermTk.TTkCore.color.TTkColor`, optional
+
+    '''
+
     __slots__ = (
         '_text', '_border', '_pressed', 'clicked', '_keyPressed',
         '_borderColor',        '_textColor',
@@ -37,6 +64,7 @@ class TTkButton(TTkWidget):
         '_borderColorDisabled','_textColorDisabled'
         )
     def __init__(self, *args, **kwargs):
+
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkButton' )
         # Define Signals

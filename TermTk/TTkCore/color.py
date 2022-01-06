@@ -212,13 +212,47 @@ class TTkColorGradient(_TTkColorModifier):
 
 
 class TTkColor(_TTkColor):
+    ''' TermTk Color helper
+
+    .. role:: strike
+        :class: strike
+
+    .. role:: underline
+        :class: underline
+
+    The TTkColor constructor creates the color based on HEX values.
+
+    Example:
+
+    .. code:: python
+
+        # Foreground only colors:
+        color_fg_red   = TTkColor.fg('#FF0000')
+        color_fg_green = TTkColor.fg('#00FF00')
+        color_fg_blue  = TTkColor.fg('#0000FF')
+
+        # Background only colors:
+        color_bg_red   = TTkColor.bg('#FF0000')
+        color_bg_green = TTkColor.bg('#00FF00')
+        color_bg_blue  = TTkColor.bg('#0000FF')
+
+        # Combine
+        color_1 = color_fg_red + color_bg_blue
+        color_2 = color_fg_red + TTkColor.bg('#FFFF00')
+        color_3 = color_2 + TTkColor.UNDERLINE + TTkColor.BOLD
+    '''
     RST = _TTkColor(fg='\033[0m')
+    '''Default terminal color'''
 
     # Modifiers:
     BOLD         = _TTkColor(mod='\033[1m')
+    '''**Bold** modifier'''
     ITALIC       = _TTkColor(mod='\033[3m')
+    '''*Italic* modifier'''
     UNDERLINE    = _TTkColor(mod='\033[4m')
+    ''':underline:`Underline` modifier'''
     STRIKETROUGH = _TTkColor(mod='\033[9m')
+    ''':strike:`Striketrough` modifier'''
 
     @staticmethod
     def fg(*args, **kwargs):

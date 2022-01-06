@@ -78,8 +78,9 @@ html_theme_options = {
 html_static_path = ['_static']
 
 html_context = {'css_files': [
-	# Workaround for RTD 0.4.3 bug https://github.com/readthedocs/sphinx_rtd_theme/issues/117
-	'_static/theme_overrides.css',  # override wide tables in RTD theme
+    # Workaround for RTD 0.4.3 bug https://github.com/readthedocs/sphinx_rtd_theme/issues/117
+    '_static/theme_overrides.css',  # override wide tables in RTD theme
+    '_static/ttk.css'
 ]}
 
 # html_theme = 'bizstyle'

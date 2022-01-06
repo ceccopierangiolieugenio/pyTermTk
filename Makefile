@@ -21,6 +21,9 @@ doc: .venv
 	make -C docs/ html ; \
 	cp -a docs/images docs/build/html/_images ;
 
+testDoc:
+	python3 -m http.server --directory docs/build/html/
+
 runGittk: .venv
 	. .venv/bin/activate ; \
 	demo/gittk.py -f
