@@ -412,7 +412,7 @@
 <span class="sd">        color_3 = color_2 + TTkColor.UNDERLINE + TTkColor.BOLD</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">RST</span> <span class="o">=</span> <span class="n">_TTkColor</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default terminal color&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;Reset to the default terminal color and modifiers&#39;&#39;&#39;</span>
 
     <span class="c1"># Modifiers:</span>
     <span class="n">BOLD</span>         <span class="o">=</span> <span class="n">_TTkColor</span><span class="p">(</span><span class="n">mod</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span><span class="p">)</span>
@@ -424,23 +424,53 @@
     <span class="n">STRIKETROUGH</span> <span class="o">=</span> <span class="n">_TTkColor</span><span class="p">(</span><span class="n">mod</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[9m&#39;</span><span class="p">)</span>
     <span class="sd">&#39;&#39;&#39;:strike:`Striketrough` modifier&#39;&#39;&#39;</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TTkColor.fg"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.fg">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">fg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">mod</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;modifier&#39;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="n">TTkColor</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="n">color</span><span class="p">),</span> <span class="n">colorMod</span><span class="o">=</span><span class="n">mod</span><span class="p">)</span>
+        <span class="sd">&#39;&#39;&#39; Helper to generate a Foreground color</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">bg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. code:: python</span>
+
+<span class="sd">            color_1 = TTkColor.fg(&#39;#FF0000&#39;)</span>
+<span class="sd">            color_2 = TTkColor.fg(color=&#39;#00FF00&#39;)</span>
+<span class="sd">            color_3 = TTkColor.fg(&#39;#0000FF&#39;, modifier=TTkColorGradient(increment=6))</span>
+
+<span class="sd">        :param str color: the color representation in (str)HEX</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**</span>
+<span class="sd">        :type modifier: TTkColorModifier, optional</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">mod</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;modifier&#39;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">color</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="n">TTkColor</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="n">color</span><span class="p">),</span> <span class="n">colorMod</span><span class="o">=</span><span class="n">mod</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">TTkColor</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="n">color</span><span class="p">),</span> <span class="n">colorMod</span><span class="o">=</span><span class="n">mod</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TTkColor.bg"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.bg">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bg</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Helper to generate a Background color</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. code:: python</span>
+
+<span class="sd">            color_1 = TTkColor.bg(&#39;#FF0000&#39;)</span>
+<span class="sd">            color_2 = TTkColor.bg(color=&#39;#00FF00&#39;)</span>
+<span class="sd">            color_3 = TTkColor.bg(&#39;#0000FF&#39;, modifier=TTkColorGradient(increment=6))</span>
+
+<span class="sd">        :param str color: the color representation in (str)HEX</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**</span>
+<span class="sd">        :type modifier: TTkColorModifier, optional</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;modifier&#39;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">TTkColor</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">Color</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="n">color</span><span class="p">),</span> <span class="n">colorMod</span><span class="o">=</span><span class="n">mod</span><span class="p">)</span></div></div>
 
 </pre></div>
 

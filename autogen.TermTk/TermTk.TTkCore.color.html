@@ -232,7 +232,7 @@
 <dl class="py attribute">
 <dt id="TermTk.TTkCore.color.TTkColor.RST">
 <code class="sig-name descname"><span class="pre">RST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.RST" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default terminal color</p>
+<dd><p>Reset to the default terminal color and modifiers</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -245,6 +245,46 @@
 <dt id="TermTk.TTkCore.color.TTkColor.UNDERLINE">
 <code class="sig-name descname"><span class="pre">UNDERLINE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.UNDERLINE" title="Permalink to this definition">¶</a></dt>
 <dd><p><span class="underline">Underline</span> modifier</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.color.TTkColor.bg">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">bg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor.bg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.bg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper to generate a Background color</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">color_1</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">)</span>
+<span class="n">color_2</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">)</span>
+<span class="n">color_3</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span> <span class="n">modifier</span><span class="o">=</span><span class="n">TTkColorGradient</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> (<em>str</em>) – the color representation in (str)HEX</p></li>
+<li><p><strong>modifier</strong> (<em>TTkColorModifier</em><em>, </em><em>optional</em>) – (experimental) the color modifier to be used to improve the <strong>kinkiness</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.color.TTkColor.fg">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">fg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor.fg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.fg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper to generate a Foreground color</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">color_1</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">)</span>
+<span class="n">color_2</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">)</span>
+<span class="n">color_3</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span> <span class="n">modifier</span><span class="o">=</span><span class="n">TTkColorGradient</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> (<em>str</em>) – the color representation in (str)HEX</p></li>
+<li><p><strong>modifier</strong> (<em>TTkColorModifier</em><em>, </em><em>optional</em>) – (experimental) the color modifier to be used to improve the <strong>kinkiness</strong></p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
