@@ -242,7 +242,7 @@ class TTkColor(_TTkColor):
         color_3 = color_2 + TTkColor.UNDERLINE + TTkColor.BOLD
     '''
     RST = _TTkColor(fg='\033[0m')
-    '''Default terminal color'''
+    '''Reset to the default terminal color and modifiers'''
 
     # Modifiers:
     BOLD         = _TTkColor(mod='\033[1m')
@@ -256,6 +256,21 @@ class TTkColor(_TTkColor):
 
     @staticmethod
     def fg(*args, **kwargs):
+        ''' Helper to generate a Foreground color
+
+        Example:
+
+        .. code:: python
+
+            color_1 = TTkColor.fg('#FF0000')
+            color_2 = TTkColor.fg(color='#00FF00')
+            color_3 = TTkColor.fg('#0000FF', modifier=TTkColorGradient(increment=6))
+
+        :param str color: the color representation in (str)HEX
+        :type color: str
+        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :type modifier: TTkColorModifier, optional
+        '''
         mod = kwargs.get('modifier', None )
         if len(args) > 0:
             color = args[0]
@@ -265,6 +280,21 @@ class TTkColor(_TTkColor):
 
     @staticmethod
     def bg(*args, **kwargs):
+        ''' Helper to generate a Background color
+
+        Example:
+
+        .. code:: python
+
+            color_1 = TTkColor.bg('#FF0000')
+            color_2 = TTkColor.bg(color='#00FF00')
+            color_3 = TTkColor.bg('#0000FF', modifier=TTkColorGradient(increment=6))
+
+        :param str color: the color representation in (str)HEX
+        :type color: str
+        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :type modifier: TTkColorModifier, optional
+        '''
         mod = kwargs.get('modifier', None )
         if len(args) > 0:
             color = args[0]
