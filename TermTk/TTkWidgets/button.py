@@ -34,6 +34,7 @@ class TTkButton(TTkWidget):
         '_borderColor',        '_textColor',
         '_borderColorClicked', '_textColorClicked',
         '_borderColorFocus',   '_textColorFocus'
+        '_borderColorDisabled','_textColorDisabled'
         )
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
@@ -49,6 +50,8 @@ class TTkButton(TTkWidget):
         self._textColorClicked   = TTkCfg.theme.buttonTextColorClicked
         self._borderColorFocus   = TTkCfg.theme.buttonBorderColorFocus
         self._textColorFocus     = TTkCfg.theme.buttonTextColorFocus
+        self._borderColorDisabled= TTkCfg.theme.buttonBorderColorDisabled
+        self._textColorDisabled  = TTkCfg.theme.buttonTextColorDisabled
 
         self._pressed = False
         self._keyPressed = False
@@ -60,7 +63,12 @@ class TTkButton(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def paintEvent(self):
-        if self._pressed:
+        if not self.isEnabled():
+            borderColor = self._borderColorDisabled
+            textColor   = self._textColorDisabled
+            grid = TTkCfg.theme.buttonBoxGridDisabled
+
+        elif self._pressed:
             borderColor = self._borderColorClicked
             textColor   = self._textColorClicked
             grid = TTkCfg.theme.buttonBoxGridClicked

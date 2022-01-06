@@ -82,6 +82,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
     :param [int,int] minSize: the minSize [width,height] of the widget, optional
 
     :param bool,optional visible: the visibility, optional, defaults to True
+    :param bool,optional enabled: the ability to handle input events, optional, defaults to True
     :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
     :type layout: :mod:`TermTk.TTkLayouts`
     '''
@@ -94,6 +95,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         '_layout', '_canvas', '_widgetItem',
         '_visible', '_transparent',
         '_pendingMouseRelease',
+        '_enabled',
         #Signals
         'focusChanged')
 
@@ -127,6 +129,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
         self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
 
         self._visible = kwargs.get('visible', True)
+        self._enabled = kwargs.get('enabled', True)
 
         self._focus = False
         self._focus_policy = TTkK.NoFocus
@@ -326,6 +329,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def mouseEvent(self, evt):
         ''' .. caution:: Don't touch this! '''
+        if not self._enabled: return True
+
         # Mouse Drag has priority because it
         # should be handled by the focussed widget
         if evt.evt == TTkK.Drag:
@@ -497,6 +502,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             self._parent.lowerWidget()
             self._parent.rootLayout().lowerWidget(self)
 
+    @pyTTkSlot()
     def close(self):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
@@ -530,6 +536,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             if self.rootLayout().update():
                 self.layoutUpdated()
 
+    @pyTTkSlot()
     def setFocus(self):
         # TTkLog.debug(f"setFocus: {self._name} - {self._focus}")
         if self._focus: return
@@ -568,3 +575,16 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def focusInEvent(self): pass
     def focusOutEvent(self): pass
+
+    def isEnabled(self):
+        return self._enabled
+
+    @pyTTkSlot(bool)
+    def setEnabled(self, enabled=True):
+        if self._enabled == enabled: return
+        self._enabled = enabled
+        self.update()
+
+    @pyTTkSlot(bool)
+    def setDisabled(self, disabled=True):
+        self.setEnabled(not disabled)

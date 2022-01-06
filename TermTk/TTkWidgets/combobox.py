@@ -36,7 +36,7 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy'
+    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign'
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
     def __init__(self, *args, **kwargs):
@@ -51,6 +51,7 @@ class TTkComboBox(TTkWidget):
         self._list = kwargs.get('list', [] )
         self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
+        self._textAlign = kwargs.get('textAlign', TTkK.CENTER_ALIGN)
         self._id = -1
         self._popupFrame = None
         self.setEditable(kwargs.get('editable', False ))
@@ -118,7 +119,7 @@ class TTkComboBox(TTkWidget):
             text = self._list[self._id]
         w = self.width()
 
-        self._canvas.drawText(pos=(1,0), text=text, width=w-2, alignment=TTkK.CENTER_ALIGN, color=color)
+        self._canvas.drawText(pos=(1,0), text=text, width=w-2, alignment=self._textAlign, color=color)
         self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
         if self._editable:
             self._canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
@@ -137,7 +138,10 @@ class TTkComboBox(TTkWidget):
     def setCurrentIndex(self, index):
         if index > len(self._list)-1: return
         self._id = index
-        self._lineEdit.setText(self.currentText())
+        if self._editable:
+            self._lineEdit.setText(self.currentText())
+        else:
+            self.currentTextChanged.emit(self._list[self._id])
         self.currentIndexChanged.emit(self._id)
         self.update()
 
@@ -162,7 +166,7 @@ class TTkComboBox(TTkWidget):
     @pyTTkSlot(str)
     def _callback(self, label):
         self._lineEdit.setText(label)
-        self._id = self._list.index(label)
+        self.setCurrentIndex(self._list.index(label))
         TTkHelper.removeOverlayAndChild(self._popupFrame)
         self._popupFrame = None
         self.setFocus()

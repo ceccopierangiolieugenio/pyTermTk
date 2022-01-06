@@ -50,7 +50,10 @@ class TTkTheme():
     braille   = draw_utf8.TTkTheme.braille
 
     fileNameColor   = TTkColor.RST # Simil NerdTree purple
+    executableColor = TTkColor.fg("#AAFFAA") # Greenish
+    linkNameColor   = TTkColor.fg("#00FFFF") # Cyanish
     folderNameColor = TTkColor.fg("#AAFFFF") # Yellowish
+    failNameColor   = TTkColor.fg("#FF0000") # Yellowish
     fileIconColor   = TTkColor.fg("#FFAAFF") # Simil NerdTree purple
     folderIconColor = TTkColor.fg("#FFFFAA") # Yellowish
 
@@ -93,12 +96,15 @@ class TTkTheme():
 
     buttonBoxGrid = 1
     buttonBoxGridClicked = 0
+    buttonBoxGridDisabled = 0
     buttonTextColor   = TTkColor.fg("#dddd88")+TTkColor.bg("#000044")
     buttonBorderColor = TTkColor.RST
     buttonTextColorClicked   = TTkColor.fg("#ffffdd")+TTkColor.BOLD
     buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
     buttonTextColorFocus     = buttonTextColor   + TTkColor.BOLD
     buttonBorderColorFocus   = TTkColor.fg("#ffff00") + TTkColor.BOLD
+    buttonTextColorDisabled  = TTkColor.fg("#888888")
+    buttonBorderColorDisabled= TTkColor.fg("#888888")
 
 
     menuButtonShortcutColor = TTkColor.fg("#dddddd") + TTkColor.UNDERLINE

@@ -113,7 +113,7 @@ class TTk(TTkWidget):
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
                 focusWidget = TTkHelper.getFocus()
-                overlayWidget = TTkHelper.getOverlay()
+                #overlayWidget = TTkHelper.getOverlay()
                 if focusWidget is not None and \
                    mevt.evt != TTkK.Press and \
                    mevt.key != TTkK.Wheel:

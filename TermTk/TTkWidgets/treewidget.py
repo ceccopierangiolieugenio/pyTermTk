@@ -81,6 +81,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
         # TTkLog.debug(f"{self.size()=}")
         return self.size()
 
+    def clear(self):
+        for item in self._items:
+            item.dataChanged.disconnect(self._refreshCache)
+        self._items = []
+        self._refreshCache()
+        self.viewChanged.emit()
+        self.update()
+
     def addTopLevelItem(self, item):
         item.dataChanged.connect(self._refreshCache)
         self._items.append(item)

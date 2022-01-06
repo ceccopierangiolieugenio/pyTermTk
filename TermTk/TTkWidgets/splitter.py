@@ -70,6 +70,17 @@ class TTkSplitter(TTkFrame):
         if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
 
+    def setSizes(self, sizes):
+        s = 0
+        sizes=sizes[:len(self._separators)]
+        for i, l in enumerate(sizes):
+            s += l
+            self._separators[i] = s
+            self._separatorsRef[i] = s
+            self._initSizes[i] = l
+        self._updateGeometries()
+
+
     def _minMaxSizeBefore(self, index):
         if self._separatorSelected is None:
             return 0, 0x1000
