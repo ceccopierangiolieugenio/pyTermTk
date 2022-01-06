@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -191,25 +192,295 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">walk</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">posixpath</span> <span class="kn">import</span> <span class="n">islink</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.window</span> <span class="kn">import</span> <span class="n">TTkWindow</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.Fancy.treewidgetitem</span> <span class="kn">import</span> <span class="n">TTkFancyTreeWidgetItem</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.tree</span> <span class="kn">import</span> <span class="n">TTkTree</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.treewidgetitem</span> <span class="kn">import</span> <span class="n">TTkTreeWidgetItem</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.splitter</span> <span class="kn">import</span> <span class="n">TTkSplitter</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.frame</span> <span class="kn">import</span> <span class="n">TTkFrame</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.combobox</span> <span class="kn">import</span> <span class="n">TTkComboBox</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.button</span> <span class="kn">import</span> <span class="n">TTkButton</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.label</span> <span class="kn">import</span> <span class="n">TTkLabel</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.list_</span> <span class="kn">import</span> <span class="n">TTkList</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.gridlayout</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 
-<span class="k">class</span> <span class="nc">_FileWidgetItem</span><span class="p">(</span><span class="n">TTkFancyTreeWidgetItem</span><span class="p">):</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">::</span>
+
+<span class="sd">    +----------------------------------------+</span>
+<span class="sd">    |  Look in: [--FULL-PATH-|v] [&lt;] [&gt;] [^] |</span>
+<span class="sd">    | +-----------+------------------------+ |</span>
+<span class="sd">    | | Bookmarks ║     File Tree          | |</span>
+<span class="sd">    | |           ║                        | |</span>
+<span class="sd">    | +-----------+------------------------+ |</span>
+<span class="sd">    | File name:     [-----------]  [Open  ] |</span>
+<span class="sd">    | Files of Type  [-----------]  [Cancel] |</span>
+<span class="sd">    +--------------+-------------------------+</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">class</span> <span class="nc">_FileTreeWidgetItem</span><span class="p">(</span><span class="n">TTkTreeWidgetItem</span><span class="p">):</span>
+    <span class="n">FILE</span> <span class="o">=</span> <span class="mh">0x00</span>
+    <span class="n">DIR</span>  <span class="o">=</span> <span class="mh">0x01</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_type&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">TTkFancyTreeWidgetItem</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">TTkTreeWidgetItem</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">_FileTreeWidgetItem</span><span class="o">.</span><span class="n">FILE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">RIGHT_ALIGN</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+    <span class="k">def</span> <span class="nf">getType</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span>
 
 <div class="viewcode-block" id="TTkFileDialogPicker"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker">[docs]</a><span class="k">class</span> <span class="nc">TTkFileDialogPicker</span><span class="p">(</span><span class="n">TTkWindow</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_recentPath&#39;</span><span class="p">,</span> <span class="s1">&#39;_recentPathId&#39;</span><span class="p">,</span> <span class="s1">&#39;_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;_caption&#39;</span><span class="p">,</span>
+                 <span class="c1"># Widgets</span>
+                 <span class="s1">&#39;_fileTree&#39;</span><span class="p">,</span> <span class="s1">&#39;_lookPath&#39;</span><span class="p">,</span> <span class="s1">&#39;btnPrev&#39;</span><span class="p">,</span> <span class="s1">&#39;btnNext&#39;</span><span class="p">,</span> <span class="s1">&#39;btnUp&#39;</span><span class="p">,</span>
+                 <span class="c1"># Signals</span>
+                 <span class="s1">&#39;filePicked&#39;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filePicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
         <span class="n">TTkWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkFileDialogPicker&#39;</span> <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkFileDialogPicker&#39;</span> <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>    <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span><span class="s1">&#39;All Files (*)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_caption</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;caption&#39;</span><span class="p">,</span><span class="s1">&#39;File Dialog&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_caption</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">TTkGridLayout</span><span class="p">())</span>
+
+        <span class="c1"># Top (absPath)</span>
+        <span class="n">topLayout</span> <span class="o">=</span> <span class="n">TTkGridLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">topLayout</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">topLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">TTkLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Look in:&quot;</span><span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>      <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">topLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lookPath</span> <span class="o">:=</span> <span class="n">TTkComboBox</span><span class="p">(</span><span class="n">textAlign</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">),</span>       <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">topLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btnPrev</span>  <span class="o">:=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">topLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btnNext</span>  <span class="o">:=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">topLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btnUp</span>    <span class="o">:=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;^&quot;</span><span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span> <span class="o">=</span> <span class="n">lookPath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnPrev</span>  <span class="o">=</span> <span class="n">btnPrev</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnNext</span>  <span class="o">=</span> <span class="n">btnNext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnUp</span>    <span class="o">=</span> <span class="n">btnUp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnPrev</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_openPrev</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnNext</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_openNext</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnUp</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_openUp</span><span class="p">)</span>
+
+        <span class="c1"># Bottom (File Name, Controls)</span>
+        <span class="n">bottomLayout</span> <span class="o">=</span> <span class="n">TTkGridLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">bottomLayout</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">bottomLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">TTkLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;File name:&quot;</span>     <span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>      <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">bottomLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">TTkLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Files of type:&quot;</span> <span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>      <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">bottomLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">_xxyyzz</span> <span class="o">:=</span> <span class="n">TTkComboBox</span><span class="p">(),</span>       <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bottomLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">_aabbcc</span> <span class="o">:=</span> <span class="n">TTkComboBox</span><span class="p">(),</span>       <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bottomLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btnOpen</span>   <span class="o">:=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Open&quot;</span><span class="p">,</span>  <span class="n">maxWidth</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">bottomLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btnCancel</span> <span class="o">:=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">8</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># Center (self._fileTree, Bookmarks)</span>
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">TTkSplitter</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">splitter</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">bookmarks</span> <span class="o">=</span> <span class="n">TTkList</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">splitter</span><span class="p">)</span>
+        <span class="c1"># Home Folder (Win Compatible):</span>
+        <span class="c1">#   os.path.expanduser(&quot;~&quot;)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span> <span class="o">=</span> <span class="n">TTkTree</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">splitter</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">-</span><span class="mi">13</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">setHeaderLabels</span><span class="p">([</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Size&quot;</span><span class="p">,</span> <span class="s2">&quot;Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Date Modified&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">itemExpanded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">TTkFileDialogPicker</span><span class="o">.</span><span class="n">_updateChildren</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">itemExpanded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">TTkFileDialogPicker</span><span class="o">.</span><span class="n">_folderExpanded</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">itemCollapsed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">TTkFileDialogPicker</span><span class="o">.</span><span class="n">_folderCollapsed</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">itemActivated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_activatedItem</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkTreeWidgetItem</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_activatedItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">ismount</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_openPrev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="o">&lt;=</span><span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="o">&gt;=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_btnPrev</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="p">],</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_btnPrev</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnNext</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_openNext</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="o">&gt;=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_btnNext</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="p">],</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="o">&gt;=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_btnNext</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnPrev</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_openUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="p">])</span>
+        <span class="n">path</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_openNewPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">addToRecent</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="n">addToRecent</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recentPath</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recentPathId</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_btnPrev</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_btnNext</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">TTkFileDialogPicker</span><span class="o">.</span><span class="n">_getFileItems</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fileTree</span><span class="o">.</span><span class="n">addTopLevelItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">TTkFileDialogPicker</span><span class="o">.</span><span class="n">_getListLook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lookPath</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_getListLook</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">path</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="n">path</span><span class="o">==</span><span class="s1">&#39;/&#39;</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_getFileItems</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span> <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">dir_list</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">dir_list</span><span class="p">:</span>
+            <span class="n">nodePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">_getStat</span><span class="p">(</span><span class="n">_path</span><span class="p">):</span>
+                <span class="n">info</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">_path</span><span class="p">)</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">st_ctime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">st_size</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">st_size</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> GB&quot;</span>
+                <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">st_size</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">st_size</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span>
+                <span class="k">elif</span> <span class="n">info</span><span class="o">.</span><span class="n">st_size</span> <span class="o">&gt;</span> <span class="mi">1024</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">st_size</span><span class="o">/</span><span class="mi">1024</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> KB&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">st_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span>
+                <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">size</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">nodePath</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nodePath</span><span class="p">):</span>
+                    <span class="n">time</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_getStat</span><span class="p">(</span><span class="n">nodePath</span><span class="p">)</span>
+                    <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">folderNameColor</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">failNameColor</span>
+
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">nodePath</span><span class="p">):</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span><span class="o">+</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">linkNameColor</span><span class="o">+</span><span class="n">n</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="o">+</span><span class="s1">&#39; -&gt; &#39;</span><span class="o">+</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">folderNameColor</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">nodePath</span><span class="p">)</span>
+                    <span class="n">typef</span> <span class="o">=</span> <span class="s2">&quot;Folder Link&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span><span class="o">+</span><span class="n">color</span><span class="o">+</span><span class="n">n</span><span class="o">+</span><span class="s1">&#39;/&#39;</span>
+                    <span class="n">typef</span> <span class="o">=</span> <span class="s2">&quot;Folder&quot;</span>
+
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_FileTreeWidgetItem</span><span class="p">(</span>
+                                <span class="p">[</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">typef</span><span class="p">,</span> <span class="n">time</span><span class="p">],</span>
+                                <span class="n">path</span><span class="o">=</span><span class="n">nodePath</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">_FileTreeWidgetItem</span><span class="o">.</span><span class="n">DIR</span><span class="p">,</span>
+                                <span class="n">icon</span><span class="o">=</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">folderIconClose</span><span class="p">,</span>
+                                <span class="n">childIndicatorPolicy</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ShowIndicator</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">nodePath</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">nodePath</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nodePath</span><span class="p">):</span>
+                    <span class="n">time</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">_getStat</span><span class="p">(</span><span class="n">nodePath</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">nodePath</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">):</span>
+                        <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">executableColor</span>
+                        <span class="n">typef</span><span class="o">=</span><span class="s2">&quot;Exec&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">fileNameColor</span>
+                        <span class="n">typef</span><span class="o">=</span><span class="s2">&quot;File&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">failNameColor</span>
+                    <span class="n">typef</span><span class="o">=</span><span class="s2">&quot;Broken&quot;</span>
+
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">nodePath</span><span class="p">):</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span><span class="o">+</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">linkNameColor</span><span class="o">+</span><span class="n">n</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="o">+</span><span class="s1">&#39; -&gt; &#39;</span><span class="o">+</span><span class="n">color</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="n">nodePath</span><span class="p">)</span>
+                    <span class="n">typef</span> <span class="o">+=</span> <span class="s2">&quot; Link&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span><span class="o">+</span><span class="n">color</span><span class="o">+</span><span class="n">n</span>
+
+                <span class="n">_</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ext</span><span class="p">:</span> <span class="n">ext</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_FileTreeWidgetItem</span><span class="p">(</span>
+                                <span class="p">[</span> <span class="n">name</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">typef</span><span class="p">,</span> <span class="n">time</span><span class="p">],</span>
+                                <span class="n">path</span><span class="o">=</span><span class="n">nodePath</span><span class="p">,</span>
+                                <span class="nb">type</span><span class="o">=</span><span class="n">_FileTreeWidgetItem</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
+                                <span class="n">icon</span><span class="o">=</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">getFileIcon</span><span class="p">(</span><span class="n">n</span><span class="p">),</span>
+                                <span class="n">childIndicatorPolicy</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">DontShowIndicator</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_folderExpanded</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">folderIconOpen</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_folderCollapsed</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">folderIconClose</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_updateChildren</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">children</span><span class="p">():</span> <span class="k">return</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">TTkFileDialogPicker</span><span class="o">.</span><span class="n">_getFileItems</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">()):</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">for (dirpath, dirnames, filenames) in walk(&#39;/tmp&#39;):</span>
 <span class="sd">    print(f&quot;{dirpath} {dirnames} {filenames}&quot;)</span>
 <span class="sd">    break</span>
 <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">class</span> <span class="nc">TTkFileDialog</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">getOpenFileName</span><span class="p">(</span><span class="n">caption</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;All Files (*)&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
 </pre></div>
 
            </div>

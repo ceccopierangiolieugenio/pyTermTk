@@ -1,0 +1,8 @@
+
+TermTk.TTkGui.fileicon\_nerd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkGui.fileicon_nerd
+
+.. currentmodule:: TermTk.TTkGui.fileicon_nerd
+

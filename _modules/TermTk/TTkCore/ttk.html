@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -282,7 +283,7 @@
             <span class="k">if</span>   <span class="n">evt</span> <span class="ow">is</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">MOUSE_EVENT</span><span class="p">:</span>
                 <span class="n">mevt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                 <span class="n">focusWidget</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">()</span>
-                <span class="n">overlayWidget</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getOverlay</span><span class="p">()</span>
+                <span class="c1">#overlayWidget = TTkHelper.getOverlay()</span>
                 <span class="k">if</span> <span class="n">focusWidget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
                    <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span> <span class="ow">and</span> \
                    <span class="n">mevt</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Wheel</span><span class="p">:</span>

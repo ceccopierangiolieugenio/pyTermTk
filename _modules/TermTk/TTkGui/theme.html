@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -192,256 +193,187 @@
 <span class="c1"># SOFTWARE.</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
+<span class="kn">import</span> <span class="nn">TermTk.TTkGui.fileicon_nerd</span>  <span class="k">as</span> <span class="nn">fi_nerd</span>
+<span class="kn">import</span> <span class="nn">TermTk.TTkGui.fileicon_utf8</span>  <span class="k">as</span> <span class="nn">fi_utf8</span>
+<span class="kn">import</span> <span class="nn">TermTk.TTkGui.fileicon_ascii</span> <span class="k">as</span> <span class="nn">fi_ascii</span>
+<span class="kn">import</span> <span class="nn">TermTk.TTkGui.draw_utf8</span>      <span class="k">as</span> <span class="nn">draw_utf8</span>
+<span class="kn">import</span> <span class="nn">TermTk.TTkGui.draw_ascii</span>     <span class="k">as</span> <span class="nn">draw_ascii</span>
 
 
 <div class="viewcode-block" id="TTkTheme"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme">[docs]</a><span class="k">class</span> <span class="nc">TTkTheme</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39; from: https://en.wikipedia.org/wiki/Box-drawing_character</span>
-
-<span class="sd">    ::</span>
-
-<span class="sd">        ┌─┬┐  ╔═╦╗  ╓─╥╖  ╒═╤╕</span>
-<span class="sd">        │ ││  ║ ║║  ║ ║║  │ ││</span>
-<span class="sd">        ├─┼┤  ╠═╬╣  ╟─╫╢  ╞═╪╡</span>
-<span class="sd">        └─┴┘  ╚═╩╝  ╙─╨╜  ╘═╧╛</span>
-<span class="sd">        ┌───────────────────┐</span>
-<span class="sd">        │  ╔═══╗ Some Text  │▒</span>
-<span class="sd">        │  ╚═╦═╝ in the box │▒</span>
-<span class="sd">        ╞═╤══╩══╤═══════════╡▒</span>
-<span class="sd">        │ ├──┬──┤           │▒</span>
-<span class="sd">        │ └──┴──┘           │▒</span>
-<span class="sd">        └───────────────────┘▒</span>
-<span class="sd">         ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒</span>
+    <span class="sd">&#39;&#39;&#39;Default Theme Class</span>
+<span class="sd">    This class can be reimplemented/extended to include new themes and default colors</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">NERD</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">fi_nerd</span><span class="p">,</span>  <span class="s1">&#39;draw&#39;</span><span class="p">:</span><span class="n">draw_utf8</span><span class="p">}</span>
+    <span class="n">UTF8</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">fi_utf8</span><span class="p">,</span>  <span class="s1">&#39;draw&#39;</span><span class="p">:</span><span class="n">draw_utf8</span><span class="p">}</span>
+    <span class="n">ASCII</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span><span class="n">fi_ascii</span><span class="p">,</span> <span class="s1">&#39;draw&#39;</span><span class="p">:</span><span class="n">draw_ascii</span><span class="p">}</span>
 
-    <span class="n">hline</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;╞&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╡&#39;</span><span class="p">)</span>
-    <span class="n">vline</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;╥&#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span><span class="s1">&#39;╨&#39;</span><span class="p">)</span>
+    <span class="n">hline</span>     <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">hline</span>
+    <span class="n">vline</span>     <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">vline</span>
+    <span class="n">box</span>       <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">box</span>
+    <span class="n">grid</span>      <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">grid</span>
+    <span class="n">buttonBox</span> <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">buttonBox</span>
+    <span class="n">hscroll</span>   <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">hscroll</span>
+    <span class="n">vscroll</span>   <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">vscroll</span>
+    <span class="n">tree</span>      <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tree</span>
+    <span class="n">menuBar</span>   <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">menuBar</span>
+    <span class="n">tab</span>       <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>
+    <span class="n">braille</span>   <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>
 
-    <span class="n">box</span> <span class="o">=</span> <span class="p">(</span> <span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;╔&#39;</span><span class="p">,</span><span class="s1">&#39;╗&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;╝&#39;</span><span class="p">)</span>
+    <span class="n">fileNameColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span> <span class="c1"># Simil NerdTree purple</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.RST # Simil NerdTree purple**&#39;&#39;&#39;</span>
+    <span class="n">executableColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#AAFFAA&quot;</span><span class="p">)</span> <span class="c1"># Greenish</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#AAFFAA&quot;) # Greenish**&#39;&#39;&#39;</span>
+    <span class="n">linkNameColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#00FFFF&quot;</span><span class="p">)</span> <span class="c1"># Cyanish</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#00FFFF&quot;) # Cyanish**&#39;&#39;&#39;</span>
+    <span class="n">folderNameColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#AAFFFF&quot;</span><span class="p">)</span> <span class="c1"># Yellowish</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#AAFFFF&quot;) # Yellowish**&#39;&#39;&#39;</span>
+    <span class="n">failNameColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#FF0000&quot;</span><span class="p">)</span> <span class="c1"># Yellowish</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#FF0000&quot;) # Yellowish**&#39;&#39;&#39;</span>
+    <span class="n">fileIconColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#FFAAFF&quot;</span><span class="p">)</span> <span class="c1"># Simil NerdTree purple</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#FFAAFF&quot;) # Simil NerdTree purple**&#39;&#39;&#39;</span>
+    <span class="n">folderIconColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#FFFFAA&quot;</span><span class="p">)</span> <span class="c1"># Yellowish</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#FFFFAA&quot;) # Yellowish**&#39;&#39;&#39;</span>
 
-
-    <span class="n">grid</span> <span class="o">=</span> <span class="p">(</span>
-      <span class="p">(</span> <span class="c1"># Grid 0</span>
-        <span class="s1">&#39;┌&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┬&#39;</span><span class="p">,</span><span class="s1">&#39;┐&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;├&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┼&#39;</span><span class="p">,</span><span class="s1">&#39;┤&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;└&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┴&#39;</span><span class="p">,</span><span class="s1">&#39;┘&#39;</span><span class="p">),</span>
-      <span class="p">(</span> <span class="c1"># Grid 1</span>
-        <span class="s1">&#39;╔&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╦&#39;</span><span class="p">,</span><span class="s1">&#39;╗&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;║&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╠&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╬&#39;</span><span class="p">,</span><span class="s1">&#39;╣&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╩&#39;</span><span class="p">,</span><span class="s1">&#39;╝&#39;</span><span class="p">),</span>
-      <span class="p">(</span> <span class="c1"># Grid 2</span>
-        <span class="s1">&#39;╔&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╤&#39;</span><span class="p">,</span><span class="s1">&#39;╗&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;║&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╟&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┼&#39;</span><span class="p">,</span><span class="s1">&#39;╢&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╧&#39;</span><span class="p">,</span><span class="s1">&#39;╝&#39;</span><span class="p">),</span>
-      <span class="p">(</span> <span class="c1"># Grid 3</span>
-        <span class="s1">&#39;┌&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;╥&#39;</span><span class="p">,</span><span class="s1">&#39;┐&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╞&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╬&#39;</span><span class="p">,</span><span class="s1">&#39;╡&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;└&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;╨&#39;</span><span class="p">,</span><span class="s1">&#39;┘&#39;</span><span class="p">),</span>
-      <span class="p">(),</span> <span class="c1"># TODO: Grid 4</span>
-      <span class="p">(),</span> <span class="c1"># TODO: Grid 5</span>
-      <span class="p">(</span> <span class="c1"># Grid 6</span>
-        <span class="s1">&#39;╓&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┬&#39;</span><span class="p">,</span><span class="s1">&#39;┐&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;║&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╟&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┼&#39;</span><span class="p">,</span><span class="s1">&#39;┤&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╧&#39;</span><span class="p">,</span><span class="s1">&#39;╛&#39;</span><span class="p">),</span>
-      <span class="p">(),</span> <span class="c1"># TODO: Grid 7</span>
-      <span class="p">(),</span> <span class="c1"># TODO: Grid 8</span>
-      <span class="p">(</span> <span class="c1"># Grid 9 ╒═╤╕</span>
-        <span class="s1">&#39;╒&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╤&#39;</span><span class="p">,</span><span class="s1">&#39;╕&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;├&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┼&#39;</span><span class="p">,</span><span class="s1">&#39;┤&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;└&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┴&#39;</span><span class="p">,</span><span class="s1">&#39;┘&#39;</span><span class="p">),</span>
-      <span class="p">(),</span> <span class="c1"># TODO: Grid 10</span>
-        <span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39; Grid Types</span>
-
-<span class="sd">    ::</span>
-
-<span class="sd">        grid0  grid1  grid2  grid3</span>
-<span class="sd">        ┌─┬┐   ╔═╦╗   ╔═╤╗   ┌─╥┐</span>
-<span class="sd">        │ ││   ║ ║║   ║ │║   │ ║│</span>
-<span class="sd">        ├─┼┤   ╠═╬╣   ╟─┼╢   ╞═╬╡</span>
-<span class="sd">        └─┴┘   ╚═╩╝   ╚═╧╝   └─╨┘</span>
-<span class="sd">        grid4  grid5  grid6  grid7  grid8  grid9</span>
-<span class="sd">        ╓─╥╖   ╒═╤╕   ╓─┬┐   ┌─┬╖   ┌─┬┐   ╒═╤╕</span>
-<span class="sd">        ║ ║║   │ ││   ║ ││   │ │║   │ ││   │ ││</span>
-<span class="sd">        ╟─╫╢   ╞═╪╡   ╟─┼┤   ├─┼╢   ├─┼┤   ├─┼┤</span>
-<span class="sd">        ╙─╨╜   ╘═╧╛   ╚═╧╛   ╘═╧╝   ╘═╧╛   └─┴┘</span>
-
-<span class="sd">        ids (hex):</span>
-<span class="sd">        0  1  2  3</span>
-<span class="sd">        ┌  ─  ┬  ┐</span>
-<span class="sd">        4  5  6  7</span>
-<span class="sd">        │     │  │</span>
-<span class="sd">        8  9  A  B</span>
-<span class="sd">        ├  ─  ┼  ┤</span>
-<span class="sd">        C  D  E  F</span>
-<span class="sd">        └  ─  ┴  ┘</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="n">buttonBox</span> <span class="o">=</span> <span class="p">(</span>
-      <span class="p">(</span><span class="s1">&#39;┌&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┐&#39;</span><span class="p">,</span>
-       <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span>
-       <span class="s1">&#39;└&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┘&#39;</span><span class="p">),</span>
-      <span class="p">(</span><span class="s1">&#39;┌&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┐&#39;</span><span class="p">,</span>
-       <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;│&#39;</span><span class="p">,</span>
-       <span class="s1">&#39;╘&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╛&#39;</span><span class="p">))</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    ::</span>
-
-<span class="sd">        box0   box1</span>
-<span class="sd">        ┌─┐    ┌─┐</span>
-<span class="sd">        │ │    │ │</span>
-<span class="sd">        └─┘    ╘═╛</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="n">hscroll</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;◀&#39;</span><span class="p">,</span><span class="s1">&#39;┄&#39;</span><span class="p">,</span><span class="s1">&#39;▓&#39;</span><span class="p">,</span><span class="s1">&#39;▶&#39;</span><span class="p">)</span>
-    <span class="n">vscroll</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;▲&#39;</span><span class="p">,</span><span class="s1">&#39;┊&#39;</span><span class="p">,</span><span class="s1">&#39;▓&#39;</span><span class="p">,</span><span class="s1">&#39;▼&#39;</span><span class="p">)</span>
-
-    <span class="n">tree</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;•&#39;</span><span class="p">,</span><span class="s1">&#39;▶&#39;</span><span class="p">,</span><span class="s1">&#39;▼&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span>
-            <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39;╿&#39;</span><span class="p">)</span>
+    <span class="n">getIcon</span>         <span class="o">=</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">getIcon</span>
+    <span class="n">folderIconClose</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_close</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="n">folderIconOpen</span>  <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_open</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
 
 
-            <span class="c1">#   0   1   2   3   4   5</span>
-    <span class="n">menuBar</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;├&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┤&#39;</span><span class="p">,</span><span class="s1">&#39;┄&#39;</span><span class="p">,</span><span class="s1">&#39;┄&#39;</span><span class="p">,</span><span class="s1">&#39;▶&#39;</span><span class="p">)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">getFileIcon</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">fileIconColor</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">getIcon</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">loadTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">):</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">hline</span>     <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">hline</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">vline</span>     <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">vline</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">box</span>       <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">box</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">grid</span>      <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">grid</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">buttonBox</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">buttonBox</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">hscroll</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">hscroll</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">vscroll</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">vscroll</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">tree</span>      <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tree</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">menuBar</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">menuBar</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>       <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>
+
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">getIcon</span>     <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">getIcon</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconClose</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_close</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconOpen</span>  <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_open</span>  <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">updateAll</span><span class="p">()</span>
 
 
-    <span class="n">tab</span> <span class="o">=</span> <span class="p">(</span>
-      <span class="c1">#0   1   2   3   4   5   6   7   8</span>
-      <span class="s1">&#39;┌&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┬&#39;</span><span class="p">,</span><span class="s1">&#39;┐&#39;</span><span class="p">,</span><span class="s1">&#39;╔&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╗&#39;</span><span class="p">,</span><span class="s1">&#39;╭&#39;</span><span class="p">,</span><span class="s1">&#39;╮&#39;</span><span class="p">,</span>
-      <span class="c1">#9   10</span>
-      <span class="s1">&#39;│&#39;</span><span class="p">,</span><span class="s1">&#39;║&#39;</span><span class="p">,</span>
-      <span class="c1">#11  12  13  14  15  16  17  18  19  20</span>
-      <span class="s1">&#39;╞&#39;</span><span class="p">,</span><span class="s1">&#39;═&#39;</span><span class="p">,</span><span class="s1">&#39;╧&#39;</span><span class="p">,</span><span class="s1">&#39;╩&#39;</span><span class="p">,</span><span class="s1">&#39;╡&#39;</span><span class="p">,</span><span class="s1">&#39;╘&#39;</span><span class="p">,</span><span class="s1">&#39;╛&#39;</span><span class="p">,</span><span class="s1">&#39;└&#39;</span><span class="p">,</span><span class="s1">&#39;─&#39;</span><span class="p">,</span><span class="s1">&#39;┘&#39;</span><span class="p">,</span>
-      <span class="c1">#21  22  23  24  25  26  27  28  29  30</span>
-      <span class="s1">&#39;╚&#39;</span><span class="p">,</span><span class="s1">&#39;╝&#39;</span><span class="p">,</span><span class="s1">&#39;╰&#39;</span><span class="p">,</span><span class="s1">&#39;╯&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">,</span><span class="s1">&#39;╒&#39;</span><span class="p">,</span><span class="s1">&#39;╕&#39;</span><span class="p">,</span><span class="s1">&#39;┴&#39;</span><span class="p">,</span><span class="s1">&#39;X&#39;</span><span class="p">,</span>
-      <span class="c1">#31  32  33  34  35  36  37  38  39  40</span>
-      <span class="s1">&#39;◀&#39;</span><span class="p">,</span><span class="s1">&#39;▶&#39;</span>
-    <span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39; Tab Examples</span>
-
-<span class="sd">    ::</span>
-
-<span class="sd">          ┌──────╔══════╗──────┬──────┐           ┌─┌──────╔══════╗──────┬──────┐─┐</span>
-<span class="sd">          │Label1║Label2║Label3│Label4│           │◀│Label1║Label2║Label3│Label4│▶│</span>
-<span class="sd">        ╞═╧══════╩══════╩══════╧══════╧════╡      ╞═╧══════╩══════╩══════╧══════╧═╡</span>
-<span class="sd">          ┌──────╔══════╗──────┬──────┐           ╭─┌──────╔══════╗──────┬──────┐─╮</span>
-<span class="sd">          │Label1║Label2║Label3│Label4│           │◀│Label1║Label2║Label3│Label4│▶│</span>
-<span class="sd">        ╞════════╩══════╩══════════════════╡      ╞════════╩══════╩═══════════════╡</span>
-<span class="sd">        # Menu Prototype:</span>
-<span class="sd">        ╭──┌──────╔══════╗──────┬──────┐          ╭──┬─┌──────╔══════╗──────┬──────┐─╮</span>
-<span class="sd">        │XX│Label1║Label2║Label3│Label4│          │XX│◀│Label1║Label2║Label3│Label4│▶│</span>
-<span class="sd">        ╞═════════╩══════╩═══════════════╡        ╞══╧════════╩══════╩═══════════════╡</span>
-<span class="sd">              ┌──────╔══════╗──────┬──────┐             ╭─┌──────╔══════╗──────┬──────┐─╮</span>
-<span class="sd">         XX YY│Label1║Label2║Label3│Label4│JJ KK   XX YY│◀│Label1║Label2║Label3│Label4│▶│JJ KK</span>
-<span class="sd">        ╞════════════╩══════╩═══════════════════╡ ╞═════╧════════╩══════╩═══════════════╧═════╡</span>
-<span class="sd">          ┌──────┲━━━━━━┱──────┬──────┐</span>
-<span class="sd">          │Label1┃Label2┃Label3│Label4│</span>
-<span class="sd">        ┝━┷━━━━━━┻━━━━━━┻━━━━━━┷━━━━━━┷━━━━┥</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="c1"># &#39;&#39;&#39; bpytop style graph:</span>
-    <span class="c1"># ::</span>
-    <span class="c1">#         ⢠⢠              ⡇      ⣆⡇  ⢠  ⣰  ⢠</span>
-    <span class="c1">#     ⢸⣀⣀⣠⣸⣸⡄     ⡄⣼  ⣀⡀ ⢠⣷⡀  ⣀⣰⣀⣿⣇⡀⢀⣸⡀⣆⣿⣆⣄⣼⣀⣀⣸</span>
-    <span class="c1">#     ⣾⣿⣿⣿⣿⣿⣧⣧⣧⣤⣦⣦⣿⣿⣤⣿⣧⣧⣿⣿⣿⣷⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧</span>
-    <span class="c1">#     ⢿⣿⣿⣿⣿⣿⡟⠟⠟⠋⠟⠏⡿⣿⠋⣿⡟⡟⢿⣿⡿⠿⡿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡏</span>
-    <span class="c1">#     ⢸⠉⠉⠉⢸⢹⠁     ⠃⠹ ⠁  ⠈⡿⠁  ⠈⠸⠉⣿⡏ ⠈⢹⠁⠏⣿⠏⠃⢻⠉ ⠸⠈⠁</span>
-    <span class="c1">#         ⠈⠈             ⠇      ⠋⠇  ⠈  ⠘  ⠈</span>
-    <span class="c1"># &#39;&#39;&#39;</span>
-    <span class="c1"># graph_up = (</span>
-    <span class="c1">#     (&#39; &#39;,&#39;⢀&#39;,&#39;⢠&#39;,&#39;⢰&#39;,&#39;⢸&#39;),</span>
-    <span class="c1">#     (&#39;⡀&#39;,&#39;⣀&#39;,&#39;⣠&#39;,&#39;⣰&#39;,&#39;⣸&#39;),</span>
-    <span class="c1">#     (&#39;⡄&#39;,&#39;⣄&#39;,&#39;⣤&#39;,&#39;⣴&#39;,&#39;⣼&#39;),</span>
-    <span class="c1">#     (&#39;⡆&#39;,&#39;⣆&#39;,&#39;⣦&#39;,&#39;⣶&#39;,&#39;⣾&#39;),</span>
-    <span class="c1">#     (&#39;⡇&#39;,&#39;⣇&#39;,&#39;⣧&#39;,&#39;⣷&#39;,&#39;⣿&#39;))</span>
-    <span class="c1"># graph_down=(</span>
-    <span class="c1">#     (&#39; &#39;,&#39;⠈&#39;,&#39;⠘&#39;,&#39;⠸&#39;,&#39;⢸&#39;),</span>
-    <span class="c1">#     (&#39;⠁&#39;,&#39;⠉&#39;,&#39;⠙&#39;,&#39;⠹&#39;,&#39;⢹&#39;),</span>
-    <span class="c1">#     (&#39;⠃&#39;,&#39;⠋&#39;,&#39;⠛&#39;,&#39;⠻&#39;,&#39;⢻&#39;),</span>
-    <span class="c1">#     (&#39;⠇&#39;,&#39;⠏&#39;,&#39;⠟&#39;,&#39;⠿&#39;,&#39;⢿&#39;),</span>
-    <span class="c1">#     (&#39;⡇&#39;,&#39;⡏&#39;,&#39;⡟&#39;,&#39;⡿&#39;,&#39;⣿&#39;))</span>
-
-    <span class="c1"># Generated by:</span>
-    <span class="c1"># tests/utf-8/test.braille.py</span>
-    <span class="n">braille</span><span class="o">=</span><span class="p">(</span>
-      <span class="s1">&#39;⠀&#39;</span><span class="p">,</span><span class="s1">&#39;⠈&#39;</span><span class="p">,</span><span class="s1">&#39;⠐&#39;</span><span class="p">,</span><span class="s1">&#39;⠘&#39;</span><span class="p">,</span><span class="s1">&#39;⠠&#39;</span><span class="p">,</span><span class="s1">&#39;⠨&#39;</span><span class="p">,</span><span class="s1">&#39;⠰&#39;</span><span class="p">,</span><span class="s1">&#39;⠸&#39;</span><span class="p">,</span><span class="s1">&#39;⢀&#39;</span><span class="p">,</span><span class="s1">&#39;⢈&#39;</span><span class="p">,</span><span class="s1">&#39;⢐&#39;</span><span class="p">,</span><span class="s1">&#39;⢘&#39;</span><span class="p">,</span><span class="s1">&#39;⢠&#39;</span><span class="p">,</span><span class="s1">&#39;⢨&#39;</span><span class="p">,</span><span class="s1">&#39;⢰&#39;</span><span class="p">,</span><span class="s1">&#39;⢸&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠁&#39;</span><span class="p">,</span><span class="s1">&#39;⠉&#39;</span><span class="p">,</span><span class="s1">&#39;⠑&#39;</span><span class="p">,</span><span class="s1">&#39;⠙&#39;</span><span class="p">,</span><span class="s1">&#39;⠡&#39;</span><span class="p">,</span><span class="s1">&#39;⠩&#39;</span><span class="p">,</span><span class="s1">&#39;⠱&#39;</span><span class="p">,</span><span class="s1">&#39;⠹&#39;</span><span class="p">,</span><span class="s1">&#39;⢁&#39;</span><span class="p">,</span><span class="s1">&#39;⢉&#39;</span><span class="p">,</span><span class="s1">&#39;⢑&#39;</span><span class="p">,</span><span class="s1">&#39;⢙&#39;</span><span class="p">,</span><span class="s1">&#39;⢡&#39;</span><span class="p">,</span><span class="s1">&#39;⢩&#39;</span><span class="p">,</span><span class="s1">&#39;⢱&#39;</span><span class="p">,</span><span class="s1">&#39;⢹&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠂&#39;</span><span class="p">,</span><span class="s1">&#39;⠊&#39;</span><span class="p">,</span><span class="s1">&#39;⠒&#39;</span><span class="p">,</span><span class="s1">&#39;⠚&#39;</span><span class="p">,</span><span class="s1">&#39;⠢&#39;</span><span class="p">,</span><span class="s1">&#39;⠪&#39;</span><span class="p">,</span><span class="s1">&#39;⠲&#39;</span><span class="p">,</span><span class="s1">&#39;⠺&#39;</span><span class="p">,</span><span class="s1">&#39;⢂&#39;</span><span class="p">,</span><span class="s1">&#39;⢊&#39;</span><span class="p">,</span><span class="s1">&#39;⢒&#39;</span><span class="p">,</span><span class="s1">&#39;⢚&#39;</span><span class="p">,</span><span class="s1">&#39;⢢&#39;</span><span class="p">,</span><span class="s1">&#39;⢪&#39;</span><span class="p">,</span><span class="s1">&#39;⢲&#39;</span><span class="p">,</span><span class="s1">&#39;⢺&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠃&#39;</span><span class="p">,</span><span class="s1">&#39;⠋&#39;</span><span class="p">,</span><span class="s1">&#39;⠓&#39;</span><span class="p">,</span><span class="s1">&#39;⠛&#39;</span><span class="p">,</span><span class="s1">&#39;⠣&#39;</span><span class="p">,</span><span class="s1">&#39;⠫&#39;</span><span class="p">,</span><span class="s1">&#39;⠳&#39;</span><span class="p">,</span><span class="s1">&#39;⠻&#39;</span><span class="p">,</span><span class="s1">&#39;⢃&#39;</span><span class="p">,</span><span class="s1">&#39;⢋&#39;</span><span class="p">,</span><span class="s1">&#39;⢓&#39;</span><span class="p">,</span><span class="s1">&#39;⢛&#39;</span><span class="p">,</span><span class="s1">&#39;⢣&#39;</span><span class="p">,</span><span class="s1">&#39;⢫&#39;</span><span class="p">,</span><span class="s1">&#39;⢳&#39;</span><span class="p">,</span><span class="s1">&#39;⢻&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠄&#39;</span><span class="p">,</span><span class="s1">&#39;⠌&#39;</span><span class="p">,</span><span class="s1">&#39;⠔&#39;</span><span class="p">,</span><span class="s1">&#39;⠜&#39;</span><span class="p">,</span><span class="s1">&#39;⠤&#39;</span><span class="p">,</span><span class="s1">&#39;⠬&#39;</span><span class="p">,</span><span class="s1">&#39;⠴&#39;</span><span class="p">,</span><span class="s1">&#39;⠼&#39;</span><span class="p">,</span><span class="s1">&#39;⢄&#39;</span><span class="p">,</span><span class="s1">&#39;⢌&#39;</span><span class="p">,</span><span class="s1">&#39;⢔&#39;</span><span class="p">,</span><span class="s1">&#39;⢜&#39;</span><span class="p">,</span><span class="s1">&#39;⢤&#39;</span><span class="p">,</span><span class="s1">&#39;⢬&#39;</span><span class="p">,</span><span class="s1">&#39;⢴&#39;</span><span class="p">,</span><span class="s1">&#39;⢼&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠅&#39;</span><span class="p">,</span><span class="s1">&#39;⠍&#39;</span><span class="p">,</span><span class="s1">&#39;⠕&#39;</span><span class="p">,</span><span class="s1">&#39;⠝&#39;</span><span class="p">,</span><span class="s1">&#39;⠥&#39;</span><span class="p">,</span><span class="s1">&#39;⠭&#39;</span><span class="p">,</span><span class="s1">&#39;⠵&#39;</span><span class="p">,</span><span class="s1">&#39;⠽&#39;</span><span class="p">,</span><span class="s1">&#39;⢅&#39;</span><span class="p">,</span><span class="s1">&#39;⢍&#39;</span><span class="p">,</span><span class="s1">&#39;⢕&#39;</span><span class="p">,</span><span class="s1">&#39;⢝&#39;</span><span class="p">,</span><span class="s1">&#39;⢥&#39;</span><span class="p">,</span><span class="s1">&#39;⢭&#39;</span><span class="p">,</span><span class="s1">&#39;⢵&#39;</span><span class="p">,</span><span class="s1">&#39;⢽&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠆&#39;</span><span class="p">,</span><span class="s1">&#39;⠎&#39;</span><span class="p">,</span><span class="s1">&#39;⠖&#39;</span><span class="p">,</span><span class="s1">&#39;⠞&#39;</span><span class="p">,</span><span class="s1">&#39;⠦&#39;</span><span class="p">,</span><span class="s1">&#39;⠮&#39;</span><span class="p">,</span><span class="s1">&#39;⠶&#39;</span><span class="p">,</span><span class="s1">&#39;⠾&#39;</span><span class="p">,</span><span class="s1">&#39;⢆&#39;</span><span class="p">,</span><span class="s1">&#39;⢎&#39;</span><span class="p">,</span><span class="s1">&#39;⢖&#39;</span><span class="p">,</span><span class="s1">&#39;⢞&#39;</span><span class="p">,</span><span class="s1">&#39;⢦&#39;</span><span class="p">,</span><span class="s1">&#39;⢮&#39;</span><span class="p">,</span><span class="s1">&#39;⢶&#39;</span><span class="p">,</span><span class="s1">&#39;⢾&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⠇&#39;</span><span class="p">,</span><span class="s1">&#39;⠏&#39;</span><span class="p">,</span><span class="s1">&#39;⠗&#39;</span><span class="p">,</span><span class="s1">&#39;⠟&#39;</span><span class="p">,</span><span class="s1">&#39;⠧&#39;</span><span class="p">,</span><span class="s1">&#39;⠯&#39;</span><span class="p">,</span><span class="s1">&#39;⠷&#39;</span><span class="p">,</span><span class="s1">&#39;⠿&#39;</span><span class="p">,</span><span class="s1">&#39;⢇&#39;</span><span class="p">,</span><span class="s1">&#39;⢏&#39;</span><span class="p">,</span><span class="s1">&#39;⢗&#39;</span><span class="p">,</span><span class="s1">&#39;⢟&#39;</span><span class="p">,</span><span class="s1">&#39;⢧&#39;</span><span class="p">,</span><span class="s1">&#39;⢯&#39;</span><span class="p">,</span><span class="s1">&#39;⢷&#39;</span><span class="p">,</span><span class="s1">&#39;⢿&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡀&#39;</span><span class="p">,</span><span class="s1">&#39;⡈&#39;</span><span class="p">,</span><span class="s1">&#39;⡐&#39;</span><span class="p">,</span><span class="s1">&#39;⡘&#39;</span><span class="p">,</span><span class="s1">&#39;⡠&#39;</span><span class="p">,</span><span class="s1">&#39;⡨&#39;</span><span class="p">,</span><span class="s1">&#39;⡰&#39;</span><span class="p">,</span><span class="s1">&#39;⡸&#39;</span><span class="p">,</span><span class="s1">&#39;⣀&#39;</span><span class="p">,</span><span class="s1">&#39;⣈&#39;</span><span class="p">,</span><span class="s1">&#39;⣐&#39;</span><span class="p">,</span><span class="s1">&#39;⣘&#39;</span><span class="p">,</span><span class="s1">&#39;⣠&#39;</span><span class="p">,</span><span class="s1">&#39;⣨&#39;</span><span class="p">,</span><span class="s1">&#39;⣰&#39;</span><span class="p">,</span><span class="s1">&#39;⣸&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡁&#39;</span><span class="p">,</span><span class="s1">&#39;⡉&#39;</span><span class="p">,</span><span class="s1">&#39;⡑&#39;</span><span class="p">,</span><span class="s1">&#39;⡙&#39;</span><span class="p">,</span><span class="s1">&#39;⡡&#39;</span><span class="p">,</span><span class="s1">&#39;⡩&#39;</span><span class="p">,</span><span class="s1">&#39;⡱&#39;</span><span class="p">,</span><span class="s1">&#39;⡹&#39;</span><span class="p">,</span><span class="s1">&#39;⣁&#39;</span><span class="p">,</span><span class="s1">&#39;⣉&#39;</span><span class="p">,</span><span class="s1">&#39;⣑&#39;</span><span class="p">,</span><span class="s1">&#39;⣙&#39;</span><span class="p">,</span><span class="s1">&#39;⣡&#39;</span><span class="p">,</span><span class="s1">&#39;⣩&#39;</span><span class="p">,</span><span class="s1">&#39;⣱&#39;</span><span class="p">,</span><span class="s1">&#39;⣹&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡂&#39;</span><span class="p">,</span><span class="s1">&#39;⡊&#39;</span><span class="p">,</span><span class="s1">&#39;⡒&#39;</span><span class="p">,</span><span class="s1">&#39;⡚&#39;</span><span class="p">,</span><span class="s1">&#39;⡢&#39;</span><span class="p">,</span><span class="s1">&#39;⡪&#39;</span><span class="p">,</span><span class="s1">&#39;⡲&#39;</span><span class="p">,</span><span class="s1">&#39;⡺&#39;</span><span class="p">,</span><span class="s1">&#39;⣂&#39;</span><span class="p">,</span><span class="s1">&#39;⣊&#39;</span><span class="p">,</span><span class="s1">&#39;⣒&#39;</span><span class="p">,</span><span class="s1">&#39;⣚&#39;</span><span class="p">,</span><span class="s1">&#39;⣢&#39;</span><span class="p">,</span><span class="s1">&#39;⣪&#39;</span><span class="p">,</span><span class="s1">&#39;⣲&#39;</span><span class="p">,</span><span class="s1">&#39;⣺&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡃&#39;</span><span class="p">,</span><span class="s1">&#39;⡋&#39;</span><span class="p">,</span><span class="s1">&#39;⡓&#39;</span><span class="p">,</span><span class="s1">&#39;⡛&#39;</span><span class="p">,</span><span class="s1">&#39;⡣&#39;</span><span class="p">,</span><span class="s1">&#39;⡫&#39;</span><span class="p">,</span><span class="s1">&#39;⡳&#39;</span><span class="p">,</span><span class="s1">&#39;⡻&#39;</span><span class="p">,</span><span class="s1">&#39;⣃&#39;</span><span class="p">,</span><span class="s1">&#39;⣋&#39;</span><span class="p">,</span><span class="s1">&#39;⣓&#39;</span><span class="p">,</span><span class="s1">&#39;⣛&#39;</span><span class="p">,</span><span class="s1">&#39;⣣&#39;</span><span class="p">,</span><span class="s1">&#39;⣫&#39;</span><span class="p">,</span><span class="s1">&#39;⣳&#39;</span><span class="p">,</span><span class="s1">&#39;⣻&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡄&#39;</span><span class="p">,</span><span class="s1">&#39;⡌&#39;</span><span class="p">,</span><span class="s1">&#39;⡔&#39;</span><span class="p">,</span><span class="s1">&#39;⡜&#39;</span><span class="p">,</span><span class="s1">&#39;⡤&#39;</span><span class="p">,</span><span class="s1">&#39;⡬&#39;</span><span class="p">,</span><span class="s1">&#39;⡴&#39;</span><span class="p">,</span><span class="s1">&#39;⡼&#39;</span><span class="p">,</span><span class="s1">&#39;⣄&#39;</span><span class="p">,</span><span class="s1">&#39;⣌&#39;</span><span class="p">,</span><span class="s1">&#39;⣔&#39;</span><span class="p">,</span><span class="s1">&#39;⣜&#39;</span><span class="p">,</span><span class="s1">&#39;⣤&#39;</span><span class="p">,</span><span class="s1">&#39;⣬&#39;</span><span class="p">,</span><span class="s1">&#39;⣴&#39;</span><span class="p">,</span><span class="s1">&#39;⣼&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡅&#39;</span><span class="p">,</span><span class="s1">&#39;⡍&#39;</span><span class="p">,</span><span class="s1">&#39;⡕&#39;</span><span class="p">,</span><span class="s1">&#39;⡝&#39;</span><span class="p">,</span><span class="s1">&#39;⡥&#39;</span><span class="p">,</span><span class="s1">&#39;⡭&#39;</span><span class="p">,</span><span class="s1">&#39;⡵&#39;</span><span class="p">,</span><span class="s1">&#39;⡽&#39;</span><span class="p">,</span><span class="s1">&#39;⣅&#39;</span><span class="p">,</span><span class="s1">&#39;⣍&#39;</span><span class="p">,</span><span class="s1">&#39;⣕&#39;</span><span class="p">,</span><span class="s1">&#39;⣝&#39;</span><span class="p">,</span><span class="s1">&#39;⣥&#39;</span><span class="p">,</span><span class="s1">&#39;⣭&#39;</span><span class="p">,</span><span class="s1">&#39;⣵&#39;</span><span class="p">,</span><span class="s1">&#39;⣽&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡆&#39;</span><span class="p">,</span><span class="s1">&#39;⡎&#39;</span><span class="p">,</span><span class="s1">&#39;⡖&#39;</span><span class="p">,</span><span class="s1">&#39;⡞&#39;</span><span class="p">,</span><span class="s1">&#39;⡦&#39;</span><span class="p">,</span><span class="s1">&#39;⡮&#39;</span><span class="p">,</span><span class="s1">&#39;⡶&#39;</span><span class="p">,</span><span class="s1">&#39;⡾&#39;</span><span class="p">,</span><span class="s1">&#39;⣆&#39;</span><span class="p">,</span><span class="s1">&#39;⣎&#39;</span><span class="p">,</span><span class="s1">&#39;⣖&#39;</span><span class="p">,</span><span class="s1">&#39;⣞&#39;</span><span class="p">,</span><span class="s1">&#39;⣦&#39;</span><span class="p">,</span><span class="s1">&#39;⣮&#39;</span><span class="p">,</span><span class="s1">&#39;⣶&#39;</span><span class="p">,</span><span class="s1">&#39;⣾&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;⡇&#39;</span><span class="p">,</span><span class="s1">&#39;⡏&#39;</span><span class="p">,</span><span class="s1">&#39;⡗&#39;</span><span class="p">,</span><span class="s1">&#39;⡟&#39;</span><span class="p">,</span><span class="s1">&#39;⡧&#39;</span><span class="p">,</span><span class="s1">&#39;⡯&#39;</span><span class="p">,</span><span class="s1">&#39;⡷&#39;</span><span class="p">,</span><span class="s1">&#39;⡿&#39;</span><span class="p">,</span><span class="s1">&#39;⣇&#39;</span><span class="p">,</span><span class="s1">&#39;⣏&#39;</span><span class="p">,</span><span class="s1">&#39;⣗&#39;</span><span class="p">,</span><span class="s1">&#39;⣟&#39;</span><span class="p">,</span><span class="s1">&#39;⣧&#39;</span><span class="p">,</span><span class="s1">&#39;⣯&#39;</span><span class="p">,</span><span class="s1">&#39;⣷&#39;</span><span class="p">,</span><span class="s1">&#39;⣿&#39;</span><span class="p">)</span>
 
     <span class="n">frameBorderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
     <span class="n">frameTitleColor</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#222222&quot;)**&#39;&#39;&#39;</span>
 
     <span class="n">windowBorderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
     <span class="n">windowBorderColorFocus</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff55&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff55&quot;)**&#39;&#39;&#39;</span>
 
     <span class="n">buttonBoxGrid</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="sd">&#39;&#39;&#39;Default to **1**&#39;&#39;&#39;</span>
     <span class="n">buttonBoxGridClicked</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&#39;&#39;&#39;Default to **0**&#39;&#39;&#39;</span>
+    <span class="n">buttonBoxGridDisabled</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="sd">&#39;&#39;&#39;Default to **0**&#39;&#39;&#39;</span>
     <span class="n">buttonTextColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
     <span class="n">buttonBorderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
     <span class="n">buttonTextColorClicked</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffdd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffdd&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
     <span class="n">buttonBorderColorClicked</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="n">buttonTextColorFocus</span>     <span class="o">=</span> <span class="n">buttonTextColor</span>   <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
+    <span class="n">buttonTextColorFocus</span>     <span class="o">=</span> <span class="n">buttonTextColor</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor` **+** :class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
     <span class="n">buttonBorderColorFocus</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff00&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff00&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
+    <span class="n">buttonTextColorDisabled</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**&#39;&#39;&#39;</span>
+    <span class="n">buttonBorderColorDisabled</span><span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**&#39;&#39;&#39;</span>
 
 
     <span class="n">menuButtonShortcutColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;) + TTkColor.UNDERLINE**&#39;&#39;&#39;</span>
     <span class="n">menuButtonColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
     <span class="n">menuButtonBorderColor</span> <span class="o">=</span> <span class="n">frameBorderColor</span>
-    <span class="n">menuButtonColorClicked</span> <span class="o">=</span>  <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`frameBorderColor`&#39;&#39;&#39;</span>
+    <span class="n">menuButtonColorClicked</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)**&#39;&#39;&#39;</span>
     <span class="n">menuButtonBorderColorClicked</span> <span class="o">=</span> <span class="n">frameBorderColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`frameBorderColor`&#39;&#39;&#39;</span>
 
     <span class="n">listColor</span>            <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
     <span class="n">listColorSelected</span>    <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffdd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffdd&quot;)+TTkColor.bg(&quot;#000044&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
     <span class="n">listColorHighlighted</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000088&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.bg(&quot;#000088&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
 
     <span class="n">lineEditTextColor</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#222222&quot;)**&#39;&#39;&#39;</span>
     <span class="n">lineEditTextColorFocus</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
 
     <span class="n">comboboxContentColor</span>      <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
     <span class="n">comboboxBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
     <span class="n">comboboxContentColorFocus</span>      <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
     <span class="n">comboboxBorderColorFocus</span>       <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
 
     <span class="n">checkboxContentColor</span>      <span class="o">=</span> <span class="n">buttonTextColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor`&#39;&#39;&#39;</span>
     <span class="n">checkboxBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
     <span class="n">checkboxContentColorFocus</span> <span class="o">=</span> <span class="n">buttonTextColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColorFocus`&#39;&#39;&#39;</span>
     <span class="n">checkboxBorderColorFocus</span>  <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColorFocus`&#39;&#39;&#39;</span>
 
     <span class="n">radioButtonContentColor</span>      <span class="o">=</span> <span class="n">buttonTextColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor`&#39;&#39;&#39;</span>
     <span class="n">radioButtonBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
     <span class="n">radioButtonContentColorFocus</span> <span class="o">=</span> <span class="n">buttonTextColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColorFocus`&#39;&#39;&#39;</span>
     <span class="n">radioButtonBorderColorFocus</span>  <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColorFocus`&#39;&#39;&#39;</span>
 
     <span class="n">tabColor</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#aaaaaa&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)**&#39;&#39;&#39;</span>
     <span class="n">tabOffsetColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.RST**&#39;&#39;&#39;</span>
     <span class="n">tabBorderColor</span> <span class="o">=</span> <span class="n">frameBorderColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`frameBorderColor`&#39;&#39;&#39;</span>
     <span class="n">tabSelectColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
     <span class="n">tabColorFocus</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#aaaaaa&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)**&#39;&#39;&#39;</span>
     <span class="n">tabOffsetColorFocus</span> <span class="o">=</span> <span class="n">tabOffsetColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`tabOffsetColor`&#39;&#39;&#39;</span>
     <span class="n">tabBorderColorFocus</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)**&#39;&#39;&#39;</span>
     <span class="n">tabSelectColorFocus</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
 
     <span class="n">treeHeaderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="n">treeSelectedColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span></div>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffff&quot;)+TTkColor.bg(&quot;#444444&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
+    <span class="n">treeSelectedColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
+    <span class="n">treeLineColor</span>     <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#444444&quot;)**&#39;&#39;&#39;</span></div>
 </pre></div>
 
            </div>

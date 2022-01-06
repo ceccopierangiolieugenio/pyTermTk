@@ -6,3 +6,10 @@ TermTk.TTkCore.color
 
 .. currentmodule:: TermTk.TTkCore.color
 
+
+
+TTkColor
+========
+
+.. autoclass:: TTkColor
+   :members:

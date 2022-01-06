@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -212,7 +213,7 @@
     <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Left</span><span class="p">:</span>
-                <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeSingleOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayAndChild</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_previous</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
                 <span class="k">return</span> <span class="kc">True</span>

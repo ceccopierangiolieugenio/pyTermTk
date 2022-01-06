@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -251,6 +252,7 @@
 <span class="sd">    :param [int,int] minSize: the minSize [width,height] of the widget, optional</span>
 
 <span class="sd">    :param bool,optional visible: the visibility, optional, defaults to True</span>
+<span class="sd">    :param bool,optional enabled: the ability to handle input events, optional, defaults to True</span>
 <span class="sd">    :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`</span>
 <span class="sd">    :type layout: :mod:`TermTk.TTkLayouts`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -263,6 +265,7 @@
         <span class="s1">&#39;_layout&#39;</span><span class="p">,</span> <span class="s1">&#39;_canvas&#39;</span><span class="p">,</span> <span class="s1">&#39;_widgetItem&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_visible&#39;</span><span class="p">,</span> <span class="s1">&#39;_transparent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_pendingMouseRelease&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_enabled&#39;</span><span class="p">,</span>
         <span class="c1">#Signals</span>
         <span class="s1">&#39;focusChanged&#39;</span><span class="p">)</span>
 
@@ -296,6 +299,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_minw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minh</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minSize&#39;</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minh</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;enabled&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus_policy</span> <span class="o">=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">NoFocus</span>
@@ -495,6 +499,8 @@
 
 <div class="viewcode-block" id="TTkWidget.mouseEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.mouseEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mouseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span><span class="p">:</span> <span class="k">return</span> <span class="kc">True</span>
+
         <span class="c1"># Mouse Drag has priority because it</span>
         <span class="c1"># should be handled by the focussed widget</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Drag</span><span class="p">:</span>
@@ -666,11 +672,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">lowerWidget</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">lowerWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeSingleOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayAndChild</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
     <span class="k">def</span> <span class="nf">isVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -699,6 +706,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">layoutUpdated</span><span class="p">()</span>
 
+    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(f&quot;setFocus: {self._name} - {self._focus}&quot;)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">:</span> <span class="k">return</span>
@@ -706,8 +714,9 @@
         <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span> <span class="k">return</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tmp</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlay</span><span class="p">(</span><span class="n">refocus</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1">#if not TTkHelper.isOverlay(self):</span>
+        <span class="c1">#    TTkHelper.removeOverlay(refocus=False)</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayChild</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">)</span>
@@ -735,7 +744,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus_policy</span> <span class="o">=</span> <span class="n">policy</span>
 
     <span class="k">def</span> <span class="nf">focusInEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
-    <span class="k">def</span> <span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">isEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">==</span> <span class="n">enabled</span><span class="p">:</span> <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="n">enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setDisabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="ow">not</span> <span class="n">disabled</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

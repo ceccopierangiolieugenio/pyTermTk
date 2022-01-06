@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -198,13 +199,42 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="o">*</span>
 
 <div class="viewcode-block" id="TTkButton"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton">[docs]</a><span class="k">class</span> <span class="nc">TTkButton</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; TTkButton:</span>
+
+<span class="sd">    Border = True</span>
+<span class="sd">    ::</span>
+
+<span class="sd">         ┌────────┐</span>
+<span class="sd">         │  Text  │</span>
+<span class="sd">         ╘════════╛</span>
+
+<span class="sd">    Border = False</span>
+<span class="sd">    ::</span>
+
+<span class="sd">         [  Text  ]</span>
+
+<span class="sd">    The TTkWidget class is the base class of all user interface objects</span>
+
+<span class="sd">    :param str text: the text shown on the button, defaults to &quot;&quot;</span>
+<span class="sd">    :type text: str, optional</span>
+<span class="sd">    :param bool border: the border of the button, defaults to &quot;False&quot;</span>
+<span class="sd">    :type text: str, optional</span>
+<span class="sd">    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonTextColor`</span>
+<span class="sd">    :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional</span>
+<span class="sd">    :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`</span>
+<span class="sd">    :type borderColor: :class:`~TermTk.TTkCore.color.TTkColor`, optional</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_border&#39;</span><span class="p">,</span> <span class="s1">&#39;_pressed&#39;</span><span class="p">,</span> <span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_keyPressed&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColor&#39;</span><span class="p">,</span>        <span class="s1">&#39;_textColor&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColorClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_textColorClicked&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColorFocus&#39;</span><span class="p">,</span>   <span class="s1">&#39;_textColorFocus&#39;</span>
+        <span class="s1">&#39;_borderColorDisabled&#39;</span><span class="p">,</span><span class="s1">&#39;_textColorDisabled&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkButton&#39;</span> <span class="p">)</span>
         <span class="c1"># Define Signals</span>
@@ -218,6 +248,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_textColorClicked</span>   <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonTextColorClicked</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_borderColorFocus</span>   <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonBorderColorFocus</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textColorFocus</span>     <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonTextColorFocus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_borderColorDisabled</span><span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonBorderColorDisabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_textColorDisabled</span>  <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonTextColorDisabled</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pressed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keyPressed</span> <span class="o">=</span> <span class="kc">False</span>
@@ -229,7 +261,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TTkButton.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pressed</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
+            <span class="n">borderColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_borderColorDisabled</span>
+            <span class="n">textColor</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textColorDisabled</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonBoxGridDisabled</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pressed</span><span class="p">:</span>
             <span class="n">borderColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_borderColorClicked</span>
             <span class="n">textColor</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textColorClicked</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonBoxGridClicked</span>

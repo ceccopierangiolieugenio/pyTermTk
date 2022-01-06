@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -214,13 +215,16 @@
         <span class="n">TTkFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkSpacer&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setBorder</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setBorder</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;border&#39;</span> <span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="TTkSplitter.addWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.splitter.html#TermTk.TTkWidgets.splitter.TTkSplitter.addWidget">[docs]</a>    <span class="k">def</span> <span class="nf">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">TTkFrame</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">():</span>
+            <span class="n">w</span><span class="o">-=</span><span class="mi">2</span>
+            <span class="n">h</span><span class="o">-=</span><span class="mi">2</span>
         <span class="n">numW</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
@@ -232,7 +236,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span> <span class="o">=</span> <span class="p">[</span><span class="n">fullSize</span><span class="o">*</span><span class="n">i</span><span class="o">//</span><span class="n">numW</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">numW</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateGeometries</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_separatorsRef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sizeRef</span> <span class="o">=</span> <span class="n">fullSize</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sizeRef</span> <span class="o">=</span> <span class="n">fullSize</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">setSizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sizes</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sizes</span><span class="o">=</span><span class="n">sizes</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sizes</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="n">l</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_separatorsRef</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initSizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateGeometries</span><span class="p">()</span>
+
 
     <span class="k">def</span> <span class="nf">_minMaxSizeBefore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -261,7 +278,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span> <span class="k">return</span>
         <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
         <span class="n">sep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span>
-        <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">():</span>
+            <span class="n">w</span><span class="o">-=</span><span class="mi">2</span>
+            <span class="n">h</span><span class="o">-=</span><span class="mi">2</span>
 
         <span class="k">def</span> <span class="nf">_processGeometry</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">forward</span><span class="p">):</span>
             <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -353,17 +372,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateGeometries</span><span class="p">(</span><span class="n">resized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkSplitter.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.splitter.html#TermTk.TTkWidgets.splitter.TTkSplitter.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">off</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">TTkFrame</span><span class="o">.</span><span class="n">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawVLine</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawVLine</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">off</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawHLine</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">w</span><span class="p">)</span></div>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawHLine</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">off</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">w</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkSplitter.mousePressEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.splitter.html#TermTk.TTkWidgets.splitter.TTkSplitter.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">():</span>
+            <span class="n">x</span><span class="o">-=</span><span class="mi">1</span> <span class="p">;</span> <span class="n">y</span><span class="o">-=</span><span class="mi">1</span>
         <span class="c1"># TTkLog.debug(f&quot;{self._separators} {evt}&quot;)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
@@ -380,10 +403,13 @@
 
 <div class="viewcode-block" id="TTkSplitter.mouseDragEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.splitter.html#TermTk.TTkWidgets.splitter.TTkSplitter.mouseDragEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mouseDragEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">():</span>
+                <span class="n">x</span><span class="o">-=</span><span class="mi">1</span> <span class="p">;</span> <span class="n">y</span><span class="o">-=</span><span class="mi">1</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span><span class="p">]</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span><span class="p">]</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_separators</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_updateGeometries</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -393,8 +419,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_separatorSelected</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">minimumHeight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span><span class="p">:</span> <span class="k">return</span> <span class="n">ret</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
                 <span class="n">ret</span><span class="o">+=</span><span class="n">item</span><span class="o">.</span><span class="n">minimumHeight</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span>
@@ -406,8 +432,8 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">minimumWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span><span class="p">:</span> <span class="k">return</span> <span class="n">ret</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
                 <span class="n">ret</span><span class="o">+=</span><span class="n">item</span><span class="o">.</span><span class="n">minimumWidth</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span>
@@ -419,12 +445,13 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">maximumHeight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span><span class="p">:</span> <span class="k">return</span> <span class="mh">0x10000</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">b</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
                 <span class="n">ret</span><span class="o">+=</span><span class="n">item</span><span class="o">.</span><span class="n">maximumHeight</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ret</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">ret</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="mh">0x10000</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
@@ -433,12 +460,13 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">maximumWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitterInitialized</span><span class="p">:</span> <span class="k">return</span> <span class="mh">0x10000</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">b</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
                 <span class="n">ret</span><span class="o">+=</span><span class="n">item</span><span class="o">.</span><span class="n">maximumHeight</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ret</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">ret</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="mh">0x10000</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>

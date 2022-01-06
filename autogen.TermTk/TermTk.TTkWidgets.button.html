@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
 
   
   
@@ -214,7 +215,29 @@
 <dl class="py class">
 <dt id="TermTk.TTkWidgets.button.TTkButton">
 <em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkButton</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>TTkButton:</p>
+<p>Border = True</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌────────┐
+│  Text  │
+╘════════╛
+</pre></div>
+</div>
+<p>Border = False</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>  <span class="n">Text</span>  <span class="p">]</span>
+</pre></div>
+</div>
+<p>The TTkWidget class is the base class of all user interface objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em><em>, </em><em>optional</em>) – the text shown on the button, defaults to “”</p></li>
+<li><p><strong>border</strong> (<em>bool</em>) – the border of the button, defaults to “False”</p></li>
+<li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the border of the button, defaults to <a class="reference internal" href="TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.buttonTextColor" title="TermTk.TTkGui.theme.TTkTheme.buttonTextColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonTextColor</span></code></a></p></li>
+<li><p><strong>borderColor</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the border of the button, defaults to <a class="reference internal" href="TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.buttonBorderColor" title="TermTk.TTkGui.theme.TTkTheme.buttonBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColor</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
 <dt id="TermTk.TTkWidgets.button.TTkButton.keyEvent">
 <code class="sig-name descname"><span class="pre">keyEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.keyEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>

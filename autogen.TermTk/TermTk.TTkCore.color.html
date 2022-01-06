@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
 
   
   
@@ -100,7 +101,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.canvas.html">TermTk.TTkCore.canvas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.cfg.html">TermTk.TTkCore.cfg</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.color</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.color</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttkcolor">TTkColor</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.constant.html">TermTk.TTkCore.constant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.draw.html">TermTk.TTkCore.draw</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.filebuffer.html">TermTk.TTkCore.filebuffer</a></li>
@@ -189,6 +193,63 @@
             
   <section id="module-TermTk.TTkCore.color">
 <span id="termtk-ttkcore-color"></span><h1>TermTk.TTkCore.color<a class="headerlink" href="#module-TermTk.TTkCore.color" title="Permalink to this headline">¶</a></h1>
+<section id="ttkcolor">
+<h2>TTkColor<a class="headerlink" href="#ttkcolor" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TermTk.TTkCore.color.TTkColor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkColor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorMod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>TermTk Color helper</p>
+<p>The TTkColor constructor creates the color based on HEX values.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Foreground only colors:</span>
+<span class="n">color_fg_red</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">)</span>
+<span class="n">color_fg_green</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">)</span>
+<span class="n">color_fg_blue</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">)</span>
+
+<span class="c1"># Background only colors:</span>
+<span class="n">color_bg_red</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">)</span>
+<span class="n">color_bg_green</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">)</span>
+<span class="n">color_bg_blue</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">)</span>
+
+<span class="c1"># Combine</span>
+<span class="n">color_1</span> <span class="o">=</span> <span class="n">color_fg_red</span> <span class="o">+</span> <span class="n">color_bg_blue</span>
+<span class="n">color_2</span> <span class="o">=</span> <span class="n">color_fg_red</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#FFFF00&#39;</span><span class="p">)</span>
+<span class="n">color_3</span> <span class="o">=</span> <span class="n">color_2</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.color.TTkColor.BOLD">
+<code class="sig-name descname"><span class="pre">BOLD</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BOLD" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Bold</strong> modifier</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.color.TTkColor.ITALIC">
+<code class="sig-name descname"><span class="pre">ITALIC</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.ITALIC" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Italic</em> modifier</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.color.TTkColor.RST">
+<code class="sig-name descname"><span class="pre">RST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.RST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default terminal color</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.color.TTkColor.STRIKETROUGH">
+<code class="sig-name descname"><span class="pre">STRIKETROUGH</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.STRIKETROUGH" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="strike">Striketrough</span> modifier</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.color.TTkColor.UNDERLINE">
+<code class="sig-name descname"><span class="pre">UNDERLINE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.UNDERLINE" title="Permalink to this definition">¶</a></dt>
+<dd><p><span class="underline">Underline</span> modifier</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 

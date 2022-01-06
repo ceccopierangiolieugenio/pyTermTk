@@ -10,4 +10,9 @@ TermTk.TTkGui
 .. autosummary::
   :toctree: ./
 
+  TermTk.TTkGui.draw_ascii
+  TermTk.TTkGui.draw_utf8
+  TermTk.TTkGui.fileicon_ascii
+  TermTk.TTkGui.fileicon_nerd
+  TermTk.TTkGui.fileicon_utf8
   TermTk.TTkGui.theme

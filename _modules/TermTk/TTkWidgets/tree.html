@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
 
   
   
@@ -198,9 +199,11 @@
 
 <div class="viewcode-block" id="TTkTree"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.tree.html#TermTk.TTkWidgets.tree.TTkTree">[docs]</a><span class="k">class</span> <span class="nc">TTkTree</span><span class="p">(</span><span class="n">TTkAbstractScrollArea</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;_treeView&#39;</span><span class="p">,</span> <span class="s1">&#39;activated&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_treeView&#39;</span><span class="p">,</span>
+        <span class="c1"># Forwarded Signals</span>
+        <span class="s1">&#39;itemActivated&#39;</span><span class="p">,</span> <span class="s1">&#39;itemChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;itemClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;itemExpanded&#39;</span><span class="p">,</span> <span class="s1">&#39;itemCollapsed&#39;</span><span class="p">,</span> <span class="s1">&#39;itemDoubleClicked&#39;</span><span class="p">,</span>
         <span class="c1"># Forwarded Methods</span>
-        <span class="s1">&#39;setAlignment&#39;</span><span class="p">,</span> <span class="s1">&#39;setHeader&#39;</span><span class="p">,</span> <span class="s1">&#39;setHeaderLabels&#39;</span><span class="p">,</span> <span class="s1">&#39;setColumnSize&#39;</span><span class="p">,</span> <span class="s1">&#39;setColumnColors&#39;</span><span class="p">,</span> <span class="s1">&#39;appendItem&#39;</span><span class="p">,</span> <span class="s1">&#39;addTopLevelItem&#39;</span> <span class="p">)</span>
+        <span class="s1">&#39;setAlignment&#39;</span><span class="p">,</span> <span class="s1">&#39;setHeader&#39;</span><span class="p">,</span> <span class="s1">&#39;setHeaderLabels&#39;</span><span class="p">,</span> <span class="s1">&#39;setColumnSize&#39;</span><span class="p">,</span> <span class="s1">&#39;setColumnColors&#39;</span><span class="p">,</span> <span class="s1">&#39;appendItem&#39;</span><span class="p">,</span> <span class="s1">&#39;addTopLevelItem&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span> <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">TTkAbstractScrollArea</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -208,7 +211,12 @@
         <span class="k">if</span> <span class="s1">&#39;parent&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span> <span class="o">=</span> <span class="n">TTkTreeWidget</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Forward the signal</span>
-        <span class="c1"># self.activated = self._treeView.activated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemActivated</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemActivated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemChanged</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemChanged</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemClicked</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemClicked</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemExpanded</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemExpanded</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemCollapsed</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemCollapsed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itemDoubleClicked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemDoubleClicked</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setViewport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="p">)</span>
@@ -220,7 +228,8 @@
         <span class="c1">#self.setColumnSize   = self._treeView.setColumnSize</span>
         <span class="c1">#self.setColumnColors = self._treeView.setColumnColors</span>
         <span class="c1">#self.appendItem      = self._treeView.appendItem</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addTopLevelItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">addTopLevelItem</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addTopLevelItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">addTopLevelItem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span>           <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">clear</span></div>
 
 
 
