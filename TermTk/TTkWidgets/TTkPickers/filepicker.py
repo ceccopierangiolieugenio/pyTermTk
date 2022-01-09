@@ -64,12 +64,16 @@ class _FileTreeWidgetItem(TTkTreeWidgetItem):
     FILE = 0x00
     DIR  = 0x01
 
-    __slots__ = ('_path', '_type')
+    __slots__ = ('_path', '_type', '_raw')
     def __init__(self, *args, **kwargs):
         TTkTreeWidgetItem.__init__(self, *args, **kwargs)
         self._path = kwargs.get('path', '.')
         self._type = kwargs.get('type', _FileTreeWidgetItem.FILE)
+        self._raw  = kwargs.get('raw')
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
+
+    def sortData(self, col):
+        return self._raw[col]
 
     def path(self):
         return self._path
@@ -275,14 +279,14 @@ class TTkFileDialogPicker(TTkWindow):
                     size = f"{info.st_size/1024:.2f} KB"
                 else:
                     size = f"{info.st_size} bytes"
-                return time, size
+                return time, size, info.st_ctime, info.st_size
 
             if os.path.isdir(nodePath):
                 if os.path.exists(nodePath):
-                    time, _ = _getStat(nodePath)
+                    time, _, rawTime, _ = _getStat(nodePath)
                     color = TTkCfg.theme.folderNameColor
                 else:
-                    time, _ = ""
+                    time, _, rawTime, _ = ""
                     color = TTkCfg.theme.failNameColor
 
                 if os.path.islink(nodePath):
@@ -294,6 +298,7 @@ class TTkFileDialogPicker(TTkWindow):
 
                 ret.append(_FileTreeWidgetItem(
                                 [ name, "", typef, time],
+                                raw = [ n , -1 , typef , rawTime ],
                                 path=nodePath,
                                 type=_FileTreeWidgetItem.DIR,
                                 icon=TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,
@@ -301,7 +306,7 @@ class TTkFileDialogPicker(TTkWindow):
 
             elif os.path.isfile(nodePath) or os.path.islink(nodePath):
                 if os.path.exists(nodePath):
-                    time, size = _getStat(nodePath)
+                    time, size, rawTime, rawSize = _getStat(nodePath)
                     if os.access(nodePath, os.X_OK):
                         color = TTkCfg.theme.executableColor
                         typef="Exec"
@@ -309,7 +314,7 @@ class TTkFileDialogPicker(TTkWindow):
                         color = TTkCfg.theme.fileNameColor
                         typef="File"
                 else:
-                    time, size = "", ""
+                    time, size, rawTime, rawSize = "", "", 0, 0
                     color = TTkCfg.theme.failNameColor
                     typef="Broken"
 
@@ -323,6 +328,7 @@ class TTkFileDialogPicker(TTkWindow):
                 if ext: ext = f"{ext[1:]} "
                 ret.append(_FileTreeWidgetItem(
                                 [ name, size, typef, time],
+                                raw = [ n , rawSize , typef , rawTime ],
                                 path=nodePath,
                                 type=_FileTreeWidgetItem.FILE,
                                 icon=TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.getIcon(n) + TTkColor.RST,

@@ -31,7 +31,8 @@ from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
     __slots__ = ('_parent', '_data', '_alignment', '_children', '_expanded', '_selected',
-                 '_childIndicatorPolicy', '_icon', '_defaultIcon'
+                 '_childIndicatorPolicy', '_icon', '_defaultIcon',
+                 '_sortColumn', '_sortOrder'
         # Signals
         # 'refreshData'
         )
@@ -51,6 +52,9 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._expanded = kwargs.get('expanded', False)
         self._selected = kwargs.get('selected', False)
         self._parent = kwargs.get("parent", None)
+
+        self._sortColumn = -1
+        self._sortOrder = TTkK.AscendingOrder
 
         self._icon = ['']*len(self._data)
         self._setDefaultIcon()
@@ -78,8 +82,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def addChild(self, child):
         self._children.append(child)
         child._parent = self
-        child.dataChanged.connect(self.emitDataChanged)
+        child._sortOrder = self._sortOrder
+        child._sortColumn = self._sortColumn
         self._setDefaultIcon()
+        self._sort(children=False)
+        child.dataChanged.connect(self.emitDataChanged)
         self.dataChanged.emit()
 
     def addChildren(self, children):
@@ -119,17 +126,27 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             return ''
         return self._data[col]
 
-    def sortChildren(self, col, order):
-        if not self._children: return
+    def sortData(self, col):
+        return self.data(col)
+
+    def _sort(self, children):
+        if self._sortColumn == -1: return
         self._children = sorted(
                 self._children,
-                key = lambda x : x.data(col),
-                reverse = order == TTkK.DescendingOrder)
+                key = lambda x : x.sortData(self._sortColumn),
+                reverse = self._sortOrder == TTkK.DescendingOrder)
         # Broadcast the sorting to the childrens
-        for c in self._children:
-            c.dataChanged.disconnect(self.emitDataChanged)
-            c.sortChildren(col, order)
-            c.dataChanged.connect(self.emitDataChanged)
+        if children:
+            for c in self._children:
+                c.dataChanged.disconnect(self.emitDataChanged)
+                c.sortChildren(self._sortColumn, self._sortOrder)
+                c.dataChanged.connect(self.emitDataChanged)
+
+    def sortChildren(self, col, order):
+        self._sortColumn = col
+        self._sortOrder = order
+        if not self._children: return
+        self._sort(children=True)
         self.dataChanged.emit()
 
     @pyTTkSlot()
