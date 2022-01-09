@@ -23,7 +23,9 @@
 # SOFTWARE.
 
 import os
+import re
 import datetime
+
 from posixpath import islink
 from TermTk.TTkCore.color import TTkColor
 
@@ -122,9 +124,14 @@ class TTkFileDialogPicker(TTkWindow):
 
         # Bottom (File Name, Controls)
         self._fileName  = TTkLineEdit()
-        self._fileType  = TTkComboBox()
+        self._fileType  = TTkComboBox(textAlign=TTkK.LEFT_ALIGN)
         self._btnOpen   = TTkButton(text="Open",  maxWidth=8, enabled=False)
         self._btnCancel = TTkButton(text="Cancel",maxWidth=8)
+
+        for f in self._filter.split(';;'):
+            if m := re.match(".*\(.*\)",f):
+                self._fileType.addItem(f)
+        self._fileType.setCurrentIndex(0)
 
         self._btnOpen.clicked.connect(self._open)
         self._btnCancel.clicked.connect(self.close)
@@ -132,6 +139,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._fileName.returnPressed.connect(self._open)
         self._fileName.textChanged.connect(self._checkFileName)
         self._fileName.textEdited.connect(self._checkFileName)
+
 
         bottomLayout = TTkGridLayout()
         self.layout().addItem(bottomLayout,2,0)
@@ -194,11 +202,7 @@ class TTkFileDialogPicker(TTkWindow):
         if os.path.isdir(path):
              self._openNewPath(path, True)
         elif os.path.isfile(path):
-            pass
-        elif os.path.islink(path):
-            pass
-        elif os.path.ismount(path):
-            pass
+            self._open()
 
     def _openPrev(self):
         if self._recentPathId<=0 or self._recentPathId>=len(self._recentPath):
