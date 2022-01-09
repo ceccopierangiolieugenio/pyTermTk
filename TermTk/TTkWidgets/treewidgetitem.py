@@ -42,14 +42,14 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         tt = TTkCfg.theme.tree
         super().__init__(self, *args, **kwargs)
         self._children = []
-        self._data = args[0] if len(args)>0 and type(args[0])==list else None
+        self._data = args[0] if len(args)>0 and type(args[0])==list else ['']
         self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
         self._parent = kwargs.get('parent', None)
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
 
         self._defaultIcon = True
-        self._expanded = False
-        self._selected = False
+        self._expanded = kwargs.get('expanded', False)
+        self._selected = kwargs.get('selected', False)
         self._parent = kwargs.get("parent", None)
 
         self._icon = ['']*len(self._data)
@@ -118,6 +118,19 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         if col >= len(self._data):
             return ''
         return self._data[col]
+
+    def sortChildren(self, col, order):
+        if not self._children: return
+        self._children = sorted(
+                self._children,
+                key = lambda x : x.data(col),
+                reverse = order == TTkK.DescendingOrder)
+        # Broadcast the sorting to the childrens
+        for c in self._children:
+            c.dataChanged.disconnect(self.emitDataChanged)
+            c.sortChildren(col, order)
+            c.dataChanged.connect(self.emitDataChanged)
+        self.dataChanged.emit()
 
     @pyTTkSlot()
     def emitDataChanged(self):
