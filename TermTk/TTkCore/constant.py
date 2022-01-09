@@ -113,6 +113,13 @@ class TTkConstant:
     DontShowIndicator              = ChildIndicatorPolicy.DontShowIndicator
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
+    class SortOrder:
+        AscendingOrder  = 0x00
+        DescendingOrder = 0x01
+
+    AscendingOrder  = SortOrder.AscendingOrder
+    DescendingOrder = SortOrder.DescendingOrder
+
     NoInsert             = InsertPolicy.NoInsert
     InsertAtTop          = InsertPolicy.InsertAtTop
     # InsertAtCurrent      = InsertPolicy.InsertAtCurrent

@@ -33,9 +33,10 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from dataclasses import dataclass
 
 class TTkTreeWidget(TTkAbstractScrollView):
-    __slots__ = ( '_items', '_header', '_columnsPos', '_cache',
+    __slots__ = ( '_rootItem', '_header', '_columnsPos', '_cache',
                   '_selectedId', '_selected', '_separatorSelected', '_mouseDelta',
                   '_headerColor', '_selectedColor', '_lineColor',
+                  '_sortColumn', '_sortOrder',
                   # Signals
                   'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
                   )
@@ -59,20 +60,24 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._selected = None
         self._selectedId = None
         self._separatorSelected = None
-        self._items = []
         self._header = kwargs.get('header',[])
         self._columnsPos = []
         self._cache = []
+        self._sortColumn = -1
+        self._sortOrder = TTkK.AscendingOrder
         self._headerColor   = kwargs.get('headerColor',   TTkCfg.theme.treeHeaderColor)
         self._selectedColor = kwargs.get('selectedColor', TTkCfg.theme.treeSelectedColor)
         self._lineColor     = kwargs.get('lineColor',     TTkCfg.theme.treeLineColor)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
+        self._rootItem = None
+        self.clear()
+
 
     # Overridden function
     def viewFullAreaSize(self) -> (int, int):
         w = self._columnsPos[-1]+1 if self._columnsPos else 0
-        h = 1+sum([c.size() for c in self._items])
+        h = self._rootItem.size()
         # TTkLog.debug(f"{w=} {h=}")
         return w,h
 
@@ -82,16 +87,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
         return self.size()
 
     def clear(self):
-        for item in self._items:
-            item.dataChanged.disconnect(self._refreshCache)
-        self._items = []
+        if self._rootItem:
+            self._rootItem.dataChanged.disconnect(self._refreshCache)
+        self._rootItem = TTkTreeWidgetItem(expanded=True)
+        self._rootItem.dataChanged.connect(self._refreshCache)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
     def addTopLevelItem(self, item):
-        item.dataChanged.connect(self._refreshCache)
-        self._items.append(item)
+        self._rootItem.addChild(item)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
@@ -102,6 +107,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._columnsPos = [20+x*20 for x in range(len(labels))]
         self.viewChanged.emit()
         self.update()
+
+    def sortColumn(self):
+        '''Returns the column used to sort the contents of the widget.'''
+        return self._sortColumn
+
+    def sortItems(self, col, order):
+        '''Sorts the items in the widget in the specified order by the values in the given column.'''
+        self._sortColumn = col
+        self._sortOrder = order
+        self._rootItem.sortChildren(col, order)
 
     def mouseDoubleClickEvent(self, evt):
         x,y = evt.x, evt.y
@@ -149,8 +164,15 @@ class TTkTreeWidget(TTkAbstractScrollView):
         if y == 0:
             for i, c in enumerate(self._columnsPos):
                 if x == c:
+                    # I-th separator selected
                     self._separatorSelected = i
                     self.update()
+                    break
+                elif x < c:
+                    # I-th header selected
+                    order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
+                    self.sortItems(i, order)
+                    break
             return True
         # Handle Tree/Table Events
         y += oy-1
@@ -240,7 +262,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             if _child.isExpanded():
                 for _c in _child.children():
                    _addToCache(_c, _level+1)
-        for c in self._items:
+        for c in self._rootItem.children():
             _addToCache(c,0)
         self.update()
         self.viewChanged.emit()
@@ -255,6 +277,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
             hx  = 0 if i==0 else self._columnsPos[i-1]+1
             hx1 = self._columnsPos[i]
             self._canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=self._headerColor)
+            if i == self._sortColumn:
+                s = tt[6] if self._sortOrder == TTkK.AscendingOrder else tt[7]
+                self._canvas.drawText(pos=(hx1-x-1,0), text=s, color=self._headerColor)
         # Draw header separators
         for sx in self._columnsPos:
             self._canvas.drawChar(pos=(sx-x,0), char=tt[5], color=self._headerColor)
