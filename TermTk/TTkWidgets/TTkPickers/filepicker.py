@@ -69,10 +69,26 @@ class _FileTreeWidgetItem(TTkTreeWidgetItem):
     __slots__ = ('_path', '_type', '_raw')
     def __init__(self, *args, **kwargs):
         TTkTreeWidgetItem.__init__(self, *args, **kwargs)
-        self._path = kwargs.get('path', '.')
-        self._type = kwargs.get('type', _FileTreeWidgetItem.FILE)
-        self._raw  = kwargs.get('raw')
+        self._path   = kwargs.get('path', '.')
+        self._type   = kwargs.get('type', _FileTreeWidgetItem.FILE)
+        self._raw    = kwargs.get('raw')
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
+
+    def setFilter(self, filter):
+        for c in self._children:
+            c.dataChanged.disconnect(self.emitDataChanged)
+            c._processFilter(filter)
+            c.setFilter(filter)
+            c.dataChanged.connect(self.emitDataChanged)
+        self.dataChanged.emit()
+
+    def _processFilter(self, filter):
+        if self.getType() == _FileTreeWidgetItem.FILE:
+            filterRe = "^"+filter.replace('.','\.').replace('*','.*')+"$"
+            if re.match(filterRe, self._raw[0]):
+                self.setHidden(False)
+            else:
+                self.setHidden(True)
 
     def sortData(self, col):
         return self._raw[col]
@@ -84,7 +100,7 @@ class _FileTreeWidgetItem(TTkTreeWidgetItem):
         return self._type
 
 class TTkFileDialogPicker(TTkWindow):
-    __slots__ = ('_path', '_recentPath', '_recentPathId', '_filter', '_caption',
+    __slots__ = ('_path', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption',
                  # Widgets
                  '_fileTree', '_lookPath', '_btnPrev', '_btnNext', '_btnUp',
                  '_fileName', '_fileType', '_btnOpen', '_btnCancel',
@@ -102,7 +118,8 @@ class TTkFileDialogPicker(TTkWindow):
         self._recentPath = []
 
         self._path    = kwargs.get('path','.')
-        self._filter  = kwargs.get('filter','All Files (*)')
+        self._filter  = '*'
+        self._filters = kwargs.get('filter','All Files (*)')
         self._caption = kwargs.get('caption','File Dialog')
 
         self.setTitle(self._caption)
@@ -132,10 +149,11 @@ class TTkFileDialogPicker(TTkWindow):
         self._btnOpen   = TTkButton(text="Open",  maxWidth=8, enabled=False)
         self._btnCancel = TTkButton(text="Cancel",maxWidth=8)
 
-        for f in self._filter.split(';;'):
+        for f in self._filters.split(';;'):
             if m := re.match(".*\(.*\)",f):
                 self._fileType.addItem(f)
         self._fileType.setCurrentIndex(0)
+        self._fileType.currentTextChanged.connect(self._fileTypeChanged)
 
         self._btnOpen.clicked.connect(self._open)
         self._btnCancel.clicked.connect(self.close)
@@ -171,7 +189,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._fileTree = TTkTree(parent=splitter)
         splitter.setSizes([10,self.width()-13])
         self._fileTree.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
-        self._fileTree.itemExpanded.connect(TTkFileDialogPicker._updateChildren)
+        self._fileTree.itemExpanded.connect(self._updateChildren)
         self._fileTree.itemExpanded.connect(TTkFileDialogPicker._folderExpanded)
         self._fileTree.itemCollapsed.connect(TTkFileDialogPicker._folderCollapsed)
 
@@ -182,8 +200,15 @@ class TTkFileDialogPicker(TTkWindow):
         self._openNewPath(self._path, True)
 
     @pyTTkSlot(str)
+    def _fileTypeChanged(self, type):
+        # TODO: Fix This Crap, _rootItem should not be addressed directly
+        # but I am just too tired now to find a proper way
+        self._filter = re.match(".*\((.*)\)",type).group(1)
+        _FileTreeWidgetItem.setFilter(self._fileTree._treeView._rootItem, self._filter)
+
+    @pyTTkSlot(str)
     def _checkFileName(self, fileName):
-        if os.path.exists(fileName):
+        if os.path.exists(fileName) and os.path.isfile(fileName):
             self._btnOpen.setEnabled()
         else:
             self._btnOpen.setDisabled()
@@ -347,11 +372,11 @@ class TTkFileDialogPicker(TTkWindow):
     def _folderCollapsed(item):
         item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,)
 
-    @staticmethod
-    def _updateChildren(item):
+    def _updateChildren(self, item):
         if item.children(): return
         for i in TTkFileDialogPicker._getFileItems(item.path()):
             item.addChild(i)
+            i._processFilter(self._filter)
 
 
 '''

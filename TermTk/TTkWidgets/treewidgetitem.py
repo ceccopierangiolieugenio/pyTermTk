@@ -30,7 +30,7 @@ from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    __slots__ = ('_parent', '_data', '_alignment', '_children', '_expanded', '_selected',
+    __slots__ = ('_parent', '_data', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
                  '_sortColumn', '_sortOrder'
         # Signals
@@ -51,6 +51,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._defaultIcon = True
         self._expanded = kwargs.get('expanded', False)
         self._selected = kwargs.get('selected', False)
+        self._hidden = kwargs.get('hidden', False)
         self._parent = kwargs.get("parent", None)
 
         self._sortColumn = -1
@@ -71,6 +72,14 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
                 self._icon[0] = TTkCfg.theme.tree[2]
             else:
                 self._icon[0] = TTkCfg.theme.tree[1]
+
+    def isHidden(self):
+        return self._hidden
+
+    def setHidden(self, hide):
+        if hide == self._hidden: return
+        self._hidden = hide
+        self.dataChanged.emit()
 
     def childIndicatorPolicy(self):
         return self._childIndicatorPolicy
@@ -99,7 +108,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         return None
 
     def children(self):
-        return self._children
+        return [x for x in self._children if not x.isHidden()]
 
     def icon(self, col):
         if col >= len(self._icon):
@@ -175,6 +184,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def size(self):
         if self._expanded:
-            return 1 + sum([c.size() for c in self._children])
+            return 1 + sum([c.size() for c in self.children()])
         else:
             return 1
