@@ -29,7 +29,7 @@ from TermTk.TTkTemplates.color import TColor
 from TermTk.TTkTemplates.text  import TText
 
 class TTkLabel(TTkWidget, TColor, TText):
-    __slots__ = ('_color', '_text')
+    __slots__ = ()
     def __init__(self, *args, **kwargs):
         TColor.__init__(self, *args, **kwargs)
         TText.__init__(self, *args, **kwargs)
@@ -37,6 +37,10 @@ class TTkLabel(TTkWidget, TColor, TText):
         self._name = kwargs.get('name' , 'TTkLabel' )
         # self.setMinimumSize(len(self.text), 1)
         self.textUpdated(self.text)
+
+    @pyTTkSlot(str)
+    def setText(self, text):
+        self.text = text
 
     def paintEvent(self):
         forceColor = self.color!=TTkColor.RST

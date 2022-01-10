@@ -33,9 +33,11 @@ def demoFilePicker(root=None):
 
     # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
     btn = ttk.TTkButton(parent=frame, pos=( 0,0), size=(8,3), border=True, text='File' )
+    label = ttk.TTkLabel(parent=frame, pos=( 10,1), size=(30,1), text="...")
 
     def _showDialog():
         filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick a File", path=".", filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
+        filePicker.filePicked.connect(label.setText)
         ttk.TTkHelper.overlay(frame, filePicker, 2, 1)
 
     btn.clicked.connect(_showDialog)

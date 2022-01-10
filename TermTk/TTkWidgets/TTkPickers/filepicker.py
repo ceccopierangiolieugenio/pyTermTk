@@ -275,6 +275,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._lookPath.addItems(TTkFileDialogPicker._getListLook(self._path))
         self._lookPath.setCurrentIndex(0)
         self._lookPath.currentTextChanged.connect(self._openNewPath)
+        _FileTreeWidgetItem.setFilter(self._fileTree._treeView._rootItem, self._filter)
 
     @staticmethod
     def _getListLook(path):
@@ -376,6 +377,7 @@ class TTkFileDialogPicker(TTkWindow):
         if item.children(): return
         for i in TTkFileDialogPicker._getFileItems(item.path()):
             item.addChild(i)
+            # TODO: Find a better way than calling an internal function
             i._processFilter(self._filter)
 
 

@@ -91,6 +91,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem = TTkTreeWidgetItem(expanded=True)
         self._rootItem.dataChanged.connect(self._refreshCache)
+        self.sortItems(self._sortColumn, self._sortOrder)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()

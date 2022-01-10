@@ -106,14 +106,20 @@ class TTk(TTkWidget):
         self.show()
 
         self.running = True
+        # Keep track of the doubleclick to avoid the extra key release
+        lastDoubleclick = False
         lbt.Term.init()
         while self.running:
             # Main Loop
             evt = self.events.get()
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
+
+                # Avoid to broadcast a key release after a doubleclick
+                if mevt.evt == TTkK.Release and lastDoubleclick: continue
+                lastDoubleclick = mevt.doubleClick
+
                 focusWidget = TTkHelper.getFocus()
-                #overlayWidget = TTkHelper.getOverlay()
                 if focusWidget is not None and \
                    mevt.evt != TTkK.Press and \
                    mevt.key != TTkK.Wheel:
