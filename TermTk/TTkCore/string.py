@@ -22,6 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from hashlib import new
+import re
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -122,5 +125,69 @@ class TTkString():
 
         return ret
 
+    def replace(self, *args, **kwargs):
+        old = args[0]
+        new = args[1]
+        count = args[2] if len(args)==3 else 0x1000000
+
+        if old not in self._text: return self
+
+        oldLen = len(old)
+        newLen = len(new)
+
+        ret = TTkString()
+        if oldLen == newLen:
+            ret._colors += self._colors
+            ret._text   = self._text.replace(*args, **kwargs)
+        elif oldLen > newLen:
+            start = 0
+            while pos := self._text.index(old, start) if old in self._text[start:] else None:
+                ret._colors += self._colors[start:pos+newLen]
+                start = pos+oldLen
+                count -= 1
+                if count == 0: break
+            ret._colors += self._colors[start:]
+            ret._text   = self._text.replace(*args, **kwargs)
+        else:
+            start = 0
+            oldPos=0
+            while pos := self._text.index(old, start) if old in self._text[start:] else None:
+                ret._colors += self._colors[start:pos+oldLen] + [self._colors[pos+oldLen-1]]*(newLen-oldLen)
+                start = pos+oldLen
+                if count == 0: break
+            ret._colors += self._colors[start:]
+            ret._text   = self._text.replace(*args, **kwargs)
+
+        return ret
+
+    def setColor(self, color, match=None):
+        ret = TTkString()
+        ret._text   += self._text
+        if match:
+            ret._colors += self._colors
+            start=0
+            lenMatch = len(match)
+            while pos := self._text.index(match, start) if match in self._text[start:] else None:
+                start = pos+lenMatch
+                for i in range(pos, pos+lenMatch):
+                    ret._colors[i] = color
+        else:
+            ret._colors = [color]*len(self._text)
+        return ret
+
+    def substring(self, fr=None, to=None):
+        ret = TTkString()
+        ret._text   = self._text[fr:to]
+        ret._colors = self._colors[fr:to]
+        return ret
+
+
+
     def getData(self):
         return (self._text,self._colors)
+
+    def search(self, regexp):
+        return re.search(regexp, self._text)
+
+    def findall(self, regexp):
+        return re.findall(regexp, self._text)
