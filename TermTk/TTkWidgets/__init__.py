@@ -22,7 +22,5 @@ from .TTkPickers      import *
 from .spinbox         import *
 from .image           import TTkImage
 from .about           import TTkAbout
-from .tree            import TTkTree
-from .treewidget      import TTkTreeWidget
-from .treewidgetitem  import TTkTreeWidgetItem
+from .TTkModelView    import *
 from .Fancy           import *

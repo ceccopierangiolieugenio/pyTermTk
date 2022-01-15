@@ -35,8 +35,8 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.window import TTkWindow
-from TermTk.TTkWidgets.tree import TTkTree
-from TermTk.TTkWidgets.treewidgetitem import TTkTreeWidgetItem
+from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
+from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.combobox import TTkComboBox
