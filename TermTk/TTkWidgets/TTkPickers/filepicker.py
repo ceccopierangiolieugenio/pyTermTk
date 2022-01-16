@@ -36,14 +36,12 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.splitter import TTkSplitter
-from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.combobox import TTkComboBox
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
-from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
+from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 
 
@@ -148,7 +146,7 @@ class TTkFileDialogPicker(TTkWindow):
         # Home Folder (Win Compatible):
         #   os.path.expanduser("~")
 
-        self._fileTree = TTkTree(parent=splitter)
+        self._fileTree = TTkFileTree(parent=splitter)
         splitter.setSizes([10,self.width()-13])
         self._fileTree.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
         self._fileTree.itemExpanded.connect(self._updateChildren)
@@ -163,10 +161,8 @@ class TTkFileDialogPicker(TTkWindow):
 
     @pyTTkSlot(str)
     def _fileTypeChanged(self, type):
-        # TODO: Fix This Crap, _rootItem should not be addressed directly
-        # but I am just too tired now to find a proper way
         self._filter = re.match(".*\((.*)\)",type).group(1)
-        TTkFileTreeWidgetItem.setFilter(self._fileTree._treeView._rootItem, self._filter)
+        self._fileTree.setFilter(self._filter)
 
     @pyTTkSlot(str)
     def _checkFileName(self, fileName):
@@ -182,12 +178,12 @@ class TTkFileDialogPicker(TTkWindow):
         self.filePicked.emit(fileName)
         self.close()
 
-    @pyTTkSlot(TTkTreeWidgetItem, int)
+    @pyTTkSlot(TTkFileTreeWidgetItem, int)
     def _selectedItem(self, item, _):
         if item.getType() != item.FILE: return
         self._fileName.setText(item.path())
 
-    @pyTTkSlot(TTkTreeWidgetItem, int)
+    @pyTTkSlot(TTkFileTreeWidgetItem, int)
     def _activatedItem(self, item, _):
         path = item.path()
         if os.path.isdir(path):
@@ -229,15 +225,12 @@ class TTkFileDialogPicker(TTkWindow):
             if self._recentPathId:
                 self._btnPrev.setEnabled()
             self._btnNext.setDisabled()
-        self._fileTree.clear()
-        for i in TTkFileDialogPicker._getFileItems(path):
-            self._fileTree.addTopLevelItem(i)
+        self._fileTree.openPath(path)
         self._lookPath.currentTextChanged.disconnect(self._openNewPath)
         self._lookPath.clear()
         self._lookPath.addItems(TTkFileDialogPicker._getListLook(self._path))
         self._lookPath.setCurrentIndex(0)
         self._lookPath.currentTextChanged.connect(self._openNewPath)
-        TTkFileTreeWidgetItem.setFilter(self._fileTree._treeView._rootItem, self._filter)
 
     @staticmethod
     def _getListLook(path):
