@@ -157,6 +157,7 @@ class TTkFileBuffer():
         indexes = []
         id = 0
         rr = re.compile(regex, re.IGNORECASE if ignoreCase else 0)
+        TTkLog.debug(f"Search RE: {regex}")
         with open(self._filename,'r') as infile:
             for line in infile:
                 ma = rr.search(line)

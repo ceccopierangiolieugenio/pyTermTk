@@ -132,10 +132,19 @@ class _TTkTabs(TTkWidget):
     def unsetSideBorder(self, border):
         self._sideBorder &= ~border
 
-
     def setBorderColor(self, color):
         self._tabBorderColor      = color
         self._tabBorderColorFocus = color
+
+    def currentIndex(self):
+        return self._currentIndex
+
+    @pyTTkSlot(int)
+    def setCurrentIndex(self, index):
+        if 0 <= index < len(self._labels):
+                self._currentIndex = index
+                self._offset = index
+                self._updateTabs()
 
     def _updateTabs(self):
         xpos = 0+2
@@ -264,7 +273,9 @@ class TTkTabWidget(TTkFrame):
         '_tabWidgets', '_labels', '_labelsPos',
         '_offset', '_currentIndex',
         '_leftScroller', '_rightScroller',
-        '_tabMovable', '_tabClosable')
+        '_tabMovable', '_tabClosable',
+        # forward methods
+        'currentIndex', 'setCurrentIndex')
 
     def __init__(self, *args, **kwargs):
         self._tabWidgets = []
@@ -300,6 +311,16 @@ class TTkTabWidget(TTkFrame):
             self.setPadding(2,0,0,0)
         self.rootLayout().addItem(self._tabBarTopLayout)
         self._tabBarTopLayout.setGeometry(0,0,self._width,self._padt)
+        # forwarded methods
+        self.currentIndex    = self._tabBar.currentIndex
+        self.setCurrentIndex = self._tabBar.setCurrentIndex
+
+    @pyTTkSlot(TTkWidget)
+    def setCurrentWidget(self, widget):
+        for i, w in enumerate(self._tabWidgets):
+            if widget == w:
+                self.setCurrentIndex(i)
+                break
 
     @pyTTkSlot(int)
     def _tabChanged(self, index):
