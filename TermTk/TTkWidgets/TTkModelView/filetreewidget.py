@@ -39,17 +39,26 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 class TTkFileTreeWidget(TTkTreeWidget):
     __slots__ = ('_path', '_filter',
                  # Signals
-                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked')
+                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
     def __init__(self, *args, **kwargs):
         # Signals
         self.fileClicked         = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderClicked       = pyTTkSignal(TTkFileTreeWidgetItem)
         self.fileDoubleClicked   = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderDoubleClicked = pyTTkSignal(TTkFileTreeWidgetItem)
+        self.fileActivated       = pyTTkSignal(TTkFileTreeWidgetItem)
+        self.folderActivated     = pyTTkSignal(TTkFileTreeWidgetItem)
         TTkTreeWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkFileTreeWidget' )
         self._path   = kwargs.get('path','.')
         self._filter = '*'
+        self.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
+        self.openPath(self._path)
+        self.itemExpanded.connect(self._folderExpanded)
+        self.itemCollapsed.connect(self._folderCollapsed)
+        self.itemExpanded.connect(self._updateChildren)
+        self.itemActivated.connect(self._activated)
+
 
     def setFilter(self, filter):
         self._filter = filter
@@ -64,6 +73,7 @@ class TTkFileTreeWidget(TTkTreeWidget):
             self.addTopLevelItem(i)
         self.setFilter(self._filter)
 
+    @staticmethod
     def _getFileItems(path):
         path = os.path.abspath(path)
         if not os.path.exists(path): return []
@@ -138,3 +148,27 @@ class TTkFileTreeWidget(TTkTreeWidget):
                                 icon=TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.getIcon(n) + TTkColor.RST,
                                 childIndicatorPolicy=TTkK.DontShowIndicator))
         return ret
+
+    @staticmethod
+    def _folderExpanded(item):
+        item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderOpen + TTkColor.RST,)
+
+    @staticmethod
+    def _folderCollapsed(item):
+        item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,)
+
+    @pyTTkSlot(TTkFileTreeWidgetItem)
+    def _updateChildren(self, item):
+        if item.children(): return
+        for i in TTkFileTreeWidget._getFileItems(item.path()):
+            item.addChild(i)
+            # TODO: Find a better way than calling an internal function
+            i._processFilter(self._filter)
+
+    @pyTTkSlot(TTkFileTreeWidgetItem, int)
+    def _activated(self, item, _):
+        path = item.path()
+        if os.path.isdir(path):
+            self.folderActivated.emit(item)
+        elif os.path.isfile(path):
+            self.fileActivated.emit(item)

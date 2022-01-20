@@ -32,7 +32,7 @@ class TTkFileTree(TTkTree):
                  # Forwarded Methods
                  'openPath',
                  # Forwarded Signals
-                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked')
+                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
 
     def __init__(self, *args, **kwargs):
         wkwargs = kwargs.copy()
@@ -47,6 +47,8 @@ class TTkFileTree(TTkTree):
         self.folderClicked       = self._fileTreeWidget.folderClicked
         self.fileDoubleClicked   = self._fileTreeWidget.fileDoubleClicked
         self.folderDoubleClicked = self._fileTreeWidget.folderDoubleClicked
+        self.fileActivated       = self._fileTreeWidget.fileActivated
+        self.folderActivated     = self._fileTreeWidget.folderActivated
 
         # Forward Methods
         self.openPath            = self._fileTreeWidget.openPath

@@ -148,10 +148,6 @@ class TTkFileDialogPicker(TTkWindow):
 
         self._fileTree = TTkFileTree(parent=splitter)
         splitter.setSizes([10,self.width()-13])
-        self._fileTree.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
-        self._fileTree.itemExpanded.connect(self._updateChildren)
-        self._fileTree.itemExpanded.connect(TTkFileDialogPicker._folderExpanded)
-        self._fileTree.itemCollapsed.connect(TTkFileDialogPicker._folderCollapsed)
 
         self._fileTree.itemClicked.connect(self._selectedItem)
         self._fileTree.itemActivated.connect(self._activatedItem)
@@ -320,27 +316,6 @@ class TTkFileDialogPicker(TTkWindow):
                                 childIndicatorPolicy=TTkK.DontShowIndicator))
         return ret
 
-    @staticmethod
-    def _folderExpanded(item):
-        item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderOpen + TTkColor.RST,)
-
-    @staticmethod
-    def _folderCollapsed(item):
-        item.setIcon(0, TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,)
-
-    def _updateChildren(self, item):
-        if item.children(): return
-        for i in TTkFileDialogPicker._getFileItems(item.path()):
-            item.addChild(i)
-            # TODO: Find a better way than calling an internal function
-            i._processFilter(self._filter)
-
-
-'''
-for (dirpath, dirnames, filenames) in walk('/tmp'):
-    print(f"{dirpath} {dirnames} {filenames}")
-    break
-'''
 
 class TTkFileDialog:
     def getOpenFileName(caption, dir=".", filter="All Files (*)", options=None):
