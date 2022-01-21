@@ -186,8 +186,8 @@ class TTkString():
     def getData(self):
         return (self._text,self._colors)
 
-    def search(self, regexp):
-        return re.search(regexp, self._text)
+    def search(self, regexp, ignoreCase=False):
+        return re.search(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
 
-    def findall(self, regexp):
-        return re.findall(regexp, self._text)
+    def findall(self, regexp, ignoreCase=False):
+        return re.findall(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
