@@ -539,7 +539,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
     @pyTTkSlot()
     def setFocus(self):
         # TTkLog.debug(f"setFocus: {self._name} - {self._focus}")
-        if self._focus: return
+        if self._focus and self == TTkHelper.getFocus(): return
         tmp = TTkHelper.getFocus()
         if tmp == self: return
         if tmp is not None:
@@ -554,7 +554,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     def clearFocus(self):
         # TTkLog.debug(f"clearFocus: {self._name} - {self._focus}")
-        if not self._focus: return
+        if not self._focus and self != TTkHelper.getFocus(): return
         TTkHelper.clearFocus()
         self._focus = False
         self.focusChanged.emit(self._focus)
