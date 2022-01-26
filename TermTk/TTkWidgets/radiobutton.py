@@ -47,6 +47,12 @@ class TTkRadioButton(TTkWidget):
         else:
             TTkRadioButton._radioLists[self._name].append(self)
 
+    def checkState(self):
+        if self._checked:
+            return TTkK.Checked
+        else:
+            return TTkK.Unchecked
+
     def paintEvent(self):
         if self.hasFocus():
             borderColor = TTkCfg.theme.radioButtonBorderColorFocus
