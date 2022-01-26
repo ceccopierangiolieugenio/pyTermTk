@@ -157,19 +157,27 @@ class TTkTheme():
     '''Default to :class:`buttonTextColor`'''
     checkboxBorderColor       = buttonBorderColor
     '''Default to :class:`buttonBorderColor`'''
+    checkboxTextColor         = TTkColor.RST
+    '''Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`'''
     checkboxContentColorFocus = buttonTextColorFocus
     '''Default to :class:`buttonTextColorFocus`'''
     checkboxBorderColorFocus  = buttonBorderColorFocus
     '''Default to :class:`buttonBorderColorFocus`'''
+    checkboxTextColorFocus    = TTkColor.fg("#ffff88")+TTkColor.bg("#111111")
+    '''Default to **TTkColor.fg("#ffff88")+TTkColor.bg("#111111")**'''
 
-    radioButtonContentColor      = buttonTextColor
-    '''Default to :class:`buttonTextColor`'''
-    radioButtonBorderColor       = buttonBorderColor
-    '''Default to :class:`buttonBorderColor`'''
-    radioButtonContentColorFocus = buttonTextColorFocus
-    '''Default to :class:`buttonTextColorFocus`'''
-    radioButtonBorderColorFocus  = buttonBorderColorFocus
-    '''Default to :class:`buttonBorderColorFocus`'''
+    radioButtonContentColor      = checkboxContentColor
+    '''Default to :class:`checkboxContentColor`'''
+    radioButtonBorderColor       = checkboxBorderColor
+    '''Default to :class:`checkboxBorderColor`'''
+    radioButtonTextColor       = checkboxTextColor
+    '''Default to :class:`checkboxTextColor`'''
+    radioButtonContentColorFocus = checkboxContentColorFocus
+    '''Default to :class:`checkboxContentColorFocus`'''
+    radioButtonBorderColorFocus  = checkboxBorderColorFocus
+    '''Default to :class:`checkboxBorderColorFocus`'''
+    radioButtonTextColorFocus  = checkboxTextColorFocus
+    '''Default to :class:`checkboxTextColorFocus`'''
 
     tabColor       = TTkColor.fg("#aaaaaa")
     '''Default to **TTkColor.fg("#aaaaaa")**'''

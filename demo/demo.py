@@ -57,7 +57,7 @@ def demoShowcase(root=None, border=True):
 
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
-    themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkGridLayout(), maxHeight=5, minHeight=5)
+    themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkVBoxLayout(), maxHeight=5, minHeight=5)
     listMenu = ttk.TTkList(maxWidth=15, minWidth=10)
 
     leftFrame.layout().addWidget(themesFrame, 0, 0)
@@ -66,12 +66,9 @@ def demoShowcase(root=None, border=True):
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
     # Themes
-    themesFrame.layout().addWidget(r1 := ttk.TTkRadioButton(name="theme",maxWidth=3),0,0)
-    themesFrame.layout().addWidget(ttk.TTkLabel(text='ASCII')            ,0,1)
-    themesFrame.layout().addWidget(r2 := ttk.TTkRadioButton(name="theme",maxWidth=3, checked=True),1,0)
-    themesFrame.layout().addWidget(ttk.TTkLabel(text='UTF-8')            ,1,1)
-    themesFrame.layout().addWidget(r3 := ttk.TTkRadioButton(name="theme",maxWidth=3),2,0)
-    themesFrame.layout().addWidget(ttk.TTkLabel(text='Nerd')             ,2,1)
+    themesFrame.layout().addWidget(r1 := ttk.TTkRadioButton(text="ASCII", name="theme"))
+    themesFrame.layout().addWidget(r2 := ttk.TTkRadioButton(text="UTF-8",name="theme", checked=True))
+    themesFrame.layout().addWidget(r3 := ttk.TTkRadioButton(text="Nerd",name="theme"))
 
     r1.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.ASCII))
     r2.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.UTF8 ))

@@ -10,6 +10,7 @@ tmp
 profiler.txt
 .vscode
 docs/html
+experiments
 
 # C extensions
 *.so

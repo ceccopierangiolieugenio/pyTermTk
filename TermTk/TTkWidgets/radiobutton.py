@@ -30,7 +30,7 @@ from TermTk.TTkWidgets.widget import *
 
 class TTkRadioButton(TTkWidget):
     _radioLists = {}
-    __slots__ = ('_checked', 'clicked')
+    __slots__ = ('_checked', '_text', 'clicked')
     def __init__(self, *args, **kwargs):
         # Define Signals
         self.clicked = pyTTkSignal()
@@ -38,7 +38,8 @@ class TTkRadioButton(TTkWidget):
         self._name = kwargs.get('name' , 'TTkRadioButton' )
         # self.cehcked = pyTTkSignal()
         self._checked = kwargs.get('checked', False )
-        self.setMinimumSize(3, 1)
+        self._text = kwargs.get('text', '' )
+        self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         if self._name not in TTkRadioButton._radioLists:
@@ -49,16 +50,18 @@ class TTkRadioButton(TTkWidget):
     def paintEvent(self):
         if self.hasFocus():
             borderColor = TTkCfg.theme.radioButtonBorderColorFocus
-            color       = TTkCfg.theme.radioButtonContentColorFocus
+            textColor   = TTkCfg.theme.radioButtonTextColorFocus
+            xColor      = TTkCfg.theme.radioButtonContentColorFocus
         else:
             borderColor = TTkCfg.theme.radioButtonBorderColor
-            color       = TTkCfg.theme.radioButtonContentColor
+            textColor   = TTkCfg.theme.radioButtonTextColor
+            xColor      = TTkCfg.theme.radioButtonContentColor
+        self._canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
+        self._canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         if self._checked:
-            self._canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
-            self._canvas.drawText(pos=(1,0), color=color ,text="X")
+            self._canvas.drawText(pos=(1,0), color=xColor ,text="X")
         else:
-            self._canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
-            self._canvas.drawText(pos=(1,0), color=color ,text=" ")
+            self._canvas.drawText(pos=(1,0), color=xColor ,text=" ")
 
     def _pressEvent(self):
         # Uncheck the radio already checked;
