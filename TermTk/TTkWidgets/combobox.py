@@ -127,7 +127,9 @@ class TTkComboBox(TTkWidget):
             self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
 
     def currentText(self):
-        if self._id >= 0:
+        if self._editable:
+            return self._lineEdit.text()
+        elif self._id >= 0:
             return self._list[self._id]
         return ""
 
@@ -139,11 +141,24 @@ class TTkComboBox(TTkWidget):
         if index > len(self._list)-1: return
         self._id = index
         if self._editable:
-            self._lineEdit.setText(self.currentText())
+            self._lineEdit.setText(self._list[self._id])
         else:
             self.currentTextChanged.emit(self._list[self._id])
         self.currentIndexChanged.emit(self._id)
         self.update()
+
+    @pyTTkSlot(str)
+    def setCurrentText(self, text):
+        if self._editable:
+            self.setEditText(text)
+        else:
+            if id := self._list.index(text):
+                self.setCurrentIndex(id)
+
+    @pyTTkSlot(str)
+    def setEditText(self, text):
+        if self._editable:
+            self._lineEdit.setText(text)
 
     def insertPolicy(self):
         return self._insertPolicy
