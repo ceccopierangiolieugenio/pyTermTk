@@ -120,9 +120,11 @@ class TTkLineEdit(TTkWidget):
         self._selectionFrom = len(before)
         self._selectionTo = len(before)
 
-        if m := re.search('[^ \t]*$',before):
+        selectRE = '[a-zA-Z0-9:,./]*'
+
+        if m := re.search(selectRE+'$',before):
             self._selectionFrom -= len(m.group(0))
-        if m := re.search('^[^ \t]*',after):
+        if m := re.search('^'+selectRE,after):
             self._selectionTo += len(m.group(0))
 
         # TTkLog.debug("x"*self._selectionFrom)
@@ -159,7 +161,7 @@ class TTkLineEdit(TTkWidget):
                     self._cursorPos -= 1
             elif evt.key == TTkK.Key_Right:
                 if self._selectionFrom < self._selectionTo:
-                    self._cursorPos = self._selectionTo
+                    self._cursorPos = self._selectionTo-1
                 if self._cursorPos < len(self._text):
                     self._cursorPos += 1
             elif evt.key == TTkK.Key_End:
@@ -169,9 +171,16 @@ class TTkLineEdit(TTkWidget):
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
             elif evt.key == TTkK.Key_Delete:
-                self._text = self._text[:self._cursorPos] + self._text[self._cursorPos+1:]
+                if self._selectionFrom < self._selectionTo:
+                    self._text = self._text[:self._selectionFrom] + self._text[self._selectionTo:]
+                    self._cursorPos = self._selectionFrom
+                else:
+                    self._text = self._text[:self._cursorPos] + self._text[self._cursorPos+1:]
             elif evt.key == TTkK.Key_Backspace:
-                if self._cursorPos > 0:
+                if self._selectionFrom < self._selectionTo:
+                    self._text = self._text[:self._selectionFrom] + self._text[self._selectionTo:]
+                    self._cursorPos = self._selectionFrom
+                elif self._cursorPos > 0:
                    self._text = self._text[:self._cursorPos-1] + self._text[self._cursorPos:]
                    self._cursorPos -= 1
 
