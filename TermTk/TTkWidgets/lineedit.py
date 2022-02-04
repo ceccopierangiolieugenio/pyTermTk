@@ -64,19 +64,30 @@ class TTkLineEdit(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot(str)
-    def setText(self, text):
+    def setText(self, text, cursorPos=-1):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = text
-            self._cursorPos = min(len(text),self._cursorPos)
+            self._cursorPos = cursorPos if cursorPos >= 0 else len(text)
             self.update()
 
     def text(self):
         return self._text
 
     def _pushCursor(self):
+        w = self.width()
+
         self._selectionFrom = 0
         self._selectionTo   = 0
+
+        # Align the text and the offset and the cursor to the current view
+        self._offset = max(0, min(self._offset, len(self._text)-w))
+        # Scroll to the right if reached the edge
+        if self._cursorPos - self._offset > w:
+            self._offset = self._cursorPos-w
+        if self._cursorPos - self._offset < 0:
+            self._offset = self._cursorPos
+
         TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)
         if self._replace:
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
@@ -184,12 +195,6 @@ class TTkLineEdit(TTkWidget):
                    self._text = self._text[:self._cursorPos-1] + self._text[self._cursorPos:]
                    self._cursorPos -= 1
 
-            # Scroll to the right if reached the edge
-            if self._cursorPos - self._offset > w:
-                self._offset = self._cursorPos - w
-            # Scroll to the right if reached the edge
-            elif self._cursorPos - self._offset < 0:
-                self._offset = self._cursorPos
             self._pushCursor()
 
             if evt.key == TTkK.Key_Enter:
@@ -212,11 +217,8 @@ class TTkLineEdit(TTkWidget):
             if self._inputType & TTkK.Input_Number and \
                not text.lstrip('-').isdigit():
                 return
-            self.setText(text)
-            self._cursorPos += 1
-            # Scroll to the right if reached the edge
-            if self._cursorPos - self._offset > w:
-                self._offset += 1
+            self.setText(text, self._cursorPos+1)
+
             self._pushCursor()
         # Emit event only if the text changed
         if baseText != self._text:
