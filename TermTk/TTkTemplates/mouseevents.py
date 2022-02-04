@@ -23,6 +23,19 @@
 # SOFTWARE.
 
 class TMouseEvents():
+    def mouseTapEvent(self, evt) -> bool :
+        '''
+        This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.
+
+        .. note:: Reimplement this function to handle this event
+
+        Args:
+            evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
+        Returns:
+            bool: True if the event has been handled
+        '''
+        return True
+
     def mouseDoubleClickEvent(self, evt) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.

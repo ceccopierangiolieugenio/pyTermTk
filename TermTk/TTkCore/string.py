@@ -160,7 +160,7 @@ class TTkString():
 
         return ret
 
-    def setColor(self, color, match=None):
+    def setColor(self, color, match=None, posFrom=0, posTo=0):
         ret = TTkString()
         ret._text   += self._text
         if match:
@@ -171,6 +171,10 @@ class TTkString():
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
                     ret._colors[i] = color
+        elif posFrom < posTo:
+            ret._colors += self._colors
+            for i in range(posFrom, posTo):
+                ret._colors[i] = color
         else:
             ret._colors = [color]*len(self._text)
         return ret

@@ -358,6 +358,8 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             if evt.doubleClick and self.mouseDoubleClickEvent(evt):
                 #self._pendingMouseRelease = True
                 return True
+            if evt.tap > 1 and self.mouseTapEvent(evt):
+                return True
             if not evt.doubleClick and self.mousePressEvent(evt):
                 # TTkLog.debug(f"Click {self._name}")
                 self._pendingMouseRelease = True

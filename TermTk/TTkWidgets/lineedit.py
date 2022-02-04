@@ -22,11 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import re
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 
@@ -38,7 +40,7 @@ from TermTk.TTkWidgets.widget import *
 '''
 class TTkLineEdit(TTkWidget):
     __slots__ = (
-        '_text', '_cursorPos', '_offset', '_replace', '_inputType',
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, *args, **kwargs):
@@ -54,6 +56,8 @@ class TTkLineEdit(TTkWidget):
            not self._text.lstrip('-').isdigit(): self._text = ""
         self._offset = 0
         self._cursorPos = 0
+        self._selectionFrom = 0
+        self._selectionTo   = 0
         self._replace=False
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
@@ -71,6 +75,8 @@ class TTkLineEdit(TTkWidget):
         return self._text
 
     def _pushCursor(self):
+        self._selectionFrom = 0
+        self._selectionTo   = 0
         TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)
         if self._replace:
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
@@ -81,15 +87,20 @@ class TTkLineEdit(TTkWidget):
     def paintEvent(self):
         if self.hasFocus():
             color = TTkCfg.theme.lineEditTextColorFocus
+            selectColor = TTkCfg.theme.lineEditTextColorSelected
         else:
             color = TTkCfg.theme.lineEditTextColor
+            selectColor = TTkCfg.theme.lineEditTextColorSelected
         w = self.width()
+        text = TTkString() + color
         if self._inputType & TTkK.Input_Password:
-            text = ("*"*(len(self._text)))[self._offset:]
+            text += ("*"*(len(self._text)))
         else:
-            text = self._text[self._offset:]
-        text = text[:w].ljust(w)
-        self._canvas.drawText(pos=(0,0), text=text, color=color)
+            text += self._text
+        if self._selectionFrom < self._selectionTo:
+            text = text.setColor(color=selectColor, posFrom=self._selectionFrom, posTo=self._selectionTo)
+        text = text.substring(self._offset)
+        self._canvas.drawText(pos=(0,0), text=text, color=color, width=w)
 
     def mousePressEvent(self, evt):
         x,y = evt.x, evt.y
@@ -97,9 +108,40 @@ class TTkLineEdit(TTkWidget):
         if txtPos > len(self._text):
             txtPos = len(self._text)
         self._cursorPos = txtPos
+        self._selectionFrom = 0
+        self._selectionTo   = 0
         self._pushCursor()
         return True
 
+    def mouseDoubleClickEvent(self, evt) -> bool:
+        before = self._text[:self._cursorPos]
+        after =  self._text[self._cursorPos:]
+
+        self._selectionFrom = len(before)
+        self._selectionTo = len(before)
+
+        if m := re.search('[^ \t]*$',before):
+            self._selectionFrom -= len(m.group(0))
+        if m := re.search('^[^ \t]*',after):
+            self._selectionTo += len(m.group(0))
+
+        # TTkLog.debug("x"*self._selectionFrom)
+        # TTkLog.debug("x"*self._selectionTo)
+        # TTkLog.debug(self._text)
+
+        if self._selectionFrom < self._selectionTo:
+            TTkHelper.hideCursor()
+
+        self.update()
+        return True
+
+    def mouseTapEvent(self, evt) -> bool:
+        self._selectionFrom = 0
+        self._selectionTo = len(self._text)
+        if self._selectionFrom < self._selectionTo:
+            TTkHelper.hideCursor()
+        self.update()
+        return True
 
     def keyEvent(self, evt):
         w = self.width()
@@ -111,9 +153,13 @@ class TTkLineEdit(TTkWidget):
             if evt.key == TTkK.Key_Up: pass
             elif evt.key == TTkK.Key_Down: pass
             elif evt.key == TTkK.Key_Left:
+                if self._selectionFrom < self._selectionTo:
+                    self._cursorPos = self._selectionTo
                 if self._cursorPos > 0:
                     self._cursorPos -= 1
             elif evt.key == TTkK.Key_Right:
+                if self._selectionFrom < self._selectionTo:
+                    self._cursorPos = self._selectionTo
                 if self._cursorPos < len(self._text):
                     self._cursorPos += 1
             elif evt.key == TTkK.Key_End:
@@ -141,11 +187,17 @@ class TTkLineEdit(TTkWidget):
                 self.returnPressed.emit()
         else:
             text = self._text
-            pre = text[:self._cursorPos]
-            if self._replace:
-                post = text[self._cursorPos+1:]
+
+            if self._selectionFrom < self._selectionTo:
+                pre  = text[:self._selectionFrom]
+                post = text[self._selectionTo:]
+                self._cursorPos = self._selectionFrom
             else:
-                post = text[self._cursorPos:]
+                pre = text[:self._cursorPos]
+                if self._replace:
+                    post = text[self._cursorPos+1:]
+                else:
+                    post = text[self._cursorPos:]
 
             text = pre + evt.key + post
             if self._inputType & TTkK.Input_Number and \
@@ -166,5 +218,7 @@ class TTkLineEdit(TTkWidget):
         self._pushCursor()
 
     def focusOutEvent(self):
+        self._selectionFrom = 0
+        self._selectionTo   = 0
         TTkHelper.hideCursor()
         self.update()

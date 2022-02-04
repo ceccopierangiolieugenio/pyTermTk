@@ -144,6 +144,8 @@ class TTkTheme():
     '''Default to **TTkColor.fg("#dddddd")+TTkColor.bg("#222222")**'''
     lineEditTextColorFocus  = TTkColor.fg("#dddddd")+TTkColor.bg("#000044")
     '''Default to **TTkColor.fg("#dddddd")+TTkColor.bg("#000044")**'''
+    lineEditTextColorSelected  = TTkColor.fg("#ffffff")+TTkColor.bg("#008844")
+    '''Default to **TTkColor.fg("#ffffff")+TTkColor.bg("#008844")**'''
 
     comboboxContentColor      = TTkColor.fg("#dddd88")+TTkColor.bg("#111111")
     '''Default to **TTkColor.fg("#dddd88")+TTkColor.bg("#111111")**'''
