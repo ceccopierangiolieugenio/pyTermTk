@@ -50,20 +50,19 @@ class MouseEvent:
     Up      = TTkK.WHEEL_Up
     Down    = TTkK.WHEEL_Down
 
-    __slots__ = ('x','y','key','evt', 'tap', 'doubleClick', 'raw')
-    def __init__(self, x: int, y: int, key: int, evt: int, tap: int, doubleClick:bool, raw: str):
+    __slots__ = ('x','y','key','evt', 'tap', 'raw')
+    def __init__(self, x: int, y: int, key: int, evt: int, tap: int, raw: str):
         self.x = x
         self.y = y
         self.key = key
         self.evt = evt
         self.raw = raw
         self.tap = tap
-        self.doubleClick = doubleClick
 
     def clone(self, pos=None, evt=None):
         x,y = pos or (self.x, self.y)
         evt = evt or self.evt
-        return MouseEvent(x, y, self.key, evt, self.tap, self.doubleClick, self.raw)
+        return MouseEvent(x, y, self.key, evt, self.tap, self.raw)
 
     def key2str(self):
         return {
@@ -88,7 +87,7 @@ class MouseEvent:
         }.get(self.evt, "Undefined")
 
     def __str__(self):
-        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} tap:{self.tap} dc:{self.doubleClick} - {self.raw}"
+        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} tap:{self.tap} - {self.raw}"
 
 class Input:
     _leftLastTime = 0
@@ -151,30 +150,29 @@ class Input:
                     state = m.group(4)
                     key = MouseEvent.NoButton
                     evt = MouseEvent.NoEvent
-                    doubleClick = False
                     tap = 0
 
-                    def _checkDoubleClick(lastTime, tap):
+                    def _checkTap(lastTime, tap):
                         if state=="M":
                             t = time()
                             if (t-lastTime) < 0.4:
-                                return t, tap+1, tap==1
+                                return t, tap+1
                             else:
-                                return t, 1, False
-                        return lastTime, tap, False
+                                return t, 1
+                        return lastTime, tap
 
                     if code == 0x00:
-                        Input._leftLastTime, Input._leftTap, doubleClick = _checkDoubleClick(Input._leftLastTime, Input._leftTap)
+                        Input._leftLastTime, Input._leftTap = _checkTap(Input._leftLastTime, Input._leftTap)
                         tap = Input._leftTap
                         key = MouseEvent.LeftButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x01:
-                        Input._midLastTime, Input._midTap, doubleClick = _checkDoubleClick(Input._midLastTime, Input._midTap)
+                        Input._midLastTime, Input._midTap = _checkTap(Input._midLastTime, Input._midTap)
                         tap = Input._midTap
                         key = MouseEvent.MidButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
                     elif code == 0x02:
-                        Input._rightLastTime, Input._rightTap, doubleClick = _checkDoubleClick(Input._rightLastTime, Input._rightTap)
+                        Input._rightLastTime, Input._rightTap = _checkTap(Input._rightLastTime, Input._rightTap)
                         tap = Input._rightTap
                         key = MouseEvent.RightButton
                         evt = MouseEvent.Press if state=="M" else MouseEvent.Release
@@ -193,7 +191,7 @@ class Input:
                     elif code == 0x41:
                         key = MouseEvent.Wheel
                         evt = MouseEvent.Down
-                    mevt = MouseEvent(x, y, key, evt, tap, doubleClick,  m.group(0).replace("\033", "<ESC>"))
+                    mevt = MouseEvent(x, y, key, evt, tap, m.group(0).replace("\033", "<ESC>"))
                 if kevt is None and mevt is None:
                     TTkLog.error("UNHANDLED: "+input_key.replace("\033","<ESC>"))
                 input_key = ""

@@ -355,12 +355,12 @@ class TTkWidget(TMouseEvents,TKeyEvents):
             if self.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 self.setFocus()
                 self.raiseWidget()
-            if evt.doubleClick and self.mouseDoubleClickEvent(evt):
+            if evt.tap == 2 and self.mouseDoubleClickEvent(evt):
                 #self._pendingMouseRelease = True
                 return True
             if evt.tap > 1 and self.mouseTapEvent(evt):
                 return True
-            if not evt.doubleClick and self.mousePressEvent(evt):
+            if evt.tap == 1 and self.mousePressEvent(evt):
                 # TTkLog.debug(f"Click {self._name}")
                 self._pendingMouseRelease = True
                 return True

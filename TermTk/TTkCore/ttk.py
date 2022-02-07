@@ -106,8 +106,8 @@ class TTk(TTkWidget):
         self.show()
 
         self.running = True
-        # Keep track of the doubleclick to avoid the extra key release
-        lastDoubleclick = False
+        # Keep track of the multiTap to avoid the extra key release
+        lastMultiTap = False
         lbt.Term.init()
         while self.running:
             # Main Loop
@@ -115,9 +115,9 @@ class TTk(TTkWidget):
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
 
-                # Avoid to broadcast a key release after a doubleclick
-                if mevt.evt == TTkK.Release and lastDoubleclick: continue
-                lastDoubleclick = mevt.doubleClick
+                # Avoid to broadcast a key release after a multitap event
+                if mevt.evt == TTkK.Release and lastMultiTap: continue
+                lastMultiTap = mevt.tap > 1
 
                 focusWidget = TTkHelper.getFocus()
                 if focusWidget is not None and \
