@@ -52,6 +52,7 @@ class TTk(TTkWidget):
         self.key_events = queue.Queue()
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
+        self._title = kwargs.get('title','TermTk')
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         try:
@@ -108,7 +109,7 @@ class TTk(TTkWidget):
         self.running = True
         # Keep track of the multiTap to avoid the extra key release
         lastMultiTap = False
-        lbt.Term.init()
+        lbt.Term.init(title=self._title)
         while self.running:
             # Main Loop
             evt = self.events.get()
