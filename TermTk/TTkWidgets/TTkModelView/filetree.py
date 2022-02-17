@@ -30,7 +30,7 @@ from TermTk.TTkWidgets.TTkModelView.filetreewidget import TTkFileTreeWidget
 class TTkFileTree(TTkTree):
     __slots__ = ('_fileTreeWidget',
                  # Forwarded Methods
-                 'openPath',
+                 'openPath', 'getOpenPath',
                  # Forwarded Signals
                  'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
 
@@ -52,3 +52,4 @@ class TTkFileTree(TTkTree):
 
         # Forward Methods
         self.openPath            = self._fileTreeWidget.openPath
+        self.getOpenPath         = self._fileTreeWidget.getOpenPath
