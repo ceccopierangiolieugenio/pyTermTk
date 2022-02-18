@@ -130,7 +130,7 @@
  - [ ] Events (Signal/Slots)
  - [x] Themes
  - [ ] Align Selected to center
- - [ ] Add Menu
+ - [x] Add Menu
  - [ ] Keyboard events
 #### Spin Box
  - [x] Basic Implementation
@@ -153,16 +153,16 @@
 #### Color Picker~/github/Varie/pyTermTk~/github/Varie/pyTermTk
  - [x] Basic Implementation
  - [x] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Themes
  - [x] Use Spinbox for R G B
 #### Date Picker
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)
  - [ ] Themes
 #### File Picker
- - [ ] Basic Implementation
- - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Basic Implementation
+ - [x] Events (Signal/Slots)
+ - [x] Themes
 #### Yes/No Ok/Cancel Picker
  - [ ] Basic Implementation
  - [ ] Events (Signal/Slots)

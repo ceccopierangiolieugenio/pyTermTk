@@ -91,7 +91,7 @@ class _TTkTabs(TTkWidget):
         '_tabMovable', '_tabClosable',
         '_sideBorder',
         #Signals
-        'currentChanged')
+        'currentChanged', 'tabBarClicked')
 
     def __init__(self, *args, **kwargs):
         self._labels = []
@@ -114,6 +114,7 @@ class _TTkTabs(TTkWidget):
         self._tabOffsetColorFocus = TTkCfg.theme.tabOffsetColorFocus
         # Signals
         self.currentChanged = pyTTkSignal(int)
+        self.tabBarClicked  = pyTTkSignal(int)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTabs')
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -197,6 +198,7 @@ class _TTkTabs(TTkWidget):
             if posx <= x < (posx+tablen):
                 self._currentIndex = i
                 self._offset = i
+                self.tabBarClicked.emit(self._currentIndex)
                 self._updateTabs()
                 return True
         return False
@@ -274,6 +276,8 @@ class TTkTabWidget(TTkFrame):
         '_offset', '_currentIndex',
         '_leftScroller', '_rightScroller',
         '_tabMovable', '_tabClosable',
+        # Forward Signals
+        'currentChanged', 'tabBarClicked',
         # forward methods
         'currentIndex', 'setCurrentIndex')
 
@@ -314,6 +318,9 @@ class TTkTabWidget(TTkFrame):
         # forwarded methods
         self.currentIndex    = self._tabBar.currentIndex
         self.setCurrentIndex = self._tabBar.setCurrentIndex
+        # forwarded Signals
+        self.currentChanged = self._tabBar.currentChanged
+        self.tabBarClicked  = self._tabBar.tabBarClicked
 
     @pyTTkSlot(TTkWidget)
     def setCurrentWidget(self, widget):

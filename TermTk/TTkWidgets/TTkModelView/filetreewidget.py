@@ -65,6 +65,9 @@ class TTkFileTreeWidget(TTkTreeWidget):
         # TODO: Avoid to refer directly '_rootItem'
         TTkFileTreeWidgetItem.setFilter(self._rootItem, filter)
 
+    def getOpenPath(self):
+        return self._path
+
     def openPath(self, path):
         self._path = path
 
