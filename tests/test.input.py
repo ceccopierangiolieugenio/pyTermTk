@@ -26,7 +26,7 @@ import sys, os
 import logging
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog, TTkK
+from TermTk import TTkLog, TTkK, Input
 import TermTk.libbpytop as lbt
 
 def message_handler(mode, context, message):
@@ -64,7 +64,7 @@ def winCallback(width, height):
     TTkLog.info(f"Resize: w:{width}, h:{height}")
 
 lbt.Term.registerResizeCb(winCallback)
-lbt.Input.get_key(keyCallback)
+Input.get_key(keyCallback)
 
-lbt.Term.push(lbt.Term.mouse_off, lbt.Term.mouse_direct_off)
+Term.push(lbt.Term.mouse_off, lbt.Term.mouse_direct_off)
 lbt.Term.echo(True)

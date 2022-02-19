@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import TermTk.libbpytop as lbt
+from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
@@ -243,7 +244,7 @@ class TTkHelper:
                 TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             if TTkHelper._cursor:
                 x,y = TTkHelper._cursorPos
-                lbt.Term.push(lbt.Mv.to(y+1,x+1))
+                lbt.Term.push(TTkTerm.Cursor.moveTo(y+1,x+1))
                 lbt.Term.showCursor(TTkHelper._cursorType)
 
     @staticmethod
@@ -336,7 +337,7 @@ class TTkHelper:
     def moveCursor(widget, x, y):
         xx, yy = TTkHelper.absPos(widget)
         TTkHelper._cursorPos = [xx+x,yy+y]
-        lbt.Term.push(lbt.Mv.to(yy+y+1,xx+x+1))
+        lbt.Term.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
 
 
     class Color(lbt.Color): pass

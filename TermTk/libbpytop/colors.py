@@ -15,13 +15,10 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-import os, sys, io, threading, signal, re, subprocess, logging, logging.handlers, argparse
-import queue
 from select import select
 from time import time, sleep, strftime, localtime
 from typing import List, Set, Dict, Tuple, Optional, Union, Any, Callable, ContextManager, Iterable, Type, NamedTuple
 
-from TermTk.libbpytop.term import Term
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog

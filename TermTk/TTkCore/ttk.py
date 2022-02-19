@@ -27,8 +27,8 @@ import signal
 import time
 import queue
 
-import TermTk.libbpytop as lbt
-from TermTk.TTkCore.constant import TTkConstant, TTkK
+from TermTk.TTkCore.TTkTerm.input import TTkInput
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.cfg import *
@@ -191,7 +191,7 @@ class TTk(TTkWidget):
                 self.events.put(TTkK.MOUSE_EVENT)
             return self.running
         # Start input key loop
-        lbt.Input.get_key(_inputCallback)
+        TTkInput.get_key(_inputCallback)
 
     def _canvas_thread(self):
         pass
