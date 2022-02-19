@@ -37,7 +37,7 @@ class TTkHelper:
     _updateBuffer  = []
     _cursorPos = [0,0]
     _cursor = False
-    _cursorType = lbt.Term.cursor_blinking_block
+    _cursorType = TTkTerm.Cursor.BLINKING_BLOCK
     class _Overlay():
         __slots__ = ('_widget','_prevFocus','_x','_y')
         def __init__(self,x,y,widget,prevFocus):
@@ -237,15 +237,15 @@ class TTkHelper:
 
         if pushToTerminal:
             if TTkHelper._cursor:
-                lbt.Term.hideCursor()
+                TTkTerm.Cursor.hide()
             if TTkCfg.doubleBuffer:
                 TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             else:
                 TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             if TTkHelper._cursor:
                 x,y = TTkHelper._cursorPos
-                lbt.Term.push(TTkTerm.Cursor.moveTo(y+1,x+1))
-                lbt.Term.showCursor(TTkHelper._cursorType)
+                TTkTerm.push(TTkTerm.Cursor.moveTo(y+1,x+1))
+                TTkTerm.Cursor.show(TTkHelper._cursorType)
 
     @staticmethod
     def widgetDepth(widget) -> int:
@@ -319,26 +319,24 @@ class TTkHelper:
 
     @staticmethod
     def showCursor(cursorType = TTkK.Cursor_Blinking_Block):
-        if   cursorType == TTkK.Cursor_Blinking_Block      : TTkHelper._cursorType = lbt.Term.cursor_blinking_block
-        elif cursorType == TTkK.Cursor_Blinking_Block_Also : TTkHelper._cursorType = lbt.Term.cursor_blinking_block_also
-        elif cursorType == TTkK.Cursor_Steady_Block        : TTkHelper._cursorType = lbt.Term.cursor_steady_block
-        elif cursorType == TTkK.Cursor_Blinking_Underline  : TTkHelper._cursorType = lbt.Term.cursor_blinking_underline
-        elif cursorType == TTkK.Cursor_Steady_Underline    : TTkHelper._cursorType = lbt.Term.cursor_steady_underline
-        elif cursorType == TTkK.Cursor_Blinking_Bar        : TTkHelper._cursorType = lbt.Term.cursor_blinking_bar
-        elif cursorType == TTkK.Cursor_Steady_Bar          : TTkHelper._cursorType = lbt.Term.cursor_steady_bar
-        lbt.Term.showCursor(TTkHelper._cursorType)
+        if   cursorType == TTkK.Cursor_Blinking_Block      : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
+        elif cursorType == TTkK.Cursor_Blinking_Block_Also : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK_ALSO
+        elif cursorType == TTkK.Cursor_Steady_Block        : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BLOCK
+        elif cursorType == TTkK.Cursor_Blinking_Underline  : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_UNDERLINE
+        elif cursorType == TTkK.Cursor_Steady_Underline    : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_UNDERLINE
+        elif cursorType == TTkK.Cursor_Blinking_Bar        : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BAR
+        elif cursorType == TTkK.Cursor_Steady_Bar          : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BAR
+        TTkTerm.Cursor.show(TTkHelper._cursorType)
         TTkHelper._cursor = True
     @staticmethod
     def hideCursor():
-        lbt.Term.hideCursor()
-        TTkHelper._cursorType = lbt.Term.cursor_blinking_block
+        TTkTerm.Cursor.hide()
+        TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
         TTkHelper._cursor = False
     @staticmethod
     def moveCursor(widget, x, y):
         xx, yy = TTkHelper.absPos(widget)
         TTkHelper._cursorPos = [xx+x,yy+y]
-        lbt.Term.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
-
+        TTkTerm.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
 
     class Color(lbt.Color): pass
-    class Mv(lbt.Mv): pass

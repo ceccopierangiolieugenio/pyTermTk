@@ -28,6 +28,7 @@ import time
 import queue
 
 from TermTk.TTkCore.TTkTerm.input import TTkInput
+from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -36,7 +37,6 @@ from TermTk.TTkCore.timer import *
 from TermTk.TTkGui.theme import TTkTheme
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
-
 
 class TTk(TTkWidget):
     running: bool = False
@@ -99,7 +99,7 @@ class TTk(TTkWidget):
         else:
             TTkLog.debug("Signal Event Registered")
 
-        lbt.Term.registerResizeCb(self._win_resize_cb)
+        TTkTerm.registerResizeCb(self._win_resize_cb)
         threading.Thread(target=self._input_thread, daemon=True).start()
         self._timer = TTkTimer()
         self._timer.timeout.connect(self._time_event)
@@ -109,7 +109,7 @@ class TTk(TTkWidget):
         self.running = True
         # Keep track of the multiTap to avoid the extra key release
         lastMultiTap = False
-        lbt.Term.init(title=self._title)
+        TTkTerm.init(title=self._title)
         while self.running:
             # Main Loop
             evt = self.events.get()
@@ -171,7 +171,7 @@ class TTk(TTkWidget):
             else:
                 TTkLog.error(f"Unhandled Event {evt}")
                 break
-        lbt.Term.exit()
+        TTkTerm.exit()
 
     def _time_event(self):
         self.events.put(TTkK.TIME_EVENT)
@@ -205,14 +205,14 @@ class TTk(TTkWidget):
     def _SIGSTOP(self, signum, frame):
         """Reset terminal settings and stop background input read before putting to sleep"""
         TTkLog.debug("Captured SIGSTOP <CTRL-z>")
-        lbt.Term.stop()
+        TTkTerm.stop()
         # TODO: stop the threads
         os.kill(os.getpid(), signal.SIGSTOP)
 
     def _SIGCONT(self, signum, frame):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
-        lbt.Term.cont()
+        TTkTerm.cont()
         # TODO: Restart threads
         # TODO: Redraw the screen
 

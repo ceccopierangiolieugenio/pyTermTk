@@ -34,8 +34,6 @@ from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.input import TTkMouseEvent
-import TermTk.libbpytop       as lbt
-
 
 class TTkWidget(TMouseEvents,TKeyEvents):
     ''' Widget Layout sizes:
