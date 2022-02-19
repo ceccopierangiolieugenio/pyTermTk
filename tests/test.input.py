@@ -26,8 +26,7 @@ import sys, os
 import logging
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog, TTkK, Input
-import TermTk.libbpytop as lbt
+from TermTk import TTkLog, TTkK, TTkInput, TTkTerm
 
 def message_handler(mode, context, message):
     log = logging.debug
@@ -45,8 +44,8 @@ TTkLog.installMessageHandler(message_handler)
 TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
 TTkLog.info("Press q or <ESC> to exit")
 
-lbt.Term.push(lbt.Term.mouse_on)
-lbt.Term.echo(False)
+TTkTerm.push(TTkTerm.Mouse.ON)
+TTkTerm.setEcho(False)
 
 def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
@@ -63,8 +62,8 @@ def keyCallback(kevt=None, mevt=None):
 def winCallback(width, height):
     TTkLog.info(f"Resize: w:{width}, h:{height}")
 
-lbt.Term.registerResizeCb(winCallback)
-Input.get_key(keyCallback)
+TTkTerm.registerResizeCb(winCallback)
+TTkInput.get_key(keyCallback)
 
-Term.push(lbt.Term.mouse_off, lbt.Term.mouse_direct_off)
-lbt.Term.echo(True)
+TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
+TTkTerm.setEcho(True)

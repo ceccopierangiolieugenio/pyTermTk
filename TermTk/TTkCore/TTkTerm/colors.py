@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
-import logging
-import time
+# Ansi Escape Codes:
+# https://conemu.github.io/en/AnsiEscapeCodes.html
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog
-from TermTk.TTkCore import TTkColor
-from TermTk.TTkCore import TTkHelper, TTkTerm
+class TTkTermColor():
+    @staticmethod
+    def esc_color(val: str, fg: bool):
+        # Return the escape sequence for bg or fg
+        # of the color represented in hex: "#AABBCC"
+        if len(val) != 7:
+            raise ValueError()
+        r = int(val[1:3],base=16)
+        g = int(val[3:5],base=16)
+        b = int(val[5:7],base=16)
+        return f'\033[{38 if fg else 48};2;{r};{g};{b}m'
+        # 256 colors
+        #     if r//11 == g//11 == b//11:
+        #         # Shade of grey
+        #         return f"\033[{38 if fg else 48};5;{232+r//11}m"
+        #     else:
+        #         # truecolor
+        #         return f"\033[{38 if fg else 48};5;{round(r/51)*36 + round(g/51)*6 + round(b/51) + 16}m"
 
-TTkLog.use_default_file_logging()
+    @staticmethod
+    def fg(val) -> str:
+        return TTkTermColor.esc_color(val, True)
 
-TTkTerm.init(mouse=False)
-TTkLog.info("Starting")
-TTkTerm.push(
-        TTkTerm.Cursor.moveTo(2,4) +
-        TTkColor.fg("#ff0000") +
-        "Test Text 3"
-    )
-time.sleep(1)
-TTkLog.info("next : 2")
-
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        TTkColor.bg("#550088") +
-        "Test Text 2"
-    )
-time.sleep(1)
-TTkLog.info("next : 1")
-
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        TTkColor.fg("#00ff00") +
-        TTkColor.bg("#555500") +
-        "Test Text 1"
-    )
-time.sleep(1)
-TTkLog.info("Ending")
-
-TTkTerm.exit()
+    @staticmethod
+    def bg(val) -> str:
+        return TTkTermColor.esc_color(val, False)

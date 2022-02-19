@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import TermTk.libbpytop as lbt
+from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
@@ -339,4 +339,4 @@ class TTkHelper:
         TTkHelper._cursorPos = [xx+x,yy+y]
         TTkTerm.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
 
-    class Color(lbt.Color): pass
+    class Color(TTkTermColor): pass
