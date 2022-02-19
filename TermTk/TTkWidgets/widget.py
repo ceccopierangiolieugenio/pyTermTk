@@ -33,8 +33,7 @@ from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
-import TermTk.libbpytop       as lbt
-
+from TermTk.TTkCore.TTkTerm.input import TTkMouseEvent
 
 class TTkWidget(TMouseEvents,TKeyEvents):
     ''' Widget Layout sizes:
@@ -309,7 +308,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
                 if not widget._visible: continue
                 wevt = None
                 mouseEvent = False
-                if isinstance(evt, lbt.MouseEvent):
+                if isinstance(evt, TTkMouseEvent):
                     mouseEvent = True
                     wx,wy,ww,wh = widget.geometry()
                     # Skip the mouse event if outside this widget

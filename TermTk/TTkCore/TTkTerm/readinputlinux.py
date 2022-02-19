@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,41 +23,22 @@
 # SOFTWARE.
 
 import sys, os
-import logging
-import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog
-from TermTk.TTkCore import TTkColor
-from TermTk.TTkCore import TTkHelper, TTkTerm
+try: import fcntl, termios, tty
+except Exception as e:
+    print(f'ERROR: {e}')
+    exit(1)
 
-TTkLog.use_default_file_logging()
-
-TTkTerm.init(mouse=False)
-TTkLog.info("Starting")
-TTkTerm.push(
-        TTkTerm.Cursor.moveTo(2,4) +
-        TTkColor.fg("#ff0000") +
-        "Test Text 3"
-    )
-time.sleep(1)
-TTkLog.info("next : 2")
-
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        TTkColor.bg("#550088") +
-        "Test Text 2"
-    )
-time.sleep(1)
-TTkLog.info("next : 1")
-
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        TTkColor.fg("#00ff00") +
-        TTkColor.bg("#555500") +
-        "Test Text 1"
-    )
-time.sleep(1)
-TTkLog.info("Ending")
-
-TTkTerm.exit()
+def readInput():
+    _fn = sys.stdin.fileno()
+    _attr = termios.tcgetattr(_fn)
+    tty.setcbreak(_fn)
+    if (stdinRead := sys.stdin.read(1)) == "\033":  # Check if the stream start with an escape sequence
+        _fl = fcntl.fcntl(_fn, fcntl.F_GETFL)
+        fcntl.fcntl(_fn, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
+        stdinRead += sys.stdin.read(20)       # Check if the stream start with an escape sequence
+        if stdinRead.startswith("\033[<"):    # Clear the buffer if this is a mouse code
+            sys.stdin.read(0x40)
+        fcntl.fcntl(_fn, fcntl.F_SETFL, _fl)
+    termios.tcsetattr(_fn, termios.TCSANOW, _attr)
+    return stdinRead

@@ -35,16 +35,16 @@ Intro
    :maxdepth: 1
    :caption: API Reference
 
-   autogen.TermTk/TermTk.libbpytop.rst
    autogen.TermTk/TermTk.TTkAbstract.rst
    autogen.TermTk/TermTk.TTkCore.rst
+   autogen.TermTk/TermTk.TTkCore.TTkTerm.rst
    autogen.TermTk/TermTk.TTkGui.rst
    autogen.TermTk/TermTk.TTkLayouts.rst
    autogen.TermTk/TermTk.TTkTemplates.rst
    autogen.TermTk/TermTk.TTkTestWidgets.rst
    autogen.TermTk/TermTk.TTkTypes.rst
    autogen.TermTk/TermTk.TTkWidgets.rst
-
+   autogen.TermTk/TermTk.TTkWidgets.TTkPickers.rst
 
 Indices and tables
 ==================

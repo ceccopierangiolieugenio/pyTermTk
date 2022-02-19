@@ -22,9 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import math
-
-import TermTk.libbpytop as lbt
+from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
@@ -573,7 +571,7 @@ class TTkCanvas:
         # TTkLog.debug("pushToTerminal")
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
-            ansi = TTkColor.RST+lbt.Mv.t(y+1,1)
+            ansi = TTkColor.RST+TTkTerm.Cursor.moveTo(y+1,1)
             for x in range(0, self._width):
                 ch = self._data[y][x]
                 color = self._colors[y][x]
@@ -581,7 +579,7 @@ class TTkCanvas:
                     ansi += color-lastcolor
                     lastcolor = color
                 ansi+=ch
-            lbt.Term.push(ansi)
+            TTkTerm.push(ansi)
 
     def pushToTerminalBuffered(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
@@ -594,13 +592,13 @@ class TTkCanvas:
                 if self._data[y][x] == oldData[y][x] and \
                    self._colors[y][x] == oldColors[y][x]:
                     if not empty:
-                        lbt.Term.push(ansi)
+                        TTkTerm.push(ansi)
                         empty=True
                     continue
                 ch = self._data[y][x]
                 color = self._colors[y][x]
                 if empty:
-                    ansi = color+lbt.Mv.t(y+1,x+1)
+                    ansi = color+TTkTerm.Cursor.moveTo(y+1,x+1)
                     #lastcolor = color
                     empty = False
                 if color != lastcolor:
@@ -608,10 +606,10 @@ class TTkCanvas:
                     lastcolor = color
                 ansi+=ch
             if not empty:
-                lbt.Term.push(ansi)
+                TTkTerm.push(ansi)
                 empty=True
         # Reset the color at the end
-        lbt.Term.push(TTkColor.RST)
+        TTkTerm.push(TTkColor.RST)
         # Switch the buffer
         self._bufferedData, self._bufferedColors = self._data, self._colors
         self._data, self._colors = oldData, oldColors

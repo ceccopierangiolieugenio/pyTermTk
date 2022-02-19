@@ -30,7 +30,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         Args:
-            evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
+            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
         Returns:
             bool: True if the event has been handled
         '''
@@ -42,7 +42,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         Args:
-            evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
+            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
         Returns:
             bool: True if the event has been handled
         '''
@@ -55,7 +55,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         Args:
-            evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event
+            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
         Returns:
             bool: True if the event has been handled
         '''

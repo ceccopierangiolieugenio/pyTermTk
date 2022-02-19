@@ -6,3 +6,4 @@ from .color import *
 from .string import *
 from .timer import *
 from .filebuffer import *
+from .TTkTerm import *

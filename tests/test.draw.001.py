@@ -27,8 +27,7 @@ import logging
 import time
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk.libbpytop import Term, Mv
-from TermTk import TTkLog
+from TermTk import TTkLog, TTkTerm
 
 def message_handler(mode, context, message):
     log = logging.debug
@@ -44,22 +43,22 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(levelname)s:(%(threadName)-9s) %(message)s',)
 TTkLog.installMessageHandler(message_handler)
 
-Term.init(mouse=False)
+TTkTerm.init(mouse=False)
 
-Term.push(
-        Mv.t(2,4) +
+TTkTerm.push(
+        TTkTerm.Cursor.moveTo(2,4) +
         "Test Text 3"
     )
 time.sleep(1)
-Term.push(
-        Mv.d(1) + Mv.l(3) +
+TTkTerm.push(
+        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
         "Test Text 2"
     )
 time.sleep(1)
-Term.push(
-        Mv.d(1) + Mv.l(3) +
+TTkTerm.push(
+        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
         "Test Text 1"
     )
 time.sleep(1)
 
-Term.exit()
+TTkTerm.exit()
