@@ -30,6 +30,7 @@ Intro
    tutorial/002-layout.rst
    tutorial/003-signalslots.rst
    tutorial/004-logging.rst
+   tutorial/005-calculator.rst
 
 .. toctree::
    :maxdepth: 1

@@ -24,3 +24,4 @@ A list of frequently used modules is given below:
 - **[Logging](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/004-logging.html)**
 - **[Layout](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html)**
 - **[Signals and Slots](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html)**
+- **[Your first Calculator](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/005-calculator.html)**
