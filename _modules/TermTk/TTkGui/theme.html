@@ -90,18 +90,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -237,14 +239,7 @@
     <span class="n">folderIconColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#FFFFAA&quot;</span><span class="p">)</span> <span class="c1"># Yellowish</span>
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#FFFFAA&quot;) # Yellowish**&#39;&#39;&#39;</span>
 
-    <span class="n">getIcon</span>         <span class="o">=</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">getIcon</span>
-    <span class="n">folderIconClose</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_close</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="n">folderIconOpen</span>  <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_open</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">getFileIcon</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">fileIconColor</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">getIcon</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="n">fileIcon</span>        <span class="o">=</span> <span class="n">fi_utf8</span><span class="o">.</span><span class="n">FileIcon</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">loadTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">):</span>
@@ -260,10 +255,7 @@
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>       <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>
 
-        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">getIcon</span>     <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">getIcon</span>
-        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconClose</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_close</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconOpen</span>  <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkTheme</span><span class="o">.</span><span class="n">folderIconColor</span> <span class="o">+</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span><span class="o">.</span><span class="n">folder_open</span>  <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">fileIcon</span>    <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">updateAll</span><span class="p">()</span>
 
 
@@ -324,6 +316,8 @@
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#222222&quot;)**&#39;&#39;&#39;</span>
     <span class="n">lineEditTextColorFocus</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
+    <span class="n">lineEditTextColorSelected</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#008844&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffff&quot;)+TTkColor.bg(&quot;#008844&quot;)**&#39;&#39;&#39;</span>
 
     <span class="n">comboboxContentColor</span>      <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
@@ -337,19 +331,27 @@
     <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor`&#39;&#39;&#39;</span>
     <span class="n">checkboxBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
     <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
+    <span class="n">checkboxTextColor</span>         <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
     <span class="n">checkboxContentColorFocus</span> <span class="o">=</span> <span class="n">buttonTextColorFocus</span>
     <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColorFocus`&#39;&#39;&#39;</span>
     <span class="n">checkboxBorderColorFocus</span>  <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
     <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColorFocus`&#39;&#39;&#39;</span>
+    <span class="n">checkboxTextColorFocus</span>    <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
 
-    <span class="n">radioButtonContentColor</span>      <span class="o">=</span> <span class="n">buttonTextColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonContentColorFocus</span> <span class="o">=</span> <span class="n">buttonTextColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColorFocus`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonBorderColorFocus</span>  <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColorFocus`&#39;&#39;&#39;</span>
+    <span class="n">radioButtonContentColor</span>      <span class="o">=</span> <span class="n">checkboxContentColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxContentColor`&#39;&#39;&#39;</span>
+    <span class="n">radioButtonBorderColor</span>       <span class="o">=</span> <span class="n">checkboxBorderColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxBorderColor`&#39;&#39;&#39;</span>
+    <span class="n">radioButtonTextColor</span>       <span class="o">=</span> <span class="n">checkboxTextColor</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxTextColor`&#39;&#39;&#39;</span>
+    <span class="n">radioButtonContentColorFocus</span> <span class="o">=</span> <span class="n">checkboxContentColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxContentColorFocus`&#39;&#39;&#39;</span>
+    <span class="n">radioButtonBorderColorFocus</span>  <span class="o">=</span> <span class="n">checkboxBorderColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxBorderColorFocus`&#39;&#39;&#39;</span>
+    <span class="n">radioButtonTextColorFocus</span>  <span class="o">=</span> <span class="n">checkboxTextColorFocus</span>
+    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxTextColorFocus`&#39;&#39;&#39;</span>
 
     <span class="n">tabColor</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#aaaaaa&quot;</span><span class="p">)</span>
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)**&#39;&#39;&#39;</span>

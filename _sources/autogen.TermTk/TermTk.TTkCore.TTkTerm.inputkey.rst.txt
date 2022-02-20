@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.TTkTerm.inputkey
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.TTkTerm.inputkey
+
+.. currentmodule:: TermTk.TTkCore.TTkTerm.inputkey
+

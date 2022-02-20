@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>TermTk.TTkWidgets.treewidget &mdash; pyTermTk 0.2.0a documentation</title>
+  <title>TermTk.TTkWidgets.TTkModelView.filetreewidgetitem &mdash; pyTermTk 0.2.0a documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkWidgets.treewidgetitem" href="TermTk.TTkWidgets.treewidgetitem.html" />
-    <link rel="prev" title="TermTk.TTkWidgets.tree" href="TermTk.TTkWidgets.tree.html" /> 
+    <link rel="next" title="TermTk.TTkWidgets.TTkModelView.tree" href="TermTk.TTkWidgets.TTkModelView.tree.html" />
+    <link rel="prev" title="TermTk.TTkWidgets.TTkModelView.filetreewidget" href="TermTk.TTkWidgets.TTkModelView.filetreewidget.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,12 +93,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
@@ -106,12 +107,20 @@
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.html">TermTk.TTkWidgets.Fancy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.filetree.html">TermTk.TTkWidgets.TTkModelView.filetree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.filetreewidget.html">TermTk.TTkWidgets.TTkModelView.filetreewidget</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.TTkModelView.filetreewidgetitem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.tree.html">TermTk.TTkWidgets.TTkModelView.tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.treewidget.html">TermTk.TTkWidgets.TTkModelView.treewidget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.treewidgetitem.html">TermTk.TTkWidgets.TTkModelView.treewidgetitem</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.about.html">TermTk.TTkWidgets.about</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.filetree.html">TermTk.TTkWidgets.filetree</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
@@ -129,16 +138,11 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.splitter.html">TermTk.TTkWidgets.splitter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tabwidget.html">TermTk.TTkWidgets.tabwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.texedit.html">TermTk.TTkWidgets.texedit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tree.html">TermTk.TTkWidgets.tree</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.treewidget</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ttktreewidget">TTkTreeWidget</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.treewidgetitem.html">TermTk.TTkWidgets.treewidgetitem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.widget.html">TermTk.TTkWidgets.widget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.window.html">TermTk.TTkWidgets.window</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -189,13 +193,15 @@
         
           <li><a href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a> &raquo;</li>
         
-      <li>TermTk.TTkWidgets.treewidget</li>
+          <li><a href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a> &raquo;</li>
+        
+      <li>TermTk.TTkWidgets.TTkModelView.filetreewidgetitem</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/autogen.TermTk/TermTk.TTkWidgets.treewidget.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetreewidgetitem.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -208,69 +214,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-TermTk.TTkWidgets.treewidget">
-<span id="termtk-ttkwidgets-treewidget"></span><h1>TermTk.TTkWidgets.treewidget<a class="headerlink" href="#module-TermTk.TTkWidgets.treewidget" title="Permalink to this headline">¶</a></h1>
-<section id="ttktreewidget">
-<h2>TTkTreeWidget<a class="headerlink" href="#ttktreewidget" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="TermTk.TTkWidgets.treewidget.TTkTreeWidget">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkTreeWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/treewidget.html#TTkTreeWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.treewidget.TTkTreeWidget" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt id="TermTk.TTkWidgets.treewidget.TTkTreeWidget.mouseDoubleClickEvent">
-<code class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/treewidget.html#TTkTreeWidget.mouseDoubleClickEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.treewidget.TTkTreeWidget.mouseDoubleClickEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Reimplement this function to handle this event</p>
-</div>
-<dl class="simple">
-<dt>Args:</dt><dd><p>evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the event has been handled</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="TermTk.TTkWidgets.treewidget.TTkTreeWidget.mouseDragEvent">
-<code class="sig-name descname"><span class="pre">mouseDragEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/treewidget.html#TTkTreeWidget.mouseDragEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.treewidget.TTkTreeWidget.mouseDragEvent" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">columnPos</span>       <span class="p">(</span><span class="n">Selected</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="mi">0</span>       <span class="mi">1</span>        <span class="mi">2</span>          <span class="mi">3</span>   <span class="mi">4</span>
-<span class="o">----|-------|--------|----------|---|</span>
-<span class="n">Mouse</span> <span class="p">(</span><span class="n">Drag</span><span class="p">)</span> <span class="n">Pos</span>
-                        <span class="o">^</span>
-<span class="n">I</span> <span class="n">consider</span> <span class="n">at</span> <span class="n">least</span> <span class="mi">4</span> <span class="n">char</span> <span class="p">(</span><span class="mi">3</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">spacing</span>
-<span class="n">Min</span> <span class="n">Selected</span> <span class="n">Pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">Selected</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt id="TermTk.TTkWidgets.treewidget.TTkTreeWidget.mousePressEvent">
-<code class="sig-name descname"><span class="pre">mousePressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/treewidget.html#TTkTreeWidget.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.treewidget.TTkTreeWidget.mousePressEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Reimplement this function to handle this event</p>
-</div>
-<dl class="simple">
-<dt>Args:</dt><dd><p>evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if the event has been handled</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="TermTk.TTkWidgets.treewidget.TTkTreeWidget.paintEvent">
-<code class="sig-name descname"><span class="pre">paintEvent</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/treewidget.html#TTkTreeWidget.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.treewidget.TTkTreeWidget.paintEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Paint Event callback,
-ths need to be overridden in the widget.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
+  <section id="module-TermTk.TTkWidgets.TTkModelView.filetreewidgetitem">
+<span id="termtk-ttkwidgets-ttkmodelview-filetreewidgetitem"></span><h1>TermTk.TTkWidgets.TTkModelView.filetreewidgetitem<a class="headerlink" href="#module-TermTk.TTkWidgets.TTkModelView.filetreewidgetitem" title="Permalink to this headline">¶</a></h1>
 </section>
 
 
@@ -279,8 +224,8 @@ ths need to be overridden in the widget.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TermTk.TTkWidgets.treewidgetitem.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.treewidgetitem" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="TermTk.TTkWidgets.tree.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.tree" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkWidgets.TTkModelView.tree.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.TTkModelView.tree" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkWidgets.TTkModelView.filetreewidget.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.TTkModelView.filetreewidget" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

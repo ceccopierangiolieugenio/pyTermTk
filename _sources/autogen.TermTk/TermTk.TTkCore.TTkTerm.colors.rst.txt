@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.TTkTerm.colors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.TTkTerm.colors
+
+.. currentmodule:: TermTk.TTkCore.TTkTerm.colors
+

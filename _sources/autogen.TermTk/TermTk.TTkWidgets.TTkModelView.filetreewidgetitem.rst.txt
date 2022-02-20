@@ -1,0 +1,8 @@
+
+TermTk.TTkWidgets.TTkModelView.filetreewidgetitem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkModelView.filetreewidgetitem
+
+.. currentmodule:: TermTk.TTkWidgets.TTkModelView.filetreewidgetitem
+

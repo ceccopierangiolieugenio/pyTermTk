@@ -1,0 +1,15 @@
+
+TermTk.TTkWidgets.TTkModelView.treewidget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkModelView.treewidget
+
+.. currentmodule:: TermTk.TTkWidgets.TTkModelView.treewidget
+
+
+
+TTkTreeWidget
+=============
+
+.. autoclass:: TTkTreeWidget
+   :members:

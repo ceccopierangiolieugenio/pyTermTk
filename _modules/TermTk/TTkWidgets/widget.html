@@ -90,18 +90,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -203,8 +205,7 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkTemplates.mouseevents</span> <span class="kn">import</span> <span class="n">TMouseEvents</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkTemplates.keyevents</span> <span class="kn">import</span> <span class="n">TKeyEvents</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.layout</span> <span class="kn">import</span> <span class="n">TTkLayout</span><span class="p">,</span> <span class="n">TTkWidgetItem</span>
-<span class="kn">import</span> <span class="nn">TermTk.libbpytop</span>       <span class="k">as</span> <span class="nn">lbt</span>
-
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.input</span> <span class="kn">import</span> <span class="n">TTkMouseEvent</span>
 
 <div class="viewcode-block" id="TTkWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget">[docs]</a><span class="k">class</span> <span class="nc">TTkWidget</span><span class="p">(</span><span class="n">TMouseEvents</span><span class="p">,</span><span class="n">TKeyEvents</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Widget Layout sizes:</span>
@@ -479,7 +480,7 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">widget</span><span class="o">.</span><span class="n">_visible</span><span class="p">:</span> <span class="k">continue</span>
                 <span class="n">wevt</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">mouseEvent</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">lbt</span><span class="o">.</span><span class="n">MouseEvent</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">TTkMouseEvent</span><span class="p">):</span>
                     <span class="n">mouseEvent</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="n">wx</span><span class="p">,</span><span class="n">wy</span><span class="p">,</span><span class="n">ww</span><span class="p">,</span><span class="n">wh</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
                     <span class="c1"># Skip the mouse event if outside this widget</span>
@@ -525,10 +526,12 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focusPolicy</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">doubleClick</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseDoubleClickEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">tap</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseDoubleClickEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
+                <span class="c1">#self._pendingMouseRelease = True</span>
                 <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">evt</span><span class="o">.</span><span class="n">doubleClick</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">tap</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseTapEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">tap</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mousePressEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="c1"># TTkLog.debug(f&quot;Click {self._name}&quot;)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -709,7 +712,7 @@
     <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(f&quot;setFocus: {self._name} - {self._focus}&quot;)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="ow">and</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">():</span> <span class="k">return</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span> <span class="k">return</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -724,7 +727,7 @@
 
     <span class="k">def</span> <span class="nf">clearFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(f&quot;clearFocus: {self._name} - {self._focus}&quot;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="ow">and</span> <span class="bp">self</span> <span class="o">!=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">():</span> <span class="k">return</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">)</span>

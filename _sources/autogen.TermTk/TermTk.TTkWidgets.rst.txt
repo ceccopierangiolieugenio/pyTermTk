@@ -11,12 +11,12 @@ TermTk.TTkWidgets
   :toctree: ./
 
   TermTk.TTkWidgets.Fancy
+  TermTk.TTkWidgets.TTkModelView
   TermTk.TTkWidgets.TTkPickers
   TermTk.TTkWidgets.about
   TermTk.TTkWidgets.button
   TermTk.TTkWidgets.checkbox
   TermTk.TTkWidgets.combobox
-  TermTk.TTkWidgets.filetree
   TermTk.TTkWidgets.frame
   TermTk.TTkWidgets.graph
   TermTk.TTkWidgets.image
@@ -34,8 +34,5 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.splitter
   TermTk.TTkWidgets.tabwidget
   TermTk.TTkWidgets.texedit
-  TermTk.TTkWidgets.tree
-  TermTk.TTkWidgets.treewidget
-  TermTk.TTkWidgets.treewidgetitem
   TermTk.TTkWidgets.widget
   TermTk.TTkWidgets.window

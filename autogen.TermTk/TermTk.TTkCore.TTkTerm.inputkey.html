@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>TermTk.libbpytop &mdash; pyTermTk 0.2.0a documentation</title>
+  <title>TermTk.TTkCore.TTkTerm.inputkey &mdash; pyTermTk 0.2.0a documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.libbpytop.colors" href="TermTk.libbpytop.colors.html" />
-    <link rel="prev" title="pyTermTk - Logging" href="../tutorial/004-logging.html" /> 
+    <link rel="next" title="TermTk.TTkCore.TTkTerm.readinputlinux" href="TermTk.TTkCore.TTkTerm.readinputlinux.html" />
+    <link rel="prev" title="TermTk.TTkCore.TTkTerm.input" href="TermTk.TTkCore.TTkTerm.input.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,24 +93,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">TermTk.libbpytop</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.libbpytop.colors.html">TermTk.libbpytop.colors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.libbpytop.input.html">TermTk.libbpytop.input</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.libbpytop.inputkey.html">TermTk.libbpytop.inputkey</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.libbpytop.term.html">TermTk.libbpytop.term</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.colors.html">TermTk.TTkCore.TTkTerm.colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.input.html">TermTk.TTkCore.TTkTerm.input</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.TTkTerm.inputkey</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.readinputlinux.html">TermTk.TTkCore.TTkTerm.readinputlinux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.term.html">TermTk.TTkCore.TTkTerm.term</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -159,13 +162,17 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>TermTk.libbpytop</li>
+          <li><a href="TermTk.TTkCore.html">TermTk.TTkCore</a> &raquo;</li>
+        
+          <li><a href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a> &raquo;</li>
+        
+      <li>TermTk.TTkCore.TTkTerm.inputkey</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/autogen.TermTk/TermTk.libbpytop.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/autogen.TermTk/TermTk.TTkCore.TTkTerm.inputkey.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -178,28 +185,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-TermTk.libbpytop">
-<span id="termtk-libbpytop"></span><h1>TermTk.libbpytop<a class="headerlink" href="#module-TermTk.libbpytop" title="Permalink to this headline">¶</a></h1>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="TermTk.libbpytop.colors.html#module-TermTk.libbpytop.colors" title="TermTk.libbpytop.colors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TermTk.libbpytop.colors</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="TermTk.libbpytop.input.html#module-TermTk.libbpytop.input" title="TermTk.libbpytop.input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TermTk.libbpytop.input</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="TermTk.libbpytop.inputkey.html#module-TermTk.libbpytop.inputkey" title="TermTk.libbpytop.inputkey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TermTk.libbpytop.inputkey</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="TermTk.libbpytop.term.html#module-TermTk.libbpytop.term" title="TermTk.libbpytop.term"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TermTk.libbpytop.term</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
+  <section id="module-TermTk.TTkCore.TTkTerm.inputkey">
+<span id="termtk-ttkcore-ttkterm-inputkey"></span><h1>TermTk.TTkCore.TTkTerm.inputkey<a class="headerlink" href="#module-TermTk.TTkCore.TTkTerm.inputkey" title="Permalink to this headline">¶</a></h1>
 </section>
 
 
@@ -208,8 +195,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TermTk.libbpytop.colors.html" class="btn btn-neutral float-right" title="TermTk.libbpytop.colors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../tutorial/004-logging.html" class="btn btn-neutral float-left" title="pyTermTk - Logging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkCore.TTkTerm.readinputlinux.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.TTkTerm.readinputlinux" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkCore.TTkTerm.input.html" class="btn btn-neutral float-left" title="TermTk.TTkCore.TTkTerm.input" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

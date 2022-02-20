@@ -93,12 +93,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
@@ -106,12 +107,12 @@
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.html">TermTk.TTkWidgets.Fancy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.about.html">TermTk.TTkWidgets.about</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.filetree.html">TermTk.TTkWidgets.filetree</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
@@ -132,13 +133,11 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.splitter.html">TermTk.TTkWidgets.splitter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tabwidget.html">TermTk.TTkWidgets.tabwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.texedit.html">TermTk.TTkWidgets.texedit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tree.html">TermTk.TTkWidgets.tree</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.treewidget.html">TermTk.TTkWidgets.treewidget</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.treewidgetitem.html">TermTk.TTkWidgets.treewidgetitem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.widget.html">TermTk.TTkWidgets.widget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.window.html">TermTk.TTkWidgets.window</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -224,7 +223,7 @@
 <p>Reimplement this function to handle this event</p>
 </div>
 <dl class="simple">
-<dt>Args:</dt><dd><p>evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event</p>
+<dt>Args:</dt><dd><p>evt ([TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event</p>
 </dd>
 <dt>Returns:</dt><dd><p>bool: True if the event has been handled</p>
 </dd>
@@ -240,7 +239,7 @@
 <p>Reimplement this function to handle this event</p>
 </div>
 <dl class="simple">
-<dt>Args:</dt><dd><p>evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event</p>
+<dt>Args:</dt><dd><p>evt ([TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event</p>
 </dd>
 <dt>Returns:</dt><dd><p>bool: True if the event has been handled</p>
 </dd>
@@ -256,7 +255,7 @@
 <p>Reimplement this function to handle this event</p>
 </div>
 <dl class="simple">
-<dt>Args:</dt><dd><p>evt ([TermTk.libbpytop.input.MouseEvent]): the mouse event</p>
+<dt>Args:</dt><dd><p>evt ([TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event</p>
 </dd>
 <dt>Returns:</dt><dd><p>bool: True if the event has been handled</p>
 </dd>

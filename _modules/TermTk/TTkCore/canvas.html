@@ -90,18 +90,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -192,9 +194,7 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
-
-<span class="kn">import</span> <span class="nn">TermTk.libbpytop</span> <span class="k">as</span> <span class="nn">lbt</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.term</span> <span class="kn">import</span> <span class="n">TTkTerm</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span><span class="p">,</span> <span class="n">TTkGlbl</span>
@@ -743,7 +743,7 @@
         <span class="c1"># TTkLog.debug(&quot;pushToTerminal&quot;)</span>
         <span class="n">lastcolor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
         <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">):</span>
-            <span class="n">ansi</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="o">+</span><span class="n">lbt</span><span class="o">.</span><span class="n">Mv</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ansi</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="o">+</span><span class="n">TTkTerm</span><span class="o">.</span><span class="n">Cursor</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">):</span>
                 <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
                 <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
@@ -751,7 +751,7 @@
                     <span class="n">ansi</span> <span class="o">+=</span> <span class="n">color</span><span class="o">-</span><span class="n">lastcolor</span>
                     <span class="n">lastcolor</span> <span class="o">=</span> <span class="n">color</span>
                 <span class="n">ansi</span><span class="o">+=</span><span class="n">ch</span>
-            <span class="n">lbt</span><span class="o">.</span><span class="n">Term</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">ansi</span><span class="p">)</span>
+            <span class="n">TTkTerm</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">ansi</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">pushToTerminalBuffered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(&quot;pushToTerminal&quot;)</span>
@@ -764,13 +764,13 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">oldData</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="ow">and</span> \
                    <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">oldColors</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">empty</span><span class="p">:</span>
-                        <span class="n">lbt</span><span class="o">.</span><span class="n">Term</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">ansi</span><span class="p">)</span>
+                        <span class="n">TTkTerm</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">ansi</span><span class="p">)</span>
                         <span class="n">empty</span><span class="o">=</span><span class="kc">True</span>
                     <span class="k">continue</span>
                 <span class="n">ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
                 <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">empty</span><span class="p">:</span>
-                    <span class="n">ansi</span> <span class="o">=</span> <span class="n">color</span><span class="o">+</span><span class="n">lbt</span><span class="o">.</span><span class="n">Mv</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">ansi</span> <span class="o">=</span> <span class="n">color</span><span class="o">+</span><span class="n">TTkTerm</span><span class="o">.</span><span class="n">Cursor</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
                     <span class="c1">#lastcolor = color</span>
                     <span class="n">empty</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="n">color</span> <span class="o">!=</span> <span class="n">lastcolor</span><span class="p">:</span>
@@ -778,10 +778,10 @@
                     <span class="n">lastcolor</span> <span class="o">=</span> <span class="n">color</span>
                 <span class="n">ansi</span><span class="o">+=</span><span class="n">ch</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">empty</span><span class="p">:</span>
-                <span class="n">lbt</span><span class="o">.</span><span class="n">Term</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">ansi</span><span class="p">)</span>
+                <span class="n">TTkTerm</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">ansi</span><span class="p">)</span>
                 <span class="n">empty</span><span class="o">=</span><span class="kc">True</span>
         <span class="c1"># Reset the color at the end</span>
-        <span class="n">lbt</span><span class="o">.</span><span class="n">Term</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">)</span>
+        <span class="n">TTkTerm</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">)</span>
         <span class="c1"># Switch the buffer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bufferedData</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bufferedColors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="n">oldData</span><span class="p">,</span> <span class="n">oldColors</span></div>

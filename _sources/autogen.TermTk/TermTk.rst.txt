@@ -18,4 +18,3 @@ TermTk
   TermTk.TTkTestWidgets
   TermTk.TTkTypes
   TermTk.TTkWidgets
-  TermTk.libbpytop

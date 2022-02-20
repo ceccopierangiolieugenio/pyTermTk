@@ -90,18 +90,20 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -262,9 +264,13 @@
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.checkboxContentColor">checkboxContentColor (TTkTheme attribute)</a>
 </li>
+      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.checkboxContentColorFocus">checkboxContentColorFocus (TTkTheme attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.checkboxContentColorFocus">checkboxContentColorFocus (TTkTheme attribute)</a>
+      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.checkboxTextColor">checkboxTextColor (TTkTheme attribute)</a>
+</li>
+      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.checkboxTextColorFocus">checkboxTextColorFocus (TTkTheme attribute)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.comboboxBorderColor">comboboxBorderColor (TTkTheme attribute)</a>
 </li>
@@ -285,10 +291,6 @@
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autogen.TermTk/TermTk.libbpytop.term.html#TermTk.libbpytop.term.Term.echo">echo() (Term static method)</a>
-</li>
-  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.executableColor">executableColor (TTkTheme attribute)</a>
 </li>
@@ -384,6 +386,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.lineEditTextColorSelected">lineEditTextColorSelected (TTkTheme attribute)</a>
+</li>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.linkNameColor">linkNameColor (TTkTheme attribute)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.listColor">listColor (TTkTheme attribute)</a>
@@ -424,16 +428,6 @@
       <ul>
         <li><a href="autogen.TermTk/TermTk.html#module-TermTk">TermTk</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.html#module-TermTk.libbpytop">TermTk.libbpytop</a>
-</li>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.colors.html#module-TermTk.libbpytop.colors">TermTk.libbpytop.colors</a>
-</li>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.input.html#module-TermTk.libbpytop.input">TermTk.libbpytop.input</a>
-</li>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.inputkey.html#module-TermTk.libbpytop.inputkey">TermTk.libbpytop.inputkey</a>
-</li>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.term.html#module-TermTk.libbpytop.term">TermTk.libbpytop.term</a>
-</li>
         <li><a href="autogen.TermTk/TermTk.TTkAbstract.html#module-TermTk.TTkAbstract">TermTk.TTkAbstract</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkAbstract.abstractitemmodel.html#module-TermTk.TTkAbstract.abstractitemmodel">TermTk.TTkAbstract.abstractitemmodel</a>
@@ -467,6 +461,18 @@
         <li><a href="autogen.TermTk/TermTk.TTkCore.timer.html#module-TermTk.TTkCore.timer">TermTk.TTkCore.timer</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkCore.ttk.html#module-TermTk.TTkCore.ttk">TermTk.TTkCore.ttk</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.html#module-TermTk.TTkCore.TTkTerm">TermTk.TTkCore.TTkTerm</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.colors.html#module-TermTk.TTkCore.TTkTerm.colors">TermTk.TTkCore.TTkTerm.colors</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.input.html#module-TermTk.TTkCore.TTkTerm.input">TermTk.TTkCore.TTkTerm.input</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.inputkey.html#module-TermTk.TTkCore.TTkTerm.inputkey">TermTk.TTkCore.TTkTerm.inputkey</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.readinputlinux.html#module-TermTk.TTkCore.TTkTerm.readinputlinux">TermTk.TTkCore.TTkTerm.readinputlinux</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.term.html#module-TermTk.TTkCore.TTkTerm.term">TermTk.TTkCore.TTkTerm.term</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkGui.html#module-TermTk.TTkGui">TermTk.TTkGui</a>
 </li>
@@ -538,8 +544,6 @@
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.Fancy.treewidgetitem.html#module-TermTk.TTkWidgets.Fancy.treewidgetitem">TermTk.TTkWidgets.Fancy.treewidgetitem</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.filetree.html#module-TermTk.TTkWidgets.filetree">TermTk.TTkWidgets.filetree</a>
-</li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.frame.html#module-TermTk.TTkWidgets.frame">TermTk.TTkWidgets.frame</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.graph.html#module-TermTk.TTkWidgets.graph">TermTk.TTkWidgets.graph</a>
@@ -574,11 +578,19 @@
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.texedit.html#module-TermTk.TTkWidgets.texedit">TermTk.TTkWidgets.texedit</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.tree.html#module-TermTk.TTkWidgets.tree">TermTk.TTkWidgets.tree</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.html#module-TermTk.TTkWidgets.TTkModelView">TermTk.TTkWidgets.TTkModelView</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#module-TermTk.TTkWidgets.treewidget">TermTk.TTkWidgets.treewidget</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetree.html#module-TermTk.TTkWidgets.TTkModelView.filetree">TermTk.TTkWidgets.TTkModelView.filetree</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidgetitem.html#module-TermTk.TTkWidgets.treewidgetitem">TermTk.TTkWidgets.treewidgetitem</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetreewidget.html#module-TermTk.TTkWidgets.TTkModelView.filetreewidget">TermTk.TTkWidgets.TTkModelView.filetreewidget</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetreewidgetitem.html#module-TermTk.TTkWidgets.TTkModelView.filetreewidgetitem">TermTk.TTkWidgets.TTkModelView.filetreewidgetitem</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.tree.html#module-TermTk.TTkWidgets.TTkModelView.tree">TermTk.TTkWidgets.TTkModelView.tree</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#module-TermTk.TTkWidgets.TTkModelView.treewidget">TermTk.TTkWidgets.TTkModelView.treewidget</a>
+</li>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidgetitem.html#module-TermTk.TTkWidgets.TTkModelView.treewidgetitem">TermTk.TTkWidgets.TTkModelView.treewidgetitem</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html#module-TermTk.TTkWidgets.TTkPickers">TermTk.TTkWidgets.TTkPickers</a>
 </li>
@@ -595,8 +607,12 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#TermTk.TTkWidgets.treewidget.TTkTreeWidget.mouseDoubleClickEvent">mouseDoubleClickEvent() (TTkTreeWidget method)</a>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit.mouseDoubleClickEvent">mouseDoubleClickEvent() (TTkLineEdit method)</a>
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget.mouseDoubleClickEvent">(TTkTreeWidget method)</a>
 </li>
+      </ul></li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.resizableframe.html#TermTk.TTkWidgets.resizableframe.TTkResizableFrame.mouseDragEvent">mouseDragEvent() (TTkResizableFrame method)</a>
 
       <ul>
@@ -608,7 +624,7 @@
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkTestWidgets.testwidget.html#TermTk.TTkTestWidgets.testwidget.TTkTestWidget.mouseDragEvent">(TTkTestWidget method)</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#TermTk.TTkWidgets.treewidget.TTkTreeWidget.mouseDragEvent">(TTkTreeWidget method)</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget.mouseDragEvent">(TTkTreeWidget method)</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.window.html#TermTk.TTkWidgets.window.TTkWindow.mouseDragEvent">(TTkWindow method)</a>
 </li>
@@ -640,7 +656,7 @@
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkTestWidgets.testwidgetsizes.html#TermTk.TTkTestWidgets.testwidgetsizes.TTkTestWidgetSizes.mousePressEvent">(TTkTestWidgetSizes method)</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#TermTk.TTkWidgets.treewidget.TTkTreeWidget.mousePressEvent">(TTkTreeWidget method)</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget.mousePressEvent">(TTkTreeWidget method)</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.window.html#TermTk.TTkWidgets.window.TTkWindow.mousePressEvent">(TTkWindow method)</a>
 </li>
@@ -653,11 +669,11 @@
         <li><a href="autogen.TermTk/TermTk.TTkTestWidgets.testwidgetsizes.html#TermTk.TTkTestWidgets.testwidgetsizes.TTkTestWidgetSizes.mouseReleaseEvent">(TTkTestWidgetSizes method)</a>
 </li>
       </ul></li>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit.mouseTapEvent">mouseTapEvent() (TTkLineEdit method)</a>
+</li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.move">move() (TTkWidget method)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.moveEvent">moveEvent() (TTkWidget method)</a>
-</li>
-      <li><a href="autogen.TermTk/TermTk.libbpytop.term.html#TermTk.libbpytop.term.Mv">Mv (class in TermTk.libbpytop.term)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -712,7 +728,7 @@
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkTestWidgets.testwidgetsizes.html#TermTk.TTkTestWidgets.testwidgetsizes.TTkTestWidgetSizes.paintEvent">(TTkTestWidgetSizes method)</a>
 </li>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#TermTk.TTkWidgets.treewidget.TTkTreeWidget.paintEvent">(TTkTreeWidget method)</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget.paintEvent">(TTkTreeWidget method)</a>
 </li>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">(TTkWidget method)</a>
 </li>
@@ -747,6 +763,10 @@
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.radioButtonContentColorFocus">radioButtonContentColorFocus (TTkTheme attribute)</a>
 </li>
+      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.radioButtonTextColor">radioButtonTextColor (TTkTheme attribute)</a>
+</li>
+      <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.radioButtonTextColorFocus">radioButtonTextColorFocus (TTkTheme attribute)</a>
+</li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">removeWidget() (TTkWidget method)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkCore.canvas.html#TermTk.TTkCore.canvas.TTkCanvas.resize">resize() (TTkCanvas method)</a>
@@ -755,6 +775,8 @@
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.resize">(TTkWidget method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autogen.TermTk/TermTk.TTkAbstract.abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollView.resizeEvent">resizeEvent() (TTkAbstractScrollView method)</a>
 
       <ul>
@@ -771,8 +793,6 @@
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.resizeEvent">(TTkWidget method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment.RIGHT_ALIGN">RIGHT_ALIGN (TTkConstant.Alignment attribute)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST">RST (TTkColor attribute)</a>
@@ -789,8 +809,12 @@
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.setPadding">setPadding() (TTkWidget method)</a>
 </li>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget.sortColumn">sortColumn() (TTkTreeWidget method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget.sortItems">sortItems() (TTkTreeWidget method)</a>
+</li>
       <li><a href="autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer.start">start() (TTkTimer method)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.STRIKETROUGH">STRIKETROUGH (TTkColor attribute)</a>
@@ -819,48 +843,11 @@
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkGui.theme.html#TermTk.TTkGui.theme.TTkTheme.tabSelectColorFocus">tabSelectColorFocus (TTkTheme attribute)</a>
 </li>
-      <li><a href="autogen.TermTk/TermTk.libbpytop.term.html#TermTk.libbpytop.term.Term">Term (class in TermTk.libbpytop.term)</a>
-</li>
       <li>
     TermTk
 
       <ul>
         <li><a href="autogen.TermTk/TermTk.html#module-TermTk">module</a>
-</li>
-      </ul></li>
-      <li>
-    TermTk.libbpytop
-
-      <ul>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.html#module-TermTk.libbpytop">module</a>
-</li>
-      </ul></li>
-      <li>
-    TermTk.libbpytop.colors
-
-      <ul>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.colors.html#module-TermTk.libbpytop.colors">module</a>
-</li>
-      </ul></li>
-      <li>
-    TermTk.libbpytop.input
-
-      <ul>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.input.html#module-TermTk.libbpytop.input">module</a>
-</li>
-      </ul></li>
-      <li>
-    TermTk.libbpytop.inputkey
-
-      <ul>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.inputkey.html#module-TermTk.libbpytop.inputkey">module</a>
-</li>
-      </ul></li>
-      <li>
-    TermTk.libbpytop.term
-
-      <ul>
-        <li><a href="autogen.TermTk/TermTk.libbpytop.term.html#module-TermTk.libbpytop.term">module</a>
 </li>
       </ul></li>
       <li>
@@ -980,6 +967,48 @@
 
       <ul>
         <li><a href="autogen.TermTk/TermTk.TTkCore.ttk.html#module-TermTk.TTkCore.ttk">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkCore.TTkTerm
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.html#module-TermTk.TTkCore.TTkTerm">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkCore.TTkTerm.colors
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.colors.html#module-TermTk.TTkCore.TTkTerm.colors">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkCore.TTkTerm.input
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.input.html#module-TermTk.TTkCore.TTkTerm.input">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkCore.TTkTerm.inputkey
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.inputkey.html#module-TermTk.TTkCore.TTkTerm.inputkey">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkCore.TTkTerm.readinputlinux
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.readinputlinux.html#module-TermTk.TTkCore.TTkTerm.readinputlinux">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkCore.TTkTerm.term
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkCore.TTkTerm.term.html#module-TermTk.TTkCore.TTkTerm.term">module</a>
 </li>
       </ul></li>
       <li>
@@ -1206,8 +1235,6 @@
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.Fancy.tree.html#module-TermTk.TTkWidgets.Fancy.tree">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     TermTk.TTkWidgets.Fancy.treeview
 
@@ -1222,18 +1249,13 @@
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.Fancy.treewidget.html#module-TermTk.TTkWidgets.Fancy.treewidget">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     TermTk.TTkWidgets.Fancy.treewidgetitem
 
       <ul>
         <li><a href="autogen.TermTk/TermTk.TTkWidgets.Fancy.treewidgetitem.html#module-TermTk.TTkWidgets.Fancy.treewidgetitem">module</a>
-</li>
-      </ul></li>
-      <li>
-    TermTk.TTkWidgets.filetree
-
-      <ul>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.filetree.html#module-TermTk.TTkWidgets.filetree">module</a>
 </li>
       </ul></li>
       <li>
@@ -1356,24 +1378,52 @@
 </li>
       </ul></li>
       <li>
-    TermTk.TTkWidgets.tree
+    TermTk.TTkWidgets.TTkModelView
 
       <ul>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.tree.html#module-TermTk.TTkWidgets.tree">module</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.html#module-TermTk.TTkWidgets.TTkModelView">module</a>
 </li>
       </ul></li>
       <li>
-    TermTk.TTkWidgets.treewidget
+    TermTk.TTkWidgets.TTkModelView.filetree
 
       <ul>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#module-TermTk.TTkWidgets.treewidget">module</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetree.html#module-TermTk.TTkWidgets.TTkModelView.filetree">module</a>
 </li>
       </ul></li>
       <li>
-    TermTk.TTkWidgets.treewidgetitem
+    TermTk.TTkWidgets.TTkModelView.filetreewidget
 
       <ul>
-        <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidgetitem.html#module-TermTk.TTkWidgets.treewidgetitem">module</a>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetreewidget.html#module-TermTk.TTkWidgets.TTkModelView.filetreewidget">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkWidgets.TTkModelView.filetreewidgetitem
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetreewidgetitem.html#module-TermTk.TTkWidgets.TTkModelView.filetreewidgetitem">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkWidgets.TTkModelView.tree
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.tree.html#module-TermTk.TTkWidgets.TTkModelView.tree">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkWidgets.TTkModelView.treewidget
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#module-TermTk.TTkWidgets.TTkModelView.treewidget">module</a>
+</li>
+      </ul></li>
+      <li>
+    TermTk.TTkWidgets.TTkModelView.treewidgetitem
+
+      <ul>
+        <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidgetitem.html#module-TermTk.TTkWidgets.TTkModelView.treewidgetitem">module</a>
 </li>
       </ul></li>
       <li>
@@ -1466,6 +1516,10 @@
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker">TTkFileDialogPicker (class in TermTk.TTkWidgets.TTkPickers.filepicker)</a>
 </li>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetree.html#TermTk.TTkWidgets.TTkModelView.filetree.TTkFileTree">TTkFileTree (class in TermTk.TTkWidgets.TTkModelView.filetree)</a>
+</li>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.filetreewidget.html#TermTk.TTkWidgets.TTkModelView.filetreewidget.TTkFileTreeWidget">TTkFileTreeWidget (class in TermTk.TTkWidgets.TTkModelView.filetreewidget)</a>
+</li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame">TTkFrame (class in TermTk.TTkWidgets.frame)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkWidgets.graph.html#TermTk.TTkWidgets.graph.TTkGraph">TTkGraph (class in TermTk.TTkWidgets.graph)</a>
@@ -1526,9 +1580,9 @@
       </ul></li>
       <li><a href="autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer">TTkTimer (class in TermTk.TTkCore.timer)</a>
 </li>
-      <li><a href="autogen.TermTk/TermTk.TTkWidgets.tree.html#TermTk.TTkWidgets.tree.TTkTree">TTkTree (class in TermTk.TTkWidgets.tree)</a>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.tree.html#TermTk.TTkWidgets.TTkModelView.tree.TTkTree">TTkTree (class in TermTk.TTkWidgets.TTkModelView.tree)</a>
 </li>
-      <li><a href="autogen.TermTk/TermTk.TTkWidgets.treewidget.html#TermTk.TTkWidgets.treewidget.TTkTreeWidget">TTkTreeWidget (class in TermTk.TTkWidgets.treewidget)</a>
+      <li><a href="autogen.TermTk/TermTk.TTkWidgets.TTkModelView.treewidget.html#TermTk.TTkWidgets.TTkModelView.treewidget.TTkTreeWidget">TTkTreeWidget (class in TermTk.TTkWidgets.TTkModelView.treewidget)</a>
 </li>
       <li><a href="autogen.TermTk/TermTk.TTkLayouts.boxlayout.html#TermTk.TTkLayouts.boxlayout.TTkVBoxLayout">TTkVBoxLayout (class in TermTk.TTkLayouts.boxlayout)</a>
 </li>

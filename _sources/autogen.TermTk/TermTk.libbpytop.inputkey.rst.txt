@@ -1,8 +1,0 @@
-
-TermTk.libbpytop.inputkey
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.libbpytop.inputkey
-
-.. currentmodule:: TermTk.libbpytop.inputkey
-

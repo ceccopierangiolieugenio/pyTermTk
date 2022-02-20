@@ -90,18 +90,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
 <p><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.libbpytop.html">TermTk.libbpytop</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
             
@@ -261,7 +263,7 @@
         <span class="s1">&#39;_tabMovable&#39;</span><span class="p">,</span> <span class="s1">&#39;_tabClosable&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_sideBorder&#39;</span><span class="p">,</span>
         <span class="c1">#Signals</span>
-        <span class="s1">&#39;currentChanged&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;currentChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;tabBarClicked&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="p">[]</span>
@@ -284,6 +286,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tabOffsetColorFocus</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">tabOffsetColorFocus</span>
         <span class="c1"># Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">currentChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabBarClicked</span>  <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;_TTkTabs&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
@@ -302,10 +305,19 @@
     <span class="k">def</span> <span class="nf">unsetSideBorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">border</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sideBorder</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">border</span>
 
-
     <span class="k">def</span> <span class="nf">setBorderColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tabBorderColor</span>      <span class="o">=</span> <span class="n">color</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tabBorderColorFocus</span> <span class="o">=</span> <span class="n">color</span>
+
+    <span class="k">def</span> <span class="nf">currentIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currentIndex</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_currentIndex</span> <span class="o">=</span> <span class="n">index</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">index</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateTabs</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_updateTabs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">xpos</span> <span class="o">=</span> <span class="mi">0</span><span class="o">+</span><span class="mi">2</span>
@@ -358,6 +370,7 @@
             <span class="k">if</span> <span class="n">posx</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">posx</span><span class="o">+</span><span class="n">tablen</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_currentIndex</span> <span class="o">=</span> <span class="n">i</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tabBarClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currentIndex</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_updateTabs</span><span class="p">()</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -434,7 +447,11 @@
         <span class="s1">&#39;_tabWidgets&#39;</span><span class="p">,</span> <span class="s1">&#39;_labels&#39;</span><span class="p">,</span> <span class="s1">&#39;_labelsPos&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;_currentIndex&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_leftScroller&#39;</span><span class="p">,</span> <span class="s1">&#39;_rightScroller&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_tabMovable&#39;</span><span class="p">,</span> <span class="s1">&#39;_tabClosable&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;_tabMovable&#39;</span><span class="p">,</span> <span class="s1">&#39;_tabClosable&#39;</span><span class="p">,</span>
+        <span class="c1"># Forward Signals</span>
+        <span class="s1">&#39;currentChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;tabBarClicked&#39;</span><span class="p">,</span>
+        <span class="c1"># forward methods</span>
+        <span class="s1">&#39;currentIndex&#39;</span><span class="p">,</span> <span class="s1">&#39;setCurrentIndex&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tabWidgets</span> <span class="o">=</span> <span class="p">[]</span>
@@ -470,6 +487,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setPadding</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tabBarTopLayout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tabBarTopLayout</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_padt</span><span class="p">)</span>
+        <span class="c1"># forwarded methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currentIndex</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tabBar</span><span class="o">.</span><span class="n">currentIndex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tabBar</span><span class="o">.</span><span class="n">setCurrentIndex</span>
+        <span class="c1"># forwarded Signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currentChanged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tabBar</span><span class="o">.</span><span class="n">currentChanged</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabBarClicked</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tabBar</span><span class="o">.</span><span class="n">tabBarClicked</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setCurrentWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tabWidgets</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">widget</span> <span class="o">==</span> <span class="n">w</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">break</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_tabChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>

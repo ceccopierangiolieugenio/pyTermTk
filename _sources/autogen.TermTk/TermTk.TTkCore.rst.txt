@@ -10,6 +10,7 @@ TermTk.TTkCore
 .. autosummary::
   :toctree: ./
 
+  TermTk.TTkCore.TTkTerm
   TermTk.TTkCore.canvas
   TermTk.TTkCore.cfg
   TermTk.TTkCore.color
