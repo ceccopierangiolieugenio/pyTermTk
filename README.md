@@ -78,3 +78,14 @@ cprofilev -f profiler.txt
 ```
 ##### pyroscope
 [pyroscope](https://pyroscope.io/) can be used as well for profiling
+
+## Related Projects
+
+- Python
+  - [pyTermGUI](https://github.com/bczsalba/pytermgui) - A simple yet powerful TUI framework for your Python (3.7+) applications
+  - [Textual](https://github.com/Textualize/textual) - TUI (Text User Interface) framework for Python inspired by modern web development
+  - [Rich](https://github.com/Textualize/rich) - Python library for rich text and beautiful formatting in the terminal
+  - [PyCuT](https://github.com/ceccopierangiolieugenio/pyCuT) - terminal graphic library loosely based on QT api (my previous failed attempt)
+- Non Python
+  - [ncurses](https://en.wikipedia.org/wiki/Ncurses)
+  - [tui.el](https://github.com/ebpa/tui.el) - An experimental text-based UI framework for Emacs modeled after React
