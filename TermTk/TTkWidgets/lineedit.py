@@ -77,8 +77,7 @@ class TTkLineEdit(TTkWidget):
     def _pushCursor(self):
         w = self.width()
 
-        self._selectionFrom = 0
-        self._selectionTo   = 0
+        self._selectionTo   = self._selectionFrom
 
         # Align the text and the offset and the cursor to the current view
         self._offset = max(0, min(self._offset, len(self._text)-w))
@@ -114,14 +113,26 @@ class TTkLineEdit(TTkWidget):
         self._canvas.drawText(pos=(0,0), text=text, color=color, width=w)
 
     def mousePressEvent(self, evt):
-        x,y = evt.x, evt.y
-        txtPos = x+self._offset
+        txtPos = evt.x+self._offset
         if txtPos > len(self._text):
             txtPos = len(self._text)
-        self._cursorPos = txtPos
-        self._selectionFrom = 0
-        self._selectionTo   = 0
+        self._cursorPos     = txtPos
+        self._selectionFrom = txtPos
+        self._selectionTo   = txtPos
         self._pushCursor()
+        return True
+
+    def mouseDragEvent(self, evt) -> bool:
+        txtPos = evt.x+self._offset
+        if txtPos < self._cursorPos:
+            self._selectionFrom = txtPos
+            self._selectionTo   = self._cursorPos
+        else:
+            self._selectionFrom = self._cursorPos
+            self._selectionTo   = txtPos
+        if self._selectionFrom < self._selectionTo:
+            TTkHelper.hideCursor()
+        self.update()
         return True
 
     def mouseDoubleClickEvent(self, evt) -> bool:
