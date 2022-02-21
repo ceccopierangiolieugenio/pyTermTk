@@ -82,6 +82,7 @@ cprofilev -f profiler.txt
 ## Related Projects
 
 - Python
+  - [urwid](https://github.com/urwid/urwid) - Console user interface library for Python
   - [pyTermGUI](https://github.com/bczsalba/pytermgui) - A simple yet powerful TUI framework for your Python (3.7+) applications
   - [Textual](https://github.com/Textualize/textual) - TUI (Text User Interface) framework for Python inspired by modern web development
   - [Rich](https://github.com/Textualize/rich) - Python library for rich text and beautiful formatting in the terminal

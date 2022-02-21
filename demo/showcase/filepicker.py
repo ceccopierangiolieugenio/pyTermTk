@@ -32,15 +32,20 @@ def demoFilePicker(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
     # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
-    btn = ttk.TTkButton(parent=frame, pos=( 0,0), size=(8,3), border=True, text='File' )
-    label = ttk.TTkLabel(parent=frame, pos=( 10,1), size=(30,1), text="...")
+    btn1 = ttk.TTkButton( parent=frame, pos=(0,0),  size=(8,3),  border=True, text='File' )
+    btn3 = ttk.TTkButton( parent=frame, pos=(8,0),  size=(13,3), border=True, text='Directory' )
+    btn2 = ttk.TTkButton( parent=frame, pos=(21,0), size=(17,3), border=True, text='Existing File', enabled=False )
+    btn4 = ttk.TTkButton( parent=frame, pos=(38,0), size=(18,3), border=True, text='Existing Files', enabled=False )
+    label = ttk.TTkLabel(parent=frame, pos=(1,5), size=(30,1), text="...")
 
-    def _showDialog():
-        filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick a File", path=".", filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
-        filePicker.filePicked.connect(label.setText)
+
+    def _showDialog(fm):
+        filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=fm ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
+        filePicker.pathPicked.connect(label.setText)
         ttk.TTkHelper.overlay(frame, filePicker, 2, 1)
 
-    btn.clicked.connect(_showDialog)
+    btn1.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.AnyFile))
+    btn3.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.Directory))
 
     return frame
 
@@ -58,7 +63,7 @@ def main():
         root.setLayout(ttk.TTkGridLayout())
         winColor1 = root
     else:
-        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(50,20), title="Test File Picker", border=True, layout=ttk.TTkGridLayout())
+        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(58,20), title="Test File/Folder Picker", border=True, layout=ttk.TTkGridLayout())
 
     demoFilePicker(winColor1)
 

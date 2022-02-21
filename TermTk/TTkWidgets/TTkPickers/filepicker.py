@@ -24,7 +24,6 @@
 
 import os
 import re
-import datetime
 
 from TermTk.TTkCore.color import TTkColor
 
@@ -60,16 +59,19 @@ from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetI
 '''
 
 class TTkFileDialogPicker(TTkWindow):
-    __slots__ = ('_path', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption',
+    __slots__ = ('_path', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption', '_fileMode',
                  # Widgets
                  '_fileTree', '_lookPath', '_btnPrev', '_btnNext', '_btnUp',
                  '_fileName', '_fileType', '_btnOpen', '_btnCancel',
                  # Signals
-                 'filePicked')
+                 'pathPicked', 'filePicked', 'filesPicked', 'folderPicked')
 
     def __init__(self, *args, **kwargs):
         # Signals
+        self.pathPicked = pyTTkSignal(str)
         self.filePicked = pyTTkSignal(str)
+        self.filesPicked = pyTTkSignal(list)
+        self.folderPicked = pyTTkSignal(str)
 
         TTkWindow.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkFileDialogPicker' )
@@ -77,10 +79,11 @@ class TTkFileDialogPicker(TTkWindow):
         self._recentPathId = -1
         self._recentPath = []
 
-        self._path    = kwargs.get('path','.')
-        self._filter  = '*'
-        self._filters = kwargs.get('filter','All Files (*)')
-        self._caption = kwargs.get('caption','File Dialog')
+        self._path     = kwargs.get('path','.')
+        self._filter   = '*'
+        self._filters  = kwargs.get('filter','All Files (*)')
+        self._caption  = kwargs.get('caption','File Dialog')
+        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.AnyFile)
 
         self.setTitle(self._caption)
         self.setLayout(TTkGridLayout())
@@ -162,7 +165,14 @@ class TTkFileDialogPicker(TTkWindow):
 
     @pyTTkSlot(str)
     def _checkFileName(self, fileName):
-        if os.path.exists(fileName) and os.path.isfile(fileName):
+        valid = False
+        if self._fileMode == TTkK.FileMode.AnyFile:
+            valid = os.path.exists(fileName) and os.path.isfile(fileName)
+        elif self._fileMode == TTkK.FileMode.Directory:
+            valid = os.path.exists(fileName) and os.path.isdir(fileName)
+        else:
+            pass
+        if valid:
             self._btnOpen.setEnabled()
         else:
             self._btnOpen.setDisabled()
@@ -171,12 +181,19 @@ class TTkFileDialogPicker(TTkWindow):
     def _open(self):
         fileName = self._fileName.text()
         if not os.path.exists(fileName): return
-        self.filePicked.emit(fileName)
+        if self._fileMode == TTkK.FileMode.AnyFile   and not os.path.isfile(fileName): return
+        if self._fileMode == TTkK.FileMode.Directory and not os.path.isdir(fileName):  return
+        if self._fileMode == TTkK.FileMode.AnyFile:
+            self.filePicked.emit(fileName)
+        if self._fileMode == TTkK.FileMode.Directory:
+            self.folderPicked.emit(fileName)
+        self.pathPicked.emit(fileName)
         self.close()
 
     @pyTTkSlot(TTkFileTreeWidgetItem, int)
     def _selectedItem(self, item, _):
-        if item.getType() != item.FILE: return
+        if self._fileMode == TTkK.FileMode.AnyFile   and item.getType() != item.FILE: return
+        if self._fileMode == TTkK.FileMode.Directory and item.getType() != item.DIR : return
         self._fileName.setText(item.path())
 
     @pyTTkSlot(TTkFileTreeWidgetItem, int)
@@ -186,6 +203,12 @@ class TTkFileDialogPicker(TTkWindow):
              self._openNewPath(path, True)
         elif os.path.isfile(path):
             self._open()
+
+    def filemode(self):
+        return self._fileMode
+
+    def setFileMode(self, fileMode):
+        self._fileMode = fileMode
 
     def _openPrev(self):
         if self._recentPathId<=0 or self._recentPathId>=len(self._recentPath):
@@ -239,84 +262,6 @@ class TTkFileDialogPicker(TTkWindow):
             if not path or path=='/':
                 break
         return ret
-
-    @staticmethod
-    def _getFileItems(path):
-        path = os.path.abspath(path)
-        if not os.path.exists(path): return []
-        dir_list = os.listdir(path)
-        ret = []
-        for n in dir_list:
-            nodePath = os.path.join(path,n)
-
-            def _getStat(_path):
-                info = os.stat(_path)
-                time = datetime.datetime.fromtimestamp(info.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
-                if info.st_size > (1024*1024*1024):
-                    size = f"{info.st_size/(1024*1024*1024):.2f} GB"
-                if info.st_size > (1024*1024):
-                    size = f"{info.st_size/(1024*1024):.2f} MB"
-                elif info.st_size > 1024:
-                    size = f"{info.st_size/1024:.2f} KB"
-                else:
-                    size = f"{info.st_size} bytes"
-                return time, size, info.st_ctime, info.st_size
-
-            if os.path.isdir(nodePath):
-                if os.path.exists(nodePath):
-                    time, _, rawTime, _ = _getStat(nodePath)
-                    color = TTkCfg.theme.folderNameColor
-                else:
-                    time, _, rawTime, _ = ""
-                    color = TTkCfg.theme.failNameColor
-
-                if os.path.islink(nodePath):
-                    name = TTkString()+TTkCfg.theme.linkNameColor+n+'/'+TTkColor.RST+' -> '+TTkCfg.theme.folderNameColor+os.readlink(nodePath)
-                    typef = "Folder Link"
-                else:
-                    name = TTkString()+color+n+'/'
-                    typef = "Folder"
-
-                ret.append(TTkFileTreeWidgetItem(
-                                [ name, "", typef, time],
-                                raw = [ n , -1 , typef , rawTime ],
-                                path=nodePath,
-                                type=TTkFileTreeWidgetItem.DIR,
-                                icon=TTkString() + TTkCfg.theme.folderIconColor + TTkCfg.theme.fileIcon.folderClose + TTkColor.RST,
-                                childIndicatorPolicy=TTkK.ShowIndicator))
-
-            elif os.path.isfile(nodePath) or os.path.islink(nodePath):
-                if os.path.exists(nodePath):
-                    time, size, rawTime, rawSize = _getStat(nodePath)
-                    if os.access(nodePath, os.X_OK):
-                        color = TTkCfg.theme.executableColor
-                        typef="Exec"
-                    else:
-                        color = TTkCfg.theme.fileNameColor
-                        typef="File"
-                else:
-                    time, size, rawTime, rawSize = "", "", 0, 0
-                    color = TTkCfg.theme.failNameColor
-                    typef="Broken"
-
-                if os.path.islink(nodePath):
-                    name = TTkString()+TTkCfg.theme.linkNameColor+n+TTkColor.RST+' -> '+color+os.readlink(nodePath)
-                    typef += " Link"
-                else:
-                    name = TTkString()+color+n
-
-                _, ext = os.path.splitext(n)
-                if ext: ext = f"{ext[1:]} "
-                ret.append(TTkFileTreeWidgetItem(
-                                [ name, size, typef, time],
-                                raw = [ n , rawSize , typef , rawTime ],
-                                path=nodePath,
-                                type=TTkFileTreeWidgetItem.FILE,
-                                icon=TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.getIcon(n) + TTkColor.RST,
-                                childIndicatorPolicy=TTkK.DontShowIndicator))
-        return ret
-
-
 class TTkFileDialog:
     def getOpenFileName(caption, dir=".", filter="All Files (*)", options=None):
         pass
