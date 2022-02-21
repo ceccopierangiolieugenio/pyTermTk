@@ -39,7 +39,7 @@ calculatorWin.setLayout(winLayout)
     # Position (Row/Col) (0,0) and (Row/Col)Span (1,4)
     # I force the Max Height to 1 in order to avoid this widget to resize vertically
 resLabel = ttk.TTkLabel(text="Results", maxHeight=1)
-winLayout.addWidget(resLabel, 0,0, 4,1)
+winLayout.addWidget(resLabel, 0,0, 1,4)
 
     # Define the Numeric Buttons and attach them to the grid layout
 btn1 = ttk.TTkButton(border=True, text="1")

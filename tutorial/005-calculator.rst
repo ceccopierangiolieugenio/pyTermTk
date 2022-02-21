@@ -56,7 +56,7 @@ From `calculator.001.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blo
 
 .. code:: bash
 
-    # Run from the pyTermTk root folder
+    # If you want to try without installation, run from the pyTermTk root folder
     PYTHONPATH=`pwd` tutorial/calculator/calculator.001.py
 
 First thing first I need a parent widget with a grid layout that I can use to place the elements of my calculator
@@ -87,7 +87,7 @@ Based on the positions and sizes defined in the `design layout <#design>`_, I pl
 
 .. code:: bash
 
-    # Run from the pyTermTk root folder
+    # If you want to try without installation, run from the pyTermTk root folder
     PYTHONPATH=`pwd` tutorial/calculator/calculator.002.py
 
 .. code:: python
@@ -96,7 +96,7 @@ Based on the positions and sizes defined in the `design layout <#design>`_, I pl
         # Position (Row/Col) (0,0) and (Row/Col)Span (1,4)
         # I force the Max Height to 1 in order to avoid this widget to resize vertically
     resLabel = ttk.TTkLabel(text="Results", maxHeight=1)
-    winLayout.addWidget(resLabel, 0,0, 4,1)
+    winLayout.addWidget(resLabel, 0,0, 1,4)
 
         # Define the Numeric Buttons and attach them to the grid layout
     btn1 = ttk.TTkButton(border=True, text="1")
@@ -166,7 +166,7 @@ From `calculator.003.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blo
 
 .. code:: bash
 
-    # Run from the pyTermTk root folder
+    # If you want to try without installation, run from the pyTermTk root folder
     PYTHONPATH=`pwd` tutorial/calculator/calculator.003.py
 
 .. code:: python
@@ -212,7 +212,7 @@ From `calculator.004.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blo
 
 .. code:: bash
 
-    # Run from the pyTermTk root folder
+    # If you want to try without installation, run from the pyTermTk root folder
     PYTHONPATH=`pwd` tutorial/calculator/calculator.004.py
 
 .. code:: python
@@ -255,7 +255,7 @@ From `calculator.005.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blo
 
 .. code:: bash
 
-    # Run from the pyTermTk root folder
+    # If you want to try without installation, run from the pyTermTk root folder
     PYTHONPATH=`pwd` tutorial/calculator/calculator.005.py
 
 .. code:: python
