@@ -224,6 +224,10 @@ Thanks to my amazing <a class="reference external" href="https://github.com/cecc
 <section id="initialize-the-window">
 <h3>Initialize the window<a class="headerlink" href="#initialize-the-window" title="Permalink to this headline">¶</a></h3>
 <p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.001.py">calculator.001.py</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> tutorial/calculator/calculator.001.py
+</pre></div>
+</div>
 <p>First thing first I need a parent widget with a grid layout that I can use to place the elements of my calculator</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">TermTk</span> <span class="k">as</span> <span class="nn">ttk</span>
 
@@ -243,12 +247,16 @@ Thanks to my amazing <a class="reference external" href="https://github.com/cecc
 <section id="add-all-the-widgets-of-calculator-to-it">
 <h3>Add all the widgets of calculator to it<a class="headerlink" href="#add-all-the-widgets-of-calculator-to-it" title="Permalink to this headline">¶</a></h3>
 <p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.002.py">calculator.002.py</a></p>
-<p>Based on the positions and sizes defined in the <a class="reference internal" href="#design"><span class="std std-ref">design layout</span></a>, I place all the widgets on the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.gridlayout.html">TTkGridLayout</a> (<strong>winLayout</strong>)</p>
+<p>Based on the positions and sizes defined in the <a class="reference external" href="#design">design layout</a>, I place all the widgets on the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.gridlayout.html">TTkGridLayout</a> (<strong>winLayout</strong>)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> tutorial/calculator/calculator.002.py
+</pre></div>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># Define the Label and attach it to the grid layout at</span>
     <span class="c1"># Position (Row/Col) (0,0) and (Row/Col)Span (1,4)</span>
     <span class="c1"># I force the Max Height to 1 in order to avoid this widget to resize vertically</span>
 <span class="n">resLabel</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkLabel</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Results&quot;</span><span class="p">,</span> <span class="n">maxHeight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">winLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">resLabel</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">winLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">resLabel</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
 
     <span class="c1"># Define the Numeric Buttons and attach them to the grid layout</span>
 <span class="n">btn1</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">TTkButton</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
@@ -312,6 +320,10 @@ Thanks to my amazing <a class="reference external" href="https://github.com/cecc
 <section id="numeric-button-events">
 <h3>Numeric Button Events<a class="headerlink" href="#numeric-button-events" title="Permalink to this headline">¶</a></h3>
 <p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.003.py">calculator.003.py</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> tutorial/calculator/calculator.003.py
+</pre></div>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># I am defining a simlpe structure that can be used to store</span>
     <span class="c1"># the mathematical elements of the formulae</span>
 <span class="n">mathElements</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;operation&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span>
@@ -350,6 +362,10 @@ Thanks to my amazing <a class="reference external" href="https://github.com/cecc
 <section id="operation-and-results-events">
 <h3>Operation and results events<a class="headerlink" href="#operation-and-results-events" title="Permalink to this headline">¶</a></h3>
 <p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.004.py">calculator.004.py</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> tutorial/calculator/calculator.004.py
+</pre></div>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># Define 2 slots to handle the Add and Sub operations</span>
 <span class="nd">@pyTTkSlot</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">setOperationAdd</span><span class="p">():</span>
@@ -385,6 +401,10 @@ Thanks to my amazing <a class="reference external" href="https://github.com/cecc
 <section id="beware-the-mystery-button">
 <h3>Beware the Mystery Button<a class="headerlink" href="#beware-the-mystery-button" title="Permalink to this headline">¶</a></h3>
 <p>From <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.005.py">calculator.005.py</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span> tutorial/calculator/calculator.005.py
+</pre></div>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyTTkSlot</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">showAboytWindow</span><span class="p">():</span>
     <span class="c1"># I am using the overlay helper to show the</span>
