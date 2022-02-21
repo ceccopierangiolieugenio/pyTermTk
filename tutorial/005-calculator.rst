@@ -54,6 +54,11 @@ Initialize the window
 
 From `calculator.001.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.001.py>`_
 
+.. code:: bash
+
+    # Run from the pyTermTk root folder
+    PYTHONPATH=`pwd` tutorial/calculator/calculator.001.py
+
 First thing first I need a parent widget with a grid layout that I can use to place the elements of my calculator
 
 .. code:: python
@@ -78,7 +83,12 @@ Add all the widgets of calculator to it
 
 From `calculator.002.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.002.py>`_
 
-Based on the positions and sizes defined in the :ref:`design layout <design>`, I place all the widgets on the TTkGridLayout_ (**winLayout**)
+Based on the positions and sizes defined in the `design layout <#design>`_, I place all the widgets on the TTkGridLayout_ (**winLayout**)
+
+.. code:: bash
+
+    # Run from the pyTermTk root folder
+    PYTHONPATH=`pwd` tutorial/calculator/calculator.002.py
 
 .. code:: python
 
@@ -154,6 +164,11 @@ Numeric Button Events
 
 From `calculator.003.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.003.py>`_
 
+.. code:: bash
+
+    # Run from the pyTermTk root folder
+    PYTHONPATH=`pwd` tutorial/calculator/calculator.003.py
+
 .. code:: python
 
         # I am defining a simlpe structure that can be used to store
@@ -195,6 +210,11 @@ Operation and results events
 
 From `calculator.004.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.004.py>`_
 
+.. code:: bash
+
+    # Run from the pyTermTk root folder
+    PYTHONPATH=`pwd` tutorial/calculator/calculator.004.py
+
 .. code:: python
 
         # Define 2 slots to handle the Add and Sub operations
@@ -232,6 +252,11 @@ Beware the Mystery Button
 -----------------------------------------
 
 From `calculator.005.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.005.py>`_
+
+.. code:: bash
+
+    # Run from the pyTermTk root folder
+    PYTHONPATH=`pwd` tutorial/calculator/calculator.005.py
 
 .. code:: python
 
