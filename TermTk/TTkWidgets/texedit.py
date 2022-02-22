@@ -34,16 +34,18 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 
 class _TTkTextEditView(TTkAbstractScrollView):
-    __slots__ = ('_lines')
+    __slots__ = ('_lines', '_hsize')
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
+        self._hsize = 0
         self._lines = []
 
     @pyTTkSlot(str)
     def setText(self, text):
         self._lines = [line for line in text.split('\n')]
         self.viewMoveTo(0, 0)
+        self._updateSize()
         self.viewChanged.emit()
         self.update()
 
@@ -51,19 +53,25 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def setLines(self, lines):
         self._lines = lines
         self.viewMoveTo(0, 0)
+        self._updateSize()
         self.viewChanged.emit()
         self.update()
 
+    def _updateSize(self):
+        self._hsize = 0
+        for l in self._lines:
+            self._hsize = max(self._hsize, len(l))
+
     def viewFullAreaSize(self) -> (int, int):
-        return self.width(), len(self._lines)
+        return self._hsize, len(self._lines)
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
     def paintEvent(self):
-        _, oy = self.getViewOffsets()
+        ox, oy = self.getViewOffsets()
         for y, t in enumerate(self._lines[oy:]):
-            self._canvas.drawText(pos=(0,y), text=t)
+            self._canvas.drawText(pos=(-ox,y), text=t)
 
 class TTkTextEdit(TTkAbstractScrollArea):
     __slots__ = ('_textEditView', 'setText', 'setColoredLines')

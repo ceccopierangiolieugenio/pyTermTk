@@ -61,7 +61,6 @@ def stupidPythonHighlighter(txt):
                 ret = ret.setColor(color, match=match)
         return ret
 
-
     # Operators
     txt = _colorize(re.compile('[\+\*\/\=\-\<\>\!]'), txt, ttk.TTkColor.fg('#00AAAA'))
     # Bool
