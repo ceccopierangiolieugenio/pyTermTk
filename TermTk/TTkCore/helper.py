@@ -118,6 +118,8 @@ class TTkHelper:
 
     @staticmethod
     def overlay(caller, widget, x, y):
+        if not caller:
+            caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
         # Try to keep the overlay widget inside the terminal

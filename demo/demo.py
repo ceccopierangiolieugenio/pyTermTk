@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import sys, os, argparse
+import re
 import random
 
 sys.path.append(os.path.join(sys.path[0],'../tmp'))
@@ -51,6 +52,51 @@ def getWord():
     return random.choice(words)
 def getSentence(a,b):
     return " ".join([getWord() for i in range(0,random.randint(a,b))])
+
+def stupidPythonHighlighter(txt):
+    def _colorize(regex, txt, color):
+        ret = txt
+        if m := txt.findall(regexp=regex):
+            for match in m:
+                ret = ret.setColor(color, match=match)
+        return ret
+
+
+    # Operators
+    txt = _colorize(re.compile('[\+\*\/\=\-\<\>\!]'), txt, ttk.TTkColor.fg('#00AAAA'))
+    # Bool
+    txt = _colorize(re.compile('True|False'), txt, ttk.TTkColor.fg('#0000FF'))
+
+    # Numbers
+    txt = _colorize(re.compile('[0-9]'), txt, ttk.TTkColor.fg('#00FFFF'))
+
+    # Functions
+    txt = _colorize(re.compile('[ \t]*def[ \t]*'), txt, ttk.TTkColor.fg('#00FFFF'))
+    txt = _colorize(re.compile('[^= \t\.\()]*[\t ]*\('), txt, ttk.TTkColor.fg('#AAAA00'))
+    # Objects
+    txt = _colorize(re.compile('[^= \t\.\()]*\.'), txt, ttk.TTkColor.fg('#44AA00'))
+
+    # Fix Extra colors
+    txt = _colorize(re.compile('[\(\)]'), txt, ttk.TTkColor.RST)
+    txt = _colorize(re.compile("'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
+
+    # Strings
+    txt = _colorize(re.compile('"[^"]*"'), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile("'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
+
+    # Comments
+    txt = _colorize(re.compile('#.*\n'), txt, ttk.TTkColor.fg('#00FF00'))
+    return txt
+
+def showSource(file):
+    ttk.TTkLog.debug(f"Placeholder for the Sources - {file}")
+    content = "Nothing"
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),file)) as f:
+        content = stupidPythonHighlighter( ttk.TTkString() + f.read() )
+    sourceWin = ttk.TTkWindow(size=(100,40), title=file, layout=ttk.TTkGridLayout())
+    texEdit = ttk.TTkTextEdit(parent=sourceWin)
+    texEdit.setText(content)
+    ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
 
 def demoShowcase(root=None, border=True):
     splitter = ttk.TTkSplitter(parent=root)
@@ -93,11 +139,13 @@ def demoShowcase(root=None, border=True):
         'showcase/layout_nested.py',
         'showcase/layout_span.py',
         'showcase/splitter.py' ]
-    tabLayouts.addMenu("Sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : ttk.TTkLog.debug(f"Placeholder for the Sources - {tabLayoutsSources[tabLayouts.currentIndex()]}"))
+    tabLayouts.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabLayoutsSources[tabLayouts.currentIndex()]))
 
     listMenu.addItem(f"MenuBar")
     tabMenuBar = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabMenuBar.addTab(demoMenuBar(),     " MenuBar Test ")
+    tabMenuBarSources = [ 'showcase/menubar.py' ]
+    tabMenuBar.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabMenuBarSources[tabMenuBar.currentIndex()]))
 
     listMenu.addItem(f"Widgets")
     tabWidgets = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
@@ -107,24 +155,41 @@ def demoShowcase(root=None, border=True):
     tabWidgets.addTab(demoTab(),         " Tab Test ")
     tabWidgets.addTab(demoFancyTable(),  " Old Table ")
     tabWidgets.addTab(demoFancyTree(),   " Old Tree ")
+    tabWidgetsSources = [
+        'showcase/formwidgets.py',
+        'showcase/list.py',
+        'showcase/tree.py',
+        'showcase/tab.py',
+        'showcase/fancytable.py',
+        'showcase/fancytree.py' ]
+    tabWidgets.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabWidgetsSources[tabWidgets.currentIndex()]))
 
     listMenu.addItem(f"Pickers")
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabPickers.addTab(demoFilePicker(),  " File Picker ")
     tabPickers.addTab(demoColorPicker(), " Color Picker ")
-
+    tabPickersSources = [
+        'showcase/filepicker.py',
+        'showcase/colorpicker.py' ]
+    tabPickers.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabPickersSources[tabPickers.currentIndex()]))
 
     listMenu.addItem(f"Graphs")
     tabGraphs = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabGraphs.addTab(demoGraph(),       " Graph Test ")
+    tabGraphsSources = [ 'showcase/graph.py' ]
+    tabGraphs.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabGraphsSources[tabGraphs.currentIndex()]))
 
     listMenu.addItem(f"Windows")
     tabWindows = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabWindows.addTab(demoWindows(),     " Windows Test ")
+    tabWindowsSources = [ 'showcase/windows.py' ]
+    tabWindows.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabWindowsSources[tabWindows.currentIndex()]))
 
     listMenu.addItem(f"Area")
     tabArea = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabArea.addTab(demoScrollArea(),  " Scroll Area ")
+    tabAreaSources = [ 'showcase/scrollarea.py' ]
+    tabArea.addMenu("[Sources]", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabAreaSources[tabArea.currentIndex()]))
 
     @ttk.pyTTkSlot(str)
     def _listCallback(label):
