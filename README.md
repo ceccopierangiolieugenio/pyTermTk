@@ -80,6 +80,9 @@ cprofilev -f profiler.txt
 [pyroscope](https://pyroscope.io/) can be used as well for profiling
 
 ## Related Projects
+- honourable mention
+  - [bpytop](https://github.com/aristocratos/bpytop) - Linux/OSX/FreeBSD resource monitor <br>
+    This was the base inspiration for my core library
 
 - Python
   - [urwid](https://github.com/urwid/urwid) - Console user interface library for Python
@@ -87,6 +90,8 @@ cprofilev -f profiler.txt
   - [Textual](https://github.com/Textualize/textual) - TUI (Text User Interface) framework for Python inspired by modern web development
   - [Rich](https://github.com/Textualize/rich) - Python library for rich text and beautiful formatting in the terminal
   - [PyCuT](https://github.com/ceccopierangiolieugenio/pyCuT) - terminal graphic library loosely based on QT api (my previous failed attempt)
+
 - Non Python
+  - [Turbo Vision](http://tvision.sourceforge.net)
   - [ncurses](https://en.wikipedia.org/wiki/Ncurses)
   - [tui.el](https://github.com/ebpa/tui.el) - An experimental text-based UI framework for Emacs modeled after React

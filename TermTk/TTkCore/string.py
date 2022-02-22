@@ -185,7 +185,19 @@ class TTkString():
         ret._colors = self._colors[fr:to]
         return ret
 
+    def split(self, separator ):
+        ret = []
+        pos = 0
+        if len(separator)==1:
+            for i,c in enumerate(self._text):
+                if c == separator:
+                    ret.append(self.substring(pos,i))
+                    pos = i+1
+        else:
+            raise NotImplementedError("Not yet implemented separators bigger than one char")
+        ret.append(self.substring(pos,len(self)))
 
+        return ret
 
     def getData(self):
         return (self._text,self._colors)

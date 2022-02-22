@@ -88,6 +88,12 @@ def demoShowcase(root=None, border=True):
     tabLayouts.addTab(demoLayoutNested()," Nested Layout Test ")
     tabLayouts.addTab(demoLayoutSpan(),  " Layout Span Test ")
     tabLayouts.addTab(demoSplitter(),    " Splitter Test ")
+    tabLayoutsSources = [
+        'showcase/layout_basic.py',
+        'showcase/layout_nested.py',
+        'showcase/layout_span.py',
+        'showcase/splitter.py' ]
+    tabLayouts.addMenu("Sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : ttk.TTkLog.debug(f"Placeholder for the Sources - {tabLayoutsSources[tabLayouts.currentIndex()]}"))
 
     listMenu.addItem(f"MenuBar")
     tabMenuBar = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
