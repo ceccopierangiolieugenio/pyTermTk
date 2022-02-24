@@ -160,10 +160,12 @@ class TTkString():
 
         return ret
 
-    def setColor(self, color, match=None, posFrom=0, posTo=0):
+    def setColor(self, color, match=None, posFrom=None, posTo=None):
         ret = TTkString()
         ret._text   += self._text
-        if match:
+        if posFrom == posTo == None:
+            ret._colors = [color]*len(self._text)
+        elif match:
             ret._colors += self._colors
             start=0
             lenMatch = len(match)
@@ -176,7 +178,7 @@ class TTkString():
             for i in range(posFrom, posTo):
                 ret._colors[i] = color
         else:
-            ret._colors = [color]*len(self._text)
+            ret._colors += self._colors
         return ret
 
     def substring(self, fr=None, to=None):
@@ -207,3 +209,6 @@ class TTkString():
 
     def findall(self, regexp, ignoreCase=False):
         return re.findall(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
+
+    def getIndexes(self, char):
+        return [i for i,c in enumerate(self._text) if c==char]
