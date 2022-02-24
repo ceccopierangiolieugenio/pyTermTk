@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+import re
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
@@ -140,11 +141,42 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def mouseDoubleClickEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
+        ox, oy = self.getViewOffsets()
+        y = max(0,min(evt.y + oy,len(self._lines)))
+        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        self._cursorPos     = (x,y)
+
+        before = self._lines[y].substring(to=x)
+        after =  self._lines[y].substring(fr=x)
+
+        xFrom = len(before)
+        xTo   = len(before)
+
+        selectRE = '[a-zA-Z0-9:,./]*'
+
+        if m := before.search(selectRE+'$'):
+            xFrom -= len(m.group(0))
+        if m := after.search('^'+selectRE):
+            xTo += len(m.group(0))
+
+        self._selectionFrom = ( xFrom, y )
+        self._selectionTo   = ( xTo,   y )
+
+        self.update()
         return True
 
     def mouseTapEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mouseTapEvent(evt)
+        ox, oy = self.getViewOffsets()
+        y = max(0,min(evt.y + oy,len(self._lines)))
+        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        self._cursorPos     = (x,y)
+
+        self._selectionFrom = ( 0 , y )
+        self._selectionTo   = ( len(self._lines[y]) ,   y )
+
+        self.update()
         return True
 
     def keyEvent(self, evt):
