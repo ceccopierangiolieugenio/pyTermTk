@@ -55,7 +55,7 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
     The TTkWidget class is the base class of all user interface objects
 
-    :param str name: the name of the widget, defaults to ""
+    :param name: the name of the widget, defaults to ""
     :type name: str, optional
     :param parent: the parent widget, defaults to None
     :type parent: :class:`TTkWidget`, optional

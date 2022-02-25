@@ -31,15 +31,22 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+def randColor():
+    return [
+        ttk.TTkColor.RST,
+        ttk.TTkColor.fg('#FFFF00'),
+        ttk.TTkColor.fg('#00FFFF'),
+        ttk.TTkColor.fg('#FF00FF')
+    ][random.randint(0,3)]
 def getWord():
-    return random.choice(words)
+    return ttk.TTkString(random.choice(words),randColor())
 def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
+    return ttk.TTkString(" ").join([getWord() for i in range(0,random.randint(a,b))])
 
 def demoTextEdit(root=None):
     te = ttk.TTkTextEdit(parent=root)
     te.setReadOnly(False)
-    te.setText('\n'.join([ getSentence(10,20) for _ in range(50)]))
+    te.setText(ttk.TTkString('\n').join([ getSentence(5,25) for _ in range(50)]))
     return te
 
 def main():

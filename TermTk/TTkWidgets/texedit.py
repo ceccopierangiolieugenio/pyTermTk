@@ -131,9 +131,18 @@ class _TTkTextEditView(TTkAbstractScrollView):
         ox, oy = self.getViewOffsets()
         y = max(0,min(evt.y + oy,len(self._lines)))
         x = max(0,min(evt.x + ox,len(self._lines[y])))
+        cx = self._cursorPos[0]
+        cy = self._cursorPos[1]
 
-        self._selectionFrom = ( min(x,self._cursorPos[0]), min(y,self._cursorPos[1]) )
-        self._selectionTo   = ( max(x,self._cursorPos[0]), max(y,self._cursorPos[1]) )
+        if y < cy:    # Mouse Dragged above the cursor
+            self._selectionFrom = (  x,  y )
+            self._selectionTo   = ( cx, cy )
+        elif y > cy:  # Mouse Dragged below the cursor
+            self._selectionFrom = ( cx, cy )
+            self._selectionTo   = (  x,  y )
+        else: # Mouse on the same line of the cursor
+            self._selectionFrom = ( min(cx,x), y )
+            self._selectionTo   = ( max(cx,x), y )
 
         self.update()
         return True
