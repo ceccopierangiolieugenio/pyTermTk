@@ -40,13 +40,13 @@ def randColor():
     ][random.randint(0,3)]
 def getWord():
     return ttk.TTkString(random.choice(words),randColor())
-def getSentence(a,b):
-    return ttk.TTkString(" ").join([getWord() for i in range(0,random.randint(a,b))])
+def getSentence(a,b,i):
+    return ttk.TTkString(" ").join([f"{i} "]+[getWord() for i in range(0,random.randint(a,b))])
 
 def demoTextEdit(root=None):
     te = ttk.TTkTextEdit(parent=root)
     te.setReadOnly(False)
-    te.setText(ttk.TTkString('\n').join([ getSentence(5,25) for _ in range(50)]))
+    te.setText(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
     return te
 
 def main():

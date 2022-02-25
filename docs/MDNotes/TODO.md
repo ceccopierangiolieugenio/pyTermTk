@@ -11,6 +11,9 @@
 - [ ] Support Hyperlink: (gnome-terminal)
       https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 - [x] Process child events before parent
+- [ ] Rewrite the way focus is handled
+      https://doc.qt.io/qt-5/focus.html
+      Ref: https://github.com/ceccopierangiolieugenio/scripts/blob/master/Programming/python/pyqt5/textedit.001.py
 
 ## Terminal Helper
 - [ ] Events

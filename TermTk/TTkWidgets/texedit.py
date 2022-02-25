@@ -24,6 +24,8 @@
 
 import re
 
+import chardet
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
@@ -92,7 +94,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         x = self._cursorPos[0]-ox
         y = self._cursorPos[1]-oy
 
-        if x >= self.width() or y>=self.height() or \
+        if x > self.width() or y>=self.height() or \
            self._selectionFrom != self._selectionTo or \
            x<0 or y<0:
             TTkHelper.hideCursor()
@@ -191,7 +193,50 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def keyEvent(self, evt):
         if self._readOnly:
             return super().keyEvent(evt)
-        return True
+        if evt.type == TTkK.SpecialKey:
+            _,_,w,h = self.geometry()
+            def _moveCursor(x,y):
+                y = max(0,min(y,len(self._lines)-1))
+                # The replace cursor need to be aligned to the chardet
+                # The Insert cursor must be placed between chars
+                if self._replace:
+                    x = max(0,min(x,len(self._lines[y])-1))
+                else:
+                    x = max(0,min(x,len(self._lines[y])))
+                self._cursorPos     = (x,y)
+                self._selectionFrom = (x,y)
+                self._selectionTo   = (x,y)
+                # Scroll the area to match the cursor
+                offx, offy = self.getViewOffsets()
+                offx = max(min(offx, x),x-w)
+                offy = max(min(offy, y),y-h+1)
+                self.viewMoveTo(offx, offy)
+            # Don't Handle the special tab key, for now
+            cx = self._cursorPos[0]
+            cy = self._cursorPos[1]
+            if evt.key == TTkK.Key_Tab:
+                return False
+            if evt.key == TTkK.Key_Up:         _moveCursor(cx  , cy-1)
+            elif evt.key == TTkK.Key_Down:     _moveCursor(cx  , cy+1)
+            elif evt.key == TTkK.Key_Left:     _moveCursor(cx-1, cy  )
+            elif evt.key == TTkK.Key_Right:    _moveCursor(cx+1, cy  )
+            elif evt.key == TTkK.Key_End:      _moveCursor(len(self._lines[cy]) , cy )
+            elif evt.key == TTkK.Key_Home:     _moveCursor(0   , cy )
+            elif evt.key == TTkK.Key_PageUp:   _moveCursor(cx   , cy - h)
+            elif evt.key == TTkK.Key_PageDown: _moveCursor(cx   , cy + h)
+            elif evt.key == TTkK.Key_Insert:
+                self._replace = not self._replace
+                _moveCursor(cx , cy)
+            elif evt.key == TTkK.Key_Delete: pass
+            elif evt.key == TTkK.Key_Backspace: pass
+
+            if evt.key == TTkK.Key_Enter:
+                self.returnPressed.emit()
+            self.update()
+            return True
+        else: pass
+
+        return super().keyEvent(evt)
 
     def focusInEvent(self):
         self._pushCursor()
