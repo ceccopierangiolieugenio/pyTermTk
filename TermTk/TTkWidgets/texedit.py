@@ -95,7 +95,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
         y = self._cursorPos[1]-oy
 
         if x > self.width() or y>=self.height() or \
-           self._selectionFrom != self._selectionTo or \
            x<0 or y<0:
             TTkHelper.hideCursor()
             return
@@ -134,6 +133,23 @@ class _TTkTextEditView(TTkAbstractScrollView):
         offx = max(min(offx, x),x-w)
         offy = max(min(offy, y),y-h+1)
         self.viewMoveTo(offx, offy)
+
+    def _selection(self) -> bool:
+        return self._selectionFrom != self._selectionTo
+
+    def _eraseSelection(self):
+       if self._selection(): # delete selection
+        sx1,sy1 = self._selectionFrom
+        sx2,sy2 = self._selectionTo
+        self._cursorPos   = self._selectionFrom
+        self._selectionTo = self._selectionFrom
+        if sy1==sy2: # the slice is on the same line
+            self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
+                               self._lines[sy1].substring(fr=sx2)
+        else:
+            self._lines[sy1] = self._lines[sy1].substring(to=sx1)
+            self._lines[sy2] = self._lines[sy2].substring(fr=sx2)
+            self._lines = self._lines[:sy1+1] + self._lines[sy2:]
 
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
@@ -213,6 +229,16 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
+    def mouseReleaseEvent(self, evt) -> bool:
+        if self._readOnly:
+            return super().mouseReleaseEvent(evt)
+        ox, oy = self.getViewOffsets()
+        y = max(0,min(evt.y + oy,len(self._lines)))
+        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        self._cursorPos     = (x,y)
+        self.update()
+        return True
+
     def keyEvent(self, evt):
         if self._readOnly:
             return super().keyEvent(evt)
@@ -235,8 +261,24 @@ class _TTkTextEditView(TTkAbstractScrollView):
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
                 self._setCursorPos(cx , cy)
-            elif evt.key == TTkK.Key_Delete: pass
-            elif evt.key == TTkK.Key_Backspace: pass
+            elif evt.key == TTkK.Key_Delete:
+                if self._selection():
+                    self._eraseSelection()
+                else:
+                    cpx,cpy = self._cursorPos
+                    l = self._lines[cpy]
+                    if cpx < len(l):
+                        self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
+            elif evt.key == TTkK.Key_Backspace:
+                if self._selection():
+                    self._eraseSelection()
+                else:
+                    cpx,cpy = self._cursorPos
+                    l = self._lines[cpy]
+                    if cpx > 0:
+                        cpx-=1
+                        self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
+                    self._cursorPos = (cpx,cpy)
 
             if evt.key == TTkK.Key_Enter:
                 self.returnPressed.emit()
@@ -247,7 +289,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return super().keyEvent(evt)
 
     def focusInEvent(self):
-        self._pushCursor()
         self.update()
 
     def focusOutEvent(self):
