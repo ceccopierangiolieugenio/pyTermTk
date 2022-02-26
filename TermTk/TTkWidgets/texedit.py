@@ -151,7 +151,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
                                self._lines[sy2].substring(fr=sx2)
             #self._lines[sy1] = self._lines[sy1].substring(to=sx1)
             #self._lines[sy2] = self._lines[sy2].substring(fr=sx2)
-            self._lines = self._lines[:sy1+1] + self._lines[sy2:]
+            self._lines = self._lines[:sy1+1] + self._lines[sy2+1:]
 
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
