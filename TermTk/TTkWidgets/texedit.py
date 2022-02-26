@@ -143,15 +143,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
         sx2,sy2 = self._selectionTo
         self._cursorPos   = self._selectionFrom
         self._selectionTo = self._selectionFrom
-        if sy1==sy2: # the slice is on the same line
-            self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
-                               self._lines[sy2].substring(fr=sx2)
-        else:
-            self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
-                               self._lines[sy2].substring(fr=sx2)
-            #self._lines[sy1] = self._lines[sy1].substring(to=sx1)
-            #self._lines[sy2] = self._lines[sy2].substring(fr=sx2)
-            self._lines = self._lines[:sy1+1] + self._lines[sy2+1:]
+        self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
+                           self._lines[sy2].substring(fr=sx2)
+        self._lines = self._lines[:sy1+1] + self._lines[sy2+1:]
 
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
