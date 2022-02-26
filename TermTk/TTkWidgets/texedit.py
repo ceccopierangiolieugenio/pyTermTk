@@ -114,6 +114,27 @@ class _TTkTextEditView(TTkAbstractScrollView):
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
+    def _setCursorPos(self, x, y):
+        y = max(0,min(y,len(self._lines)-1))
+        # The replace cursor need to be aligned to the char
+        # The Insert cursor must be placed between chars
+        if self._replace:
+            x = max(0,min(x,len(self._lines[y])-1))
+        else:
+            x = max(0,min(x,len(self._lines[y])))
+        self._cursorPos     = (x,y)
+        self._selectionFrom = (x,y)
+        self._selectionTo   = (x,y)
+        self._scrolToInclude(x,y)
+
+    def _scrolToInclude(self, x, y):
+        # Scroll the area (if required) to include the position x,y
+        _,_,w,h = self.geometry()
+        offx, offy = self.getViewOffsets()
+        offx = max(min(offx, x),x-w)
+        offy = max(min(offy, y),y-h+1)
+        self.viewMoveTo(offx, offy)
+
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mousePressEvent(evt)
@@ -145,6 +166,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         else: # Mouse on the same line of the cursor
             self._selectionFrom = ( min(cx,x), y )
             self._selectionTo   = ( max(cx,x), y )
+
+        self._scrolToInclude(x,y)
 
         self.update()
         return True
@@ -195,38 +218,23 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().keyEvent(evt)
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
-            def _moveCursor(x,y):
-                y = max(0,min(y,len(self._lines)-1))
-                # The replace cursor need to be aligned to the chardet
-                # The Insert cursor must be placed between chars
-                if self._replace:
-                    x = max(0,min(x,len(self._lines[y])-1))
-                else:
-                    x = max(0,min(x,len(self._lines[y])))
-                self._cursorPos     = (x,y)
-                self._selectionFrom = (x,y)
-                self._selectionTo   = (x,y)
-                # Scroll the area to match the cursor
-                offx, offy = self.getViewOffsets()
-                offx = max(min(offx, x),x-w)
-                offy = max(min(offy, y),y-h+1)
-                self.viewMoveTo(offx, offy)
+
             # Don't Handle the special tab key, for now
             cx = self._cursorPos[0]
             cy = self._cursorPos[1]
             if evt.key == TTkK.Key_Tab:
                 return False
-            if evt.key == TTkK.Key_Up:         _moveCursor(cx  , cy-1)
-            elif evt.key == TTkK.Key_Down:     _moveCursor(cx  , cy+1)
-            elif evt.key == TTkK.Key_Left:     _moveCursor(cx-1, cy  )
-            elif evt.key == TTkK.Key_Right:    _moveCursor(cx+1, cy  )
-            elif evt.key == TTkK.Key_End:      _moveCursor(len(self._lines[cy]) , cy )
-            elif evt.key == TTkK.Key_Home:     _moveCursor(0   , cy )
-            elif evt.key == TTkK.Key_PageUp:   _moveCursor(cx   , cy - h)
-            elif evt.key == TTkK.Key_PageDown: _moveCursor(cx   , cy + h)
+            if evt.key == TTkK.Key_Up:         self._setCursorPos(cx  , cy-1)
+            elif evt.key == TTkK.Key_Down:     self._setCursorPos(cx  , cy+1)
+            elif evt.key == TTkK.Key_Left:     self._setCursorPos(cx-1, cy  )
+            elif evt.key == TTkK.Key_Right:    self._setCursorPos(cx+1, cy  )
+            elif evt.key == TTkK.Key_End:      self._setCursorPos(len(self._lines[cy]) , cy )
+            elif evt.key == TTkK.Key_Home:     self._setCursorPos(0   , cy )
+            elif evt.key == TTkK.Key_PageUp:   self._setCursorPos(cx   , cy - h)
+            elif evt.key == TTkK.Key_PageDown: self._setCursorPos(cx   , cy + h)
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
-                _moveCursor(cx , cy)
+                self._setCursorPos(cx , cy)
             elif evt.key == TTkK.Key_Delete: pass
             elif evt.key == TTkK.Key_Backspace: pass
 
