@@ -145,10 +145,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._selectionTo = self._selectionFrom
         if sy1==sy2: # the slice is on the same line
             self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
-                               self._lines[sy1].substring(fr=sx2)
+                               self._lines[sy2].substring(fr=sx2)
         else:
-            self._lines[sy1] = self._lines[sy1].substring(to=sx1)
-            self._lines[sy2] = self._lines[sy2].substring(fr=sx2)
+            self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
+                               self._lines[sy2].substring(fr=sx2)
+            #self._lines[sy1] = self._lines[sy1].substring(to=sx1)
+            #self._lines[sy2] = self._lines[sy2].substring(fr=sx2)
             self._lines = self._lines[:sy1+1] + self._lines[sy2:]
 
     def mousePressEvent(self, evt) -> bool:
@@ -278,13 +280,24 @@ class _TTkTextEditView(TTkAbstractScrollView):
                     if cpx > 0:
                         cpx-=1
                         self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
-                    self._cursorPos = (cpx,cpy)
-
+                    self._setCursorPos(cpx,cpy)
             if evt.key == TTkK.Key_Enter:
-                self.returnPressed.emit()
+                self._eraseSelection()
+                cpx,cpy = self._cursorPos
+                l = self._lines[cpy]
+                self._lines[cpy] = l.substring(to=cpx)
+                self._lines = self._lines[:cpy+1] + [l.substring(fr=cpx)] + self._lines[cpy+1:]
+                self._setCursorPos(0,cpy+1)
             self.update()
             return True
-        else: pass
+        else: # Input char
+            self._eraseSelection()
+            cpx,cpy = self._cursorPos
+            l = self._lines[cpy]
+            self._lines[cpy] = l.substring(to=cpx) + evt.key + l.substring(fr=cpx)
+            self._setCursorPos(cpx+1,cpy)
+            self.update()
+            return True
 
         return super().keyEvent(evt)
 
