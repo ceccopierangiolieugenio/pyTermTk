@@ -29,9 +29,6 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-from tkinter import OFF
-from turtle import onclick
-
 class TTkTerm():
     CLEAR         = "\033[2J\033[0;0f" # Clear screen and set cursor to position 0,0
     ALT_SCREEN    = "\033[?1049h"                       #* Switch to alternate screen

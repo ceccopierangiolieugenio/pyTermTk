@@ -90,6 +90,7 @@ cprofilev -f profiler.txt
   - [Textual](https://github.com/Textualize/textual) - TUI (Text User Interface) framework for Python inspired by modern web development
   - [Rich](https://github.com/Textualize/rich) - Python library for rich text and beautiful formatting in the terminal
   - [PyCuT](https://github.com/ceccopierangiolieugenio/pyCuT) - terminal graphic library loosely based on QT api (my previous failed attempt)
+  - [pyTooling.TerminalUI](https://github.com/pyTooling/pyTooling.TerminalUI) - A set of helpers to implement a text user interface (TUI) in a terminal.
 
 - Non Python
   - [Turbo Vision](http://tvision.sourceforge.net)

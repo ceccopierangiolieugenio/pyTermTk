@@ -46,6 +46,7 @@ from  showcase.colorpicker   import demoColorPicker
 from  showcase.tree          import demoTree
 from  showcase.fancytable    import demoFancyTable
 from  showcase.fancytree     import demoFancyTree
+from  showcase.textedit      import demoTextEdit
 
 words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
 def getWord():
@@ -149,6 +150,7 @@ def demoShowcase(root=None, border=True):
     listMenu.addItem(f"Widgets")
     tabWidgets = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabWidgets.addTab(demoFormWidgets(), " Form Test ")
+    tabWidgets.addTab(demoTextEdit(),    " Text Edit ")
     tabWidgets.addTab(demoList(),        " List Test ")
     tabWidgets.addTab(demoTree(),        " Tree Test")
     tabWidgets.addTab(demoTab(),         " Tab Test ")
@@ -156,6 +158,7 @@ def demoShowcase(root=None, border=True):
     tabWidgets.addTab(demoFancyTree(),   " Old Tree ")
     tabWidgetsSources = [
         'showcase/formwidgets.py',
+        'showcase/textedit.py',
         'showcase/list.py',
         'showcase/tree.py',
         'showcase/tab.py',
