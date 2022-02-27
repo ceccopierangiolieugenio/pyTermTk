@@ -263,18 +263,26 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 else:
                     cpx,cpy = self._cursorPos
                     l = self._lines[cpy]
-                    if cpx < len(l):
+                    if cpx < len(l): # Erase next caracter on the same line
                         self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
+                    elif (cpy+1)<len(self._lines): # End of the line, remove "\n" and merge with the next line
+                        self._lines[cpy] += self._lines[cpy+1]
+                        self._lines = self._lines[:cpy+1] + self._lines[cpy+2:]
+                        self._setCursorPos(cpx , cpy)
             elif evt.key == TTkK.Key_Backspace:
                 if self._selection():
                     self._eraseSelection()
                 else:
                     cpx,cpy = self._cursorPos
                     l = self._lines[cpy]
-                    if cpx > 0:
+                    if cpx > 0: # Erase the previous character
                         cpx-=1
                         self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
-                    self._setCursorPos(cpx,cpy)
+                    elif cpy>0: # Beginning of the line, remove "\n" and merge with the previous line
+                        cpx = len(self._lines[cpy-1])
+                        self._lines[cpy-1] += l
+                        self._lines = self._lines[:cpy] + self._lines[cpy+1:]
+                        self._setCursorPos(cpx,cpy-1)
             if evt.key == TTkK.Key_Enter:
                 self._eraseSelection()
                 cpx,cpy = self._cursorPos
