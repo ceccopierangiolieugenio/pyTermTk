@@ -227,9 +227,7 @@ class TTkString():
         '''
         ret = TTkString()
         ret._text   += self._text
-        if posFrom == posTo == None:
-            ret._colors = [color]*len(self._text)
-        elif match:
+        if match:
             ret._colors += self._colors
             start=0
             lenMatch = len(match)
@@ -237,6 +235,8 @@ class TTkString():
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
                     ret._colors[i] = color
+        elif posFrom == posTo == None:
+            ret._colors = [color]*len(self._text)
         elif posFrom < posTo:
             ret._colors += self._colors
             for i in range(posFrom, posTo):

@@ -58,11 +58,11 @@ def main():
 
     root = ttk.TTk()
     if args.f:
-        rootTree1 = root
+        rootTree = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
-    demoTextEdit(rootTree1)
+        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
+    demoTextEdit(rootTree)
     root.mainloop()
 
 if __name__ == "__main__":
