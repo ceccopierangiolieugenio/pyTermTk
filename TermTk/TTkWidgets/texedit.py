@@ -22,10 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
-
-import chardet
-
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
@@ -35,11 +31,6 @@ from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-
-'''
-    Design:
-
-'''
 class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_lines', '_hsize',
