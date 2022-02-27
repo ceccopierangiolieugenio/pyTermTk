@@ -109,7 +109,10 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.helper.html">TermTk.TTkCore.helper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.log.html">TermTk.TTkCore.log</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.signal.html">TermTk.TTkCore.signal</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.string</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.string</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttkstring">TTkString</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer.html">TermTk.TTkCore.timer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.ttk.html">TermTk.TTkCore.ttk</a></li>
 </ul>
@@ -193,6 +196,169 @@
             
   <section id="module-TermTk.TTkCore.string">
 <span id="termtk-ttkcore-string"></span><h1>TermTk.TTkCore.string<a class="headerlink" href="#module-TermTk.TTkCore.string" title="Permalink to this headline">¶</a></h1>
+<section id="ttkstring">
+<h2>TTkString<a class="headerlink" href="#ttkstring" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TermTk.TTkCore.string.TTkString">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">text=''</span></em>, <em class="sig-param"><span class="pre">color=&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString" title="Permalink to this definition">¶</a></dt>
+<dd><p>TermTk String Helper</p>
+<p>The TTkString constructor creates a terminal String object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em><em>, </em><em>optional</em>) – text of the string, defaults to “”</p></li>
+<li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the string, defaults to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># No params Constructor</span>
+<span class="n">str1</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;test 1&quot;</span>
+<span class="n">str2</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span> <span class="o">+</span> <span class="s2">&quot;test 2&quot;</span>
+
+<span class="c1"># Indexed params constructor</span>
+<span class="n">str3</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="s2">&quot;test 3&quot;</span><span class="p">)</span>
+<span class="n">str4</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="s2">&quot;test 4&quot;</span><span class="p">,</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">ITALIC</span><span class="p">)</span>
+
+<span class="c1"># Named params constructor</span>
+<span class="n">str5</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;test 5&quot;</span><span class="p">)</span>
+<span class="n">str6</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;test 6&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">ITALIC</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;000044&quot;</span><span class="p">))</span>
+
+<span class="c1"># Combination of constructors (Highly Unrecommended)</span>
+<span class="n">str7</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="s2">&quot;test 7&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.align">
+<code class="sig-name descname"><span class="pre">align</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">width=None</span></em>, <em class="sig-param"><span class="pre">color=&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em>, <em class="sig-param"><span class="pre">alignment=0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align the string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – the new width</p></li>
+<li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the padding, defaults to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p></li>
+<li><p><strong>alignment</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment" title="TermTk.TTkCore.constant.TTkConstant.Alignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Alignment</span></code></a>, optional) – the alignment of the text to the full width <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment.NONE" title="TermTk.TTkCore.constant.TTkConstant.Alignment.NONE"><code class="xref py py-class docutils literal notranslate"><span class="pre">NONE</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.findall">
+<code class="sig-name descname"><span class="pre">findall</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regexp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreCase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.findall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.findall" title="Permalink to this definition">¶</a></dt>
+<dd><p>FindAll the <strong>regexp</strong> matches in the string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regexp</strong> (<em>str</em>) – the regular expression to be matched</p></li>
+<li><p><strong>ignoreCase</strong> (<em>bool</em>) – Ignore case, defaults to <strong>False</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.join">
+<code class="sig-name descname"><span class="pre">join</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join the input strings using the current as separator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>strings</strong> (<em>list</em>) – the list of strings to be joined</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.replace">
+<code class="sig-name descname"><span class="pre">replace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>replace</strong> (<em>old</em>, <em>new</em>, <em>count</em>)</p>
+<p>Replace “<strong>old</strong>” match with “<strong>new</strong>” string for “<strong>count</strong>” times</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old</strong> (<em>str</em>) – the match to be placed</p></li>
+<li><p><strong>new</strong> (<em>str</em><em>, </em><em>optional</em>) – the match to replace</p></li>
+<li><p><strong>count</strong> (<em>int</em><em>, </em><em>optional</em>) – the number of occurrences</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.search">
+<code class="sig-name descname"><span class="pre">search</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regexp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreCase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the <strong>re.match</strong> of the <strong>regexp</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regexp</strong> (<em>str</em>) – the regular expression to be matched</p></li>
+<li><p><strong>ignoreCase</strong> (<em>bool</em>) – Ignore case, defaults to <strong>False</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.setColor">
+<code class="sig-name descname"><span class="pre">setColor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posFrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posTo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.setColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the color of the entire string or a slice of it</p>
+<p>If only the color is specified, the entore sting is colorized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>) – the color to be used, defaults to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p></li>
+<li><p><strong>match</strong> (<em>str</em><em>, </em><em>optional</em>) – the match to colorize</p></li>
+<li><p><strong>posFrom</strong> (<em>int</em><em>, </em><em>optional</em>) – the initial position of the color</p></li>
+<li><p><strong>posTo</strong> (<em>int</em><em>, </em><em>optional</em>) – the final position of the color</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.split">
+<code class="sig-name descname"><span class="pre">split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">separator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the string using a separator</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only a one char separator is currently supported</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>separator</strong> (<em>str</em>) – the “<strong>char</strong>” separator to be used</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.substring">
+<code class="sig-name descname"><span class="pre">substring</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.substring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.substring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the substring</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fr</strong> (<em>int</em><em>, </em><em>optional</em>) – the starting of the slice, defaults to 0</p></li>
+<li><p><strong>to</strong> (<em>int</em><em>, </em><em>optional</em>) – the ending of the slice, defaults to the end of the string</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.toAansi">
+<code class="sig-name descname"><span class="pre">toAansi</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.toAansi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.toAansi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ansii (terminal colors/events) representation of the string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.toAscii">
+<code class="sig-name descname"><span class="pre">toAscii</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.toAscii"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.toAscii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ascii representation of the string</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 

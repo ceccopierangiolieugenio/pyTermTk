@@ -359,6 +359,16 @@
     <span class="n">CENTER_ALIGN</span> <span class="o">=</span> <span class="n">Alignment</span><span class="o">.</span><span class="n">CENTER_ALIGN</span>
     <span class="n">JUSTIFY</span>      <span class="o">=</span> <span class="n">Alignment</span><span class="o">.</span><span class="n">JUSTIFY</span>
 
+    <span class="k">class</span> <span class="nc">FileMode</span><span class="p">():</span>
+        <span class="n">AnyFile</span>        <span class="o">=</span> <span class="mi">0</span> <span class="c1">#The name of a file, whether it exists or not.</span>
+        <span class="c1"># ExistingFile   = 1 #The name of a single existing file.</span>
+        <span class="n">Directory</span>      <span class="o">=</span> <span class="mi">2</span> <span class="c1">#The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.</span>
+        <span class="c1"># ExistingFiles  = 3 #The names of zero or more existing files.</span>
+
+    <span class="c1"># AnyFile       = FileMode.AnyFile</span>
+    <span class="c1"># ExistingFile  = FileMode.ExistingFile</span>
+    <span class="c1"># Directory     = FileMode.Directory</span>
+    <span class="c1"># ExistingFiles = FileMode.ExistingFiles</span>
 
     <span class="c1"># LayoutItem Types</span>
 <div class="viewcode-block" id="TTkConstant.LayoutItemTypes"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes">[docs]</a>    <span class="k">class</span> <span class="nc">LayoutItemTypes</span><span class="p">:</span>
