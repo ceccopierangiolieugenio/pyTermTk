@@ -241,9 +241,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
 
-            # Don't Handle the special tab key, for now
             cx = self._cursorPos[0]
             cy = self._cursorPos[1]
+            # Don't Handle the special tab key, for now
             if evt.key == TTkK.Key_Tab:
                 return False
             if evt.key == TTkK.Key_Up:         self._setCursorPos(cx  , cy-1)
@@ -261,35 +261,33 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 if self._selection():
                     self._eraseSelection()
                 else:
-                    cpx,cpy = self._cursorPos
-                    l = self._lines[cpy]
-                    if cpx < len(l): # Erase next caracter on the same line
-                        self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
-                    elif (cpy+1)<len(self._lines): # End of the line, remove "\n" and merge with the next line
-                        self._lines[cpy] += self._lines[cpy+1]
-                        self._lines = self._lines[:cpy+1] + self._lines[cpy+2:]
-                        self._setCursorPos(cpx , cpy)
+                    l = self._lines[cy]
+                    if cx < len(l): # Erase next caracter on the same line
+                        self._lines[cy] = l.substring(to=cx) + l.substring(fr=cx+1)
+                    elif (cy+1)<len(self._lines): # End of the line, remove "\n" and merge with the next line
+                        self._lines[cy] += self._lines[cy+1]
+                        self._lines = self._lines[:cy+1] + self._lines[cy+2:]
+                        self._setCursorPos(cx, cy)
             elif evt.key == TTkK.Key_Backspace:
                 if self._selection():
                     self._eraseSelection()
                 else:
-                    cpx,cpy = self._cursorPos
-                    l = self._lines[cpy]
-                    if cpx > 0: # Erase the previous character
-                        cpx-=1
-                        self._lines[cpy] = l.substring(to=cpx) + l.substring(fr=cpx+1)
-                    elif cpy>0: # Beginning of the line, remove "\n" and merge with the previous line
-                        cpx = len(self._lines[cpy-1])
-                        self._lines[cpy-1] += l
-                        self._lines = self._lines[:cpy] + self._lines[cpy+1:]
-                        self._setCursorPos(cpx,cpy-1)
-            if evt.key == TTkK.Key_Enter:
+                    l = self._lines[cy]
+                    if cx > 0: # Erase the previous character
+                        cx-=1
+                        self._lines[cy] = l.substring(to=cx) + l.substring(fr=cx+1)
+                        self._setCursorPos(cx, cy)
+                    elif cy>0: # Beginning of the line, remove "\n" and merge with the previous line
+                        cx = len(self._lines[cy-1])
+                        self._lines[cy-1] += l
+                        self._lines = self._lines[:cy] + self._lines[cy+1:]
+                        self._setCursorPos(cx, cy-1)
+            elif evt.key == TTkK.Key_Enter:
                 self._eraseSelection()
-                cpx,cpy = self._cursorPos
-                l = self._lines[cpy]
-                self._lines[cpy] = l.substring(to=cpx)
-                self._lines = self._lines[:cpy+1] + [l.substring(fr=cpx)] + self._lines[cpy+1:]
-                self._setCursorPos(0,cpy+1)
+                l = self._lines[cy]
+                self._lines[cy] = l.substring(to=cx)
+                self._lines = self._lines[:cy+1] + [l.substring(fr=cx)] + self._lines[cy+1:]
+                self._setCursorPos(0,cy+1)
             self.update()
             return True
         else: # Input char
