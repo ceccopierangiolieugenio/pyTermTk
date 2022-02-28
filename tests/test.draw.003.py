@@ -26,7 +26,7 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 from TermTk import TTkLog
 from TermTk.TTkCore import TTkColor
 from TermTk.TTkCore import TTkHelper
@@ -38,34 +38,30 @@ TTkLog.use_default_file_logging()
 TTkTerm.init(mouse=False)
 TTkLog.info("Starting")
 
-s1 = TTkString()                              + "Text "                          + "Text 1"
-s2 = TTkString() +   TTkColor.fg("#ff0000")   + "Test "                          + "Text 2"
-s3 = TTkString() +   TTkColor.bg("#550088")   + "Test "                          + "Text 3"
-s4 = TTkString() + ( TTkColor.UNDERLINE     +
-                     TTkColor.fg("#00ff00") +
-                     TTkColor.bg("#555500") ) + "Test " + TTkColor.bg("#880055") + "Text 4"
+s1 = TTkString() + "Text " + "Text 1"
+s2 = TTkString() + TTkColor.fg("#ff0000") + "Test " + "Text 2"
+s3 = TTkString() + TTkColor.bg("#550088") + "Test " + "Text 3"
+s4 = (
+    TTkString()
+    + (TTkColor.UNDERLINE + TTkColor.fg("#00ff00") + TTkColor.bg("#555500"))
+    + "Test "
+    + TTkColor.bg("#880055")
+    + "Text 4"
+)
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveTo(2,4) +
-        s1.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveTo(2, 4) + s1.toAansi())
 time.sleep(1)
 TTkLog.info("next : 3")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        s2.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) + s2.toAansi())
 time.sleep(1)
 TTkLog.info("next : 2")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        s3.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) + s3.toAansi())
 time.sleep(1)
 TTkLog.info("next : 1")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        s4.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) + s4.toAansi())
 time.sleep(3)
 TTkLog.info("Ending")
 

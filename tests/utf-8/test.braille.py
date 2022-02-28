@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 
-'''
+"""
     bits          utf-8             diff with utf8 bits
     0 4  0,1,2 -> 0x00->0x07        ch012
     1 5  4,5,6 -> 0x00->0x07 << 3   ch456>>1
@@ -31,22 +31,23 @@
     3 7
     | \---> 7  -> 0x80              ch7
     \-----> 3  -> 0x40              ch3<<3
-'''
+"""
+
+
 def ch2braille(ch):
     ch012 = ch & 0x07
     ch456 = ch & 0x70
-    ch3   = ch & 0x08
-    ch7   = ch & 0x80
-    return 0x2800 | ch012 | (ch456>>1) | (ch3<<3) | ch7
+    ch3 = ch & 0x08
+    ch7 = ch & 0x80
+    return 0x2800 | ch012 | (ch456 >> 1) | (ch3 << 3) | ch7
 
 
-codes = [ chr(ch2braille(ch)) for ch in range(0,0x100)]
+codes = [chr(ch2braille(ch)) for ch in range(0, 0x100)]
 
 print("braille=(")
 for a in range(0x10):
     for b in range(0x10):
-        val = a | (b<<4)
-        print(f"'{codes[val]}',",end='')
+        val = a | (b << 4)
+        print(f"'{codes[val]}',", end="")
     print()
 print(")")
-

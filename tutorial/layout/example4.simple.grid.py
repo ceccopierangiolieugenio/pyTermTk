@@ -24,16 +24,16 @@
 
 import TermTk as ttk
 
-    # Set the GridLayout as defaut in the terminal widget
-gridLayout = ttk.TTkGridLayout(columnMinHeight=0,columnMinWidth=2)
+# Set the GridLayout as defaut in the terminal widget
+gridLayout = ttk.TTkGridLayout(columnMinHeight=0, columnMinWidth=2)
 root = ttk.TTk(layout=gridLayout)
 
-    # Attach 2 buttons to the root widget using the default method
-    # this will append them to the first row
+# Attach 2 buttons to the root widget using the default method
+# this will append them to the first row
 ttk.TTkButton(parent=root, border=True, text="Button1")
 ttk.TTkButton(parent=root, border=True, text="Button2")
-    # Attach 2 buttons to a specific position in the grid
-gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button3"), 1,2)
-gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button4"), 3,4)
+# Attach 2 buttons to a specific position in the grid
+gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button3"), 1, 2)
+gridLayout.addWidget(ttk.TTkButton(parent=root, border=True, text="Button4"), 3, 4)
 
 root.mainloop()

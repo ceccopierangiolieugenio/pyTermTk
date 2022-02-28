@@ -22,12 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TText():
-    #__slots__ = ('_text')
-    def __init__(self, *args, **kwargs):
-        self._text  = kwargs.get('text', "" )
 
-    def textUpdated(self, text): pass
+class TText:
+    # __slots__ = ('_text')
+    def __init__(self, *args, **kwargs):
+        self._text = kwargs.get("text", "")
+
+    def textUpdated(self, text):
+        pass
 
     @property
     def text(self):
@@ -38,4 +40,3 @@ class TText():
         if self.text != text:
             self._text = text
             self.textUpdated(text)
-

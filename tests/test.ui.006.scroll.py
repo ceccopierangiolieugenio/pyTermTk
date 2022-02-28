@@ -24,21 +24,48 @@
 
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 import TermTk as ttk
 
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
 
-win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(30,40), title="Test Window 1", border=True)
+win1 = ttk.TTkWindow(
+    parent=root, pos=(1, 1), size=(30, 40), title="Test Window 1", border=True
+)
 win1.setLayout(ttk.TTkVBoxLayout())
 top = ttk.TTkFrame(parent=win1, layout=ttk.TTkHBoxLayout())
-ttk.TTkScrollBar(parent=win1, orientation=ttk.TTkK.HORIZONTAL, value=0,  color=ttk.TTkColor.bg('#990044')+ttk.TTkColor.fg('#ffff00'))
-ttk.TTkScrollBar(parent=win1, orientation=ttk.TTkK.HORIZONTAL, value=10, color=ttk.TTkColor.bg('#770044')+ttk.TTkColor.fg('#ccff00'))
-ttk.TTkScrollBar(parent=win1, orientation=ttk.TTkK.HORIZONTAL, value=50, color=ttk.TTkColor.bg('#660044')+ttk.TTkColor.fg('#88ff00'))
-ttk.TTkScrollBar(parent=win1, orientation=ttk.TTkK.HORIZONTAL, value=80, color=ttk.TTkColor.bg('#550044')+ttk.TTkColor.fg('#55ff00'))
-ttk.TTkScrollBar(parent=win1, orientation=ttk.TTkK.HORIZONTAL, value=99, color=ttk.TTkColor.bg('#330044')+ttk.TTkColor.fg('#33ff00'))
+ttk.TTkScrollBar(
+    parent=win1,
+    orientation=ttk.TTkK.HORIZONTAL,
+    value=0,
+    color=ttk.TTkColor.bg("#990044") + ttk.TTkColor.fg("#ffff00"),
+)
+ttk.TTkScrollBar(
+    parent=win1,
+    orientation=ttk.TTkK.HORIZONTAL,
+    value=10,
+    color=ttk.TTkColor.bg("#770044") + ttk.TTkColor.fg("#ccff00"),
+)
+ttk.TTkScrollBar(
+    parent=win1,
+    orientation=ttk.TTkK.HORIZONTAL,
+    value=50,
+    color=ttk.TTkColor.bg("#660044") + ttk.TTkColor.fg("#88ff00"),
+)
+ttk.TTkScrollBar(
+    parent=win1,
+    orientation=ttk.TTkK.HORIZONTAL,
+    value=80,
+    color=ttk.TTkColor.bg("#550044") + ttk.TTkColor.fg("#55ff00"),
+)
+ttk.TTkScrollBar(
+    parent=win1,
+    orientation=ttk.TTkK.HORIZONTAL,
+    value=99,
+    color=ttk.TTkColor.bg("#330044") + ttk.TTkColor.fg("#33ff00"),
+)
 
 
 ttk.TTkScrollBar(parent=top, orientation=ttk.TTkK.VERTICAL, value=0)

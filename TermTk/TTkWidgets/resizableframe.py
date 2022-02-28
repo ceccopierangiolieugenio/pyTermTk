@@ -26,63 +26,80 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.frame import TTkFrame
 
+
 class TTkResizableFrame(TTkFrame):
-    __slots__ = ('_mouseDelta', '_resizable')
+    __slots__ = ("_mouseDelta", "_resizable")
+
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkResizableFrame' )
+        self._name = kwargs.get("name", "TTkResizableFrame")
         self.setBorder(True)
-        self._mouseDelta = (0,0)
+        self._mouseDelta = (0, 0)
         self._resizable = TTkK.NONE
         self.setFocusPolicy(TTkK.ClickFocus)
-
 
     def mousePressEvent(self, evt):
         self._resizable = TTkK.NONE
         self._mouseDelta = (evt.x, evt.y)
-        w,h = self.size()
-        x,y = evt.x, evt.y
+        w, h = self.size()
+        x, y = evt.x, evt.y
 
         # check if the ckick is on any norder to enable the resize feature
-        if x==0:
+        if x == 0:
             self._resizable |= TTkK.LEFT
-        elif x==w-1:
+        elif x == w - 1:
             self._resizable |= TTkK.RIGHT
-        if y==0:
+        if y == 0:
             self._resizable |= TTkK.TOP
-        elif y==h-1:
+        elif y == h - 1:
             self._resizable |= TTkK.BOTTOM
         # TTkLog.debug(f"{(x,y)} - {self._resizable}")
-        #return self._resizable != TTkK.NONE
+        # return self._resizable != TTkK.NONE
         return True
 
     def mouseDragEvent(self, evt):
         if self._resizable:
             # TTkLog.debug(f"{self._resizable}")
-            x,y,w,h = self.geometry()
+            x, y, w, h = self.geometry()
             maxw, maxh = self.maximumSize()
             minw, minh = self.minimumSize()
-            dx = evt.x-self._mouseDelta[0]
-            dy = evt.y-self._mouseDelta[1]
+            dx = evt.x - self._mouseDelta[0]
+            dy = evt.y - self._mouseDelta[1]
             if self._resizable & TTkK.LEFT:
-                tmpw = w-dx
-                if   minw > tmpw: tmpw=minw; dx= w-tmpw
-                elif maxw < tmpw: tmpw=maxw; dx= w-tmpw
-                x += dx ; w = tmpw
+                tmpw = w - dx
+                if minw > tmpw:
+                    tmpw = minw
+                    dx = w - tmpw
+                elif maxw < tmpw:
+                    tmpw = maxw
+                    dx = w - tmpw
+                x += dx
+                w = tmpw
             elif self._resizable & TTkK.RIGHT:
-                if   minw > evt.x: w = minw
-                elif maxw < evt.x: w = maxw
-                else: w = evt.x+1
+                if minw > evt.x:
+                    w = minw
+                elif maxw < evt.x:
+                    w = maxw
+                else:
+                    w = evt.x + 1
             if self._resizable & TTkK.TOP:
-                tmph = h-dy
-                if   minh > tmph: tmph=minh; dy= h-tmph
-                elif maxh < tmph: tmph=maxh; dy= h-tmph
-                y += dy ; h = tmph
+                tmph = h - dy
+                if minh > tmph:
+                    tmph = minh
+                    dy = h - tmph
+                elif maxh < tmph:
+                    tmph = maxh
+                    dy = h - tmph
+                y += dy
+                h = tmph
             elif self._resizable & TTkK.BOTTOM:
-                if   minh > evt.y: h = minh
-                elif maxh < evt.y: h = maxh
-                else: h = evt.y+1
-            self.move(x,y)
-            self.resize(w,h)
+                if minh > evt.y:
+                    h = minh
+                elif maxh < evt.y:
+                    h = maxh
+                else:
+                    h = evt.y + 1
+            self.move(x, y)
+            self.resize(w, h)
             return True
         return False

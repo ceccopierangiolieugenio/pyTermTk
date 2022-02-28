@@ -30,12 +30,22 @@ from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    __slots__ = ('_parent', '_data', '_alignment', '_children', '_expanded', '_selected', '_hidden',
-                 '_childIndicatorPolicy', '_icon', '_defaultIcon',
-                 '_sortColumn', '_sortOrder'
+    __slots__ = (
+        "_parent",
+        "_data",
+        "_alignment",
+        "_children",
+        "_expanded",
+        "_selected",
+        "_hidden",
+        "_childIndicatorPolicy",
+        "_icon",
+        "_defaultIcon",
+        "_sortColumn",
+        "_sortOrder"
         # Signals
         # 'refreshData'
-        )
+    )
 
     def __init__(self, *args, **kwargs):
         # Signals
@@ -43,31 +53,37 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         tt = TTkCfg.theme.tree
         super().__init__(self, *args, **kwargs)
         self._children = []
-        self._data = args[0] if len(args)>0 and type(args[0])==list else ['']
-        self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
-        self._parent = kwargs.get('parent', None)
-        self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
+        self._data = args[0] if len(args) > 0 and type(args[0]) == list else [""]
+        self._alignment = [TTkK.LEFT_ALIGN] * len(self._data)
+        self._parent = kwargs.get("parent", None)
+        self._childIndicatorPolicy = kwargs.get(
+            "childIndicatorPolicy", TTkK.DontShowIndicatorWhenChildless
+        )
 
         self._defaultIcon = True
-        self._expanded = kwargs.get('expanded', False)
-        self._selected = kwargs.get('selected', False)
-        self._hidden = kwargs.get('hidden', False)
+        self._expanded = kwargs.get("expanded", False)
+        self._selected = kwargs.get("selected", False)
+        self._hidden = kwargs.get("hidden", False)
         self._parent = kwargs.get("parent", None)
 
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
 
-        self._icon = ['']*len(self._data)
+        self._icon = [""] * len(self._data)
         self._setDefaultIcon()
-        if 'icon' in kwargs:
-            self._icon[0] = kwargs['icon']
+        if "icon" in kwargs:
+            self._icon[0] = kwargs["icon"]
             self._defaultIcon = False
 
     def _setDefaultIcon(self):
-        if not self._defaultIcon: return
+        if not self._defaultIcon:
+            return
         self._icon[0] = TTkCfg.theme.tree[0]
-        if self._childIndicatorPolicy == TTkK.DontShowIndicatorWhenChildless and self._children or \
-           self._childIndicatorPolicy == TTkK.ShowIndicator:
+        if (
+            self._childIndicatorPolicy == TTkK.DontShowIndicatorWhenChildless
+            and self._children
+            or self._childIndicatorPolicy == TTkK.ShowIndicator
+        ):
             if self._expanded:
                 self._icon[0] = TTkCfg.theme.tree[2]
             else:
@@ -77,7 +93,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         return self._hidden
 
     def setHidden(self, hide):
-        if hide == self._hidden: return
+        if hide == self._hidden:
+            return
         self._hidden = hide
         self.dataChanged.emit()
 
@@ -112,11 +129,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def icon(self, col):
         if col >= len(self._icon):
-            return ''
+            return ""
         return self._icon[col]
 
     def setIcon(self, col, icon):
-        if col==0:
+        if col == 0:
             self._defaultIcon = False
         self._icon[col] = icon
         self.dataChanged.emit()
@@ -132,18 +149,20 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def data(self, col, role=None):
         if col >= len(self._data):
-            return ''
+            return ""
         return self._data[col]
 
     def sortData(self, col):
         return self.data(col)
 
     def _sort(self, children):
-        if self._sortColumn == -1: return
+        if self._sortColumn == -1:
+            return
         self._children = sorted(
-                self._children,
-                key = lambda x : x.sortData(self._sortColumn),
-                reverse = self._sortOrder == TTkK.DescendingOrder)
+            self._children,
+            key=lambda x: x.sortData(self._sortColumn),
+            reverse=self._sortOrder == TTkK.DescendingOrder,
+        )
         # Broadcast the sorting to the childrens
         if children:
             for c in self._children:
@@ -154,7 +173,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def sortChildren(self, col, order):
         self._sortColumn = col
         self._sortOrder = order
-        if not self._children: return
+        if not self._children:
+            return
         self._sort(children=True)
         self.dataChanged.emit()
 

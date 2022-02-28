@@ -24,7 +24,7 @@
 
 import sys, os, argparse
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
 
@@ -37,29 +37,27 @@ def demoLayoutNested(root=None):
     mainLayout.addItem(gridLayout)
 
     nestedLayout = ttk.TTkGridLayout()
-    gridLayout.addItem(nestedLayout,1,2)
+    gridLayout.addItem(nestedLayout, 1, 2)
 
-    mainLayout.addWidget(ttk.TTkFrame(border=True,title="Frame1"))
-    mainLayout.addWidget(ttk.TTkFrame(border=True,title="Frame2"))
+    mainLayout.addWidget(ttk.TTkFrame(border=True, title="Frame1"))
+    mainLayout.addWidget(ttk.TTkFrame(border=True, title="Frame2"))
 
-    gridLayout.addWidget(ttk.TTkButton(border=True, text="Button1"),0,0)
-    gridLayout.addWidget(ttk.TTkButton(border=True, text="Button2"),1,1)
-    gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"),2,2)
+    gridLayout.addWidget(ttk.TTkButton(border=True, text="Button1"), 0, 0)
+    gridLayout.addWidget(ttk.TTkButton(border=True, text="Button2"), 1, 1)
+    gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 2, 2)
 
-    gridLayout.addWidget(ttk.TTkFrame(border=True,title="Frame3"),0,1)
-    gridLayout.addWidget(ttk.TTkFrame(border=True,title="Frame4"),2,3)
+    gridLayout.addWidget(ttk.TTkFrame(border=True, title="Frame3"), 0, 1)
+    gridLayout.addWidget(ttk.TTkFrame(border=True, title="Frame4"), 2, 3)
 
-    nestedLayout.addWidget(ttk.TTkButton(border=True, text="Button4"),0,1)
-    nestedLayout.addWidget(ttk.TTkButton(border=True, text="Button5"),1,0)
+    nestedLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 0, 1)
+    nestedLayout.addWidget(ttk.TTkButton(border=True, text="Button5"), 1, 0)
 
     return frame
 
 
-
-
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -69,9 +67,17 @@ def main():
         rootLayout = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootLayout = ttk.TTkWindow(title="Test Layout", parent=root,pos=(1,1), size=(100,40), border=True, layout=ttk.TTkGridLayout())
+        rootLayout = ttk.TTkWindow(
+            title="Test Layout",
+            parent=root,
+            pos=(1, 1),
+            size=(100, 40),
+            border=True,
+            layout=ttk.TTkGridLayout(),
+        )
     demoLayoutNested(rootLayout)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

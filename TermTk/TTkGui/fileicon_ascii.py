@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class FileIcon():
-    folderClose = '+'
-    folderOpen  = '-'
-    home = '-'
-    computer = '-'
+
+class FileIcon:
+    folderClose = "+"
+    folderOpen = "-"
+    home = "-"
+    computer = "-"
 
     @staticmethod
     def getIcon(fileName):
-        return ' '
+        return " "

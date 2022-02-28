@@ -31,16 +31,26 @@ from TermTk.TTkWidgets.Fancy.treewidget import TTkFancyTreeWidget
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
+
 class TTkFancyTree(TTkAbstractScrollArea):
     __slots__ = (
-        '_treeView', 'activated',
+        "_treeView",
+        "activated",
         # Forwarded Methods
-        'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem', 'addTopLevelItem' )
+        "setAlignment",
+        "setHeader",
+        "setHeaderLabels",
+        "setColumnSize",
+        "setColumnColors",
+        "appendItem",
+        "addTopLevelItem",
+    )
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTree' )
-        if 'parent' in kwargs: kwargs.pop('parent')
+        self._name = kwargs.get("name", "TTkFancyTree")
+        if "parent" in kwargs:
+            kwargs.pop("parent")
         self._treeView = TTkFancyTreeWidget(*args, **kwargs)
         # Forward the signal
         self.activated = self._treeView.activated
@@ -49,13 +59,10 @@ class TTkFancyTree(TTkAbstractScrollArea):
         self.setViewport(self._treeView)
 
         # Forwarded Methods
-        self.setAlignment    = self._treeView.setAlignment
-        self.setHeader       = self._treeView.setHeader
+        self.setAlignment = self._treeView.setAlignment
+        self.setHeader = self._treeView.setHeader
         self.setHeaderLabels = self._treeView.setHeaderLabels
-        self.setColumnSize   = self._treeView.setColumnSize
+        self.setColumnSize = self._treeView.setColumnSize
         self.setColumnColors = self._treeView.setColumnColors
-        self.appendItem      = self._treeView.appendItem
+        self.appendItem = self._treeView.appendItem
         self.addTopLevelItem = self._treeView.addTopLevelItem
-
-
-

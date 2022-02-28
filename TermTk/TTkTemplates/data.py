@@ -22,12 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TData():
-    #__slots__ = ('_data')
-    def __init__(self, *args, **kwargs):
-        self._data  = kwargs.get('data', "" )
 
-    def dataUpdated(self, data): pass
+class TData:
+    # __slots__ = ('_data')
+    def __init__(self, *args, **kwargs):
+        self._data = kwargs.get("data", "")
+
+    def dataUpdated(self, data):
+        pass
 
     @property
     def data(self):
@@ -38,4 +40,3 @@ class TData():
         if self.data != data:
             self._data = data
             self.dataUpdated(data)
-

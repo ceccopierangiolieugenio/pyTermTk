@@ -26,15 +26,17 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkTemplates.color import TColor
-from TermTk.TTkTemplates.text  import TText
+from TermTk.TTkTemplates.text import TText
+
 
 class TTkLabel(TTkWidget, TColor, TText):
     __slots__ = ()
+
     def __init__(self, *args, **kwargs):
         TColor.__init__(self, *args, **kwargs)
         TText.__init__(self, *args, **kwargs)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLabel' )
+        self._name = kwargs.get("name", "TTkLabel")
         # self.setMinimumSize(len(self.text), 1)
         self.textUpdated(self.text)
 
@@ -43,14 +45,18 @@ class TTkLabel(TTkWidget, TColor, TText):
         self.text = text
 
     def paintEvent(self):
-        forceColor = self.color!=TTkColor.RST
-        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color, forceColor=forceColor)
-        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color, forceColor=forceColor)
+        forceColor = self.color != TTkColor.RST
+        self._canvas.drawText(
+            pos=(0, 0), text=" " * self.width(), color=self.color, forceColor=forceColor
+        )
+        self._canvas.drawText(
+            pos=(0, 0), text=self.text, color=self.color, forceColor=forceColor
+        )
 
     def textUpdated(self, text):
         w, h = self.size()
-        if w<len(text) or h<1:
-            self.resize(len(text),1)
+        if w < len(text) or h < 1:
+            self.resize(len(text), 1)
         self.setMinimumSize(len(text), 1)
         self.update()
 

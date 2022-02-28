@@ -24,20 +24,31 @@
 
 import sys, os, argparse, math, random
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 import TermTk as ttk
 
-def demoGraph(root= None):
+
+def demoGraph(root=None):
     frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkGridLayout())
-    graphWidget1 = ttk.TTkGraph(color=ttk.TTkColor.fg('#00dddd', modifier=ttk.TTkColorGradient(increment=-20)))
-    graphWidget2 = ttk.TTkGraph(direction=ttk.TTkK.LEFT, color=ttk.TTkColor.fg('#ffdd00', modifier=ttk.TTkColorGradient(increment= 10)))
-    graphWidget3 = ttk.TTkGraph(color=ttk.TTkColor.fg('#dd00dd', modifier=ttk.TTkColorGradient(increment=-10)))
-    graphWidget4 = ttk.TTkGraph(color=ttk.TTkColor.fg('#00dd44', modifier=ttk.TTkColorGradient(increment=-15)))
-    frame.layout().addWidget(graphWidget1, 0,0)
-    frame.layout().addWidget(graphWidget2, 0,1)
-    frame.layout().addWidget(graphWidget3, 1,0)
-    frame.layout().addWidget(graphWidget4, 1,1)
-    class timerEvent():
+    graphWidget1 = ttk.TTkGraph(
+        color=ttk.TTkColor.fg("#00dddd", modifier=ttk.TTkColorGradient(increment=-20))
+    )
+    graphWidget2 = ttk.TTkGraph(
+        direction=ttk.TTkK.LEFT,
+        color=ttk.TTkColor.fg("#ffdd00", modifier=ttk.TTkColorGradient(increment=10)),
+    )
+    graphWidget3 = ttk.TTkGraph(
+        color=ttk.TTkColor.fg("#dd00dd", modifier=ttk.TTkColorGradient(increment=-10))
+    )
+    graphWidget4 = ttk.TTkGraph(
+        color=ttk.TTkColor.fg("#00dd44", modifier=ttk.TTkColorGradient(increment=-15))
+    )
+    frame.layout().addWidget(graphWidget1, 0, 0)
+    frame.layout().addWidget(graphWidget2, 0, 1)
+    frame.layout().addWidget(graphWidget3, 1, 0)
+    frame.layout().addWidget(graphWidget4, 1, 1)
+
+    class timerEvent:
         def __init__(self, w, type):
             self.timer = ttk.TTkTimer()
             self.val = 10
@@ -46,32 +57,39 @@ def demoGraph(root= None):
             self.type = type
             self.timer.timeout.connect(self.timerEvent)
             self.timer.start(1)
+
         @ttk.pyTTkSlot()
         def timerEvent(self):
             self.switch = not self.switch
-            if self.type == 1: # Simple sin
-                    val = math.sin(self.val*math.pi/40)*4*10
-            if self.type == 2: # Double sin
+            if self.type == 1:  # Simple sin
+                val = math.sin(self.val * math.pi / 40) * 4 * 10
+            if self.type == 2:  # Double sin
                 offset = 15
-                if self.switch: val = math.sin(self.val*math.pi/40)*4*10
-                else:           val = math.sin((self.val+offset)*math.pi/40)*4*7
-            if self.type == 3: # random
-                val = random.uniform(-40,+40)
-            if self.type == 4: # mix rand and sin
-                if self.switch: val = math.sin(self.val*math.pi/40)*4*10
-                else:           val = random.uniform(-40,+40)
-            self.val+=1
+                if self.switch:
+                    val = math.sin(self.val * math.pi / 40) * 4 * 10
+                else:
+                    val = math.sin((self.val + offset) * math.pi / 40) * 4 * 7
+            if self.type == 3:  # random
+                val = random.uniform(-40, +40)
+            if self.type == 4:  # mix rand and sin
+                if self.switch:
+                    val = math.sin(self.val * math.pi / 40) * 4 * 10
+                else:
+                    val = random.uniform(-40, +40)
+            self.val += 1
             self.w.addValue(val)
             self.timer.start(0.1)
+
     timerEvent(graphWidget1, 1)
     timerEvent(graphWidget2, 2)
     timerEvent(graphWidget3, 3)
     timerEvent(graphWidget4, 4)
     return frame
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -81,9 +99,17 @@ def main():
         rootGraph = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootGraph = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Graph", border=True, layout=ttk.TTkGridLayout())
+        rootGraph = ttk.TTkWindow(
+            parent=root,
+            pos=(1, 1),
+            size=(100, 40),
+            title="Test Graph",
+            border=True,
+            layout=ttk.TTkGridLayout(),
+        )
     demoGraph(rootGraph)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

@@ -35,43 +35,55 @@ from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
+
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign'
-        #signals
-        'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
+    __slots__ = (
+        "_list",
+        "_id",
+        "_lineEdit",
+        "_listw",
+        "_editable",
+        "_insertPolicy",
+        "_textAlign"
+        # signals
+        "currentIndexChanged",
+        "currentTextChanged",
+        "editTextChanged",
+    )
+
     def __init__(self, *args, **kwargs):
         # Define Signals
         self.currentIndexChanged = pyTTkSignal(int)
-        self.currentTextChanged  = pyTTkSignal(str)
-        self.editTextChanged     = pyTTkSignal(str)
+        self.currentTextChanged = pyTTkSignal(str)
+        self.editTextChanged = pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkCheckbox' )
+        self._name = kwargs.get("name", "TTkCheckbox")
         # self.cehcked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
-        self._list = kwargs.get('list', [] )
-        self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
+        self._list = kwargs.get("list", [])
+        self._insertPolicy = kwargs.get("insertPolicy", TTkK.InsertAtBottom)
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
-        self._textAlign = kwargs.get('textAlign', TTkK.CENTER_ALIGN)
+        self._textAlign = kwargs.get("textAlign", TTkK.CENTER_ALIGN)
         self._id = -1
         self._popupFrame = None
-        self.setEditable(kwargs.get('editable', False ))
+        self.setEditable(kwargs.get("editable", False))
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
 
     def _lineEditChanged(self):
         text = self._lineEdit.text()
-        self._id=-1
+        self._id = -1
         if text in self._list:
             self._id = self._list.index(text)
-        elif self._insertPolicy ==  TTkK.NoInsert:
+        elif self._insertPolicy == TTkK.NoInsert:
             pass
-        elif self._insertPolicy ==  TTkK.InsertAtTop:
-            self._id=0
-            self._list.insert(0,text)
+        elif self._insertPolicy == TTkK.InsertAtTop:
+            self._id = 0
+            self._list.insert(0, text)
         # elif self._insertPolicy ==  TTkK.InsertAtCurrent:
         #     pass
-        elif self._insertPolicy ==  TTkK.InsertAtBottom:
-            self._id=len(self._list)
+        elif self._insertPolicy == TTkK.InsertAtBottom:
+            self._id = len(self._list)
             self._list.append(text)
         # elif self._insertPolicy ==  TTkK.InsertAfterCurrent:
         #     pass
@@ -85,11 +97,11 @@ class TTkComboBox(TTkWidget):
         self.currentTextChanged.emit(text)
         self.editTextChanged.emit(text)
 
-    def addItem(self,item):
+    def addItem(self, item):
         self._list.append(item)
         self.update()
 
-    def addItems(self,items):
+    def addItems(self, items):
         for item in items:
             self.addItem(item)
 
@@ -103,28 +115,30 @@ class TTkComboBox(TTkWidget):
         return self._lineEdit if self._editable else None
 
     def resizeEvent(self, w: int, h: int):
-        w,h = self.size()
-        self._lineEdit.setGeometry(1,0,w-4,h)
+        w, h = self.size()
+        self._lineEdit.setGeometry(1, 0, w - 4, h)
 
     def paintEvent(self):
         if self.hasFocus():
             borderColor = TTkCfg.theme.comboboxBorderColorFocus
-            color       = TTkCfg.theme.comboboxContentColorFocus
+            color = TTkCfg.theme.comboboxContentColorFocus
         else:
             borderColor = TTkCfg.theme.comboboxBorderColor
-            color       = TTkCfg.theme.comboboxContentColor
+            color = TTkCfg.theme.comboboxContentColor
         if self._id == -1:
             text = "- select -"
         else:
             text = self._list[self._id]
         w = self.width()
 
-        self._canvas.drawText(pos=(1,0), text=text, width=w-2, alignment=self._textAlign, color=color)
-        self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
+        self._canvas.drawText(
+            pos=(1, 0), text=text, width=w - 2, alignment=self._textAlign, color=color
+        )
+        self._canvas.drawText(pos=(0, 0), text="[", color=borderColor)
         if self._editable:
-            self._canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
+            self._canvas.drawText(pos=(w - 3, 0), text="[^]", color=borderColor)
         else:
-            self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
+            self._canvas.drawText(pos=(w - 2, 0), text="^]", color=borderColor)
 
     def currentText(self):
         if self._editable:
@@ -138,7 +152,8 @@ class TTkComboBox(TTkWidget):
 
     @pyTTkSlot(int)
     def setCurrentIndex(self, index):
-        if index > len(self._list)-1: return
+        if index > len(self._list) - 1:
+            return
         self._id = index
         if self._editable:
             self._lineEdit.setText(self._list[self._id])
@@ -190,10 +205,14 @@ class TTkComboBox(TTkWidget):
     def _pressEvent(self):
         frameHeight = len(self._list) + 2
         frameWidth = self.width()
-        if frameHeight > 20: frameHeight = 20
-        if frameWidth  < 20: frameWidth = 20
+        if frameHeight > 20:
+            frameHeight = 20
+        if frameWidth < 20:
+            frameWidth = 20
 
-        self._popupFrame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
+        self._popupFrame = TTkResizableFrame(
+            layout=TTkGridLayout(), size=(frameWidth, frameHeight)
+        )
         TTkHelper.overlay(self, self._popupFrame, 0, 0)
         listw = TTkList(parent=self._popupFrame)
         TTkLog.debug(f"{self._list}")
@@ -211,8 +230,9 @@ class TTkComboBox(TTkWidget):
         return True
 
     def keyEvent(self, evt):
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key in [TTkK.Key_Enter,TTkK.Key_Down] ):
+        if (evt.type == TTkK.Character and evt.key == " ") or (
+            evt.type == TTkK.SpecialKey and evt.key in [TTkK.Key_Enter, TTkK.Key_Down]
+        ):
             self._pressEvent()
             return True
         return False

@@ -25,8 +25,9 @@
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import TTkWidget
 
+
 class TTkSpacer(TTkWidget):
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkSpacer')
+        self._name = kwargs.get("name", "TTkSpacer")
         # self.hide()

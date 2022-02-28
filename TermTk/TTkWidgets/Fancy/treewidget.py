@@ -33,37 +33,55 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
 
+
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkDisplayedTreeItemControl' )
+        self._name = kwargs.get("name", "_TTkDisplayedTreeItemControl")
         self.setMinimumSize(1, 1)
 
     def paintEvent(self):
         if self._checked:
-            self._canvas.drawText(pos=(0,0), text="▼")
+            self._canvas.drawText(pos=(0, 0), text="▼")
         else:
-            self._canvas.drawText(pos=(0,0), text="▶")
+            self._canvas.drawText(pos=(0, 0), text="▶")
 
 
 class _TTkDisplayedTreeItem(TTkWidget):
-    __slots__ = ('_depth', '_control', '_text', '_id', '_clicked', '_treeWidgetItem', '_isLeaf' )
+    __slots__ = (
+        "_depth",
+        "_control",
+        "_text",
+        "_id",
+        "_clicked",
+        "_treeWidgetItem",
+        "_isLeaf",
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        #Signals
+        # Signals
         self._clicked = pyTTkSignal(bool, _TTkDisplayedTreeItem, TTkFancyTreeWidgetItem)
 
-        self._name = kwargs.get('name' , '_TTkDisplayedTreeItem' )
-        self._depth = kwargs.get('depth' , 0 )
-        self._text = kwargs.get('text' , "" )
-        self._id = kwargs.get('id' , 0 )
-        self._treeWidgetItem = kwargs.get('treeWidgetItem', None)
-        self._isLeaf  = self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicator
-        self._isLeaf |= self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and not self._treeWidgetItem.children()
+        self._name = kwargs.get("name", "_TTkDisplayedTreeItem")
+        self._depth = kwargs.get("depth", 0)
+        self._text = kwargs.get("text", "")
+        self._id = kwargs.get("id", 0)
+        self._treeWidgetItem = kwargs.get("treeWidgetItem", None)
+        self._isLeaf = (
+            self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicator
+        )
+        self._isLeaf |= (
+            self._treeWidgetItem.childIndicatorPolicy()
+            == TTkK.DontShowIndicatorWhenChildless
+            and not self._treeWidgetItem.children()
+        )
         if self._isLeaf:
             self._control = None
         else:
-            self._control = _TTkDisplayedTreeItemControl(parent=self, checked=self._treeWidgetItem.expand())
+            self._control = _TTkDisplayedTreeItemControl(
+                parent=self, checked=self._treeWidgetItem.expand()
+            )
             self._control.setGeometry(self._depth, 0, 1, 1)
             self._control.clicked.connect(self._controlClicked)
 
@@ -74,15 +92,15 @@ class _TTkDisplayedTreeItem(TTkWidget):
     def paintEvent(self):
         if self._isLeaf:
             self._canvas.drawText(pos=(self._depth, 0), text="•")
-        self._canvas.drawText(pos=(self._depth+2, 0), text=self._text)
+        self._canvas.drawText(pos=(self._depth + 2, 0), text=self._text)
 
 
 class TTkFancyTreeWidget(TTkFancyTableView):
-    __slots__ = ( '_topLevelItems')
+    __slots__ = "_topLevelItems"
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
+        self._name = kwargs.get("name", "TTkFancyTreeView")
         self._topLevelItems = TTkFancyTreeWidgetItem(None)
         self.doubleClicked.connect(self._doubleClickItem)
         # if 'parent' in kwargs: kwargs.pop('parent')
@@ -91,16 +109,15 @@ class TTkFancyTreeWidget(TTkFancyTableView):
         item.setExpand(True)
         item.refresh()
         toExpand = []
-        index = self.indexOf(item.data())+1
+        index = self.indexOf(item.data()) + 1
         if index != 0:
             for child in item.children():
                 self._addTreeWidgetItem(item=child, depth=depth, index=index)
-                index+=1
+                index += 1
                 if child.expand():
                     toExpand.append(child)
         for child in toExpand:
-            self._expand(item=child, depth=(depth+1))
-
+            self._expand(item=child, depth=(depth + 1))
 
     def _shrink(self, item):
         item.setExpand(False)
@@ -108,50 +125,61 @@ class TTkFancyTreeWidget(TTkFancyTableView):
         index = self.indexOf(item.data())
         parent = item.parent()
         if item == parent.children()[-1]:
-            self.removeItemsFrom(index+1)
+            self.removeItemsFrom(index + 1)
         else:
             nextItemIndex = parent.children().index(item)
-            nextItem = parent.children()[nextItemIndex+1]
+            nextItem = parent.children()[nextItemIndex + 1]
             indexTo = self.indexOf(nextItem.data())
-            for id in reversed(range(index+1,indexTo)):
+            for id in reversed(range(index + 1, indexTo)):
                 self.removeItemAt(id)
 
     @pyTTkSlot(int)
     def _doubleClickItem(self, index):
-        if not (item := self.itemAt(index)): return
-        if item[0]._isLeaf: return
-        if not item[0]._treeWidgetItem.expand(): # we need to expand the TTkFancyTreeWidgetItem
-            self._expand(item=item[0]._treeWidgetItem, depth=item[0]._depth+1)
-        else: # we need to shrink the TTkFancyTreeWidgetItem
+        if not (item := self.itemAt(index)):
+            return
+        if item[0]._isLeaf:
+            return
+        if not item[
+            0
+        ]._treeWidgetItem.expand():  # we need to expand the TTkFancyTreeWidgetItem
+            self._expand(item=item[0]._treeWidgetItem, depth=item[0]._depth + 1)
+        else:  # we need to shrink the TTkFancyTreeWidgetItem
             self._shrink(item=item[0]._treeWidgetItem)
-
 
     @pyTTkSlot(bool, _TTkDisplayedTreeItem, TTkFancyTreeWidgetItem)
     def _controlClicked(self, status, widget, item):
         TTkLog.debug(f"{status} {widget._name}")
-        if status: # we need to expand the TTkFancyTreeWidgetItem
-            self._expand(item=item, depth=(widget._depth+1))
-        else: # we need to shrink the TTkFancyTreeWidgetItem
+        if status:  # we need to expand the TTkFancyTreeWidgetItem
+            self._expand(item=item, depth=(widget._depth + 1))
+        else:  # we need to shrink the TTkFancyTreeWidgetItem
             self._shrink(item=item)
 
     def _addTreeWidgetItem(self, item, depth=0, index=-1):
         if not isinstance(item, TTkFancyTreeWidgetItem):
-            raise TypeError("TTkFancyTreeWidgetItem is required in TTkFancyTreeWidget.addTopLevelItem(item)")
+            raise TypeError(
+                "TTkFancyTreeWidgetItem is required in TTkFancyTreeWidget.addTopLevelItem(item)"
+            )
         if item.parent() is None:
             self._topLevelItems.addChild(item)
         displayedItems = item.data().copy()
-        displayTreeItem = _TTkDisplayedTreeItem(text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item)
+        displayTreeItem = _TTkDisplayedTreeItem(
+            text=displayedItems[0], id=0, depth=depth, treeWidgetItem=item
+        )
         displayTreeItem._clicked.connect(self._controlClicked)
         displayedItems[0] = displayTreeItem
         if index == -1:
             self.appendItem(item=displayedItems, id=item.data())
         else:
-            self.insertItem(item=displayedItems, id=item.data(), index=index, )
+            self.insertItem(
+                item=displayedItems,
+                id=item.data(),
+                index=index,
+            )
 
     def addTopLevelItem(self, item):
         self._addTreeWidgetItem(item)
 
     def setHeaderLabels(self, labels):
-        columns = [-1]*len(labels)
+        columns = [-1] * len(labels)
         self.setColumnSize(columns)
         self.setHeader(labels)

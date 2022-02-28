@@ -28,16 +28,23 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
+
 class TTkCheckbox(TTkWidget):
-    __slots__ = ('_checked', '_text', 'clicked', 'stateChanged', )
+    __slots__ = (
+        "_checked",
+        "_text",
+        "clicked",
+        "stateChanged",
+    )
+
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkCheckbox' )
+        self._name = kwargs.get("name", "TTkCheckbox")
         # Define Signals
         self.stateChanged = pyTTkSignal(int)
         self.clicked = pyTTkSignal(bool)
-        self._checked = kwargs.get('checked', False )
-        self._text = kwargs.get('text', '' )
+        self._checked = kwargs.get("checked", False)
+        self._text = kwargs.get("text", "")
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -55,18 +62,18 @@ class TTkCheckbox(TTkWidget):
     def paintEvent(self):
         if self.hasFocus():
             borderColor = TTkCfg.theme.checkboxBorderColorFocus
-            textColor   = TTkCfg.theme.checkboxTextColorFocus
-            xColor      = TTkCfg.theme.checkboxContentColorFocus
+            textColor = TTkCfg.theme.checkboxTextColorFocus
+            xColor = TTkCfg.theme.checkboxContentColorFocus
         else:
             borderColor = TTkCfg.theme.checkboxBorderColor
-            textColor   = TTkCfg.theme.checkboxTextColor
-            xColor      = TTkCfg.theme.checkboxContentColor
-        self._canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
-        self._canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
+            textColor = TTkCfg.theme.checkboxTextColor
+            xColor = TTkCfg.theme.checkboxContentColor
+        self._canvas.drawText(pos=(0, 0), color=borderColor, text="[ ]")
+        self._canvas.drawText(pos=(3, 0), color=textColor, text=self._text)
         if self._checked:
-            self._canvas.drawText(pos=(1,0), color=xColor ,text="X")
+            self._canvas.drawText(pos=(1, 0), color=xColor, text="X")
         else:
-            self._canvas.drawText(pos=(1,0), color=xColor ,text=" ")
+            self._canvas.drawText(pos=(1, 0), color=xColor, text=" ")
 
     def _pressEvent(self):
         self._checked = not self._checked
@@ -80,8 +87,9 @@ class TTkCheckbox(TTkWidget):
         return True
 
     def keyEvent(self, evt):
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+        if (evt.type == TTkK.Character and evt.key == " ") or (
+            evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter
+        ):
             self._pressEvent()
             return True
         return False

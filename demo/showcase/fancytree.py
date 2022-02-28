@@ -30,64 +30,153 @@ import sys
 import random
 import argparse
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+words = [
+    "Lorem",
+    "ipsum",
+    "dolor",
+    "sit",
+    "amet,",
+    "consectetur",
+    "adipiscing",
+    "elit,",
+    "sed",
+    "do",
+    "eiusmod",
+    "tempor",
+    "incididunt",
+    "ut",
+    "labore",
+    "et",
+    "dolore",
+    "magna",
+    "aliqua.",
+    "Ut",
+    "enim",
+    "ad",
+    "minim",
+    "veniam,",
+    "quis",
+    "nostrud",
+    "exercitation",
+    "ullamco",
+    "laboris",
+    "nisi",
+    "ut",
+    "aliquip",
+    "ex",
+    "ea",
+    "commodo",
+    "consequat.",
+    "Duis",
+    "aute",
+    "irure",
+    "dolor",
+    "in",
+    "reprehenderit",
+    "in",
+    "voluptate",
+    "velit",
+    "esse",
+    "cillum",
+    "dolore",
+    "eu",
+    "fugiat",
+    "nulla",
+    "pariatur.",
+    "Excepteur",
+    "sint",
+    "occaecat",
+    "cupidatat",
+    "non",
+    "proident,",
+    "sunt",
+    "in",
+    "culpa",
+    "qui",
+    "officia",
+    "deserunt",
+    "mollit",
+    "anim",
+    "id",
+    "est",
+    "laborum.",
+]
+
+
 def getWord():
     return random.choice(words)
-def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
+
+
+def getSentence(a, b):
+    return " ".join([getWord() for i in range(0, random.randint(a, b))])
+
 
 def demoFancyTree(root=None):
     # tw = ttk.TTkFancyTreeWidget(parent=rootTree1)
     tw = ttk.TTkFancyTree(parent=root)
     tw.setHeaderLabels(["Column 1", "Column 2", "Column 3"])
-    tw.setColumnSize((-1,20,20))
-    tw.setColumnColors((
+    tw.setColumnSize((-1, 20, 20))
+    tw.setColumnColors(
+        (
             ttk.TTkColor.RST,
-            ttk.TTkColor.fg('#00dddd', modifier=ttk.TTkColorGradient(increment=-4)),
-            ttk.TTkColor.fg('#cccc00', modifier=ttk.TTkColorGradient(increment=-2))
-        ))
-    l1   = ttk.TTkFancyTreeWidgetItem(["String A", "String B", "String C"])
-    l2   = ttk.TTkFancyTreeWidgetItem(["String AA", "String BB", "String CC"])
-    l3   = ttk.TTkFancyTreeWidgetItem(["String AAA", "String BBB", "String CCC"])
-    l4   = ttk.TTkFancyTreeWidgetItem(["String AAAA", "String BBBB", "String CCCC"])
-    l5   = ttk.TTkFancyTreeWidgetItem(["String AAAAA", "String BBBBB", "String CCCCC"])
+            ttk.TTkColor.fg("#00dddd", modifier=ttk.TTkColorGradient(increment=-4)),
+            ttk.TTkColor.fg("#cccc00", modifier=ttk.TTkColorGradient(increment=-2)),
+        )
+    )
+    l1 = ttk.TTkFancyTreeWidgetItem(["String A", "String B", "String C"])
+    l2 = ttk.TTkFancyTreeWidgetItem(["String AA", "String BB", "String CC"])
+    l3 = ttk.TTkFancyTreeWidgetItem(["String AAA", "String BBB", "String CCC"])
+    l4 = ttk.TTkFancyTreeWidgetItem(["String AAAA", "String BBBB", "String CCCC"])
+    l5 = ttk.TTkFancyTreeWidgetItem(["String AAAAA", "String BBBBB", "String CCCCC"])
 
     l2.addChild(l5)
 
     for i in range(3):
-        l1_child = ttk.TTkFancyTreeWidgetItem(["Child A" + str(i), "Child B" + str(i), "Child C" + str(i)])
+        l1_child = ttk.TTkFancyTreeWidgetItem(
+            ["Child A" + str(i), "Child B" + str(i), "Child C" + str(i)]
+        )
         l1.addChild(l1_child)
 
     for j in range(2):
-        l2_child = ttk.TTkFancyTreeWidgetItem(["Child AA" + str(j), "Child BB" + str(j), "Child CC" + str(j)])
+        l2_child = ttk.TTkFancyTreeWidgetItem(
+            ["Child AA" + str(j), "Child BB" + str(j), "Child CC" + str(j)]
+        )
         l2.addChild(l2_child)
 
     for j in range(2):
-        l3_child = ttk.TTkFancyTreeWidgetItem(["Child AAA" + str(j), "Child BBB" + str(j), "Child CCC" + str(j)])
+        l3_child = ttk.TTkFancyTreeWidgetItem(
+            ["Child AAA" + str(j), "Child BBB" + str(j), "Child CCC" + str(j)]
+        )
         l3.addChild(l3_child)
 
     for j in range(2):
-        l4_child = ttk.TTkFancyTreeWidgetItem(["Child AAAA" + str(j), "Child BBBB" + str(j), "Child CCCC" + str(j)])
+        l4_child = ttk.TTkFancyTreeWidgetItem(
+            ["Child AAAA" + str(j), "Child BBBB" + str(j), "Child CCCC" + str(j)]
+        )
         l4.addChild(l4_child)
 
     for j in range(2):
-        l5_child = ttk.TTkFancyTreeWidgetItem(["Child AAAAA" + str(j), "Child BBBBB" + str(j), "Child CCCCC" + str(j)])
+        l5_child = ttk.TTkFancyTreeWidgetItem(
+            ["Child AAAAA" + str(j), "Child BBBBB" + str(j), "Child CCCCC" + str(j)]
+        )
         l5.addChild(l5_child)
 
-    l6   = ttk.TTkFancyTreeWidgetItem(["RND", "RND", "RND"], childIndicatorPolicy=ttk.TTkK.ShowIndicator)
+    l6 = ttk.TTkFancyTreeWidgetItem(
+        ["RND", "RND", "RND"], childIndicatorPolicy=ttk.TTkK.ShowIndicator
+    )
 
     def updateChildren(item):
-        if item.children(): return
-        for _ in range(0,random.randint(3,8)):
-            child = ttk.TTkFancyTreeWidgetItem([getWord(),getWord(),getWord()])
-            if random.randint(0,10)>5:
+        if item.children():
+            return
+        for _ in range(0, random.randint(3, 8)):
+            child = ttk.TTkFancyTreeWidgetItem([getWord(), getWord(), getWord()])
+            if random.randint(0, 10) > 5:
                 child.setChildIndicatorPolicy(ttk.TTkK.ShowIndicator)
                 child.refreshData.connect(updateChildren)
             item.addChild(child)
-
 
     l6.refreshData.connect(updateChildren)
 
@@ -99,9 +188,10 @@ def demoFancyTree(root=None):
 
     return tw
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -111,9 +201,17 @@ def main():
         rootTree1 = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
+        rootTree1 = ttk.TTkWindow(
+            parent=root,
+            pos=(0, 0),
+            size=(70, 40),
+            title="Test Tree 1",
+            layout=ttk.TTkGridLayout(),
+            border=True,
+        )
     demoFancyTree(rootTree1)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

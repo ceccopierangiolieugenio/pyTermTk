@@ -25,29 +25,125 @@
 import sys
 import random
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+words = [
+    "Lorem",
+    "ipsum",
+    "dolor",
+    "sit",
+    "amet,",
+    "consectetur",
+    "adipiscing",
+    "elit,",
+    "sed",
+    "do",
+    "eiusmod",
+    "tempor",
+    "incididunt",
+    "ut",
+    "labore",
+    "et",
+    "dolore",
+    "magna",
+    "aliqua.",
+    "Ut",
+    "enim",
+    "ad",
+    "minim",
+    "veniam,",
+    "quis",
+    "nostrud",
+    "exercitation",
+    "ullamco",
+    "laboris",
+    "nisi",
+    "ut",
+    "aliquip",
+    "ex",
+    "ea",
+    "commodo",
+    "consequat.",
+    "Duis",
+    "aute",
+    "irure",
+    "dolor",
+    "in",
+    "reprehenderit",
+    "in",
+    "voluptate",
+    "velit",
+    "esse",
+    "cillum",
+    "dolore",
+    "eu",
+    "fugiat",
+    "nulla",
+    "pariatur.",
+    "Excepteur",
+    "sint",
+    "occaecat",
+    "cupidatat",
+    "non",
+    "proident,",
+    "sunt",
+    "in",
+    "culpa",
+    "qui",
+    "officia",
+    "deserunt",
+    "mollit",
+    "anim",
+    "id",
+    "est",
+    "laborum.",
+]
+
+
 def getWord():
     return random.choice(words)
-def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
 
 
-if len(sys.argv) != 3 :
-	print ("Missing filename")
-	print ("use %s <FILENAME> <LINES>" % sys.argv[0])
-	exit(1)
+def getSentence(a, b):
+    return " ".join([getWord() for i in range(0, random.randint(a, b))])
+
+
+if len(sys.argv) != 3:
+    print("Missing filename")
+    print("use %s <FILENAME> <LINES>" % sys.argv[0])
+    exit(1)
 
 filename = sys.argv[1]
 lines = int(sys.argv[2])
-print ("Lines=%d" % lines)
+print("Lines=%d" % lines)
 
-with open(filename, 'a') as out:
-	for i in range(0,lines):
-		seconds = 1000 + i
-		m, s = divmod(seconds, 60)
-		h, m = divmod(m, 60)
-		if (random.random() < 0.9):
-			out.write( "TEST;%d:%02d:%02d;COL1\tCOL2     COL3  c:COL4;LIN=%05X\tRND=%f %s %s\n" % (h, m, s, i, random.random(), getSentence(3,20), " Fill" * random.randint(1,5)) )
-		else:
-			out.write( "TEST;%d:%02d:%02d;COL1 --- (BROKEN LINE) --- LIN=%05X\tRND=%f %s %s\n" % (h, m, s, i, random.random(), getSentence(3,20), " Fill" * random.randint(1,5)) )
-	out.write( "    END LINE (No Newline)" )
+with open(filename, "a") as out:
+    for i in range(0, lines):
+        seconds = 1000 + i
+        m, s = divmod(seconds, 60)
+        h, m = divmod(m, 60)
+        if random.random() < 0.9:
+            out.write(
+                "TEST;%d:%02d:%02d;COL1\tCOL2     COL3  c:COL4;LIN=%05X\tRND=%f %s %s\n"
+                % (
+                    h,
+                    m,
+                    s,
+                    i,
+                    random.random(),
+                    getSentence(3, 20),
+                    " Fill" * random.randint(1, 5),
+                )
+            )
+        else:
+            out.write(
+                "TEST;%d:%02d:%02d;COL1 --- (BROKEN LINE) --- LIN=%05X\tRND=%f %s %s\n"
+                % (
+                    h,
+                    m,
+                    s,
+                    i,
+                    random.random(),
+                    getSentence(3, 20),
+                    " Fill" * random.randint(1, 5),
+                )
+            )
+    out.write("    END LINE (No Newline)")

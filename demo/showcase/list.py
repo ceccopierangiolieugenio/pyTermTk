@@ -24,14 +24,87 @@
 
 import sys, os, argparse, math, random
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+words = [
+    "Lorem",
+    "ipsum",
+    "dolor",
+    "sit",
+    "amet,",
+    "consectetur",
+    "adipiscing",
+    "elit,",
+    "sed",
+    "do",
+    "eiusmod",
+    "tempor",
+    "incididunt",
+    "ut",
+    "labore",
+    "et",
+    "dolore",
+    "magna",
+    "aliqua.",
+    "Ut",
+    "enim",
+    "ad",
+    "minim",
+    "veniam,",
+    "quis",
+    "nostrud",
+    "exercitation",
+    "ullamco",
+    "laboris",
+    "nisi",
+    "ut",
+    "aliquip",
+    "ex",
+    "ea",
+    "commodo",
+    "consequat.",
+    "Duis",
+    "aute",
+    "irure",
+    "dolor",
+    "in",
+    "reprehenderit",
+    "in",
+    "voluptate",
+    "velit",
+    "esse",
+    "cillum",
+    "dolore",
+    "eu",
+    "fugiat",
+    "nulla",
+    "pariatur.",
+    "Excepteur",
+    "sint",
+    "occaecat",
+    "cupidatat",
+    "non",
+    "proident,",
+    "sunt",
+    "in",
+    "culpa",
+    "qui",
+    "officia",
+    "deserunt",
+    "mollit",
+    "anim",
+    "id",
+    "est",
+    "laborum.",
+]
+
+
 def getWord():
     return random.choice(words)
 
-def demoList(root= None):
+
+def demoList(root=None):
     # Define the main Layout
     splitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.HORIZONTAL)
     frame2 = ttk.TTkFrame(parent=splitter, border=0, layout=ttk.TTkVBoxLayout())
@@ -39,17 +112,19 @@ def demoList(root= None):
     frame3 = ttk.TTkFrame(parent=splitter, border=0, layout=ttk.TTkVBoxLayout())
 
     # Multi Selection List
-    ttk.TTkLabel(parent=frame1, text="[ MultiSelect ]",maxHeight=2)
-    listWidgetMulti = ttk.TTkList(parent=frame1, maxWidth=40, minWidth=10, selectionMode=ttk.TTkK.MultiSelection)
+    ttk.TTkLabel(parent=frame1, text="[ MultiSelect ]", maxHeight=2)
+    listWidgetMulti = ttk.TTkList(
+        parent=frame1, maxWidth=40, minWidth=10, selectionMode=ttk.TTkK.MultiSelection
+    )
 
     # Single Selection List
-    ttk.TTkLabel(parent=frame2, text="[ SingleSelect ]",maxHeight=2)
+    ttk.TTkLabel(parent=frame2, text="[ SingleSelect ]", maxHeight=2)
     listWidgetSingle = ttk.TTkList(parent=frame2, maxWidth=40, minWidth=10)
 
     # Log Viewer
-    label1 = ttk.TTkLabel(parent=frame3, text="[ list1 ]",maxHeight=2)
-    label2 = ttk.TTkLabel(parent=frame3, text="[ list2 ]",maxHeight=2)
-    ttk.TTkLogViewer(parent=frame3)#, border=True)
+    label1 = ttk.TTkLabel(parent=frame3, text="[ list1 ]", maxHeight=2)
+    label2 = ttk.TTkLabel(parent=frame3, text="[ list2 ]", maxHeight=2)
+    ttk.TTkLogViewer(parent=frame3)  # , border=True)
 
     @ttk.pyTTkSlot(str)
     def _listCallback1(label):
@@ -58,7 +133,9 @@ def demoList(root= None):
 
     @ttk.pyTTkSlot(str)
     def _listCallback2(label):
-        ttk.TTkLog.info(f"Clicked label2: {label} - selected: {listWidgetMulti.selectedLabels()}")
+        ttk.TTkLog.info(
+            f"Clicked label2: {label} - selected: {listWidgetMulti.selectedLabels()}"
+        )
         label2.text = f"[ list2 ] {listWidgetMulti.selectedLabels()}"
 
     # Connect the signals to the 2 slots defines
@@ -72,9 +149,10 @@ def demoList(root= None):
 
     return splitter
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -84,9 +162,17 @@ def main():
         rootGraph = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootGraph = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test List", border=True, layout=ttk.TTkGridLayout())
+        rootGraph = ttk.TTkWindow(
+            parent=root,
+            pos=(1, 1),
+            size=(100, 40),
+            title="Test List",
+            border=True,
+            layout=ttk.TTkGridLayout(),
+        )
     demoList(rootGraph)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

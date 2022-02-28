@@ -31,19 +31,24 @@ from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
+
 class TTkFancyTable(TTkAbstractScrollArea):
     __slots__ = (
-        '_tableView', 'activated',
+        "_tableView",
+        "activated",
         # Forwarded Methods
-        'setAlignment', 'setHeader', 'setColumnSize', 'setColumnColors', 'appendItem' )
-
-
-
+        "setAlignment",
+        "setHeader",
+        "setColumnSize",
+        "setColumnColors",
+        "appendItem",
+    )
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTable' )
-        if 'parent' in kwargs: kwargs.pop('parent')
+        self._name = kwargs.get("name", "TTkFancyTable")
+        if "parent" in kwargs:
+            kwargs.pop("parent")
         self._tableView = TTkFancyTableView(*args, **kwargs)
         # Forward the signal
         self.activated = self._tableView.activated
@@ -51,12 +56,8 @@ class TTkFancyTable(TTkAbstractScrollArea):
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._tableView)
         # Forwarded Methods
-        self.setAlignment    = self._tableView.setAlignment
-        self.setHeader       = self._tableView.setHeader
-        self.setColumnSize   = self._tableView.setColumnSize
+        self.setAlignment = self._tableView.setAlignment
+        self.setHeader = self._tableView.setHeader
+        self.setColumnSize = self._tableView.setColumnSize
         self.setColumnColors = self._tableView.setColumnColors
-        self.appendItem      = self._tableView.appendItem
-
-
-
-
+        self.appendItem = self._tableView.appendItem

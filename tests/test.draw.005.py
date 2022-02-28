@@ -26,7 +26,7 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 from TermTk import TTkLog
 from TermTk.TTkCore import TTkColor
 from TermTk.TTkCore import TTkHelper
@@ -41,21 +41,27 @@ TTkLog.info("Starting")
 
 color1 = TTkColor.fg("#88ffff")
 color2 = TTkColor.bg("#005555")
-color3 = TTkColor.UNDERLINE + TTkColor.fg("#00ff00" ) + TTkColor.bg("#555500")
+color3 = TTkColor.UNDERLINE + TTkColor.fg("#00ff00") + TTkColor.bg("#555500")
 color4 = TTkColor.RST
-color5 = TTkColor.bg("#555500")+TTkColor.STRIKETROUGH
+color5 = TTkColor.bg("#555500") + TTkColor.STRIKETROUGH
 
-base = TTkString() + color1 + "Tes;tXYZ" + color2 + "012345;ABCDEF;XYZ" + color3 + "0123;456" + color4 + ";pyTermTk"
+base = (
+    TTkString()
+    + color1
+    + "Tes;tXYZ"
+    + color2
+    + "012345;ABCDEF;XYZ"
+    + color3
+    + "0123;456"
+    + color4
+    + ";pyTermTk"
+)
 
-TTkTerm.push(
-    TTkTerm.Cursor.moveTo(2,4) +
-    base.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveTo(2, 4) + base.toAansi())
 time.sleep(0.5)
 
-for s in base.split(';'):
-    TTkTerm.push(
-            TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(5) +
-            s.toAansi() )
+for s in base.split(";"):
+    TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(5) + s.toAansi())
     time.sleep(0.5)
 
 time.sleep(5)

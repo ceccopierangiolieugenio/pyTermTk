@@ -24,37 +24,50 @@
 
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
 
 def demoSplitter(root=None):
     vsplitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
-    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.1")
+    ttk.TTkFrame(parent=vsplitter, border=True, title="Frame1.1")
     hsplitter1 = ttk.TTkSplitter(parent=vsplitter)
-    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.2")
+    ttk.TTkFrame(parent=vsplitter, border=True, title="Frame1.2")
     hsplitter2 = ttk.TTkSplitter(parent=vsplitter)
-    ttk.TTkFrame(parent=vsplitter ,border=True, title="Frame1.3")
-    ttk.TTkFrame(parent=hsplitter1 ,border=True, title="Frame3")
-    ttk.TTkTestWidgetSizes(parent=hsplitter1 ,border=True, title="Frame2", minSize=(33,7), maxSize=(33,7))
-    ttk.TTkFrame(parent=hsplitter1 ,border=True, title="Frame4")
+    ttk.TTkFrame(parent=vsplitter, border=True, title="Frame1.3")
+    ttk.TTkFrame(parent=hsplitter1, border=True, title="Frame3")
+    ttk.TTkTestWidgetSizes(
+        parent=hsplitter1, border=True, title="Frame2", minSize=(33, 7), maxSize=(33, 7)
+    )
+    ttk.TTkFrame(parent=hsplitter1, border=True, title="Frame4")
 
-    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame5")
-    ttk.TTkTestWidgetSizes(parent=hsplitter2 ,border=True, title="Frame6", minSize=(33,7), maxSize=(33,7))
-    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame7")
-    ttk.TTkTestWidgetSizes(parent=hsplitter2 ,border=True, title="Frame8", minSize=(33,7), maxSize=(33,7))
-    ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame9")
+    ttk.TTkFrame(parent=hsplitter2, border=True, title="Frame5")
+    ttk.TTkTestWidgetSizes(
+        parent=hsplitter2, border=True, title="Frame6", minSize=(33, 7), maxSize=(33, 7)
+    )
+    ttk.TTkFrame(parent=hsplitter2, border=True, title="Frame7")
+    ttk.TTkTestWidgetSizes(
+        parent=hsplitter2, border=True, title="Frame8", minSize=(33, 7), maxSize=(33, 7)
+    )
+    ttk.TTkFrame(parent=hsplitter2, border=True, title="Frame9")
     return vsplitter
-
 
 
 def main():
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    winSplitter = ttk.TTkWindow(parent=root,pos = (10,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
+    winSplitter = ttk.TTkWindow(
+        parent=root,
+        pos=(10, 5),
+        size=(100, 40),
+        title="Test Splitter",
+        border=True,
+        layout=ttk.TTkGridLayout(),
+    )
     demoSplitter(winSplitter)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

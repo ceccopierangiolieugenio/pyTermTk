@@ -23,9 +23,11 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
+
+
 class TTkCfg:
-    version="__VERSION__"
-    name="__NAME__"
+    version = "__VERSION__"
+    name = "__NAME__"
 
     color_depth: int = TTkK.DEP_24
 
@@ -35,8 +37,7 @@ class TTkCfg:
     scrollDelta = 5
     theme = None
 
+
 class TTkGlbl:
     term_w: int = 0
     term_h: int = 0
-
-

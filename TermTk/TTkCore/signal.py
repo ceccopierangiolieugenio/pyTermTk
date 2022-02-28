@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 # MIT License
@@ -26,7 +25,7 @@
 # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html
 #      https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuSignal.py
 
-'''
+"""
 Signals & Slots [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_]
 =========================================================================================================================
 
@@ -56,19 +55,25 @@ Methods
 
 .. autofunction:: TermTk.pyTTkSignal
 .. autodecorator:: TermTk.pyTTkSlot
-'''
+"""
+
+
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function
         func._TTkslot_attr = args
         return func
+
     return pyTTkSlot_d
+
 
 def pyTTkSignal(*args, **kwargs):
     return _pyTTkSignal_obj(*args, **kwargs)
 
-class _pyTTkSignal_obj():
-    __slots__ = ('_types', '_name', '_revision', '_connected_slots')
+
+class _pyTTkSignal_obj:
+    __slots__ = ("_types", "_name", "_revision", "_connected_slots")
+
     def __init__(self, *args, **kwargs):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
 
@@ -83,8 +88,8 @@ class _pyTTkSignal_obj():
         #    Return type:
         #        an unbound signal
         self._types = args
-        self._name = kwargs.get('name', None)
-        self._revision = kwargs.get('revision', 0)
+        self._name = kwargs.get("name", None)
+        self._revision = kwargs.get("revision", 0)
         self._connected_slots = []
 
     def connect(self, slot):
@@ -99,13 +104,25 @@ class _pyTTkSignal_obj():
         #    no_receiver_check - suppress the check that the underlying C++ receiver instance still exists and deliver the signal anyway.
         #    Returns:
         #        a Connection object which can be passed to disconnect(). This is the only way to disconnect a connection to a lambda function.
-        if hasattr(slot, '_TTkslot_attr'):
+        if hasattr(slot, "_TTkslot_attr"):
             if len(slot._TTkslot_attr) != len(self._types):
-                error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
+                error = (
+                    "Decorated slot has no signature compatible: "
+                    + slot.__name__
+                    + str(slot._TTkslot_attr)
+                    + " != signal"
+                    + str(self._types)
+                )
                 raise TypeError(error)
-            for a,b in zip(slot._TTkslot_attr, self._types):
-                if not issubclass(a,b):
-                    error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
+            for a, b in zip(slot._TTkslot_attr, self._types):
+                if not issubclass(a, b):
+                    error = (
+                        "Decorated slot has no signature compatible: "
+                        + slot.__name__
+                        + str(slot._TTkslot_attr)
+                        + " != signal"
+                        + str(self._types)
+                    )
                     raise TypeError(error)
         if slot not in self._connected_slots:
             self._connected_slots.append(slot)
@@ -116,7 +133,15 @@ class _pyTTkSignal_obj():
 
     def emit(self, *args, **kwargs):
         if len(args) != len(self._types):
-            error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
+            error = (
+                "func"
+                + str(self._types)
+                + " signal has "
+                + str(len(self._types))
+                + " argument(s) but "
+                + str(len(args))
+                + " provided"
+            )
             raise TypeError(error)
         for slot in self._connected_slots:
             slot(*args, **kwargs)
@@ -127,4 +152,5 @@ class _pyTTkSignal_obj():
     def forward(self):
         def _ret(*args, **kwargs):
             self.emit(*args, **kwargs)
+
         return _ret

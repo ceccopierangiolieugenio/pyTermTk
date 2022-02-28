@@ -1,4 +1,4 @@
-from .input    import *
-from .term     import *
+from .input import *
+from .term import *
 from .inputkey import *
-from .colors   import TTkTermColor
+from .colors import TTkTermColor

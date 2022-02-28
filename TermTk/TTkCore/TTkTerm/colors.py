@@ -25,17 +25,18 @@
 # Ansi Escape Codes:
 # https://conemu.github.io/en/AnsiEscapeCodes.html
 
-class TTkTermColor():
+
+class TTkTermColor:
     @staticmethod
     def esc_color(val: str, fg: bool):
         # Return the escape sequence for bg or fg
         # of the color represented in hex: "#AABBCC"
         if len(val) != 7:
             raise ValueError()
-        r = int(val[1:3],base=16)
-        g = int(val[3:5],base=16)
-        b = int(val[5:7],base=16)
-        return f'\033[{38 if fg else 48};2;{r};{g};{b}m'
+        r = int(val[1:3], base=16)
+        g = int(val[3:5], base=16)
+        b = int(val[5:7], base=16)
+        return f"\033[{38 if fg else 48};2;{r};{g};{b}m"
         # 256 colors
         #     if r//11 == g//11 == b//11:
         #         # Shade of grey

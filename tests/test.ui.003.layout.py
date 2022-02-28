@@ -24,7 +24,7 @@
 
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 import TermTk as ttk
 
 ttk.TTkLog.use_default_file_logging()
@@ -32,31 +32,53 @@ ttk.TTkLog.use_default_file_logging()
 root = ttk.TTk()
 root.setLayout(ttk.TTkHBoxLayout())
 
-ttk.TTkTestWidget(parent=root,border=True, maxWidth=52)
-rightframe = ttk.TTkFrame(parent=root, border=True, title="V Box Layout", titleColor=ttk.TTkColor.BOLD+ttk.TTkColor.fg('#8888dd'))
+ttk.TTkTestWidget(parent=root, border=True, maxWidth=52)
+rightframe = ttk.TTkFrame(
+    parent=root,
+    border=True,
+    title="V Box Layout",
+    titleColor=ttk.TTkColor.BOLD + ttk.TTkColor.fg("#8888dd"),
+)
 rightframe.setLayout(ttk.TTkVBoxLayout())
 
-gridFrame = ttk.TTkFrame(parent=rightframe, border=True, title="Grid Layout", titleColor=ttk.TTkColor.fg('#88dd88'))
+gridFrame = ttk.TTkFrame(
+    parent=rightframe,
+    border=True,
+    title="Grid Layout",
+    titleColor=ttk.TTkColor.fg("#88dd88"),
+)
 gridFrame.setLayout(ttk.TTkGridLayout())
 ttk.TTkButton(parent=gridFrame, border=True, text="Button1")
 ttk.TTkButton(parent=gridFrame, border=True, text="Button2")
-gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (1,0)"),1,0)
+gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (1,0)"), 1, 0)
 ttk.TTkButton(parent=gridFrame, border=True, text="Button4")
-gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (0,3)"),0,3)
-gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (1,2)"),1,2)
+gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (0,3)"), 0, 3)
+gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (1,2)"), 1, 2)
 # Test (add a widget to the same parent with a different layout params than the default)
-gridFrame.layout().addWidget(ttk.TTkButton(parent=gridFrame, border=True, text="Button (2,1)"),2,1)
-gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (5,5)"),5,5)
+gridFrame.layout().addWidget(
+    ttk.TTkButton(parent=gridFrame, border=True, text="Button (2,1)"), 2, 1
+)
+gridFrame.layout().addWidget(ttk.TTkButton(border=True, text="Button (5,5)"), 5, 5)
 
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame1"),0,5)
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame2"),2,3)
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame3"),5,3)
-gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame4"),5,1)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True, title="Frame1"), 0, 5)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True, title="Frame2"), 2, 3)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True, title="Frame3"), 5, 3)
+gridFrame.layout().addWidget(ttk.TTkFrame(border=True, title="Frame4"), 5, 1)
 
 
-centerrightframe=ttk.TTkFrame(parent=rightframe, border=True, title="H Box Layout", titleColor=ttk.TTkColor.fg('#dd88dd'))
+centerrightframe = ttk.TTkFrame(
+    parent=rightframe,
+    border=True,
+    title="H Box Layout",
+    titleColor=ttk.TTkColor.fg("#dd88dd"),
+)
 centerrightframe.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkTestWidget(parent=rightframe, border=True, title="Test Widget", titleColor=ttk.TTkColor.fg('#dddddd'))
+ttk.TTkTestWidget(
+    parent=rightframe,
+    border=True,
+    title="Test Widget",
+    titleColor=ttk.TTkColor.fg("#dddddd"),
+)
 
 
 smallframe = ttk.TTkFrame(parent=centerrightframe, border=True)

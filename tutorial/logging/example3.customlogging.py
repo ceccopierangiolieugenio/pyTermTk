@@ -24,22 +24,29 @@
 
 import TermTk as ttk
 
-    # define the callback used to process the log message
+# define the callback used to process the log message
 def message_handler(mode, context, message):
     msgType = "NONE"
-    if mode == ttk.TTkLog.InfoMsg:       msgType = "[INFO]"
-    elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
-    elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
-    elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
-    elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+    if mode == ttk.TTkLog.InfoMsg:
+        msgType = "[INFO]"
+    elif mode == ttk.TTkLog.WarningMsg:
+        msgType = "[WARNING]"
+    elif mode == ttk.TTkLog.CriticalMsg:
+        msgType = "[CRITICAL]"
+    elif mode == ttk.TTkLog.FatalMsg:
+        msgType = "[FATAL]"
+    elif mode == ttk.TTkLog.ErrorMsg:
+        msgType = "[ERROR]"
     print(f"{msgType} {context.file} {message}")
 
     # Register the callback to the message handler
+
+
 ttk.TTkLog.installMessageHandler(message_handler)
 
-ttk.TTkLog.info(    "Test Info Message")
-ttk.TTkLog.debug(   "Test Debug Message")
-ttk.TTkLog.error(   "Test Error Message")
-ttk.TTkLog.warn(    "Test Warning Message")
+ttk.TTkLog.info("Test Info Message")
+ttk.TTkLog.debug("Test Debug Message")
+ttk.TTkLog.error("Test Error Message")
+ttk.TTkLog.warn("Test Warning Message")
 ttk.TTkLog.critical("Test Critical Message")
-ttk.TTkLog.fatal(   "Test Fatal Message")
+ttk.TTkLog.fatal("Test Fatal Message")

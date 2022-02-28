@@ -24,28 +24,28 @@
 
 import sys, os, time, argparse
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 import TermTk as ttk
 
 import git
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', help='Full Screen', action='store_true')
+parser.add_argument("-f", help="Full Screen", action="store_true")
 args = parser.parse_args()
 
 fullscreen = args.f
 
-repo = git.Repo('.')
+repo = git.Repo(".")
 assert not repo.bare
 
-allCommits = list(repo.iter_commits('main'))
+allCommits = list(repo.iter_commits("main"))
 
 commitResults = []
 for commit in allCommits:
     t = time.strftime("%d-%m-%Y %H:%M", time.gmtime(commit.committed_date))
-    message = commit.message.split('\n')[0]
+    message = commit.message.split("\n")[0]
     author = commit.author
-    commitResults.append((message,str(author),str(t)))
+    commitResults.append((message, str(author), str(t)))
 
 ttk.TTkLog.use_default_file_logging()
 
@@ -56,45 +56,58 @@ if fullscreen:
     root.setLayout(ttk.TTkGridLayout())
 else:
     root = ttk.TTk()
-    gittk = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,40), title="gittk", border=True, layout=ttk.TTkGridLayout())
+    gittk = ttk.TTkWindow(
+        parent=root,
+        pos=(1, 1),
+        size=(100, 40),
+        title="gittk",
+        border=True,
+        layout=ttk.TTkGridLayout(),
+    )
 
 gittkVsplitter = ttk.TTkSplitter(parent=gittk, orientation=ttk.TTkK.VERTICAL)
-tableCommit = ttk.TTkFancyTable(parent=gittkVsplitter, selectColor=ttk.TTkColor.bg('#882200'))
+tableCommit = ttk.TTkFancyTable(
+    parent=gittkVsplitter, selectColor=ttk.TTkColor.bg("#882200")
+)
 gittkHsplitter = ttk.TTkSplitter(parent=gittkVsplitter, orientation=ttk.TTkK.HORIZONTAL)
 diffText = ttk.TTkTextEdit(parent=gittkHsplitter)
-gittkHsplitter.addWidget(ttk.TTkTestWidgetSizes(border=True, title="Details"),20)
-gittkVsplitter.addWidget(ttk.TTkLogViewer(),3)
+gittkHsplitter.addWidget(ttk.TTkTestWidgetSizes(border=True, title="Details"), 20)
+gittkVsplitter.addWidget(ttk.TTkLogViewer(), 3)
 
-tableCommit.setColumnSize((-1,20,20))
+tableCommit.setColumnSize((-1, 20, 20))
 
-tableCommit.setHeader(("commit","Name","Date"))
-tableCommit.setColumnColors((
-        ttk.TTkColor.fg('#cccccc', modifier=ttk.TTkColorGradient(increment=-2)),
-        ttk.TTkColor.fg('#888800', modifier=ttk.TTkColorGradient(increment=6)),
-        ttk.TTkColor.fg('#00dddd', modifier=ttk.TTkColorGradient(increment=-4)),
-    ))
+tableCommit.setHeader(("commit", "Name", "Date"))
+tableCommit.setColumnColors(
+    (
+        ttk.TTkColor.fg("#cccccc", modifier=ttk.TTkColorGradient(increment=-2)),
+        ttk.TTkColor.fg("#888800", modifier=ttk.TTkColorGradient(increment=6)),
+        ttk.TTkColor.fg("#00dddd", modifier=ttk.TTkColorGradient(increment=-4)),
+    )
+)
 
 for commit in commitResults:
     tableCommit.appendItem(commit)
 
+
 @ttk.pyTTkSlot(int)
 def _tableCallback(val):
     commit = allCommits[val]
-    diff = repo.git.diff(f"{commit.hexsha}~",f"{commit.hexsha}")
+    diff = repo.git.diff(f"{commit.hexsha}~", f"{commit.hexsha}")
     # ttk.TTkLog.debug(diff)
     lines = []
-    for line in diff.split('\n'):
+    for line in diff.split("\n"):
         color = ttk.TTkColor.RST
-        if   line.startswith('---') or line.startswith('+++'):
-            color = ttk.TTkColor.fg('#000000')+ttk.TTkColor.bg('#888888')
-        elif line.startswith('+'):
-            color = ttk.TTkColor.fg('#00ff00')
-        elif line.startswith('-'):
-            color = ttk.TTkColor.fg('#ff0000')
-        elif line.startswith('@@'):
-            color = ttk.TTkColor.fg('#0088ff')
-        lines.append(ttk.TTkString() + color + line.replace('\t',' '*4))
+        if line.startswith("---") or line.startswith("+++"):
+            color = ttk.TTkColor.fg("#000000") + ttk.TTkColor.bg("#888888")
+        elif line.startswith("+"):
+            color = ttk.TTkColor.fg("#00ff00")
+        elif line.startswith("-"):
+            color = ttk.TTkColor.fg("#ff0000")
+        elif line.startswith("@@"):
+            color = ttk.TTkColor.fg("#0088ff")
+        lines.append(ttk.TTkString() + color + line.replace("\t", " " * 4))
     diffText.setLines(lines)
+
 
 tableCommit.activated.connect(_tableCallback)
 

@@ -33,16 +33,18 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
+
 class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
     FILE = 0x00
-    DIR  = 0x01
+    DIR = 0x01
 
-    __slots__ = ('_path', '_type', '_raw')
+    __slots__ = ("_path", "_type", "_raw")
+
     def __init__(self, *args, **kwargs):
         TTkTreeWidgetItem.__init__(self, *args, **kwargs)
-        self._path   = kwargs.get('path', '.')
-        self._type   = kwargs.get('type', TTkFileTreeWidgetItem.FILE)
-        self._raw    = kwargs.get('raw')
+        self._path = kwargs.get("path", ".")
+        self._type = kwargs.get("type", TTkFileTreeWidgetItem.FILE)
+        self._raw = kwargs.get("raw")
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
 
     def setFilter(self, filter):
@@ -55,7 +57,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
 
     def _processFilter(self, filter):
         if self.getType() == TTkFileTreeWidgetItem.FILE:
-            filterRe = "^"+filter.replace('.','\.').replace('*','.*')+"$"
+            filterRe = "^" + filter.replace(".", "\.").replace("*", ".*") + "$"
             if re.match(filterRe, self._raw[0]):
                 self.setHidden(False)
             else:

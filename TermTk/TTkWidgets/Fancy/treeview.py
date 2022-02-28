@@ -29,11 +29,11 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 
+
 class TTkFancyTreeView(TTkFancyTableView):
-    __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
+    __slots__ = ("_header", "_treeView", "_showHeader", "activated")
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
+        self._name = kwargs.get("name", "TTkFancyTreeView")
         # if 'parent' in kwargs: kwargs.pop('parent')
-

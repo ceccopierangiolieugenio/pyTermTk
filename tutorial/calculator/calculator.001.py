@@ -24,15 +24,17 @@
 
 import TermTk as ttk
 
-    # Create a root object (it is a widget that represent the terminal)
+# Create a root object (it is a widget that represent the terminal)
 root = ttk.TTk()
 
-    # Create a window and attach it to the root (parent=root)
-calculatorWin = ttk.TTkWindow(parent=root, pos=(1,1), size=(30,17), title="My first Calculator")
+# Create a window and attach it to the root (parent=root)
+calculatorWin = ttk.TTkWindow(
+    parent=root, pos=(1, 1), size=(30, 17), title="My first Calculator"
+)
 
-    # Create a grid layout and set it as default for the window
+# Create a grid layout and set it as default for the window
 winLayout = ttk.TTkGridLayout()
 calculatorWin.setLayout(winLayout)
 
-    # Start the Main loop
+# Start the Main loop
 root.mainloop()

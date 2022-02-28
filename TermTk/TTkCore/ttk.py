@@ -38,6 +38,7 @@ from TermTk.TTkGui.theme import TTkTheme
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
 
+
 class TTk(TTkWidget):
     running: bool = False
     events = None
@@ -47,52 +48,53 @@ class TTk(TTkWidget):
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTk' )
+        self._name = kwargs.get("name", "TTk")
         self.events = queue.Queue()
         self.key_events = queue.Queue()
         self.mouse_events = queue.Queue()
         self.screen_events = queue.Queue()
-        self._title = kwargs.get('title','TermTk')
+        self._title = kwargs.get("title", "TermTk")
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         try:
             size = os.get_terminal_size()
-            self.setGeometry(0,0,size.columns,size.lines)
+            self.setGeometry(0, 0, size.columns, size.lines)
         except OSError as e:
-            print(f'ERROR: {e}')
+            print(f"ERROR: {e}")
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootWidget(self)
 
     frame = 0
     time = time.time()
+
     def _fps(self):
         curtime = time.time()
-        self.frame+=1
+        self.frame += 1
         delta = curtime - self.time
         if delta > 5:
             TTkLog.debug(f"fps: {int(self.frame/delta)}")
             self.frame = 0
-            self.time  = curtime
+            self.time = curtime
 
     def mainloop(self):
-        '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
-        TTkLog.debug( "" )
-        TTkLog.debug( "         ████████╗            ████████╗    " )
-        TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
-        TTkLog.debug( "            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  " )
-        TTkLog.debug( "    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   " )
-        TTkLog.debug( "    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  " )
-        TTkLog.debug( "    ▌    ▐  ╚═╝                  ╚═╝       " )
-        TTkLog.debug( "      ▚▄▄▘                                 " )
-        TTkLog.debug( "" )
-        TTkLog.debug(f"  Version: {TTkCfg.version}" )
-        TTkLog.debug( "" )
-        TTkLog.debug( "Starting Main Loop..." )
+        """Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed."""
+        TTkLog.debug("")
+        TTkLog.debug("         ████████╗            ████████╗    ")
+        TTkLog.debug("         ╚══██╔══╝            ╚══██╔══╝    ")
+        TTkLog.debug("            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  ")
+        TTkLog.debug("    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   ")
+        TTkLog.debug("    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  ")
+        TTkLog.debug("    ▌    ▐  ╚═╝                  ╚═╝       ")
+        TTkLog.debug("      ▚▄▄▘                                 ")
+        TTkLog.debug("")
+        TTkLog.debug(f"  Version: {TTkCfg.version}")
+        TTkLog.debug("")
+        TTkLog.debug("Starting Main Loop...")
         # Register events
         try:
-            signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
-            signal.signal(signal.SIGCONT, self._SIGCONT) # Resume
-            signal.signal(signal.SIGINT,  self._SIGINT)  # Ctrl-C
+            signal.signal(signal.SIGTSTP, self._SIGSTOP)  # Ctrl-Z
+            signal.signal(signal.SIGCONT, self._SIGCONT)  # Resume
+            signal.signal(signal.SIGINT, self._SIGINT)  # Ctrl-C
         except Exception as e:
             TTkLog.error(f"{e}")
             exit(1)
@@ -113,19 +115,22 @@ class TTk(TTkWidget):
         while self.running:
             # Main Loop
             evt = self.events.get()
-            if   evt is TTkK.MOUSE_EVENT:
+            if evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
 
                 # Avoid to broadcast a key release after a multitap event
-                if mevt.evt == TTkK.Release and lastMultiTap: continue
+                if mevt.evt == TTkK.Release and lastMultiTap:
+                    continue
                 lastMultiTap = mevt.tap > 1
 
                 focusWidget = TTkHelper.getFocus()
-                if focusWidget is not None and \
-                   mevt.evt != TTkK.Press and \
-                   mevt.key != TTkK.Wheel:
-                    x,y = TTkHelper.absPos(focusWidget)
-                    nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
+                if (
+                    focusWidget is not None
+                    and mevt.evt != TTkK.Press
+                    and mevt.key != TTkK.Wheel
+                ):
+                    x, y = TTkHelper.absPos(focusWidget)
+                    nmevt = mevt.clone(pos=(mevt.x - x, mevt.y - y))
                     focusWidget.mouseEvent(nmevt)
                 else:
                     # Sometimes the release event is not retrieved
@@ -141,29 +146,31 @@ class TTk(TTkWidget):
                 overlayWidget = TTkHelper.getOverlay()
                 TTkLog.debug(f"{focusWidget}")
                 if focusWidget is not None:
-                    TTkHelper.execShortcut(kevt.key,focusWidget)
+                    TTkHelper.execShortcut(kevt.key, focusWidget)
                     keyHandled = focusWidget.keyEvent(kevt)
                 else:
                     TTkHelper.execShortcut(kevt.key)
                 # Handle Next Focus Key Binding
-                if not keyHandled and \
-                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
-                   ( kevt.key == TTkK.Key_Right )):
-                        TTkHelper.nextFocus(focusWidget if focusWidget else self)
+                if not keyHandled and (
+                    (kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier)
+                    or (kevt.key == TTkK.Key_Right)
+                ):
+                    TTkHelper.nextFocus(focusWidget if focusWidget else self)
                 # Handle Prev Focus Key Binding
-                if not keyHandled and \
-                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
-                   ( kevt.key == TTkK.Key_Left )):
-                        TTkHelper.prevFocus(focusWidget if focusWidget else self)
+                if not keyHandled and (
+                    (kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier)
+                    or (kevt.key == TTkK.Key_Left)
+                ):
+                    TTkHelper.prevFocus(focusWidget if focusWidget else self)
             elif evt is TTkK.TIME_EVENT:
                 size = os.get_terminal_size()
-                self.setGeometry(0,0,size.columns,size.lines)
+                self.setGeometry(0, 0, size.columns, size.lines)
                 TTkHelper.paintAll()
-                self._timer.start(1/TTkCfg.maxFps)
+                self._timer.start(1 / TTkCfg.maxFps)
                 self._fps()
                 pass
             elif evt is TTkK.SCREEN_EVENT:
-                self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
+                self.setGeometry(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
                 TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
             elif evt is TTkK.QUIT_EVENT:
                 TTkLog.debug(f"Quit.")
@@ -190,6 +197,7 @@ class TTk(TTkWidget):
                 self.mouse_events.put(mevt)
                 self.events.put(TTkK.MOUSE_EVENT)
             return self.running
+
         # Start input key loop
         TTkInput.get_key(_inputCallback)
 
@@ -197,7 +205,7 @@ class TTk(TTkWidget):
         pass
 
     def quit(self):
-        '''Tells the application to exit with a return code.'''
+        """Tells the application to exit with a return code."""
         self.events.put(TTkK.QUIT_EVENT)
         TTkTimer.quitAll()
         self.running = False
@@ -220,5 +228,5 @@ class TTk(TTkWidget):
         TTkLog.debug("Captured SIGINT <CTRL-C>")
         # Deregister the handler
         # so CTRL-C can be redirected to the default handler if the app does not exit
-        signal.signal(signal.SIGINT,  signal.SIG_DFL)
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         self.quit()

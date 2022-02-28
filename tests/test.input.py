@@ -25,20 +25,29 @@
 import sys, os
 import logging
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 from TermTk import TTkLog, TTkK, TTkInput, TTkTerm
+
 
 def message_handler(mode, context, message):
     log = logging.debug
-    if mode == TTkLog.InfoMsg:       log = logging.info
-    elif mode == TTkLog.WarningMsg:  log = logging.warning
-    elif mode == TTkLog.CriticalMsg: log = logging.critical
-    elif mode == TTkLog.FatalMsg:    log = logging.fatal
-    elif mode == TTkLog.ErrorMsg:    log = logging.error
+    if mode == TTkLog.InfoMsg:
+        log = logging.info
+    elif mode == TTkLog.WarningMsg:
+        log = logging.warning
+    elif mode == TTkLog.CriticalMsg:
+        log = logging.critical
+    elif mode == TTkLog.FatalMsg:
+        log = logging.fatal
+    elif mode == TTkLog.ErrorMsg:
+        log = logging.error
     log(f"{context.file} {message}")
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(levelname)s:(%(threadName)-9s) %(message)s",
+)
 TTkLog.installMessageHandler(message_handler)
 
 TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
@@ -46,6 +55,7 @@ TTkLog.info("Press q or <ESC> to exit")
 
 TTkTerm.push(TTkTerm.Mouse.ON)
 TTkTerm.setEcho(False)
+
 
 def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
@@ -59,8 +69,10 @@ def keyCallback(kevt=None, mevt=None):
             return False
     return True
 
+
 def winCallback(width, height):
     TTkLog.info(f"Resize: w:{width}, h:{height}")
+
 
 TTkTerm.registerResizeCb(winCallback)
 TTkInput.get_key(keyCallback)

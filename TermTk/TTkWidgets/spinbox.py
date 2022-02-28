@@ -34,26 +34,35 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
 
 class TTkSpinBox(TTkWidget):
-    __slots__= (
-        '_lineEdit', '_value', '_maximum', '_minimum',
-        '_mouseDelta', '_valueDelta', '_draggable',
+    __slots__ = (
+        "_lineEdit",
+        "_value",
+        "_maximum",
+        "_minimum",
+        "_mouseDelta",
+        "_valueDelta",
+        "_draggable",
         # Signals
-        'valueChanged')
+        "valueChanged",
+    )
+
     def __init__(self, *args, **kwargs):
         # Signals
-        self.valueChanged=pyTTkSignal(int)
+        self.valueChanged = pyTTkSignal(int)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkSpinBox' )
-        self._value = kwargs.get("value",0)
-        self._maximum = kwargs.get("maximum",99)
-        self._minimum = kwargs.get("minimum",0)
+        self._name = kwargs.get("name", "TTkSpinBox")
+        self._value = kwargs.get("value", 0)
+        self._maximum = kwargs.get("maximum", 99)
+        self._minimum = kwargs.get("minimum", 0)
         self.setLayout(TTkGridLayout())
-        self.setPadding(0,0,0,2)
-        self.setMinimumSize(4,1)
+        self.setPadding(0, 0, 0, 2)
+        self.setMinimumSize(4, 1)
         self._mouseDelta = 0
         self._valueDelta = 0
         self._draggable = False
-        self._lineEdit = TTkLineEdit(parent=self, text=str(self._value), inputType=TTkK.Input_Number)
+        self._lineEdit = TTkLineEdit(
+            parent=self, text=str(self._value), inputType=TTkK.Input_Number
+        )
         self._lineEdit.keyEvent = self.keyEvent
         self.setFocusPolicy(TTkK.ClickFocus)
         self._lineEdit.textEdited.connect(self._textEdited)
@@ -63,9 +72,10 @@ class TTkSpinBox(TTkWidget):
 
     @pyTTkSlot(int)
     def setValue(self, value):
-        value = min(value,self._maximum)
-        value = max(value,self._minimum)
-        if self._value == value: return
+        value = min(value, self._maximum)
+        value = max(value, self._minimum)
+        if self._value == value:
+            return
         self._value = value
         self._lineEdit.setText(str(self._value))
         self.valueChanged.emit(value)
@@ -78,22 +88,22 @@ class TTkSpinBox(TTkWidget):
     def keyEvent(self, evt):
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Up:
-                self.setValue(self._value+1)
+                self.setValue(self._value + 1)
                 return True
             elif evt.key == TTkK.Key_Down:
-                self.setValue(self._value-1)
+                self.setValue(self._value - 1)
                 return True
         return TTkLineEdit.keyEvent(self._lineEdit, evt)
 
     def mousePressEvent(self, evt):
-        x,y = evt.x, evt.y
+        x, y = evt.x, evt.y
         w = self.width()
         value = self._value
         self._draggable = False
-        if x==w-2:
+        if x == w - 2:
             self._draggable = True
             value += 1
-        if x==w-1:
+        if x == w - 1:
             self._draggable = True
             value -= 1
         self.setValue(value)
@@ -109,8 +119,8 @@ class TTkSpinBox(TTkWidget):
 
     def paintEvent(self):
         w = self.width()
-        self._canvas.drawChar(pos=(w-2,0),char="▲")
-        self._canvas.drawChar(pos=(w-1,0),char="▼")
+        self._canvas.drawChar(pos=(w - 2, 0), char="▲")
+        self._canvas.drawChar(pos=(w - 1, 0), char="▼")
 
     def focusOutEvent(self):
         self._draggable = False

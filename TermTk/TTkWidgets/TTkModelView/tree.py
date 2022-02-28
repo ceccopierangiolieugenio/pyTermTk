@@ -28,36 +28,51 @@ from TermTk.TTkWidgets.TTkModelView import treewidget
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
+
 class TTkTree(TTkAbstractScrollArea):
     __slots__ = (
-        '_treeView',
+        "_treeView",
         # Forwarded Signals
-        'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
+        "itemActivated",
+        "itemChanged",
+        "itemClicked",
+        "itemExpanded",
+        "itemCollapsed",
+        "itemDoubleClicked",
         # Forwarded Methods
-        'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem', 'addTopLevelItem', 'clear' )
+        "setAlignment",
+        "setHeader",
+        "setHeaderLabels",
+        "setColumnSize",
+        "setColumnColors",
+        "appendItem",
+        "addTopLevelItem",
+        "clear",
+    )
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTree' )
-        if 'parent' in kwargs: kwargs.pop('parent')
-        self._treeView = kwargs.get('treeWidget',TTkTreeWidget(*args, **kwargs))
+        self._name = kwargs.get("name", "TTkTree")
+        if "parent" in kwargs:
+            kwargs.pop("parent")
+        self._treeView = kwargs.get("treeWidget", TTkTreeWidget(*args, **kwargs))
         self.setViewport(self._treeView)
         self.setFocusPolicy(TTkK.ClickFocus)
 
         # Forward the signal
-        self.itemActivated     = self._treeView.itemActivated
-        self.itemChanged       = self._treeView.itemChanged
-        self.itemClicked       = self._treeView.itemClicked
-        self.itemExpanded      = self._treeView.itemExpanded
-        self.itemCollapsed     = self._treeView.itemCollapsed
+        self.itemActivated = self._treeView.itemActivated
+        self.itemChanged = self._treeView.itemChanged
+        self.itemClicked = self._treeView.itemClicked
+        self.itemExpanded = self._treeView.itemExpanded
+        self.itemCollapsed = self._treeView.itemCollapsed
         self.itemDoubleClicked = self._treeView.itemDoubleClicked
 
         # Forwarded Methods
-        #self.setAlignment    = self._treeView.setAlignment
-        #self.setHeader       = self._treeView.setHeader
+        # self.setAlignment    = self._treeView.setAlignment
+        # self.setHeader       = self._treeView.setHeader
         self.setHeaderLabels = self._treeView.setHeaderLabels
-        #self.setColumnSize   = self._treeView.setColumnSize
-        #self.setColumnColors = self._treeView.setColumnColors
-        #self.appendItem      = self._treeView.appendItem
+        # self.setColumnSize   = self._treeView.setColumnSize
+        # self.setColumnColors = self._treeView.setColumnColors
+        # self.appendItem      = self._treeView.appendItem
         self.addTopLevelItem = self._treeView.addTopLevelItem
-        self.clear           = self._treeView.clear
+        self.clear = self._treeView.clear

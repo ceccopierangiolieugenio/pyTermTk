@@ -31,10 +31,8 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 class TTkTimer(threading.Thread):
     _timers = []
-    __slots__ = (
-        'timeout', '_timerEvent',
-        '_delay', '_delayLock', '_quit',
-        '_stopTime')
+    __slots__ = ("timeout", "_timerEvent", "_delay", "_delayLock", "_quit", "_stopTime")
+
     def __init__(self):
         # Define Signals
         self.timeout = pyTTkSignal()
@@ -42,7 +40,7 @@ class TTkTimer(threading.Thread):
         self._timerEvent = threading.Event()
         self._quit = threading.Event()
         self._stopTime = 0
-        self._delay=0
+        self._delay = 0
         self._delayLock = threading.Lock()
         threading.Thread.__init__(self)
         TTkTimer._timers.append(self)

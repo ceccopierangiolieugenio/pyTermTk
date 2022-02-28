@@ -31,15 +31,17 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
+
 class _TTkFancyTableViewHeader(TTkWidget):
-    __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
+    __slots__ = ("_header", "_alignments", "_headerColor", "_columns")
+
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkFancyTableViewHeader' )
-        self._columns = kwargs.get('columns' , [-1] )
-        self._header = [""]*len(self._columns)
-        self._alignments = [TTkK.NONE]*len(self._columns)
-        self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
+        self._name = kwargs.get("name", "_TTkFancyTableViewHeader")
+        self._columns = kwargs.get("columns", [-1])
+        self._header = [""] * len(self._columns)
+        self._alignments = [TTkK.NONE] * len(self._columns)
+        self._headerColor = kwargs.get("headerColor", TTkColor.BOLD)
         self.setMaximumHeight(1)
         self.setMinimumHeight(1)
 
@@ -55,11 +57,11 @@ class _TTkFancyTableViewHeader(TTkWidget):
 
     def setColumnSize(self, columns):
         self._columns = columns
-        self._header += [""]*(len(self._columns)-len(self._header))
-        self._alignments = [TTkK.NONE]*len(self._columns)
+        self._header += [""] * (len(self._columns) - len(self._header))
+        self._alignments = [TTkK.NONE] * len(self._columns)
 
     def paintEvent(self):
-        w,h = self.size()
+        w, h = self.size()
         total = 0
         variableCols = 0
         # Retrieve the free size
@@ -74,36 +76,53 @@ class _TTkFancyTableViewHeader(TTkWidget):
             if width > 0:
                 sizes.append(width)
             else:
-                sizes.append((w-total)//variableCols)
+                sizes.append((w - total) // variableCols)
                 variableCols -= 1
-        colors = [self._headerColor]*len(self._header)
-        self._canvas.drawTableLine(pos=(0,0), items=self._header, sizes=sizes, colors=colors, alignments=self._alignments)
+        colors = [self._headerColor] * len(self._header)
+        self._canvas.drawTableLine(
+            pos=(0, 0),
+            items=self._header,
+            sizes=sizes,
+            colors=colors,
+            alignments=self._alignments,
+        )
 
 
 class _TTkFancyTableView(TTkAbstractScrollView):
     __slots__ = (
-            '_alignments', '_headerColor',
-            '_columns', '_columnColors',
-            '_tableDataId', '_tableDataText', '_tableDataWidget', '_shownWidgets',
-            '_selectColor', '_selected',
-            # Signals
-            'activated', 'doubleClicked')
+        "_alignments",
+        "_headerColor",
+        "_columns",
+        "_columnColors",
+        "_tableDataId",
+        "_tableDataText",
+        "_tableDataWidget",
+        "_shownWidgets",
+        "_selectColor",
+        "_selected",
+        # Signals
+        "activated",
+        "doubleClicked",
+    )
+
     def __init__(self, *args, **kwargs):
         self._tableDataId = []
         self._tableDataText = []
         self._tableDataWidget = []
         self._shownWidgets = []
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkFancyTableView' )
+        self._name = kwargs.get("name", "_TTkFancyTableView")
         # define signals
-        self.activated = pyTTkSignal(int) # Value
-        self.doubleClicked = pyTTkSignal(int) # Value
+        self.activated = pyTTkSignal(int)  # Value
+        self.doubleClicked = pyTTkSignal(int)  # Value
 
-        self._columns = kwargs.get('columns' , [-1] )
-        self._alignments = [TTkK.NONE]*len(self._columns)
-        self._columnColors = kwargs.get('columnColors' , [TTkColor.RST]*len(self._columns) )
-        self._selectColor = kwargs.get('selectColor' , TTkColor.BOLD )
-        self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
+        self._columns = kwargs.get("columns", [-1])
+        self._alignments = [TTkK.NONE] * len(self._columns)
+        self._columnColors = kwargs.get(
+            "columnColors", [TTkColor.RST] * len(self._columns)
+        )
+        self._selectColor = kwargs.get("selectColor", TTkColor.BOLD)
+        self._headerColor = kwargs.get("headerColor", TTkColor.BOLD)
         self._selected = -1
         self.setFocusPolicy(TTkK.ClickFocus)
         self.viewChanged.connect(self._viewChangedHandler)
@@ -128,7 +147,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _viewChangedHandler(self):
-        w,h = self.size()
+        w, h = self.size()
         _, oy = self.getViewOffsets()
         total = 0
         variableCols = 0
@@ -144,15 +163,18 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             if width > 0:
                 sizes.append(width)
             else:
-                sizes.append((w-total)//variableCols)
+                sizes.append((w - total) // variableCols)
                 variableCols -= 1
 
         maxItems = len(self._tableDataText)
         itemFrom = oy
-        if itemFrom > maxItems-h: itemFrom = maxItems-h
-        if itemFrom < 0 : itemFrom = 0
-        itemTo   = itemFrom + h
-        if itemTo > maxItems: itemTo = maxItems
+        if itemFrom > maxItems - h:
+            itemFrom = maxItems - h
+        if itemFrom < 0:
+            itemFrom = 0
+        itemTo = itemFrom + h
+        if itemTo > maxItems:
+            itemTo = maxItems
 
         widgetsToHide = self._shownWidgets
         self._shownWidgets = []
@@ -164,15 +186,13 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 if widget is not None:
                     if widget.parentWidget() != self:
                         self.addWidget(widget)
-                    widget.setGeometry(x,y,size,1)
+                    widget.setGeometry(x, y, size, 1)
                     widget.show()
                     self._shownWidgets.append(widget)
-                x+=size+1
+                x += size + 1
         for widget in widgetsToHide:
             if widget not in self._shownWidgets:
                 widget.hide()
-
-
 
     def viewFullAreaSize(self) -> (int, int):
         return self.width(), len(self._tableDataText)
@@ -189,8 +209,8 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
     def setColumnSize(self, columns):
         self._columns = columns
-        self._columnColors = [TTkColor.RST]*len(self._columns)
-        self._alignments = [TTkK.NONE]*len(self._columns)
+        self._columnColors = [TTkColor.RST] * len(self._columns)
+        self._alignments = [TTkK.NONE] * len(self._columns)
 
     def setColumnColors(self, colors):
         if len(colors) != len(self._columns):
@@ -200,8 +220,8 @@ class _TTkFancyTableView(TTkAbstractScrollView):
     def appendItem(self, item, id=None):
         if len(item) != len(self._columns):
             return
-        textItem = [i if isinstance(i,str) else "" for i in item]
-        widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
+        textItem = [i if isinstance(i, str) else "" for i in item]
+        widgetItem = [i if isinstance(i, TTkWidget) else None for i in item]
         if id is not None:
             self._tableDataId.append(id)
         else:
@@ -213,9 +233,9 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
     def insertItem(self, index, item, id=None):
         if len(item) != len(self._columns):
-            return#
-        textItem = [i if isinstance(i,str) else "" for i in item]
-        widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
+            return  #
+        textItem = [i if isinstance(i, str) else "" for i in item]
+        widgetItem = [i if isinstance(i, TTkWidget) else None for i in item]
         if id is not None:
             self._tableDataId.insert(index, id)
         else:
@@ -251,7 +271,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
     def itemAt(self, index):
         if 0 <= index < len(self._tableDataId):
-            if item:=self._tableDataWidget[index]:
+            if item := self._tableDataWidget[index]:
                 return item
             else:
                 return self._tableDataText[index]
@@ -269,7 +289,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         return -1
 
     def mouseDoubleClickEvent(self, evt):
-        _,y = evt.x, evt.y
+        _, y = evt.x, evt.y
         _, oy = self.getViewOffsets()
         if y >= 0:
             selected = oy + y
@@ -281,7 +301,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         return True
 
     def mousePressEvent(self, evt):
-        _,y = evt.x, evt.y
+        _, y = evt.x, evt.y
         _, oy = self.getViewOffsets()
         if y >= 0:
             selected = oy + y
@@ -293,7 +313,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         return True
 
     def paintEvent(self):
-        w,h = self.size()
+        w, h = self.size()
         _, oy = self.getViewOffsets()
         total = 0
         variableCols = 0
@@ -309,15 +329,18 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             if width > 0:
                 sizes.append(width)
             else:
-                sizes.append((w-total)//variableCols)
+                sizes.append((w - total) // variableCols)
                 variableCols -= 1
 
         maxItems = len(self._tableDataText)
         itemFrom = oy
-        if itemFrom > maxItems-h: itemFrom = maxItems-h
-        if itemFrom < 0 : itemFrom = 0
-        itemTo   = itemFrom + h
-        if itemTo > maxItems: itemTo = maxItems
+        if itemFrom > maxItems - h:
+            itemFrom = maxItems - h
+        if itemFrom < 0:
+            itemFrom = 0
+        itemTo = itemFrom + h
+        if itemTo > maxItems:
+            itemTo = maxItems
         # TTkLog.debug(f"moveto:{self._moveTo}, maxItems:{maxItems}, f:{itemFrom}, t{itemTo}, h:{h}, sel:{self._selected}")
 
         for y, it in enumerate(range(itemFrom, itemTo)):
@@ -325,52 +348,81 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             if self._selected > 0:
                 val = self._selected - itemFrom
             else:
-                val = h//2
-            if val < 0 : val = 0
-            if val > h : val = h
+                val = h // 2
+            if val < 0:
+                val = 0
+            if val > h:
+                val = h
             if it == self._selected:
-                colors = [self._selectColor]*len(self._columnColors)
-                self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
+                colors = [self._selectColor] * len(self._columnColors)
+                self._canvas.drawTableLine(
+                    pos=(0, y),
+                    items=item,
+                    sizes=sizes,
+                    colors=colors,
+                    alignments=self._alignments,
+                )
             else:
                 colors = [c.modParam(val=-val) for c in self._columnColors]
-                self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
+                self._canvas.drawTableLine(
+                    pos=(0, y),
+                    items=item,
+                    sizes=sizes,
+                    colors=colors,
+                    alignments=self._alignments,
+                )
+
 
 class TTkFancyTableView(TTkAbstractScrollView):
     __slots__ = (
-        '_header', '_tableView', '_showHeader', 'activated',
+        "_header",
+        "_tableView",
+        "_showHeader",
+        "activated",
         # Forwarded Methods
-        'setHeader', 'setColumnColors', 'appendItem', 'itemAt', 'dataAt', 'indexOf', 'insertItem',
-        'removeItem', 'removeItemAt', 'removeItemsFrom', 'doubleClicked')
+        "setHeader",
+        "setColumnColors",
+        "appendItem",
+        "itemAt",
+        "dataAt",
+        "indexOf",
+        "insertItem",
+        "removeItem",
+        "removeItemAt",
+        "removeItemsFrom",
+        "doubleClicked",
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTableView' )
-        if 'parent' in kwargs: kwargs.pop('parent')
-        self._showHeader = kwargs.get('showHeader', True)
+        self._name = kwargs.get("name", "TTkFancyTableView")
+        if "parent" in kwargs:
+            kwargs.pop("parent")
+        self._showHeader = kwargs.get("showHeader", True)
         self.setLayout(TTkGridLayout())
         self._tableView = _TTkFancyTableView(*args, **kwargs)
         self._header = _TTkFancyTableViewHeader(*args, **kwargs)
-        self.layout().addWidget(self._header,0,0)
-        self.layout().addWidget(self._tableView,1,0)
+        self.layout().addWidget(self._header, 0, 0)
+        self.layout().addWidget(self._tableView, 1, 0)
         # Forward the tableSignals
-        self.viewMovedTo     = self._tableView.viewMovedTo
+        self.viewMovedTo = self._tableView.viewMovedTo
         self.viewSizeChanged = self._tableView.viewSizeChanged
-        self.viewChanged     = self._tableView.viewChanged
-        self.activated       = self._tableView.activated
-        self.doubleClicked   = self._tableView.doubleClicked
+        self.viewChanged = self._tableView.viewChanged
+        self.activated = self._tableView.activated
+        self.doubleClicked = self._tableView.doubleClicked
         if not self._showHeader:
             self._header.hide()
 
         # Forward Methods
-        self.setHeader       = self._header.setHeader
+        self.setHeader = self._header.setHeader
         self.setColumnColors = self._tableView.setColumnColors
-        self.appendItem      = self._tableView.appendItem
-        self.dataAt          = self._tableView.dataAt
-        self.itemAt          = self._tableView.itemAt
-        self.indexOf         = self._tableView.indexOf
-        self.insertItem      = self._tableView.insertItem
-        self.removeItem      = self._tableView.removeItem
-        self.removeItemAt    = self._tableView.removeItemAt
+        self.appendItem = self._tableView.appendItem
+        self.dataAt = self._tableView.dataAt
+        self.itemAt = self._tableView.itemAt
+        self.indexOf = self._tableView.indexOf
+        self.insertItem = self._tableView.insertItem
+        self.removeItem = self._tableView.removeItem
+        self.removeItemAt = self._tableView.removeItemAt
         self.removeItemsFrom = self._tableView.removeItemsFrom
 
     @pyTTkSlot(int, int)
@@ -386,9 +438,10 @@ class TTkFancyTableView(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self._tableView.viewDisplayedSize()
 
-    def setAlignment(self, *args, **kwargs)   :
+    def setAlignment(self, *args, **kwargs):
         self._tableView.setAlignment(*args, **kwargs)
         self._header.setAlignment(*args, **kwargs)
-    def setColumnSize(self, *args, **kwargs)  :
+
+    def setColumnSize(self, *args, **kwargs):
         self._tableView.setColumnSize(*args, **kwargs)
         self._header.setColumnSize(*args, **kwargs)

@@ -24,15 +24,15 @@
 
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 import TermTk as ttk
 
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
 
-f1 = ttk.TTkFrame(parent=root, border=True, pos=(10,10), size=(50,10))
+f1 = ttk.TTkFrame(parent=root, border=True, pos=(10, 10), size=(50, 10))
 
-f2 = ttk.TTkFrame(parent=f1,   border=True, pos=(3,3), size=(20,5))
+f2 = ttk.TTkFrame(parent=f1, border=True, pos=(3, 3), size=(20, 5))
 
 root.mainloop()

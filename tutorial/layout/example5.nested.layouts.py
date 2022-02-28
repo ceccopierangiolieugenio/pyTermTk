@@ -24,25 +24,25 @@
 
 import TermTk as ttk
 
-    # Set the GridLayout as defaut in the terminal widget
+# Set the GridLayout as defaut in the terminal widget
 root = ttk.TTk()
 
 gridLayout = ttk.TTkGridLayout()
 root.setLayout(gridLayout)
 
-    # Attach 2 buttons to the root widget using the default method
-    # this will append them to the first row
-    # NOTE: it is not recommended to use this legacy method in a gridLayout
+# Attach 2 buttons to the root widget using the default method
+# this will append them to the first row
+# NOTE: it is not recommended to use this legacy method in a gridLayout
 ttk.TTkButton(parent=root, border=True, text="Button1")
 ttk.TTkButton(parent=root, border=True, text="Button2")
-    # Attach 2 buttons to a specific position in the grid
-gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 1,2)
-gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 2,4)
+# Attach 2 buttons to a specific position in the grid
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button3"), 1, 2)
+gridLayout.addWidget(ttk.TTkButton(border=True, text="Button4"), 2, 4)
 
-    # Create a VBoxLayout and add it to the gridLayout
+# Create a VBoxLayout and add it to the gridLayout
 vboxLayout = ttk.TTkVBoxLayout()
-gridLayout.addItem(vboxLayout,1,3)
-    # Attach 2 buttons to the vBoxLayout
+gridLayout.addItem(vboxLayout, 1, 3)
+# Attach 2 buttons to the vBoxLayout
 vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button5"))
 vboxLayout.addWidget(ttk.TTkButton(border=True, text="Button6"))
 

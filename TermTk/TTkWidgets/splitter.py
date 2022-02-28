@@ -28,11 +28,18 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.frame import *
 
+
 class TTkSplitter(TTkFrame):
     __slots__ = (
-        '_splitterInitialized', '_orientation',
-        '_separators', '_separatorsRef', '_sizeRef', '_initSizes',
-        '_separatorSelected')
+        "_splitterInitialized",
+        "_orientation",
+        "_separators",
+        "_separatorsRef",
+        "_sizeRef",
+        "_initSizes",
+        "_separatorSelected",
+    )
+
     def __init__(self, *args, **kwargs):
         self._splitterInitialized = False
         # self._splitterInitialized = True
@@ -43,18 +50,18 @@ class TTkSplitter(TTkFrame):
         self._separatorSelected = None
         self._orientation = TTkK.HORIZONTAL
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkSpacer')
-        self._orientation = kwargs.get('orientation', TTkK.HORIZONTAL)
-        self.setBorder(kwargs.get('border' , False))
+        self._name = kwargs.get("name", "TTkSpacer")
+        self._orientation = kwargs.get("orientation", TTkK.HORIZONTAL)
+        self.setBorder(kwargs.get("border", False))
         self.setFocusPolicy(TTkK.ClickFocus)
         self._splitterInitialized = True
 
     def addWidget(self, widget, size=None):
         TTkFrame.addWidget(self, widget)
-        _,_,w,h = self.geometry()
+        _, _, w, h = self.geometry()
         if self.border():
-            w-=2
-            h-=2
+            w -= 2
+            h -= 2
         numW = self.layout().count()
 
         if self._orientation == TTkK.HORIZONTAL:
@@ -63,7 +70,7 @@ class TTkSplitter(TTkFrame):
             fullSize = h
         # assign the same slice to all the widgets
         self._initSizes.append(size)
-        self._separators = [fullSize*i//numW for i in range(1,numW+1)]
+        self._separators = [fullSize * i // numW for i in range(1, numW + 1)]
         self._updateGeometries()
         self._separatorsRef = self._separators
         self._sizeRef = fullSize
@@ -72,7 +79,7 @@ class TTkSplitter(TTkFrame):
 
     def setSizes(self, sizes):
         s = 0
-        sizes=sizes[:len(self._separators)]
+        sizes = sizes[: len(self._separators)]
         for i, l in enumerate(sizes):
             s += l
             self._separators[i] = s
@@ -80,17 +87,16 @@ class TTkSplitter(TTkFrame):
             self._initSizes[i] = l
         self._updateGeometries()
 
-
     def _minMaxSizeBefore(self, index):
         if self._separatorSelected is None:
             return 0, 0x1000
         # this is because there is a hidden splitter at position -1
         minsize = -1
         maxsize = -1
-        for i in range(self._separatorSelected+1):
+        for i in range(self._separatorSelected + 1):
             item = self.layout().itemAt(i)
-            minsize += item.minDimension(self._orientation)+1
-            maxsize += item.maxDimension(self._orientation)+1
+            minsize += item.minDimension(self._orientation) + 1
+            maxsize += item.maxDimension(self._orientation) + 1
         return minsize, maxsize
 
     def _minMaxSizeAfter(self, index):
@@ -98,49 +104,51 @@ class TTkSplitter(TTkFrame):
             return 0, 0x1000
         minsize = 0x0
         maxsize = 0x0
-        for i in range(self._separatorSelected+1, len(self._separators)):
+        for i in range(self._separatorSelected + 1, len(self._separators)):
             item = self.layout().itemAt(i)
-            minsize += item.minDimension(self._orientation)+1
-            maxsize += item.maxDimension(self._orientation)+1
+            minsize += item.minDimension(self._orientation) + 1
+            maxsize += item.maxDimension(self._orientation) + 1
         return minsize, maxsize
 
     def _updateGeometries(self, resized=False):
-        if not self.isVisible(): return
-        _,_,w,h = self.geometry()
+        if not self.isVisible():
+            return
+        _, _, w, h = self.geometry()
         sep = self._separators
         if self.border():
-            w-=2
-            h-=2
+            w -= 2
+            h -= 2
 
         def _processGeometry(index, forward):
             item = self.layout().itemAt(i)
-            pa = -1 if i==0 else sep[i-1]
+            pa = -1 if i == 0 else sep[i - 1]
             pb = sep[i]
 
             if self._orientation == TTkK.HORIZONTAL:
-                newPos = pa+1
-                size = w-newPos
+                newPos = pa + 1
+                size = w - newPos
             else:
-                newPos = pa+1
-                size = h-newPos
+                newPos = pa + 1
+                size = h - newPos
 
-            if i<=len(sep)-2: # this is not the last widget
-                size = pb-newPos
+            if i <= len(sep) - 2:  # this is not the last widget
+                size = pb - newPos
                 maxsize = item.maxDimension(self._orientation)
                 minsize = item.minDimension(self._orientation)
-                if   size > maxsize: size = maxsize
-                elif size < minsize: size = minsize
+                if size > maxsize:
+                    size = maxsize
+                elif size < minsize:
+                    size = minsize
                 if forward:
-                    sep[i]=pa+size+1
-                elif i>0 :
-                    sep[i-1]=pa=pb-size-1
+                    sep[i] = pa + size + 1
+                elif i > 0:
+                    sep[i - 1] = pa = pb - size - 1
 
             if self._orientation == TTkK.HORIZONTAL:
-                item.setGeometry(pa+1,0,size,h)
+                item.setGeometry(pa + 1, 0, size, h)
             else:
-                item.setGeometry(0,pa+1,w,size)
+                item.setGeometry(0, pa + 1, w, size)
             pass
-
 
         selected = 0
         if self._orientation == TTkK.HORIZONTAL:
@@ -150,14 +158,18 @@ class TTkSplitter(TTkFrame):
         if self._separatorSelected is not None:
             selected = self._separatorSelected
             sepPos = sep[selected]
-            minsize,maxsize = self._minMaxSizeBefore(selected)
+            minsize, maxsize = self._minMaxSizeBefore(selected)
             # TTkLog.debug(f"before:{minsize,maxsize}")
-            if sepPos > maxsize: sep[selected] = maxsize
-            if sepPos < minsize: sep[selected] = minsize
-            minsize,maxsize = self._minMaxSizeAfter(selected)
+            if sepPos > maxsize:
+                sep[selected] = maxsize
+            if sepPos < minsize:
+                sep[selected] = minsize
+            minsize, maxsize = self._minMaxSizeAfter(selected)
             # TTkLog.debug(f"after:{minsize,maxsize}")
-            if sepPos < size-maxsize: sep[selected] = size-maxsize
-            if sepPos > size-minsize: sep[selected] = size-minsize
+            if sepPos < size - maxsize:
+                sep[selected] = size - maxsize
+            if sepPos > size - minsize:
+                sep[selected] = size - minsize
 
         if resized:
             l = len(sep)
@@ -166,17 +178,18 @@ class TTkSplitter(TTkFrame):
             for i in range(l):
                 _processGeometry(i, True)
         else:
-            for i in reversed(range(selected+1)):
+            for i in reversed(range(selected + 1)):
                 _processGeometry(i, False)
-            for i in range(selected+1, len(sep)):
+            for i in range(selected + 1, len(sep)):
                 _processGeometry(i, True)
 
-        if self._separatorSelected is not None or self._sizeRef==0:
+        if self._separatorSelected is not None or self._sizeRef == 0:
             self._separatorsRef = self._separators
             self._sizeRef = size
 
     def resizeEvent(self, w, h):
-        if w==h==0: return
+        if w == h == 0:
+            return
         if not self._sizeRef:
             # This is the first resize (w,h != 0 and previous reference size was 0)
             # I need to define the initial position of all the widgets
@@ -187,36 +200,39 @@ class TTkSplitter(TTkFrame):
             # get the sum of the fixed sizes
             fixSize = sum(filter(None, self._initSizes))
             numVarSizes = len([x for x in self._initSizes if x is None])
-            avalSize = self._sizeRef-fixSize
-            sizes = [avalSize//numVarSizes if s is None else s for s in self._initSizes]
-            self._separatorsRef = [sum(sizes[:i+1]) for i in range(len(sizes))]
+            avalSize = self._sizeRef - fixSize
+            sizes = [
+                avalSize // numVarSizes if s is None else s for s in self._initSizes
+            ]
+            self._separatorsRef = [sum(sizes[: i + 1]) for i in range(len(sizes))]
 
         # Adjust separators to the new size;
         self._separatorSelected = None
         if self._sizeRef > 0:
             if self._orientation == TTkK.HORIZONTAL:
-                diff = w/self._sizeRef
+                diff = w / self._sizeRef
             else:
-                diff = h/self._sizeRef
-            self._separators = [int(i*diff) for i in self._separatorsRef]
+                diff = h / self._sizeRef
+            self._separators = [int(i * diff) for i in self._separatorsRef]
         self._updateGeometries(resized=True)
 
     def paintEvent(self):
         off = 1 if self.border() else 0
         TTkFrame.paintEvent(self)
-        w,h = self.size()
+        w, h = self.size()
         if self._orientation == TTkK.HORIZONTAL:
             for i in self._separators[:-1]:
-                self._canvas.drawVLine(pos=(i+off,0), size=h)
+                self._canvas.drawVLine(pos=(i + off, 0), size=h)
         else:
             for i in self._separators[:-1]:
-                self._canvas.drawHLine(pos=(0,i+off), size=w)
+                self._canvas.drawHLine(pos=(0, i + off), size=w)
 
     def mousePressEvent(self, evt):
         self._separatorSelected = None
-        x,y = evt.x, evt.y
+        x, y = evt.x, evt.y
         if self.border():
-            x-=1 ; y-=1
+            x -= 1
+            y -= 1
         # TTkLog.debug(f"{self._separators} {evt}")
         for i, val in enumerate(self._separators):
             if self._orientation == TTkK.HORIZONTAL:
@@ -233,9 +249,10 @@ class TTkSplitter(TTkFrame):
 
     def mouseDragEvent(self, evt):
         if self._separatorSelected is not None:
-            x,y = evt.x, evt.y
+            x, y = evt.x, evt.y
             if self.border():
-                x-=1 ; y-=1
+                x -= 1
+                y -= 1
             if self._orientation == TTkK.HORIZONTAL:
                 self._separators[self._separatorSelected] = x
             else:
@@ -250,24 +267,26 @@ class TTkSplitter(TTkFrame):
 
     def minimumHeight(self) -> int:
         ret = 2 if self.border() else 0
-        if not self._splitterInitialized: return ret
+        if not self._splitterInitialized:
+            return ret
         if self._orientation == TTkK.VERTICAL:
             for item in self.layout().children():
-                ret+=item.minimumHeight()+1
-            ret = max(0,ret-1)
+                ret += item.minimumHeight() + 1
+            ret = max(0, ret - 1)
         else:
             for item in self.layout().children():
                 if ret < item.minimumHeight():
                     ret = item.minimumHeight()
         return ret
 
-    def minimumWidth(self)  -> int:
+    def minimumWidth(self) -> int:
         ret = 2 if self.border() else 0
-        if not self._splitterInitialized: return ret
+        if not self._splitterInitialized:
+            return ret
         if self._orientation == TTkK.HORIZONTAL:
             for item in self.layout().children():
-                ret+=item.minimumWidth()+1
-            ret = max(0,ret-1)
+                ret += item.minimumWidth() + 1
+            ret = max(0, ret - 1)
         else:
             for item in self.layout().children():
                 if ret < item.minimumWidth():
@@ -276,12 +295,13 @@ class TTkSplitter(TTkFrame):
 
     def maximumHeight(self) -> int:
         b = 2 if self.border() else 0
-        if not self._splitterInitialized: return 0x10000
+        if not self._splitterInitialized:
+            return 0x10000
         if self._orientation == TTkK.VERTICAL:
             ret = b
             for item in self.layout().children():
-                ret+=item.maximumHeight()+1
-            ret = max(b,ret-1)
+                ret += item.maximumHeight() + 1
+            ret = max(b, ret - 1)
         else:
             ret = 0x10000
             for item in self.layout().children():
@@ -289,14 +309,15 @@ class TTkSplitter(TTkFrame):
                     ret = item.maximumHeight()
         return ret
 
-    def maximumWidth(self)  -> int:
+    def maximumWidth(self) -> int:
         b = 2 if self.border() else 0
-        if not self._splitterInitialized: return 0x10000
+        if not self._splitterInitialized:
+            return 0x10000
         if self._orientation == TTkK.HORIZONTAL:
             ret = b
             for item in self.layout().children():
-                ret+=item.maximumHeight()+1
-            ret = max(b,ret-1)
+                ret += item.maximumHeight() + 1
+            ret = max(b, ret - 1)
         else:
             ret = 0x10000
             for item in self.layout().children():

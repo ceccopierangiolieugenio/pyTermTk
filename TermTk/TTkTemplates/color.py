@@ -25,12 +25,14 @@
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
-class TColor():
-    #__slots__ = ('_color')
-    def __init__(self, *args, **kwargs):
-        self._color = kwargs.get('color', TTkColor.RST )
 
-    def colorUpdated(self, color): pass
+class TColor:
+    # __slots__ = ('_color')
+    def __init__(self, *args, **kwargs):
+        self._color = kwargs.get("color", TTkColor.RST)
+
+    def colorUpdated(self, color):
+        pass
 
     @property
     def color(self):

@@ -28,31 +28,36 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
+
 class _TTkAreaWidget(TTkAbstractScrollView):
     __slots__ = ()
+
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkAreaWidget' )
+        self._name = kwargs.get("name", "_TTkAreaWidget")
         self.viewChanged.connect(self._viewChangedHandler)
 
     @pyTTkSlot()
     def _viewChangedHandler(self):
-        x,y = self.getViewOffsets()
-        self.layout().setOffset(-x,-y)
+        x, y = self.getViewOffsets()
+        self.layout().setOffset(-x, -y)
 
     def viewFullAreaSize(self) -> (int, int):
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        return w , h
+        _, _, w, h = self.layout().fullWidgetAreaGeometry()
+        return w, h
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
+
 class TTkScrollArea(TTkAbstractScrollArea):
-    __slots__ = ('_areaView')
+    __slots__ = "_areaView"
+
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkScrollArea' )
-        if 'parent' in kwargs: kwargs.pop('parent')
+        self._name = kwargs.get("name", "TTkScrollArea")
+        if "parent" in kwargs:
+            kwargs.pop("parent")
         self._areaView = _TTkAreaWidget(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._areaView)

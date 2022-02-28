@@ -24,20 +24,28 @@
 
 import sys, os
 
-try: import fcntl, termios, tty
+try:
+    import fcntl, termios, tty
 except Exception as e:
-    print(f'ERROR: {e}')
+    print(f"ERROR: {e}")
     exit(1)
+
 
 def readInput():
     _fn = sys.stdin.fileno()
     _attr = termios.tcgetattr(_fn)
     tty.setcbreak(_fn)
-    if (stdinRead := sys.stdin.read(1)) == "\033":  # Check if the stream start with an escape sequence
+    if (
+        stdinRead := sys.stdin.read(1)
+    ) == "\033":  # Check if the stream start with an escape sequence
         _fl = fcntl.fcntl(_fn, fcntl.F_GETFL)
-        fcntl.fcntl(_fn, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
-        stdinRead += sys.stdin.read(20)       # Check if the stream start with an escape sequence
-        if stdinRead.startswith("\033[<"):    # Clear the buffer if this is a mouse code
+        fcntl.fcntl(
+            _fn, fcntl.F_SETFL, _fl | os.O_NONBLOCK
+        )  # Set the input as NONBLOCK to read the full sequence
+        stdinRead += sys.stdin.read(
+            20
+        )  # Check if the stream start with an escape sequence
+        if stdinRead.startswith("\033[<"):  # Clear the buffer if this is a mouse code
             sys.stdin.read(0x40)
         fcntl.fcntl(_fn, fcntl.F_SETFL, _fl)
     termios.tcsetattr(_fn, termios.TCSANOW, _attr)

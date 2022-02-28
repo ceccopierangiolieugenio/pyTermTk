@@ -24,14 +24,14 @@
 
 import sys, os, argparse
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
 
 def demoMenuBar(root=None):
-    frame       = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkVBoxLayout())
-    frameTop    = ttk.TTkFrame(parent=frame, border=False)
-    frameBottom = ttk.TTkFrame(parent=frame, border=True,layout=ttk.TTkVBoxLayout())
+    frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkVBoxLayout())
+    frameTop = ttk.TTkFrame(parent=frame, border=False)
+    frameBottom = ttk.TTkFrame(parent=frame, border=True, layout=ttk.TTkVBoxLayout())
 
     fileMenu = frameTop.menubarTop().addMenu("&File")
     fileMenu.addMenu("Open")
@@ -48,7 +48,9 @@ def demoMenuBar(root=None):
     frameTop.menubarTop().addMenu("^", alignment=ttk.TTkK.RIGHT_ALIGN)
     frameTop.menubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
 
-    window = ttk.TTkWindow(title="Test MenuBar", parent=frameTop,pos=(1,1), size=(60,10), border=True)
+    window = ttk.TTkWindow(
+        title="Test MenuBar", parent=frameTop, pos=(1, 1), size=(60, 10), border=True
+    )
     fileMenu2 = window.menubarTop().addMenu("&Fi&le")
     fileMenu2.addMenu("New File")
     fileMenu2.addMenu("Old File")
@@ -84,7 +86,6 @@ def demoMenuBar(root=None):
 
     window.menubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
 
-
     fileMenu3 = frameBottom.menubarTop().addMenu("&File 2")
     fileMenu3.addMenu("Open")
     fileMenu3.addMenu("Close")
@@ -97,9 +98,10 @@ def demoMenuBar(root=None):
 
     return frame
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -109,9 +111,17 @@ def main():
         rootLayout = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootLayout = ttk.TTkWindow(title="Test MenuBar", parent=root,pos=(1,1), size=(100,40), border=True, layout=ttk.TTkGridLayout())
+        rootLayout = ttk.TTkWindow(
+            title="Test MenuBar",
+            parent=root,
+            pos=(1, 1),
+            size=(100, 40),
+            border=True,
+            layout=ttk.TTkGridLayout(),
+        )
     demoMenuBar(rootLayout)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

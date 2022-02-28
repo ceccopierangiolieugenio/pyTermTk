@@ -24,13 +24,13 @@
 
 import TermTk as ttk
 
-    # TTkLayout is used by default
+# TTkLayout is used by default
 root = ttk.TTk()
 
-    # Attach 4 buttons to the root widget
-ttk.TTkButton(parent=root, pos=(0,0),  size=(15,5), border=True, text="Button1")
-ttk.TTkButton(parent=root, pos=(0,5),  size=(10,4), border=True, text="Button2")
-ttk.TTkButton(parent=root, pos=(10,6), size=(10,3), border=True, text="Button3")
-ttk.TTkButton(parent=root, pos=(13,1), size=(15,3), border=True, text="Button4")
+# Attach 4 buttons to the root widget
+ttk.TTkButton(parent=root, pos=(0, 0), size=(15, 5), border=True, text="Button1")
+ttk.TTkButton(parent=root, pos=(0, 5), size=(10, 4), border=True, text="Button2")
+ttk.TTkButton(parent=root, pos=(10, 6), size=(10, 3), border=True, text="Button3")
+ttk.TTkButton(parent=root, pos=(13, 1), size=(15, 3), border=True, text="Button4")
 
 root.mainloop()

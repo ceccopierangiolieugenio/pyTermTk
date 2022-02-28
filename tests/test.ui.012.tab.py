@@ -24,14 +24,21 @@
 
 import sys, os
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 import TermTk as ttk
 
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
 
-winTabbed1 = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
+winTabbed1 = ttk.TTkWindow(
+    parent=root,
+    pos=(1, 1),
+    size=(100, 40),
+    title="Test Tab",
+    border=True,
+    layout=ttk.TTkGridLayout(),
+)
 tabWidget1 = ttk.TTkTabWidget(parent=winTabbed1, border=True)
 tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"), "Label 1.1")
 tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.2"), "Label 1.2")

@@ -28,8 +28,9 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
+
 class TTkButton(TTkWidget):
-    ''' TTkButton:
+    """TTkButton:
 
     Border = True
     ::
@@ -54,78 +55,91 @@ class TTkButton(TTkWidget):
     :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`
     :type borderColor: :class:`~TermTk.TTkCore.color.TTkColor`, optional
 
-    '''
+    """
 
     __slots__ = (
-        '_text', '_border', '_pressed', 'clicked', '_keyPressed',
-        '_borderColor',        '_textColor',
-        '_borderColorClicked', '_textColorClicked',
-        '_borderColorFocus',   '_textColorFocus'
-        '_borderColorDisabled','_textColorDisabled'
-        )
+        "_text",
+        "_border",
+        "_pressed",
+        "clicked",
+        "_keyPressed",
+        "_borderColor",
+        "_textColor",
+        "_borderColorClicked",
+        "_textColorClicked",
+        "_borderColorFocus",
+        "_textColorFocus" "_borderColorDisabled",
+        "_textColorDisabled",
+    )
+
     def __init__(self, *args, **kwargs):
 
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkButton' )
+        self._name = kwargs.get("name", "TTkButton")
         # Define Signals
         self.clicked = pyTTkSignal()
 
-        self._text = kwargs.get('text', "" )
-        self._border = kwargs.get('border', False )
-        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.buttonBorderColor )
-        self._textColor   = kwargs.get('color',       TTkCfg.theme.buttonTextColor )
+        self._text = kwargs.get("text", "")
+        self._border = kwargs.get("border", False)
+        self._borderColor = kwargs.get("borderColor", TTkCfg.theme.buttonBorderColor)
+        self._textColor = kwargs.get("color", TTkCfg.theme.buttonTextColor)
         self._borderColorClicked = TTkCfg.theme.buttonBorderColorClicked
-        self._textColorClicked   = TTkCfg.theme.buttonTextColorClicked
-        self._borderColorFocus   = TTkCfg.theme.buttonBorderColorFocus
-        self._textColorFocus     = TTkCfg.theme.buttonTextColorFocus
-        self._borderColorDisabled= TTkCfg.theme.buttonBorderColorDisabled
-        self._textColorDisabled  = TTkCfg.theme.buttonTextColorDisabled
+        self._textColorClicked = TTkCfg.theme.buttonTextColorClicked
+        self._borderColorFocus = TTkCfg.theme.buttonBorderColorFocus
+        self._textColorFocus = TTkCfg.theme.buttonTextColorFocus
+        self._borderColorDisabled = TTkCfg.theme.buttonBorderColorDisabled
+        self._textColorDisabled = TTkCfg.theme.buttonTextColorDisabled
 
         self._pressed = False
         self._keyPressed = False
         if self._border:
-            self.setMinimumSize(2+len(self._text), 3)
+            self.setMinimumSize(2 + len(self._text), 3)
         else:
-            self.setMinimumSize(len(self._text)+2, 1)
+            self.setMinimumSize(len(self._text) + 2, 1)
             self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def paintEvent(self):
         if not self.isEnabled():
             borderColor = self._borderColorDisabled
-            textColor   = self._textColorDisabled
+            textColor = self._textColorDisabled
             grid = TTkCfg.theme.buttonBoxGridDisabled
 
         elif self._pressed:
             borderColor = self._borderColorClicked
-            textColor   = self._textColorClicked
+            textColor = self._textColorClicked
             grid = TTkCfg.theme.buttonBoxGridClicked
         elif self.hasFocus():
             borderColor = self._borderColorFocus
-            textColor   = self._textColorFocus
+            textColor = self._textColorFocus
             grid = TTkCfg.theme.buttonBoxGrid
         else:
             borderColor = self._borderColor
-            textColor   = self._textColor
+            textColor = self._textColor
             grid = TTkCfg.theme.buttonBoxGrid
         text = self._text
-        w = self.width()-2
+        w = self.width() - 2
         h = self.height()
-        y = (h-1)//2
+        y = (h - 1) // 2
         l = len(text)
-        text = (" "*((w-l)//2)+text).ljust(w)
+        text = (" " * ((w - l) // 2) + text).ljust(w)
         if self._border:
             if self._border:
-                self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
-                for i in range(1,h-1):
-                    self._canvas.drawText(pos=(1,i), color=textColor ,text=" "*w)
-                self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
+                self._canvas.drawButtonBox(
+                    pos=(0, 0),
+                    size=(self._width, self._height),
+                    color=borderColor,
+                    grid=grid,
+                )
+                for i in range(1, h - 1):
+                    self._canvas.drawText(pos=(1, i), color=textColor, text=" " * w)
+                self._canvas.drawText(pos=(1, y), color=textColor, text=text)
             else:
-                self._canvas.drawText(pos=(1,1), color=textColor ,text=text)
+                self._canvas.drawText(pos=(1, 1), color=textColor, text=text)
         else:
-            self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
-            self._canvas.drawText(pos=(1+len(text),y), color=borderColor ,text=']')
-            self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
+            self._canvas.drawText(pos=(0, y), color=borderColor, text="[")
+            self._canvas.drawText(pos=(1 + len(text), y), color=borderColor, text="]")
+            self._canvas.drawText(pos=(1, y), color=textColor, text=text)
         if self._keyPressed:
             self._keyPressed = False
             self._pressed = False
@@ -145,8 +159,9 @@ class TTkButton(TTkWidget):
         return True
 
     def keyEvent(self, evt):
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+        if (evt.type == TTkK.Character and evt.key == " ") or (
+            evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter
+        ):
             self._keyPressed = True
             self._pressed = True
             self.update()

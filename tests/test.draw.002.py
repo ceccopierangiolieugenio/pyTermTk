@@ -26,7 +26,7 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 from TermTk import TTkLog
 from TermTk.TTkCore import TTkColor
 from TermTk.TTkCore import TTkHelper, TTkTerm
@@ -35,28 +35,26 @@ TTkLog.use_default_file_logging()
 
 TTkTerm.init(mouse=False)
 TTkLog.info("Starting")
-TTkTerm.push(
-        TTkTerm.Cursor.moveTo(2,4) +
-        TTkColor.fg("#ff0000") +
-        "Test Text 3"
-    )
+TTkTerm.push(TTkTerm.Cursor.moveTo(2, 4) + TTkColor.fg("#ff0000") + "Test Text 3")
 time.sleep(1)
 TTkLog.info("next : 2")
 
 TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        TTkColor.bg("#550088") +
-        "Test Text 2"
-    )
+    TTkTerm.Cursor.moveDown(1)
+    + TTkTerm.Cursor.moveLeft(3)
+    + TTkColor.bg("#550088")
+    + "Test Text 2"
+)
 time.sleep(1)
 TTkLog.info("next : 1")
 
 TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        TTkColor.fg("#00ff00") +
-        TTkColor.bg("#555500") +
-        "Test Text 1"
-    )
+    TTkTerm.Cursor.moveDown(1)
+    + TTkTerm.Cursor.moveLeft(3)
+    + TTkColor.fg("#00ff00")
+    + TTkColor.bg("#555500")
+    + "Test Text 1"
+)
 time.sleep(1)
 TTkLog.info("Ending")
 

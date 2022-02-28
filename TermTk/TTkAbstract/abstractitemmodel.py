@@ -24,10 +24,12 @@
 
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
-class TTkAbstractItemModel():
+
+class TTkAbstractItemModel:
     __slots__ = (
         # Signals
-        'dataChanged'
+        "dataChanged"
     )
+
     def __init__(self, *args, **kwargs):
         self.dataChanged = pyTTkSignal()

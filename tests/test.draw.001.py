@@ -26,39 +26,39 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 from TermTk import TTkLog, TTkTerm
+
 
 def message_handler(mode, context, message):
     log = logging.debug
-    if mode == TTkLog.InfoMsg:       log = logging.info
-    elif mode == TTkLog.WarningMsg:  log = logging.warning
-    elif mode == TTkLog.CriticalMsg: log = logging.critical
-    elif mode == TTkLog.FatalMsg:    log = logging.fatal
-    elif mode == TTkLog.ErrorMsg:    log = logging.error
+    if mode == TTkLog.InfoMsg:
+        log = logging.info
+    elif mode == TTkLog.WarningMsg:
+        log = logging.warning
+    elif mode == TTkLog.CriticalMsg:
+        log = logging.critical
+    elif mode == TTkLog.FatalMsg:
+        log = logging.fatal
+    elif mode == TTkLog.ErrorMsg:
+        log = logging.error
     log(f"{context.file} {message}")
 
-logging.basicConfig(level=logging.DEBUG,
-                    filename='session.log',
-                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename="session.log",
+    format="%(levelname)s:(%(threadName)-9s) %(message)s",
+)
 TTkLog.installMessageHandler(message_handler)
 
 TTkTerm.init(mouse=False)
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveTo(2,4) +
-        "Test Text 3"
-    )
+TTkTerm.push(TTkTerm.Cursor.moveTo(2, 4) + "Test Text 3")
 time.sleep(1)
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        "Test Text 2"
-    )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) + "Test Text 2")
 time.sleep(1)
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        "Test Text 1"
-    )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) + "Test Text 1")
 time.sleep(1)
 
 TTkTerm.exit()

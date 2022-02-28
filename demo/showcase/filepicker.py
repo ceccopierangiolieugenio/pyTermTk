@@ -24,7 +24,7 @@
 
 import sys, os, argparse
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
 
@@ -32,26 +32,51 @@ def demoFilePicker(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
     # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
-    btn1 = ttk.TTkButton( parent=frame, pos=(0,0),  size=(8,3),  border=True, text='File' )
-    btn3 = ttk.TTkButton( parent=frame, pos=(8,0),  size=(13,3), border=True, text='Directory' )
-    btn2 = ttk.TTkButton( parent=frame, pos=(21,0), size=(17,3), border=True, text='Existing File', enabled=False )
-    btn4 = ttk.TTkButton( parent=frame, pos=(38,0), size=(18,3), border=True, text='Existing Files', enabled=False )
-    label = ttk.TTkLabel(parent=frame, pos=(1,5), size=(30,1), text="...")
-
+    btn1 = ttk.TTkButton(
+        parent=frame, pos=(0, 0), size=(8, 3), border=True, text="File"
+    )
+    btn3 = ttk.TTkButton(
+        parent=frame, pos=(8, 0), size=(13, 3), border=True, text="Directory"
+    )
+    btn2 = ttk.TTkButton(
+        parent=frame,
+        pos=(21, 0),
+        size=(17, 3),
+        border=True,
+        text="Existing File",
+        enabled=False,
+    )
+    btn4 = ttk.TTkButton(
+        parent=frame,
+        pos=(38, 0),
+        size=(18, 3),
+        border=True,
+        text="Existing Files",
+        enabled=False,
+    )
+    label = ttk.TTkLabel(parent=frame, pos=(1, 5), size=(30, 1), text="...")
 
     def _showDialog(fm):
-        filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=fm ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
+        filePicker = ttk.TTkFileDialogPicker(
+            pos=(3, 3),
+            size=(75, 24),
+            caption="Pick Something",
+            path=".",
+            fileMode=fm,
+            filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)",
+        )
         filePicker.pathPicked.connect(label.setText)
         ttk.TTkHelper.overlay(frame, filePicker, 2, 1)
 
-    btn1.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.AnyFile))
-    btn3.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.Directory))
+    btn1.clicked.connect(lambda: _showDialog(ttk.TTkK.FileMode.AnyFile))
+    btn3.clicked.connect(lambda: _showDialog(ttk.TTkK.FileMode.Directory))
 
     return frame
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -63,11 +88,19 @@ def main():
         root.setLayout(ttk.TTkGridLayout())
         winColor1 = root
     else:
-        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(58,20), title="Test File/Folder Picker", border=True, layout=ttk.TTkGridLayout())
+        winColor1 = ttk.TTkWindow(
+            parent=root,
+            pos=(0, 0),
+            size=(58, 20),
+            title="Test File/Folder Picker",
+            border=True,
+            layout=ttk.TTkGridLayout(),
+        )
 
     demoFilePicker(winColor1)
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

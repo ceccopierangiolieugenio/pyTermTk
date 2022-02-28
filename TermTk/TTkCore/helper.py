@@ -28,29 +28,35 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 
+
 class TTkHelper:
     # TODO: Add Setter/Getter
     _focusWidget = None
     _rootCanvas = None
     _rootWidget = None
     _updateWidget = []
-    _updateBuffer  = []
-    _cursorPos = [0,0]
+    _updateBuffer = []
+    _cursorPos = [0, 0]
     _cursor = False
     _cursorType = TTkTerm.Cursor.BLINKING_BLOCK
-    class _Overlay():
-        __slots__ = ('_widget','_prevFocus','_x','_y')
-        def __init__(self,x,y,widget,prevFocus):
+
+    class _Overlay:
+        __slots__ = ("_widget", "_prevFocus", "_x", "_y")
+
+        def __init__(self, x, y, widget, prevFocus):
             self._widget = widget
             self._prevFocus = prevFocus
-            widget.move(x,y)
+            widget.move(x, y)
+
     _overlay = []
 
-    class _Shortcut():
-        __slots__ = ('_letter','_widget')
+    class _Shortcut:
+        __slots__ = ("_letter", "_widget")
+
         def __init__(self, letter, widget):
             self._letter = letter.lower()
             self._widget = widget
+
     _shortcut = []
 
     @staticmethod
@@ -59,13 +65,16 @@ class TTkHelper:
 
     @staticmethod
     def isParent(parent, widget):
-        if parent==widget: return True
-        if widget.parentWidget() is None: return False
-        return TTkHelper.isParent(parent,widget.parentWidget())
+        if parent == widget:
+            return True
+        if widget.parentWidget() is None:
+            return False
+        return TTkHelper.isParent(parent, widget.parentWidget())
 
     @staticmethod
     def execShortcut(letter, widget=None):
-        if not isinstance(letter, str): return
+        if not isinstance(letter, str):
+            return
         for sc in TTkHelper._shortcut:
             if sc._letter == letter.lower() and sc._widget.isVisible():
                 if not widget or TTkHelper.isParent(widget, sc._widget):
@@ -81,7 +90,8 @@ class TTkHelper:
 
     @staticmethod
     def addUpdateWidget(widget):
-        if not widget.isVisible(): return
+        if not widget.isVisible():
+            return
         if widget not in TTkHelper._updateWidget:
             TTkHelper._updateWidget.append(widget)
 
@@ -114,18 +124,20 @@ class TTkHelper:
 
     @staticmethod
     def isOverlay(widget):
-         return TTkHelper.rootOverlay(widget) is not None
+        return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
     def overlay(caller, widget, x, y):
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
-        w,h = widget.size()
+        w, h = widget.size()
         # Try to keep the overlay widget inside the terminal
-        wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
-        wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget))
+        wx = max(0, wx + x if wx + x + w < TTkGlbl.term_w else TTkGlbl.term_w - w)
+        wy = max(0, wy + y if wy + y + h < TTkGlbl.term_h else TTkGlbl.term_h - h)
+        TTkHelper._overlay.append(
+            TTkHelper._Overlay(wx, wy, widget, TTkHelper._focusWidget)
+        )
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
@@ -189,13 +201,12 @@ class TTkHelper:
         if not found:
             TTkHelper.removeOverlay()
 
-
     @staticmethod
     def paintAll():
-        '''
-            _updateBuffer = list widgets that require a repaint [paintEvent]
-            _updateWidget = list widgets that need to be pushed below
-        '''
+        """
+        _updateBuffer = list widgets that require a repaint [paintEvent]
+        _updateWidget = list widgets that need to be pushed below
+        """
         if TTkHelper._rootCanvas is None:
             return
 
@@ -205,7 +216,8 @@ class TTkHelper:
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
         for widget in TTkHelper._updateWidget:
-            if not widget.isVisible(): continue
+            if not widget.isVisible():
+                continue
             parent = widget.parentWidget()
             while parent is not None:
                 if parent not in updateBuffers:
@@ -219,7 +231,8 @@ class TTkHelper:
 
         # Paint all the canvas
         for widget in updateBuffers:
-            if not widget.isVisible(): continue
+            if not widget.isVisible():
+                continue
             # Resize the canvas just before the paintEvent
             # to avoid too many allocations
             widget.getCanvas().updateSize()
@@ -229,11 +242,12 @@ class TTkHelper:
         # Compose all the canvas to the parents
         # From the deepest children to the bottom
         pushToTerminal = False
-        sortedUpdateWidget = [ (w, TTkHelper.widgetDepth(w)) for w in updateWidgets]
+        sortedUpdateWidget = [(w, TTkHelper.widgetDepth(w)) for w in updateWidgets]
         sortedUpdateWidget = sorted(sortedUpdateWidget, key=lambda w: -w[1])
         for w in sortedUpdateWidget:
             widget = w[0]
-            if not widget.isVisible(): continue
+            if not widget.isVisible():
+                continue
             pushToTerminal = True
             widget.paintChildCanvas()
 
@@ -241,12 +255,16 @@ class TTkHelper:
             if TTkHelper._cursor:
                 TTkTerm.Cursor.hide()
             if TTkCfg.doubleBuffer:
-                TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+                TTkHelper._rootCanvas.pushToTerminalBuffered(
+                    0, 0, TTkGlbl.term_w, TTkGlbl.term_h
+                )
             else:
-                TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+                TTkHelper._rootCanvas.pushToTerminal(
+                    0, 0, TTkGlbl.term_w, TTkGlbl.term_h
+                )
             if TTkHelper._cursor:
-                x,y = TTkHelper._cursorPos
-                TTkTerm.push(TTkTerm.Cursor.moveTo(y+1,x+1))
+                x, y = TTkHelper._cursorPos
+                TTkTerm.push(TTkTerm.Cursor.moveTo(y + 1, x + 1))
                 TTkTerm.Cursor.show(TTkHelper._cursorType)
 
     @staticmethod
@@ -256,19 +274,19 @@ class TTkHelper:
         return 1 + TTkHelper.widgetDepth(widget.parentWidget())
 
     @staticmethod
-    def absPos(widget) -> (int,int):
-        wx, wy = 0,0
+    def absPos(widget) -> (int, int):
+        wx, wy = 0, 0
         layout = widget.widgetItem()
         while layout:
             px, py = layout.pos()
-            wx, wy = wx+px, wy+py
+            wx, wy = wx + px, wy + py
             layout = layout.parent()
         return (wx, wy)
 
     def nextFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:
-            rootWidget =  TTkHelper._rootWidget
+            rootWidget = TTkHelper._rootWidget
         if widget == rootWidget:
             widget = None
         first = None
@@ -278,7 +296,7 @@ class TTkHelper:
             # TTkLog.debug(f"{w._name} {widget}")
             if widget:
                 if w == widget:
-                    widget=None
+                    widget = None
                 continue
             if w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 w.setFocus()
@@ -298,7 +316,7 @@ class TTkHelper:
         for w in rootWidget.rootLayout().iterWidgets():
             # TTkLog.debug(f"{w._name} {widget}")
             if w == widget:
-                widget=None
+                widget = None
                 if prev:
                     break
             if w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
@@ -320,25 +338,35 @@ class TTkHelper:
         TTkHelper._focusWidget = None
 
     @staticmethod
-    def showCursor(cursorType = TTkK.Cursor_Blinking_Block):
-        if   cursorType == TTkK.Cursor_Blinking_Block      : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
-        elif cursorType == TTkK.Cursor_Blinking_Block_Also : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK_ALSO
-        elif cursorType == TTkK.Cursor_Steady_Block        : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BLOCK
-        elif cursorType == TTkK.Cursor_Blinking_Underline  : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_UNDERLINE
-        elif cursorType == TTkK.Cursor_Steady_Underline    : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_UNDERLINE
-        elif cursorType == TTkK.Cursor_Blinking_Bar        : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BAR
-        elif cursorType == TTkK.Cursor_Steady_Bar          : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BAR
+    def showCursor(cursorType=TTkK.Cursor_Blinking_Block):
+        if cursorType == TTkK.Cursor_Blinking_Block:
+            TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
+        elif cursorType == TTkK.Cursor_Blinking_Block_Also:
+            TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK_ALSO
+        elif cursorType == TTkK.Cursor_Steady_Block:
+            TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BLOCK
+        elif cursorType == TTkK.Cursor_Blinking_Underline:
+            TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_UNDERLINE
+        elif cursorType == TTkK.Cursor_Steady_Underline:
+            TTkHelper._cursorType = TTkTerm.Cursor.STEADY_UNDERLINE
+        elif cursorType == TTkK.Cursor_Blinking_Bar:
+            TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BAR
+        elif cursorType == TTkK.Cursor_Steady_Bar:
+            TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BAR
         TTkTerm.Cursor.show(TTkHelper._cursorType)
         TTkHelper._cursor = True
+
     @staticmethod
     def hideCursor():
         TTkTerm.Cursor.hide()
         TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
         TTkHelper._cursor = False
+
     @staticmethod
     def moveCursor(widget, x, y):
         xx, yy = TTkHelper.absPos(widget)
-        TTkHelper._cursorPos = [xx+x,yy+y]
-        TTkTerm.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
+        TTkHelper._cursorPos = [xx + x, yy + y]
+        TTkTerm.push(TTkTerm.Cursor.moveTo(yy + y + 1, xx + x + 1))
 
-    class Color(TTkTermColor): pass
+    class Color(TTkTermColor):
+        pass

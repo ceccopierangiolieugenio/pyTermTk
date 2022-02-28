@@ -29,23 +29,27 @@ import inspect
 import logging
 from collections.abc import Callable, Set
 
+
 class _TTkContext:
-    __slots__ = ['file', 'line', 'function']
+    __slots__ = ["file", "line", "function"]
+
     def __init__(self, cf):
         self.file = cf[1]
         self.line = cf[2]
         self.function = cf[3]
+
     def __str__(self):
         return f"{self.file}:{self.line} [{self.function}]"
 
+
 class TTkLog:
-    DebugMsg    = 0x0001
-    InfoMsg     = 0x0002
-    ErrorMsg    = 0x0004
-    WarningMsg  = 0x0008
+    DebugMsg = 0x0001
+    InfoMsg = 0x0002
+    ErrorMsg = 0x0004
+    WarningMsg = 0x0008
     CriticalMsg = 0x0010
-    FatalMsg    = 0x0020
-    SystemMsg   = CriticalMsg
+    FatalMsg = 0x0020
+    SystemMsg = CriticalMsg
 
     # TypeHandlers = list[Callable]
     _messageHandler: Set = []
@@ -53,32 +57,40 @@ class TTkLog:
     @staticmethod
     def _logging_message_handler(mode, context, message):
         log = logging.debug
-        if mode == TTkLog.InfoMsg:       log = logging.info
-        elif mode == TTkLog.WarningMsg:  log = logging.warning
-        elif mode == TTkLog.CriticalMsg: log = logging.critical
-        elif mode == TTkLog.FatalMsg:    log = logging.fatal
-        elif mode == TTkLog.ErrorMsg:    log = logging.error
+        if mode == TTkLog.InfoMsg:
+            log = logging.info
+        elif mode == TTkLog.WarningMsg:
+            log = logging.warning
+        elif mode == TTkLog.CriticalMsg:
+            log = logging.critical
+        elif mode == TTkLog.FatalMsg:
+            log = logging.fatal
+        elif mode == TTkLog.ErrorMsg:
+            log = logging.error
         log(f"{context.file}:{context.line} {message}")
 
     @staticmethod
     def use_default_file_logging(file="session.log"):
-        logging.basicConfig(level=logging.DEBUG,
-                    filename='session.log',
-                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
+        logging.basicConfig(
+            level=logging.DEBUG,
+            filename="session.log",
+            format="%(levelname)s:(%(threadName)-9s) %(message)s",
+        )
         TTkLog.installMessageHandler(TTkLog._logging_message_handler)
 
     @staticmethod
     def use_default_stdout_logging():
-        logging.basicConfig(level=logging.DEBUG,
-                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="%(levelname)s:(%(threadName)-9s) %(message)s",
+        )
         TTkLog.installMessageHandler(TTkLog._logging_message_handler)
-
 
     @staticmethod
     def _process_msg(mode: int, msg: str):
         for cb in TTkLog._messageHandler:
             curframe = inspect.currentframe()
-            calframe = inspect.getouterframes(curframe,1)
+            calframe = inspect.getouterframes(curframe, 1)
             if len(calframe) > 2:
                 ctx = _TTkContext(calframe[2])
                 cb(mode, ctx, msg)

@@ -22,9 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TKeyEvents():
-    def keyPressEvent(self, evt) -> bool :
-        '''
+
+class TKeyEvents:
+    def keyPressEvent(self, evt) -> bool:
+        """
         This event handler, can be reimplemented in a subclass to receive key press events for the widget.
 
         .. note:: Reimplement this function to handle this event
@@ -33,10 +34,11 @@ class TKeyEvents():
             evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
         Returns:
             bool: True if the event has been handled
-        '''
+        """
         return False
-    def keyReleaseEvent(self, evt) -> bool :
-        '''
+
+    def keyReleaseEvent(self, evt) -> bool:
+        """
         This event handler, can be reimplemented in a subclass to receive key release events for the widget.
 
         .. note:: Reimplement this function to handle this event
@@ -45,11 +47,11 @@ class TKeyEvents():
             evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
         Returns:
             bool: True if the event has been handled
-        '''
+        """
         return False
 
-    def keyEvent(self, evt) -> bool :
-        '''
+    def keyEvent(self, evt) -> bool:
+        """
         This event handler, can be reimplemented in a subclass to receive key events for the widget.
 
         .. note:: Reimplement this function to handle this event
@@ -58,5 +60,5 @@ class TKeyEvents():
             evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
         Returns:
             bool: True if the event has been handled
-        '''
+        """
         return False

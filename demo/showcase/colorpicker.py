@@ -24,35 +24,109 @@
 
 import sys, os, argparse
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
+sys.path.append(os.path.join(sys.path[0], "../.."))
 import TermTk as ttk
 
 
 def demoColorPicker(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
-    winCP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(30,16), title="Test Color Pickers", border=True)
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,0), size=(8,3), border=True, color=ttk.TTkColor.bg('#88ffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,3), size=(8,3), border=True, color=ttk.TTkColor.bg('#ff88ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,6), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffff88') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,9), size=(8,3), border=True, color=ttk.TTkColor.bg('#8888ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,0), size=(8,3), border=True, color=ttk.TTkColor.fg('#00ffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,3), size=(8,3), border=True, color=ttk.TTkColor.fg('#ff00ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,6), size=(8,3), border=True, color=ttk.TTkColor.fg('#ffff00') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,9), size=(8,3), border=True, color=ttk.TTkColor.fg('#0000ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,0), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,3), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,6), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,9), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-
+    winCP = ttk.TTkWindow(
+        parent=frame, pos=(0, 0), size=(30, 16), title="Test Color Pickers", border=True
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(0, 0),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#88ffff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(0, 3),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#ff88ff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(0, 6),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#ffff88"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(0, 9),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#8888ff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(10, 0),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.fg("#00ffff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(10, 3),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.fg("#ff00ff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(10, 6),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.fg("#ffff00"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(10, 9),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.fg("#0000ff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(20, 0),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#ffffff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(20, 3),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#ffffff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(20, 6),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#ffffff"),
+    )
+    ttk.TTkColorButtonPicker(
+        parent=winCP,
+        pos=(20, 9),
+        size=(8, 3),
+        border=True,
+        color=ttk.TTkColor.bg("#ffffff"),
+    )
 
     # win2_1 = ttk.TTkColorDialogPicker(parent=frame,pos = (3,3), size=(110,40), title="Test Color Picker", border=True)
 
     return frame
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument("-f", help="Full Screen", action="store_true")
     args = parser.parse_args()
 
     ttk.TTkLog.use_default_file_logging()
@@ -62,11 +136,19 @@ def main():
         root.setLayout(ttk.TTkGridLayout())
         winColor1 = root
     else:
-        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(120,50), title="Test Color Picker", border=True, layout=ttk.TTkGridLayout())
+        winColor1 = ttk.TTkWindow(
+            parent=root,
+            pos=(0, 0),
+            size=(120, 50),
+            title="Test Color Picker",
+            border=True,
+            layout=ttk.TTkGridLayout(),
+        )
 
     demoColorPicker(winColor1)
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

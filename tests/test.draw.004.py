@@ -26,7 +26,7 @@ import sys, os
 import logging
 import time
 
-sys.path.append(os.path.join(sys.path[0],'..'))
+sys.path.append(os.path.join(sys.path[0], ".."))
 from TermTk import TTkLog
 from TermTk.TTkCore import TTkColor
 from TermTk.TTkCore import TTkHelper
@@ -41,52 +41,50 @@ TTkLog.info("Starting")
 
 color1 = TTkColor.fg("#88ffff")
 color2 = TTkColor.bg("#005555")
-color3 = TTkColor.UNDERLINE + TTkColor.fg("#00ff00" ) + TTkColor.bg("#555500")
+color3 = TTkColor.UNDERLINE + TTkColor.fg("#00ff00") + TTkColor.bg("#555500")
 color4 = TTkColor.RST
-color5 = TTkColor.bg("#555500")+TTkColor.STRIKETROUGH
+color5 = TTkColor.bg("#555500") + TTkColor.STRIKETROUGH
 
-base = TTkString() + color1 + "TestXYZ" + color2 + "012345ABCDEFXYZ" + color3 + "0123456" + color4 + "pyTermTk"
+base = (
+    TTkString()
+    + color1
+    + "TestXYZ"
+    + color2
+    + "012345ABCDEFXYZ"
+    + color3
+    + "0123456"
+    + color4
+    + "pyTermTk"
+)
 
 s1 = base
-s2 = base.replace("ABCD",     "__PierCecco__")
-s3 = base.replace("XYZ012345","CeccoPierangioliEugenio")
-s4 = base.replace("XYZ012345","Parodi")
-s5 = base.setColor(color5,    "XYZ0123")
+s2 = base.replace("ABCD", "__PierCecco__")
+s3 = base.replace("XYZ012345", "CeccoPierangioliEugenio")
+s4 = base.replace("XYZ012345", "Parodi")
+s5 = base.setColor(color5, "XYZ0123")
 s6 = base.setColor(color5)
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveTo(2,4) +
-        s1.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveTo(2, 4) + s1.toAansi())
 time.sleep(0.5)
 TTkLog.info("next : 4")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) +
-        s2.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) + s2.toAansi())
 time.sleep(0.5)
 TTkLog.info("next : 3")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) +
-        s3.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) + s3.toAansi())
 time.sleep(0.5)
 TTkLog.info("next : 2")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) +
-        s4.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) + s4.toAansi())
 time.sleep(0.5)
 TTkLog.info("next : 1")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) +
-        s5.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) + s5.toAansi())
 time.sleep(0.5)
 TTkLog.info("next : 0")
 
-TTkTerm.push(
-        TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) +
-        s6.toAansi() )
+TTkTerm.push(TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(30) + s6.toAansi())
 time.sleep(3)
 TTkLog.info("Ending")
 

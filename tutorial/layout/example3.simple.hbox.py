@@ -24,11 +24,11 @@
 
 import TermTk as ttk
 
-    # Set the HBoxLayout as defaut in the terminal widget
+# Set the HBoxLayout as defaut in the terminal widget
 root = ttk.TTk()
 root.setLayout(ttk.TTkHBoxLayout())
 
-    # Attach 4 buttons to the root widget
+# Attach 4 buttons to the root widget
 ttk.TTkButton(parent=root, border=True, text="Button1")
 ttk.TTkButton(parent=root, border=True, text="Button2")
 ttk.TTkButton(parent=root, border=True, text="Button3")

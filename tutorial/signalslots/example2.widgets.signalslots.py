@@ -26,17 +26,24 @@ import TermTk as ttk
 
 root = ttk.TTk()
 
-    # Create a window with a logviewer
-logWin = ttk.TTkWindow(parent=root,pos = (10,2), size=(80,20), title="LogViewer Window", border=True, layout=ttk.TTkVBoxLayout())
+# Create a window with a logviewer
+logWin = ttk.TTkWindow(
+    parent=root,
+    pos=(10, 2),
+    size=(80, 20),
+    title="LogViewer Window",
+    border=True,
+    layout=ttk.TTkVBoxLayout(),
+)
 ttk.TTkLogViewer(parent=logWin)
 
-    # Create 2 buttons
-btnShow = ttk.TTkButton(parent=root, text="Show", pos=(0,0), size=(10,3), border=True)
-btnHide = ttk.TTkButton(parent=root, text="Hide", pos=(0,3), size=(10,3), border=True)
+# Create 2 buttons
+btnShow = ttk.TTkButton(parent=root, text="Show", pos=(0, 0), size=(10, 3), border=True)
+btnHide = ttk.TTkButton(parent=root, text="Hide", pos=(0, 3), size=(10, 3), border=True)
 
-    # Connect the btnShow's "clicked" signal with the window's "show" slot
+# Connect the btnShow's "clicked" signal with the window's "show" slot
 btnShow.clicked.connect(logWin.show)
-    # Connect the btnHide's "clicked" signal with the window's "hide" slot
+# Connect the btnHide's "clicked" signal with the window's "hide" slot
 btnHide.clicked.connect(logWin.hide)
 
 root.mainloop()
