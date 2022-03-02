@@ -124,12 +124,8 @@ class TTkLineEdit(TTkWidget):
 
     def mouseDragEvent(self, evt) -> bool:
         txtPos = evt.x+self._offset
-        if txtPos < self._cursorPos:
-            self._selectionFrom = txtPos
-            self._selectionTo   = self._cursorPos
-        else:
-            self._selectionFrom = self._cursorPos
-            self._selectionTo   = txtPos
+        self._selectionFrom = max(0,              min(txtPos,self._cursorPos))
+        self._selectionTo   = min(len(self._text),max(txtPos,self._cursorPos))
         if self._selectionFrom < self._selectionTo:
             TTkHelper.hideCursor()
         self.update()
