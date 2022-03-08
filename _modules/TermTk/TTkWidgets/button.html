@@ -215,12 +215,12 @@
 
 <span class="sd">         [  Text  ]</span>
 
-<span class="sd">    The TTkWidget class is the base class of all user interface objects</span>
+<span class="sd">    Demo: `formwidgets.py &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py&gt;`_</span>
 
 <span class="sd">    :param str text: the text shown on the button, defaults to &quot;&quot;</span>
 <span class="sd">    :type text: str, optional</span>
 <span class="sd">    :param bool border: the border of the button, defaults to &quot;False&quot;</span>
-<span class="sd">    :type text: str, optional</span>
+<span class="sd">    :type border: bool, optional</span>
 <span class="sd">    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonTextColor`</span>
 <span class="sd">    :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional</span>
 <span class="sd">    :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`</span>
@@ -229,11 +229,13 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_border&#39;</span><span class="p">,</span> <span class="s1">&#39;_pressed&#39;</span><span class="p">,</span> <span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_keyPressed&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_border&#39;</span><span class="p">,</span> <span class="s1">&#39;_pressed&#39;</span><span class="p">,</span> <span class="s1">&#39;_keyPressed&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColor&#39;</span><span class="p">,</span>        <span class="s1">&#39;_textColor&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColorClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_textColorClicked&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColorFocus&#39;</span><span class="p">,</span>   <span class="s1">&#39;_textColorFocus&#39;</span>
-        <span class="s1">&#39;_borderColorDisabled&#39;</span><span class="p">,</span><span class="s1">&#39;_textColorDisabled&#39;</span>
+        <span class="s1">&#39;_borderColorDisabled&#39;</span><span class="p">,</span><span class="s1">&#39;_textColorDisabled&#39;</span><span class="p">,</span>
+        <span class="c1"># Signals</span>
+        <span class="s1">&#39;clicked&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 

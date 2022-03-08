@@ -214,7 +214,61 @@
 <dl class="py class">
 <dt id="TermTk.TTkWidgets.checkbox.TTkCheckbox">
 <em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkCheckbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/checkbox.html#TTkCheckbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p><strong>Checked</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">X</span><span class="p">]</span><span class="n">CheckBox</span>
+</pre></div>
+</div>
+<p><strong>Unchecked</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="p">]</span><span class="n">CheckBox</span>
+</pre></div>
+</div>
+<p>Demo: <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py">formwidgets.py</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em><em>, </em><em>optional</em>) – the text shown on the checkbox, defaults to “”</p></li>
+<li><p><strong>checked</strong> (<em>bool</em><em>, </em><em>optional</em>) – Checked status, defaults to “False”</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Signals</strong></p>
+<p>Signals:</p>
+<blockquote>
+<div><dl class="py method">
+<dt id="TermTk.TTkWidgets.checkbox.TTkCheckbox.clicked">
+<em class="property"><span class="pre">signal</span> </em><code class="sig-name descname"><span class="pre">clicked</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox.clicked" title="Permalink to this definition">¶</a></dt>
+<dd><p>This signal is emitted when the button is activated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>checked</strong> (<em>bool</em>) – True if checked otherwise False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.checkbox.TTkCheckbox.stateChanged">
+<em class="property"><span class="pre">signal</span> </em><code class="sig-name descname"><span class="pre">stateChanged</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox.stateChanged" title="Permalink to this definition">¶</a></dt>
+<dd><p>This signal is emitted whenever the checkbox’s state changes, i.e., whenever the user checks or unchecks it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.CheckState" title="TermTk.TTkCore.constant.TTkConstant.CheckState"><code class="xref py py-class docutils literal notranslate"><span class="pre">CheckState</span></code></a>) – state of the checkbox</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.checkbox.TTkCheckbox.checkState">
+<code class="sig-name descname"><span class="pre">checkState</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/checkbox.html#TTkCheckbox.checkState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox.checkState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the state of the checkbox</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.CheckState" title="TermTk.TTkCore.constant.TTkConstant.CheckState"><code class="xref py py-class docutils literal notranslate"><span class="pre">CheckState</span></code></a> : the checkbox status</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TermTk.TTkWidgets.checkbox.TTkCheckbox.keyEvent">
 <code class="sig-name descname"><span class="pre">keyEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/checkbox.html#TTkCheckbox.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox.keyEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
@@ -251,6 +305,17 @@
 <code class="sig-name descname"><span class="pre">paintEvent</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/checkbox.html#TTkCheckbox.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox.paintEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Paint Event callback,
 ths need to be overridden in the widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.checkbox.TTkCheckbox.setCheckState">
+<code class="sig-name descname"><span class="pre">setCheckState</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/checkbox.html#TTkCheckbox.setCheckState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.checkbox.TTkCheckbox.setCheckState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the checkbox’s check state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.CheckState" title="TermTk.TTkCore.constant.TTkConstant.CheckState"><code class="xref py py-class docutils literal notranslate"><span class="pre">CheckState</span></code></a>) – state of the checkbox</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

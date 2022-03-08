@@ -201,7 +201,52 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="o">*</span>
 
 <div class="viewcode-block" id="TTkCheckbox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox">[docs]</a><span class="k">class</span> <span class="nc">TTkCheckbox</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_checked&#39;</span><span class="p">,</span> <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;stateChanged&#39;</span><span class="p">,</span> <span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    **Checked**</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        [X]CheckBox</span>
+
+<span class="sd">    **Unchecked**</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        [ ]CheckBox</span>
+
+<span class="sd">    Demo: `formwidgets.py &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py&gt;`_</span>
+
+<span class="sd">    :param str text: the text shown on the checkbox, defaults to &quot;&quot;</span>
+<span class="sd">    :type text: str, optional</span>
+<span class="sd">    :param bool checked: Checked status, defaults to &quot;False&quot;</span>
+<span class="sd">    :type checked: bool, optional</span>
+
+<span class="sd">    **Signals**</span>
+
+<span class="sd">    Signals:</span>
+
+<span class="sd">        .. py:method:: clicked(checked)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted when the button is activated</span>
+
+<span class="sd">            :param checked: True if checked otherwise False</span>
+<span class="sd">            :type checked: bool</span>
+
+<span class="sd">        .. py:method:: stateChanged(state)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever the checkbox&#39;s state changes, i.e., whenever the user checks or unchecks it.</span>
+
+<span class="sd">            :param state: state of the checkbox</span>
+<span class="sd">            :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`</span>
+
+<span class="sd">    ..</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;_checked&#39;</span><span class="p">,</span> <span class="s1">&#39;_text&#39;</span><span class="p">,</span>
+        <span class="c1"># Signals</span>
+         <span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;stateChanged&#39;</span>
+        <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkCheckbox&#39;</span> <span class="p">)</span>
@@ -214,15 +259,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">checkState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkCheckbox.checkState"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.checkState">[docs]</a>    <span class="k">def</span> <span class="nf">checkState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Retrieve the state of the checkbox</span>
+
+<span class="sd">        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>
+            <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span></div>
 
-    <span class="k">def</span> <span class="nf">setCheckState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkCheckbox.setCheckState"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.setCheckState">[docs]</a>    <span class="k">def</span> <span class="nf">setCheckState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Sets the checkbox&#39;s check state.</span>
+
+<span class="sd">        :param state: state of the checkbox</span>
+<span class="sd">        :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="n">state</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TTkCheckbox.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
