@@ -1,4 +1,3 @@
-
 ## Python Refactoring
 * From [sourcery](https://sourcery.ai/blog)'s [Blog](https://sourcery.ai/blog/)
     [explaining-refactorings-1](https://sourcery.ai/blog/explaining-refactorings-1/)
@@ -16,7 +15,12 @@
     https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
     https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
 
-
 ## Terminal
 #### Hyperlink
 https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+
+## Sphinx Doc
+#### Domains - docstring syntax
+https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#directive-py-class
+#### ReStructuredText
+https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#explicit-markup-blocks

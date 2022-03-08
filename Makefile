@@ -4,6 +4,8 @@
 	python3 -m venv .venv
 	. .venv/bin/activate ; \
 	pip install -r docs/requirements.txt
+	# Add "Signal" option in the method domains
+	patch -p0  < docs/sphynx.001.signal.patch
 	#  Regen requirements;
 	#    pip freeze > docs/requirements.txt
 

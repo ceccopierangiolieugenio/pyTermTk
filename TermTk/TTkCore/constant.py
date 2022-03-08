@@ -87,6 +87,13 @@ class TTkConstant:
     ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
 
     class CheckState:
+        ''' This class type is used to describe the check status.
+
+        .. autosummary::
+          Unchecked
+          PartiallyChecked
+          Checked
+        '''
         Unchecked        = 0x00
         PartiallyChecked = 0x01
         Checked          = 0x02

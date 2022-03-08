@@ -43,12 +43,12 @@ class TTkButton(TTkWidget):
 
          [  Text  ]
 
-    The TTkWidget class is the base class of all user interface objects
+    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
 
     :param str text: the text shown on the button, defaults to ""
     :type text: str, optional
     :param bool border: the border of the button, defaults to "False"
-    :type text: str, optional
+    :type border: bool, optional
     :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonTextColor`
     :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
     :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`
@@ -57,11 +57,13 @@ class TTkButton(TTkWidget):
     '''
 
     __slots__ = (
-        '_text', '_border', '_pressed', 'clicked', '_keyPressed',
+        '_text', '_border', '_pressed', '_keyPressed',
         '_borderColor',        '_textColor',
         '_borderColorClicked', '_textColorClicked',
         '_borderColorFocus',   '_textColorFocus'
-        '_borderColorDisabled','_textColorDisabled'
+        '_borderColorDisabled','_textColorDisabled',
+        # Signals
+        'clicked'
         )
     def __init__(self, *args, **kwargs):
 

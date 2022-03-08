@@ -29,7 +29,52 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkCheckbox(TTkWidget):
-    __slots__ = ('_checked', '_text', 'clicked', 'stateChanged', )
+    '''
+    **Checked**
+    ::
+
+        [X]CheckBox
+
+    **Unchecked**
+    ::
+
+        [ ]CheckBox
+
+    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
+
+    :param str text: the text shown on the checkbox, defaults to ""
+    :type text: str, optional
+    :param bool checked: Checked status, defaults to "False"
+    :type checked: bool, optional
+
+    **Signals**
+
+    Signals:
+
+        .. py:method:: clicked(checked)
+            :signal:
+
+            This signal is emitted when the button is activated
+
+            :param checked: True if checked otherwise False
+            :type checked: bool
+
+        .. py:method:: stateChanged(state)
+            :signal:
+
+            This signal is emitted whenever the checkbox's state changes, i.e., whenever the user checks or unchecks it.
+
+            :param state: state of the checkbox
+            :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+
+    ..
+
+    '''
+    __slots__ = (
+        '_checked', '_text',
+        # Signals
+         'clicked', 'stateChanged'
+        )
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
@@ -43,12 +88,23 @@ class TTkCheckbox(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def checkState(self):
+        ''' Retrieve the state of the checkbox
+
+        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
+        '''
         if self._checked:
             return TTkK.Checked
         else:
             return TTkK.Unchecked
 
     def setCheckState(self, state):
+        ''' Sets the checkbox's check state.
+
+        :param state: state of the checkbox
+        :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+        '''
+
+
         self._checked = state == TTkK.Checked
         self.update()
 

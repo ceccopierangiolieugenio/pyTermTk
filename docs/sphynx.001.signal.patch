@@ -1,0 +1,19 @@
+--- .venv/lib/python3.8/site-packages/sphinx/domains/python.py	2022-03-08 11:00:06.152347159 +0000
++++ .venv/lib/python3.8/site-packages/sphinx/domains/python.py	2022-03-08 11:03:07.292940495 +0000
+@@ -795,6 +795,7 @@
+
+     option_spec = PyObject.option_spec.copy()
+     option_spec.update({
++        'signal': directives.flag,
+         'abstractmethod': directives.flag,
+         'async': directives.flag,
+         'classmethod': directives.flag,
+@@ -813,6 +814,8 @@
+         prefix = []
+         if 'final' in self.options:
+             prefix.append('final')
++        if 'signal' in self.options:
++            prefix.append('signal')
+         if 'abstractmethod' in self.options:
+             prefix.append('abstract')
+         if 'async' in self.options:
