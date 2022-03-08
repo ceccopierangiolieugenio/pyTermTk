@@ -47,9 +47,9 @@ class TTkCheckbox(TTkWidget):
     :param bool checked: Checked status, defaults to "False"
     :type checked: bool, optional
 
-    **Signals**
-
-    Signals:
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
 
         .. py:method:: clicked(checked)
             :signal:
@@ -67,9 +67,7 @@ class TTkCheckbox(TTkWidget):
             :param state: state of the checkbox
             :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
 
-    ..
-
-    '''
+     '''
     __slots__ = (
         '_checked', '_text',
         # Signals
