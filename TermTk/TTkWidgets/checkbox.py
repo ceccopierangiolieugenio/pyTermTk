@@ -40,7 +40,7 @@ class TTkCheckbox(TTkWidget):
 
         [ ]CheckBox
 
-    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
+    :Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
 
     :param str text: the text shown on the checkbox, defaults to ""
     :type text: str, optional
@@ -71,7 +71,7 @@ class TTkCheckbox(TTkWidget):
     __slots__ = (
         '_checked', '_text',
         # Signals
-         'clicked', 'stateChanged'
+        'clicked', 'stateChanged'
         )
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)

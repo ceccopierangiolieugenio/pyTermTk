@@ -29,10 +29,11 @@ class TKeyEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The keyboard event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.KeyEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
     def keyReleaseEvent(self, evt) -> bool :
@@ -41,10 +42,11 @@ class TKeyEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The keyboard event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.KeyEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -54,9 +56,10 @@ class TKeyEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The keyboard event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.KeyEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False

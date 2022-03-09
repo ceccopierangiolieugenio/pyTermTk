@@ -54,6 +54,15 @@ class TTkButton(TTkWidget):
     :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`
     :type borderColor: :class:`~TermTk.TTkCore.color.TTkColor`, optional
 
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: clicked()
+            :signal:
+
+            This signal is emitted when the button is activated
+
     '''
 
     __slots__ = (

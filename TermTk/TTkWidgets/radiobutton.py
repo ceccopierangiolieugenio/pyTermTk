@@ -29,8 +29,41 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import *
 
 class TTkRadioButton(TTkWidget):
+    '''
+    **Checked**
+    ::
+
+        (X)radioButton
+
+    **Unchecked**
+    ::
+
+        ( )RadioButton
+
+    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
+
+    :param str text: the text shown on the checkbox, defaults to ""
+    :type text: str, optional
+    :param bool checked: Checked status, defaults to "False"
+    :type checked: bool, optional
+
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: clicked()
+            :signal:
+
+            This signal is emitted when the button is activated
+
+     '''
+
     _radioLists = {}
-    __slots__ = ('_checked', '_text', 'clicked')
+    __slots__ = (
+        '_checked', '_text',
+        # Signals
+        'clicked'
+        )
     def __init__(self, *args, **kwargs):
         # Define Signals
         self.clicked = pyTTkSignal()

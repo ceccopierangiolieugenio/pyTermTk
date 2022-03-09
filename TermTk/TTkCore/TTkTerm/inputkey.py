@@ -25,6 +25,40 @@
 from TermTk.TTkCore.constant import TTkK
 
 class KeyEvent:
+    ''' Keyboard Events
+
+    :demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
+
+    :param type: The key input type recorded
+    :type type: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType`
+    :param key: the key
+    :type key: str
+    :param code: The terminal code used to represent this input
+    :type code: str
+    :param mod: The modifier used by the :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
+    :type mod: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier`
+
+    .. py:attribute:: type
+        :type: KeyType
+
+        The key input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType` recorded
+
+    .. py:attribute:: key
+        :type: str
+
+        the key
+
+    .. py:attribute:: code
+        :type: str
+
+        The terminal code used to represent this input
+
+    .. py:attribute:: mod
+        :type: KeyModifier
+
+        The :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier` used by the :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
+
+    '''
     __slots__ = ('type', 'key', 'code', 'mod')
     def __init__(self, type:int, key: str, code: str, mod: int):
         self.type = type

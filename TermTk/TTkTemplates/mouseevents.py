@@ -29,10 +29,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return True
 
@@ -42,10 +43,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -55,10 +57,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -68,10 +71,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -81,10 +85,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -94,10 +99,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -107,10 +113,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -120,10 +127,11 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
 
@@ -133,9 +141,10 @@ class TMouseEvents():
 
         .. note:: Reimplement this function to handle this event
 
-        Args:
-            evt (\[TermTk.TTkCore.TTkTerm.input.MouseEvent]): the mouse event
-        Returns:
-            bool: True if the event has been handled
+        :param evt: The mouse event
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.input.TTkMouseEvent`
+
+        :return: **True** if the event has been handled
+        :rtype: bool
         '''
         return False
