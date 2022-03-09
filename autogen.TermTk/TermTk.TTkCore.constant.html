@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkCore.draw" href="TermTk.TTkCore.draw.html" />
+    <link rel="next" title="TermTk.TTkCore.drag" href="TermTk.TTkCore.drag.html" />
     <link rel="prev" title="TermTk.TTkCore.color" href="TermTk.TTkCore.color.html" /> 
 </head>
 
@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ttkk">TTkK</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.drag.html">TermTk.TTkCore.drag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.draw.html">TermTk.TTkCore.draw</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.filebuffer.html">TermTk.TTkCore.filebuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.helper.html">TermTk.TTkCore.helper</a></li>
@@ -286,6 +287,72 @@
 </dd></dl>
 
 <dl class="py class">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">KeyModifier</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.KeyModifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input <a class="reference internal" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecialKey</span></code></a> modifiers</p>
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier">
+<code class="sig-name descname"><span class="pre">AltModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Alt key on the keyboard is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ControlModifier">
+<code class="sig-name descname"><span class="pre">ControlModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">67108864</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ControlModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Ctrl key on the keyboard is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.GroupSwitchModifier">
+<code class="sig-name descname"><span class="pre">GroupSwitchModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1073741824</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.GroupSwitchModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.KeypadModifier">
+<code class="sig-name descname"><span class="pre">KeypadModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">536870912</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.KeypadModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A keypad button is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier">
+<code class="sig-name descname"><span class="pre">MetaModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Meta key on the keyboard is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier">
+<code class="sig-name descname"><span class="pre">NoModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>No modifier key is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ShiftModifier">
+<code class="sig-name descname"><span class="pre">ShiftModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">33554432</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ShiftModifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Shift key on the keyboard is pressed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyType">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">KeyType</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.KeyType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input Key Types</p>
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyType.Character">
+<code class="sig-name descname"><span class="pre">Character</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.Character" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input Char Key</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey">
+<code class="sig-name descname"><span class="pre">SpecialKey</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input Special Key</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes">
 <em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">LayoutItemTypes</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.LayoutItemTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Types used internally in <a class="reference internal" href="TermTk.TTkLayouts.html#module-TermTk.TTkLayouts" title="TermTk.TTkLayouts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TTkLayouts</span></code></a></p>
@@ -322,7 +389,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TermTk.TTkCore.draw.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.draw" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkCore.drag.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.drag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="TermTk.TTkCore.color.html" class="btn btn-neutral float-left" title="TermTk.TTkCore.color" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

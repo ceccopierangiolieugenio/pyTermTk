@@ -389,16 +389,42 @@
     <span class="n">LayoutItem</span> <span class="o">=</span> <span class="n">LayoutItemTypes</span><span class="o">.</span><span class="n">LayoutItem</span>
     <span class="n">WidgetItem</span> <span class="o">=</span> <span class="n">LayoutItemTypes</span><span class="o">.</span><span class="n">WidgetItem</span>
 
-    <span class="n">Character</span>  <span class="o">=</span> <span class="mh">0x0001</span>
-    <span class="n">SpecialKey</span> <span class="o">=</span> <span class="mh">0x0002</span>
+<div class="viewcode-block" id="TTkConstant.KeyType"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.KeyType">[docs]</a>    <span class="k">class</span> <span class="nc">KeyType</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Input Key Types&#39;&#39;&#39;</span>
+        <span class="n">Character</span>  <span class="o">=</span> <span class="mh">0x0001</span>
+        <span class="sd">&#39;&#39;&#39;Input Char Key&#39;&#39;&#39;</span>
+        <span class="n">SpecialKey</span> <span class="o">=</span> <span class="mh">0x0002</span>
+        <span class="sd">&#39;&#39;&#39;Input Special Key&#39;&#39;&#39;</span></div>
 
-    <span class="n">NoModifier</span>          <span class="o">=</span> <span class="mh">0x00000000</span> <span class="c1"># No modifier key is pressed.</span>
-    <span class="n">ShiftModifier</span>       <span class="o">=</span> <span class="mh">0x02000000</span> <span class="c1"># A Shift key on the keyboard is pressed.</span>
-    <span class="n">ControlModifier</span>     <span class="o">=</span> <span class="mh">0x04000000</span> <span class="c1"># A Ctrl key on the keyboard is pressed.</span>
-    <span class="n">AltModifier</span>         <span class="o">=</span> <span class="mh">0x08000000</span> <span class="c1"># An Alt key on the keyboard is pressed.</span>
-    <span class="n">MetaModifier</span>        <span class="o">=</span> <span class="mh">0x10000000</span> <span class="c1"># A Meta key on the keyboard is pressed.</span>
-    <span class="n">KeypadModifier</span>      <span class="o">=</span> <span class="mh">0x20000000</span> <span class="c1"># A keypad button is pressed.</span>
-    <span class="n">GroupSwitchModifier</span> <span class="o">=</span> <span class="mh">0x40000000</span> <span class="c1"># X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.</span>
+    <span class="n">Character</span>  <span class="o">=</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">Character</span>
+    <span class="n">SpecialKey</span> <span class="o">=</span> <span class="n">KeyType</span><span class="o">.</span><span class="n">SpecialKey</span>
+
+
+<div class="viewcode-block" id="TTkConstant.KeyModifier"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.KeyModifier">[docs]</a>    <span class="k">class</span> <span class="nc">KeyModifier</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers&#39;&#39;&#39;</span>
+        <span class="n">NoModifier</span>          <span class="o">=</span> <span class="mh">0x00000000</span>
+        <span class="sd">&#39;&#39;&#39;No modifier key is pressed.&#39;&#39;&#39;</span>
+        <span class="n">ShiftModifier</span>       <span class="o">=</span> <span class="mh">0x02000000</span>
+        <span class="sd">&#39;&#39;&#39;A Shift key on the keyboard is pressed.&#39;&#39;&#39;</span>
+        <span class="n">ControlModifier</span>     <span class="o">=</span> <span class="mh">0x04000000</span>
+        <span class="sd">&#39;&#39;&#39;A Ctrl key on the keyboard is pressed.&#39;&#39;&#39;</span>
+        <span class="n">AltModifier</span>         <span class="o">=</span> <span class="mh">0x08000000</span>
+        <span class="sd">&#39;&#39;&#39;An Alt key on the keyboard is pressed.&#39;&#39;&#39;</span>
+        <span class="n">MetaModifier</span>        <span class="o">=</span> <span class="mh">0x10000000</span>
+        <span class="sd">&#39;&#39;&#39;A Meta key on the keyboard is pressed.&#39;&#39;&#39;</span>
+        <span class="n">KeypadModifier</span>      <span class="o">=</span> <span class="mh">0x20000000</span>
+        <span class="sd">&#39;&#39;&#39;A keypad button is pressed.&#39;&#39;&#39;</span>
+        <span class="n">GroupSwitchModifier</span> <span class="o">=</span> <span class="mh">0x40000000</span>
+        <span class="sd">&#39;&#39;&#39;X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.&#39;&#39;&#39;</span></div>
+
+    <span class="n">NoModifier</span>          <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">NoModifier</span>
+    <span class="n">ShiftModifier</span>       <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">ShiftModifier</span>
+    <span class="n">ControlModifier</span>     <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">ControlModifier</span>
+    <span class="n">AltModifier</span>         <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">AltModifier</span>
+    <span class="n">MetaModifier</span>        <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">MetaModifier</span>
+    <span class="n">KeypadModifier</span>      <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">KeypadModifier</span>
+    <span class="n">GroupSwitchModifier</span> <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">GroupSwitchModifier</span>
+
 
     <span class="n">Key_Escape</span>                  <span class="o">=</span> <span class="mh">0x01000000</span>
     <span class="n">Key_Tab</span>                     <span class="o">=</span> <span class="mh">0x01000001</span>

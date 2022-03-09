@@ -6,3 +6,10 @@ TermTk.TTkCore.TTkTerm.inputkey
 
 .. currentmodule:: TermTk.TTkCore.TTkTerm.inputkey
 
+
+
+KeyEvent
+========
+
+.. autoclass:: KeyEvent
+   :members:
