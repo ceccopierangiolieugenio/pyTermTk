@@ -1,0 +1,15 @@
+
+TermTk.TTkCore.TTkTerm.inputmouse
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.TTkTerm.inputmouse
+
+.. currentmodule:: TermTk.TTkCore.TTkTerm.inputmouse
+
+
+
+TTkMouseEvent
+=============
+
+.. autoclass:: TTkMouseEvent
+   :members:

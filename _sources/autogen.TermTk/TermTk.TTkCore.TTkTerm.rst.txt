@@ -13,5 +13,6 @@ TermTk.TTkCore.TTkTerm
   TermTk.TTkCore.TTkTerm.colors
   TermTk.TTkCore.TTkTerm.input
   TermTk.TTkCore.TTkTerm.inputkey
+  TermTk.TTkCore.TTkTerm.inputmouse
   TermTk.TTkCore.TTkTerm.readinputlinux
   TermTk.TTkCore.TTkTerm.term

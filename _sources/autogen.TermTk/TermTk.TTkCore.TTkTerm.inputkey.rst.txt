@@ -8,8 +8,8 @@ TermTk.TTkCore.TTkTerm.inputkey
 
 
 
-KeyEvent
-========
+TTkKeyEvent
+===========
 
-.. autoclass:: KeyEvent
+.. autoclass:: TTkKeyEvent
    :members:
