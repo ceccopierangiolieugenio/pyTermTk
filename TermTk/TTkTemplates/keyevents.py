@@ -30,7 +30,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.KeyEvent`
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -43,7 +43,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.KeyEvent`
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -57,7 +57,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.KeyEvent`
+        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool

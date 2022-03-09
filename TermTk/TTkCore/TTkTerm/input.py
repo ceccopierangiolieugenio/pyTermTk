@@ -37,66 +37,8 @@ elif platform.system() == 'Emscripten':
     raise NotImplementedError('Pyodide not yet supported')
 
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.TTkTerm.inputkey import KeyEvent
-
-class TTkMouseEvent:
-    # Keys
-    NoButton      = TTkK.NoButton     # The button state does not refer to any button (see QMouseEvent::button()).
-    AllButtons    = TTkK.AllButtons   # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.
-    LeftButton    = TTkK.LeftButton   # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
-    RightButton   = TTkK.RightButton  # The right button.
-    MidButton     = TTkK.MidButton    # The middle button.
-    MiddleButton  = TTkK.MiddleButton # The middle button.
-    Wheel         = TTkK.Wheel
-
-    # Events
-    NoEvent = TTkK.NoEvent
-    Press   = TTkK.Press
-    Release = TTkK.Release
-    Drag    = TTkK.Drag
-    Move    = TTkK.Move
-    Up      = TTkK.WHEEL_Up
-    Down    = TTkK.WHEEL_Down
-
-    __slots__ = ('x','y','key','evt', 'tap', 'raw')
-    def __init__(self, x: int, y: int, key: int, evt: int, tap: int, raw: str):
-        self.x = x
-        self.y = y
-        self.key = key
-        self.evt = evt
-        self.raw = raw
-        self.tap = tap
-
-    def clone(self, pos=None, evt=None):
-        x,y = pos or (self.x, self.y)
-        evt = evt or self.evt
-        return TTkMouseEvent(x, y, self.key, evt, self.tap, self.raw)
-
-    def key2str(self):
-        return {
-            TTkMouseEvent.NoButton     : "NoButton",
-            TTkMouseEvent.AllButtons   : "AllButtons",
-            TTkMouseEvent.LeftButton   : "LeftButton",
-            TTkMouseEvent.RightButton  : "RightButton",
-            TTkMouseEvent.MidButton    : "MidButton",
-            TTkMouseEvent.MiddleButton : "MiddleButton",
-            TTkMouseEvent.Wheel        : "Wheel",
-        }.get(self.key, "Undefined")
-
-    def evt2str(self):
-        return {
-            TTkMouseEvent.NoEvent : "NoEvent",
-            TTkMouseEvent.Press   : "Press",
-            TTkMouseEvent.Release : "Release",
-            TTkMouseEvent.Drag    : "Drag",
-            TTkMouseEvent.Move    : "Move",
-            TTkMouseEvent.Up      : "Up",
-            TTkMouseEvent.Down    : "Down",
-        }.get(self.evt, "Undefined")
-
-    def __str__(self):
-        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} tap:{self.tap} - {self.raw}"
+from TermTk.TTkCore.TTkTerm.inputkey   import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TTkInput:
     _leftLastTime = 0
@@ -113,7 +55,7 @@ class TTkInput:
             stdinRead = readInput()
 
             mevt = None
-            kevt = KeyEvent.parse(stdinRead)
+            kevt = TTkKeyEvent.parse(stdinRead)
             if kevt is None and \
                stdinRead.startswith("\033[<"):
                 # Mouse Event

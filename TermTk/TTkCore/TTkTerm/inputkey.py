@@ -24,10 +24,10 @@
 
 from TermTk.TTkCore.constant import TTkK
 
-class KeyEvent:
+class TTkKeyEvent:
     ''' Keyboard Events
 
-    :demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
+    :Demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
 
     :param type: The key input type recorded
     :type type: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType`
@@ -72,11 +72,11 @@ class KeyEvent:
     @staticmethod
     def parse(input_key):  # from: Space           except "DEL"
         if len(input_key) == 1 and "\040" <= input_key != "\177":
-            return KeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
+            return TTkKeyEvent(TTkK.Character, input_key, input_key, TTkK.NoModifier)
         else:
             key, mod = _translate_key(input_key)
             if key is not None:
-                return KeyEvent(TTkK.SpecialKey, key, input_key, mod)
+                return TTkKeyEvent(TTkK.SpecialKey, key, input_key, mod)
         return None
 
 def _translate_key(key):
