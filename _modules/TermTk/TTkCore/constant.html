@@ -308,22 +308,55 @@
     <span class="c1"># InsertAlphabetically = InsertPolicy.InsertAlphabetically</span>
 
     <span class="c1"># Keys</span>
-    <span class="n">NoButton</span>      <span class="o">=</span> <span class="mh">0x00000000</span>    <span class="c1"># The button state does not refer to any button (see QMouseEvent::button()).</span>
-    <span class="n">AllButtons</span>    <span class="o">=</span> <span class="mh">0x07ffffff</span>    <span class="c1"># This value corresponds to a mask of all possible mouse buttons. Use to set the &#39;acceptedButtons&#39; property of a MouseArea to accept ALL mouse buttons.</span>
-    <span class="n">LeftButton</span>    <span class="o">=</span> <span class="mh">0x00000001</span>    <span class="c1"># The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)</span>
-    <span class="n">RightButton</span>   <span class="o">=</span> <span class="mh">0x00000002</span>    <span class="c1"># The right button.</span>
-    <span class="n">MidButton</span>     <span class="o">=</span> <span class="mh">0x00000004</span>    <span class="c1"># The middle button.</span>
-    <span class="n">MiddleButton</span>  <span class="o">=</span> <span class="n">MidButton</span>     <span class="c1"># The middle button.</span>
-    <span class="n">Wheel</span>         <span class="o">=</span> <span class="mh">0x00000008</span>
+<div class="viewcode-block" id="TTkConstant.MouseKey"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.MouseKey">[docs]</a>    <span class="k">class</span> <span class="nc">MouseKey</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Input Mouse Key</span>
+
+<span class="sd">        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">NoButton</span>      <span class="o">=</span> <span class="mh">0x00000000</span>
+        <span class="sd">&#39;&#39;&#39;The button state does not refer to any button (see QMouseEvent::button()).&#39;&#39;&#39;</span>
+        <span class="n">AllButtons</span>    <span class="o">=</span> <span class="mh">0x07ffffff</span>
+        <span class="sd">&#39;&#39;&#39;This value corresponds to a mask of all possible mouse buttons. Use to set the &#39;acceptedButtons&#39; property of a MouseArea to accept ALL mouse buttons.&#39;&#39;&#39;</span>
+        <span class="n">LeftButton</span>    <span class="o">=</span> <span class="mh">0x00000001</span>
+        <span class="sd">&#39;&#39;&#39;The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)&#39;&#39;&#39;</span>
+        <span class="n">RightButton</span>   <span class="o">=</span> <span class="mh">0x00000002</span>
+        <span class="sd">&#39;&#39;&#39;The right button.&#39;&#39;&#39;</span>
+        <span class="n">MidButton</span>     <span class="o">=</span> <span class="mh">0x00000004</span>
+        <span class="sd">&#39;&#39;&#39;The middle button.&#39;&#39;&#39;</span>
+        <span class="n">MiddleButton</span>  <span class="o">=</span> <span class="n">MidButton</span>
+        <span class="sd">&#39;&#39;&#39;The middle button.&#39;&#39;&#39;</span>
+        <span class="n">Wheel</span>         <span class="o">=</span> <span class="mh">0x00000008</span>
+        <span class="sd">&#39;&#39;&#39;The wheel control&#39;&#39;&#39;</span></div>
+
+    <span class="n">NoButton</span>      <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">NoButton</span>
+    <span class="n">AllButtons</span>    <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">AllButtons</span>
+    <span class="n">LeftButton</span>    <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">LeftButton</span>
+    <span class="n">RightButton</span>   <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">RightButton</span>
+    <span class="n">MidButton</span>     <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">MidButton</span>
+    <span class="n">MiddleButton</span>  <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">MiddleButton</span>
+    <span class="n">Wheel</span>         <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">Wheel</span>
 
     <span class="c1"># Events</span>
-    <span class="n">NoEvent</span> <span class="o">=</span> <span class="mh">0x00000000</span>
-    <span class="n">Press</span>   <span class="o">=</span> <span class="mh">0x00010000</span>
-    <span class="n">Release</span> <span class="o">=</span> <span class="mh">0x00020000</span>
-    <span class="n">Drag</span>    <span class="o">=</span> <span class="mh">0x00040000</span>
-    <span class="n">Move</span>    <span class="o">=</span> <span class="mh">0x00080000</span>
-    <span class="n">WHEEL_Up</span>   <span class="o">=</span> <span class="mh">0x00100000</span> <span class="c1"># Wheel Up</span>
-    <span class="n">WHEEL_Down</span> <span class="o">=</span> <span class="mh">0x00200000</span> <span class="c1"># Wheel Down</span>
+<div class="viewcode-block" id="TTkConstant.MouseEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.MouseEvent">[docs]</a>    <span class="k">class</span> <span class="nc">MouseEvent</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Input Mouse Event</span>
+
+<span class="sd">        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">NoEvent</span>    <span class="o">=</span> <span class="mh">0x00000000</span>
+        <span class="n">Press</span>      <span class="o">=</span> <span class="mh">0x00010000</span>
+        <span class="n">Release</span>    <span class="o">=</span> <span class="mh">0x00020000</span>
+        <span class="n">Drag</span>       <span class="o">=</span> <span class="mh">0x00040000</span>
+        <span class="n">Move</span>       <span class="o">=</span> <span class="mh">0x00080000</span>
+        <span class="n">WHEEL_Up</span>   <span class="o">=</span> <span class="mh">0x00100000</span> <span class="c1"># Wheel Up</span>
+        <span class="n">WHEEL_Down</span> <span class="o">=</span> <span class="mh">0x00200000</span> <span class="c1"># Wheel Down</span></div>
+
+    <span class="n">NoEvent</span>    <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">NoEvent</span>
+    <span class="n">Press</span>      <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">Press</span>
+    <span class="n">Release</span>    <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">Release</span>
+    <span class="n">Drag</span>       <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">Drag</span>
+    <span class="n">Move</span>       <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">Move</span>
+    <span class="n">WHEEL_Up</span>   <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">WHEEL_Up</span>
+    <span class="n">WHEEL_Down</span> <span class="o">=</span> <span class="n">MouseEvent</span><span class="o">.</span><span class="n">WHEEL_Down</span>
 
     <span class="c1"># Cursors</span>
     <span class="n">Cursor_Blinking_Block</span>      <span class="o">=</span> <span class="mh">0x0001</span>
@@ -390,7 +423,10 @@
     <span class="n">WidgetItem</span> <span class="o">=</span> <span class="n">LayoutItemTypes</span><span class="o">.</span><span class="n">WidgetItem</span>
 
 <div class="viewcode-block" id="TTkConstant.KeyType"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.KeyType">[docs]</a>    <span class="k">class</span> <span class="nc">KeyType</span><span class="p">():</span>
-        <span class="sd">&#39;&#39;&#39;Input Key Types&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Input Key Types</span>
+
+<span class="sd">        Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">Character</span>  <span class="o">=</span> <span class="mh">0x0001</span>
         <span class="sd">&#39;&#39;&#39;Input Char Key&#39;&#39;&#39;</span>
         <span class="n">SpecialKey</span> <span class="o">=</span> <span class="mh">0x0002</span>
@@ -401,7 +437,10 @@
 
 
 <div class="viewcode-block" id="TTkConstant.KeyModifier"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.KeyModifier">[docs]</a>    <span class="k">class</span> <span class="nc">KeyModifier</span><span class="p">():</span>
-        <span class="sd">&#39;&#39;&#39;Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers</span>
+
+<span class="sd">        Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoModifier</span>          <span class="o">=</span> <span class="mh">0x00000000</span>
         <span class="sd">&#39;&#39;&#39;No modifier key is pressed.&#39;&#39;&#39;</span>
         <span class="n">ShiftModifier</span>       <span class="o">=</span> <span class="mh">0x02000000</span>

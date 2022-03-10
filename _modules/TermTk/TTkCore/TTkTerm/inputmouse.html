@@ -200,8 +200,39 @@
     <span class="sd">&#39;&#39;&#39; Mouse Events</span>
 
 <span class="sd">    :Demo: `test.input.py &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py&gt;`_</span>
-<span class="sd">    &#39;&#39;&#39;</span>
 
+<span class="sd">    .. py:attribute:: x</span>
+<span class="sd">        :type: int</span>
+
+<span class="sd">        The horizontal (x) position relative to the widget</span>
+
+<span class="sd">    .. py:attribute:: y</span>
+<span class="sd">        :type: int</span>
+
+<span class="sd">        The vertical (y) position relative to the widget</span>
+
+<span class="sd">    .. py:attribute:: key</span>
+<span class="sd">        :type: MouseKey</span>
+
+<span class="sd">        The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton`)</span>
+
+
+<span class="sd">    .. py:attribute:: evt</span>
+<span class="sd">        :type: MouseEvent</span>
+
+<span class="sd">        The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseEvent` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.Press`)</span>
+
+<span class="sd">    .. py:attribute:: tap</span>
+<span class="sd">        :type: int</span>
+
+<span class="sd">        The number of tap (keypressed) reported in this event, (i.e. a **doubleclick** is reported as tap=2)</span>
+
+<span class="sd">    .. py:attribute:: raw</span>
+<span class="sd">        :type: str</span>
+
+<span class="sd">        The terminal &quot;raw&quot; information reporting this event (Do not use it unless you know what you are looking for)</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># Keys</span>
     <span class="n">NoButton</span>      <span class="o">=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">NoButton</span>     <span class="c1"># The button state does not refer to any button (see QMouseEvent::button()).</span>
     <span class="n">AllButtons</span>    <span class="o">=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">AllButtons</span>   <span class="c1"># This value corresponds to a mask of all possible mouse buttons. Use to set the &#39;acceptedButtons&#39; property of a MouseArea to accept ALL mouse buttons.</span>
