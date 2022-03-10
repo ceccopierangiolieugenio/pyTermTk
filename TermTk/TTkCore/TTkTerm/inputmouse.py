@@ -28,8 +28,39 @@ class TTkMouseEvent:
     ''' Mouse Events
 
     :Demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
-    '''
 
+    .. py:attribute:: x
+        :type: int
+
+        The horizontal (x) position relative to the widget
+
+    .. py:attribute:: y
+        :type: int
+
+        The vertical (y) position relative to the widget
+
+    .. py:attribute:: key
+        :type: MouseKey
+
+        The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton`)
+
+
+    .. py:attribute:: evt
+        :type: MouseEvent
+
+        The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseEvent` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.Press`)
+
+    .. py:attribute:: tap
+        :type: int
+
+        The number of tap (keypressed) reported in this event, (i.e. a **doubleclick** is reported as tap=2)
+
+    .. py:attribute:: raw
+        :type: str
+
+        The terminal "raw" information reporting this event (Do not use it unless you know what you are looking for)
+
+    '''
     # Keys
     NoButton      = TTkK.NoButton     # The button state does not refer to any button (see QMouseEvent::button()).
     AllButtons    = TTkK.AllButtons   # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.

@@ -46,7 +46,7 @@ class TTkKeyEvent:
     .. py:attribute:: key
         :type: str
 
-        the key
+        the input key
 
     .. py:attribute:: code
         :type: str

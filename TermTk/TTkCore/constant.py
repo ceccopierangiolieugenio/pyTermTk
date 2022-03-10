@@ -136,22 +136,55 @@ class TTkConstant:
     # InsertAlphabetically = InsertPolicy.InsertAlphabetically
 
     # Keys
-    NoButton      = 0x00000000    # The button state does not refer to any button (see QMouseEvent::button()).
-    AllButtons    = 0x07ffffff    # This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.
-    LeftButton    = 0x00000001    # The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)
-    RightButton   = 0x00000002    # The right button.
-    MidButton     = 0x00000004    # The middle button.
-    MiddleButton  = MidButton     # The middle button.
-    Wheel         = 0x00000008
+    class MouseKey():
+        '''Input Mouse Key
+
+        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
+        '''
+        NoButton      = 0x00000000
+        '''The button state does not refer to any button (see QMouseEvent::button()).'''
+        AllButtons    = 0x07ffffff
+        '''This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.'''
+        LeftButton    = 0x00000001
+        '''The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)'''
+        RightButton   = 0x00000002
+        '''The right button.'''
+        MidButton     = 0x00000004
+        '''The middle button.'''
+        MiddleButton  = MidButton
+        '''The middle button.'''
+        Wheel         = 0x00000008
+        '''The wheel control'''
+
+    NoButton      = MouseKey.NoButton
+    AllButtons    = MouseKey.AllButtons
+    LeftButton    = MouseKey.LeftButton
+    RightButton   = MouseKey.RightButton
+    MidButton     = MouseKey.MidButton
+    MiddleButton  = MouseKey.MiddleButton
+    Wheel         = MouseKey.Wheel
 
     # Events
-    NoEvent = 0x00000000
-    Press   = 0x00010000
-    Release = 0x00020000
-    Drag    = 0x00040000
-    Move    = 0x00080000
-    WHEEL_Up   = 0x00100000 # Wheel Up
-    WHEEL_Down = 0x00200000 # Wheel Down
+    class MouseEvent():
+        '''Input Mouse Event
+
+        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
+        '''
+        NoEvent    = 0x00000000
+        Press      = 0x00010000
+        Release    = 0x00020000
+        Drag       = 0x00040000
+        Move       = 0x00080000
+        WHEEL_Up   = 0x00100000 # Wheel Up
+        WHEEL_Down = 0x00200000 # Wheel Down
+
+    NoEvent    = MouseEvent.NoEvent
+    Press      = MouseEvent.Press
+    Release    = MouseEvent.Release
+    Drag       = MouseEvent.Drag
+    Move       = MouseEvent.Move
+    WHEEL_Up   = MouseEvent.WHEEL_Up
+    WHEEL_Down = MouseEvent.WHEEL_Down
 
     # Cursors
     Cursor_Blinking_Block      = 0x0001
@@ -218,7 +251,10 @@ class TTkConstant:
     WidgetItem = LayoutItemTypes.WidgetItem
 
     class KeyType():
-        '''Input Key Types'''
+        '''Input Key Types
+
+        Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
+        '''
         Character  = 0x0001
         '''Input Char Key'''
         SpecialKey = 0x0002
@@ -229,7 +265,10 @@ class TTkConstant:
 
 
     class KeyModifier():
-        '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers'''
+        '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
+
+        Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
+        '''
         NoModifier          = 0x00000000
         '''No modifier key is pressed.'''
         ShiftModifier       = 0x02000000
