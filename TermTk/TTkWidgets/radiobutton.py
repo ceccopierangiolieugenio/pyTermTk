@@ -42,8 +42,10 @@ class TTkRadioButton(TTkWidget):
 
     Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
 
-    :param str text: the text shown on the checkbox, defaults to ""
+    :param str text: the text shown on the radio button, defaults to ""
     :type text: str, optional
+    :param str name: the text used to group the RadioButtons, only one checked status is allowed in between all the radio buttons with the same name, defaults to "TTkRadioButton"
+    :type name: str, optional
     :param bool checked: Checked status, defaults to "False"
     :type checked: bool, optional
 

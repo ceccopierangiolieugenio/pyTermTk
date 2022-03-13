@@ -29,6 +29,28 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.menubar import TTkMenuLayout
 
 class TTkFrame(TTkWidget):
+    '''
+
+    ::
+
+        ┌──────│Title│──────┐
+        │                   │
+        │                   │
+        │                   │
+        │                   │
+        │                   │
+        └───────────────────┘
+
+    Demo1: `layout_nested.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/layout_nested.py>`_
+
+    Demo2: `splitter.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_
+
+    :param title: the title displayed at the top border of the frame, defaults to ""
+    :type title: str, optional
+    :param border: Enable/Disable the border, defaults to **True**
+    :type border: bool, optional
+
+    '''
     __slots__ = (
         '_border','_title', '_titleColor', '_titleAlign','_borderColor',
         '_menubarTop', '_menubarTopPosition', '_menubarBottom')
