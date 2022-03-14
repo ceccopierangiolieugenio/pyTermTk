@@ -106,7 +106,7 @@ class TTkTerm():
     def stop():
         TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
         TTkTerm.push(TTkTerm.CLEAR + TTkTerm.NORMAL_SCREEN + TTkTerm.Cursor.SHOW + TTkTerm.escTitle())
-        TTkTerm.echo(True)
+        TTkTerm.setEcho(True)
 
     @staticmethod
     def cont():

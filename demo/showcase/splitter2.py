@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+import sys, os, argparse
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
@@ -46,14 +46,20 @@ def demoSplitter(root=None):
     ttk.TTkFrame(parent=hsplitter2 ,border=True, title="Frame9")
     return vsplitter
 
-
-
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', help='Full Screen', action='store_true')
+    args = parser.parse_args()
+
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    winSplitter = ttk.TTkWindow(parent=root,pos = (10,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
-    demoSplitter(winSplitter)
+    if args.f:
+        rootSplitter = root
+        root.setLayout(ttk.TTkGridLayout())
+    else:
+        rootSplitter = ttk.TTkWindow(parent=root,pos = (10,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
+    demoSplitter(rootSplitter)
     root.mainloop()
 
 if __name__ == "__main__":
