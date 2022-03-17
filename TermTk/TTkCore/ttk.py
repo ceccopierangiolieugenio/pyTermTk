@@ -144,10 +144,16 @@ class TTk(TTkWidget):
                     focusWidget.mouseEvent(nmevt)
                 else:
                     # Sometimes the release event is not retrieved
-                    if focusWidget and focusWidget._pendingMouseRelease:
+                    if ( focusWidget and
+                         focusWidget._pendingMouseRelease and
+                         not TTkHelper.isDnD() ):
                         focusWidget.mouseEvent(nmevt.clone(evt=TTkK.Release))
                         focusWidget._pendingMouseRelease = False
                     self.mouseEvent(mevt)
+
+                # Clean the Drag and Drop in case of mouse release
+                if mevt.evt == TTkK.Release:
+                    TTkHelper.dndEnd()
             elif evt is TTkK.KEY_EVENT:
                 keyHandled = False
                 kevt = self.key_events.get()
