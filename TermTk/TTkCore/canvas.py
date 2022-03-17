@@ -82,6 +82,9 @@ class TTkCanvas:
         self._height = h
         self._width  = w
 
+    def size(self):
+        return (self._width, self._height)
+
     def resize(self, w, h):
         ''' resize the canvas keeping or cutting the current one
 

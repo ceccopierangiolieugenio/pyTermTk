@@ -115,15 +115,30 @@ class TTk(TTkWidget):
             evt = self.events.get()
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self.mouse_events.get()
+                # Upload the global mouse position
+                # Mainly used by the drag pixmap display
+                TTkHelper.setMousePos((mevt.x,mevt.y))
 
                 # Avoid to broadcast a key release after a multitap event
                 if mevt.evt == TTkK.Release and lastMultiTap: continue
                 lastMultiTap = mevt.tap > 1
 
+                if ( TTkHelper.isDnD() and
+                     mevt.evt != TTkK.Drag   and
+                     mevt.evt != TTkK.Release ):
+                    # Clean Drag Drop status for any event that is not
+                    # Mouse Drag, Key Release
+                    TTkHelper.dndEnd()
+
+                # Mouse Events forwarded straight to the Focus widget:
+                #  - Drag
+                #  - Move
+                #  - Release
                 focusWidget = TTkHelper.getFocus()
-                if focusWidget is not None and \
-                   mevt.evt != TTkK.Press and \
-                   mevt.key != TTkK.Wheel:
+                if ( focusWidget is not None and
+                     mevt.evt != TTkK.Press  and
+                     mevt.key != TTkK.Wheel  and
+                     not TTkHelper.isDnD()   ) :
                     x,y = TTkHelper.absPos(focusWidget)
                     nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
                     focusWidget.mouseEvent(nmevt)

@@ -35,6 +35,7 @@ class TTkHelper:
     _rootWidget = None
     _updateWidget = []
     _updateBuffer  = []
+    _mousePos = (0,0)
     _cursorPos = [0,0]
     _cursor = False
     _cursorType = TTkTerm.Cursor.BLINKING_BLOCK
@@ -189,6 +190,16 @@ class TTkHelper:
         if not found:
             TTkHelper.removeOverlay()
 
+    @staticmethod
+    def setMousePos(pos):
+        TTkHelper._mousePos = pos
+        # update the position of the Drag and Drop Widget
+        if TTkHelper._dnd:
+            TTkHelper._dnd['d'].pixmap().move(pos[0], pos[1])
+
+    @staticmethod
+    def mousePos():
+        return TTkHelper._mousePos
 
     @staticmethod
     def paintAll():
@@ -342,3 +353,38 @@ class TTkHelper:
         TTkTerm.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
 
     class Color(TTkTermColor): pass
+
+    # Drag and Drop related helper routines
+    _dnd = None
+
+    @staticmethod
+    def dndInit(drag):
+        TTkHelper._dnd = {
+                'd' : drag,
+                'w' : None
+            }
+        TTkHelper._rootWidget.rootLayout().addWidget(drag.pixmap())
+        drag.pixmap().raiseWidget()
+
+    @staticmethod
+    def dndGetDrag():
+        return TTkHelper._dnd['d']
+
+    @staticmethod
+    def dndWidget():
+        return TTkHelper._dnd['w']
+
+    @staticmethod
+    def dndEnter(widget):
+        TTkHelper._dnd['w'] = widget
+
+    @staticmethod
+    def isDnD():
+        return TTkHelper._dnd is not None
+
+    @staticmethod
+    def dndEnd():
+        if TTkHelper._dnd:
+            TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper._dnd['d'].pixmap())
+        TTkHelper._dnd = None
+        TTkHelper._rootWidget.update()

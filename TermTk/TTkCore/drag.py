@@ -22,11 +22,88 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TTkDrag():
-    def __init__():
-        pass
+from TermTk.TTkCore.string    import TTkString
+from TermTk.TTkCore.helper    import TTkHelper
+from TermTk.TTkCore.canvas    import TTkCanvas
+from TermTk.TTkWidgets.widget import TTkWidget
 
-class TTkDropEvent():
-    __slots__=('_pos', '_data')
-    def __init__():
-        pass
+class _TTkDragDisplayWidget(TTkWidget):
+    __slots__ = ('_pixmap')
+    def __init__(self, *args, **kwargs):
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_TTkDragDisplayWidget' )
+        self._x, self._y = TTkHelper.mousePos()
+
+    def setPixmap(self, pixmap):
+        self._pixmap = pixmap
+
+    def paintEvent(self):
+        _,_,w,h = self.geometry()
+        self._canvas.paintCanvas(self._pixmap, (0,0,w,h), (0,0,w,h), (0,0,w,h))
+
+class TTkDrag():
+    __slots__ = ('_data', '_pixmap', '_showPixmap')
+    def __init__(self):
+        self._data = None
+        self._showPixmap = True
+        self._pixmap = _TTkDragDisplayWidget(size=(5,1))
+        pixmap = TTkCanvas(width=5, height=1)
+        pixmap.drawText(pos=(0,0), text='[...]')
+        self._pixmap.setPixmap(pixmap)
+
+    def setData(self, data):
+        self._data = data
+
+    def data(self):
+        return self._data
+
+    def setPixmap(self, pixmap):
+        self._pixmap = pixmap
+
+    def pixmap(self):
+        return self._pixmap
+
+    def visible(self):
+        return self._showPixmap
+
+    def showPixmap(self):
+        self._showPixmap = True
+
+    def hidePixmap(self):
+        self._showPixmap = False
+
+    def exec(self):
+        TTkHelper.dndInit(self)
+
+    @staticmethod
+    def copy(drag):
+        ret = TTkDropEvent()
+        ret._data = drag._data
+        ret._pixmap = drag._pixmap
+        return ret
+
+    def getDragEnterEvent(self, evt):
+        ret = TTkDropEvent.copy(self)
+        ret._pos = (evt.x, evt.y)
+        return ret
+
+    def getDragLeaveEvent(self, evt):
+        ret = TTkDropEvent.copy(self)
+        ret._pos = (evt.x, evt.y)
+        return ret
+
+    def getDragMoveEvent(self, evt):
+        ret = TTkDropEvent.copy(self)
+        ret._pos = (evt.x, evt.y)
+        return ret
+
+    def getDropEvent(self, evt):
+        ret = TTkDropEvent.copy(self)
+        ret._pos = (evt.x, evt.y)
+        return ret
+
+
+class TTkDropEvent(TTkDrag):
+    __slots__ = ('_pos')
+
+    def pos(self): return self._pos

@@ -28,12 +28,13 @@ from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+from TermTk.TTkTemplates.dragevents import TDragEvents
 from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.input import TTkMouseEvent
 
-class TTkWidget(TMouseEvents,TKeyEvents):
+class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     ''' Widget Layout sizes:
 
     ::
@@ -330,13 +331,33 @@ class TTkWidget(TMouseEvents,TKeyEvents):
 
         # Mouse Drag has priority because it
         # should be handled by the focussed widget
-        if evt.evt == TTkK.Drag:
+        # unless there is a Drag and Drop event ongoing
+        if evt.evt == TTkK.Drag and not TTkHelper.isDnD():
             if self.mouseDragEvent(evt):
                 return True
 
         if self.rootLayout() is not None:
             if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
                 return True
+
+        # Handle Drag and Drop Events
+        if TTkHelper.isDnD():
+            if evt.evt == TTkK.Drag:
+                dndw = TTkHelper.dndWidget()
+                if dndw and dndw != self:
+                    dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(evt))
+                if dndw == self:
+                    if self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt)):
+                        return True
+                else:
+                    TTkHelper.dndEnter(self)
+                    if self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)):
+                        return True
+            if evt.evt == TTkK.Release:
+                if self.dropEvent(TTkHelper.dndGetDrag().getDropEvent(evt)):
+                    return True
+                TTkHelper.dndEnd()
+            return False
 
         # handle own events
         if evt.evt == TTkK.Move:
