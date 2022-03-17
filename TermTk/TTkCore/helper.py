@@ -368,11 +368,11 @@ class TTkHelper:
 
     @staticmethod
     def dndGetDrag():
-        return TTkHelper._dnd['d']
+        return TTkHelper._dnd['d'] if TTkHelper._dnd else None
 
     @staticmethod
     def dndWidget():
-        return TTkHelper._dnd['w']
+        return TTkHelper._dnd['w'] if TTkHelper._dnd else None
 
     @staticmethod
     def dndEnter(widget):

@@ -35,7 +35,9 @@ class _TTkDragDisplayWidget(TTkWidget):
         self._x, self._y = TTkHelper.mousePos()
 
     def setPixmap(self, pixmap):
+        w,h = pixmap.size()
         self._pixmap = pixmap
+        self.resize(w,h)
 
     def paintEvent(self):
         _,_,w,h = self.geometry()
@@ -58,7 +60,13 @@ class TTkDrag():
         return self._data
 
     def setPixmap(self, pixmap):
-        self._pixmap = pixmap
+        if issubclass(type(pixmap),TTkWidget):
+            pixmap.getCanvas().updateSize()
+            pixmap.paintEvent()
+            pixmap = pixmap.getCanvas()
+        if type(pixmap) is TTkCanvas:
+            pixmap.updateSize()
+            self._pixmap.setPixmap(pixmap)
 
     def pixmap(self):
         return self._pixmap
@@ -85,25 +93,21 @@ class TTkDrag():
     def getDragEnterEvent(self, evt):
         ret = TTkDropEvent.copy(self)
         ret._pos = (evt.x, evt.y)
+        ret.x = evt.x
+        ret.y = evt.y
         return ret
 
     def getDragLeaveEvent(self, evt):
-        ret = TTkDropEvent.copy(self)
-        ret._pos = (evt.x, evt.y)
-        return ret
+        return self.getDragEnterEvent(evt)
 
     def getDragMoveEvent(self, evt):
-        ret = TTkDropEvent.copy(self)
-        ret._pos = (evt.x, evt.y)
-        return ret
+        return self.getDragEnterEvent(evt)
 
     def getDropEvent(self, evt):
-        ret = TTkDropEvent.copy(self)
-        ret._pos = (evt.x, evt.y)
-        return ret
+        return self.getDragEnterEvent(evt)
 
 
 class TTkDropEvent(TTkDrag):
-    __slots__ = ('_pos')
+    __slots__ = ('_pos', 'x', 'y')
 
     def pos(self): return self._pos
