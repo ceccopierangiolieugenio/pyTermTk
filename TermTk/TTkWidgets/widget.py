@@ -342,20 +342,16 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         # Handle Drag and Drop Events
         if TTkHelper.isDnD():
-            # Exclude the pixmap in case it is displayed under the cursor
-            if TTkHelper.dndGetDrag().pixmap() == self:
-                return False
             ret = False
             if evt.evt == TTkK.Drag:
                 dndw = TTkHelper.dndWidget()
-                if dndw and dndw != self and type(self) != '_TTkDragDisplayWidget':
-                    ret = dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(evt))
-                    TTkHelper.dndEnter(None)
                 if dndw == self:
                     if self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt)):
                         return True
                 else:
                     if self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)):
+                        if dndw:
+                            ret = dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(evt))
                         TTkHelper.dndEnter(self)
                         return True
             if evt.evt == TTkK.Release:
