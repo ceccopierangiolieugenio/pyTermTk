@@ -55,11 +55,13 @@ ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
 
-win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,20), title="Test Window 1", border=True)
+win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,30), title="Test Window 1", border=True)
 win1.setLayout(ttk.TTkGridLayout())
 
 win1.layout().addWidget(DragDrop(title="DnD 1"),0,0,2,1)
 win1.layout().addWidget(DragDrop(title="DnD 2"),0,1,1,1)
 win1.layout().addWidget(DragDrop(title="DnD 3"),1,1,1,1)
+# Add a debug window at the bottom to display the messages
+win1.layout().addWidget(ttk.TTkLogViewer(follow=True),2,0,1,2)
 
 root.mainloop()

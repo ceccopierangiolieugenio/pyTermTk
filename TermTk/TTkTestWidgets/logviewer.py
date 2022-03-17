@@ -34,12 +34,13 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkLogViewer(TTkAbstractScrollView):
-    __slots__ = ('_color', '_text', '_messages', '_cwd')
+    __slots__ = ('_color', '_text', '_messages', '_cwd', '_follow')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkLogViewer' )
         self._messages = [""]
         self._cwd = os.getcwd()
+        self._follow = kwargs.get('follow' , False )
         TTkLog.installMessageHandler(self.loggingCallback)
         self.viewChanged.connect(self._viewChangedHandler)
 
@@ -66,7 +67,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
         self._messages.append(f"{logType}: {context.file}:{context.line} {message}".replace(self._cwd,"_"))
         offx, offy = self.getViewOffsets()
         _,h = self.size()
-        if offy == len(self._messages)-h-1:
+        if self._follow or offy == len(self._messages)-h-1:
             offy = len(self._messages)-h
         self.viewMoveTo(offx, offy)
         self.viewChanged.emit()
