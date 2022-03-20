@@ -46,9 +46,12 @@ def getSentence(a,b,i):
 def demoTextEdit(root=None):
     te = ttk.TTkTextEdit(parent=root)
     te.setReadOnly(False)
+    te.setText("Text Edit DEMO\n")
     # Load ANSI input
+    te.append("ANSI Input Test\n")
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.colors.txt')) as f:
-        te.setText(f.read())
+        te.append(f.read())
+    te.append("Random TTkString Input Test\n")
     te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
     return te
 
