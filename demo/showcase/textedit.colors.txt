@@ -1,0 +1,19 @@
+            40m   41m   42m   43m   44m   45m   46m   47m 
+    m [mgYw [0m [40;m gYw [0m [41;m gYw [0m [42;m gYw [0m [43;m gYw [0m [44;m gYw [0m [45;m gYw [0m [46;m gYw [0m [47;m gYw [0m
+  1;m [1;mgYw [0m [40;1;m gYw [0m [41;1;m gYw [0m [42;1;m gYw [0m [43;1;m gYw [0m [44;1;m gYw [0m [45;1;m gYw [0m [46;1;m gYw [0m [47;1;m gYw [0m
+  30m [30mgYw [0m [40;30m gYw [0m [41;30m gYw [0m [42;30m gYw [0m [43;30m gYw [0m [44;30m gYw [0m [45;30m gYw [0m [46;30m gYw [0m [47;30m gYw [0m
+1;30m [1;30mgYw [0m [40;1;30m gYw [0m [41;1;30m gYw [0m [42;1;30m gYw [0m [43;1;30m gYw [0m [44;1;30m gYw [0m [45;1;30m gYw [0m [46;1;30m gYw [0m [47;1;30m gYw [0m
+  31m [31mgYw [0m [40;31m gYw [0m [41;31m gYw [0m [42;31m gYw [0m [43;31m gYw [0m [44;31m gYw [0m [45;31m gYw [0m [46;31m gYw [0m [47;31m gYw [0m
+1;31m [1;31mgYw [0m [40;1;31m gYw [0m [41;1;31m gYw [0m [42;1;31m gYw [0m [43;1;31m gYw [0m [44;1;31m gYw [0m [45;1;31m gYw [0m [46;1;31m gYw [0m [47;1;31m gYw [0m
+  32m [32mgYw [0m [40;32m gYw [0m [41;32m gYw [0m [42;32m gYw [0m [43;32m gYw [0m [44;32m gYw [0m [45;32m gYw [0m [46;32m gYw [0m [47;32m gYw [0m
+1;32m [1;32mgYw [0m [40;1;32m gYw [0m [41;1;32m gYw [0m [42;1;32m gYw [0m [43;1;32m gYw [0m [44;1;32m gYw [0m [45;1;32m gYw [0m [46;1;32m gYw [0m [47;1;32m gYw [0m
+  33m [33mgYw [0m [40;33m gYw [0m [41;33m gYw [0m [42;33m gYw [0m [43;33m gYw [0m [44;33m gYw [0m [45;33m gYw [0m [46;33m gYw [0m [47;33m gYw [0m
+1;33m [1;33mgYw [0m [40;1;33m gYw [0m [41;1;33m gYw [0m [42;1;33m gYw [0m [43;1;33m gYw [0m [44;1;33m gYw [0m [45;1;33m gYw [0m [46;1;33m gYw [0m [47;1;33m gYw [0m
+  34m [34mgYw [0m [40;34m gYw [0m [41;34m gYw [0m [42;34m gYw [0m [43;34m gYw [0m [44;34m gYw [0m [45;34m gYw [0m [46;34m gYw [0m [47;34m gYw [0m
+1;34m [1;34mgYw [0m [40;1;34m gYw [0m [41;1;34m gYw [0m [42;1;34m gYw [0m [43;1;34m gYw [0m [44;1;34m gYw [0m [45;1;34m gYw [0m [46;1;34m gYw [0m [47;1;34m gYw [0m
+  35m [35mgYw [0m [40;35m gYw [0m [41;35m gYw [0m [42;35m gYw [0m [43;35m gYw [0m [44;35m gYw [0m [45;35m gYw [0m [46;35m gYw [0m [47;35m gYw [0m
+1;35m [1;35mgYw [0m [40;1;35m gYw [0m [41;1;35m gYw [0m [42;1;35m gYw [0m [43;1;35m gYw [0m [44;1;35m gYw [0m [45;1;35m gYw [0m [46;1;35m gYw [0m [47;1;35m gYw [0m
+  36m [36mgYw [0m [40;36m gYw [0m [41;36m gYw [0m [42;36m gYw [0m [43;36m gYw [0m [44;36m gYw [0m [45;36m gYw [0m [46;36m gYw [0m [47;36m gYw [0m
+1;36m [1;36mgYw [0m [40;1;36m gYw [0m [41;1;36m gYw [0m [42;1;36m gYw [0m [43;1;36m gYw [0m [44;1;36m gYw [0m [45;1;36m gYw [0m [46;1;36m gYw [0m [47;1;36m gYw [0m
+  37m [37mgYw [0m [40;37m gYw [0m [41;37m gYw [0m [42;37m gYw [0m [43;37m gYw [0m [44;37m gYw [0m [45;37m gYw [0m [46;37m gYw [0m [47;37m gYw [0m
+1;37m [1;37mgYw [0m [40;1;37m gYw [0m [41;1;37m gYw [0m [42;1;37m gYw [0m [43;1;37m gYw [0m [44;1;37m gYw [0m [45;1;37m gYw [0m [46;1;37m gYw [0m [47;1;37m gYw [0m

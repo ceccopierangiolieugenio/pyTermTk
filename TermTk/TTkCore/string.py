@@ -65,6 +65,24 @@ class TTkString():
         self._baseColor = color
         self._colors = [self._baseColor]*len(self._text)
 
+    def _parseAnsi(text, color = TTkColor.RST):
+        pos = 0
+        txtret = ""
+        colret = []
+        for m in re.findall('\033[^m]*m', text):
+            index = text.index(m,pos)
+            txt = text[pos:index]
+            txtret += txt
+            colret += [TTkColor(color) if type(color) is str else color]*len(txt)
+            if pos == index:
+                color+=m
+            else:
+                color=m
+            pos = index+len(m)
+        txtret += text[pos:]
+        colret += [TTkColor(color) if type(color) is str else color]*(len(text)-pos)
+        return txtret, colret
+
     def __len__(self):
         return len(self._text)
 
@@ -78,8 +96,9 @@ class TTkString():
             ret._text   = self._text   + other._text
             ret._colors = self._colors + other._colors
         elif isinstance(other, str):
-            ret._text   = self._text   + other
-            ret._colors = self._colors + [self._baseColor]*len(other)
+            atxt, acol = TTkString._parseAnsi(other, self._baseColor)
+            ret._text   = self._text   + atxt
+            ret._colors = self._colors + acol
         elif isinstance(other, _TTkColor):
             ret._text   = self._text
             ret._colors = self._colors

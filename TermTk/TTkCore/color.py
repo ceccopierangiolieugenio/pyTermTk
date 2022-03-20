@@ -301,4 +301,3 @@ class TTkColor(_TTkColor):
         else:
             color = kwargs.get('color', "" )
         return TTkColor(bg=TTkHelper.Color.bg(color), colorMod=mod)
-

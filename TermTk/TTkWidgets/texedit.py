@@ -60,10 +60,15 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot(str)
     def setText(self, text):
+        self.viewMoveTo(0, 0)
+        self._lines = []
+        self.append(text)
+
+    @pyTTkSlot(str)
+    def append(self, text):
         if type(text) == str:
             text = TTkString() + text
-        self._lines = text.split('\n')
-        self.viewMoveTo(0, 0)
+        self._lines += text.split('\n')
         self._updateSize()
         self.viewChanged.emit()
         self.update()
@@ -320,7 +325,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
     __slots__ = (
             '_textEditView',
             # Forwarded Methods
-            'setText', 'isReadOnly', 'setReadOnly'
+            'setText', 'append', 'isReadOnly', 'setReadOnly'
         )
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -328,6 +333,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._textEditView = _TTkTextEditView()
         self.setViewport(self._textEditView)
         self.setText = self._textEditView.setText
+        self.append  = self._textEditView.append
         self.isReadOnly  = self._textEditView.isReadOnly
         self.setReadOnly = self._textEditView.setReadOnly
 
