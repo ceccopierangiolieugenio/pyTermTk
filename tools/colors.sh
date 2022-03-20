@@ -1,5 +1,5 @@
 #!/bin/sh
-# colors demo from: 
+# colors demo from:
 # https://unix.stackexchange.com/questions/41563/how-to-create-a-testcolor-sh-like-the-following-screenshot
 
 printf "          "

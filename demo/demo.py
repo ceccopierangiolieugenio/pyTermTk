@@ -235,7 +235,7 @@ def main():
         winTabbed1 = root
         border = False
     else:
-        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
         border = True
 
     demoShowcase(winTabbed1, border)
