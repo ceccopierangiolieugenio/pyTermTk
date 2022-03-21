@@ -130,6 +130,21 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text
     def __ge__(self, other): return self._text >= other._text
 
+    def tab2spaces(self, tabSpaces):
+        ret = TTkString()
+        slices = self._text.split("\t")
+        ret._text += slices[0]
+        pos = len(slices[0])
+        ret._colors += self._colors[0:pos]
+        for s in slices[1:]:
+            c  = self._colors[pos]
+            lentxt = len(ret._text)
+            spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
+            ret._text   += " "*spaces + s
+            ret._colors += [c]*spaces + self._colors[pos+1:pos+1+len(s)]
+            pos+=len(s)+1
+        return ret
+
     def toAscii(self):
         ''' Return the ascii representation of the string '''
         return self._text

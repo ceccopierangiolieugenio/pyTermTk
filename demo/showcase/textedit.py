@@ -46,12 +46,28 @@ def getSentence(a,b,i):
 def demoTextEdit(root=None):
     te = ttk.TTkTextEdit(parent=root)
     te.setReadOnly(False)
-    te.setText("Text Edit DEMO\n")
+
+    te.setText(ttk.TTkString("Text Edit DEMO\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD+ttk.TTkColor.ITALIC))
+
     # Load ANSI input
-    te.append("ANSI Input Test\n")
+    te.append(ttk.TTkString("ANSI Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.colors.txt')) as f:
         te.append(f.read())
-    te.append("Random TTkString Input Test\n")
+
+    # Test Tabs
+    te.append(ttk.TTkString("Tabs Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
+    te.append("Word\tAnother Word\tYet more words")
+    te.append("What a wonderful word\tOut of this word\tBattle of the words\n")
+    te.append("tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("-tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("--tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("---tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("----tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("-----tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab")
+    te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
+
+    te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
     return te
 

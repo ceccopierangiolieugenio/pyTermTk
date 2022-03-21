@@ -35,6 +35,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_lines', '_hsize',
             '_cursorPos', '_cursorParams', '_selectionFrom', '_selectionTo',
+            '_tabSpaces',
             '_replace',
             '_readOnly'
         )
@@ -44,13 +45,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._readOnly = True
         self._hsize = 0
         self._lines = ['']
+        self._tabSpaces = 4
         self._replace = False
         self._cursorPos = (0,0)
         self._selectionFrom = (0,0)
         self._selectionTo = (0,0)
         self._cursorParams = None
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
-
 
     def isReadOnly(self) -> bool :
         return self._readOnly
@@ -314,6 +315,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
         h = self.height()
         for y, t in enumerate(self._lines[oy:oy+h]):
+            t = t.tab2spaces(self._tabSpaces)
             if self._selectionFrom[1] <= y+oy <= self._selectionTo[1]:
                 pf = 0      if y+oy > self._selectionFrom[1] else self._selectionFrom[0]
                 pt = len(t) if y+oy < self._selectionTo[1]   else self._selectionTo[0]
