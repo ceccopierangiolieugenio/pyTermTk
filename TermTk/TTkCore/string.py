@@ -58,12 +58,19 @@ class TTkString():
         # Combination of constructors (Highly Unrecommended)
         str7 = TTkString("test 7", color=TTkColor.fg('#FF0000'))
     '''
-    __slots__ = ('_text','_colors','_baseColor')
+    __slots__ = ('_text','_colors','_baseColor','_hasTab')
 
-    def __init__(self, text="", color=TTkColor.RST):
-        self._text = text
-        self._baseColor = color
-        self._colors = [self._baseColor]*len(self._text)
+    def __init__(self, text="", color=None):
+        if issubclass(type(text), TTkString):
+            self._text      = text._text
+            self._colors    = text._colors if color is None else [color]*len(self._text)
+            self._baseColor = text._baseColor
+        else:
+            self._text = str(text)
+            self._baseColor = TTkColor.RST if color is None else color
+            self._colors = [self._baseColor]*len(self._text)
+        self._hasTab = '\t' in self._text
+        # raise AttributeError(f"{type(text)} not supported in TTkString")
 
     def _parseAnsi(text, color = TTkColor.RST):
         pos = 0
@@ -103,6 +110,7 @@ class TTkString():
             ret._text   = self._text
             ret._colors = self._colors
             ret._baseColor = other
+        ret._hasTab = '\t' in ret._text
         return ret
 
     def __radd__(self, other):
@@ -114,6 +122,7 @@ class TTkString():
         elif isinstance(other, str):
             ret._text   = other + self._text
             ret._colors = [self._baseColor]*len(other) + self._colors
+        ret._hasTab = '\t' in ret._text
         return ret
 
     def __setitem__(self, index, value):
@@ -132,6 +141,7 @@ class TTkString():
 
     def tab2spaces(self, tabSpaces=4):
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
+	if not self._hasTab: return self
         ret = TTkString()
         slices = self._text.split("\t")
         ret._text += slices[0]
@@ -160,6 +170,7 @@ class TTkString():
             chars      .....t   .....t  .....t  ...t.....
             ret                   x = 8 (tab is a char)
         '''
+	if not self._hasTab: return pos
         slices = self._text.split("\t")
         postxt = 0 # position of the text
         lentxt = 0 # length of the text with resolved tabs
@@ -226,6 +237,8 @@ class TTkString():
             ret._text   =  self._text[:width]
             ret._colors =  self._colors[:width]
 
+        ret._hasTab = '\t' in ret._text
+
         return ret
 
     def replace(self, *args, **kwargs):
@@ -272,6 +285,8 @@ class TTkString():
             ret._colors += self._colors[start:]
             ret._text   = self._text.replace(*args, **kwargs)
 
+        ret._hasTab = '\t' in ret._text
+
         return ret
 
     def setColor(self, color, match=None, posFrom=None, posTo=None):
@@ -289,7 +304,8 @@ class TTkString():
         :type posTo: int, optional
         '''
         ret = TTkString()
-        ret._text   += self._text
+        ret._text  += self._text
+        ret._hasTab = self._hasTab
         if match:
             ret._colors += self._colors
             start=0
@@ -319,6 +335,7 @@ class TTkString():
         ret = TTkString()
         ret._text   = self._text[fr:to]
         ret._colors = self._colors[fr:to]
+        ret._hasTab = '\t' in ret._text
         return ret
 
     def split(self, separator ):
@@ -376,7 +393,7 @@ class TTkString():
         '''
         if not strings:
             return TTkString()
-        ret = TTkString() + strings[0]
+        ret = TTkString(strings[0])
         for s in strings[1:]:
             ret += self + s
         return ret
