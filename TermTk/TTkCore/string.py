@@ -66,9 +66,8 @@ class TTkString():
             self._colors    = text._colors if color is None else [color]*len(self._text)
             self._baseColor = text._baseColor
         else:
-            self._text = str(text)
             self._baseColor = TTkColor.RST if color is None else color
-            self._colors = [self._baseColor]*len(self._text)
+            self._text, self._colors = TTkString._parseAnsi(str(text), self._baseColor)
         self._hasTab = '\t' in self._text
         # raise AttributeError(f"{type(text)} not supported in TTkString")
 
