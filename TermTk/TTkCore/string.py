@@ -132,12 +132,12 @@ class TTkString():
         raise NotImplementedError()
 
     # Operators
-    def __lt__(self, other): return self._text <  other._text
-    def __le__(self, other): return self._text <= other._text
-    def __eq__(self, other): return self._text == other._text
-    def __ne__(self, other): return self._text != other._text
-    def __gt__(self, other): return self._text >  other._text
-    def __ge__(self, other): return self._text >= other._text
+    def __lt__(self, other): return self._text <  other if type(other) is str else self._text <  other._text
+    def __le__(self, other): return self._text <= other if type(other) is str else self._text <= other._text
+    def __eq__(self, other): return self._text == other if type(other) is str else self._text == other._text
+    def __ne__(self, other): return self._text != other if type(other) is str else self._text != other._text
+    def __gt__(self, other): return self._text >  other if type(other) is str else self._text >  other._text
+    def __ge__(self, other): return self._text >= other if type(other) is str else self._text >= other._text
 
     def tab2spaces(self, tabSpaces=4):
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
