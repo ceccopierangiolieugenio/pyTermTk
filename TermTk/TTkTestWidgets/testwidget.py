@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.button import *
 from TermTk.TTkWidgets.label import *
@@ -57,6 +58,8 @@ class TTkTestWidget(TTkFrame):
         self._name = f"TestWidget-{TTkTestWidget.ID}"
         t,_,l,_ = self.getPadding()
         TTkButton(parent=self, x=l, y=t, width=15, height=3, border=True, text=' Test Button')
+        label = TTkLabel(parent=self,pos=(l+20, t+1), size=(50,1))
+        label.setText(TTkString("test \033[42;1;30mANSI\033[44;1;33m TTkString",TTkColor.bg('#440099')+TTkColor.UNDERLINE))
         self._l = [
                 TTkLabel(parent=self,pos=(l, t+3), size=(50,1), color=TTkColor.bg('#440099')+TTkColor.fg('#00ffff'), text="pippo"),
                 TTkLabel(parent=self,pos=(l, t+4), size=(50,1), color=TTkColor.bg('#440077')+TTkColor.fg('#00ccff')),

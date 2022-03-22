@@ -51,7 +51,7 @@ def demoTextEdit(root=None):
 
     # Load ANSI input
     te.append(ttk.TTkString("ANSI Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.colors.txt')) as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.ANSI.txt')) as f:
         te.append(f.read())
 
     # Test Tabs
@@ -71,11 +71,12 @@ def demoTextEdit(root=None):
     te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
 
     # use the widget size to wrap
-    # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+    te.setLineWrapMode(ttk.TTkK.WidgetWidth)
 
     # Use a fixed wrap size
-    te.setLineWrapMode(ttk.TTkK.FixedWidth)
-    te.setWrapWidth(100)
+    # te.setLineWrapMode(ttk.TTkK.FixedWidth)
+    # te.setWrapWidth(100)
+
     return te
 
 def main():

@@ -180,9 +180,11 @@ class TTkString():
             if pos<postxt:
                 return pos
             spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
+            if pos < postxt+spaces:
+                return postxt
+            pos += 1-spaces
             lentxt += spaces
             postxt += 1
-            pos -= spaces-1
         return len(self._text)
 
     def toAscii(self):

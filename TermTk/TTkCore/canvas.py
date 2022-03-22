@@ -602,8 +602,7 @@ class TTkCanvas:
                 ch = self._data[y][x]
                 color = self._colors[y][x]
                 if empty:
-                    ansi = color+TTkTerm.Cursor.moveTo(y+1,x+1)
-                    #lastcolor = color
+                    ansi = TTkTerm.Cursor.moveTo(y+1,x+1)
                     empty = False
                 if color != lastcolor:
                     ansi += color-lastcolor

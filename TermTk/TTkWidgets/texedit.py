@@ -129,7 +129,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
                         self._lines.append((i,(fr,fr+len(l))))
                         l=[]
                     else:
-                        to = l.tabCharPos(w,self._tabSpaces)
+                        to = max(1,l.tabCharPos(w,self._tabSpaces))
                         self._lines.append((i,(fr,fr+to)))
                         l = l.substring(to)
                         fr += to
@@ -382,10 +382,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def paintEvent(self):
         ox, oy = self.getViewOffsets()
         if self.hasFocus():
-            color = TTkCfg.theme.lineEditTextColorFocus
             selectColor = TTkCfg.theme.lineEditTextColorSelected
         else:
-            color = TTkCfg.theme.lineEditTextColor
             selectColor = TTkCfg.theme.lineEditTextColorSelected
 
         h = self.height()
