@@ -141,7 +141,7 @@ class TTkString():
 
     def tab2spaces(self, tabSpaces=4):
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
-	if not self._hasTab: return self
+        if not self._hasTab: return self
         ret = TTkString()
         slices = self._text.split("\t")
         ret._text += slices[0]
@@ -170,7 +170,7 @@ class TTkString():
             chars      .....t   .....t  .....t  ...t.....
             ret                   x = 8 (tab is a char)
         '''
-	if not self._hasTab: return pos
+        if not self._hasTab: return pos
         slices = self._text.split("\t")
         postxt = 0 # position of the text
         lentxt = 0 # length of the text with resolved tabs
