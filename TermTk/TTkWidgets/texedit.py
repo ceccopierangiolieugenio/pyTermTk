@@ -49,14 +49,14 @@ class _TTkTextEditView(TTkAbstractScrollView):
                      This is required to support the wrap feature
     '''
     def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self._readOnly = True
         self._hsize = 0
         self._lines = [(0,(0,0))]
         self._dataLines = ['']
         self._tabSpaces = 4
-        self._wrapWidth     = 30
+        self._wrapWidth     = 80
         self._lastWrapUsed  = 0
         self._lineWrapMode = TTkK.NoWrap
         self._wordWrapMode = TTkK.NoWrap
@@ -142,6 +142,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if w != self._lastWrapUsed and w>self._tabSpaces:
             self._lastWrapUsed = w
             self._rewrap()
+        return super().resizeEvent(w,h)
 
     def _updateSize(self):
         self._hsize = max( [ len(l) for l in self._dataLines ] )
@@ -407,7 +408,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'wordWrapMode', 'setWordWrapMode',
         )
     def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTextEdit' )
         self._textEditView = _TTkTextEditView()
         self.setViewport(self._textEditView)

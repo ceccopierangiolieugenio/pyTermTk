@@ -75,7 +75,7 @@ def demoTextEdit(root=None):
 
     # Use a fixed wrap size
     te.setLineWrapMode(ttk.TTkK.FixedWidth)
-    te.setWrapWidth(40)
+    te.setWrapWidth(100)
     return te
 
 def main():
