@@ -130,7 +130,8 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text
     def __ge__(self, other): return self._text >= other._text
 
-    def tab2spaces(self, tabSpaces):
+    def tab2spaces(self, tabSpaces=4):
+        '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
         ret = TTkString()
         slices = self._text.split("\t")
         ret._text += slices[0]
@@ -144,6 +145,35 @@ class TTkString():
             ret._colors += [c]*spaces + self._colors[pos+1:pos+1+len(s)]
             pos+=len(s)+1
         return ret
+
+    def tabCharPos(self, pos, tabSpaces=4):
+        '''Return the char position in the string from the position in its representation with the tab solved
+
+        i.e.
+
+        ::
+
+            pos                   X = 11
+            tab2Spaces |----------|---------------------|
+            Tabs            |--|  |  |-|     |-|   |
+            _text      Lorem    ipsum   dolor   sit amet,
+            chars      .....t   .....t  .....t  ...t.....
+            ret                   x = 8 (tab is a char)
+        '''
+        slices = self._text.split("\t")
+        postxt = 0 # position of the text
+        lentxt = 0 # length of the text with resolved tabs
+        for s in slices:
+            lens   = len(s)
+            lentxt += lens
+            postxt += lens
+            if pos<postxt:
+                return pos
+            spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
+            lentxt += spaces
+            postxt += 1
+            pos -= spaces-1
+        return len(self._text)
 
     def toAscii(self):
         ''' Return the ascii representation of the string '''

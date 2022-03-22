@@ -33,19 +33,33 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
-            '_lines', '_hsize',
+            '_lines', '_dataLines', '_hsize',
             '_cursorPos', '_cursorParams', '_selectionFrom', '_selectionTo',
             '_tabSpaces',
+            '_lineWrapMode', '_wordWrapMode', '_wrapWidth', '_lastWrapUsed',
             '_replace',
             '_readOnly'
         )
+    '''
+        in order to support the line wrap, I need to divide the full data text in;
+        _dataLines = the entire text divided in lines, easy to add/remove/append lines
+        _lines     = an array of tuples for each displayed line with a pointer to a
+                     specific line and its slice to be shown at this coordinate;
+                     [ (line, (posFrom, posTo)), ... ]
+                     This is required to support the wrap feature
+    '''
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self._readOnly = True
         self._hsize = 0
-        self._lines = ['']
+        self._lines = [(0,(0,0))]
+        self._dataLines = ['']
         self._tabSpaces = 4
+        self._wrapWidth     = 30
+        self._lastWrapUsed  = 0
+        self._lineWrapMode = TTkK.NoWrap
+        self._wordWrapMode = TTkK.NoWrap
         self._replace = False
         self._cursorPos = (0,0)
         self._selectionFrom = (0,0)
@@ -59,26 +73,86 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def setReadOnly(self, ro):
         self._readOnly = ro
 
+    def wrapWidth(self):
+        return self._wrapWidth
+
+    def setWrapWidth(self, width):
+        self._wrapWidth = width
+        self._rewrap()
+
+    def lineWrapMode(self):
+        return self._lineWrapMode
+
+    def setLineWrapMode(self, mode):
+        self._lineWrapMode = mode
+        self._rewrap()
+
+    def wordWrapMode(self):
+        return self._wordWrapMode
+
+    def setWordWrapMode(self, mode):
+        self._wordWrapMode = mode
+        self._rewrap()
+
     @pyTTkSlot(str)
     def setText(self, text):
         self.viewMoveTo(0, 0)
-        self._lines = []
+        self._dataLines = []
         self.append(text)
 
     @pyTTkSlot(str)
     def append(self, text):
         if type(text) == str:
             text = TTkString() + text
-        self._lines += text.split('\n')
+        self._dataLines += text.split('\n')
         self._updateSize()
         self.viewChanged.emit()
+        self._rewrap()
+
+    def _rewrap(self):
+        self._lines = []
+        if self._lineWrapMode == TTkK.NoWrap:
+            def _process(i,l):
+                self._lines.append((i,(0,len(l))))
+        else:
+            if   self._lineWrapMode == TTkK.WidgetWidth:
+                w = self.width()
+                if not w: return
+            elif self._lineWrapMode == TTkK.FixedWidth:
+                w = self._wrapWidth
+            def _process(i,l):
+                fr = 0
+                to = 0
+                while len(l):
+                    fl = l.tab2spaces(self._tabSpaces)
+                    if len(fl) <= w:
+                        self._lines.append((i,(fr,fr+len(l))))
+                        l=[]
+                    else:
+                        to = l.tabCharPos(w,self._tabSpaces)
+                        self._lines.append((i,(fr,fr+to)))
+                        l = l.substring(to)
+                        fr += to
         self.update()
 
+        for i,l in enumerate(self._dataLines):
+            _process(i,l)
+
+    def resizeEvent(self, w, h):
+        if w != self._lastWrapUsed and w>self._tabSpaces:
+            self._lastWrapUsed = w
+            self._rewrap()
+
     def _updateSize(self):
-        self._hsize = max( [ len(l) for l in self._lines ] )
+        self._hsize = max( [ len(l) for l in self._dataLines ] )
 
     def viewFullAreaSize(self) -> (int, int):
-        return self._hsize, len(self._lines)
+        if self._lineWrapMode == TTkK.NoWrap:
+            return self._hsize, len(self._lines)
+        elif self._lineWrapMode == TTkK.WidgetWidth:
+            return self.width(), len(self._lines)
+        elif self._lineWrapMode == TTkK.FixedWidth:
+            return self._wrapWidth, len(self._lines)
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
@@ -314,8 +388,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             selectColor = TTkCfg.theme.lineEditTextColorSelected
 
         h = self.height()
-        for y, t in enumerate(self._lines[oy:oy+h]):
-            t = t.tab2spaces(self._tabSpaces)
+        for y, l in enumerate(self._lines[oy:oy+h]):
+            t = self._dataLines[l[0]].substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces)
             if self._selectionFrom[1] <= y+oy <= self._selectionTo[1]:
                 pf = 0      if y+oy > self._selectionFrom[1] else self._selectionFrom[0]
                 pt = len(t) if y+oy < self._selectionTo[1]   else self._selectionTo[0]
@@ -328,6 +402,9 @@ class TTkTextEdit(TTkAbstractScrollArea):
             '_textEditView',
             # Forwarded Methods
             'setText', 'append', 'isReadOnly', 'setReadOnly'
+            'wrapWidth', 'setWrapWidth',
+            'lineWrapMode', 'setLineWrapMode',
+            'wordWrapMode', 'setWordWrapMode',
         )
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
@@ -338,4 +415,11 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.append  = self._textEditView.append
         self.isReadOnly  = self._textEditView.isReadOnly
         self.setReadOnly = self._textEditView.setReadOnly
+        # Forward Wrap Methods
+        self.wrapWidth       = self._textEditView.wrapWidth
+        self.setWrapWidth    = self._textEditView.setWrapWidth
+        self.lineWrapMode    = self._textEditView.lineWrapMode
+        self.setLineWrapMode = self._textEditView.setLineWrapMode
+        self.wordWrapMode    = self._textEditView.wordWrapMode
+        self.setWordWrapMode = self._textEditView.setWordWrapMode
 

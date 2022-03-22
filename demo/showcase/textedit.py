@@ -69,6 +69,13 @@ def demoTextEdit(root=None):
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
+
+    # use the widget size to wrap
+    # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+
+    # Use a fixed wrap size
+    te.setLineWrapMode(ttk.TTkK.FixedWidth)
+    te.setWrapWidth(40)
     return te
 
 def main():
