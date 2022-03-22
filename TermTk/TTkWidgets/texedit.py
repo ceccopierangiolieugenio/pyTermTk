@@ -219,12 +219,58 @@ class _TTkTextEditView(TTkAbstractScrollView):
                            self._lines[sy2].substring(fr=sx2)
         self._lines = self._lines[:sy1+1] + self._lines[sy2+1:]
 
+    def _cursorAlign(self, x, y):
+        '''
+        Return the widget position of the closest editable char
+        in:
+        x,y = widget relative position
+        return:
+        x,y = widget relative position aligned to the close editable char
+        '''
+        y = max(0,min(y,len(self._lines)))
+        dt, (fr, to) = self._lines[y]
+        x = max(0,x)
+        s = self._dataLines[dt].substring(fr,to)
+        x = s.tabCharPos(x, self._tabSpaces)
+        x = len(s.substring(0,x).tab2spaces(self._tabSpaces))
+        return x, y
+
+    def _linePosFromCursor(self,x,y):
+        '''
+        return the line and the x position from the x,y cursor position relative to the widget
+        I assume the x,y position already normalized using the _cursorAlign function
+        '''
+        dt, (fr, to) = self._lines[y]
+        return self._dataLines[dt], self._dataLines[dt].tabCharPos(x+fr,self._tabSpaces)
+
+    def _cursorFromLinePos(self,liney,p):
+        '''
+        return the x,y cursor position relative to the widget from the
+        liney value relative to the self._lines and the
+        p = position value relative to the string related to self._lines[liney][0]
+        I know, big chink of crap
+        '''
+        # Find the bginning of the string in the "self._lines" (position from == 0)
+        while self._lines[liney][1][0]: liney -=1
+        dt = self._lines[liney][0]
+        while liney < len(self._lines):
+            dt1, (fr, to) = self._lines[liney]
+            if dt1 != dt:
+                break
+            if fr<=p<to:
+                s = self._dataLines[dt].substring(0,p).tab2spaces(self._tabSpaces)
+                return len(s)-fr, liney
+            liney += 1
+        liney-=1
+        dt, (fr, to) = self._lines[liney]
+        s = self._dataLines[dt].substring(fr,to)
+        return len(s.tab2spaces(self._tabSpaces)), liney
+
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
-        y = max(0,min(evt.y + oy,len(self._lines)))
-        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
         self._cursorPos     = (x,y)
         self._selectionFrom = (x,y)
         self._selectionTo   = (x,y)
@@ -236,8 +282,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseDragEvent(evt)
         ox, oy = self.getViewOffsets()
-        y = max(0,min(evt.y + oy,len(self._lines)))
-        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
         cx = self._cursorPos[0]
         cy = self._cursorPos[1]
 
@@ -260,12 +305,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
         ox, oy = self.getViewOffsets()
-        y = max(0,min(evt.y + oy,len(self._lines)))
-        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
         self._cursorPos     = (x,y)
 
-        before = self._lines[y].substring(to=x)
-        after =  self._lines[y].substring(fr=x)
+        l,p = self._linePosFromCursor(x,y)
+        before = l.substring(to=p)
+        after =  l.substring(fr=p)
 
         xFrom = len(before)
         xTo   = len(before)
@@ -277,8 +322,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if m := after.search('^'+selectRE):
             xTo += len(m.group(0))
 
-        self._selectionFrom = ( xFrom, y )
-        self._selectionTo   = ( xTo,   y )
+        self._selectionFrom = self._cursorFromLinePos(y,xFrom)
+        self._selectionTo   = self._cursorFromLinePos(y,xTo)
 
         self.update()
         return True
@@ -287,13 +332,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseTapEvent(evt)
         ox, oy = self.getViewOffsets()
-        y = max(0,min(evt.y + oy,len(self._lines)))
-        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
         self._cursorPos     = (x,y)
 
-        self._selectionFrom = ( 0 , y )
-        self._selectionTo   = ( len(self._lines[y]) ,   y )
+        l,_ = self._linePosFromCursor(x,y)
 
+        self._selectionFrom = self._cursorFromLinePos(y,0)
+        self._selectionTo   = self._cursorFromLinePos(y,len(l))
         self.update()
         return True
 
@@ -301,8 +346,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseReleaseEvent(evt)
         ox, oy = self.getViewOffsets()
-        y = max(0,min(evt.y + oy,len(self._lines)))
-        x = max(0,min(evt.x + ox,len(self._lines[y])))
+        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
         self._cursorPos     = (x,y)
         self.update()
         return True
