@@ -207,6 +207,7 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s1">&#39;_lines&#39;</span><span class="p">,</span> <span class="s1">&#39;_hsize&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_cursorPos&#39;</span><span class="p">,</span> <span class="s1">&#39;_cursorParams&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionTo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_tabSpaces&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_replace&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_readOnly&#39;</span>
         <span class="p">)</span>
@@ -216,13 +217,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_readOnly</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hsize</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tabSpaces</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_replace</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_selectionTo</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cursorParams</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
-
 
     <span class="k">def</span> <span class="nf">isReadOnly</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readOnly</span>
@@ -232,10 +233,15 @@
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewMoveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">text</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">viewMoveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">+=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateSize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -481,6 +487,7 @@
 
         <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">[</span><span class="n">oy</span><span class="p">:</span><span class="n">oy</span><span class="o">+</span><span class="n">h</span><span class="p">]):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">tab2spaces</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tabSpaces</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">y</span><span class="o">+</span><span class="n">oy</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionTo</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="n">pf</span> <span class="o">=</span> <span class="mi">0</span>      <span class="k">if</span> <span class="n">y</span><span class="o">+</span><span class="n">oy</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">pt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="o">+</span><span class="n">oy</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionTo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>   <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionTo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -492,7 +499,7 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s1">&#39;_textEditView&#39;</span><span class="p">,</span>
             <span class="c1"># Forwarded Methods</span>
-            <span class="s1">&#39;setText&#39;</span><span class="p">,</span> <span class="s1">&#39;isReadOnly&#39;</span><span class="p">,</span> <span class="s1">&#39;setReadOnly&#39;</span>
+            <span class="s1">&#39;setText&#39;</span><span class="p">,</span> <span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="s1">&#39;isReadOnly&#39;</span><span class="p">,</span> <span class="s1">&#39;setReadOnly&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -500,6 +507,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span> <span class="o">=</span> <span class="n">_TTkTextEditView</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setViewport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setText</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">append</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isReadOnly</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">isReadOnly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setReadOnly</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setReadOnly</span></div>
 

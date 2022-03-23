@@ -287,24 +287,49 @@
             <span class="n">evt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="k">if</span>   <span class="n">evt</span> <span class="ow">is</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">MOUSE_EVENT</span><span class="p">:</span>
                 <span class="n">mevt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="c1"># Upload the global mouse position</span>
+                <span class="c1"># Mainly used by the drag pixmap display</span>
+                <span class="n">TTkHelper</span><span class="o">.</span><span class="n">setMousePos</span><span class="p">((</span><span class="n">mevt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">mevt</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
 
                 <span class="c1"># Avoid to broadcast a key release after a multitap event</span>
                 <span class="k">if</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span> <span class="ow">and</span> <span class="n">lastMultiTap</span><span class="p">:</span> <span class="k">continue</span>
                 <span class="n">lastMultiTap</span> <span class="o">=</span> <span class="n">mevt</span><span class="o">.</span><span class="n">tap</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
+                <span class="k">if</span> <span class="p">(</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">()</span> <span class="ow">and</span>
+                     <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Drag</span>   <span class="ow">and</span>
+                     <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span> <span class="p">):</span>
+                    <span class="c1"># Clean Drag Drop status for any event that is not</span>
+                    <span class="c1"># Mouse Drag, Key Release</span>
+                    <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndEnd</span><span class="p">()</span>
+
+                <span class="c1"># Mouse Events forwarded straight to the Focus widget:</span>
+                <span class="c1">#  - Drag</span>
+                <span class="c1">#  - Move</span>
+                <span class="c1">#  - Release</span>
                 <span class="n">focusWidget</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">focusWidget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                   <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span> <span class="ow">and</span> \
-                   <span class="n">mevt</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Wheel</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="n">focusWidget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                     <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span>  <span class="ow">and</span>
+                     <span class="n">mevt</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Wheel</span>  <span class="ow">and</span>
+                     <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">()</span>   <span class="p">)</span> <span class="p">:</span>
                     <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">absPos</span><span class="p">(</span><span class="n">focusWidget</span><span class="p">)</span>
                     <span class="n">nmevt</span> <span class="o">=</span> <span class="n">mevt</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">mevt</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">mevt</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">y</span><span class="p">))</span>
                     <span class="n">focusWidget</span><span class="o">.</span><span class="n">mouseEvent</span><span class="p">(</span><span class="n">nmevt</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Sometimes the release event is not retrieved</span>
-                    <span class="k">if</span> <span class="n">focusWidget</span> <span class="ow">and</span> <span class="n">focusWidget</span><span class="o">.</span><span class="n">_pendingMouseRelease</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span> <span class="n">focusWidget</span> <span class="ow">and</span>
+                         <span class="n">focusWidget</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="ow">and</span>
+                         <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">()</span> <span class="p">):</span>
                         <span class="n">focusWidget</span><span class="o">.</span><span class="n">mouseEvent</span><span class="p">(</span><span class="n">nmevt</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">evt</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span><span class="p">))</span>
                         <span class="n">focusWidget</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">mouseEvent</span><span class="p">(</span><span class="n">mevt</span><span class="p">)</span>
+                    <span class="c1"># Adding this Crappy logic to handle a corner case in the drop routine</span>
+                    <span class="c1"># where the mouse is leaving any widget able to handle the drop event</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseEvent</span><span class="p">(</span><span class="n">mevt</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dndw</span> <span class="o">:=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndWidget</span><span class="p">()):</span>
+                        <span class="n">dndw</span><span class="o">.</span><span class="n">dragLeaveEvent</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndGetDrag</span><span class="p">()</span><span class="o">.</span><span class="n">getDragLeaveEvent</span><span class="p">(</span><span class="n">mevt</span><span class="p">))</span>
+                        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndEnter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+                <span class="c1"># Clean the Drag and Drop in case of mouse release</span>
+                <span class="k">if</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span><span class="p">:</span>
+                    <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndEnd</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">evt</span> <span class="ow">is</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">KEY_EVENT</span><span class="p">:</span>
                 <span class="n">keyHandled</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="n">kevt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>

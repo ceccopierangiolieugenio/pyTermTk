@@ -201,6 +201,28 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.menubar</span> <span class="kn">import</span> <span class="n">TTkMenuLayout</span>
 
 <div class="viewcode-block" id="TTkFrame"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame">[docs]</a><span class="k">class</span> <span class="nc">TTkFrame</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        ┌──────│Title│──────┐</span>
+<span class="sd">        │                   │</span>
+<span class="sd">        │                   │</span>
+<span class="sd">        │                   │</span>
+<span class="sd">        │                   │</span>
+<span class="sd">        │                   │</span>
+<span class="sd">        └───────────────────┘</span>
+
+<span class="sd">    Demo1: `layout_nested.py  &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/layout_nested.py&gt;`_</span>
+
+<span class="sd">    Demo2: `splitter.py  &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py&gt;`_</span>
+
+<span class="sd">    :param title: the title displayed at the top border of the frame, defaults to &quot;&quot;</span>
+<span class="sd">    :type title: str, optional</span>
+<span class="sd">    :param border: Enable/Disable the border, defaults to **True**</span>
+<span class="sd">    :type border: bool, optional</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_border&#39;</span><span class="p">,</span><span class="s1">&#39;_title&#39;</span><span class="p">,</span> <span class="s1">&#39;_titleColor&#39;</span><span class="p">,</span> <span class="s1">&#39;_titleAlign&#39;</span><span class="p">,</span><span class="s1">&#39;_borderColor&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_menubarTop&#39;</span><span class="p">,</span> <span class="s1">&#39;_menubarTopPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;_menubarBottom&#39;</span><span class="p">)</span>
@@ -217,7 +239,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkFrame&#39;</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setBorder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_border</span><span class="p">)</span>
 
-
     <span class="k">def</span> <span class="nf">menubarTop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span> <span class="o">=</span> <span class="n">TTkMenuLayout</span><span class="p">(</span><span class="n">borderColor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span><span class="p">)</span>
@@ -230,6 +251,13 @@
 <div class="viewcode-block" id="TTkFrame.resizeEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame.resizeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_menubarTopPosition</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span>
+
+    <span class="k">def</span> <span class="nf">setTitle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">setBorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">border</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="o">=</span> <span class="n">border</span>

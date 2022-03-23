@@ -200,12 +200,13 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span>    <span class="kn">import</span> <span class="n">TTkHelper</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.canvas</span>    <span class="kn">import</span> <span class="n">TTkCanvas</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span>    <span class="kn">import</span> <span class="n">pyTTkSignal</span><span class="p">,</span> <span class="n">pyTTkSlot</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkTemplates.dragevents</span> <span class="kn">import</span> <span class="n">TDragEvents</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkTemplates.mouseevents</span> <span class="kn">import</span> <span class="n">TMouseEvents</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkTemplates.keyevents</span> <span class="kn">import</span> <span class="n">TKeyEvents</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.layout</span> <span class="kn">import</span> <span class="n">TTkLayout</span><span class="p">,</span> <span class="n">TTkWidgetItem</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.input</span> <span class="kn">import</span> <span class="n">TTkMouseEvent</span>
 
-<div class="viewcode-block" id="TTkWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget">[docs]</a><span class="k">class</span> <span class="nc">TTkWidget</span><span class="p">(</span><span class="n">TMouseEvents</span><span class="p">,</span><span class="n">TKeyEvents</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget">[docs]</a><span class="k">class</span> <span class="nc">TTkWidget</span><span class="p">(</span><span class="n">TMouseEvents</span><span class="p">,</span><span class="n">TKeyEvents</span><span class="p">,</span> <span class="n">TDragEvents</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Widget Layout sizes:</span>
 
 <span class="sd">    ::</span>
@@ -502,13 +503,33 @@
 
         <span class="c1"># Mouse Drag has priority because it</span>
         <span class="c1"># should be handled by the focussed widget</span>
-        <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Drag</span><span class="p">:</span>
+        <span class="c1"># unless there is a Drag and Drop event ongoing</span>
+        <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Drag</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseDragEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span>  <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_mouseEventLayoutHandle</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()):</span>
                 <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Handle Drag and Drop Events</span>
+        <span class="k">if</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">():</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Drag</span><span class="p">:</span>
+                <span class="n">dndw</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndWidget</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">dndw</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dragMoveEvent</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndGetDrag</span><span class="p">()</span><span class="o">.</span><span class="n">getDragMoveEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">)):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dragEnterEvent</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndGetDrag</span><span class="p">()</span><span class="o">.</span><span class="n">getDragEnterEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">dndw</span><span class="p">:</span>
+                            <span class="n">ret</span> <span class="o">=</span> <span class="n">dndw</span><span class="o">.</span><span class="n">dragLeaveEvent</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndGetDrag</span><span class="p">()</span><span class="o">.</span><span class="n">getDragLeaveEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">))</span>
+                        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndEnter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropEvent</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndGetDrag</span><span class="p">()</span><span class="o">.</span><span class="n">getDropEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">)):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">ret</span>
 
         <span class="c1"># handle own events</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Move</span><span class="p">:</span>

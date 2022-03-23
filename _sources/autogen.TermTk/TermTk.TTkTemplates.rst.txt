@@ -12,6 +12,7 @@ TermTk.TTkTemplates
 
   TermTk.TTkTemplates.color
   TermTk.TTkTemplates.data
+  TermTk.TTkTemplates.dragevents
   TermTk.TTkTemplates.keyevents
   TermTk.TTkTemplates.mouseevents
   TermTk.TTkTemplates.text
