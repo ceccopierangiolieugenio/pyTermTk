@@ -44,7 +44,10 @@ def getSentence(a,b,i):
     return ttk.TTkString(" ").join([f"{i} "]+[getWord() for i in range(0,random.randint(a,b))])
 
 def demoTextEdit(root=None):
-    te = ttk.TTkTextEdit(parent=root)
+    frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkGridLayout())
+
+    te = ttk.TTkTextEdit()
+
     te.setReadOnly(False)
 
     te.setText(ttk.TTkString("Text Edit DEMO\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD+ttk.TTkColor.ITALIC))
@@ -71,14 +74,54 @@ def demoTextEdit(root=None):
     te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
 
     # use the widget size to wrap
-    te.setLineWrapMode(ttk.TTkK.WidgetWidth)
-    te.setWordWrapMode(ttk.TTkK.WordWrap)
+    # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+    # te.setWordWrapMode(ttk.TTkK.WordWrap)
 
     # Use a fixed wrap size
     # te.setLineWrapMode(ttk.TTkK.FixedWidth)
     # te.setWrapWidth(100)
 
-    return te
+    frame.layout().addWidget(te,1,0,1,6)
+    frame.layout().addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
+    frame.layout().addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth']),0,1)
+    frame.layout().addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
+    frame.layout().addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], enabled=False),0,3)
+    frame.layout().addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
+    frame.layout().addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maximum=500, minimum=10, enabled=False),0,5)
+
+
+    lineWrap.setCurrentIndex(0)
+    wordWrap.setCurrentIndex(1)
+
+    fixWidth.valueChanged.connect(te.setWrapWidth)
+
+    @ttk.pyTTkSlot(int)
+    def _lineWrapCallback(index):
+        if index == 0:
+            te.setLineWrapMode(ttk.TTkK.NoWrap)
+            wordWrap.setDisabled()
+            fixWidth.setDisabled()
+        elif index == 1:
+            te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+            wordWrap.setEnabled()
+            fixWidth.setDisabled()
+        else:
+            te.setLineWrapMode(ttk.TTkK.FixedWidth)
+            wordWrap.setEnabled()
+            fixWidth.setEnabled()
+
+    lineWrap.currentIndexChanged.connect(_lineWrapCallback)
+
+    @ttk.pyTTkSlot(int)
+    def _wordWrapCallback(index):
+        if index == 0:
+            te.setWordWrapMode(ttk.TTkK.WordWrap)
+        else:
+            te.setWordWrapMode(ttk.TTkK.WrapAnywhere)
+
+    wordWrap.currentIndexChanged.connect(_wordWrapCallback)
+
+    return frame
 
 def main():
     parser = argparse.ArgumentParser()

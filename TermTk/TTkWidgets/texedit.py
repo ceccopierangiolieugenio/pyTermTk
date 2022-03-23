@@ -59,7 +59,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._wrapWidth     = 80
         self._lastWrapUsed  = 0
         self._lineWrapMode = TTkK.NoWrap
-        self._wordWrapMode = TTkK.NoWrap
+        self._wordWrapMode = TTkK.WrapAnywhere
         self._replace = False
         self._cursorPos = (0,0)
         self._selectionFrom = (0,0)
@@ -106,7 +106,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
             text = TTkString() + text
         self._dataLines += text.split('\n')
         self._updateSize()
-        self.viewChanged.emit()
         self._rewrap()
 
     def _rewrap(self):
@@ -143,6 +142,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
                         self._lines.append((i,(fr,fr+to)))
                         l = l.substring(to)
                         fr += to
+        self.viewChanged.emit()
         self.update()
 
         for i,l in enumerate(self._dataLines):
