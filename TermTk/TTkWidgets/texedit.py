@@ -241,7 +241,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         I assume the x,y position already normalized using the _cursorAlign function
         '''
         dt, (fr, to) = self._lines[y]
-        return self._dataLines[dt], self._dataLines[dt].tabCharPos(x+fr,self._tabSpaces)
+        return self._dataLines[dt], fr+self._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
 
     def _cursorFromLinePos(self,liney,p):
         '''
@@ -258,8 +258,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             if dt1 != dt:
                 break
             if fr<=p<to:
-                s = self._dataLines[dt].substring(0,p).tab2spaces(self._tabSpaces)
-                return len(s)-fr, liney
+                s = self._dataLines[dt].substring(fr,p).tab2spaces(self._tabSpaces)
+                return len(s), liney
             liney += 1
         liney-=1
         dt, (fr, to) = self._lines[liney]
