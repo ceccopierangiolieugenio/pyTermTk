@@ -123,6 +123,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
             def _process(i,l):
                 fr = 0
                 to = 0
+                if not len(l): # if the line is empty append it
+                    self._lines.append((i,(0,0)))
+                    return
                 while len(l):
                     fl = l.tab2spaces(self._tabSpaces)
                     if len(fl) <= w:
@@ -185,14 +188,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
-    def _setCursorPos(self, x, y):
-        y = max(0,min(y,len(self._lines)-1))
-        # The replace cursor need to be aligned to the char
-        # The Insert cursor must be placed between chars
-        if self._replace:
-            x = max(0,min(x,len(self._lines[y])-1))
-        else:
-            x = max(0,min(x,len(self._lines[y])))
+    def _setCursorPos(self, x, y, alignRightTab = False):
+        x,y = self._cursorAlign(x,y, alignRightTab)
         self._cursorPos     = (x,y)
         self._selectionFrom = (x,y)
         self._selectionTo   = (x,y)
@@ -210,20 +207,24 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return self._selectionFrom != self._selectionTo
 
     def _eraseSelection(self):
-       if self._selection(): # delete selection
-        sx1,sy1 = self._selectionFrom
-        sx2,sy2 = self._selectionTo
+        if not self._selection(): return
+        _,sx1 = self._linePosFromCursor(self._selectionFrom[0],self._selectionFrom[1])
+        sy1 = self._lines[self._selectionFrom[1]][0]
+        _,sx2 = self._linePosFromCursor(self._selectionTo[0]  ,self._selectionTo[1])
+        sy2 = self._lines[self._selectionTo[1]][0]
         self._cursorPos   = self._selectionFrom
         self._selectionTo = self._selectionFrom
-        self._lines[sy1] = self._lines[sy1].substring(to=sx1) + \
-                           self._lines[sy2].substring(fr=sx2)
-        self._lines = self._lines[:sy1+1] + self._lines[sy2+1:]
+        self._dataLines[sy1] = self._dataLines[sy1].substring(to=sx1) + \
+                           self._dataLines[sy2].substring(fr=sx2)
+        self._dataLines = self._dataLines[:sy1+1] + self._dataLines[sy2+1:]
+        self._rewrap()
 
-    def _cursorAlign(self, x, y):
+    def _cursorAlign(self, x, y, alignRightTab = False):
         '''
         Return the widget position of the closest editable char
         in:
         x,y = widget relative position
+        alignRightTab = if true, align the position to the right of the tab space
         return:
         x,y = widget relative position aligned to the close editable char
         '''
@@ -231,7 +232,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
         dt, (fr, to) = self._lines[y]
         x = max(0,x)
         s = self._dataLines[dt].substring(fr,to)
-        x = s.tabCharPos(x, self._tabSpaces)
+        x = s.tabCharPos(x, self._tabSpaces, alignRightTab)
+        # The replace cursor need to be aligned to the char
+        # The Insert cursor must be placed between chars
+        if self._replace and x==len(s):
+            x -= 1
         x = len(s.substring(0,x).tab2spaces(self._tabSpaces))
         return x, y
 
@@ -265,6 +270,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         dt, (fr, to) = self._lines[liney]
         s = self._dataLines[dt].substring(fr,to)
         return len(s.tab2spaces(self._tabSpaces)), liney
+
+    def _cursorFromDataPos(self,y,p):
+        for i,l in enumerate(self._lines):
+            if l[0] == y:
+                return self._cursorFromLinePos(i,p)
+        return 0,0
 
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
@@ -324,6 +335,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
         self._selectionFrom = self._cursorFromLinePos(y,xFrom)
         self._selectionTo   = self._cursorFromLinePos(y,xTo)
+        self._cursorPos     = self._selectionFrom
 
         self.update()
         return True
@@ -339,6 +351,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
         self._selectionFrom = self._cursorFromLinePos(y,0)
         self._selectionTo   = self._cursorFromLinePos(y,len(l))
+        self._cursorPos     = self._selectionFrom
         self.update()
         return True
 
@@ -346,8 +359,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseReleaseEvent(evt)
         ox, oy = self.getViewOffsets()
-        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-        self._cursorPos     = (x,y)
+        self._cursorPos     = self._selectionFrom
         self.update()
         return True
 
@@ -357,17 +369,17 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
 
-            cx = self._cursorPos[0]
-            cy = self._cursorPos[1]
+            cx, cy = self._cursorPos
+            dt, (fr, to) = self._lines[cy]
             # Don't Handle the special tab key, for now
             if evt.key == TTkK.Key_Tab:
                 return False
-            if evt.key == TTkK.Key_Up:         self._setCursorPos(cx  , cy-1)
-            elif evt.key == TTkK.Key_Down:     self._setCursorPos(cx  , cy+1)
-            elif evt.key == TTkK.Key_Left:     self._setCursorPos(cx-1, cy  )
-            elif evt.key == TTkK.Key_Right:    self._setCursorPos(cx+1, cy  )
-            elif evt.key == TTkK.Key_End:      self._setCursorPos(len(self._lines[cy]) , cy )
-            elif evt.key == TTkK.Key_Home:     self._setCursorPos(0   , cy )
+            if evt.key == TTkK.Key_Up:         self._setCursorPos(cx   , cy-1)
+            elif evt.key == TTkK.Key_Down:     self._setCursorPos(cx   , cy+1)
+            elif evt.key == TTkK.Key_Left:     self._setCursorPos(cx-1 , cy  )
+            elif evt.key == TTkK.Key_Right:    self._setCursorPos(cx+1 , cy  , True)
+            elif evt.key == TTkK.Key_End:      self._setCursorPos(w    , cy )
+            elif evt.key == TTkK.Key_Home:     self._setCursorPos(0    , cy )
             elif evt.key == TTkK.Key_PageUp:   self._setCursorPos(cx   , cy - h)
             elif evt.key == TTkK.Key_PageDown: self._setCursorPos(cx   , cy + h)
             elif evt.key == TTkK.Key_Insert:
@@ -377,41 +389,48 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 if self._selection():
                     self._eraseSelection()
                 else:
-                    l = self._lines[cy]
-                    if cx < len(l): # Erase next caracter on the same line
-                        self._lines[cy] = l.substring(to=cx) + l.substring(fr=cx+1)
-                    elif (cy+1)<len(self._lines): # End of the line, remove "\n" and merge with the next line
-                        self._lines[cy] += self._lines[cy+1]
-                        self._lines = self._lines[:cy+1] + self._lines[cy+2:]
+                    l,dx = self._linePosFromCursor(cx,cy)
+                    if dx < len(l): # Erase next caracter on the same line
+                        self._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
+                    elif (dt+1)<len(self._dataLines): # End of the line, remove "\n" and merge with the next line
+                        self._dataLines[dt] += self._dataLines[dt+1]
+                        self._dataLines = self._dataLines[:dt+1] + self._dataLines[dt+2:]
                         self._setCursorPos(cx, cy)
+                    self._rewrap()
             elif evt.key == TTkK.Key_Backspace:
                 if self._selection():
                     self._eraseSelection()
                 else:
-                    l = self._lines[cy]
-                    if cx > 0: # Erase the previous character
-                        cx-=1
-                        self._lines[cy] = l.substring(to=cx) + l.substring(fr=cx+1)
-                        self._setCursorPos(cx, cy)
-                    elif cy>0: # Beginning of the line, remove "\n" and merge with the previous line
-                        cx = len(self._lines[cy-1])
-                        self._lines[cy-1] += l
-                        self._lines = self._lines[:cy] + self._lines[cy+1:]
-                        self._setCursorPos(cx, cy-1)
+                    l,dx = self._linePosFromCursor(cx,cy)
+                    if dx > 0: # Erase the previous character
+                        dx -= 1
+                        self._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
+                    elif dt>0: # Beginning of the line, remove "\n" and merge with the previous line
+                        dt -=1
+                        dx = len(self._dataLines[dt])
+                        self._dataLines[dt] += l
+                        self._dataLines = self._dataLines[:dt+1] + self._dataLines[dt+2:]
+                    self._rewrap()
+                    cx, cy = self._cursorFromDataPos(dt,dx)
+                    self._setCursorPos(cx, cy)
             elif evt.key == TTkK.Key_Enter:
                 self._eraseSelection()
-                l = self._lines[cy]
-                self._lines[cy] = l.substring(to=cx)
-                self._lines = self._lines[:cy+1] + [l.substring(fr=cx)] + self._lines[cy+1:]
+                l,dx = self._linePosFromCursor(cx,cy)
+                self._dataLines[dt] = l.substring(to=dx)
+                self._dataLines = self._dataLines[:dt+1] + [l.substring(fr=dx)] + self._dataLines[dt+1:]
+                self._rewrap()
                 self._setCursorPos(0,cy+1)
             self.update()
             return True
         else: # Input char
             self._eraseSelection()
-            cpx,cpy = self._cursorPos
-            l = self._lines[cpy]
-            self._lines[cpy] = l.substring(to=cpx) + evt.key + l.substring(fr=cpx)
-            self._setCursorPos(cpx+1,cpy)
+            cx,cy = self._cursorPos
+            dt, _ = self._lines[cy]
+            l, dx = self._linePosFromCursor(cx,cy)
+            self._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx)
+            self._rewrap()
+            cx, cy = self._cursorFromDataPos(dt,dx+1)
+            self._setCursorPos(cx, cy)
             self.update()
             return True
 

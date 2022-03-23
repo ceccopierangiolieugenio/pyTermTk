@@ -155,7 +155,7 @@ class TTkString():
             pos+=len(s)+1
         return ret
 
-    def tabCharPos(self, pos, tabSpaces=4):
+    def tabCharPos(self, pos, tabSpaces=4, alignTabRight=False):
         '''Return the char position in the string from the position in its representation with the tab solved
 
         i.e.
@@ -177,11 +177,14 @@ class TTkString():
             lens   = len(s)
             lentxt += lens
             postxt += lens
-            if pos<postxt:
+            if pos<=postxt:
                 return pos
             spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
             if pos < postxt+spaces:
-                return postxt
+                if alignTabRight:
+                    return postxt+1
+                else:
+                    return postxt
             pos += 1-spaces
             lentxt += spaces
             postxt += 1
