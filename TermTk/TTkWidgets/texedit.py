@@ -195,6 +195,23 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._selectionTo   = (x,y)
         self._scrolToInclude(x,y)
 
+    def _moveHCursor(self, x,y, hoff):
+        l, dx = self._linePosFromCursor(x,y)
+        dt, _ = self._lines[y]
+        # Due to the internal usage I assume hoff 1 or -1
+        dx += hoff
+        if hoff > 0 and dx>len(l) and dt<len(self._dataLines):
+            dx  = 0
+            dt += 1
+        elif dx<0:
+            if dt == 0: # Beginning of the file
+                dx = 0
+            else:
+                dt -= 1
+                dx = len(self._dataLines[dt])
+        cx, cy = self._cursorFromDataPos(dt,dx)
+        self._setCursorPos(cx, cy, hoff>0)
+
     def _scrolToInclude(self, x, y):
         # Scroll the area (if required) to include the position x,y
         _,_,w,h = self.geometry()
@@ -374,14 +391,14 @@ class _TTkTextEditView(TTkAbstractScrollView):
             # Don't Handle the special tab key, for now
             if evt.key == TTkK.Key_Tab:
                 return False
-            if evt.key == TTkK.Key_Up:         self._setCursorPos(cx   , cy-1)
-            elif evt.key == TTkK.Key_Down:     self._setCursorPos(cx   , cy+1)
-            elif evt.key == TTkK.Key_Left:     self._setCursorPos(cx-1 , cy  )
-            elif evt.key == TTkK.Key_Right:    self._setCursorPos(cx+1 , cy  , True)
-            elif evt.key == TTkK.Key_End:      self._setCursorPos(w    , cy )
-            elif evt.key == TTkK.Key_Home:     self._setCursorPos(0    , cy )
-            elif evt.key == TTkK.Key_PageUp:   self._setCursorPos(cx   , cy - h)
-            elif evt.key == TTkK.Key_PageDown: self._setCursorPos(cx   , cy + h)
+            if evt.key == TTkK.Key_Up:         self._setCursorPos(cx , cy-1)
+            elif evt.key == TTkK.Key_Down:     self._setCursorPos(cx , cy+1)
+            elif evt.key == TTkK.Key_Left:     self._moveHCursor( cx , cy , -1 )
+            elif evt.key == TTkK.Key_Right:    self._moveHCursor( cx , cy , +1 )
+            elif evt.key == TTkK.Key_End:      self._setCursorPos(w  , cy )
+            elif evt.key == TTkK.Key_Home:     self._setCursorPos(0  , cy )
+            elif evt.key == TTkK.Key_PageUp:   self._setCursorPos(cx , cy - h)
+            elif evt.key == TTkK.Key_PageDown: self._setCursorPos(cx , cy + h)
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
                 self._setCursorPos(cx , cy)
@@ -427,7 +444,10 @@ class _TTkTextEditView(TTkAbstractScrollView):
             cx,cy = self._cursorPos
             dt, _ = self._lines[cy]
             l, dx = self._linePosFromCursor(cx,cy)
-            self._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx)
+            if self._replace:
+                self._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx+1)
+            else:
+                self._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx)
             self._rewrap()
             cx, cy = self._cursorFromDataPos(dt,dx+1)
             self._setCursorPos(cx, cy)
