@@ -142,7 +142,7 @@ class TTkConstant:
         Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
         '''
         NoButton      = 0x00000000
-        '''The button state does not refer to any button (see QMouseEvent::button()).'''
+        '''The button state does not refer to any button.'''
         AllButtons    = 0x07ffffff
         '''This value corresponds to a mask of all possible mouse buttons. Use to set the 'acceptedButtons' property of a MouseArea to accept ALL mouse buttons.'''
         LeftButton    = 0x00000001
@@ -163,6 +163,35 @@ class TTkConstant:
     MidButton     = MouseKey.MidButton
     MiddleButton  = MouseKey.MiddleButton
     Wheel         = MouseKey.Wheel
+
+    class WrapMode():
+        '''Those constants describes how text is wrapped in a document.'''
+        # NoWrap        = 0x00
+        # '''Text is not wrapped at all.'''
+        WordWrap      = 0x01
+        '''Text is wrapped at word boundaries.'''
+        # ManualWrap    = 0x02
+        # '''Same as :class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
+        WrapAnywhere  = 0x03
+        '''Text can be wrapped at any point on a line, even if it occurs in the middle of a word.'''
+        WrapAtWordBoundaryOrAnywhere = 0x04
+        '''If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.'''
+
+    # NoWrap       = WrapMode.NoWrap
+    WordWrap     = WrapMode.WordWrap
+    # ManualWrap   = WrapMode.ManualWrap
+    WrapAnywhere = WrapMode.WrapAnywhere
+    WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+
+    class LineWrapMode():
+        NoWrap       =  0x00
+        WidgetWidth  =  0x01
+        FixedWidth   =  0x03
+
+    NoWrap      = LineWrapMode.NoWrap
+    WidgetWidth = LineWrapMode.WidgetWidth
+    FixedWidth  = LineWrapMode.FixedWidth
+
 
     # Events
     class MouseEvent():

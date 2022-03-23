@@ -343,7 +343,7 @@ class TTkFancyTableView(TTkAbstractScrollView):
         'removeItem', 'removeItemAt', 'removeItemsFrom', 'doubleClicked')
 
     def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkFancyTableView' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._showHeader = kwargs.get('showHeader', True)

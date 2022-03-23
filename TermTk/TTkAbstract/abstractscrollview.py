@@ -39,7 +39,7 @@ class TTkAbstractScrollView(TTkWidget):
         self.viewMovedTo = pyTTkSignal(int, int) # x, y
         self.viewSizeChanged = pyTTkSignal(int, int) # w, h
         self.viewChanged = pyTTkSignal()
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbstractScrollView')
 
         self._viewOffsetX = 0

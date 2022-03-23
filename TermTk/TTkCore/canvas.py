@@ -209,7 +209,7 @@ class TTkCanvas:
 
         if isinstance(text, TTkString):
             text = text.align(width=width, alignment=alignment, color=color)
-            txt, colors = text.getData()
+            txt, colors = text.tab2spaces().getData()
             if forceColor:
                 colors=[color]*len(colors)
             for i in range(max(0,-x), min(len(txt),self._width-x)):
@@ -217,6 +217,7 @@ class TTkCanvas:
                 self._data[y][x+i] = txt[i]
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)
         else:
+            text = text.replace('\t','    ')
             if lentxt < width:
                 pad = width-lentxt
                 if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
@@ -601,8 +602,7 @@ class TTkCanvas:
                 ch = self._data[y][x]
                 color = self._colors[y][x]
                 if empty:
-                    ansi = color+TTkTerm.Cursor.moveTo(y+1,x+1)
-                    #lastcolor = color
+                    ansi = TTkTerm.Cursor.moveTo(y+1,x+1)
                     empty = False
                 if color != lastcolor:
                     ansi += color-lastcolor

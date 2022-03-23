@@ -55,7 +55,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self.itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTreeView' )
         self._selected = None
         self._selectedId = None

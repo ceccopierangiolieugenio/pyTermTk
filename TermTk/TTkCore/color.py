@@ -135,9 +135,9 @@ class _TTkColor:
     def __sub__(self, other):
         # TTkLog.debug("__sub__")
         # if other is None: return str(self)
-        if "" == self._bg  != other._bg  or \
-           "" == self._fg  != other._fg  or \
-           "" == self._mod != other._mod :
+        if ( "" == self._bg  != other._bg  or
+             "" == self._fg  != other._fg  or
+                   self._mod != other._mod ):
             return '\033[0m'+self
         return str(self)
 

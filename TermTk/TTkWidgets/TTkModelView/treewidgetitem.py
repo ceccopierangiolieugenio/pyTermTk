@@ -41,7 +41,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
         tt = TTkCfg.theme.tree
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._children = []
         self._data = args[0] if len(args)>0 and type(args[0])==list else ['']
         self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
