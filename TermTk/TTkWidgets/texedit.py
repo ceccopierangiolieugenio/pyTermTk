@@ -120,6 +120,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 if not w: return
             elif self._lineWrapMode == TTkK.FixedWidth:
                 w = self._wrapWidth
+
             def _process(i,l):
                 fr = 0
                 to = 0
@@ -133,6 +134,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
                         l=[]
                     else:
                         to = max(1,l.tabCharPos(w,self._tabSpaces))
+                        if self._wordWrapMode == TTkK.WordWrap: # Find the index of the first white space
+                            s = str(l)
+                            newTo = to
+                            while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ): newTo-=1
+                            if newTo: to = newTo
+
                         self._lines.append((i,(fr,fr+to)))
                         l = l.substring(to)
                         fr += to
