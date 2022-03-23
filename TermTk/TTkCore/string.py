@@ -319,6 +319,8 @@ class TTkString():
             ret._colors = [color]*len(self._text)
         elif posFrom < posTo:
             ret._colors += self._colors
+            posFrom = min(len(self._text),posFrom)
+            posTo   = min(len(self._text),posTo)
             for i in range(posFrom, posTo):
                 ret._colors[i] = color
         else:
