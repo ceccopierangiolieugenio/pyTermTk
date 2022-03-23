@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 '''
-### Layout - [Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
+**Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`_]
 '''
 
 from TermTk.TTkCore.log import TTkLog

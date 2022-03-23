@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 '''
-### Box Layout - [Tutorial](https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/002-layout.md)
+**Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`_]
 '''
 
 from TermTk.TTkCore.log import TTkLog
