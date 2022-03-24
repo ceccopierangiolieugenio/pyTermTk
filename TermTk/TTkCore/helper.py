@@ -40,10 +40,11 @@ class TTkHelper:
     _cursor = False
     _cursorType = TTkTerm.Cursor.BLINKING_BLOCK
     class _Overlay():
-        __slots__ = ('_widget','_prevFocus','_x','_y')
-        def __init__(self,x,y,widget,prevFocus):
+        __slots__ = ('_widget','_prevFocus','_x','_y','_modal')
+        def __init__(self,x,y,widget,prevFocus,modal):
             self._widget = widget
             self._prevFocus = prevFocus
+            self._modal = modal
             widget.move(x,y)
     _overlay = []
 
@@ -114,11 +115,40 @@ class TTkHelper:
         return None
 
     @staticmethod
-    def isOverlay(widget):
-         return TTkHelper.rootOverlay(widget) is not None
+    def getLastModal():
+        modal = None
+        for o in TTkHelper._overlay:
+            if o._modal:
+                modal = o
+        return modal
 
     @staticmethod
-    def overlay(caller, widget, x, y):
+    def checkModalOverlay(widget):
+        #if not TTkHelper._overlay:
+        #    # There are no Overlays
+        #    return True
+
+        if not (lastModal := TTkHelper.getLastModal()):
+            return True
+
+        # if not TTkHelper._overlay[-1]._modal:
+        #     # The last window is not modal
+        #     return True
+        if not (rootWidget := TTkHelper.rootOverlay(widget)):
+            # This widget is not overlay
+            return False
+        if rootWidget in [ o._widget for o in TTkHelper._overlay[TTkHelper._overlay.index(lastModal):]]:
+            return True
+        # if TTkHelper._overlay[-1]._widget == rootWidget:
+        #     return True
+        return False
+
+    @staticmethod
+    def isOverlay(widget):
+        return TTkHelper.rootOverlay(widget) is not None
+
+    @staticmethod
+    def overlay(caller, widget, x, y, modal=False):
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
@@ -126,7 +156,7 @@ class TTkHelper:
         # Try to keep the overlay widget inside the terminal
         wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
         wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget))
+        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
@@ -138,13 +168,18 @@ class TTkHelper:
         return None
 
     @staticmethod
-    def removeOverlay(refocus=True):
-        for widget in TTkHelper._overlay:
-            TTkHelper._rootWidget.rootLayout().removeWidget(widget._widget)
+    def removeOverlay():
+        if not TTkHelper._overlay:
+            return
         bkFocus = None
-        if TTkHelper._overlay:
-            bkFocus = TTkHelper._overlay[0]._prevFocus
-        TTkHelper._overlay = []
+        # Remove the first element also if it is modal
+        TTkHelper._overlay[-1]._modal = False
+        while TTkHelper._overlay:
+            if TTkHelper._overlay[-1]._modal:
+                break
+            owidget = TTkHelper._overlay.pop()
+            bkFocus = owidget._prevFocus
+            TTkHelper._rootWidget.rootLayout().removeWidget(owidget._widget)
         if TTkHelper._focusWidget:
             TTkHelper._focusWidget.clearFocus()
         if bkFocus:

@@ -340,6 +340,12 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
                 return True
 
+        # If there is an overlay and it is modal,
+        # return False if this widget id not part of any
+        # of the widgets above the modal
+        if not TTkHelper.checkModalOverlay(self):
+            return False
+
         # Handle Drag and Drop Events
         if TTkHelper.isDnD():
             ret = False
@@ -564,8 +570,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
-        #if not TTkHelper.isOverlay(self):
-        #    TTkHelper.removeOverlay(refocus=False)
         TTkHelper.removeOverlayChild(self)
         TTkHelper.setFocus(self)
         self._focus = True

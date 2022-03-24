@@ -42,7 +42,7 @@ def demoFilePicker(root=None):
     def _showDialog(fm):
         filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=fm ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
         filePicker.pathPicked.connect(label.setText)
-        ttk.TTkHelper.overlay(frame, filePicker, 2, 1)
+        ttk.TTkHelper.overlay(frame, filePicker, 2, 1, True)
 
     btn1.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.AnyFile))
     btn3.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.Directory))
