@@ -173,7 +173,7 @@ class TTkLayout(TTkLayoutItem):
     def itemAt(self, index):
         if index < len(self._items):
             return self._items[index]
-        return 0
+        return None
 
     def setParent(self, parent):
         if isinstance(parent, TTkLayoutItem):

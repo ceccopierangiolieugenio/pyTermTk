@@ -107,7 +107,7 @@ class TTkSplitter(TTkFrame):
     def _updateGeometries(self, resized=False):
         if not self.isVisible(): return
         _,_,w,h = self.geometry()
-        sep = self._separators
+        sep = self._separators = self._separators[0:len(self.layout().children())]
         if self.border():
             w-=2
             h-=2
