@@ -154,6 +154,11 @@ class TTkTheme():
     comboboxContentColorFocus      = TTkColor.fg("#ffff88")+TTkColor.bg("#111111")
     '''Default to **TTkColor.fg("#ffff88")+TTkColor.bg("#111111")**'''
     comboboxBorderColorFocus       = buttonBorderColorFocus
+    '''Default to :class:`buttonBorderColorFocus`'''
+    comboboxContentColorDisabled  = TTkColor.fg("#888888")
+    '''Default to **TTkColor.fg("#888888")**'''
+    comboboxBorderColorDisabled= TTkColor.fg("#888888")
+    '''Default to **TTkColor.fg("#888888")**'''
 
     checkboxContentColor      = buttonTextColor
     '''Default to :class:`buttonTextColor`'''

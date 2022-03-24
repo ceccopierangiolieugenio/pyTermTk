@@ -107,7 +107,10 @@ class TTkComboBox(TTkWidget):
         self._lineEdit.setGeometry(1,0,w-4,h)
 
     def paintEvent(self):
-        if self.hasFocus():
+        if not self.isEnabled():
+            borderColor = TTkCfg.theme.comboboxBorderColorDisabled
+            color       = TTkCfg.theme.comboboxContentColorDisabled
+        elif self.hasFocus():
             borderColor = TTkCfg.theme.comboboxBorderColorFocus
             color       = TTkCfg.theme.comboboxContentColorFocus
         else:
