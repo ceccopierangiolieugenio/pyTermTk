@@ -79,14 +79,14 @@ class TTkString():
             index = text.index(m,pos)
             txt = text[pos:index]
             txtret += txt
-            colret += [TTkColor(color) if type(color) is str else color]*len(txt)
+            colret += [TTkColor(mod=color) if type(color) is str else color]*len(txt)
             if pos == index:
                 color+=m
             else:
                 color=m
             pos = index+len(m)
         txtret += text[pos:]
-        colret += [TTkColor(color) if type(color) is str else color]*(len(text)-pos)
+        colret += [TTkColor(mod=color) if type(color) is str else color]*(len(text)-pos)
         return txtret, colret
 
     def __len__(self):

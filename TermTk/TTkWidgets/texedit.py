@@ -484,6 +484,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 pt = len(t) if y+oy < self._selectionTo[1]   else self._selectionTo[0]
                 t = t.setColor(color=selectColor, posFrom=pf, posTo=pt )
             self._canvas.drawText(pos=(-ox,y), text=t)
+        if self._lineWrapMode == TTkK.FixedWidth:
+            self._canvas.drawVLine(pos=(self._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
         self._pushCursor()
 
 class TTkTextEdit(TTkAbstractScrollArea):
