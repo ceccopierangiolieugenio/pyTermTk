@@ -1,3 +1,6 @@
+
+
+
 #!/usr/bin/env python3
 
 # MIT License
@@ -29,49 +32,50 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.menubar import TTkMenuButton
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 
-class _TTkTabMenuButton(TTkMenuButton):
-    __slots__ = ('_sideBorder', '_tabPosition')
-
+class TTkTabButton(TTkButton):
+    __slots__ = ('_sideEnd', '_tabStatus')
     def __init__(self, *args, **kwargs):
-        self._sideBorder = TTkK.NONE
-        self._tabPosition = kwargs.get('tabPosition', TTkK.LEFT)
-        TTkMenuButton.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTabMenuButton')
-        txtlen = len(self.text)
-        self.setMinimumSize(txtlen+1,0x2)
-        self.setMaximumSize(txtlen+1,0x1000)
+        self._sideEnd = TTkK.NONE
+        self._tabStatus = TTkK.Unchecked
+        TTkButton.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkTabButton' )
+        if self._border:
+            self.resize(len(self._text)+2, 3)
+            self.setMinimumSize(2+len(self._text), 3)
+            self.setMaximumSize(2+len(self._text), 3)
+        else:
+            self.resize(len(self._text)+2, 2)
+            self.setMinimumSize(len(self._text)+2, 2)
+            self.setMaximumSize(len(self._text)+2, 2)
+        self.setFocusPolicy(TTkK.ParentFocus)
 
-    def setSideBorder(self, border):
-        self._sideBorder |= border
+    def sideEnd(self):
+        return self._sideEnd
 
-    def unsetSideBorder(self, border):
-        self._sideBorder &= ~border
+    def setSideEnd(self, sideEnd):
+        self._sideEnd = sideEnd
+        self.update()
+
+    def tabStatus(self):
+        return self._tabStatus
+
+    def setTabStatus(self, status):
+        self._tabStatus = status
+        self.update()
 
     def paintEvent(self):
-        if self._pressed:
-            borderColor = self._borderColor
-            textColor   = TTkCfg.theme.menuButtonColorClicked
-            scColor     = TTkCfg.theme.menuButtonShortcutColor
-        else:
-            borderColor = self._borderColor
-            textColor   = self._color
-            scColor     =  TTkCfg.theme.menuButtonShortcutColor
-        if self._tabPosition == TTkK.LEFT:
-            text = f" {self.text}"
-        else:
-            text = f"{self.text} "
-        self._canvas.drawTabMenuButton(
-                        pos=(0,0),text=text,
-                        slim=(self._height==2),
-                        size=self.size(),
-                        color=textColor,
-                        borderColor=borderColor,
-                        sideBorder = self._sideBorder)
+        self._canvas.drawTabButton(
+            pos=(0,0), size=self.size(),
+            small=(not self._border),
+            sideEnd=self._sideEnd, status=self._tabStatus,
+            label=self.text )
+
 
 '''
 _curentIndex =              2
@@ -81,37 +85,31 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
                 ╞═══════════╩══════╩═══════════════╡
                  leftscroller                     rightScroller
 '''
-class _TTkTabs(TTkWidget):
+
+class TTkTabBar(TTkWidget):
     __slots__ = (
-        '_tabColor', '_tabBorderColor', '_tabSelectColor', '_tabOffsetColor',
-        '_tabColorFocus', '_tabBorderColorFocus', '_tabSelectColorFocus', '_tabOffsetColorFocus',
-        '_labels', '_labelsPos',
-        '_offset', '_currentIndex','_lastIndex',
+        '_tabButtons', '_small',
+        '_highlighted', '_currentIndex','_lastIndex',
         '_leftScroller', '_rightScroller',
-        '_tabMovable', '_tabClosable',
-        '_sideBorder',
         #Signals
         'currentChanged', 'tabBarClicked')
 
     def __init__(self, *args, **kwargs):
-        self._labels = []
-        self._labelsPos = []
+        self._tabButtons = []
         self._currentIndex = -1
         self._lastIndex = -1
-        self._offset = -1
+        self._highlighted = -1
         self._tabMovable = False
         self._tabClosable = False
         self._leftScroller = False
         self._rightScroller = False
+        self._small = kwargs.get('small',True)
         self._sideBorder = TTkK.LEFT | TTkK.RIGHT
-        self._tabColor       = TTkCfg.theme.tabColor
-        self._tabBorderColor = TTkCfg.theme.tabBorderColor
-        self._tabSelectColor = TTkCfg.theme.tabSelectColor
-        self._tabOffsetColor = TTkCfg.theme.tabOffsetColor
-        self._tabColorFocus       = TTkCfg.theme.tabColorFocus
-        self._tabBorderColorFocus = TTkCfg.theme.tabBorderColorFocus
-        self._tabSelectColorFocus = TTkCfg.theme.tabSelectColorFocus
-        self._tabOffsetColorFocus = TTkCfg.theme.tabOffsetColorFocus
+
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_TTkTabs')
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
         # Signals
         self.currentChanged = pyTTkSignal(int)
         self.tabBarClicked  = pyTTkSignal(int)
@@ -120,11 +118,12 @@ class _TTkTabs(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def addTab(self, label):
-        self._labels.append(label)
-        self._updateTabs()
+        self.insertTab(len(self._tabButtons), label)
 
     def insertTab(self, index, label):
-        self._labels.insert(index, label)
+        button = TTkTabButton(parent=self, text=label, border=not self._small)
+        self._tabButtons.insert(index,button)
+        button.clicked.connect(lambda :self.setCurrentIndex(self._tabButtons.index(button)))
         self._updateTabs()
 
     def setSideBorder(self, border):
@@ -133,41 +132,64 @@ class _TTkTabs(TTkWidget):
     def unsetSideBorder(self, border):
         self._sideBorder &= ~border
 
-    def setBorderColor(self, color):
-        self._tabBorderColor      = color
-        self._tabBorderColorFocus = color
-
     def currentIndex(self):
         return self._currentIndex
 
     @pyTTkSlot(int)
     def setCurrentIndex(self, index):
-        if 0 <= index < len(self._labels):
-                self._currentIndex = index
-                self._offset = index
-                self._updateTabs()
+        TTkLog.debug(index)
+        if 0 <= index < len(self._tabButtons):
+            self._currentIndex = index
+            self._offset = index
+            self._updateTabs()
+
+    def resizeEvent(self, w, h):
+        self._updateTabs()
 
     def _updateTabs(self):
-        xpos = 0+2
-        w = self.width()-4
-        self._labelsPos = []
-        self._leftScroller = False
-        self._rightScroller = False
-        minLabelLen = 0
-        for label in self._labels:
-            labelLen = len(label)
-            if xpos+labelLen > w:
-                xpos = w-labelLen
-                self._leftScroller = True
-                self._rightScroller = True
-            self._labelsPos.append(xpos)
-            xpos += labelLen+1
-            if minLabelLen < labelLen:
-                minLabelLen = labelLen
-        self.setMinimumWidth(minLabelLen+2+4)
+        w = self.width()
+        # Find the tabs used size max size
+        maxLen = 0
+        sizes = [t.width()-1 for t in self._tabButtons]
+        for s in sizes: maxLen += s
+        if maxLen <= w:
+            self._leftScroller = False
+            self._rightScroller = False
+            shrink = 1
+            offx = 0
+        else:
+            self._leftScroller = True
+            self._rightScroller = True
+            w-=4
+            shrink = w/maxLen
+            offx = 2
+
+        posx=0
+        for t in self._tabButtons:
+            tmpx = offx+min(int(posx*shrink),w-t.width())
+            sideEnd = TTkK.NONE
+            if tmpx==0:
+                sideEnd |= TTkK.LEFT
+            if tmpx+t.width()==self.width():
+                sideEnd |= TTkK.RIGHT
+            t.move(tmpx,0)
+            t.setSideEnd(sideEnd)
+            t.setTabStatus(TTkK.Unchecked)
+            posx += t.width()-1
+
+        # ZReorder the widgets:
+        for i in range(0,max(0,self._currentIndex)):
+            self._tabButtons[i].raiseWidget()
+        for i in reversed(range(max(0,self._currentIndex),len(self._tabButtons))):
+            self._tabButtons[i].raiseWidget()
+        if 0 <= self._highlighted < len(self._tabButtons):
+            self._tabButtons[self._highlighted].raiseWidget()
 
         if self._currentIndex == -1:
-            self._currentIndex = len(self._labels) -1
+            self._currentIndex = len(self._tabButtons)-1
+
+        if self._tabButtons:
+            self._tabButtons[self._currentIndex].setTabStatus(TTkK.Checked)
 
         if self._lastIndex != self._currentIndex:
             self._lastIndex = self._currentIndex
@@ -175,84 +197,9 @@ class _TTkTabs(TTkWidget):
 
         self.update()
 
-    def resizeEvent(self, w, h):
-        self._updateTabs()
-
-    def mousePressEvent(self, evt):
-        x = evt.x
-        w = self.width()
-        offset = self._offset
-        # Check from the selected to the left and from selected+1 to the right
-        if self._leftScroller and x<2 and offset>0:
-            self._offset -= 1
-            self._updateTabs()
-            return True
-        if self._rightScroller and x>w-3 and offset<len(self._labels)-1:
-            self._offset += 1
-            self._updateTabs()
-            return True
-        for i in list(reversed(range(offset+1                  )) ) + \
-                 list(         range(offset+1, len(self._labels)) ) :
-            posx = self._labelsPos[i]
-            tablen = len(self._labels[i])+2
-            if posx <= x < (posx+tablen):
-                self._currentIndex = i
-                self._offset = i
-                self.tabBarClicked.emit(self._currentIndex)
-                self._updateTabs()
-                return True
-        return False
-
-    def mouseDragEvent(self, evt):
-        return False
-
-    def wheelEvent(self, evt):
-        _,y = evt.x, evt.y
-        if y>2: return False
-        if evt.evt == TTkK.WHEEL_Down:
-            if self._currentIndex < len(self._labels)-1:
-                self._currentIndex += 1
-        else:
-            if self._currentIndex > 0:
-                self._currentIndex -= 1
-        self._offset = self._currentIndex
-        self._updateTabs()
-        return True
-
-    def keyEvent(self, evt):
-        if evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Right:
-            self._offset = min(self._offset+1,len(self._labels)-1)
-            self._updateTabs()
-            return True
-        if evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Left:
-            self._offset = max(self._offset-1,0)
-            self._updateTabs()
-            return True
-        if ( evt.type == TTkK.Character and evt.key==" " ) or \
-           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            self._currentIndex = self._offset
-            self._updateTabs()
-            return True
-        return False
-
     def paintEvent(self):
-        if self.hasFocus():
-            tabColor       = self._tabColorFocus
-            tabBorderColor = self._tabBorderColorFocus
-            tabSelectColor = self._tabSelectColorFocus
-            tabOffsetColor = self._tabOffsetColorFocus
-        else:
-            tabColor       = self._tabColor
-            tabBorderColor = self._tabBorderColor
-            tabSelectColor = self._tabSelectColor
-            tabOffsetColor = self._tabOffsetColor
-        self._canvas.drawTab(
-                pos=(0,0), size=self.size(), slim=(self._height==2),
-                labels=self._labels, labelsPos=self._labelsPos,
-                selected=self._currentIndex, offset=self._offset,
-                leftScroller=self._leftScroller, rightScroller=self._rightScroller,
-                color=tabColor, borderColor=tabBorderColor, selectColor=tabSelectColor,
-                offsetColor=tabOffsetColor, sideBorder = self._sideBorder)
+        if self._small: return
+        self._canvas.drawTabWidgetBottomLine(pos=(0,2), size=self.size())
 
 '''
            ┌────────────────────────────┐
@@ -270,12 +217,7 @@ class _TTkTabs(TTkWidget):
 class TTkTabWidget(TTkFrame):
     __slots__ = (
         '_tabBarTopLayout', '_tabBar', '_topLeftLayout', '_topRightLayout',
-        '_tabColor', '_tabBorderColor', '_tabSelectColor', '_tabOffsetColor',
-        '_tabColorFocus', '_tabBorderColorFocus', '_tabSelectColorFocus', '_tabOffsetColorFocus',
-        '_tabWidgets', '_labels', '_labelsPos',
-        '_offset', '_currentIndex',
-        '_leftScroller', '_rightScroller',
-        '_tabMovable', '_tabClosable',
+        '_tabWidgets',
         # Forward Signals
         'currentChanged', 'tabBarClicked',
         # forward methods
@@ -283,36 +225,26 @@ class TTkTabWidget(TTkFrame):
 
     def __init__(self, *args, **kwargs):
         self._tabWidgets = []
-        self._labels = []
-        self._labelsPos = []
-        self._currentIndex = 0
-        self._offset = 0
-        self._tabMovable = False
-        self._tabClosable = False
-        self._leftScroller = False
-        self._rightScroller = False
-        self._tabColor       = TTkCfg.theme.tabColor
-        self._tabBorderColor = TTkCfg.theme.tabBorderColor
-        self._tabSelectColor = TTkCfg.theme.tabSelectColor
-        self._tabOffsetColor = TTkCfg.theme.tabOffsetColor
-        self._tabColorFocus       = TTkCfg.theme.tabColorFocus
-        self._tabBorderColorFocus = TTkCfg.theme.tabBorderColorFocus
-        self._tabSelectColorFocus = TTkCfg.theme.tabSelectColorFocus
-        self._tabOffsetColorFocus = TTkCfg.theme.tabOffsetColorFocus
-        self._tabBar = _TTkTabs()
-        self._tabBar.currentChanged.connect(self._tabChanged)
-        self._tabBar.focusChanged.connect(self._focusChanged)
         self._tabBarTopLayout = TTkGridLayout()
+
+        TTkFrame.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , 'TTkTabWidget')
+
+        self._tabBar = TTkTabBar(small = not self.border())
         self._topLeftLayout   = None
         self._topRightLayout  = None
         self._tabBarTopLayout.addWidget(self._tabBar,0,1)
-        TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTabWidget')
+
+        self._tabBar.currentChanged.connect(self._tabChanged)
+        self._tabBar.focusChanged.connect(self._focusChanged)
+
+
         self.setLayout(TTkGridLayout())
         if self.border():
             self.setPadding(3,1,1,1)
         else:
             self.setPadding(2,0,0,0)
+
         self.rootLayout().addItem(self._tabBarTopLayout)
         self._tabBarTopLayout.setGeometry(0,0,self._width,self._padt)
         # forwarded methods
@@ -339,6 +271,7 @@ class TTkTabWidget(TTkFrame):
 
     @pyTTkSlot(bool)
     def _focusChanged(self, focus):
+        return
         if focus:
             tabBorderColor = self._tabBorderColorFocus
         else:
@@ -349,25 +282,7 @@ class TTkTabWidget(TTkFrame):
             widget.update()
 
     def addMenu(self, text, position=TTkK.LEFT):
-        button = _TTkTabMenuButton(text=text, borderColor=self._tabBorderColor, menuOffset=(-1,1) if self.border() else (-1,0) , tabPosition=position)
-        button.focusChanged.connect(self._focusChanged)
-        if position==TTkK.LEFT:
-            if not self._topLeftLayout:
-                self._topLeftLayout = TTkHBoxLayout()
-                self._tabBarTopLayout.addItem(self._topLeftLayout,0,0)
-                button.setSideBorder(TTkK.LEFT)
-            layout = self._topLeftLayout
-        else:
-            if not self._topRightLayout:
-                self._topRightLayout = TTkHBoxLayout()
-                self._tabBarTopLayout.addItem(self._topRightLayout,0,2)
-            layout = self._topRightLayout
-            button.setSideBorder(TTkK.RIGHT)
-            for b in self._topRightLayout.iterWidgets(onlyVisible=False):
-                b.unsetSideBorder(TTkK.RIGHT)
-        self._tabBar.unsetSideBorder(position)
-        layout.addWidget(button)
-        return button
+        return TTkMenuButton()
 
     def addTab(self, widget, label):
         widget.hide()
@@ -384,10 +299,4 @@ class TTkTabWidget(TTkFrame):
     def resizeEvent(self, w, h):
         self._tabBarTopLayout.setGeometry(0,0,w,self._padt)
 
-    def paintEvent(self):
-        if any(w.hasFocus() for w in self._tabBarTopLayout.iterWidgets()):
-            tabBorderColor = self._tabBorderColorFocus
-        else:
-            tabBorderColor = self._tabBorderColor
-        if self.border():
-            self._canvas.drawBox(pos=(0,2),size=(self._width,self._height-2), color=tabBorderColor, grid=9)
+    #def paintEvent(self): pass

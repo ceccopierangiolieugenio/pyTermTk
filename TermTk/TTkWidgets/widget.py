@@ -376,9 +376,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 return True
 
         if evt.evt == TTkK.Press:
-            if self.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
-                self.setFocus()
-                self.raiseWidget()
+            # in case of parent focus, check the parent that can accept the focus
+            w = self
+            while w._parent and (w.focusPolicy() & TTkK.ParentFocus) == TTkK.ParentFocus:
+                w = w._parent
+            if w.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
+                w.setFocus()
+                w.raiseWidget()
             if evt.tap == 2 and self.mouseDoubleClickEvent(evt):
                 #self._pendingMouseRelease = True
                 return True
