@@ -94,14 +94,23 @@ class _TTkTabScrollerButton(TTkButton):
 
     def paintEvent(self):
         tt = TTkCfg.theme.tab
-        if self._side == TTkK.LEFT:
-            self._canvas.drawText(pos=(0,0),text=tt[7] +tt[1])
-            self._canvas.drawText(pos=(0,1),text=tt[9] +tt[31])
-            self._canvas.drawText(pos=(0,2),text=tt[11]+tt[12])
+        if self._border:
+            if self._side == TTkK.LEFT:
+                self._canvas.drawText(pos=(0,0),text=tt[7] +tt[1])
+                self._canvas.drawText(pos=(0,1),text=tt[9] +tt[31])
+                self._canvas.drawText(pos=(0,2),text=tt[11]+tt[12])
+            else:
+                self._canvas.drawText(pos=(0,0),text=tt[1] +tt[8])
+                self._canvas.drawText(pos=(0,1),text=tt[32]+tt[9])
+                self._canvas.drawText(pos=(0,2),text=tt[12]+tt[15])
         else:
-            self._canvas.drawText(pos=(0,0),text=tt[1] +tt[8])
-            self._canvas.drawText(pos=(0,1),text=tt[32]+tt[9])
-            self._canvas.drawText(pos=(0,2),text=tt[12]+tt[15])
+            if self._side == TTkK.LEFT:
+                self._canvas.drawText(pos=(0,0),text=tt[9] +tt[31])
+                self._canvas.drawText(pos=(0,1),text=tt[23]+tt[1])
+            else:
+                self._canvas.drawText(pos=(0,0),text=tt[32]+tt[9])
+                self._canvas.drawText(pos=(0,1),text=tt[1] +tt[24])
+
 '''
 _curentIndex =              2
 _labelPos =      [0],[1],  [2],   [3],   [4],
@@ -227,8 +236,13 @@ class TTkTabBar(TTkWidget):
         self.update()
 
     def paintEvent(self):
-        if self._small: return
-        self._canvas.drawTabWidgetBottomLine(pos=(0,2), size=self.size())
+        w = self.width()
+        tt = TTkCfg.theme.tab
+        if self._small:
+            self._canvas.drawText(pos=(0,1),text=tt[23] + tt[19]*(w-2) + tt[24])
+        else:
+            self._canvas.drawText(pos=(0,2),text=tt[11] + tt[12]*(w-2) + tt[15])
+
 
 '''
            ┌────────────────────────────┐

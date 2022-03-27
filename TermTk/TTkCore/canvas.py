@@ -373,7 +373,14 @@ class TTkCanvas:
         w,h = size
         tt = TTkCfg.theme.tab
         if small:
-            pass
+            if status == TTkK.Checked:
+                txtCenter = tt[10] + label        + tt[10]
+                txtBottom = tt[21] + tt[5] *(w-2) + tt[22]
+            else:
+                txtCenter = tt[9]  + label        + tt[9]
+                txtBottom = tt[18] + tt[19]*(w-2) + tt[20]
+            self.drawText(pos=(x,y+0),text=txtCenter)
+            self.drawText(pos=(x,y+1),text=txtBottom)
         else:
             if status == TTkK.Checked:
                 txtTop    = tt[4]  + tt[5] *(w-2) + tt[6]
