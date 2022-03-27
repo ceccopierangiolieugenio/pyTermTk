@@ -76,7 +76,32 @@ class TTkTabButton(TTkButton):
             sideEnd=self._sideEnd, status=self._tabStatus,
             label=self.text )
 
+class _TTkTabScrollerButton(TTkButton):
+    __slots__ = ('_side')
+    def __init__(self, *args, **kwargs):
+        self._side = kwargs.get('side',TTkK.LEFT)
+        TTkButton.__init__(self, *args, **kwargs)
+        self._name = kwargs.get('name' , '_TTkTabScrollerButton' )
+        if self._border:
+            self.resize(2, 3)
+            self.setMinimumSize(2, 3)
+            self.setMaximumSize(2, 3)
+        else:
+            self.resize(2, 2)
+            self.setMinimumSize(2, 2)
+            self.setMaximumSize(2, 2)
+        self.setFocusPolicy(TTkK.ParentFocus)
 
+    def paintEvent(self):
+        tt = TTkCfg.theme.tab
+        if self._side == TTkK.LEFT:
+            self._canvas.drawText(pos=(0,0),text=tt[7] +tt[1])
+            self._canvas.drawText(pos=(0,1),text=tt[9] +tt[31])
+            self._canvas.drawText(pos=(0,2),text=tt[11]+tt[12])
+        else:
+            self._canvas.drawText(pos=(0,0),text=tt[1] +tt[8])
+            self._canvas.drawText(pos=(0,1),text=tt[32]+tt[9])
+            self._canvas.drawText(pos=(0,2),text=tt[12]+tt[15])
 '''
 _curentIndex =              2
 _labelPos =      [0],[1],  [2],   [3],   [4],
@@ -101,20 +126,23 @@ class TTkTabBar(TTkWidget):
         self._highlighted = -1
         self._tabMovable = False
         self._tabClosable = False
-        self._leftScroller = False
-        self._rightScroller = False
         self._small = kwargs.get('small',True)
+        self._leftScroller =  _TTkTabScrollerButton(border=not self._small,side=TTkK.LEFT)
+        self._rightScroller = _TTkTabScrollerButton(border=not self._small,side=TTkK.RIGHT)
         self._sideBorder = TTkK.LEFT | TTkK.RIGHT
 
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTabs')
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
+        # Add and connect the scrollers
+        self.addWidget(self._leftScroller)
+        self.addWidget(self._rightScroller)
+
         # Signals
         self.currentChanged = pyTTkSignal(int)
         self.tabBarClicked  = pyTTkSignal(int)
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTabs')
+
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def addTab(self, label):
@@ -153,13 +181,14 @@ class TTkTabBar(TTkWidget):
         sizes = [t.width()-1 for t in self._tabButtons]
         for s in sizes: maxLen += s
         if maxLen <= w:
-            self._leftScroller = False
-            self._rightScroller = False
+            self._leftScroller.hide()
+            self._rightScroller.hide()
             shrink = 1
             offx = 0
         else:
-            self._leftScroller = True
-            self._rightScroller = True
+            self._leftScroller.show()
+            self._rightScroller.show()
+            self._rightScroller.move(w-2,0)
             w-=4
             shrink = w/maxLen
             offx = 2
