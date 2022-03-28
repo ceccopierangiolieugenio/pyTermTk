@@ -164,6 +164,20 @@ class TTkButton(TTkWidget):
             return True
         return False
 
+    def color(self):
+        return self._textColor
+
+    def setColor(self, color):
+        self._textColor = color
+        self.update()
+
+    def borderColor(self):
+        return self._borderColor
+
+    def setBorderColor(self, color):
+        self._borderColor = color
+        self.update()
+
     @property
     def text(self):
         return self._text

@@ -74,7 +74,8 @@ class TTkTabButton(TTkButton):
             pos=(0,0), size=self.size(),
             small=(not self._border),
             sideEnd=self._sideEnd, status=self._tabStatus,
-            label=self.text )
+            label=self.text, color=self._borderColor )
+        self._canvas.drawText(pos=(1,1 if self._border else 0), text=self.text, color=self.color())
 
 class _TTkTabScrollerButton(TTkButton):
     __slots__ = ('_side')
@@ -96,20 +97,20 @@ class _TTkTabScrollerButton(TTkButton):
         tt = TTkCfg.theme.tab
         if self._border:
             if self._side == TTkK.LEFT:
-                self._canvas.drawText(pos=(0,0),text=tt[7] +tt[1])
-                self._canvas.drawText(pos=(0,1),text=tt[9] +tt[31])
-                self._canvas.drawText(pos=(0,2),text=tt[11]+tt[12])
+                self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[7] +tt[1])
+                self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[9] +tt[31])
+                self._canvas.drawText(pos=(0,2), color=self._borderColor, text=tt[11]+tt[12])
             else:
-                self._canvas.drawText(pos=(0,0),text=tt[1] +tt[8])
-                self._canvas.drawText(pos=(0,1),text=tt[32]+tt[9])
-                self._canvas.drawText(pos=(0,2),text=tt[12]+tt[15])
+                self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[1] +tt[8])
+                self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[32]+tt[9])
+                self._canvas.drawText(pos=(0,2), color=self._borderColor, text=tt[12]+tt[15])
         else:
             if self._side == TTkK.LEFT:
-                self._canvas.drawText(pos=(0,0),text=tt[9] +tt[31])
-                self._canvas.drawText(pos=(0,1),text=tt[23]+tt[1])
+                self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[9] +tt[31])
+                self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[23]+tt[1])
             else:
-                self._canvas.drawText(pos=(0,0),text=tt[32]+tt[9])
-                self._canvas.drawText(pos=(0,1),text=tt[1] +tt[24])
+                self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[32]+tt[9])
+                self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[1] +tt[24])
 
 '''
 _curentIndex =              2
@@ -125,6 +126,7 @@ class TTkTabBar(TTkWidget):
         '_tabButtons', '_small',
         '_highlighted', '_currentIndex','_lastIndex',
         '_leftScroller', '_rightScroller',
+        '_borderColor',
         #Signals
         'currentChanged', 'tabBarClicked')
 
@@ -135,6 +137,7 @@ class TTkTabBar(TTkWidget):
         self._highlighted = -1
         self._tabMovable = False
         self._tabClosable = False
+        self._borderColor = TTkCfg.theme.tabBorderColor
         self._small = kwargs.get('small',True)
         self._leftScroller =  _TTkTabScrollerButton(border=not self._small,side=TTkK.LEFT)
         self._rightScroller = _TTkTabScrollerButton(border=not self._small,side=TTkK.RIGHT)
@@ -143,6 +146,8 @@ class TTkTabBar(TTkWidget):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTabs')
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.focusChanged.connect(self._focusChanged)
+
 
         # Add and connect the scrollers
         self.addWidget(self._leftScroller)
@@ -162,6 +167,13 @@ class TTkTabBar(TTkWidget):
         self._tabButtons.insert(index,button)
         button.clicked.connect(lambda :self.setCurrentIndex(self._tabButtons.index(button)))
         self._updateTabs()
+
+    def borderColor(self):
+        return self._borderColor
+
+    def setBorderColor(self, color):
+        self._borderColor = color
+        self.update()
 
     def setSideBorder(self, border):
         self._sideBorder |= border
@@ -233,15 +245,34 @@ class TTkTabBar(TTkWidget):
             self._lastIndex = self._currentIndex
             self.currentChanged.emit(self._currentIndex)
 
+        # set the buttons text color based on the selection/offset
+        for i,b in enumerate(self._tabButtons):
+            if i == self._currentIndex:
+                b.setColor(TTkCfg.theme.tabSelectColor)
+            else:
+                b.setColor(TTkCfg.theme.tabColor)
+
         self.update()
+
+    @pyTTkSlot(bool)
+    def _focusChanged(self, focus):
+        if focus:
+            borderColor = TTkCfg.theme.tabBorderColorFocus
+        else:
+            borderColor = TTkCfg.theme.tabBorderColor
+        self.setBorderColor(borderColor)
+        for b in self._tabButtons:
+            b.setBorderColor(borderColor)
+        self._leftScroller.setBorderColor(borderColor)
+        self._rightScroller.setBorderColor(borderColor)
 
     def paintEvent(self):
         w = self.width()
         tt = TTkCfg.theme.tab
         if self._small:
-            self._canvas.drawText(pos=(0,1),text=tt[23] + tt[19]*(w-2) + tt[24])
+            self._canvas.drawText(pos=(0,1),text=tt[23] + tt[19]*(w-2) + tt[24], color=self._borderColor)
         else:
-            self._canvas.drawText(pos=(0,2),text=tt[11] + tt[12]*(w-2) + tt[15])
+            self._canvas.drawText(pos=(0,2),text=tt[11] + tt[12]*(w-2) + tt[15], color=self._borderColor)
 
 
 '''
@@ -269,6 +300,7 @@ class TTkTabWidget(TTkFrame):
     def __init__(self, *args, **kwargs):
         self._tabWidgets = []
         self._tabBarTopLayout = TTkGridLayout()
+        self._borderColor = TTkCfg.theme.tabBorderColor
 
         TTkFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTabWidget')
@@ -280,7 +312,6 @@ class TTkTabWidget(TTkFrame):
 
         self._tabBar.currentChanged.connect(self._tabChanged)
         self._tabBar.focusChanged.connect(self._focusChanged)
-
 
         self.setLayout(TTkGridLayout())
         if self.border():
@@ -314,15 +345,10 @@ class TTkTabWidget(TTkFrame):
 
     @pyTTkSlot(bool)
     def _focusChanged(self, focus):
-        return
         if focus:
-            tabBorderColor = self._tabBorderColorFocus
+            self.setBorderColor(TTkCfg.theme.tabBorderColorFocus)
         else:
-            tabBorderColor = self._tabBorderColor
-
-        for widget in self._tabBarTopLayout.iterWidgets():
-            widget.setBorderColor(tabBorderColor)
-            widget.update()
+            self.setBorderColor(TTkCfg.theme.tabBorderColor)
 
     def addMenu(self, text, position=TTkK.LEFT):
         return TTkMenuButton()
