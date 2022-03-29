@@ -49,7 +49,7 @@ class TTkTabButton(TTkButton):
             self.resize(len(self._text)+2, 3)
             self.setMinimumSize(2+len(self._text), 3)
             self.setMaximumSize(2+len(self._text), 3)
-        else:#'@@@@@@@@@@
+        else:
             self.resize(len(self._text)+2, 2)
             self.setMinimumSize(len(self._text)+2, 2)
             self.setMaximumSize(len(self._text)+2, 2)
@@ -68,6 +68,13 @@ class TTkTabButton(TTkButton):
     def setTabStatus(self, status):
         self._tabStatus = status
         self.update()
+
+    # This is a hack to force the action aftet the keypress
+    # And not key release as normally happen to the button
+    def mousePressEvent(self, evt):
+        return super().mouseReleaseEvent(evt)
+    def mouseReleaseEvent(self, evt):
+        return False
 
     def paintEvent(self):
         self._canvas.drawTabButton(
@@ -93,6 +100,16 @@ class _TTkTabScrollerButton(TTkButton):
             self.setMaximumSize(2, 2)
         self.setFocusPolicy(TTkK.ParentFocus)
 
+    # This is a hack to force the action aftet the keypress
+    # And not key release as normally happen to the button
+    def mousePressEvent(self, evt):
+        return super().mouseReleaseEvent(evt)
+    def mouseReleaseEvent(self, evt):
+        return False
+    def mouseTapEvent(self, evt) -> bool:
+        self.clicked.emit()
+        return True
+
     def paintEvent(self):
         tt = TTkCfg.theme.tab
         if self._border:
@@ -100,18 +117,21 @@ class _TTkTabScrollerButton(TTkButton):
                 self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[7] +tt[1])
                 self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[9] +tt[31])
                 self._canvas.drawText(pos=(0,2), color=self._borderColor, text=tt[11]+tt[12])
+                self._canvas.drawChar(pos=(1,1), char=tt[31], color=TTkCfg.theme.tabOffsetColor)
             else:
                 self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[1] +tt[8])
                 self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[32]+tt[9])
                 self._canvas.drawText(pos=(0,2), color=self._borderColor, text=tt[12]+tt[15])
+                self._canvas.drawChar(pos=(0,1), char=tt[32], color=TTkCfg.theme.tabOffsetColor)
         else:
             if self._side == TTkK.LEFT:
                 self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[9] +tt[31])
                 self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[23]+tt[1])
+                self._canvas.drawChar(pos=(1,0), char=tt[31], color=TTkCfg.theme.tabOffsetColor)
             else:
                 self._canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[32]+tt[9])
                 self._canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[1] +tt[24])
-
+                self._canvas.drawChar(pos=(0,0), char=tt[32], color=TTkCfg.theme.tabOffsetColor)
 '''
 _curentIndex =              2
 _labelPos =      [0],[1],  [2],   [3],   [4],
@@ -141,6 +161,8 @@ class TTkTabBar(TTkWidget):
         self._small = kwargs.get('small',True)
         self._leftScroller =  _TTkTabScrollerButton(border=not self._small,side=TTkK.LEFT)
         self._rightScroller = _TTkTabScrollerButton(border=not self._small,side=TTkK.RIGHT)
+        self._leftScroller.clicked.connect( self._moveToTheLeft)
+        self._rightScroller.clicked.connect(self._andMoveToTheRight)
         self._sideBorder = TTkK.LEFT | TTkK.RIGHT
 
         TTkWidget.__init__(self, *args, **kwargs)
@@ -254,13 +276,21 @@ class TTkTabBar(TTkWidget):
 
         self.update()
 
-    def wheelEvent(self, evt):
-        if evt.evt == TTkK.WHEEL_Down:
-            self._currentIndex = min(self._currentIndex+1,len(self._tabButtons)-1)
-        else:
-            self._currentIndex = max(self._currentIndex-1,0)
+    def _moveToTheLeft(self):
+        self._currentIndex = max(self._currentIndex-1,0)
         self._highlighted = self._currentIndex
         self._updateTabs()
+
+    def _andMoveToTheRight(self):
+        self._currentIndex = min(self._currentIndex+1,len(self._tabButtons)-1)
+        self._highlighted = self._currentIndex
+        self._updateTabs()
+
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Up:
+            self._moveToTheLeft()
+        else:
+            self._andMoveToTheRight()
         return True
 
     def keyEvent(self, evt):
