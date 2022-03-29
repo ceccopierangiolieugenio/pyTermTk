@@ -49,7 +49,7 @@ class TTkTabButton(TTkButton):
             self.resize(len(self._text)+2, 3)
             self.setMinimumSize(2+len(self._text), 3)
             self.setMaximumSize(2+len(self._text), 3)
-        else:
+        else:#'@@@@@@@@@@
             self.resize(len(self._text)+2, 2)
             self.setMinimumSize(len(self._text)+2, 2)
             self.setMaximumSize(len(self._text)+2, 2)
@@ -189,7 +189,7 @@ class TTkTabBar(TTkWidget):
         TTkLog.debug(index)
         if 0 <= index < len(self._tabButtons):
             self._currentIndex = index
-            self._offset = index
+            self._highlighted = index
             self._updateTabs()
 
     def resizeEvent(self, w, h):
@@ -224,7 +224,6 @@ class TTkTabBar(TTkWidget):
                 sideEnd |= TTkK.RIGHT
             t.move(tmpx,0)
             t.setSideEnd(sideEnd)
-            t.setTabStatus(TTkK.Unchecked)
             posx += t.width()-1
 
         # ZReorder the widgets:
@@ -232,14 +231,9 @@ class TTkTabBar(TTkWidget):
             self._tabButtons[i].raiseWidget()
         for i in reversed(range(max(0,self._currentIndex),len(self._tabButtons))):
             self._tabButtons[i].raiseWidget()
-        if 0 <= self._highlighted < len(self._tabButtons):
-            self._tabButtons[self._highlighted].raiseWidget()
 
         if self._currentIndex == -1:
             self._currentIndex = len(self._tabButtons)-1
-
-        if self._tabButtons:
-            self._tabButtons[self._currentIndex].setTabStatus(TTkK.Checked)
 
         if self._lastIndex != self._currentIndex:
             self._lastIndex = self._currentIndex
@@ -247,12 +241,44 @@ class TTkTabBar(TTkWidget):
 
         # set the buttons text color based on the selection/offset
         for i,b in enumerate(self._tabButtons):
-            if i == self._currentIndex:
+            if i == self._highlighted != self._currentIndex:
+                b.setColor(TTkCfg.theme.tabOffsetColor)
+                b.setTabStatus(TTkK.PartiallyChecked)
+                b.raiseWidget()
+            elif i == self._currentIndex:
                 b.setColor(TTkCfg.theme.tabSelectColor)
+                b.setTabStatus(TTkK.Checked)
             else:
                 b.setColor(TTkCfg.theme.tabColor)
+                b.setTabStatus(TTkK.Unchecked)
 
         self.update()
+
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Down:
+            self._currentIndex = min(self._currentIndex+1,len(self._tabButtons)-1)
+        else:
+            self._currentIndex = max(self._currentIndex-1,0)
+        self._highlighted = self._currentIndex
+        self._updateTabs()
+        return True
+
+    def keyEvent(self, evt):
+        if evt.type == TTkK.SpecialKey:
+            if evt.key == TTkK.Key_Right:
+                self._highlighted = min(self._highlighted+1,len(self._tabButtons)-1)
+                self._updateTabs()
+                return True
+            elif evt.key == TTkK.Key_Left:
+                self._highlighted = max(self._highlighted-1,0)
+                self._updateTabs()
+                return True
+        if ( evt.type == TTkK.Character and evt.key==" " ) or \
+           ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            self._currentIndex = self._highlighted
+            self._updateTabs()
+            return True
+        return False
 
     @pyTTkSlot(bool)
     def _focusChanged(self, focus):

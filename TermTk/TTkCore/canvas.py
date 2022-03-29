@@ -390,6 +390,12 @@ class TTkCanvas:
                 bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[14]
                 bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[14]
                 txtBottom = bLeft + tt[12]*(w-2) + bRight
+            elif status == TTkK.PartiallyChecked:
+                txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
+                txtCenter = tt[9]  + label           + tt[9]
+                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[13]
+                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[13]
+                txtBottom = bLeft + tt[12]*(w-2) + bRight
             else:
                 txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
                 txtCenter = tt[9]  + label           + tt[9]
