@@ -107,15 +107,15 @@ class TTkSplitter(TTkFrame):
     def _updateGeometries(self, resized=False):
         if not self.isVisible(): return
         _,_,w,h = self.geometry()
-        sep = self._separators
+        sep = self._separators = self._separators[0:len(self.layout().children())]
         if self.border():
             w-=2
             h-=2
 
         def _processGeometry(index, forward):
-            item = self.layout().itemAt(i)
-            pa = -1 if i==0 else sep[i-1]
-            pb = sep[i]
+            item = self.layout().itemAt(index)
+            pa = -1 if index==0 else sep[index-1]
+            pb = sep[index]
 
             if self._orientation == TTkK.HORIZONTAL:
                 newPos = pa+1
@@ -131,9 +131,9 @@ class TTkSplitter(TTkFrame):
                 if   size > maxsize: size = maxsize
                 elif size < minsize: size = minsize
                 if forward:
-                    sep[i]=pa+size+1
+                    sep[index]=pa+size+1
                 elif i>0 :
-                    sep[i-1]=pa=pb-size-1
+                    sep[index-1]=pa=pb-size-1
 
             if self._orientation == TTkK.HORIZONTAL:
                 item.setGeometry(pa+1,0,size,h)

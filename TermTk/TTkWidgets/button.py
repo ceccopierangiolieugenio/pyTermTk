@@ -106,7 +106,6 @@ class TTkButton(TTkWidget):
             borderColor = self._borderColorDisabled
             textColor   = self._textColorDisabled
             grid = TTkCfg.theme.buttonBoxGridDisabled
-
         elif self._pressed:
             borderColor = self._borderColorClicked
             textColor   = self._textColorClicked
@@ -164,6 +163,20 @@ class TTkButton(TTkWidget):
             self.clicked.emit()
             return True
         return False
+
+    def color(self):
+        return self._textColor
+
+    def setColor(self, color):
+        self._textColor = color
+        self.update()
+
+    def borderColor(self):
+        return self._borderColor
+
+    def setBorderColor(self, color):
+        self._borderColor = color
+        self.update()
 
     @property
     def text(self):

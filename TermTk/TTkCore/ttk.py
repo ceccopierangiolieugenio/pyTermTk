@@ -151,9 +151,12 @@ class TTk(TTkWidget):
                         focusWidget._pendingMouseRelease = False
                     # Adding this Crappy logic to handle a corner case in the drop routine
                     # where the mouse is leaving any widget able to handle the drop event
-                    if not self.mouseEvent(mevt) and (dndw := TTkHelper.dndWidget()):
-                        dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(mevt))
-                        TTkHelper.dndEnter(None)
+                    if not self.mouseEvent(mevt):
+                        if dndw := TTkHelper.dndWidget():
+                            dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(mevt))
+                            TTkHelper.dndEnter(None)
+                        if mevt.evt == TTkK.Press and focusWidget:
+                            focusWidget.clearFocus()
 
                 # Clean the Drag and Drop in case of mouse release
                 if mevt.evt == TTkK.Release:
@@ -163,7 +166,6 @@ class TTk(TTkWidget):
                 kevt = self.key_events.get()
                 # TTkLog.debug(f"Key: {kevt}")
                 focusWidget = TTkHelper.getFocus()
-                overlayWidget = TTkHelper.getOverlay()
                 TTkLog.debug(f"{focusWidget}")
                 if focusWidget is not None:
                     TTkHelper.execShortcut(kevt.key,focusWidget)

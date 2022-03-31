@@ -368,6 +368,51 @@ class TTkCanvas:
             textPos = (x,y+1)
         self.drawText(pos=textPos, text=text, color=color)
 
+    def drawTabButton(self, pos, size, label, sideEnd, small, status, color=TTkColor.RST):
+        x,y = pos
+        w,h = size
+        tt = TTkCfg.theme.tab
+        if small:
+            if status == TTkK.Checked:
+                txtCenter = tt[10] + label        + tt[10]
+                txtBottom = tt[21] + tt[5] *(w-2) + tt[22]
+            else:
+                txtCenter = tt[9]  + label        + tt[9]
+                txtBottom = tt[18] + tt[19]*(w-2) + tt[20]
+            self.drawText(pos=(x,y+0),color=color,text=txtCenter)
+            self.drawText(pos=(x,y+1),color=color,text=txtBottom)
+        else:
+            if status == TTkK.Checked:
+                txtTop    = tt[4]  + tt[5] *(w-2) + tt[6]
+                cLeft  = tt[33] if sideEnd & TTkK.LEFT  else tt[10]
+                cRight = tt[33] if sideEnd & TTkK.RIGHT else tt[10]
+                txtCenter = cLeft + label        + cRight
+                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[14]
+                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[14]
+                txtBottom = bLeft + tt[12]*(w-2) + bRight
+            elif status == TTkK.PartiallyChecked:
+                txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
+                txtCenter = tt[9]  + label           + tt[9]
+                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[13]
+                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[13]
+                txtBottom = bLeft + tt[12]*(w-2) + bRight
+            else:
+                txtTop    = tt[0]  + tt[1] *(w-2) + tt[3]
+                txtCenter = tt[9]  + label           + tt[9]
+                bLeft  = tt[11] if sideEnd & TTkK.LEFT  else tt[12]
+                bRight = tt[15] if sideEnd & TTkK.RIGHT else tt[12]
+                txtBottom = bLeft + tt[12]*(w-2) + bRight
+            self.drawText(pos=(x,y+0),color=color,text=txtTop)
+            self.drawText(pos=(x,y+1),color=color,text=txtCenter)
+            self.drawText(pos=(x,y+2),color=color,text=txtBottom)
+
+    def drawTabWidgetBottomLine(self, pos, size):
+        x,y = pos
+        w,h = size
+        tt = TTkCfg.theme.tab
+        txtLine = tt[11] + tt[12]*(w-2) + tt[15]
+        self.drawText(pos=(x,y),text=txtLine)
+
     def drawTab(
             self, pos, size,
             labels, labelsPos, selected,

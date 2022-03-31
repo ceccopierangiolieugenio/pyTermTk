@@ -43,10 +43,11 @@ class TTkConstant:
     Modifier   = ColorType.Modifier
 
     # Focus Policies
-    NoFocus    = 0x0000
-    ClickFocus = 0x0001
-    WheelFocus = 0x0002
-    TabFocus   = 0x0004
+    NoFocus     = 0x0000
+    ClickFocus  = 0x0001
+    WheelFocus  = 0x0002
+    TabFocus    = 0x0004
+    ParentFocus = 0x0101
 
     # positions
     NONE   = 0x0000

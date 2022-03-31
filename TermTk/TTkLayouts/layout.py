@@ -173,7 +173,7 @@ class TTkLayout(TTkLayoutItem):
     def itemAt(self, index):
         if index < len(self._items):
             return self._items[index]
-        return 0
+        return None
 
     def setParent(self, parent):
         if isinstance(parent, TTkLayoutItem):
@@ -302,7 +302,7 @@ class TTkLayout(TTkLayoutItem):
         return ret
 
 class TTkWidgetItem(TTkLayoutItem):
-    slots = ('_widget')
+    __slots__ = ('_widget')
     def __init__(self, *args, **kwargs):
         TTkLayoutItem.__init__(self, *args, **kwargs)
         self._widget = kwargs.get('widget', None)

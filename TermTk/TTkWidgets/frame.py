@@ -91,9 +91,17 @@ class TTkFrame(TTkWidget):
         self._border = border
         if border: self.setPadding(1,1,1,1)
         else:      self.setPadding(0,0,0,0)
+        self.update()
 
     def border(self):
         return self._border
+
+    def borderColor(self):
+        return self._borderColor
+
+    def setBorderColor(self, color):
+        self._borderColor = color
+        self.update()
 
     def paintEvent(self):
         if self._border:
@@ -108,4 +116,3 @@ class TTkFrame(TTkWidget):
                                 colorText=self._titleColor)
         elif self._menubarTop:
             self._canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
-
