@@ -489,4 +489,4 @@ class TTkTabWidget(TTkFrame):
         if self.border():
             self._canvas.drawBox(pos=(0,2),size=(self.width(),self.height()-2), color=self._borderColor, grid=9)
         else:
-            self._canvas.drawText(pos=(0,1),text=tt[23] + tt[19]*(self.width()-2) + tt[24], color=self._borderColor)
+            self._canvas.drawText(pos=(0,1),text=tt[36] + tt[19]*(self.width()-2) + tt[35], color=self._borderColor)
