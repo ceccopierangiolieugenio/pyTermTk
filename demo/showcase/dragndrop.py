@@ -27,6 +27,8 @@ import sys
 import random
 import argparse
 
+from TermTk.TTkWidgets.widget import TTkWidget
+
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
@@ -59,10 +61,12 @@ class DropThings(ttk.TTkFrame):
     def dropEvent(self, evt) -> bool:
         ttk.TTkLog.debug(f"Drop ({self.title()}) -> pos={evt.pos()}")
         data = evt.data()
-        self.addWidget(data)
-        data.move(evt.x,evt.y)
-        self.update()
-        return True
+        if issubclass(type(data),TTkWidget):
+            self.addWidget(data)
+            data.move(evt.x,evt.y)
+            self.update()
+            return True
+        return False
 
 def demoDnD(root=None):
     dndlayout = ttk.TTkGridLayout()

@@ -26,9 +26,11 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkConstant, TTkK
+from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.drag import TTkDrag
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.spacer import TTkSpacer
@@ -38,6 +40,21 @@ from TermTk.TTkWidgets.menubar import TTkMenuButton
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
+class _TTkTabWidgetDragData():
+    __slots__ = ('_tabButton', '_tabWidget')
+    def __init__(self, b, tw):
+        self._tabButton = b
+        self._tabWidget = tw
+    def tabButton(self): return self._tabButton
+    def tabWidget(self): return self._tabWidget
+
+class _TTkTabBarDragData():
+    __slots__ = ('_tabButton','_tabBar')
+    def __init__(self, b, tb):
+        self._tabButton = b
+        self._tabBar = tb
+    def tabButton(self): return self._tabButton
+    def tabBar(self): return self._tabBar
 
 class TTkTabButton(TTkButton):
     __slots__ = ('_sideEnd', '_tabStatus')
@@ -76,6 +93,21 @@ class TTkTabButton(TTkButton):
         return super().mouseReleaseEvent(evt)
     def mouseReleaseEvent(self, evt):
         return False
+    def mouseDragEvent(self, evt) -> bool:
+        drag = TTkDrag()
+        if tb := self.parentWidget():
+            if issubclass(type(tb),TTkTabBar):
+                if tw:= tb.parentWidget():
+                    # Init the drag only if used in a tabBar/tabWidget
+                    if issubclass(type(tw), TTkTabWidget):
+                        data = _TTkTabWidgetDragData(self,tw)
+                    else:
+                        data = _TTkTabBarDragData(self,tb)
+                    drag.setPixmap(self)
+                    drag.setData(data)
+                    drag.exec()
+                    return True
+        return super().mouseDragEvent(evt)
 
     def paintEvent(self):
         self._canvas.drawTabButton(
@@ -231,8 +263,18 @@ class TTkTabBar(TTkWidget):
 
     def insertTab(self, index, label):
         button = TTkTabButton(parent=self, text=label, border=not self._small)
+        button._borderColor = self._borderColor
         self._tabButtons.insert(index,button)
         button.clicked.connect(lambda :self.setCurrentIndex(self._tabButtons.index(button)))
+        self._updateTabs()
+
+    def removeTab(self, index):
+        button = self._tabButtons[index]
+        self.removeWidget(button)
+        self._tabButtons = self._tabButtons[:index] + self._tabButtons[index+1:]
+        if self._currentIndex >= index:
+            self._currentIndex -= 1
+        self._highlighted = self._currentIndex
         self._updateTabs()
 
     def borderColor(self):
@@ -240,6 +282,10 @@ class TTkTabBar(TTkWidget):
 
     def setBorderColor(self, color):
         self._borderColor = color
+        for b in self._tabButtons:
+            b.setBorderColor(color)
+        self._leftScroller.setBorderColor(color)
+        self._rightScroller.setBorderColor(color)
         self.update()
 
     def currentIndex(self):
@@ -356,10 +402,7 @@ class TTkTabBar(TTkWidget):
         else:
             borderColor = TTkCfg.theme.tabBorderColor
         self.setBorderColor(borderColor)
-        for b in self._tabButtons:
-            b.setBorderColor(borderColor)
-        self._leftScroller.setBorderColor(borderColor)
-        self._rightScroller.setBorderColor(borderColor)
+
 
     def paintEvent(self):
         w = self.width()
@@ -414,7 +457,9 @@ class TTkTabWidget(TTkFrame):
         self._tabBarTopLayout.addWidget(self._tabBar,0,1,3 if self.border() else 2,1)
 
         self._tabBar.currentChanged.connect(self._tabChanged)
-        self._tabBar.focusChanged.connect(self._focusChanged)
+        self.setFocusPolicy(self._tabBar.focusPolicy())
+        self._tabBar.setFocusPolicy(TTkK.ParentFocus)
+        self.focusChanged.connect(self._focusChanged)
 
         self.setLayout(TTkGridLayout())
         if self.border():
@@ -449,9 +494,45 @@ class TTkTabWidget(TTkFrame):
     @pyTTkSlot(bool)
     def _focusChanged(self, focus):
         if focus:
-            self.setBorderColor(TTkCfg.theme.tabBorderColorFocus)
+            borderColor = TTkCfg.theme.tabBorderColorFocus
         else:
-            self.setBorderColor(TTkCfg.theme.tabBorderColor)
+            borderColor = TTkCfg.theme.tabBorderColor
+        self.setBorderColor(borderColor)
+        self._tabBar.setBorderColor(borderColor)
+
+    def keyEvent(self, evt) -> bool:
+        return self._tabBar.keyEvent(evt)
+
+    def dropEvent(self, evt) -> bool:
+        data = evt.data()
+        x, y = evt.x, evt.y
+        if not issubclass(type  (data),_TTkTabWidgetDragData):
+            return False
+        tb = data.tabButton()
+        tw = data.tabWidget()
+        index  = tw._tabBar._tabButtons.index(tb)
+        widget = tw._tabWidgets[index]
+        if TTkHelper.isParent(self, tw):
+            return False
+        if y < 3:
+            tbx = self._tabBar.x()
+            newIndex = 0
+            for b in self._tabBar._tabButtons:
+                if tbx+b.x()+b.width()/2 < x:
+                    newIndex += 1
+            if tw == self:
+                if index <= newIndex:
+                    newIndex -= 1
+            tw.removeTab(index)
+            self.insertTab(newIndex, widget, tb.text)
+            self.setCurrentIndex(newIndex)
+            self._tabChanged(newIndex)
+        elif tw != self:
+            tw.removeTab(index)
+            self.insertTab(widget, tb.text)
+
+        TTkLog.debug(f"Drop -> pos={evt.pos()}")
+        return True
 
     def addMenu(self, text, position=TTkK.LEFT):
         button = _TTkTabMenuButton(text=text, borderColor=TTkCfg.theme.tabBorderColor)
@@ -478,8 +559,13 @@ class TTkTabWidget(TTkFrame):
     def insertTab(self, index, widget, label):
         widget.hide()
         self._tabWidgets.insert(index, widget)
-        self.layout().addWidget(widget)
+        self.addWidget(widget)
         self._tabBar.insertTab(index, label)
+
+    def removeTab(self, index):
+        self.removeWidget(self._tabWidgets[index])
+        self._tabWidgets = self._tabWidgets[:index] + self._tabWidgets[index+1:]
+        self._tabBar.removeTab(index)
 
     def resizeEvent(self, w, h):
         self._tabBarTopLayout.setGeometry(0,0,w,self._padt)

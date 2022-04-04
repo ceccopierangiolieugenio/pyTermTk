@@ -179,6 +179,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if self.layout() is not None:
             self.layout().removeWidget(widget)
             self.update(repaint=True, updateLayout=True)
+        #widget._parent = None
 
     def paintEvent(self):
         '''
@@ -538,7 +539,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
            self._parent.rootLayout() is not None:
             self._parent.rootLayout().removeWidget(self)
         TTkHelper.removeOverlayAndChild(self)
-
+        self._parent = None
 
     def isVisible(self):
         if self._parent is None:

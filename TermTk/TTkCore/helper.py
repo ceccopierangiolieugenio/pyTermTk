@@ -302,6 +302,14 @@ class TTkHelper:
         return 1 + TTkHelper.widgetDepth(widget.parentWidget())
 
     @staticmethod
+    def isParent(widget, parent):
+        if p := widget.parentWidget():
+            if p == parent:
+                return True
+            return TTkHelper.isParent(p, parent)
+        return False
+
+    @staticmethod
     def absPos(widget) -> (int,int):
         wx, wy = 0,0
         layout = widget.widgetItem()
