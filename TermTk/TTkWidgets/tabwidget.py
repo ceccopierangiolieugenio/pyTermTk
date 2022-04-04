@@ -272,7 +272,9 @@ class TTkTabBar(TTkWidget):
         button = self._tabButtons[index]
         self.removeWidget(button)
         self._tabButtons = self._tabButtons[:index] + self._tabButtons[index+1:]
-        if self._currentIndex >= index:
+        if self._currentIndex == index:
+            self._lastIndex = -1
+        if self._currentIndex > index:
             self._currentIndex -= 1
         self._highlighted = self._currentIndex
         self._updateTabs()
@@ -529,7 +531,10 @@ class TTkTabWidget(TTkFrame):
             self._tabChanged(newIndex)
         elif tw != self:
             tw.removeTab(index)
-            self.insertTab(widget, tb.text)
+            newIndex = len(self._tabWidgets)
+            self.addTab(widget, tb.text)
+            self.setCurrentIndex(newIndex)
+            self._tabChanged(newIndex)
 
         TTkLog.debug(f"Drop -> pos={evt.pos()}")
         return True
