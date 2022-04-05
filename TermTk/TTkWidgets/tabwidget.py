@@ -439,7 +439,7 @@ class TTkTabBar(TTkWidget):
 class TTkTabWidget(TTkFrame):
     __slots__ = (
         '_tabBarTopLayout', '_tabBar', '_topLeftLayout', '_topRightLayout',
-        '_tabWidgets',
+        '_tabWidgets', '_spacer',
         # Forward Signals
         'currentChanged', 'tabBarClicked',
         # forward methods
@@ -462,6 +462,8 @@ class TTkTabWidget(TTkFrame):
         self.setFocusPolicy(self._tabBar.focusPolicy())
         self._tabBar.setFocusPolicy(TTkK.ParentFocus)
         self.focusChanged.connect(self._focusChanged)
+
+        self._spacer = TTkSpacer(parent=self)
 
         self.setLayout(TTkGridLayout())
         if self.border():
@@ -487,9 +489,11 @@ class TTkTabWidget(TTkFrame):
 
     @pyTTkSlot(int)
     def _tabChanged(self, index):
+        self._spacer.show()
         for i, widget in enumerate(self._tabWidgets):
             if index == i:
                 widget.show()
+                self._spacer.hide()
             else:
                 widget.hide()
 
