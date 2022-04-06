@@ -274,7 +274,7 @@ class TTkTabBar(TTkWidget):
         self._tabButtons = self._tabButtons[:index] + self._tabButtons[index+1:]
         if self._currentIndex == index:
             self._lastIndex = -1
-        if self._currentIndex > index:
+        if self._currentIndex >= index:
             self._currentIndex -= 1
         self._highlighted = self._currentIndex
         self._updateTabs()
