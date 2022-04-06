@@ -218,7 +218,10 @@ class TTkLayout(TTkLayoutItem):
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addItem(self, item):
-        self._items.append(item)
+        self.insertItem(len(self._items),item)
+
+    def insertItem(self, index, item):
+        self._items.insert(index, item)
         self._zSortItems()
         self.update()
         item.setParent(self)
@@ -228,9 +231,12 @@ class TTkLayout(TTkLayoutItem):
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
-        if widget.parentWidget() is not None:
-            widget.parentWidget().removeWidget(self)
-        self.addItem(widget.widgetItem())
+        self.insertWidget(len(self._items),widget)
+
+    def insertWidget(self, index, widget):
+        if widget.parentWidget() and widget.parentWidget().layout():
+            widget.parentWidget().layout().removeWidget(self)
+        self.insertItem(index, widget.widgetItem())
 
     def removeItem(self, item):
         if item in self._items:

@@ -232,7 +232,7 @@ def main():
 
     ttk.TTkLog.use_default_file_logging()
 
-    root = ttk.TTk()
+    root = ttk.TTk(title="pyTermTk Demo")
     if args.f:
         root.setLayout(ttk.TTkGridLayout())
         winTabbed1 = root

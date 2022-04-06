@@ -189,7 +189,7 @@ class TTkListWidget(TTkAbstractScrollView):
             return self.addItemAt(label,pos)
         # item.listItemClicked.connect(self._labelSelectedHandler)
         self._items.insert(pos,item)
-        self.addWidget(item)
+        self.layout().addWidget(item)
         self._placeItems()
 
     def indexOf(self, item):

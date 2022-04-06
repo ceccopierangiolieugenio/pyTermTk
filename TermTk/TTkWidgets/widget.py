@@ -144,8 +144,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                             height = self._height )
 
 
-        if self._parent is not None:
-            self._parent.addWidget(self)
+        if self._parent and self._parent.layout():
+            self._parent.layout().addWidget(self)
             self._parent.update(repaint=True, updateLayout=True)
 
         self.update(repaint=True, updateLayout=True)
@@ -153,33 +153,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def __del__(self):
         ''' .. caution:: Don't touch this! '''
         # TTkLog.debug("DESTRUCTOR")
-        if self._parent is not None:
-            self._parent.removeWidget(self)
+        if self._parent and self._parent.layout():
+            self._parent.layout().removeWidget(self)
             self._parent = None
 
     def widgetItem(self): return self._widgetItem
-
-    def addWidget(self, widget):
-        ''' Add a child widget to the layout
-
-        :param widget: the widget to be added
-        :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
-        '''
-        widget._parent = self
-        if self.layout():
-            self.layout().addWidget(widget)
-            self.update(repaint=True, updateLayout=True)
-        # widget.show()
-
-    def removeWidget(self, widget):
-        ''' Remove the child widget from the layout
-
-        :param widget: (:class:`~TermTk.TTkWidgets.widget.TTkWidget`): the widget to be removed
-        '''
-        if self.layout() is not None:
-            self.layout().removeWidget(widget)
-            self.update(repaint=True, updateLayout=True)
-        #widget._parent = None
 
     def paintEvent(self):
         '''

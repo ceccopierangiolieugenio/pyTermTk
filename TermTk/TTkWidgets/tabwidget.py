@@ -240,8 +240,8 @@ class TTkTabBar(TTkWidget):
 
 
         # Add and connect the scrollers
-        self.addWidget(self._leftScroller)
-        self.addWidget(self._rightScroller)
+        self.layout().addWidget(self._leftScroller)
+        self.layout().addWidget(self._rightScroller)
 
         # Signals
         self.currentChanged = pyTTkSignal(int)
@@ -270,7 +270,7 @@ class TTkTabBar(TTkWidget):
 
     def removeTab(self, index):
         button = self._tabButtons[index]
-        self.removeWidget(button)
+        self.layout().removeWidget(button)
         self._tabButtons = self._tabButtons[:index] + self._tabButtons[index+1:]
         if self._currentIndex == index:
             self._lastIndex = -1
@@ -568,11 +568,11 @@ class TTkTabWidget(TTkFrame):
     def insertTab(self, index, widget, label):
         widget.hide()
         self._tabWidgets.insert(index, widget)
-        self.addWidget(widget)
+        self.layout().addWidget(widget)
         self._tabBar.insertTab(index, label)
 
     def removeTab(self, index):
-        self.removeWidget(self._tabWidgets[index])
+        self.layout().removeWidget(self._tabWidgets[index])
         self._tabWidgets = self._tabWidgets[:index] + self._tabWidgets[index+1:]
         self._tabBar.removeTab(index)
 

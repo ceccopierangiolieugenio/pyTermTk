@@ -49,8 +49,16 @@ class TTkSplitter(TTkFrame):
         self.setFocusPolicy(TTkK.ClickFocus)
         self._splitterInitialized = True
 
-    def addWidget(self, widget, size=None):
-        TTkFrame.addWidget(self, widget)
+        class _SplitterLayout(TTkLayout):
+            def addWidget(s, *args, **kwargs):
+                TTkLayout.addWidget(s, *args, **kwargs)
+                self._addWidget(*args, **kwargs)
+        self.setLayout(_SplitterLayout())
+
+    def orientation(self):
+        return self._orientation
+
+    def _addWidget(self, widget, size=None):
         _,_,w,h = self.geometry()
         if self.border():
             w-=2

@@ -62,7 +62,7 @@ class DropThings(ttk.TTkFrame):
         ttk.TTkLog.debug(f"Drop ({self.title()}) -> pos={evt.pos()}")
         data = evt.data()
         if issubclass(type(data),TTkWidget):
-            self.addWidget(data)
+            self.layout().addWidget(data)
             data.move(evt.x,evt.y)
             self.update()
             return True

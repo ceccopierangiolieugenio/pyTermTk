@@ -163,7 +163,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 size = sizes[iw]
                 if widget is not None:
                     if widget.parentWidget() != self:
-                        self.addWidget(widget)
+                        self.layout().addWidget(widget)
                     widget.setGeometry(x,y,size,1)
                     widget.show()
                     self._shownWidgets.append(widget)
