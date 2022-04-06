@@ -159,6 +159,38 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     def widgetItem(self): return self._widgetItem
 
+    def addWidget(self, widget):
+        '''
+        .. warning::
+            Method Deprecated,
+
+            use :class:`TTkWidget` -> :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :class:`~TermTk.TTkLayouts.layout.TTkLayout.addWidget`
+
+            i.e.
+
+            .. code:: python
+
+                parentWidget.layout().addWidget(childWidget)
+        '''
+        TTkLog.error("<TTkWidget>.addWidget(...) is deprecated, use <TTkWidget>.layout().addWidget(...)")
+        if self.layout(): self.layout().addWidget(widget)
+
+    def removeWidget(self, widget):
+        '''
+        .. warning::
+            Method Deprecated,
+
+            use :class:`TTkWidget` -> :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :class:`~TermTk.TTkLayouts.layout.TTkLayout.removeWidget`
+
+            i.e.
+
+            .. code:: python
+
+                parentWidget.layout().removeWidget(childWidget)
+        '''
+        TTkLog.error("<TTkWidget>.removeWidget(...) is deprecated, use <TTkWidget>.layout().removeWidget(...)")
+        if self.layout(): self.layout().removeWidget(widget)
+
     def paintEvent(self):
         '''
         Paint Event callback,
@@ -383,7 +415,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         #self.layout().setParent(self)
         self.update(repaint=True, updateLayout=True)
 
-    def layout(self): return self._layout.itemAt(0)
+    def layout(self):
+        ''' Get the layout
+
+        :return: The layout used
+        :rtype: :class:`TTkLayout` or derived
+        '''
+        return self._layout.itemAt(0)
     def rootLayout(self): return self._layout
 
     def setParent(self, parent):

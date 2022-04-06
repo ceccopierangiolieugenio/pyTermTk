@@ -50,15 +50,15 @@ class TTkSplitter(TTkFrame):
         self._splitterInitialized = True
 
         class _SplitterLayout(TTkLayout):
-            def addWidget(s, *args, **kwargs):
-                TTkLayout.addWidget(s, *args, **kwargs)
-                self._addWidget(*args, **kwargs)
+            def addWidget(s, widget, size=None):
+                TTkLayout.addWidget(s, widget)
+                self._addWidget(size)
         self.setLayout(_SplitterLayout())
 
     def orientation(self):
         return self._orientation
 
-    def _addWidget(self, widget, size=None):
+    def _addWidget(self, size=None):
         _,_,w,h = self.geometry()
         if self.border():
             w-=2

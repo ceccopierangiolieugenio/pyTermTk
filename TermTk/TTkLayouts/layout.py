@@ -231,6 +231,11 @@ class TTkLayout(TTkLayoutItem):
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
+        ''' Add a widget to this Layout
+
+        :param widget: the widget to be added
+        :type widget: :class:`~TermTk.TTkWidgets`
+        '''
         self.insertWidget(len(self._items),widget)
 
     def insertWidget(self, index, widget):
@@ -244,6 +249,11 @@ class TTkLayout(TTkLayoutItem):
         self._zSortItems()
 
     def removeWidget(self, widget):
+        ''' Remove a widget from this Layout
+
+        :param widget: the widget to be removed
+        :type widget: :class:`~TermTk.TTkWidgets`
+        '''
         for item in self._items:
             if item.layoutItemType == TTkK.WidgetItem and \
                item.widget() == widget:

@@ -64,7 +64,7 @@
 - [x] Add Grid Layout
   - [x] Add ColSpan / RowSpan
 - [x] Get rid of groupMoveTo
-- [ ] Get rid of addWidget
+- [x] Get rid of addWidget
 
 ### AbstractScrollArea
 - [x] Implement something that mimic the QAbstactScrollArea
