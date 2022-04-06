@@ -8,6 +8,20 @@ TermTk.TTkWidgets.tabwidget
 
 
 
+TTkTabButton
+============
+
+.. autoclass:: TTkTabButton
+   :members:
+
+
+TTkTabBar
+=========
+
+.. autoclass:: TTkTabBar
+   :members:
+
+
 TTkTabWidget
 ============
 

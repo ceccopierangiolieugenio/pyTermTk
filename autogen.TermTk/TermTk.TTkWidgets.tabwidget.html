@@ -129,6 +129,8 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.spinbox.html">TermTk.TTkWidgets.spinbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.splitter.html">TermTk.TTkWidgets.splitter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.tabwidget</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttktabbutton">TTkTabButton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ttktabbar">TTkTabBar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ttktabwidget">TTkTabWidget</a></li>
 </ul>
 </li>
@@ -209,12 +211,195 @@
             
   <section id="module-TermTk.TTkWidgets.tabwidget">
 <span id="termtk-ttkwidgets-tabwidget"></span><h1>TermTk.TTkWidgets.tabwidget<a class="headerlink" href="#module-TermTk.TTkWidgets.tabwidget" title="Permalink to this headline">¶</a></h1>
+<section id="ttktabbutton">
+<h2>TTkTabButton<a class="headerlink" href="#ttktabbutton" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabButton">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkTabButton</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabButton.mouseDragEvent">
+<code class="sig-name descname"><span class="pre">mouseDragEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton.mouseDragEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.mouseDragEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabButton.mousePressEvent">
+<code class="sig-name descname"><span class="pre">mousePressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabButton.mouseReleaseEvent">
+<code class="sig-name descname"><span class="pre">mouseReleaseEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse release events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabButton.paintEvent">
+<code class="sig-name descname"><span class="pre">paintEvent</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.paintEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paint Event callback,
+ths need to be overridden in the widget.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="ttktabbar">
+<h2>TTkTabBar<a class="headerlink" href="#ttktabbar" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabBar">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkTabBar</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabBar.keyEvent">
+<code class="sig-name descname"><span class="pre">keyEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.keyEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabBar.paintEvent">
+<code class="sig-name descname"><span class="pre">paintEvent</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.paintEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paint Event callback,
+ths need to be overridden in the widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabBar.resizeEvent">
+<code class="sig-name descname"><span class="pre">resizeEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.resizeEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event Callback triggered after a successful resize</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabBar.wheelEvent">
+<code class="sig-name descname"><span class="pre">wheelEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.wheelEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.wheelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse wheel events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="ttktabwidget">
 <h2>TTkTabWidget<a class="headerlink" href="#ttktabwidget" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="TermTk.TTkWidgets.tabwidget.TTkTabWidget">
 <em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkTabWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.dropEvent">
+<code class="sig-name descname"><span class="pre">dropEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.dropEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.dropEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.keyEvent">
+<code class="sig-name descname"><span class="pre">keyEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.keyEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.paintEvent">
 <code class="sig-name descname"><span class="pre">paintEvent</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.paintEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Paint Event callback,

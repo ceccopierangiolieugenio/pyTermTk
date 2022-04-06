@@ -201,7 +201,7 @@
 <h2>TTkString<a class="headerlink" href="#ttkstring" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="TermTk.TTkCore.string.TTkString">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">text=''</span></em>, <em class="sig-param"><span class="pre">color=&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString" title="Permalink to this definition">¶</a></dt>
 <dd><p>TermTk String Helper</p>
 <p>The TTkString constructor creates a terminal String object.</p>
 <dl class="field-list simple">
@@ -343,6 +343,27 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.tab2spaces">
+<code class="sig-name descname"><span class="pre">tab2spaces</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tabSpaces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.tab2spaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.tab2spaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string representation with the tabs (converted in spaces) trimmed and aligned</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkCore.string.TTkString.tabCharPos">
+<code class="sig-name descname"><span class="pre">tabCharPos</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabSpaces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignTabRight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.tabCharPos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.tabCharPos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the char position in the string from the position in its representation with the tab solved</p>
+<p>i.e.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span>                   <span class="n">X</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">tab2Spaces</span> <span class="o">|----------|---------------------|</span>
+<span class="n">Tabs</span>            <span class="o">|--|</span>  <span class="o">|</span>  <span class="o">|-|</span>     <span class="o">|-|</span>   <span class="o">|</span>
+<span class="n">_text</span>      <span class="n">Lorem</span>    <span class="n">ipsum</span>   <span class="n">dolor</span>   <span class="n">sit</span> <span class="n">amet</span><span class="p">,</span>
+<span class="n">chars</span>      <span class="o">.....</span><span class="n">t</span>   <span class="o">.....</span><span class="n">t</span>  <span class="o">.....</span><span class="n">t</span>  <span class="o">...</span><span class="n">t</span><span class="o">.....</span>
+<span class="n">ret</span>                   <span class="n">x</span> <span class="o">=</span> <span class="mi">8</span> <span class="p">(</span><span class="n">tab</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">char</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

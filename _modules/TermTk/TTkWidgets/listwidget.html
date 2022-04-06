@@ -361,7 +361,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">addItemAt</span><span class="p">(</span><span class="n">label</span><span class="p">,</span><span class="n">pos</span><span class="p">)</span>
         <span class="c1"># item.listItemClicked.connect(self._labelSelectedHandler)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">indexOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>

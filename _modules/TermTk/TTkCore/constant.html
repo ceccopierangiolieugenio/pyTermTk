@@ -215,10 +215,11 @@
     <span class="n">Modifier</span>   <span class="o">=</span> <span class="n">ColorType</span><span class="o">.</span><span class="n">Modifier</span>
 
     <span class="c1"># Focus Policies</span>
-    <span class="n">NoFocus</span>    <span class="o">=</span> <span class="mh">0x0000</span>
-    <span class="n">ClickFocus</span> <span class="o">=</span> <span class="mh">0x0001</span>
-    <span class="n">WheelFocus</span> <span class="o">=</span> <span class="mh">0x0002</span>
-    <span class="n">TabFocus</span>   <span class="o">=</span> <span class="mh">0x0004</span>
+    <span class="n">NoFocus</span>     <span class="o">=</span> <span class="mh">0x0000</span>
+    <span class="n">ClickFocus</span>  <span class="o">=</span> <span class="mh">0x0001</span>
+    <span class="n">WheelFocus</span>  <span class="o">=</span> <span class="mh">0x0002</span>
+    <span class="n">TabFocus</span>    <span class="o">=</span> <span class="mh">0x0004</span>
+    <span class="n">ParentFocus</span> <span class="o">=</span> <span class="mh">0x0101</span>
 
     <span class="c1"># positions</span>
     <span class="n">NONE</span>   <span class="o">=</span> <span class="mh">0x0000</span>
@@ -314,7 +315,7 @@
 <span class="sd">        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoButton</span>      <span class="o">=</span> <span class="mh">0x00000000</span>
-        <span class="sd">&#39;&#39;&#39;The button state does not refer to any button (see QMouseEvent::button()).&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;The button state does not refer to any button.&#39;&#39;&#39;</span>
         <span class="n">AllButtons</span>    <span class="o">=</span> <span class="mh">0x07ffffff</span>
         <span class="sd">&#39;&#39;&#39;This value corresponds to a mask of all possible mouse buttons. Use to set the &#39;acceptedButtons&#39; property of a MouseArea to accept ALL mouse buttons.&#39;&#39;&#39;</span>
         <span class="n">LeftButton</span>    <span class="o">=</span> <span class="mh">0x00000001</span>
@@ -335,6 +336,35 @@
     <span class="n">MidButton</span>     <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">MidButton</span>
     <span class="n">MiddleButton</span>  <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">MiddleButton</span>
     <span class="n">Wheel</span>         <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">Wheel</span>
+
+<div class="viewcode-block" id="TTkConstant.WrapMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.WrapMode">[docs]</a>    <span class="k">class</span> <span class="nc">WrapMode</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Those constants describes how text is wrapped in a document.&#39;&#39;&#39;</span>
+        <span class="c1"># NoWrap        = 0x00</span>
+        <span class="c1"># &#39;&#39;&#39;Text is not wrapped at all.&#39;&#39;&#39;</span>
+        <span class="n">WordWrap</span>      <span class="o">=</span> <span class="mh">0x01</span>
+        <span class="sd">&#39;&#39;&#39;Text is wrapped at word boundaries.&#39;&#39;&#39;</span>
+        <span class="c1"># ManualWrap    = 0x02</span>
+        <span class="c1"># &#39;&#39;&#39;Same as :class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`&#39;&#39;&#39;</span>
+        <span class="n">WrapAnywhere</span>  <span class="o">=</span> <span class="mh">0x03</span>
+        <span class="sd">&#39;&#39;&#39;Text can be wrapped at any point on a line, even if it occurs in the middle of a word.&#39;&#39;&#39;</span>
+        <span class="n">WrapAtWordBoundaryOrAnywhere</span> <span class="o">=</span> <span class="mh">0x04</span>
+        <span class="sd">&#39;&#39;&#39;If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.&#39;&#39;&#39;</span></div>
+
+    <span class="c1"># NoWrap       = WrapMode.NoWrap</span>
+    <span class="n">WordWrap</span>     <span class="o">=</span> <span class="n">WrapMode</span><span class="o">.</span><span class="n">WordWrap</span>
+    <span class="c1"># ManualWrap   = WrapMode.ManualWrap</span>
+    <span class="n">WrapAnywhere</span> <span class="o">=</span> <span class="n">WrapMode</span><span class="o">.</span><span class="n">WrapAnywhere</span>
+    <span class="n">WrapAtWordBoundaryOrAnywhere</span> <span class="o">=</span> <span class="n">WrapMode</span><span class="o">.</span><span class="n">WrapAtWordBoundaryOrAnywhere</span>
+
+    <span class="k">class</span> <span class="nc">LineWrapMode</span><span class="p">():</span>
+        <span class="n">NoWrap</span>       <span class="o">=</span>  <span class="mh">0x00</span>
+        <span class="n">WidgetWidth</span>  <span class="o">=</span>  <span class="mh">0x01</span>
+        <span class="n">FixedWidth</span>   <span class="o">=</span>  <span class="mh">0x03</span>
+
+    <span class="n">NoWrap</span>      <span class="o">=</span> <span class="n">LineWrapMode</span><span class="o">.</span><span class="n">NoWrap</span>
+    <span class="n">WidgetWidth</span> <span class="o">=</span> <span class="n">LineWrapMode</span><span class="o">.</span><span class="n">WidgetWidth</span>
+    <span class="n">FixedWidth</span>  <span class="o">=</span> <span class="n">LineWrapMode</span><span class="o">.</span><span class="n">FixedWidth</span>
+
 
     <span class="c1"># Events</span>
 <div class="viewcode-block" id="TTkConstant.MouseEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.MouseEvent">[docs]</a>    <span class="k">class</span> <span class="nc">MouseEvent</span><span class="p">():</span>

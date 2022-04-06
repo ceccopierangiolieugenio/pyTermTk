@@ -279,7 +279,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="n">h</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkComboBox.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
+            <span class="n">borderColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxBorderColorDisabled</span>
+            <span class="n">color</span>       <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxContentColorDisabled</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
             <span class="n">borderColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxBorderColorFocus</span>
             <span class="n">color</span>       <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxContentColorFocus</span>
         <span class="k">else</span><span class="p">:</span>

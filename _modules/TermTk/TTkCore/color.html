@@ -307,9 +307,9 @@
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(&quot;__sub__&quot;)</span>
         <span class="c1"># if other is None: return str(self)</span>
-        <span class="k">if</span> <span class="s2">&quot;&quot;</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg</span>  <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_bg</span>  <span class="ow">or</span> \
-           <span class="s2">&quot;&quot;</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fg</span>  <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_fg</span>  <span class="ow">or</span> \
-           <span class="s2">&quot;&quot;</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mod</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_mod</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="s2">&quot;&quot;</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg</span>  <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_bg</span>  <span class="ow">or</span>
+             <span class="s2">&quot;&quot;</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fg</span>  <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_fg</span>  <span class="ow">or</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">_mod</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">_mod</span> <span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span><span class="o">+</span><span class="bp">self</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 

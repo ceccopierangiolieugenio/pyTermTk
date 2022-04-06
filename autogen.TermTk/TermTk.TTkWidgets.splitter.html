@@ -217,12 +217,12 @@
 <dd><dl class="py method">
 <dt id="TermTk.TTkWidgets.splitter.TTkSplitter.addWidget">
 <code class="sig-name descname"><span class="pre">addWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.addWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.addWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a child widget to the layout</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>widget</strong> (<a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget" title="TermTk.TTkWidgets.widget.TTkWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code></a>) – the widget to be added</p>
-</dd>
-</dl>
+<dd><p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -272,6 +272,17 @@
 <code class="sig-name descname"><span class="pre">paintEvent</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.paintEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Paint Event callback,
 ths need to be overridden in the widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TermTk.TTkWidgets.splitter.TTkSplitter.removeWidget">
+<code class="sig-name descname"><span class="pre">removeWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.removeWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.removeWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

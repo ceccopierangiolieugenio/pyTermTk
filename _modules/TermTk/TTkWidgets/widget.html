@@ -316,8 +316,8 @@
                             <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="p">)</span>
 
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -325,32 +325,43 @@
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; .. caution:: Don&#39;t touch this! &#39;&#39;&#39;</span>
         <span class="c1"># TTkLog.debug(&quot;DESTRUCTOR&quot;)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">widgetItem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetItem</span>
 
 <div class="viewcode-block" id="TTkWidget.addWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.addWidget">[docs]</a>    <span class="k">def</span> <span class="nf">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; Add a child widget to the layout</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. warning::</span>
+<span class="sd">            Method Deprecated,</span>
 
-<span class="sd">        :param widget: the widget to be added</span>
-<span class="sd">        :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`</span>
+<span class="sd">            use :class:`TTkWidget` -&gt; :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -&gt; :class:`~TermTk.TTkLayouts.layout.TTkLayout.addWidget`</span>
+
+<span class="sd">            i.e.</span>
+
+<span class="sd">            .. code:: python</span>
+
+<span class="sd">                parentWidget.layout().addWidget(childWidget)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-        <span class="c1"># widget.show()</span>
+        <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;&lt;TTkWidget&gt;.addWidget(...) is deprecated, use &lt;TTkWidget&gt;.layout().addWidget(...)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkWidget.removeWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.removeWidget">[docs]</a>    <span class="k">def</span> <span class="nf">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; Remove the child widget from the layout</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. warning::</span>
+<span class="sd">            Method Deprecated,</span>
 
-<span class="sd">        :param widget: (:class:`~TermTk.TTkWidgets.widget.TTkWidget`): the widget to be removed</span>
+<span class="sd">            use :class:`TTkWidget` -&gt; :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -&gt; :class:`~TermTk.TTkLayouts.layout.TTkLayout.removeWidget`</span>
+
+<span class="sd">            i.e.</span>
+
+<span class="sd">            .. code:: python</span>
+
+<span class="sd">                parentWidget.layout().removeWidget(childWidget)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;&lt;TTkWidget&gt;.removeWidget(...) is deprecated, use &lt;TTkWidget&gt;.layout().removeWidget(...)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkWidget.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -512,6 +523,12 @@
             <span class="k">if</span>  <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_mouseEventLayoutHandle</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()):</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
+        <span class="c1"># If there is an overlay and it is modal,</span>
+        <span class="c1"># return False if this widget id not part of any</span>
+        <span class="c1"># of the widgets above the modal</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">checkModalOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
         <span class="c1"># Handle Drag and Drop Events</span>
         <span class="k">if</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">():</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
@@ -542,9 +559,13 @@
                 <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focusPolicy</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">()</span>
+            <span class="c1"># in case of parent focus, check the parent that can accept the focus</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="k">while</span> <span class="n">w</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">and</span> <span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">focusPolicy</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ParentFocus</span><span class="p">)</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ParentFocus</span><span class="p">:</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">_parent</span>
+            <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">focusPolicy</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">:</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">tap</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseDoubleClickEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="c1">#self._pendingMouseRelease = True</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -566,7 +587,13 @@
         <span class="c1">#self.layout().setParent(self)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkWidget.layout"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout">[docs]</a>    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Get the layout</span>
+
+<span class="sd">        :return: The layout used</span>
+<span class="sd">        :rtype: :class:`TTkLayout` or derived</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
     <span class="k">def</span> <span class="nf">rootLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span>
 
     <span class="k">def</span> <span class="nf">setParent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
@@ -700,7 +727,7 @@
            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayAndChild</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">isVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -736,8 +763,6 @@
         <span class="k">if</span> <span class="n">tmp</span> <span class="o">==</span> <span class="bp">self</span><span class="p">:</span> <span class="k">return</span>
         <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tmp</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
-        <span class="c1">#if not TTkHelper.isOverlay(self):</span>
-        <span class="c1">#    TTkHelper.removeOverlay(refocus=False)</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayChild</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">True</span>
