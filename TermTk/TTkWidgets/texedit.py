@@ -54,7 +54,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._readOnly = True
         self._hsize = 0
         self._lines = [(0,(0,0))]
-        self._dataLines = ['']
+        self._dataLines = [TTkString()]
         self._tabSpaces = 4
         self._wrapWidth     = 80
         self._lastWrapUsed  = 0
@@ -93,6 +93,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def setWordWrapMode(self, mode):
         self._wordWrapMode = mode
         self._rewrap()
+
+    def clear(self):
+        self.setText(TTkString())
 
     @pyTTkSlot(str)
     def setText(self, text):
@@ -492,7 +495,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
     __slots__ = (
             '_textEditView',
             # Forwarded Methods
-            'setText', 'append', 'isReadOnly', 'setReadOnly'
+            'clear', 'setText', 'append', 'isReadOnly', 'setReadOnly'
             'wrapWidth', 'setWrapWidth',
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
@@ -502,6 +505,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._name = kwargs.get('name' , 'TTkTextEdit' )
         self._textEditView = _TTkTextEditView()
         self.setViewport(self._textEditView)
+        self.clear   = self._textEditView.clear
         self.setText = self._textEditView.setText
         self.append  = self._textEditView.append
         self.isReadOnly  = self._textEditView.isReadOnly
