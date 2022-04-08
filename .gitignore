@@ -7,7 +7,7 @@ __pycache__/
 tests/test.dummy.py
 *.swp
 tmp
-profiler.txt
+profiler.*
 .vscode
 docs/html
 experiments

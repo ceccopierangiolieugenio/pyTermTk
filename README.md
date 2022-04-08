@@ -39,48 +39,64 @@ Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.
 
 ## Install/Upgrade
 [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) is available on [PyPI](https://pypi.org/project/pyTermTk/)
-```shell
+```bash
 pip3 install --upgrade pyTermTk
 ```
 ## Quick Test/Try - no install required
 
 #### Clone
-```shell
+```bash
 clone git@github.com:ceccopierangiolieugenio/pyTermTk.git
 cd pyTermTk
 ```
 
 #### Run Basic (non ui) input test
-```shell
+```bash
 python3 tests/test.input.py
 ```
 
-#### Run demo
-```shell
+#### Demos
+```bash
 # Press CTRL-C to exit
 # the logs are written to "session.log"
-make runDemo
-  # or
+# add "-f" option to run it in "fullscreen" :-D
+
+# Showcase Demo
 python3 demo/demo.py -f
 
-# Try gittk
-make runGittk
+# Paint demo
+python3 demo/paint.py
+
+# VSCode like d'n d layout demo
+python3 demo/ttkode.py
+
+# early gittk demo
+python3 demo/gittk.py
+
+# Text edit with "Pygments" highlight integrated
+# it require pygments
+#   pip install pygments
+python3 tests/test.ui.018.TextEdit.Pygments.py REAMDE.md
 ```
 #### Profiling
 ##### [cProfile](https://docs.python.org/3/library/profile.html), [cProfilev](https://github.com/ymichael/cprofilev)
-```shell
-python3 -m cProfile -o profiler.txt tests/test.ui.004.py
+```bash
+python3 -m cProfile -o profiler.bin tests/test.ui.004.py
 
 # install cprofilev:
 #     pip3 install cprofilev
-cprofilev -f profiler.txt
+cprofilev -f profiler.bin
 # open http://127.0.0.1:4000
 ```
 ##### pyroscope
 [pyroscope](https://pyroscope.io/) can be used as well for profiling
 
+## Projects using [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+- [tlogg](https://github.com/ceccopierangiolieugenio/tlogg) - A fast, advanced log explorer.
+- [pytest-fold](https://github.com/jeffwright13/pytest-fold) - A Pytest plugin to make console output more manageable when there are multiple failed tests
+
 ## Related Projects
-- honourable mention
+- Honourable mention
   - [bpytop](https://github.com/aristocratos/bpytop) - Linux/OSX/FreeBSD resource monitor <br>
     This was the base inspiration for my core library
 
