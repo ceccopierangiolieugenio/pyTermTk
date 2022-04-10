@@ -35,7 +35,7 @@ class TTkSplitter(TTkFrame):
         '_widgets', '_separatorSelected')
     def __init__(self, *args, **kwargs):
         self._splitterInitialized = False
-        # self._splitterInitialized = True
+
         self._widgets = []
         self._separators = []
         self._separatorsRef = []
@@ -77,10 +77,10 @@ class TTkSplitter(TTkFrame):
 
     def removeWidget(self, widget):
         index = self.indexOf(widget)
-        self._widgets       = self._widgets[:index]       + self._widgets[index+1:]
-        self._initSizes     = self._initSizes[:index]     + self._initSizes[index+1:]
-        self._separators    = self._separators[:index]    + self._separators[index+1:]
-        self._separatorsRef = self._separatorsRef[:index] + self._separatorsRef[index+1:]
+        self._widgets.pop(index)
+        self._initSizes.pop(index)
+        self._separators.pop(index)
+        self._separatorsRef = [s for s in self._separators]
         TTkLayout.removeWidget(self.layout(), widget)
         self._updateGeometries()
 

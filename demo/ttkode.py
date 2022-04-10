@@ -59,7 +59,7 @@ class KodeTab(TTkTabWidget):
         self._name = kwargs.get('name' , 'KodeTab')
         self._frameOverlay = _KolorFrame('visible',False)
         self._frameOverlay.setBorderColor(TTkColor.fg("#00FFFF")+TTkColor.bg("#000044"))
-        self._frameOverlay.setFillColor(TTkColor.bg("#000088"))
+        self._frameOverlay.setFillColor(TTkColor.bg("#000088", modifier=TTkColorGradient(increment=-3)))
         self.rootLayout().addWidget(self._frameOverlay)
 
 

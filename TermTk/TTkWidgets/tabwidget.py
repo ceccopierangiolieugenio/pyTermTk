@@ -25,6 +25,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from turtle import isvisible
 from TermTk.TTkCore.constant import TTkConstant, TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
@@ -479,6 +480,12 @@ class TTkTabWidget(TTkFrame):
         # forwarded Signals
         self.currentChanged = self._tabBar.currentChanged
         self.tabBarClicked  = self._tabBar.tabBarClicked
+
+    def currentWidget(self):
+        for w in self._tabWidgets:
+            if w.isVisible():
+                return w
+        return self._spacer
 
     @pyTTkSlot(TTkWidget)
     def setCurrentWidget(self, widget):
