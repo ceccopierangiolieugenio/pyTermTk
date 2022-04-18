@@ -475,7 +475,7 @@ class TTkTabWidget(TTkFrame):
         # forward methods
         'tabsClosable', 'setTabsClosable',
         'data', 'setData',
-        'currentIndex', 'setCurrentIndex')
+        'currentIndex', 'setCurrentIndex', 'tabCloseRequested')
 
     def __init__(self, *args, **kwargs):
         self._tabWidgets = []
@@ -514,8 +514,9 @@ class TTkTabWidget(TTkFrame):
         self.tabsClosable    = self._tabBar.tabsClosable
         self.setTabsClosable = self._tabBar.setTabsClosable
         # forwarded Signals
-        self.currentChanged = self._tabBar.currentChanged
-        self.tabBarClicked  = self._tabBar.tabBarClicked
+        self.currentChanged    = self._tabBar.currentChanged
+        self.tabBarClicked     = self._tabBar.tabBarClicked
+        self.tabCloseRequested = self._tabBar.tabCloseRequested
 
     def widget(self, index):
         return self._tabWidgets[index]
