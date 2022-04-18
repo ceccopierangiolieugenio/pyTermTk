@@ -1,6 +1,3 @@
-
-
-
 #!/usr/bin/env python3
 
 # MIT License
@@ -273,7 +270,7 @@ class TTkTabBar(TTkWidget):
         self._updateTabs()
 
     def addTab(self, label, data=None):
-        self.insertTab(len(self._tabButtons), label)
+        self.insertTab(len(self._tabButtons), label, data)
 
     def insertTab(self, index, label, data=None):
         button = TTkTabButton(parent=self, text=label, border=not self._small, closable=self._tabClosable)
@@ -564,7 +561,8 @@ class TTkTabWidget(TTkFrame):
         tb = data.tabButton()
         tw = data.tabWidget()
         index  = tw._tabBar._tabButtons.index(tb)
-        widget = tw._tabWidgets[index]
+        widget = tw.widget(index)
+        data   = tw.data(index)
         if TTkHelper.isParent(self, tw):
             return False
         if y < 3:
@@ -577,13 +575,13 @@ class TTkTabWidget(TTkFrame):
                 if index <= newIndex:
                     newIndex -= 1
             tw.removeTab(index)
-            self.insertTab(newIndex, widget, tb.text)
+            self.insertTab(newIndex, widget, tb.text, data)
             self.setCurrentIndex(newIndex)
             #self._tabChanged(newIndex)
         elif tw != self:
             tw.removeTab(index)
             newIndex = len(self._tabWidgets)
-            self.addTab(widget, tb.text)
+            self.addTab(widget, tb.text, data)
             self.setCurrentIndex(newIndex)
             self._tabChanged(newIndex)
 
