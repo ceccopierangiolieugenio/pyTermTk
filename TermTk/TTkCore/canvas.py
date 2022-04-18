@@ -215,7 +215,10 @@ class TTkCanvas:
             for i in range(max(0,-x), min(len(txt),self._width-x)):
                 #self._set(y, x+i, txt[i-x], colors[i-x])
                 self._data[y][x+i] = txt[i]
-                self._colors[y][x+i] =  colors[i].mod(x+i,y)
+                if colors[i] == TTkColor.RST != color:
+                    self._colors[y][x+i] =  color.mod(x+i,y)
+                else:
+                    self._colors[y][x+i] =  colors[i].mod(x+i,y)
         else:
             text = text.replace('\t','    ')
             if lentxt < width:
@@ -368,10 +371,11 @@ class TTkCanvas:
             textPos = (x,y+1)
         self.drawText(pos=textPos, text=text, color=color)
 
-    def drawTabButton(self, pos, size, label, sideEnd, small, status, color=TTkColor.RST):
+    def drawTabButton(self, pos, size, sideEnd, small, status, color=TTkColor.RST):
         x,y = pos
         w,h = size
         tt = TTkCfg.theme.tab
+        label = ' '*(w-2)
         if small:
             if status == TTkK.Checked:
                 txtCenter = tt[10] + label        + tt[10]

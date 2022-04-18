@@ -28,7 +28,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 def demoTab(root=None, border=True):
-    tabWidget1 = ttk.TTkTabWidget(parent=root, border=border)
+    tabWidget1 = ttk.TTkTabWidget(parent=root, border=border, closable=True)
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.1"),  "Label 1.1")
     tabWidget1.addTab(ttk.TTkTestWidgetSizes(border=True, title="Frame1.2"),  "Label 1.2")
     tabWidget1.addTab(ttk.TTkTestWidget(     border=True, title="Frame1.3"),  "Label Test 1.3")

@@ -504,6 +504,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTextEdit' )
         self._textEditView = _TTkTextEditView()
+        # self.setFocusPolicy(self._textEditView.focusPolicy())
+        # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self.setViewport(self._textEditView)
         self.clear   = self._textEditView.clear
         self.setText = self._textEditView.setText
@@ -517,4 +519,5 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.setLineWrapMode = self._textEditView.setLineWrapMode
         self.wordWrapMode    = self._textEditView.wordWrapMode
         self.setWordWrapMode = self._textEditView.setWordWrapMode
-
+        # Forward Signals
+        self.focusChanged = self._textEditView.focusChanged

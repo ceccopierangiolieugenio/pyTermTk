@@ -136,12 +136,14 @@ class KodeTab(TTkTabWidget):
             else:
                 ret = super().dropEvent(evt)
 
+        # Remove the widget and/or all the cascade empty splitters
         if not tw._tabWidgets:
-            splitter = tw.parentWidget()
-            if splitter.count() == 1:
-                splitter.parentWidget().removeWidget(splitter)
-            else:
-                splitter.removeWidget(tw)
+            widget = tw
+            splitter = widget.parentWidget()
+            while splitter.count() == 1:
+                widget = splitter
+                splitter = widget.parentWidget()
+            splitter.removeWidget(widget)
 
         return ret
 
