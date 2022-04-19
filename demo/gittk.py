@@ -82,7 +82,7 @@ def _tableCallback(val):
     commit = allCommits[val]
     diff = repo.git.diff(f"{commit.hexsha}~",f"{commit.hexsha}")
     # ttk.TTkLog.debug(diff)
-    lines = []
+    lines = ttk.TTkString()
     for line in diff.split('\n'):
         color = ttk.TTkColor.RST
         if   line.startswith('---') or line.startswith('+++'):
@@ -93,8 +93,8 @@ def _tableCallback(val):
             color = ttk.TTkColor.fg('#ff0000')
         elif line.startswith('@@'):
             color = ttk.TTkColor.fg('#0088ff')
-        lines.append(ttk.TTkString() + color + line.replace('\t',' '*4))
-    diffText.setLines(lines)
+        lines += ttk.TTkString(line+"\n",color).tab2spaces()
+    diffText.setText(lines)
 
 tableCommit.activated.connect(_tableCallback)
 
