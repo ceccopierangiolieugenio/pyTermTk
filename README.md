@@ -26,6 +26,7 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 - [TBD] Fullsize/Halfsize UTF-8 characters
 
 ## Limitations
+- The native **Windows** porting is not ready yet but it works with [Cygwin](https://www.cygwin.com) or **WSL**.
 - Only the key combinations forwarded by the terminal emulator used are detected (ALT,CTRL may not be handled)
 
 ## Try

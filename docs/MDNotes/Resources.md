@@ -19,6 +19,14 @@
 #### Hyperlink
 https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 
+#### Blinking Text
+```bash
+echo  -e "\033[5mBlinking Text\033[0m"
+echo  -e "\033[33;5mBlinking Text\033[0m"
+echo  -e "\033[33;7mBlinking Text\033[0m"
+echo  -e "\033[33;5;7mBlinking Text\033[0m"
+```
+
 ## Sphinx Doc
 #### Domains - docstring syntax
 https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#directive-py-class
