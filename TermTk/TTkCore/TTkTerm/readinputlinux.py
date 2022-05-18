@@ -44,7 +44,7 @@ class ReadInput():
         _fn = sys.stdin.fileno()
         _attr = termios.tcgetattr(_fn)
         tty.setcbreak(_fn)
-        rlist, _, _ = select.select( [sys.stdin, self._readPipe[0]], [], [], 10 )
+        rlist, _, _ = select.select( [sys.stdin, self._readPipe[0]], [], [] )
 
         if self._readPipe[0] in rlist:
             return None
