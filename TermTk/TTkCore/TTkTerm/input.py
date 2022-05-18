@@ -131,10 +131,10 @@ class TTkInput:
 def main():
     print("Retrieve Keyboard, Mouse press/drag/wheel Events")
     print("Press q or <ESC> to exit")
-    import term as t
+    from term import TTkTerm
 
-    t.Term.push(t.Term.mouse_on)
-    t.Term.echo(False)
+    TTkTerm.push(TTkTerm.Mouse.ON)
+    TTkTerm.setEcho(False)
 
     def callback(kevt=None, mevt=None):
         if kevt is not None:
@@ -142,10 +142,11 @@ def main():
         if mevt is not None:
             print(f"Mouse Event: {mevt}")
 
-    self.get_key(callback)
+    testInput = TTkInput()
+    testInput.get_key(callback)
 
-    t.Term.push(t.Term.mouse_off, t.Term.mouse_direct_off)
-    t.Term.echo(True)
+    TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
+    TTkTerm.setEcho(True)
 
 if __name__ == "__main__":
     main()
