@@ -28,9 +28,9 @@ from time import time
 import platform
 
 if platform.system() == 'Linux':
-    from TermTk.TTkCore.TTkTerm.readinputlinux import *
+    from TermTk.TTkCore.TTkTerm.readinputlinux import ReadInput
 elif platform.system() == 'Darwin':
-    from TermTk.TTkCore.TTkTerm.readinputlinux import *
+    from TermTk.TTkCore.TTkTerm.readinputlinux import ReadInput
 elif platform.system() == 'Windows':
     raise NotImplementedError('Windows OS not yet supported')
 elif platform.system() == 'Emscripten':
@@ -41,18 +41,26 @@ from TermTk.TTkCore.TTkTerm.inputkey   import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TTkInput:
-    _leftLastTime = 0
-    _midLastTime = 0
-    _rightLastTime = 0
-    _leftTap = 0
-    _midTap = 0
-    _rightTap = 0
+    __slots__ = ('_readInput', '_leftLastTime', '_midLastTime', '_rightLastTime', '_leftTap', '_midTap', '_rightTap')
 
-    @staticmethod
-    def get_key(callback=None):
+    def __init__(self):
+        self._readInput = ReadInput()
+        self._leftLastTime = 0
+        self._midLastTime = 0
+        self._rightLastTime = 0
+        self._leftTap = 0
+        self._midTap = 0
+        self._rightTap = 0
+
+    def close(self):
+        self._readInput.close()
+
+    def get_key(self, callback=None):
         mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
-        while not False:
-            stdinRead = readInput()
+        while True:
+            if not (stdinRead := self._readInput.read()):
+                TTkLog.debug("Close TTkInput")
+                break
 
             mevt = None
             kevt = TTkKeyEvent.parse(stdinRead)
@@ -82,18 +90,18 @@ class TTkInput:
                     return lastTime, tap
 
                 if code == 0x00:
-                    TTkInput._leftLastTime, TTkInput._leftTap = _checkTap(TTkInput._leftLastTime, TTkInput._leftTap)
-                    tap = TTkInput._leftTap
+                    self._leftLastTime, self._leftTap = _checkTap(self._leftLastTime, self._leftTap)
+                    tap = self._leftTap
                     key = TTkMouseEvent.LeftButton
                     evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
                 elif code == 0x01:
-                    TTkInput._midLastTime, TTkInput._midTap = _checkTap(TTkInput._midLastTime, TTkInput._midTap)
-                    tap = TTkInput._midTap
+                    self._midLastTime, self._midTap = _checkTap(self._midLastTime, self._midTap)
+                    tap = self._midTap
                     key = TTkMouseEvent.MidButton
                     evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
                 elif code == 0x02:
-                    TTkInput._rightLastTime, TTkInput._rightTap = _checkTap(TTkInput._rightLastTime, TTkInput._rightTap)
-                    tap = TTkInput._rightTap
+                    self._rightLastTime, self._rightTap = _checkTap(self._rightLastTime, self._rightTap)
+                    tap = self._rightTap
                     key = TTkMouseEvent.RightButton
                     evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
                 elif code == 0x20:
@@ -134,7 +142,7 @@ def main():
         if mevt is not None:
             print(f"Mouse Event: {mevt}")
 
-    TTkInput.get_key(callback)
+    self.get_key(callback)
 
     t.Term.push(t.Term.mouse_off, t.Term.mouse_direct_off)
     t.Term.echo(True)
