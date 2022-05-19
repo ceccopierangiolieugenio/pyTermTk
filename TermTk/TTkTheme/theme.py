@@ -25,11 +25,11 @@
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
-import TermTk.TTkGui.fileicon_nerd  as fi_nerd
-import TermTk.TTkGui.fileicon_utf8  as fi_utf8
-import TermTk.TTkGui.fileicon_ascii as fi_ascii
-import TermTk.TTkGui.draw_utf8      as draw_utf8
-import TermTk.TTkGui.draw_ascii     as draw_ascii
+import TermTk.TTkTheme.fileicon_nerd  as fi_nerd
+import TermTk.TTkTheme.fileicon_utf8  as fi_utf8
+import TermTk.TTkTheme.fileicon_ascii as fi_ascii
+import TermTk.TTkTheme.draw_utf8      as draw_utf8
+import TermTk.TTkTheme.draw_ascii     as draw_ascii
 
 
 class TTkTheme():

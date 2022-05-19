@@ -34,7 +34,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.timer import *
-from TermTk.TTkGui.theme import TTkTheme
+from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
 

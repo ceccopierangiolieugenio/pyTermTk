@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from cgitb import text
 import sys, os, argparse
 import re
 import random
@@ -100,16 +101,19 @@ def showSource(file):
     texEdit.setText(content)
     ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
 
-def demoShowcase(root=None, border=True):
+def demoShowcase(root=None, border=True, quit=None):
     splitter = ttk.TTkSplitter(parent=root)
 
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
     themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkVBoxLayout(), maxHeight=5, minHeight=5)
     listMenu = ttk.TTkList(maxWidth=15, minWidth=10)
+    quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
+    quitButton.clicked.connect(quit)
 
     leftFrame.layout().addWidget(themesFrame, 0, 0)
-    leftFrame.layout().addWidget(listMenu, 1, 0)
+    leftFrame.layout().addWidget(listMenu,    1, 0)
+    leftFrame.layout().addWidget(quitButton,  2, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
@@ -241,7 +245,7 @@ def main():
         winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
         border = True
 
-    demoShowcase(winTabbed1, border)
+    demoShowcase(winTabbed1, border, root.quit)
 
     root.mainloop()
 

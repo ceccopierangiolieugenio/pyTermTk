@@ -43,8 +43,10 @@ Intro
    autogen.TermTk/TermTk.TTkLayouts.rst
    autogen.TermTk/TermTk.TTkTemplates.rst
    autogen.TermTk/TermTk.TTkTestWidgets.rst
+   autogen.TermTk/TermTk.TTkTheme.rst
    autogen.TermTk/TermTk.TTkTypes.rst
    autogen.TermTk/TermTk.TTkWidgets.rst
+   autogen.TermTk/TermTk.TTkWidgets.TTkModelView.rst
    autogen.TermTk/TermTk.TTkWidgets.TTkPickers.rst
 
 Indices and tables

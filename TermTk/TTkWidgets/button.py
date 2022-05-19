@@ -49,9 +49,9 @@ class TTkButton(TTkWidget):
     :type text: str, optional
     :param bool border: the border of the button, defaults to "False"
     :type border: bool, optional
-    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonTextColor`
+    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonTextColor`
     :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
-    :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkGui.theme.TTkTheme.buttonBorderColor`
+    :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor`
     :type borderColor: :class:`~TermTk.TTkCore.color.TTkColor`, optional
 
     +-----------------------------------------------------------------------------------------------+

@@ -28,7 +28,7 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.drag import TTkDrag
+from TermTk.TTkGui.drag import TTkDrag
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.spacer import TTkSpacer
