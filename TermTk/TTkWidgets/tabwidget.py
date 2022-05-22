@@ -273,6 +273,8 @@ class TTkTabBar(TTkWidget):
         self.insertTab(len(self._tabButtons), label, data)
 
     def insertTab(self, index, label, data=None):
+        if index <= self._currentIndex:
+            self._currentIndex += 1
         button = TTkTabButton(parent=self, text=label, border=not self._small, closable=self._tabClosable)
         button._borderColor = self._borderColor
         self._tabButtons.insert(index,button)
