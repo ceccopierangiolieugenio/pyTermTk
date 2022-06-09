@@ -57,11 +57,7 @@ class TTkInput:
 
     def get_key(self, callback=None):
         mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
-        while True:
-            if not (stdinRead := self._readInput.read()):
-                TTkLog.debug("Close TTkInput")
-                break
-
+        while stdinRead := self._readInput.read():
             mevt = None
             kevt = TTkKeyEvent.parse(stdinRead)
             if kevt is None and \
@@ -127,6 +123,7 @@ class TTkInput:
             if callback is not None:
                 if not callback(kevt, mevt):
                     break
+        TTkLog.debug("Close TTkInput")
 
 def main():
     print("Retrieve Keyboard, Mouse press/drag/wheel Events")
