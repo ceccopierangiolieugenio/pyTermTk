@@ -70,6 +70,8 @@ echo Name: ${_NAME}
 mkdir -p ${_TMP_PATH}
 rm -rf ${_TMP_PATH}/*
 
+cp setup.py README.md LICENSE ${_TMP_PATH}
+
 cp -a ${_BASE_PATH}/TermTk ${_TMP_PATH}
 sed "s,__VERSION__,${_VERSION}," -i ${_TMP_PATH}/TermTk/TTkCore/cfg.py
 sed "s,__NAME__,${_NAME}," -i ${_TMP_PATH}/TermTk/TTkCore/cfg.py

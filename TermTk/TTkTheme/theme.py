@@ -24,7 +24,7 @@
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkCore.string import TTkString
+# from TermTk.TTkCore.string import TTkString
 import TermTk.TTkTheme.fileicon_nerd  as fi_nerd
 import TermTk.TTkTheme.fileicon_utf8  as fi_utf8
 import TermTk.TTkTheme.fileicon_ascii as fi_ascii

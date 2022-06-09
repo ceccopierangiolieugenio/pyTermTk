@@ -1,5 +1,5 @@
 import setuptools, os
-from tmp.TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.cfg import TTkCfg
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -31,7 +31,7 @@ setuptools.setup(
         "Topic :: Terminals",
         "Topic :: Software Development :: User Interfaces"],
     # packages=setuptools.find_packages(),
-    packages = setuptools.find_packages(where="tmp"),
-    package_dir = {"":"tmp"},
+    packages = setuptools.find_packages(where="."),
+    package_dir = {"":"."},
     python_requires=">=3.8",
 )

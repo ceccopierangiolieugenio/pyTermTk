@@ -36,13 +36,16 @@ runDemo: .venv
 
 build: .venv
 	. .venv/bin/activate ; \
-	rm -rf dist ; \
 	tools/prepareBuild.sh release ; \
-	python3 -m build
+	cd tmp ; \
+	python3 -m build \
+
+deploy: .venv
+	. .venv/bin/activate ; \
+	python3 -m twine upload tmp/dist/*
 
 buildTest: .venv
 	. .venv/bin/activate ; \
-	rm -rf dist ; \
 	tools/prepareBuild.sh test ; \
 	python3 -m build ; \
 
@@ -57,11 +60,7 @@ deployDoc:
 
 deployTest: .venv
 	. .venv/bin/activate ; \
-	python3 -m twine upload --repository testpypi dist/* --verbose
-
-deploy: .venv
-	. .venv/bin/activate ; \
-	python3 -m twine upload dist/*
+	python3 -m twine upload --repository testpypi tmp/dist/* --verbose
 
 test: .venv
 	. .venv/bin/activate ; \
