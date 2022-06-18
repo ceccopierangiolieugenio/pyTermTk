@@ -24,16 +24,15 @@
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.scrollbar import TTkScrollBar
+from TermTk.TTkGui.textcursor import TTkTextCursor
+from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
-            '_lines', '_dataLines', '_hsize',
+            '_textDocument', '_hsize', '_lines',
             '_cursorPos', '_cursorParams', '_selectionFrom', '_selectionTo',
             '_tabSpaces',
             '_lineWrapMode', '_wordWrapMode', '_wrapWidth', '_lastWrapUsed',
@@ -42,7 +41,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         )
     '''
         in order to support the line wrap, I need to divide the full data text in;
-        _dataLines = the entire text divided in lines, easy to add/remove/append lines
+        _textDocument = the entire text divided in lines, easy to add/remove/append lines
         _lines     = an array of tuples for each displayed line with a pointer to a
                      specific line and its slice to be shown at this coordinate;
                      [ (line, (posFrom, posTo)), ... ]
@@ -52,9 +51,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self._readOnly = True
+        self._textDocument = TTkTextDocument()
         self._hsize = 0
         self._lines = [(0,(0,0))]
-        self._dataLines = [TTkString()]
         self._tabSpaces = 4
         self._wrapWidth     = 80
         self._lastWrapUsed  = 0
@@ -100,14 +99,15 @@ class _TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(str)
     def setText(self, text):
         self.viewMoveTo(0, 0)
-        self._dataLines = []
-        self.append(text)
+        self._textDocument = TTkTextDocument(text)
+        self._updateSize()
+        self._rewrap()
 
     @pyTTkSlot(str)
     def append(self, text):
         if type(text) == str:
             text = TTkString() + text
-        self._dataLines += text.split('\n')
+        self._textDocument._dataLines += text.split('\n')
         self._updateSize()
         self._rewrap()
 
@@ -148,7 +148,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-        for i,l in enumerate(self._dataLines):
+        for i,l in enumerate(self._textDocument._dataLines):
             _process(i,l)
 
     def resizeEvent(self, w, h):
@@ -158,7 +158,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return super().resizeEvent(w,h)
 
     def _updateSize(self):
-        self._hsize = max( [ len(l) for l in self._dataLines ] )
+        self._hsize = max( [ len(l) for l in self._textDocument._dataLines ] )
 
     def viewFullAreaSize(self) -> (int, int):
         if self._lineWrapMode == TTkK.NoWrap:
@@ -210,7 +210,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         dt, _ = self._lines[y]
         # Due to the internal usage I assume hoff 1 or -1
         dx += hoff
-        if hoff > 0 and dx>len(l) and dt<len(self._dataLines):
+        if hoff > 0 and dx>len(l) and dt<self._textDocument.lineCount():
             dx  = 0
             dt += 1
         elif dx<0:
@@ -218,7 +218,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 dx = 0
             else:
                 dt -= 1
-                dx = len(self._dataLines[dt])
+                dx = len(self._textDocument._dataLines[dt])
         cx, cy = self._cursorFromDataPos(dt,dx)
         self._setCursorPos(cx, cy, hoff>0)
 
@@ -241,9 +241,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
         sy2 = self._lines[self._selectionTo[1]][0]
         self._cursorPos   = self._selectionFrom
         self._selectionTo = self._selectionFrom
-        self._dataLines[sy1] = self._dataLines[sy1].substring(to=sx1) + \
-                           self._dataLines[sy2].substring(fr=sx2)
-        self._dataLines = self._dataLines[:sy1+1] + self._dataLines[sy2+1:]
+        self._textDocument._dataLines[sy1] = self._textDocument._dataLines[sy1].substring(to=sx1) + \
+                           self._textDocument._dataLines[sy2].substring(fr=sx2)
+        self._textDocument._dataLines = self._textDocument._dataLines[:sy1+1] + self._textDocument._dataLines[sy2+1:]
         self._rewrap()
 
     def _cursorAlign(self, x, y, alignRightTab = False):
@@ -258,7 +258,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         y = max(0,min(y,len(self._lines)))
         dt, (fr, to) = self._lines[y]
         x = max(0,x)
-        s = self._dataLines[dt].substring(fr,to)
+        s = self._textDocument._dataLines[dt].substring(fr,to)
         x = s.tabCharPos(x, self._tabSpaces, alignRightTab)
         # The replace cursor need to be aligned to the char
         # The Insert cursor must be placed between chars
@@ -273,7 +273,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         I assume the x,y position already normalized using the _cursorAlign function
         '''
         dt, (fr, to) = self._lines[y]
-        return self._dataLines[dt], fr+self._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
+        return self._textDocument._dataLines[dt], fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
 
     def _cursorFromLinePos(self,liney,p):
         '''
@@ -290,12 +290,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
             if dt1 != dt:
                 break
             if fr<=p<to:
-                s = self._dataLines[dt].substring(fr,p).tab2spaces(self._tabSpaces)
+                s = self._textDocument._dataLines[dt].substring(fr,p).tab2spaces(self._tabSpaces)
                 return len(s), liney
             liney += 1
         liney-=1
         dt, (fr, to) = self._lines[liney]
-        s = self._dataLines[dt].substring(fr,to)
+        s = self._textDocument._dataLines[dt].substring(fr,to)
         return len(s.tab2spaces(self._tabSpaces)), liney
 
     def _cursorFromDataPos(self,y,p):
@@ -418,10 +418,10 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 else:
                     l,dx = self._linePosFromCursor(cx,cy)
                     if dx < len(l): # Erase next caracter on the same line
-                        self._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
-                    elif (dt+1)<len(self._dataLines): # End of the line, remove "\n" and merge with the next line
-                        self._dataLines[dt] += self._dataLines[dt+1]
-                        self._dataLines = self._dataLines[:dt+1] + self._dataLines[dt+2:]
+                        self._textDocument._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
+                    elif (dt+1)<len(self._textDocument._dataLines): # End of the line, remove "\n" and merge with the next line
+                        self._textDocument._dataLines[dt] += self._textDocument._dataLines[dt+1]
+                        self._textDocument._dataLines = self._textDocument._dataLines[:dt+1] + self._textDocument._dataLines[dt+2:]
                         self._setCursorPos(cx, cy)
                     self._rewrap()
             elif evt.key == TTkK.Key_Backspace:
@@ -431,20 +431,20 @@ class _TTkTextEditView(TTkAbstractScrollView):
                     l,dx = self._linePosFromCursor(cx,cy)
                     if dx > 0: # Erase the previous character
                         dx -= 1
-                        self._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
+                        self._textDocument._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
                     elif dt>0: # Beginning of the line, remove "\n" and merge with the previous line
                         dt -=1
-                        dx = len(self._dataLines[dt])
-                        self._dataLines[dt] += l
-                        self._dataLines = self._dataLines[:dt+1] + self._dataLines[dt+2:]
+                        dx = len(self._textDocument._dataLines[dt])
+                        self._textDocument._dataLines[dt] += l
+                        self._textDocument._dataLines = self._textDocument._dataLines[:dt+1] + self._textDocument._dataLines[dt+2:]
                     self._rewrap()
                     cx, cy = self._cursorFromDataPos(dt,dx)
                     self._setCursorPos(cx, cy)
             elif evt.key == TTkK.Key_Enter:
                 self._eraseSelection()
                 l,dx = self._linePosFromCursor(cx,cy)
-                self._dataLines[dt] = l.substring(to=dx)
-                self._dataLines = self._dataLines[:dt+1] + [l.substring(fr=dx)] + self._dataLines[dt+1:]
+                self._textDocument._dataLines[dt] = l.substring(to=dx)
+                self._textDocument._dataLines = self._textDocument._dataLines[:dt+1] + [l.substring(fr=dx)] + self._textDocument._dataLines[dt+1:]
                 self._rewrap()
                 self._setCursorPos(0,cy+1)
             self.update()
@@ -455,9 +455,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
             dt, _ = self._lines[cy]
             l, dx = self._linePosFromCursor(cx,cy)
             if self._replace:
-                self._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx+1)
+                self._textDocument._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx+1)
             else:
-                self._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx)
+                self._textDocument._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx)
             self._rewrap()
             cx, cy = self._cursorFromDataPos(dt,dx+1)
             self._setCursorPos(cx, cy)
@@ -481,7 +481,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
         h = self.height()
         for y, l in enumerate(self._lines[oy:oy+h]):
-            t = self._dataLines[l[0]].substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces)
+            t = self._textDocument._dataLines[l[0]].substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces)
             if self._selectionFrom[1] <= y+oy <= self._selectionTo[1]:
                 pf = 0      if y+oy > self._selectionFrom[1] else self._selectionFrom[0]
                 pt = len(t) if y+oy < self._selectionTo[1]   else self._selectionTo[0]
