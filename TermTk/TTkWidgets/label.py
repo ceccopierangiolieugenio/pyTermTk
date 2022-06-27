@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkTemplates.color import TColor
 from TermTk.TTkTemplates.text  import TText

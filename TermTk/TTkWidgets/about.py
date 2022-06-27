@@ -22,10 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.image import TTkImage
 

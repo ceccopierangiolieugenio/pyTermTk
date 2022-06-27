@@ -24,10 +24,8 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
-from TermTk.TTkWidgets.widget import TTkWidget
 
 
 class TTkWindow(TTkResizableFrame):

@@ -22,12 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 

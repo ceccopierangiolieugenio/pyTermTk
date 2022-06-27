@@ -29,7 +29,6 @@
 
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkTemplates.color import TColor
 

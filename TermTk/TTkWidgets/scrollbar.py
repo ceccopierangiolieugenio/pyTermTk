@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget

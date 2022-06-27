@@ -26,7 +26,6 @@
 **Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`_]
 '''
 
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:

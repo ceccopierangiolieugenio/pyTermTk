@@ -25,8 +25,6 @@
 import re
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor, _TTkColor
 
 class TTkString():

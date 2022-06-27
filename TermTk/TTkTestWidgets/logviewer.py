@@ -26,10 +26,7 @@ import os
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.frame import TTkFrame
-from TermTk.TTkTemplates.color import TColor
-from TermTk.TTkTemplates.text  import TText
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 

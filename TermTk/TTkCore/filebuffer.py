@@ -26,7 +26,7 @@ import os
 import re
 import threading
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.signal import pyTTkSignal
 
 '''
              w1   w3   w2   w5

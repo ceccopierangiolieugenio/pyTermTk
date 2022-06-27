@@ -22,8 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.frame import *
 
 class TTkTestWidgetSizes(TTkFrame):

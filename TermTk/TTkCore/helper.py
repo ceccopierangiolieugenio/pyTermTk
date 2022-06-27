@@ -24,7 +24,6 @@
 
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 

@@ -25,7 +25,6 @@
 import re
 
 from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal

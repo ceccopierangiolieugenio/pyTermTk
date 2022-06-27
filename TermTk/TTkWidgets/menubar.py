@@ -26,7 +26,6 @@ from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkLayouts.layout import TTkLayout
