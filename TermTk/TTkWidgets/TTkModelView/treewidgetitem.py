@@ -184,6 +184,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def size(self):
         if self._expanded:
-            return 1 + sum([c.size() for c in self.children()])
+            return 1 + sum(c.size() for c in self.children())
         else:
             return 1

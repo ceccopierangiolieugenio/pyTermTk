@@ -34,7 +34,7 @@ class TTkImage(TTkWidget):
         self._name = kwargs.get('name' , 'TTkImage' )
         self._data = kwargs.get('data' , [] )
         if self._data:
-            w = min([len(i) for i in self._data])
+            w = min(len(i) for i in self._data)
             h = len(self._data)
             self.resize(w//2,h//2)
 
@@ -42,7 +42,7 @@ class TTkImage(TTkWidget):
         # quadblitter notcurses like
         l = (a,b,c,d)
         def delta(i):
-            return max([v[i] for v in l]) - min([v[i] for v in l])
+            return max(v[i] for v in l) - min(v[i] for v in l)
         deltaR = delta(0)
         deltaG = delta(1)
         deltaB = delta(2)

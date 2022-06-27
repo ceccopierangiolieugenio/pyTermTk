@@ -74,7 +74,7 @@ class TTkFileBuffer():
         self._width=0
         self._buffer = [None]*self._numW
         self._pages = [None]
-        self._fd = open(self._filename,'r')
+        self._fd = open(self._filename)
         threading.Thread(target=self.createIndex).start()
 
     def __del__(self):
@@ -148,7 +148,7 @@ class TTkFileBuffer():
                 offset+=len(chunk)
                 self.indexUpdated.emit(offset/fileSize)
                 # TTkLog.debug(f"{self._filename} {offset/fileSize} ...")
-        self._width = max([ (self._indexes[i+1]-self._indexes[i]) for i in range(len(self._indexes)-1) ])
+        self._width = max( (self._indexes[i+1]-self._indexes[i]) for i in range(len(self._indexes)-1) )
         self.indexUpdated.emit(1.0)
         self.indexed.emit()
         # TTkLog.debug(f"{self._filename} {offset/fileSize} END")
@@ -158,7 +158,7 @@ class TTkFileBuffer():
         id = 0
         rr = re.compile(regex, re.IGNORECASE if ignoreCase else 0)
         TTkLog.debug(f"Search RE: {regex}")
-        with open(self._filename,'r') as infile:
+        with open(self._filename) as infile:
             for line in infile:
                 ma = rr.search(line)
                 if ma:
@@ -168,7 +168,7 @@ class TTkFileBuffer():
 
     def search(self, txt):
         indexes = []
-        with open(self._filename,'r') as infile:
+        with open(self._filename) as infile:
             for line in infile:
                 if txt in line:
                     indexes.append(id)

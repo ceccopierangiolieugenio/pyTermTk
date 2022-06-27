@@ -158,7 +158,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return super().resizeEvent(w,h)
 
     def _updateSize(self):
-        self._hsize = max( [ len(l) for l in self._dataLines ] )
+        self._hsize = max(  len(l) for l in self._dataLines  )
 
     def viewFullAreaSize(self) -> (int, int):
         if self._lineWrapMode == TTkK.NoWrap:
