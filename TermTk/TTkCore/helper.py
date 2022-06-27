@@ -320,6 +320,7 @@ class TTkHelper:
             layout = layout.parent()
         return (wx, wy)
 
+    @staticmethod
     def nextFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:
@@ -343,6 +344,7 @@ class TTkHelper:
             first.setFocus()
             first.update()
 
+    @staticmethod
     def prevFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:

@@ -263,5 +263,6 @@ class TTkFileDialogPicker(TTkWindow):
                 break
         return ret
 class TTkFileDialog:
+    @staticmethod
     def getOpenFileName(caption, dir=".", filter="All Files (*)", options=None):
         pass

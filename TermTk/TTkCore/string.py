@@ -71,6 +71,7 @@ class TTkString():
         self._hasTab = '\t' in self._text
         # raise AttributeError(f"{type(text)} not supported in TTkString")
 
+    @staticmethod
     def _parseAnsi(text, color = TTkColor.RST):
         pos = 0
         txtret = ""

@@ -51,8 +51,10 @@ class TTkSplitter(TTkFrame):
         self._splitterInitialized = True
 
         class _SplitterLayout(TTkLayout):
+            @staticmethod
             def insertWidget(_, index, widget):
                 self.insertWidget(index, widget)
+            @staticmethod
             def addWidget(_, widget):
                 self.addWidget(widget)
         self.setLayout(_SplitterLayout())
