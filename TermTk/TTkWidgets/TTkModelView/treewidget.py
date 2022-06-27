@@ -181,7 +181,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             item  = self._cache[y].item
             level = self._cache[y].level
             if level*2 <= x < level*2+3 and \
-               ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or \
+               ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or
                  item.childIndicatorPolicy() == TTkK.ShowIndicator ):
                 item.setExpanded(not item.isExpanded())
                 if item.isExpanded():

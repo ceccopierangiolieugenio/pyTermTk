@@ -87,7 +87,7 @@ class TTkImage(TTkWidget):
                      '▄', '▙', '▟', '█']
 
             return  TTkString() + \
-                    (TTkColor.bg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') + \
+                    (TTkColor.bg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') +
                      TTkColor.fg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}')) + \
                     quad[ch]
 
@@ -172,8 +172,8 @@ class TTkImage(TTkWidget):
         img = self._data
         for y in range(0, len(img)&(~1), 2):
             for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                self._canvas.drawText( \
-                        pos=(x//2,y//2), \
+                self._canvas.drawText(
+                        pos=(x//2,y//2),
                         text=self._reduce(
                                     img[y][x]   , img[y][x+1]   ,
                                     img[y+1][x] , img[y+1][x+1] ))
