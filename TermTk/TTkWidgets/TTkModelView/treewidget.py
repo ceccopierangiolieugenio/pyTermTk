@@ -23,9 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot

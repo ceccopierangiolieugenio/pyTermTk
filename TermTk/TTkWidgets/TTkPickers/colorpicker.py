@@ -33,7 +33,6 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.button import TTkButton
-from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox import TTkSpinBox

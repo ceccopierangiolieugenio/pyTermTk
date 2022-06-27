@@ -24,8 +24,7 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 

@@ -24,14 +24,8 @@
 
 import re
 
-from TermTk.TTkCore.color import TTkColor
-
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
     FILE = 0x00

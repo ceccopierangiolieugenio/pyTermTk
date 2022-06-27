@@ -22,10 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSignal
 
 class TTkFancyTreeWidgetItem():
     __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',

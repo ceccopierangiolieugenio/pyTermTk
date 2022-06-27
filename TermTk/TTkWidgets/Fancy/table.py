@@ -22,13 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkFancyTable(TTkAbstractScrollArea):
