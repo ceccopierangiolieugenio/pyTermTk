@@ -40,7 +40,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def __init__(self, *args, **kwargs):
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
-        tt = TTkCfg.theme.tree
+        # tt = TTkCfg.theme.tree
         super().__init__(*args, **kwargs)
         self._children = []
         self._data = args[0] if len(args)>0 and type(args[0])==list else ['']

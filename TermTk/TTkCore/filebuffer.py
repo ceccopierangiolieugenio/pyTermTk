@@ -129,9 +129,9 @@ class TTkFileBuffer():
     def createIndex(self):
         # TTkLog.debug(f"Start Indexing {self._filename}")
         indexes = []
-        lines = 0
+        # lines = 0
         offset = 0
-        width = 0
+        # width = 0
         fileSize = os.stat(self._filename).st_size
         chunkSize = 0x1000000 # ~16M
         with open(self._filename,'rb') as infile:

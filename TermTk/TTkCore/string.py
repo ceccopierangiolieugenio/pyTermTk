@@ -281,7 +281,7 @@ class TTkString():
             ret._text   = self._text.replace(*args, **kwargs)
         else:
             start = 0
-            oldPos=0
+            # oldPos=0
             while pos := self._text.index(old, start) if old in self._text[start:] else None:
                 ret._colors += self._colors[start:pos+oldLen] + [self._colors[pos+oldLen-1]]*(newLen-oldLen)
                 start = pos+oldLen

@@ -76,7 +76,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
         _,h = self.size()
-        offset = max(0,ox)
+        # offset = max(0,ox)
         for y, message in enumerate(self._messages[oy:]):
             self._canvas.drawText(pos=(0,y),text=message[ox:])
             c = TTkColor.RST

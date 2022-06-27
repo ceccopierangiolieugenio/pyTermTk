@@ -291,7 +291,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for i, c in enumerate(self._cache):
             if i-y<0 : continue
             item  = c.item
-            level = c.level
+            # level = c.level
             for il in range(len(self._header)):
                 lx = 0 if il==0 else self._columnsPos[il-1]+1
                 lx1 = self._columnsPos[il]

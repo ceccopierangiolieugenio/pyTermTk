@@ -113,7 +113,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._btnCancel = TTkButton(text="Cancel",maxWidth=8)
 
         for f in self._filters.split(';;'):
-            if m := re.match(".*\(.*\)",f):
+            if _ := re.match(".*\(.*\)",f):
                 self._fileType.addItem(f)
         self._fileType.setCurrentIndex(0)
         self._fileType.currentTextChanged.connect(self._fileTypeChanged)

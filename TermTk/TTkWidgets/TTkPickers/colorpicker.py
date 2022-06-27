@@ -61,10 +61,9 @@ class _TTkHueCanvas(TTkWidget):
         self._selected = -1
 
     def mousePressEvent(self, evt):
-        x,y = evt.x, evt.y
-        self._selected = x
-        if x < len(self._hueList):
-            self.colorPicked.emit(self._hueList[x])
+        self._selected = evt.x
+        if evt.x < len(self._hueList):
+            self.colorPicked.emit(self._hueList[evt.x])
         self.update()
         return True
 
