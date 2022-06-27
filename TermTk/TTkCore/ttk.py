@@ -192,7 +192,7 @@ class TTk(TTkWidget):
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
                 TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
             elif evt is TTkK.QUIT_EVENT:
-                TTkLog.debug(f"Quit.")
+                TTkLog.debug("Quit.")
                 break
             else:
                 TTkLog.error(f"Unhandled Event {evt}")

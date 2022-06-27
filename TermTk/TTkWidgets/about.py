@@ -76,7 +76,7 @@ class TTkAbout(TTkWindow):
             self._canvas.drawText(pos=(9,3+y),text=line, color=TTkColor.fg(f'#{c[0]:02X}{c[1]:02X}{c[2]:02X}'))
             c[2]-=0x11
         self._canvas.drawText(pos=(20,9),text=f"  Version: {TTkCfg.version}", color=TTkColor.fg('#AAAAFF'))
-        self._canvas.drawText(pos=(12,11),text=f"Powered By, Eugenio Parodi")
-        self._canvas.drawText(pos=(2,13),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
+        self._canvas.drawText(pos=(12,11),text="Powered By, Eugenio Parodi")
+        self._canvas.drawText(pos=(2,13),text="https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
 
         TTkWindow.paintEvent(self)
