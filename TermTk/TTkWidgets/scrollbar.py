@@ -218,7 +218,7 @@ class TTkScrollBar(TTkWidget):
 
     @property
     def maximum(self): return self._maximum
-    @minimum.setter
+    @maximum.setter
     def maximum(self, v):
         if v == self._maximum:
             return
