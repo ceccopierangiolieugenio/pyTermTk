@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -34,7 +33,7 @@ class TTkImage(TTkWidget):
         self._name = kwargs.get('name' , 'TTkImage' )
         self._data = kwargs.get('data' , [] )
         if self._data:
-            w = min([len(i) for i in self._data])
+            w = min(len(i) for i in self._data)
             h = len(self._data)
             self.resize(w//2,h//2)
 
@@ -42,7 +41,7 @@ class TTkImage(TTkWidget):
         # quadblitter notcurses like
         l = (a,b,c,d)
         def delta(i):
-            return max([v[i] for v in l]) - min([v[i] for v in l])
+            return max(v[i] for v in l) - min(v[i] for v in l)
         deltaR = delta(0)
         deltaG = delta(1)
         deltaB = delta(2)
@@ -87,7 +86,7 @@ class TTkImage(TTkWidget):
                      '▄', '▙', '▟', '█']
 
             return  TTkString() + \
-                    (TTkColor.bg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') + \
+                    (TTkColor.bg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') +
                      TTkColor.fg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}')) + \
                     quad[ch]
 
@@ -172,8 +171,8 @@ class TTkImage(TTkWidget):
         img = self._data
         for y in range(0, len(img)&(~1), 2):
             for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                self._canvas.drawText( \
-                        pos=(x//2,y//2), \
+                self._canvas.drawText(
+                        pos=(x//2,y//2),
                         text=self._reduce(
                                     img[y][x]   , img[y][x+1]   ,
                                     img[y+1][x] , img[y+1][x+1] ))

@@ -31,11 +31,9 @@ from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.timer import *
 from TermTk.TTkTheme.theme import TTkTheme
-from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import *
 
 class TTk(TTkWidget):
@@ -192,7 +190,7 @@ class TTk(TTkWidget):
                 self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
                 TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
             elif evt is TTkK.QUIT_EVENT:
-                TTkLog.debug(f"Quit.")
+                TTkLog.debug("Quit.")
                 break
             else:
                 TTkLog.error(f"Unhandled Event {evt}")

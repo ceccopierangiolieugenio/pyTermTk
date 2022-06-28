@@ -28,7 +28,6 @@ import re
 from TermTk.TTkCore.color import TTkColor
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.string import TTkString
@@ -113,7 +112,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._btnCancel = TTkButton(text="Cancel",maxWidth=8)
 
         for f in self._filters.split(';;'):
-            if m := re.match(".*\(.*\)",f):
+            if re.match(".*\(.*\)",f):
                 self._fileType.addItem(f)
         self._fileType.setCurrentIndex(0)
         self._fileType.currentTextChanged.connect(self._fileTypeChanged)
@@ -263,5 +262,6 @@ class TTkFileDialogPicker(TTkWindow):
                 break
         return ret
 class TTkFileDialog:
+    @staticmethod
     def getOpenFileName(caption, dir=".", filter="All Files (*)", options=None):
         pass

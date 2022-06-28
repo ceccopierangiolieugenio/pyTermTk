@@ -22,8 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 
@@ -82,7 +80,7 @@ class _TTkColor:
             r,g,b = self.fgToRGB()
         else:
             r,g,b = self.bgToRGB()
-        return "#{:06x}".format(r<<16|g<<8|b)
+        return f"#{r<<16|g<<8|b:06x}"
 
     def fgToRGB(self):
         if self._fg == "": return 0xff,0xff,0xff

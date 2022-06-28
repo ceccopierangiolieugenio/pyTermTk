@@ -25,10 +25,10 @@
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.helper import TTkHelper
+
 
 class TTkCanvas:
     ''' Init the Canvas object

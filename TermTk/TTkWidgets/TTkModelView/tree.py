@@ -23,8 +23,6 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkWidgets.TTkModelView import treewidget
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 

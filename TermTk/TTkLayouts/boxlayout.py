@@ -26,7 +26,6 @@
 **Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`_]
 '''
 
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkHBoxLayout(TTkGridLayout):

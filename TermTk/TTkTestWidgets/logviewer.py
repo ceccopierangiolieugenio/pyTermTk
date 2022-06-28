@@ -26,10 +26,7 @@ import os
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.frame import TTkFrame
-from TermTk.TTkTemplates.color import TColor
-from TermTk.TTkTemplates.text  import TText
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
@@ -49,7 +46,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
         self.update()
 
     def viewFullAreaSize(self) -> (int, int):
-        w = max([ len(m) for m in self._messages])
+        w = max( len(m) for m in self._messages)
         h = len(self._messages)
         return w , h
 
@@ -76,7 +73,6 @@ class _TTkLogViewer(TTkAbstractScrollView):
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
         _,h = self.size()
-        offset = max(0,ox)
         for y, message in enumerate(self._messages[oy:]):
             self._canvas.drawText(pos=(0,y),text=message[ox:])
             c = TTkColor.RST

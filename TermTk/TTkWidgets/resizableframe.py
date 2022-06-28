@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.frame import TTkFrame
 
 class TTkResizableFrame(TTkFrame):

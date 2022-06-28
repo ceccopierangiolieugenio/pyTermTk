@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -218,7 +217,7 @@ class TTkScrollBar(TTkWidget):
 
     @property
     def maximum(self): return self._maximum
-    @minimum.setter
+    @maximum.setter
     def maximum(self, v):
         if v == self._maximum:
             return

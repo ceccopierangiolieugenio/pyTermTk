@@ -23,13 +23,11 @@
 # SOFTWARE.
 
 import os
-import re
 import datetime
 
 from TermTk.TTkCore.color import TTkColor
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget

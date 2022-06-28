@@ -23,8 +23,6 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.menubar import TTkMenuLayout
 

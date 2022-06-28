@@ -22,8 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidget import TTkFileTreeWidget
 

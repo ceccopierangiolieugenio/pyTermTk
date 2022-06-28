@@ -23,9 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkWidgets.widget import *
 
 class TTkButton(TTkWidget):

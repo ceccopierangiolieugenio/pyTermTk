@@ -24,8 +24,7 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
@@ -40,7 +39,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def __init__(self, *args, **kwargs):
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
-        tt = TTkCfg.theme.tree
         super().__init__(*args, **kwargs)
         self._children = []
         self._data = args[0] if len(args)>0 and type(args[0])==list else ['']
@@ -184,6 +182,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def size(self):
         if self._expanded:
-            return 1 + sum([c.size() for c in self.children()])
+            return 1 + sum(c.size() for c in self.children())
         else:
             return 1

@@ -30,7 +30,7 @@
 
 import re
 import os
-from TermTk.TTkCore.color import TTkColor
+
 
 class FileIcon():
     folderClose = ''

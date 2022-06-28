@@ -23,9 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -181,7 +179,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             item  = self._cache[y].item
             level = self._cache[y].level
             if level*2 <= x < level*2+3 and \
-               ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or \
+               ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or
                  item.childIndicatorPolicy() == TTkK.ShowIndicator ):
                 item.setExpanded(not item.isExpanded())
                 if item.isExpanded():
@@ -291,7 +289,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for i, c in enumerate(self._cache):
             if i-y<0 : continue
             item  = c.item
-            level = c.level
             for il in range(len(self._header)):
                 lx = 0 if il==0 else self._columnsPos[il-1]+1
                 lx1 = self._columnsPos[il]
