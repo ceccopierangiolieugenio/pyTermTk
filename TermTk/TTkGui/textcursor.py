@@ -41,3 +41,6 @@ class TTkTextCursor():
 
     def document(self):
         return self._document
+
+    def insertText(self, text):
+        pass
