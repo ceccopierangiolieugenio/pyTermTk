@@ -58,13 +58,6 @@ class TTkHelper:
     def addShortcut(widget, letter):
         TTkHelper._shortcut.append(TTkHelper._Shortcut(letter, widget))
 
-    # redefined on line 306
-    # @staticmethod
-    # def isParent(parent, widget):
-    #     if parent==widget: return True
-    #     if widget.parentWidget() is None: return False
-    #     return TTkHelper.isParent(parent,widget.parentWidget())
-
     @staticmethod
     def execShortcut(letter, widget=None):
         if not isinstance(letter, str): return

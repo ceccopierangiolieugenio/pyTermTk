@@ -49,8 +49,6 @@ class TTkSplitter(TTkFrame):
         self._splitterInitialized = True
 
         class _SplitterLayout(TTkLayout):
-            # Use dunder instead of 'self' in non-static methods to avoid
-            # recursion.
             def insertWidget(_, index, widget):
                 self.insertWidget(index, widget)
             def addWidget(_, widget):

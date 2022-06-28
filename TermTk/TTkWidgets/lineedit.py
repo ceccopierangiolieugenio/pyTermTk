@@ -163,7 +163,6 @@ class TTkLineEdit(TTkWidget):
         return True
 
     def keyEvent(self, evt):
-        # w = self.width()
         baseText = self._text
         if evt.type == TTkK.SpecialKey:
             # Don't Handle the special tab key
