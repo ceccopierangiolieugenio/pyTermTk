@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkWidgets.widget import *
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.textcursor import TTkTextCursor
@@ -158,7 +157,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return super().resizeEvent(w,h)
 
     def _updateSize(self):
-        self._hsize = max( [ len(l) for l in self._textDocument._dataLines ] )
+        self._hsize = max( len(l) for l in self._textDocument._dataLines )
 
     def viewFullAreaSize(self) -> (int, int):
         if self._lineWrapMode == TTkK.NoWrap:

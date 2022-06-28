@@ -33,7 +33,6 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.button import TTkButton
-from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
@@ -61,10 +60,9 @@ class _TTkHueCanvas(TTkWidget):
         self._selected = -1
 
     def mousePressEvent(self, evt):
-        x,y = evt.x, evt.y
-        self._selected = x
-        if x < len(self._hueList):
-            self.colorPicked.emit(self._hueList[x])
+        self._selected = evt.x
+        if evt.x < len(self._hueList):
+            self.colorPicked.emit(self._hueList[evt.x])
         self.update()
         return True
 
@@ -83,7 +81,7 @@ class _TTkHueCanvas(TTkWidget):
                     rgb =a|(b&_linInt(0,b,6*x/w))
                 else:
                     rgb =a|(b&_linInt(b,0,6*x/w))
-                color = TTkColor.bg( "#{:06x}".format(rgb) )
+                color = TTkColor.bg( f"#{rgb:06x}" )
                 if (num*w//6)+x == self._selected:
                     self._canvas.drawChar(pos=((num*w//6)+x,0), char="◼", color=color+TTkColor.fg("#000000"))
                 else:
@@ -144,7 +142,7 @@ class _TTkColorCanvas(TTkWidget):
         w,h = self.size()
         for x in range(w):
             for y in range(h):
-                color = TTkColor.bg( "#{:06x}".format(self._colorAt(x,y,w,h)) )
+                color = TTkColor.bg( f"#{self._colorAt(x,y,w,h):06x}" )
                 if (x,y)==self._selected:
                     self._canvas.drawText(pos=(x,y), text="◼", color=color+TTkColor.fg("#000000"))
                 else:
@@ -158,7 +156,7 @@ class _TTkShowColor(TTkWidget,TColor):
 
     @pyTTkSlot(int)
     def setRGBColor(self, color):
-        self.color = TTkColor.bg( "#{:06x}".format(color) )
+        self.color = TTkColor.bg( f"#{color:06x}" )
         self.update()
 
     @pyTTkSlot(TTkColor)
@@ -296,7 +294,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
             leR.setValue((color&0xff0000)>>16)
             leG.setValue((color&0x00ff00)>> 8)
             leB.setValue((color&0x0000ff)>> 0)
-            leHTML.setText("#{:06X}".format(color))
+            leHTML.setText(f"#{color:06X}")
 
         @pyTTkSlot(TTkColor)
         def _controlSetColor(color):

@@ -24,7 +24,6 @@
 
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 
@@ -58,12 +57,6 @@ class TTkHelper:
     @staticmethod
     def addShortcut(widget, letter):
         TTkHelper._shortcut.append(TTkHelper._Shortcut(letter, widget))
-
-    @staticmethod
-    def isParent(parent, widget):
-        if parent==widget: return True
-        if widget.parentWidget() is None: return False
-        return TTkHelper.isParent(parent,widget.parentWidget())
 
     @staticmethod
     def execShortcut(letter, widget=None):
@@ -319,6 +312,7 @@ class TTkHelper:
             layout = layout.parent()
         return (wx, wy)
 
+    @staticmethod
     def nextFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:
@@ -342,6 +336,7 @@ class TTkHelper:
             first.setFocus()
             first.update()
 
+    @staticmethod
     def prevFocus(widget):
         rootWidget = TTkHelper.rootOverlay(widget)
         if not rootWidget:

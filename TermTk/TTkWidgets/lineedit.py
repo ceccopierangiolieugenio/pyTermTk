@@ -25,7 +25,6 @@
 import re
 
 from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -164,7 +163,6 @@ class TTkLineEdit(TTkWidget):
         return True
 
     def keyEvent(self, evt):
-        w = self.width()
         baseText = self._text
         if evt.type == TTkK.SpecialKey:
             # Don't Handle the special tab key

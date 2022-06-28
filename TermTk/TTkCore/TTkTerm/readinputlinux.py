@@ -29,7 +29,6 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-from TermTk.TTkCore.log import TTkLog
 
 class ReadInput():
     __slots__ = ('_readPipe')

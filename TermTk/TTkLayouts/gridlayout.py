@@ -27,8 +27,7 @@
 '''
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
+from TermTk.TTkLayouts.layout import TTkLayout
 
 class TTkGridLayout(TTkLayout):
     '''
