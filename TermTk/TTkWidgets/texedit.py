@@ -22,8 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkWidgets.widget import *
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
@@ -32,7 +36,7 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_textDocument', '_hsize', '_lines',
-            '_cursorPos', '_cursorParams', '_selectionFrom', '_selectionTo',
+            '_textCursor', '_cursorPos', '_cursorParams', '_selectionFrom', '_selectionTo',
             '_tabSpaces',
             '_lineWrapMode', '_wordWrapMode', '_wrapWidth', '_lastWrapUsed',
             '_replace',
@@ -51,6 +55,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self._readOnly = True
         self._textDocument = TTkTextDocument()
+        self._textCursor = TTkTextCursor(document=self._textDocument)
         self._hsize = 0
         self._lines = [(0,(0,0))]
         self._tabSpaces = 4
@@ -311,6 +316,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._cursorPos     = (x,y)
         self._selectionFrom = (x,y)
         self._selectionTo   = (x,y)
+        line, pos = self._linePosFromCursor(x,y)
+        self._textCursor.setPosition(pos)
         # TTkLog.debug(f"{self._cursorPos=}")
         self.update()
         return True

@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkGui.textdocument import TTkTextDocument
+
 class TTkTextCursor():
     class _prop():
         __slots__ = ('anchor', 'position')
@@ -29,15 +31,27 @@ class TTkTextCursor():
             self.anchor = anchor
             self.position = position
 
+    # class _cursorPosition():
+    #     __slots__ = ('x','y')
+    #     def __init__(self, x, y):
+    #         self.set(x,y)
+    #     def set(self, x, y):
+    #         self.x = x
+    #         self.y = y
+
     __slots__ = ('_document', '_properties')
     def __init__(self, *args, **kwargs):
         self._properties = [TTkTextCursor._prop(0,0)]
+        self._document = kwargs.get('document',TTkTextDocument())
 
     def anchor(self):
-        return self._properties.anchor
+        return self._properties[0].anchor
 
     def position(self):
-        return self._properties.position
+        return self._properties[0].position
+
+    def setPosition(self, pos):
+        self._properties[0].position = pos
 
     def document(self):
         return self._document
