@@ -63,7 +63,8 @@ def winCallback(width, height):
     TTkLog.info(f"Resize: w:{width}, h:{height}")
 
 TTkTerm.registerResizeCb(winCallback)
-TTkInput.get_key(keyCallback)
+input = TTkInput()
+input.get_key(keyCallback)
 
 TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
 TTkTerm.setEcho(True)
