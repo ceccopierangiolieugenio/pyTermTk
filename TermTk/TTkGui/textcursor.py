@@ -148,3 +148,20 @@ class TTkTextCursor():
                 xTo += len(m.group(0))
             self._properties[0].position.pos = xTo
             self._properties[0].anchor.pos   = xFrom
+
+    def hasSelection(self):
+        return ( self._properties[0].anchor.pos  != self._properties[0].position.pos or
+                 self._properties[0].anchor.line != self._properties[0].position.line )
+
+    def clearSelection(self):
+        self._properties[0].anchor.pos  = self._properties[0].position.pos
+        self._properties[0].anchor.line = self._properties[0].position.line
+
+    def removeSelectedText(self):
+        if not self.hasSelection(): return
+        selSt = self.selectionStart()
+        selEn = self.selectionEnd()
+        self._docData[selSt.line] = self._docData[selSt.line].substring(to=selSt.pos) + \
+                           self._docData[selEn.line].substring(fr=selEn.pos)
+        self._document._dataLines = self._docData[:selSt.line+1] + self._docData[selEn.line+1:]
+        self.setPosition(selSt.line, selSt.pos)

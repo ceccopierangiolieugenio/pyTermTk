@@ -181,6 +181,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
         y = self._textCursor.position().line
         x,_ = self._cursorFromLinePos(y, self._textCursor.position().pos)
+        y -= oy
+        x -= ox
 
         if x > self.width() or y>=self.height() or \
            x<0 or y<0:
@@ -243,19 +245,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self.viewMoveTo(offx, offy)
 
     def _selection(self) -> bool:
-        return self._selectionFrom != self._selectionTo
+        return self._textCursor.hasSelection()
 
     def _eraseSelection(self):
-        if not self._selection(): return
-        _,sx1 = self._linePosFromCursor(self._selectionFrom[0],self._selectionFrom[1])
-        sy1 = self._lines[self._selectionFrom[1]][0]
-        _,sx2 = self._linePosFromCursor(self._selectionTo[0]  ,self._selectionTo[1])
-        sy2 = self._lines[self._selectionTo[1]][0]
-        self._cursorPos   = self._selectionFrom
-        self._selectionTo = self._selectionFrom
-        self._textDocument._dataLines[sy1] = self._textDocument._dataLines[sy1].substring(to=sx1) + \
-                           self._textDocument._dataLines[sy2].substring(fr=sx2)
-        self._textDocument._dataLines = self._textDocument._dataLines[:sy1+1] + self._textDocument._dataLines[sy2+1:]
+        if not self._textCursor.hasSelection(): return
+        self._textCursor.removeSelectedText()
         self._rewrap()
 
     def _cursorAlign(self, x, y, alignRightTab = False):
