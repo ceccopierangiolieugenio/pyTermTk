@@ -125,17 +125,19 @@ def demoTextEdit(root=None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+    parser.add_argument('-w', help='Windowed',    action='store_true')
     args = parser.parse_args()
+    windowed = args.w
 
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    if args.f:
+    if windowed:
+        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
+    else:
         rootTree = root
         root.setLayout(ttk.TTkGridLayout())
-    else:
-        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
     demoTextEdit(rootTree)
     root.mainloop()
 

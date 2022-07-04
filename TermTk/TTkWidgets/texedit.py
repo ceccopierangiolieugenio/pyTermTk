@@ -104,14 +104,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def setText(self, text):
         self.viewMoveTo(0, 0)
         self._textDocument = TTkTextDocument(text)
+        self._textCursor = TTkTextCursor(document=self._textDocument)
         self._updateSize()
         self._rewrap()
 
     @pyTTkSlot(str)
     def append(self, text):
-        if type(text) == str:
-            text = TTkString() + text
-        self._textDocument._dataLines += text.split('\n')
+        self._textDocument.appendText(text)
         self._updateSize()
         self._rewrap()
 
@@ -180,8 +179,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return
         ox, oy = self.getViewOffsets()
 
-        x = self._cursorPos[0]-ox
-        y = self._cursorPos[1]-oy
+        y = self._textCursor.position().line
+        x,_ = self._cursorFromLinePos(y, self._textCursor.position().pos)
 
         if x > self.width() or y>=self.height() or \
            x<0 or y<0:
@@ -202,11 +201,20 @@ class _TTkTextEditView(TTkAbstractScrollView):
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
-    def _setCursorPos(self, x, y, alignRightTab = False):
+    def _setCursorPos(self, x, y, alignRightTab=False):
         x,y = self._cursorAlign(x,y, alignRightTab)
         self._cursorPos     = (x,y)
         self._selectionFrom = (x,y)
         self._selectionTo   = (x,y)
+        self._setCursorPosNEW(x,y)
+        self._scrolToInclude(x,y)
+
+    def _setCursorPosNEW(self, x, y, alignRightTab=False, moveAnchor=True):
+        x,y = self._cursorAlign(x,y, alignRightTab)
+        _, pos = self._linePosFromCursor(x,y)
+        self._textCursor.setPosition(y, pos,
+                            moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor)
+        TTkLog.debug(f"{self._cursorPos=} - {pos=}")
         self._scrolToInclude(x,y)
 
     def _moveHCursor(self, x,y, hoff):
@@ -259,7 +267,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return:
         x,y = widget relative position aligned to the close editable char
         '''
-        y = max(0,min(y,len(self._lines)))
+        y = max(0,min(y,len(self._lines)-1))
         dt, (fr, to) = self._lines[y]
         x = max(0,x)
         s = self._textDocument._dataLines[dt].substring(fr,to)
@@ -313,12 +321,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
         x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-        self._cursorPos     = (x,y)
-        self._selectionFrom = (x,y)
-        self._selectionTo   = (x,y)
-        line, pos = self._linePosFromCursor(x,y)
-        self._textCursor.setPosition(pos)
-        # TTkLog.debug(f"{self._cursorPos=}")
+        self._setCursorPos(x,y)
         self.update()
         return True
 
@@ -327,6 +330,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().mouseDragEvent(evt)
         ox, oy = self.getViewOffsets()
         x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
+        self._setCursorPosNEW(x,y,moveAnchor=False)
         cx = self._cursorPos[0]
         cy = self._cursorPos[1]
 
@@ -350,7 +354,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().mouseDoubleClickEvent(evt)
         ox, oy = self.getViewOffsets()
         x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-        self._cursorPos     = (x,y)
 
         l,p = self._linePosFromCursor(x,y)
         before = l.substring(to=p)
@@ -370,6 +373,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._selectionTo   = self._cursorFromLinePos(y,xTo)
         self._cursorPos     = self._selectionFrom
 
+        self._textCursor.select(TTkTextCursor.WordUnderCursor)
+
         self.update()
         return True
 
@@ -385,16 +390,19 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._selectionFrom = self._cursorFromLinePos(y,0)
         self._selectionTo   = self._cursorFromLinePos(y,len(l))
         self._cursorPos     = self._selectionFrom
+
+        self._textCursor.select(TTkTextCursor.LineUnderCursor)
+
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt) -> bool:
-        if self._readOnly:
-            return super().mouseReleaseEvent(evt)
-        ox, oy = self.getViewOffsets()
-        self._cursorPos     = self._selectionFrom
-        self.update()
-        return True
+    #def mouseReleaseEvent(self, evt) -> bool:
+    #    if self._readOnly:
+    #        return super().mouseReleaseEvent(evt)
+    #    ox, oy = self.getViewOffsets()
+    #    self._cursorPos     = self._selectionFrom
+    #    self.update()
+    #    return True
 
     def keyEvent(self, evt):
         if self._readOnly:
@@ -486,13 +494,16 @@ class _TTkTextEditView(TTkAbstractScrollView):
             selectColor = TTkCfg.theme.lineEditTextColorSelected
 
         h = self.height()
+        selSt = self._textCursor.selectionStart()
+        selEn = self._textCursor.selectionEnd()
         for y, l in enumerate(self._lines[oy:oy+h]):
-            t = self._textDocument._dataLines[l[0]].substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces)
-            if self._selectionFrom[1] <= y+oy <= self._selectionTo[1]:
-                pf = 0      if y+oy > self._selectionFrom[1] else self._selectionFrom[0]
-                pt = len(t) if y+oy < self._selectionTo[1]   else self._selectionTo[0]
+            t = self._textDocument._dataLines[l[0]]
+            # apply the selection color if required
+            if selSt.line <= y+oy <= selEn.line:
+                pf = 0      if y+oy > selSt.line else selSt.pos
+                pt = len(t) if y+oy < selEn.line else selEn.pos
                 t = t.setColor(color=selectColor, posFrom=pf, posTo=pt )
-            self._canvas.drawText(pos=(-ox,y), text=t)
+            self._canvas.drawText(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces))
         if self._lineWrapMode == TTkK.FixedWidth:
             self._canvas.drawVLine(pos=(self._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
         self._pushCursor()
