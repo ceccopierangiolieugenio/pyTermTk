@@ -32,7 +32,7 @@ class TTkTextDocument():
         'contentsChange', 'contentsChanged',
         )
     def __init__(self, *args, **kwargs):
-        self.contentsChange = pyTTkSignal(int,int,int,int) # int,int position, int charsRemoved, int charsAdded
+        self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
         text =  kwargs.get('text',"")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
@@ -46,15 +46,14 @@ class TTkTextDocument():
     def setText(self, text):
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self.contentsChanged.emit()
-        self.contentsChange.emit(0,0,0,len(text))
+        self.contentsChange.emit(0,0,len(self._dataLines))
 
     def appendText(self, text):
         if type(text) == str:
             text = TTkString() + text
         oldLines = len(self._dataLines)
-        oldPos = len(self._dataLines[-1])
         self._dataLines += text.split('\n')
         self.contentsChanged.emit()
-        self.contentsChange.emit(oldLines,oldPos,0,len(text))
+        self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
 
 

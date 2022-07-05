@@ -36,7 +36,7 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_textDocument', '_hsize', '_lines',
-            '_textCursor', '_cursorPos', '_cursorParams', '_selectionFrom', '_selectionTo',
+            '_textCursor', '_cursorParams',
             '_tabSpaces',
             '_lineWrapMode', '_wordWrapMode', '_wrapWidth', '_lastWrapUsed',
             '_replace',
@@ -56,6 +56,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._readOnly = True
         self._textDocument = TTkTextDocument()
         self._textCursor = TTkTextCursor(document=self._textDocument)
+        self._textDocument.contentsChanged.connect(self._rewrap)
         self._hsize = 0
         self._lines = [(0,(0,0))]
         self._tabSpaces = 4
@@ -64,9 +65,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._lineWrapMode = TTkK.NoWrap
         self._wordWrapMode = TTkK.WrapAnywhere
         self._replace = False
-        self._cursorPos = (0,0)
-        self._selectionFrom = (0,0)
-        self._selectionTo = (0,0)
         self._cursorParams = None
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
@@ -103,16 +101,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(str)
     def setText(self, text):
         self.viewMoveTo(0, 0)
-        self._textDocument = TTkTextDocument(text)
-        self._textCursor = TTkTextCursor(document=self._textDocument)
+        self._textDocument.setText(text)
         self._updateSize()
-        self._rewrap()
 
     @pyTTkSlot(str)
     def append(self, text):
         self._textDocument.appendText(text)
         self._updateSize()
-        self._rewrap()
 
     def _rewrap(self):
         self._lines = []
@@ -179,8 +174,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return
         ox, oy = self.getViewOffsets()
 
-        y = self._textCursor.position().line
-        x,_ = self._cursorFromLinePos(y, self._textCursor.position().pos)
+        x,y = self._cursorFromDataPos(
+            self._textCursor.position().line,
+            self._textCursor.position().pos)
         y -= oy
         x -= ox
 
@@ -204,37 +200,14 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self.update()
 
     def _setCursorPos(self, x, y, alignRightTab=False):
-        x,y = self._cursorAlign(x,y, alignRightTab)
-        self._cursorPos     = (x,y)
-        self._selectionFrom = (x,y)
-        self._selectionTo   = (x,y)
-        self._setCursorPosNEW(x,y)
-        self._scrolToInclude(x,y)
+        self._setCursorPosNEW(x,y,alignRightTab)
 
     def _setCursorPosNEW(self, x, y, alignRightTab=False, moveAnchor=True):
         x,y = self._cursorAlign(x,y, alignRightTab)
         _, pos = self._linePosFromCursor(x,y)
-        self._textCursor.setPosition(y, pos,
+        self._textCursor.setPosition(self._lines[y][0], pos,
                             moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor)
-        TTkLog.debug(f"{self._cursorPos=} - {pos=}")
         self._scrolToInclude(x,y)
-
-    def _moveHCursor(self, x,y, hoff):
-        l, dx = self._linePosFromCursor(x,y)
-        dt, _ = self._lines[y]
-        # Due to the internal usage I assume hoff 1 or -1
-        dx += hoff
-        if hoff > 0 and dx>len(l) and dt<self._textDocument.lineCount():
-            dx  = 0
-            dt += 1
-        elif dx<0:
-            if dt == 0: # Beginning of the file
-                dx = 0
-            else:
-                dt -= 1
-                dx = len(self._textDocument._dataLines[dt])
-        cx, cy = self._cursorFromDataPos(dt,dx)
-        self._setCursorPos(cx, cy, hoff>0)
 
     def _scrolToInclude(self, x, y):
         # Scroll the area (if required) to include the position x,y
@@ -250,7 +223,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def _eraseSelection(self):
         if not self._textCursor.hasSelection(): return
         self._textCursor.removeSelectedText()
-        self._rewrap()
 
     def _cursorAlign(self, x, y, alignRightTab = False):
         '''
@@ -280,6 +252,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         '''
         dt, (fr, to) = self._lines[y]
         return self._textDocument._dataLines[dt], fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
+
+    def _widgetPositionFromTextCursor(self, line, pos):
+        for i,l in enumerate(self._lines):
+            if l[0] == line and l[1][0] <= pos < l[1][1]:
+                return pos-l[1][0], i
+        return 0,0
 
     def _cursorFromLinePos(self,liney,p):
         '''
@@ -325,78 +303,23 @@ class _TTkTextEditView(TTkAbstractScrollView):
         ox, oy = self.getViewOffsets()
         x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
         self._setCursorPosNEW(x,y,moveAnchor=False)
-        cx = self._cursorPos[0]
-        cy = self._cursorPos[1]
-
-        if y < cy:    # Mouse Dragged above the cursor
-            self._selectionFrom = (  x,  y )
-            self._selectionTo   = ( cx, cy )
-        elif y > cy:  # Mouse Dragged below the cursor
-            self._selectionFrom = ( cx, cy )
-            self._selectionTo   = (  x,  y )
-        else: # Mouse on the same line of the cursor
-            self._selectionFrom = ( min(cx,x), y )
-            self._selectionTo   = ( max(cx,x), y )
-
         self._scrolToInclude(x,y)
-
         self.update()
         return True
 
     def mouseDoubleClickEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
-        ox, oy = self.getViewOffsets()
-        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-
-        l,p = self._linePosFromCursor(x,y)
-        before = l.substring(to=p)
-        after =  l.substring(fr=p)
-
-        xFrom = len(before)
-        xTo   = len(before)
-
-        selectRE = '[a-zA-Z0-9:,./]*'
-
-        if m := before.search(selectRE+'$'):
-            xFrom -= len(m.group(0))
-        if m := after.search('^'+selectRE):
-            xTo += len(m.group(0))
-
-        self._selectionFrom = self._cursorFromLinePos(y,xFrom)
-        self._selectionTo   = self._cursorFromLinePos(y,xTo)
-        self._cursorPos     = self._selectionFrom
-
         self._textCursor.select(TTkTextCursor.WordUnderCursor)
-
         self.update()
         return True
 
     def mouseTapEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mouseTapEvent(evt)
-        ox, oy = self.getViewOffsets()
-        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-        self._cursorPos     = (x,y)
-
-        l,_ = self._linePosFromCursor(x,y)
-
-        self._selectionFrom = self._cursorFromLinePos(y,0)
-        self._selectionTo   = self._cursorFromLinePos(y,len(l))
-        self._cursorPos     = self._selectionFrom
-
         self._textCursor.select(TTkTextCursor.LineUnderCursor)
-
         self.update()
         return True
-
-    #def mouseReleaseEvent(self, evt) -> bool:
-    #    if self._readOnly:
-    #        return super().mouseReleaseEvent(evt)
-    #    ox, oy = self.getViewOffsets()
-    #    self._cursorPos     = self._selectionFrom
-    #    self.update()
-    #    return True
 
     def keyEvent(self, evt):
         if self._readOnly:
@@ -404,15 +327,16 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
 
-            cx, cy = self._cursorPos
+            p = self._textCursor.position()
+            cx, cy = self._cursorFromDataPos(p.line, p.pos)
             dt, (fr, to) = self._lines[cy]
             # Don't Handle the special tab key, for now
             if evt.key == TTkK.Key_Tab:
                 return False
             if evt.key == TTkK.Key_Up:         self._setCursorPos(cx , cy-1)
             elif evt.key == TTkK.Key_Down:     self._setCursorPos(cx , cy+1)
-            elif evt.key == TTkK.Key_Left:     self._moveHCursor( cx , cy , -1 )
-            elif evt.key == TTkK.Key_Right:    self._moveHCursor( cx , cy , +1 )
+            elif evt.key == TTkK.Key_Left:     self._textCursor.movePosition(TTkTextCursor.Left)
+            elif evt.key == TTkK.Key_Right:    self._textCursor.movePosition(TTkTextCursor.Right)
             elif evt.key == TTkK.Key_End:      self._setCursorPos(w  , cy )
             elif evt.key == TTkK.Key_Home:     self._setCursorPos(0  , cy )
             elif evt.key == TTkK.Key_PageUp:   self._setCursorPos(cx , cy - h)
@@ -493,9 +417,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
         for y, l in enumerate(self._lines[oy:oy+h]):
             t = self._textDocument._dataLines[l[0]]
             # apply the selection color if required
-            if selSt.line <= y+oy <= selEn.line:
-                pf = 0      if y+oy > selSt.line else selSt.pos
-                pt = len(t) if y+oy < selEn.line else selEn.pos
+            if selSt.line <= l[0] <= selEn.line:
+                pf = 0      if l[0] > selSt.line else selSt.pos
+                pt = len(t) if l[0] < selEn.line else selEn.pos
                 t = t.setColor(color=selectColor, posFrom=pf, posTo=pt )
             self._canvas.drawText(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces))
         if self._lineWrapMode == TTkK.FixedWidth:

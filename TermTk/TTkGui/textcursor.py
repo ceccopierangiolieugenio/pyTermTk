@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 class TTkTextCursor():
@@ -46,6 +47,83 @@ class TTkTextCursor():
     BlockUnderCursor = SelectionType.BlockUnderCursor
     LineUnderCursor  = SelectionType.LineUnderCursor
     WordUnderCursor  = SelectionType.WordUnderCursor
+
+    class MoveOperation():
+        NoMove            = 0
+        '''Keep the cursor where it is'''
+        Start             = 1
+        '''Move to the start of the document.'''
+        StartOfLine       = 3
+        '''Move to the start of the current line.'''
+        StartOfBlock      = 4
+        '''Move to the start of the current block.'''
+        StartOfWord       = 5
+        '''Move to the start of the current word.'''
+        PreviousBlock     = 6
+        '''Move to the start of the previous block.'''
+        PreviousCharacter = 7
+        '''Move to the previous character.'''
+        PreviousWord      = 8
+        '''Move to the beginning of the previous word.'''
+        Up                = 2
+        '''Move up one line.'''
+        Left              = 9
+        '''Move left one character.'''
+        WordLeft          = 10
+        '''Move left one word.'''
+        End               = 11
+        '''Move to the end of the document.'''
+        EndOfLine         = 13
+        '''Move to the end of the current line.'''
+        EndOfWord         = 14
+        '''Move to the end of the current word.'''
+        EndOfBlock        = 15
+        '''Move to the end of the current block.'''
+        NextBlock         = 16
+        '''Move to the beginning of the next block.'''
+        NextCharacter     = 17
+        '''Move to the next character.'''
+        NextWord          = 18
+        '''Move to the next word.'''
+        Down              = 12
+        '''Move down one line.'''
+        Right             = 19
+        '''Move right one character.'''
+        WordRight         = 20
+        '''Move right one word.'''
+        NextCell          = 21
+        '''Move to the beginning of the next table cell inside the current table. If the current cell is the last cell in the row, the cursor will move to the first cell in the next row.'''
+        PreviousCell      = 22
+        '''Move to the beginning of the previous table cell inside the current table. If the current cell is the first cell in the row, the cursor will move to the last cell in the previous row.'''
+        NextRow           = 23
+        '''Move to the first new cell of the next row in the current table.'''
+        PreviousRow       = 24
+        '''Move to the last cell of the previous row in the current table.'''
+    NoMove            = MoveOperation.NoMove
+    Start             = MoveOperation.Start
+    StartOfLine       = MoveOperation.StartOfLine
+    StartOfBlock      = MoveOperation.StartOfBlock
+    StartOfWord       = MoveOperation.StartOfWord
+    PreviousBlock     = MoveOperation.PreviousBlock
+    PreviousCharacter = MoveOperation.PreviousCharacter
+    PreviousWord      = MoveOperation.PreviousWord
+    Up                = MoveOperation.Up
+    Left              = MoveOperation.Left
+    WordLeft          = MoveOperation.WordLeft
+    End               = MoveOperation.End
+    EndOfLine         = MoveOperation.EndOfLine
+    EndOfWord         = MoveOperation.EndOfWord
+    EndOfBlock        = MoveOperation.EndOfBlock
+    NextBlock         = MoveOperation.NextBlock
+    NextCharacter     = MoveOperation.NextCharacter
+    NextWord          = MoveOperation.NextWord
+    Down              = MoveOperation.Down
+    Right             = MoveOperation.Right
+    WordRight         = MoveOperation.WordRight
+    NextCell          = MoveOperation.NextCell
+    PreviousCell      = MoveOperation.PreviousCell
+    NextRow           = MoveOperation.NextRow
+    PreviousRow       = MoveOperation.PreviousRow
 
     class _prop():
         __slots__ = ('anchor', 'position')
@@ -87,13 +165,12 @@ class TTkTextCursor():
             self.pos  = p
             self.line = l
 
-    __slots__ = ('_document', '_properties', '_docData')
+    __slots__ = ('_document', '_properties')
     def __init__(self, *args, **kwargs):
         self._properties = [TTkTextCursor._prop(
                                 TTkTextCursor._CP(),
                                 TTkTextCursor._CP())]
         self._document = kwargs.get('document',TTkTextDocument())
-        self._docData = self._document._dataLines
 
     def anchor(self):
         return self._properties[0].anchor
@@ -102,12 +179,24 @@ class TTkTextCursor():
         return self._properties[0].position
 
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor ):
+        TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
         self._properties[0].position.set(line,pos)
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[0].anchor.set(line,pos)
 
-    #def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1 ):
-    #    pass
+    def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1 ):
+        if operation == TTkTextCursor.Right:
+            p = self.position()
+            if p.pos < len(self._document._dataLines[p.line]):
+                self.setPosition(p.line, p.pos+1, moveMode)
+            elif p.line < len(self._document._dataLines)-1:
+                self.setPosition(p.line+1, 0, moveMode)
+        elif operation == TTkTextCursor.Left:
+            p = self.position()
+            if p.pos > 0:
+                self.setPosition(p.line, p.pos-1, moveMode)
+            elif p.line > 0:
+                self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode)
 
     def document(self):
         return self._document
@@ -130,15 +219,15 @@ class TTkTextCursor():
         elif selection == TTkTextCursor.SelectionType.LineUnderCursor:
             line = self._properties[0].position.line
             self._properties[0].position.pos = 0
-            self._properties[0].anchor.pos   = len(self._docData[line])
+            self._properties[0].anchor.pos   = len(self._document._dataLines[line])
         elif selection == TTkTextCursor.SelectionType.WordUnderCursor:
             line = self._properties[0].position.line
             pos  = self._properties[0].position.pos
             # Split the current line from the current cursor position
             # search the leftmost(on the right slice)/rightmost(on the left slice) word
             # in order to match the full word under the cursor
-            splitBefore = self._docData[line].substring(to=pos)
-            splitAfter =  self._docData[line].substring(fr=pos)
+            splitBefore = self._document._dataLines[line].substring(to=pos)
+            splitAfter =  self._document._dataLines[line].substring(fr=pos)
             xFrom = pos
             xTo   = pos
             selectRE = '[a-zA-Z0-9:,./]*'
@@ -161,7 +250,13 @@ class TTkTextCursor():
         if not self.hasSelection(): return
         selSt = self.selectionStart()
         selEn = self.selectionEnd()
-        self._docData[selSt.line] = self._docData[selSt.line].substring(to=selSt.pos) + \
-                           self._docData[selEn.line].substring(fr=selEn.pos)
-        self._document._dataLines = self._docData[:selSt.line+1] + self._docData[selEn.line+1:]
+        self._document._dataLines[selSt.line] = self._document._dataLines[selSt.line].substring(to=selSt.pos) + \
+                           self._document._dataLines[selEn.line].substring(fr=selEn.pos)
+        self._document._dataLines = self._document._dataLines[:selSt.line+1] + self._document._dataLines[selEn.line+1:]
         self.setPosition(selSt.line, selSt.pos)
+        self._document.contentsChanged.emit()
+        self._document.contentsChange.emit(selSt.line, selEn.line-selSt.line, 1)
+
+    def getHighlightedLine(self, line, color):
+
+        return self._document._dataLines[line]
