@@ -22,12 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkGui.textwrap import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
@@ -35,17 +37,23 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
-            '_textDocument', '_hsize', '_lines',
-            '_textCursor', '_cursorParams',
-            '_tabSpaces',
+            '_textDocument', '_hsize',
+            '_textCursor', '_textColor', '_cursorParams',
+            '_textWrap', '_tabSpaces',
             '_lineWrapMode', '_wordWrapMode', '_wrapWidth', '_lastWrapUsed',
             '_replace',
-            '_readOnly'
+            '_readOnly',
+            # Forwarded Methods
+            'wrapWidth',    'setWrapWidth',
+            'lineWrapMode', 'setLineWrapMode',
+            'wordWrapMode', 'setWordWrapMode',
+            # Signals
+            'currentCharFormatChanged'
         )
     '''
         in order to support the line wrap, I need to divide the full data text in;
         _textDocument = the entire text divided in lines, easy to add/remove/append lines
-        _lines     = an array of tuples for each displayed line with a pointer to a
+        _textWrap._lines     = an array of tuples for each displayed line with a pointer to a
                      specific line and its slice to be shown at this coordinate;
                      [ (line, (posFrom, posTo)), ... ]
                      This is required to support the wrap feature
@@ -54,46 +62,30 @@ class _TTkTextEditView(TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self._readOnly = True
+        self._hsize = 0
+        self._lastWrapUsed  = 0
         self._textDocument = TTkTextDocument()
         self._textCursor = TTkTextCursor(document=self._textDocument)
+        self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textDocument.contentsChanged.connect(self._rewrap)
-        self._hsize = 0
-        self._lines = [(0,(0,0))]
-        self._tabSpaces = 4
-        self._wrapWidth     = 80
-        self._lastWrapUsed  = 0
-        self._lineWrapMode = TTkK.NoWrap
-        self._wordWrapMode = TTkK.WrapAnywhere
         self._replace = False
         self._cursorParams = None
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        # Trigger an update when the rewrap happen
+        self._textWrap.wrapChanged.connect(self.update)
+        # forward textWrap Methods
+        self.wrapWidth       = self._textWrap.wrapWidth
+        self.setWrapWidth    = self._textWrap.setWrapWidth
+        self.lineWrapMode    = self._textWrap.lineWrapMode
+        self.setLineWrapMode = self._textWrap.setLineWrapMode
+        self.wordWrapMode    = self._textWrap.wordWrapMode
+        self.setWordWrapMode = self._textWrap.setWordWrapMode
 
     def isReadOnly(self) -> bool :
         return self._readOnly
 
     def setReadOnly(self, ro):
         self._readOnly = ro
-
-    def wrapWidth(self):
-        return self._wrapWidth
-
-    def setWrapWidth(self, width):
-        self._wrapWidth = width
-        self._rewrap()
-
-    def lineWrapMode(self):
-        return self._lineWrapMode
-
-    def setLineWrapMode(self, mode):
-        self._lineWrapMode = mode
-        self._rewrap()
-
-    def wordWrapMode(self):
-        return self._wordWrapMode
-
-    def setWordWrapMode(self, mode):
-        self._wordWrapMode = mode
-        self._rewrap()
 
     def clear(self):
         self.setText(TTkString())
@@ -110,47 +102,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._updateSize()
 
     def _rewrap(self):
-        self._lines = []
-        if self._lineWrapMode == TTkK.NoWrap:
-            def _process(i,l):
-                self._lines.append((i,(0,len(l))))
-        else:
-            if   self._lineWrapMode == TTkK.WidgetWidth:
-                w = self.width()
-                if not w: return
-            elif self._lineWrapMode == TTkK.FixedWidth:
-                w = self._wrapWidth
-
-            def _process(i,l):
-                fr = 0
-                to = 0
-                if not len(l): # if the line is empty append it
-                    self._lines.append((i,(0,0)))
-                    return
-                while len(l):
-                    fl = l.tab2spaces(self._tabSpaces)
-                    if len(fl) <= w:
-                        self._lines.append((i,(fr,fr+len(l))))
-                        l=[]
-                    else:
-                        to = max(1,l.tabCharPos(w,self._tabSpaces))
-                        if self._wordWrapMode == TTkK.WordWrap: # Find the index of the first white space
-                            s = str(l)
-                            newTo = to
-                            while newTo and ( s[newTo] != ' ' and s[newTo] != '\t' ): newTo-=1
-                            if newTo: to = newTo
-
-                        self._lines.append((i,(fr,fr+to)))
-                        l = l.substring(to)
-                        fr += to
+        self._textWrap.rewrap()
         self.viewChanged.emit()
         self.update()
 
-        for i,l in enumerate(self._textDocument._dataLines):
-            _process(i,l)
-
     def resizeEvent(self, w, h):
-        if w != self._lastWrapUsed and w>self._tabSpaces:
+        if w != self._lastWrapUsed and w>self._textWrap._tabSpaces:
             self._lastWrapUsed = w
             self._rewrap()
         return super().resizeEvent(w,h)
@@ -159,12 +116,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._hsize = max( len(l) for l in self._textDocument._dataLines )
 
     def viewFullAreaSize(self) -> (int, int):
-        if self._lineWrapMode == TTkK.NoWrap:
-            return self._hsize, len(self._lines)
-        elif self._lineWrapMode == TTkK.WidgetWidth:
-            return self.width(), len(self._lines)
-        elif self._lineWrapMode == TTkK.FixedWidth:
-            return self._wrapWidth, len(self._lines)
+        if self._textWrap._lineWrapMode == TTkK.NoWrap:
+            return self._hsize, len(self._textWrap._lines)
+        elif self._textWrap._lineWrapMode == TTkK.WidgetWidth:
+            return self.width(), len(self._textWrap._lines)
+        elif self._textWrap._lineWrapMode == TTkK.FixedWidth:
+            return self._textWrap._wrapWidth, len(self._textWrap._lines)
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
@@ -205,7 +162,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def _setCursorPosNEW(self, x, y, alignRightTab=False, moveAnchor=True):
         x,y = self._cursorAlign(x,y, alignRightTab)
         _, pos = self._linePosFromCursor(x,y)
-        self._textCursor.setPosition(self._lines[y][0], pos,
+        self._textCursor.setPosition(self._textWrap._lines[y][0], pos,
                             moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor)
         self._scrolToInclude(x,y)
 
@@ -233,16 +190,16 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return:
         x,y = widget relative position aligned to the close editable char
         '''
-        y = max(0,min(y,len(self._lines)-1))
-        dt, (fr, to) = self._lines[y]
+        y = max(0,min(y,len(self._textWrap._lines)-1))
+        dt, (fr, to) = self._textWrap._lines[y]
         x = max(0,x)
         s = self._textDocument._dataLines[dt].substring(fr,to)
-        x = s.tabCharPos(x, self._tabSpaces, alignRightTab)
+        x = s.tabCharPos(x, self._textWrap._tabSpaces, alignRightTab)
         # The replace cursor need to be aligned to the char
         # The Insert cursor must be placed between chars
         if self._replace and x==len(s):
             x -= 1
-        x = len(s.substring(0,x).tab2spaces(self._tabSpaces))
+        x = len(s.substring(0,x).tab2spaces(self._textWrap._tabSpaces))
         return x, y
 
     def _linePosFromCursor(self,x,y):
@@ -250,11 +207,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return the line and the x position from the x,y cursor position relative to the widget
         I assume the x,y position already normalized using the _cursorAlign function
         '''
-        dt, (fr, to) = self._lines[y]
-        return self._textDocument._dataLines[dt], fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
+        dt, (fr, to) = self._textWrap._lines[y]
+        return self._textDocument._dataLines[dt], fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._textWrap._tabSpaces)
 
     def _widgetPositionFromTextCursor(self, line, pos):
-        for i,l in enumerate(self._lines):
+        for i,l in enumerate(self._textWrap._lines):
             if l[0] == line and l[1][0] <= pos < l[1][1]:
                 return pos-l[1][0], i
         return 0,0
@@ -262,28 +219,28 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def _cursorFromLinePos(self,liney,p):
         '''
         return the x,y cursor position relative to the widget from the
-        liney value relative to the self._lines and the
-        p = position value relative to the string related to self._lines[liney][0]
+        liney value relative to the self._textWrap._lines and the
+        p = position value relative to the string related to self._textWrap._lines[liney][0]
         I know, big chink of crap
         '''
-        # Find the bginning of the string in the "self._lines" (position from == 0)
-        while self._lines[liney][1][0]: liney -=1
-        dt = self._lines[liney][0]
-        while liney < len(self._lines):
-            dt1, (fr, to) = self._lines[liney]
+        # Find the bginning of the string in the "self._textWrap._lines" (position from == 0)
+        while self._textWrap._lines[liney][1][0]: liney -=1
+        dt = self._textWrap._lines[liney][0]
+        while liney < len(self._textWrap._lines):
+            dt1, (fr, to) = self._textWrap._lines[liney]
             if dt1 != dt:
                 break
             if fr<=p<to:
-                s = self._textDocument._dataLines[dt].substring(fr,p).tab2spaces(self._tabSpaces)
+                s = self._textDocument._dataLines[dt].substring(fr,p).tab2spaces(self._textWrap._tabSpaces)
                 return len(s), liney
             liney += 1
         liney-=1
-        dt, (fr, to) = self._lines[liney]
+        dt, (fr, to) = self._textWrap._lines[liney]
         s = self._textDocument._dataLines[dt].substring(fr,to)
-        return len(s.tab2spaces(self._tabSpaces)), liney
+        return len(s.tab2spaces(self._textWrap._tabSpaces)), liney
 
     def _cursorFromDataPos(self,y,p):
-        for i,l in enumerate(self._lines):
+        for i,l in enumerate(self._textWrap._lines):
             if l[0] == y:
                 return self._cursorFromLinePos(i,p)
         return 0,0
@@ -329,7 +286,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
             p = self._textCursor.position()
             cx, cy = self._cursorFromDataPos(p.line, p.pos)
-            dt, (fr, to) = self._lines[cy]
+            dt, (fr, to) = self._textWrap._lines[cy]
             # Don't Handle the special tab key, for now
             if evt.key == TTkK.Key_Tab:
                 return False
@@ -345,33 +302,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 self._replace = not self._replace
                 self._setCursorPos(cx , cy)
             elif evt.key == TTkK.Key_Delete:
-                if self._selection():
-                    self._eraseSelection()
-                else:
-                    l,dx = self._linePosFromCursor(cx,cy)
-                    if dx < len(l): # Erase next caracter on the same line
-                        self._textDocument._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
-                    elif (dt+1)<len(self._textDocument._dataLines): # End of the line, remove "\n" and merge with the next line
-                        self._textDocument._dataLines[dt] += self._textDocument._dataLines[dt+1]
-                        self._textDocument._dataLines = self._textDocument._dataLines[:dt+1] + self._textDocument._dataLines[dt+2:]
-                        self._setCursorPos(cx, cy)
-                    self._rewrap()
+                if not self._selection():
+                    self._textCursor.movePosition(TTkTextCursor.Right, TTkTextCursor.KeepAnchor)
+                self._eraseSelection()
             elif evt.key == TTkK.Key_Backspace:
-                if self._selection():
-                    self._eraseSelection()
-                else:
-                    l,dx = self._linePosFromCursor(cx,cy)
-                    if dx > 0: # Erase the previous character
-                        dx -= 1
-                        self._textDocument._dataLines[dt] = l.substring(to=dx) + l.substring(fr=dx+1)
-                    elif dt>0: # Beginning of the line, remove "\n" and merge with the previous line
-                        dt -=1
-                        dx = len(self._textDocument._dataLines[dt])
-                        self._textDocument._dataLines[dt] += l
-                        self._textDocument._dataLines = self._textDocument._dataLines[:dt+1] + self._textDocument._dataLines[dt+2:]
-                    self._rewrap()
-                    cx, cy = self._cursorFromDataPos(dt,dx)
-                    self._setCursorPos(cx, cy)
+                if not self._selection():
+                    self._textCursor.movePosition(TTkTextCursor.Left, TTkTextCursor.KeepAnchor)
+                self._eraseSelection()
             elif evt.key == TTkK.Key_Enter:
                 self._eraseSelection()
                 l,dx = self._linePosFromCursor(cx,cy)
@@ -382,17 +319,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             self.update()
             return True
         else: # Input char
-            self._eraseSelection()
-            cx,cy = self._cursorPos
-            dt, _ = self._lines[cy]
-            l, dx = self._linePosFromCursor(cx,cy)
-            if self._replace:
-                self._textDocument._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx+1)
-            else:
-                self._textDocument._dataLines[dt] = l.substring(to=dx) + evt.key + l.substring(fr=dx)
-            self._rewrap()
-            cx, cy = self._cursorFromDataPos(dt,dx+1)
-            self._setCursorPos(cx, cy)
+            self._textCursor.insertText(evt.key)
             self.update()
             return True
 
@@ -412,18 +339,15 @@ class _TTkTextEditView(TTkAbstractScrollView):
             selectColor = TTkCfg.theme.lineEditTextColorSelected
 
         h = self.height()
-        selSt = self._textCursor.selectionStart()
-        selEn = self._textCursor.selectionEnd()
-        for y, l in enumerate(self._lines[oy:oy+h]):
-            t = self._textDocument._dataLines[l[0]]
-            # apply the selection color if required
-            if selSt.line <= l[0] <= selEn.line:
-                pf = 0      if l[0] > selSt.line else selSt.pos
-                pt = len(t) if l[0] < selEn.line else selEn.pos
-                t = t.setColor(color=selectColor, posFrom=pf, posTo=pt )
-            self._canvas.drawText(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._tabSpaces))
-        if self._lineWrapMode == TTkK.FixedWidth:
-            self._canvas.drawVLine(pos=(self._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
+        subLines = self._textWrap._lines[oy:oy+h]
+        outLines = self._textCursor.getHighlightedLines(subLines[0][0], subLines[-1][0], selectColor)
+
+        for y, l in enumerate(subLines):
+            t = outLines[l[0]-subLines[0][0]]
+            self._canvas.drawText(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
+
+        if self._textWrap._lineWrapMode == TTkK.FixedWidth:
+            self._canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
         self._pushCursor()
 
 class TTkTextEdit(TTkAbstractScrollArea):

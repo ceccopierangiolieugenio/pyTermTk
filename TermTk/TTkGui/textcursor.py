@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 class TTkTextCursor():
@@ -202,7 +203,15 @@ class TTkTextCursor():
         return self._document
 
     def insertText(self, text):
-        pass
+        l,b,c = 0,1,1
+        if self.hasSelection():
+            l,b,c = self._removeSelectedText()
+        l = self.position().line
+        p = self.position().pos
+        [TTkString(t) for t in text.split('\n')]
+        self._document._dataLines[l] = self._document._dataLines[l].substring(to=p) + text + self._document._dataLines[l].substring(fr=p)
+        self._document.contentsChanged.emit()
+        self._document.contentsChange.emit(l,b,c)
 
     def removeSelectedText(self):
         pass
@@ -246,17 +255,29 @@ class TTkTextCursor():
         self._properties[0].anchor.pos  = self._properties[0].position.pos
         self._properties[0].anchor.line = self._properties[0].position.line
 
-    def removeSelectedText(self):
-        if not self.hasSelection(): return
+    def _removeSelectedText(self):
         selSt = self.selectionStart()
         selEn = self.selectionEnd()
         self._document._dataLines[selSt.line] = self._document._dataLines[selSt.line].substring(to=selSt.pos) + \
                            self._document._dataLines[selEn.line].substring(fr=selEn.pos)
         self._document._dataLines = self._document._dataLines[:selSt.line+1] + self._document._dataLines[selEn.line+1:]
         self.setPosition(selSt.line, selSt.pos)
+        return selSt.line, selEn.line-selSt.line, 1
+
+    def removeSelectedText(self):
+        if not self.hasSelection(): return
+        a,b,c = self._removeSelectedText()
         self._document.contentsChanged.emit()
-        self._document.contentsChange.emit(selSt.line, selEn.line-selSt.line, 1)
+        self._document.contentsChange.emit(a,b,c)
 
-    def getHighlightedLine(self, line, color):
-
-        return self._document._dataLines[line]
+    def getHighlightedLines(self, fr, to, color):
+        selSt = self.selectionStart()
+        selEn = self.selectionEnd()
+        ret = []
+        for i,l in enumerate(self._document._dataLines[fr:to+1],fr):
+            if selSt.line <= i <= selEn.line:
+                pf = 0      if i > selSt.line else selSt.pos
+                pt = len(l) if i < selEn.line else selEn.pos
+                l = l.setColor(color=color, posFrom=pf, posTo=pt)
+            ret.append(l)
+        return ret

@@ -73,6 +73,8 @@ def demoTextEdit(root=None):
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
 
+    te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
+
     # use the widget size to wrap
     # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
     # te.setWordWrapMode(ttk.TTkK.WordWrap)
