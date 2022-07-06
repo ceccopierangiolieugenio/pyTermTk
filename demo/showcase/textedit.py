@@ -109,6 +109,7 @@ def demoTextEdit(root=None):
             fixWidth.setDisabled()
         else:
             te.setLineWrapMode(ttk.TTkK.FixedWidth)
+            te.setWrapWidth(fixWidth.value())
             wordWrap.setEnabled()
             fixWidth.setEnabled()
 

@@ -39,13 +39,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_textDocument', '_hsize',
             '_textCursor', '_textColor', '_cursorParams',
-            '_textWrap', '_tabSpaces',
-            '_lineWrapMode', '_wordWrapMode', '_wrapWidth', '_lastWrapUsed',
+            '_textWrap', '_lineWrapMode', '_lastWrapUsed',
             '_replace',
             '_readOnly',
             # Forwarded Methods
             'wrapWidth',    'setWrapWidth',
-            'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
             # Signals
             'currentCharFormatChanged'
@@ -66,6 +64,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._lastWrapUsed  = 0
         self._textDocument = TTkTextDocument()
         self._textCursor = TTkTextCursor(document=self._textDocument)
+        self._lineWrapMode = TTkK.NoWrap
         self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textDocument.contentsChanged.connect(self._rewrap)
         self._replace = False
@@ -76,8 +75,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
         # forward textWrap Methods
         self.wrapWidth       = self._textWrap.wrapWidth
         self.setWrapWidth    = self._textWrap.setWrapWidth
-        self.lineWrapMode    = self._textWrap.lineWrapMode
-        self.setLineWrapMode = self._textWrap.setLineWrapMode
         self.wordWrapMode    = self._textWrap.wordWrapMode
         self.setWordWrapMode = self._textWrap.setWordWrapMode
 
@@ -89,6 +86,19 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
     def clear(self):
         self.setText(TTkString())
+
+    def lineWrapMode(self):
+        return self._lineWrapMode
+
+    def setLineWrapMode(self, mode):
+        self._lineWrapMode = mode
+        if mode == TTkK.NoWrap:
+            self._textWrap.disable()
+        else:
+            self._textWrap.enable()
+            if mode == TTkK.WidgetWidth:
+                self._textWrap.setWrapWidth(self.width())
+        self._textWrap.rewrap()
 
     @pyTTkSlot(str)
     def setText(self, text):
@@ -116,12 +126,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._hsize = max( len(l) for l in self._textDocument._dataLines )
 
     def viewFullAreaSize(self) -> (int, int):
-        if self._textWrap._lineWrapMode == TTkK.NoWrap:
-            return self._hsize, len(self._textWrap._lines)
-        elif self._textWrap._lineWrapMode == TTkK.WidgetWidth:
-            return self.width(), len(self._textWrap._lines)
-        elif self._textWrap._lineWrapMode == TTkK.FixedWidth:
-            return self._textWrap._wrapWidth, len(self._textWrap._lines)
+        if self.lineWrapMode() == TTkK.NoWrap:
+            return self._hsize, self._textWrap.size()
+        elif self.lineWrapMode() == TTkK.WidgetWidth:
+            return self.width(), self._textWrap.size()
+        elif self.lineWrapMode() == TTkK.FixedWidth:
+            return self.wrapWidth(), self._textWrap.size()
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
@@ -131,9 +141,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return
         ox, oy = self.getViewOffsets()
 
-        x,y = self._cursorFromDataPos(
-            self._textCursor.position().line,
-            self._textCursor.position().pos)
+        x,y = self._textWrap.dataToScreenPosition(
+                self._textCursor.position().line,
+                self._textCursor.position().pos)
         y -= oy
         x -= ox
 
@@ -156,15 +166,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
-    def _setCursorPos(self, x, y, alignRightTab=False):
-        self._setCursorPosNEW(x,y,alignRightTab)
-
-    def _setCursorPosNEW(self, x, y, alignRightTab=False, moveAnchor=True):
-        x,y = self._cursorAlign(x,y, alignRightTab)
-        _, pos = self._linePosFromCursor(x,y)
-        self._textCursor.setPosition(self._textWrap._lines[y][0], pos,
+    def _setCursorPos(self, x, y, moveAnchor=True):
+        x,y = self._textWrap.normalizeScreenPosition(x,y)
+        line, pos = self._textWrap.screenToDataPosition(x,y)
+        self._textCursor.setPosition(line, pos,
                             moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor)
         self._scrolToInclude(x,y)
+        return x, y
 
     def _scrolToInclude(self, x, y):
         # Scroll the area (if required) to include the position x,y
@@ -181,31 +189,10 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if not self._textCursor.hasSelection(): return
         self._textCursor.removeSelectedText()
 
-    def _cursorAlign(self, x, y, alignRightTab = False):
-        '''
-        Return the widget position of the closest editable char
-        in:
-        x,y = widget relative position
-        alignRightTab = if true, align the position to the right of the tab space
-        return:
-        x,y = widget relative position aligned to the close editable char
-        '''
-        y = max(0,min(y,len(self._textWrap._lines)-1))
-        dt, (fr, to) = self._textWrap._lines[y]
-        x = max(0,x)
-        s = self._textDocument._dataLines[dt].substring(fr,to)
-        x = s.tabCharPos(x, self._textWrap._tabSpaces, alignRightTab)
-        # The replace cursor need to be aligned to the char
-        # The Insert cursor must be placed between chars
-        if self._replace and x==len(s):
-            x -= 1
-        x = len(s.substring(0,x).tab2spaces(self._textWrap._tabSpaces))
-        return x, y
-
     def _linePosFromCursor(self,x,y):
         '''
         return the line and the x position from the x,y cursor position relative to the widget
-        I assume the x,y position already normalized using the _cursorAlign function
+        I assume the x,y position already normalized using the _textWrap.normalizeScreenPosition function
         '''
         dt, (fr, to) = self._textWrap._lines[y]
         return self._textDocument._dataLines[dt], fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._textWrap._tabSpaces)
@@ -216,41 +203,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 return pos-l[1][0], i
         return 0,0
 
-    def _cursorFromLinePos(self,liney,p):
-        '''
-        return the x,y cursor position relative to the widget from the
-        liney value relative to the self._textWrap._lines and the
-        p = position value relative to the string related to self._textWrap._lines[liney][0]
-        I know, big chink of crap
-        '''
-        # Find the bginning of the string in the "self._textWrap._lines" (position from == 0)
-        while self._textWrap._lines[liney][1][0]: liney -=1
-        dt = self._textWrap._lines[liney][0]
-        while liney < len(self._textWrap._lines):
-            dt1, (fr, to) = self._textWrap._lines[liney]
-            if dt1 != dt:
-                break
-            if fr<=p<to:
-                s = self._textDocument._dataLines[dt].substring(fr,p).tab2spaces(self._textWrap._tabSpaces)
-                return len(s), liney
-            liney += 1
-        liney-=1
-        dt, (fr, to) = self._textWrap._lines[liney]
-        s = self._textDocument._dataLines[dt].substring(fr,to)
-        return len(s.tab2spaces(self._textWrap._tabSpaces)), liney
-
-    def _cursorFromDataPos(self,y,p):
-        for i,l in enumerate(self._textWrap._lines):
-            if l[0] == y:
-                return self._cursorFromLinePos(i,p)
-        return 0,0
-
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
-        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-        self._setCursorPos(x,y)
+        x,y = self._setCursorPos(evt.x + ox, evt.y + oy)
         self.update()
         return True
 
@@ -258,8 +215,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseDragEvent(evt)
         ox, oy = self.getViewOffsets()
-        x,y = self._cursorAlign(evt.x + ox, evt.y + oy)
-        self._setCursorPosNEW(x,y,moveAnchor=False)
+        x,y = self._setCursorPos(evt.x + ox, evt.y + oy, moveAnchor=False)
         self._scrolToInclude(x,y)
         self.update()
         return True
@@ -285,8 +241,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             _,_,w,h = self.geometry()
 
             p = self._textCursor.position()
-            cx, cy = self._cursorFromDataPos(p.line, p.pos)
-            dt, (fr, to) = self._textWrap._lines[cy]
+            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+            dt, _ = self._textWrap._lines[cy]
             # Don't Handle the special tab key, for now
             if evt.key == TTkK.Key_Tab:
                 return False
@@ -310,12 +266,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
                     self._textCursor.movePosition(TTkTextCursor.Left, TTkTextCursor.KeepAnchor)
                 self._eraseSelection()
             elif evt.key == TTkK.Key_Enter:
-                self._eraseSelection()
-                l,dx = self._linePosFromCursor(cx,cy)
-                self._textDocument._dataLines[dt] = l.substring(to=dx)
-                self._textDocument._dataLines = self._textDocument._dataLines[:dt+1] + [l.substring(fr=dx)] + self._textDocument._dataLines[dt+1:]
-                self._rewrap()
-                self._setCursorPos(0,cy+1)
+                self._textCursor.insertText('\n')
             self.update()
             return True
         else: # Input char
@@ -346,7 +297,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             t = outLines[l[0]-subLines[0][0]]
             self._canvas.drawText(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
 
-        if self._textWrap._lineWrapMode == TTkK.FixedWidth:
+        if self._lineWrapMode == TTkK.FixedWidth:
             self._canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
         self._pushCursor()
 

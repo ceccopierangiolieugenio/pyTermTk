@@ -31,7 +31,8 @@ from TermTk.TTkGui.textdocument import TTkTextDocument
 class TTkTextWrap():
     __slots__ = (
         '_lines', '_textDocument', '_tabSpaces',
-        '_lineWrapMode', '_wordWrapMode', '_wrapWidth',
+        '_wordWrapMode', '_wrapWidth',
+        '_enable',
         # Signals
         'wrapChanged'
         )
@@ -39,10 +40,10 @@ class TTkTextWrap():
         # signals
         self.wrapChanged = pyTTkSignal()
 
+        self._enable = True
         self._lines = [(0,(0,0))]
         self._tabSpaces = 4
         self._wrapWidth     = 80
-        self._lineWrapMode = TTkK.NoWrap
         self._wordWrapMode = TTkK.WrapAnywhere
         self.setDocument(kwargs.get('document',TTkTextDocument()))
 
@@ -50,18 +51,20 @@ class TTkTextWrap():
         self._textDocument = document
         self.rewrap()
 
+    def disable(self):
+        self._enable = False
+
+    def enable(self):
+        self._enable = True
+
+    def size(self):
+        return len(self._lines)
+
     def wrapWidth(self):
         return self._wrapWidth
 
     def setWrapWidth(self, width):
         self._wrapWidth = width
-        self.rewrap()
-
-    def lineWrapMode(self):
-        return self._lineWrapMode
-
-    def setLineWrapMode(self, mode):
-        self._lineWrapMode = mode
         self.rewrap()
 
     def wordWrapMode(self):
@@ -73,15 +76,12 @@ class TTkTextWrap():
 
     def rewrap(self):
         self._lines = []
-        if self._lineWrapMode == TTkK.NoWrap:
+        if not self._enable:
             def _process(i,l):
                 self._lines.append((i,(0,len(l))))
         else:
-            if   self._lineWrapMode == TTkK.WidgetWidth:
-                w = self.width()
-                if not w: return
-            elif self._lineWrapMode == TTkK.FixedWidth:
-                w = self._wrapWidth
+            if not (w := self._wrapWidth):
+                return
 
             def _process(i,l):
                 fr = 0
@@ -109,4 +109,31 @@ class TTkTextWrap():
             _process(i,l)
         self.wrapChanged.emit()
 
+    def dataToScreenPosition(self, line, pos):
+        for i, (dt, (fr, to)) in enumerate(self._lines):
+            if dt == line and fr <= pos <= to:
+                l = self._textDocument._dataLines[dt].substring(fr,pos).tab2spaces(self._tabSpaces)
+                return len(l), i
+        return 0,0
 
+    def screenToDataPosition(self, x, y):
+        dt, (fr, to) = self._lines[y]
+        pos = fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._tabSpaces)
+        return dt, pos
+
+    def normalizeScreenPosition(self, x, y):
+        '''
+        Return the widget position of the closest editable char
+        in:
+        x,y = widget relative position
+        alignRightTab = if true, align the position to the right of the tab space
+        return:
+        x,y = widget relative position aligned to the close editable char
+        '''
+        y = max(0,min(y,self.size()-1))
+        dt, (fr, to) = self._lines[y]
+        x = max(0,x)
+        s = self._textDocument._dataLines[dt].substring(fr,to)
+        x = s.tabCharPos(x, self._tabSpaces)
+        x = len(s.substring(0,x).tab2spaces(self._tabSpaces))
+        return x, y
