@@ -267,10 +267,12 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 self._eraseSelection()
             elif evt.key == TTkK.Key_Enter:
                 self._textCursor.insertText('\n')
+                self._textCursor.movePosition(TTkTextCursor.Right)
             self.update()
             return True
         else: # Input char
             self._textCursor.insertText(evt.key)
+            self._textCursor.movePosition(TTkTextCursor.Right)
             self.update()
             return True
 
