@@ -212,13 +212,10 @@ class TTkTextCursor():
         newLines = (self._document._dataLines[l].substring(to=p) + text + self._document._dataLines[l].substring(fr=p)).split('\n')
         self._document._dataLines[l] = newLines[0]
         for nl in reversed(newLines[1:]):
-            c+=1
             self._document._dataLines.insert(l+1, nl)
+            c+=1
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(l,b,c)
-
-    def removeSelectedText(self):
-        pass
 
     def selectionStart(self):
         return self._properties[0].selectionStart()

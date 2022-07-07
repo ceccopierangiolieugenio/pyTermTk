@@ -182,27 +182,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
         offy = max(min(offy, y),y-h+1)
         self.viewMoveTo(offx, offy)
 
-    def _selection(self) -> bool:
-        return self._textCursor.hasSelection()
-
-    def _eraseSelection(self):
-        if not self._textCursor.hasSelection(): return
-        self._textCursor.removeSelectedText()
-
-    def _linePosFromCursor(self,x,y):
-        '''
-        return the line and the x position from the x,y cursor position relative to the widget
-        I assume the x,y position already normalized using the _textWrap.normalizeScreenPosition function
-        '''
-        dt, (fr, to) = self._textWrap._lines[y]
-        return self._textDocument._dataLines[dt], fr+self._textDocument._dataLines[dt].substring(fr,to).tabCharPos(x,self._textWrap._tabSpaces)
-
-    def _widgetPositionFromTextCursor(self, line, pos):
-        for i,l in enumerate(self._textWrap._lines):
-            if l[0] == line and l[1][0] <= pos < l[1][1]:
-                return pos-l[1][0], i
-        return 0,0
-
     def mousePressEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mousePressEvent(evt)
@@ -258,13 +237,13 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 self._replace = not self._replace
                 self._setCursorPos(cx , cy)
             elif evt.key == TTkK.Key_Delete:
-                if not self._selection():
+                if not self._textCursor.hasSelection():
                     self._textCursor.movePosition(TTkTextCursor.Right, TTkTextCursor.KeepAnchor)
-                self._eraseSelection()
+                self._textCursor.removeSelectedText()
             elif evt.key == TTkK.Key_Backspace:
-                if not self._selection():
+                if not self._textCursor.hasSelection():
                     self._textCursor.movePosition(TTkTextCursor.Left, TTkTextCursor.KeepAnchor)
-                self._eraseSelection()
+                self._textCursor.removeSelectedText()
             elif evt.key == TTkK.Key_Enter:
                 self._textCursor.insertText('\n')
                 self._textCursor.movePosition(TTkTextCursor.Right)
