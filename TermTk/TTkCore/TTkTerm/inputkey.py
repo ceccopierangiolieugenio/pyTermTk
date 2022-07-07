@@ -90,6 +90,23 @@ def _translate_key(key):
     elif key == "\033[D"    : return TTkK.Key_Left      , TTkK.NoModifier
     elif key == "\033[5~"   : return TTkK.Key_PageUp    , TTkK.NoModifier
     elif key == "\033[6~"   : return TTkK.Key_PageDown  , TTkK.NoModifier
+    elif key == "\033[1;2A" : return TTkK.Key_Up        , TTkK.ShiftModifier
+    elif key == "\033[1;2B" : return TTkK.Key_Down      , TTkK.ShiftModifier
+    elif key == "\033[1;2C" : return TTkK.Key_Right     , TTkK.ShiftModifier
+    elif key == "\033[1;2D" : return TTkK.Key_Left      , TTkK.ShiftModifier
+    elif key == "\033[1;3A" : return TTkK.Key_Up        , TTkK.AltModifier
+    elif key == "\033[1;3B" : return TTkK.Key_Down      , TTkK.AltModifier
+    elif key == "\033[1;3C" : return TTkK.Key_Right     , TTkK.AltModifier
+    elif key == "\033[1;3D" : return TTkK.Key_Left      , TTkK.AltModifier
+    elif key == "\033[1;4A" : return TTkK.Key_Up        , TTkK.AltModifier | TTkK.ShiftModifier
+    elif key == "\033[1;4B" : return TTkK.Key_Down      , TTkK.AltModifier | TTkK.ShiftModifier
+    elif key == "\033[1;4C" : return TTkK.Key_Right     , TTkK.AltModifier | TTkK.ShiftModifier
+    elif key == "\033[1;4D" : return TTkK.Key_Left      , TTkK.AltModifier | TTkK.ShiftModifier
+    elif key == "\033[1;5A" : return TTkK.Key_Up        , TTkK.ControlModifier
+    elif key == "\033[1;5B" : return TTkK.Key_Down      , TTkK.ControlModifier
+    elif key == "\033[1;5C" : return TTkK.Key_Right     , TTkK.ControlModifier
+    elif key == "\033[1;5D" : return TTkK.Key_Left      , TTkK.ControlModifier
+
     # Xterm
     elif key == "\033[F"    : return TTkK.Key_End       , TTkK.NoModifier
     elif key == "\033[H"    : return TTkK.Key_Home      , TTkK.NoModifier
@@ -205,12 +222,14 @@ def _translate_key(key):
 
 def mod2str(k):
     if k == TTkK.NoModifier          : return "NoModifier"
-    if k == TTkK.ShiftModifier       : return "ShiftModifier"
-    if k == TTkK.ControlModifier     : return "ControlModifier"
-    if k == TTkK.AltModifier         : return "AltModifier"
-    if k == TTkK.MetaModifier        : return "MetaModifier"
-    if k == TTkK.KeypadModifier      : return "KeypadModifier"
-    if k == TTkK.GroupSwitchModifier : return "GroupSwitchModifier"
+    ret = []
+    if k & TTkK.ShiftModifier       : ret.append("ShiftModifier")
+    if k & TTkK.ControlModifier     : ret.append("ControlModifier")
+    if k & TTkK.AltModifier         : ret.append("AltModifier")
+    if k & TTkK.MetaModifier        : ret.append("MetaModifier")
+    if k & TTkK.KeypadModifier      : ret.append("KeypadModifier")
+    if k & TTkK.GroupSwitchModifier : ret.append("GroupSwitchModifier")
+    if ret: return ",".join(ret)
     return "NONE!!!"
 
 def key2str(k):

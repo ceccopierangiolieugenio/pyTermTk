@@ -40,7 +40,7 @@ class TTkTextWrap():
         # signals
         self.wrapChanged = pyTTkSignal()
 
-        self._enable = True
+        self._enable = False
         self._lines = [(0,(0,0))]
         self._tabSpaces = 4
         self._wrapWidth     = 80

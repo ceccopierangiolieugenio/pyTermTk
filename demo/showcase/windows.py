@@ -40,6 +40,10 @@ def demoWindows(root=None):
     win2_2.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkTestWidget(parent=win2_2, border=False)
 
+    win2_3 = ttk.TTkWindow(parent=frame,pos = (6,21), size=(50,7), title="Captured Input", border=True)
+    win2_3.setLayout(ttk.TTkHBoxLayout())
+    ttk.TTkKeyPressView(parent=win2_3)
+
     ttk.TTkAbout(parent=frame, pos=(11,7))
 
     return frame
@@ -49,7 +53,7 @@ def demoWindows(root=None):
 def main():
     ttk.TTkLog.use_default_file_logging()
     root = ttk.TTk()
-    win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(60,30), title="Test Window 1", border=True, layout=ttk.TTkGridLayout())
+    win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(60,35), title="Test Window 1", border=True, layout=ttk.TTkGridLayout())
     demoWindows(win1)
     root.mainloop()
 

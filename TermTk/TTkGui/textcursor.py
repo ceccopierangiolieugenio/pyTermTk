@@ -180,7 +180,7 @@ class TTkTextCursor():
         return self._properties[0].position
 
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor ):
-        TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
+        # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
         self._properties[0].position.set(line,pos)
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[0].anchor.set(line,pos)
