@@ -37,6 +37,7 @@ elif platform.system() == 'Emscripten':
     raise NotImplementedError('Pyodide not yet supported')
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.TTkTerm.inputkey   import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
@@ -85,6 +86,14 @@ class TTkInput:
                             return t, 1
                     return lastTime, tap
 
+                mod = TTkK.NoModifier
+                if code & 0x10:
+                    code &= ~0x10
+                    mod |= TTkK.ControlModifier
+                if code & 0x08:
+                    code &= ~0x08
+                    mod |= TTkK.AltModifier
+
                 if code == 0x00:
                     self._leftLastTime, self._leftTap = _checkTap(self._leftLastTime, self._leftTap)
                     tap = self._leftTap
@@ -115,7 +124,7 @@ class TTkInput:
                 elif code == 0x41:
                     key = TTkMouseEvent.Wheel
                     evt = TTkMouseEvent.Down
-                mevt = TTkMouseEvent(x, y, key, evt, tap, m.group(0).replace("\033", "<ESC>"))
+                mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
 
             if kevt is None and mevt is None:
                 TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>"))

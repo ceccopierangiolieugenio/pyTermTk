@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, mod2str, key2str
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
@@ -37,9 +38,10 @@ class TTkKeyPressView(TTkWidget):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbstractScrollView')
         TTkHelper._rootWidget.eventKeyPress.connect(self._addKey)
+        TTkHelper._rootWidget.eventMouse.connect(self._addMouse)
         self._keys = []
-        self._period = 0.2
-        self._fade = 5
+        self._period = 0.1
+        self._fade = 10
         self._timer = TTkTimer()
         self._timer.timeout.connect(self._timerEvent)
         self._timer.start(self._period)
@@ -60,13 +62,21 @@ class TTkKeyPressView(TTkWidget):
             self._keys.append([0,text,evt.type])
         self.update()
 
+    @pyTTkSlot(TTkMouseEvent)
+    def _addMouse(self, evt):
+              # return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} {self.mod2str()} tap:{self.tap} - {self.raw}"
+        # text = f"M:{(evt.x,evt.y)} {evt.key2str().replace('Button','')} {evt.evt2str().replace('Release','').replace('Press','')} {evt.mod2str().replace('NoModifier','')}"
+        text = f"M:{(evt.x,evt.y)} {evt.key2str().replace('Button','')} {evt.mod2str().replace('NoModifier','')}"
+        self._keys.append([0,text,0x100])
+        self.update()
+
     def _timerEvent(self):
         for i,k in enumerate(self._keys):
             if k[0] > self._fade:
                 self._keys.pop(i)
             else:
                 k[0] += 1
-        self.update()
+            self.update()
         self._timer.start(self._period)
 
     def txt2map(self, txt):

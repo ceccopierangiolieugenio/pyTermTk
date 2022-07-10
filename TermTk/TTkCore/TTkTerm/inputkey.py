@@ -221,7 +221,7 @@ def _translate_key(key):
     # return TTkK.NONE
 
 def mod2str(k):
-    if k == TTkK.NoModifier          : return "NoModifier"
+    if k == TTkK.NoModifier         : return "NoModifier"
     ret = []
     if k & TTkK.ShiftModifier       : ret.append("ShiftModifier")
     if k & TTkK.ControlModifier     : ret.append("ControlModifier")

@@ -29,6 +29,7 @@ import queue
 
 from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.constant import TTkK
@@ -44,12 +45,13 @@ class TTk(TTkWidget):
         '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
         #Signals
-        'eventKeyPress' )
+        'eventKeyPress', 'eventMouse' )
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTk' )
         self.eventKeyPress = pyTTkSignal(TTkKeyEvent)
+        self.eventMouse    = pyTTkSignal(TTkMouseEvent)
         self._running = False
         self._input = TTkInput()
         self._events = queue.Queue()
@@ -120,6 +122,8 @@ class TTk(TTkWidget):
             evt = self._events.get()
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self._mouse_events.get()
+                self.eventMouse.emit(mevt)
+
                 # Upload the global mouse position
                 # Mainly used by the drag pixmap display
                 TTkHelper.setMousePos((mevt.x,mevt.y))

@@ -40,7 +40,7 @@ def demoWindows(root=None):
     win2_2.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkTestWidget(parent=win2_2, border=False)
 
-    win2_3 = ttk.TTkWindow(parent=frame,pos = (6,21), size=(50,7), title="Captured Input", border=True)
+    win2_3 = ttk.TTkWindow(parent=frame,pos = (6,21), size=(80,7), title="Captured Input", border=True)
     win2_3.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkKeyPressView(parent=win2_3)
 
