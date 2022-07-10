@@ -41,7 +41,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             '_textCursor', '_textColor', '_cursorParams',
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
             '_replace',
-            '_readOnly',
+            '_readOnly', '_multiCursor',
             # Forwarded Methods
             'wrapWidth',    'setWrapWidth',
             'wordWrapMode', 'setWordWrapMode',
@@ -60,6 +60,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self._readOnly = True
+        self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
         self._textDocument = TTkTextDocument()
@@ -166,9 +167,10 @@ class _TTkTextEditView(TTkAbstractScrollView):
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
-    def _setCursorPos(self, x, y, moveAnchor=True):
+    def _setCursorPos(self, x, y, moveAnchor=True, newCursor=False):
         x,y = self._textWrap.normalizeScreenPosition(x,y)
         line, pos = self._textWrap.screenToDataPosition(x,y)
+        TTkLog.debug(f"{newCursor=}")
         self._textCursor.setPosition(line, pos,
                             moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor)
         self._scrolToInclude(x,y)
@@ -186,7 +188,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
-        x,y = self._setCursorPos(evt.x + ox, evt.y + oy)
+        self._setCursorPos(evt.x + ox, evt.y + oy, newCursor=evt.mod&TTkK.ControlModifier==TTkK.ControlModifier)
         self.update()
         return True
 
