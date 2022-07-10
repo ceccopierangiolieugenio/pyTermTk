@@ -102,18 +102,25 @@ def showSource(file):
     ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
 
 def demoShowcase(root=None, border=True, quit=None):
-    splitter = ttk.TTkSplitter(parent=root)
+    splitter = ttk.TTkSplitter()
+    root.layout().addWidget(splitter, 0, 0)
+
+    logInput = ttk.TTkKeyPressView(visible=False, maxHeight=3, minHeight=3)
+    root.layout().addWidget(logInput, 1, 0)
 
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
     themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkVBoxLayout(), maxHeight=5, minHeight=5)
     listMenu = ttk.TTkList(maxWidth=15, minWidth=10)
+    logInputToggler = ttk.TTkCheckbox(text='ShowInput')
+    logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
     quitButton.clicked.connect(quit)
 
     leftFrame.layout().addWidget(themesFrame, 0, 0)
     leftFrame.layout().addWidget(listMenu,    1, 0)
-    leftFrame.layout().addWidget(quitButton,  2, 0)
+    leftFrame.layout().addWidget(logInputToggler,  2, 0)
+    leftFrame.layout().addWidget(quitButton,  3, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
