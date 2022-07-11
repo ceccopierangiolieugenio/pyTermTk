@@ -78,7 +78,7 @@ class TTkTextWrap():
         self._lines = []
         if not self._enable:
             def _process(i,l):
-                self._lines.append((i,(0,len(l))))
+                self._lines.append((i,(0,len(l)+1)))
         else:
             if not (w := self._wrapWidth):
                 return
@@ -92,7 +92,7 @@ class TTkTextWrap():
                 while len(l):
                     fl = l.tab2spaces(self._tabSpaces)
                     if len(fl) <= w:
-                        self._lines.append((i,(fr,fr+len(l))))
+                        self._lines.append((i,(fr,fr+len(l)+1)))
                         l=[]
                     else:
                         to = max(1,l.tabCharPos(w,self._tabSpaces))

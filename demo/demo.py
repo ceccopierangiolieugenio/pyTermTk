@@ -66,29 +66,29 @@ def stupidPythonHighlighter(txt):
         return ret
 
     # Operators
-    txt = _colorize(re.compile('[\+\*\/\=\-\<\>\!]'), txt, ttk.TTkColor.fg('#00AAAA'))
+    txt = _colorize(re.compile(r'[\+\*\/\=\-\<\>\!]'), txt, ttk.TTkColor.fg('#00AAAA'))
     # Bool
-    txt = _colorize(re.compile('True|False'), txt, ttk.TTkColor.fg('#0000FF'))
+    txt = _colorize(re.compile(r'True|False'), txt, ttk.TTkColor.fg('#0000FF'))
 
     # Numbers
-    txt = _colorize(re.compile('[0-9]'), txt, ttk.TTkColor.fg('#00FFFF'))
+    txt = _colorize(re.compile(r'[0-9]'), txt, ttk.TTkColor.fg('#00FFFF'))
 
     # Functions
-    txt = _colorize(re.compile('[ \t]*def[ \t]*'), txt, ttk.TTkColor.fg('#00FFFF'))
-    txt = _colorize(re.compile('[^= \t\.\()]*[\t ]*\('), txt, ttk.TTkColor.fg('#AAAA00'))
+    txt = _colorize(re.compile(r'[ \t]*def[ \t]*'), txt, ttk.TTkColor.fg('#00FFFF'))
+    txt = _colorize(re.compile(r'[^= \t\.\()]*[\t ]*\('), txt, ttk.TTkColor.fg('#AAAA00'))
     # Objects
-    txt = _colorize(re.compile('[^= \t\.\()]*\.'), txt, ttk.TTkColor.fg('#44AA00'))
+    txt = _colorize(re.compile(r'[^= \t\.\()]*\.'), txt, ttk.TTkColor.fg('#44AA00'))
 
     # Fix Extra colors
-    txt = _colorize(re.compile('[\(\)]'), txt, ttk.TTkColor.RST)
-    txt = _colorize(re.compile("'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile(r'[\(\)]'), txt, ttk.TTkColor.RST)
+    txt = _colorize(re.compile(r"'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
 
     # Strings
-    txt = _colorize(re.compile('"[^"]*"'), txt, ttk.TTkColor.fg('#FF8800'))
-    txt = _colorize(re.compile("'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile(r'"[^"]*"'), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile(r"'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
 
     # Comments
-    txt = _colorize(re.compile('#.*\n'), txt, ttk.TTkColor.fg('#00FF00'))
+    txt = _colorize(re.compile(r'#.*\n'), txt, ttk.TTkColor.fg('#00FF00'))
     return txt
 
 def showSource(file):
@@ -260,6 +260,6 @@ if __name__ == "__main__":
     main()
 
 def test_demo():
-    root = ttk.TTk()
+    root = ttk.TTk(layout=ttk.TTkGridLayout())
     assert demoShowcase(root) != None
     root.quit()

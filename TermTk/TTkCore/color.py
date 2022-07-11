@@ -252,6 +252,9 @@ class TTkColor(_TTkColor):
     STRIKETROUGH = _TTkColor(mod='\033[9m')
     ''':strike:`Striketrough` modifier'''
 
+    BLINKING     = _TTkColor(mod='\033[5m')
+    '''"Blinking" modifier'''
+
     @staticmethod
     def fg(*args, **kwargs):
         ''' Helper to generate a Foreground color

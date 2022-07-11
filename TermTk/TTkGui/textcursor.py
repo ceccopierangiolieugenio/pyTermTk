@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.textdocument import TTkTextDocument
@@ -179,25 +180,67 @@ class TTkTextCursor():
     def position(self):
         return self._properties[0].position
 
-    def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor ):
-        # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
-        self._properties[0].position.set(line,pos)
-        if moveMode==TTkTextCursor.MoveAnchor:
-            self._properties[0].anchor.set(line,pos)
+    def addCursor(self, line, pos):
+        self._properties.insert(0,
+                        TTkTextCursor._prop(
+                                TTkTextCursor._CP(line, pos),
+                                TTkTextCursor._CP(line, pos)))
 
-    def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1 ):
-        if operation == TTkTextCursor.Right:
-            p = self.position()
+    def cleanCursors(self):
+        self._properties = self._properties[:1]
+
+    def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
+        # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
+        self._properties[cID].position.set(line,pos)
+        if moveMode==TTkTextCursor.MoveAnchor:
+            self._properties[cID].anchor.set(line,pos)
+
+    def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1, textWrap=None):
+        def moveRight(cID,p,_):
             if p.pos < len(self._document._dataLines[p.line]):
-                self.setPosition(p.line, p.pos+1, moveMode)
+                self.setPosition(p.line, p.pos+1, moveMode, cID=cID)
             elif p.line < len(self._document._dataLines)-1:
-                self.setPosition(p.line+1, 0, moveMode)
-        elif operation == TTkTextCursor.Left:
-            p = self.position()
+                self.setPosition(p.line+1, 0, moveMode, cID=cID)
+        def moveLeft(cID,p,_):
             if p.pos > 0:
-                self.setPosition(p.line, p.pos-1, moveMode)
+                self.setPosition(p.line, p.pos-1, moveMode, cID=cID)
             elif p.line > 0:
-                self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode)
+                self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode, cID=cID)
+        def moveUpDown(offset):
+            def _moveUpDown(cID,p,n):
+                cx, cy    = textWrap.dataToScreenPosition(p.line, p.pos)
+                x,  y     = textWrap.normalizeScreenPosition(cx,cy+offset*n)
+                line, pos = textWrap.screenToDataPosition(x,y)
+                self.setPosition(line, pos, moveMode, cID=cID)
+            return _moveUpDown
+        def moveEnd(cID,p,_):
+            l = self._document._dataLines[p.line]
+            self.setPosition(p.line, len(l), moveMode, cID=cID)
+        def moveHome(cID,p,_):
+            self.setPosition(p.line, 0, moveMode, cID=cID)
+
+        operations = {
+                TTkTextCursor.Right : moveRight,
+                TTkTextCursor.Left  : moveLeft,
+                TTkTextCursor.Up    : moveUpDown(-1),
+                TTkTextCursor.Down  : moveUpDown(+1),
+                TTkTextCursor.EndOfLine  : moveEnd,
+                TTkTextCursor.StartOfLine: moveHome
+            }
+
+        for cID, prop in enumerate(self._properties):
+            p = prop.position
+            operations.get(operation,lambda _:_)(cID,p,n)
+            #if operation == TTkTextCursor.Right:
+            #    if p.pos < len(self._document._dataLines[p.line]):
+            #        self.setPosition(p.line, p.pos+1, moveMode, cID=cID)
+            #    elif p.line < len(self._document._dataLines)-1:
+            #        self.setPosition(p.line+1, 0, moveMode, cID=cID)
+            #elif operation == TTkTextCursor.Left:
+            #    if p.pos > 0:
+            #        self.setPosition(p.line, p.pos-1, moveMode, cID=cID)
+            #    elif p.line > 0:
+            #        self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode, cID=cID)
 
     def document(self):
         return self._document
@@ -272,13 +315,30 @@ class TTkTextCursor():
         self._document.contentsChange.emit(a,b,c)
 
     def getHighlightedLines(self, fr, to, color):
-        selSt = self.selectionStart()
-        selEn = self.selectionEnd()
-        ret = []
-        for i,l in enumerate(self._document._dataLines[fr:to+1],fr):
-            if selSt.line <= i <= selEn.line:
+        # Create a list of cursors (filtering out the ones which
+        # position/selection is outside the screen boundaries)
+        sel = []
+        for p in self._properties:
+            selSt = p.selectionStart()
+            selEn = p.selectionEnd()
+            if selEn.line >= fr and selSt.line<=to:
+                sel.append((selSt,selEn,p))
+
+        # Retrieve the sublist of lines to be required (displayed)
+        ret = self._document._dataLines[fr:to+1]
+        # Apply the selection color for each of them
+        for s in sel:
+            selSt, selEn, _ = s
+            for i in range(max(selSt.line,fr),min(selEn.line+1,to+1)):
+                l = ret[i-fr]
                 pf = 0      if i > selSt.line else selSt.pos
                 pt = len(l) if i < selEn.line else selEn.pos
-                l = l.setColor(color=color, posFrom=pf, posTo=pt)
-            ret.append(l)
+                ret[i-fr] = l.setColor(color=color, posFrom=pf, posTo=pt)
+        # Add Blinking cursor
+        if len(sel)>1:
+            for s in sel:
+                _, _, prop = s
+                p = prop.position
+                ret[p.line-fr] = (ret[p.line-fr]+" ").setColor(color=color+TTkColor.BLINKING, posFrom=p.pos, posTo=p.pos+1)
+
         return ret
