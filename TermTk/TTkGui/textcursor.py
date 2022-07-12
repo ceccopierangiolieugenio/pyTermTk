@@ -134,26 +134,16 @@ class TTkTextCursor():
             self.position = position
 
         def selectionStart(self):
-            if self.position.line == self.anchor.line:
-                if self.position.pos < self.anchor.pos:
-                    return self.position
-                else:
-                    return self.anchor
-            elif self.position.line < self.anchor.line:
-                return self.position
-            else:
+            if self.position.toNum() > self.anchor.toNum():
                 return self.anchor
+            else:
+                return self.position
 
         def selectionEnd(self):
-            if self.position.line == self.anchor.line:
-                if self.position.pos < self.anchor.pos:
-                    return self.anchor
-                else:
-                    return self.position
-            elif self.position.line < self.anchor.line:
-                return self.anchor
-            else:
+            if self.position.toNum() >= self.anchor.toNum():
                 return self.position
+            else:
+                return self.anchor
 
     class _CP():
         # The Cursor Position is based on the
@@ -166,25 +156,30 @@ class TTkTextCursor():
         def set(self, l, p):
             self.pos  = p
             self.line = l
+        def toNum(self):
+            return self.pos | self.line << 16
 
-    __slots__ = ('_document', '_properties')
+    __slots__ = ('_document', '_properties', '_cID')
     def __init__(self, *args, **kwargs):
+        self._cID = 0
         self._properties = [TTkTextCursor._prop(
                                 TTkTextCursor._CP(),
                                 TTkTextCursor._CP())]
         self._document = kwargs.get('document',TTkTextDocument())
 
     def anchor(self):
-        return self._properties[0].anchor
+        return self._properties[self._cID].anchor
 
     def position(self):
-        return self._properties[0].position
+        return self._properties[self._cID].position
 
     def addCursor(self, line, pos):
+        self._cID = 0
         self._properties.insert(0,
                         TTkTextCursor._prop(
                                 TTkTextCursor._CP(line, pos),
                                 TTkTextCursor._CP(line, pos)))
+        self._checkCursors()
 
     def cleanCursors(self):
         self._properties = self._properties[:1]
@@ -194,6 +189,31 @@ class TTkTextCursor():
         self._properties[cID].position.set(line,pos)
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[cID].anchor.set(line,pos)
+
+    def _checkCursors(self):
+        currCurs = self._properties[self._cID]
+        # Sort the cursors based on the starting position
+        self._properties = sorted(
+                self._properties,
+                key=lambda x: x.selectionStart().toNum())
+        # remove /merge overlapping cursors
+        newProperties = self._properties[:1]
+        for np in self._properties:
+            op = newProperties[-1]
+            if op.selectionEnd().toNum() < np.selectionStart().toNum():
+                newProperties.append(np)
+                continue
+            if currCurs == np:
+                currCurs = op
+            # the two cursors are overlapping
+            # I try to combine the 2 selections
+            if op.selectionEnd().toNum() < np.selectionEnd().toNum():
+                if op.position.toNum()>op.anchor.toNum():
+                    op.position=np.selectionEnd()
+                else:
+                    op.anchor=np.selectionEnd()
+        self._properties = newProperties
+        self._cID = self._properties.index(currCurs)
 
     def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1, textWrap=None):
         def moveRight(cID,p,_):
@@ -231,16 +251,8 @@ class TTkTextCursor():
         for cID, prop in enumerate(self._properties):
             p = prop.position
             operations.get(operation,lambda _:_)(cID,p,n)
-            #if operation == TTkTextCursor.Right:
-            #    if p.pos < len(self._document._dataLines[p.line]):
-            #        self.setPosition(p.line, p.pos+1, moveMode, cID=cID)
-            #    elif p.line < len(self._document._dataLines)-1:
-            #        self.setPosition(p.line+1, 0, moveMode, cID=cID)
-            #elif operation == TTkTextCursor.Left:
-            #    if p.pos > 0:
-            #        self.setPosition(p.line, p.pos-1, moveMode, cID=cID)
-            #    elif p.line > 0:
-            #        self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode, cID=cID)
+
+        self._checkCursors()
 
     def document(self):
         return self._document
@@ -261,21 +273,21 @@ class TTkTextCursor():
         self._document.contentsChange.emit(l,b,c)
 
     def selectionStart(self):
-        return self._properties[0].selectionStart()
+        return self._properties[self._cID].selectionStart()
 
     def selectionEnd(self):
-        return self._properties[0].selectionEnd()
+        return self._properties[self._cID].selectionEnd()
 
     def select(self, selection):
         if   selection == TTkTextCursor.SelectionType.Document:
             pass
         elif selection == TTkTextCursor.SelectionType.LineUnderCursor:
-            line = self._properties[0].position.line
-            self._properties[0].position.pos = 0
-            self._properties[0].anchor.pos   = len(self._document._dataLines[line])
+            line = self._properties[self._cID].position.line
+            self._properties[self._cID].position.pos = 0
+            self._properties[self._cID].anchor.pos   = len(self._document._dataLines[line])
         elif selection == TTkTextCursor.SelectionType.WordUnderCursor:
-            line = self._properties[0].position.line
-            pos  = self._properties[0].position.pos
+            line = self._properties[self._cID].position.line
+            pos  = self._properties[self._cID].position.pos
             # Split the current line from the current cursor position
             # search the leftmost(on the right slice)/rightmost(on the left slice) word
             # in order to match the full word under the cursor
@@ -288,16 +300,16 @@ class TTkTextCursor():
                 xFrom -= len(m.group(0))
             if m := splitAfter.search('^'+selectRE):
                 xTo += len(m.group(0))
-            self._properties[0].position.pos = xTo
-            self._properties[0].anchor.pos   = xFrom
+            self._properties[self._cID].position.pos = xTo
+            self._properties[self._cID].anchor.pos   = xFrom
 
     def hasSelection(self):
-        return ( self._properties[0].anchor.pos  != self._properties[0].position.pos or
-                 self._properties[0].anchor.line != self._properties[0].position.line )
+        return ( self._properties[self._cID].anchor.pos  != self._properties[self._cID].position.pos or
+                 self._properties[self._cID].anchor.line != self._properties[self._cID].position.line )
 
     def clearSelection(self):
-        self._properties[0].anchor.pos  = self._properties[0].position.pos
-        self._properties[0].anchor.line = self._properties[0].position.line
+        self._properties[self._cID].anchor.pos  = self._properties[self._cID].position.pos
+        self._properties[self._cID].anchor.line = self._properties[self._cID].position.line
 
     def _removeSelectedText(self):
         selSt = self.selectionStart()
@@ -335,7 +347,7 @@ class TTkTextCursor():
                 pt = len(l) if i < selEn.line else selEn.pos
                 ret[i-fr] = l.setColor(color=color, posFrom=pf, posTo=pt)
         # Add Blinking cursor
-        if len(sel)>1:
+        if len(self._properties)>1:
             for s in sel:
                 _, _, prop = s
                 p = prop.position

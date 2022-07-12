@@ -170,7 +170,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def _setCursorPos(self, x, y, moveAnchor=True, addCursor=False):
         x,y = self._textWrap.normalizeScreenPosition(x,y)
         line, pos = self._textWrap.screenToDataPosition(x,y)
-        TTkLog.debug(f"{addCursor=}")
         if addCursor:
             self._textCursor.addCursor(line, pos)
         else:
@@ -229,16 +228,28 @@ class _TTkTextEditView(TTkAbstractScrollView):
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
             dt, _ = self._textWrap._lines[cy]
             # Don't Handle the special tab key, for now
+
+            moveMode = TTkTextCursor.MoveAnchor
+            if evt.mod==TTkK.ShiftModifier:
+                moveMode = TTkTextCursor.KeepAnchor
+
+            ctrl = evt.mod==TTkK.ControlModifier
+
             if evt.key == TTkK.Key_Tab:
                 return False
-            if evt.key == TTkK.Key_Up:         self._textCursor.movePosition(TTkTextCursor.Up,   textWrap=self._textWrap)
-            elif evt.key == TTkK.Key_Down:     self._textCursor.movePosition(TTkTextCursor.Down, textWrap=self._textWrap)
-            elif evt.key == TTkK.Key_Left:     self._textCursor.movePosition(TTkTextCursor.Left)
-            elif evt.key == TTkK.Key_Right:    self._textCursor.movePosition(TTkTextCursor.Right)
-            elif evt.key == TTkK.Key_End:      self._textCursor.movePosition(TTkTextCursor.EndOfLine)
-            elif evt.key == TTkK.Key_Home:     self._textCursor.movePosition(TTkTextCursor.StartOfLine)
-            elif evt.key == TTkK.Key_PageUp:   self._textCursor.movePosition(TTkTextCursor.Up,   textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy - h)
-            elif evt.key == TTkK.Key_PageDown: self._textCursor.movePosition(TTkTextCursor.Down, textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy + h)
+            if ctrl:
+                p = self._textCursor.position()
+                cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+                if evt.key == TTkK.Key_Up:     self._setCursorPos(cx, cy-1, addCursor=True)
+                if evt.key == TTkK.Key_Down:   self._setCursorPos(cx, cy+1, addCursor=True)
+            elif evt.key == TTkK.Key_Up:         self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap)
+            elif evt.key == TTkK.Key_Down:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap)
+            elif evt.key == TTkK.Key_Left:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Left)
+            elif evt.key == TTkK.Key_Right:    self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Right)
+            elif evt.key == TTkK.Key_End:      self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.EndOfLine)
+            elif evt.key == TTkK.Key_Home:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.StartOfLine)
+            elif evt.key == TTkK.Key_PageUp:   self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy - h)
+            elif evt.key == TTkK.Key_PageDown: self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy + h)
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
                 self._setCursorPos(cx , cy)
