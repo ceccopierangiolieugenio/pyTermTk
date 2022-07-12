@@ -59,10 +59,11 @@ class TTkInput:
     def get_key(self, callback=None):
         mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
         while stdinRead := self._readInput.read():
-            mevt = None
-            kevt = TTkKeyEvent.parse(stdinRead)
-            if kevt is None and \
-               stdinRead.startswith("\033[<"):
+            mevt,kevt = None, None
+            if not stdinRead.startswith("\033[<"):
+                # Key Event
+                kevt = TTkKeyEvent.parse(stdinRead)
+            else:
                 # Mouse Event
                 m = mouse_re.match(stdinRead)
                 if not m:

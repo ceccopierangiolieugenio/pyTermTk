@@ -14,6 +14,11 @@
 #### Fullsize/Halfsize forms
     https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
     https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
+#### Ascii Fonts
+    https://github.com/phpjsnerd/ascii-fonts
+    https://github.com/phpjsnerd/ascii-fonts/blob/master/Calvin%20S.flf
+    https://www.texttool.com/ascii-font#p=display&f=Calvin%20S&t=Type%20Something%20%2012345
+    http://www.roysac.com/thedrawfonts-tdf.html#16
 
 ## Terminal
 #### ANSI Escape Sequences
