@@ -145,6 +145,9 @@ class TTkTextCursor():
             else:
                 return self.anchor
 
+        def hasSelection(self):
+            return not (self.position.line == self.anchor.line and self.position.pos == self.anchor.pos)
+
     class _CP():
         # The Cursor Position is based on the
         # document data structure, where the
@@ -182,6 +185,7 @@ class TTkTextCursor():
         self._checkCursors()
 
     def cleanCursors(self):
+        self._cID = 0
         self._properties = self._properties[:1]
 
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
@@ -279,45 +283,59 @@ class TTkTextCursor():
         return self._properties[self._cID].selectionEnd()
 
     def select(self, selection):
-        if   selection == TTkTextCursor.SelectionType.Document:
-            pass
-        elif selection == TTkTextCursor.SelectionType.LineUnderCursor:
-            line = self._properties[self._cID].position.line
-            self._properties[self._cID].position.pos = 0
-            self._properties[self._cID].anchor.pos   = len(self._document._dataLines[line])
-        elif selection == TTkTextCursor.SelectionType.WordUnderCursor:
-            line = self._properties[self._cID].position.line
-            pos  = self._properties[self._cID].position.pos
-            # Split the current line from the current cursor position
-            # search the leftmost(on the right slice)/rightmost(on the left slice) word
-            # in order to match the full word under the cursor
-            splitBefore = self._document._dataLines[line].substring(to=pos)
-            splitAfter =  self._document._dataLines[line].substring(fr=pos)
-            xFrom = pos
-            xTo   = pos
-            selectRE = '[a-zA-Z0-9:,./]*'
-            if m := splitBefore.search(selectRE+'$'):
-                xFrom -= len(m.group(0))
-            if m := splitAfter.search('^'+selectRE):
-                xTo += len(m.group(0))
-            self._properties[self._cID].position.pos = xTo
-            self._properties[self._cID].anchor.pos   = xFrom
+        for p in self._properties:
+            if   selection == TTkTextCursor.SelectionType.Document:
+                pass
+            elif selection == TTkTextCursor.SelectionType.LineUnderCursor:
+                line = p.position.line
+                p.position.pos = 0
+                p.anchor.pos   = len(self._document._dataLines[line])
+            elif selection == TTkTextCursor.SelectionType.WordUnderCursor:
+                line = p.position.line
+                pos  = p.position.pos
+                # Split the current line from the current cursor position
+                # search the leftmost(on the right slice)/rightmost(on the left slice) word
+                # in order to match the full word under the cursor
+                splitBefore = self._document._dataLines[line].substring(to=pos)
+                splitAfter =  self._document._dataLines[line].substring(fr=pos)
+                xFrom = pos
+                xTo   = pos
+                selectRE = '[a-zA-Z0-9:,./]*'
+                if m := splitBefore.search(selectRE+'$'):
+                    xFrom -= len(m.group(0))
+                if m := splitAfter.search('^'+selectRE):
+                    xTo += len(m.group(0))
+                p.position.pos = xTo
+                p.anchor.pos   = xFrom
+        self._checkCursors()
 
     def hasSelection(self):
-        return ( self._properties[self._cID].anchor.pos  != self._properties[self._cID].position.pos or
-                 self._properties[self._cID].anchor.line != self._properties[self._cID].position.line )
+        for p in self._properties:
+            if p.hasSelection():
+                return True
+        return False
 
     def clearSelection(self):
-        self._properties[self._cID].anchor.pos  = self._properties[self._cID].position.pos
-        self._properties[self._cID].anchor.line = self._properties[self._cID].position.line
+        for p in self._properties:
+            p.anchor.pos  = p.position.pos
+            p.anchor.line = p.position.line
 
     def _removeSelectedText(self):
-        selSt = self.selectionStart()
-        selEn = self.selectionEnd()
-        self._document._dataLines[selSt.line] = self._document._dataLines[selSt.line].substring(to=selSt.pos) + \
-                           self._document._dataLines[selEn.line].substring(fr=selEn.pos)
-        self._document._dataLines = self._document._dataLines[:selSt.line+1] + self._document._dataLines[selEn.line+1:]
-        self.setPosition(selSt.line, selSt.pos)
+        def _alignPoint(point,st,en):
+            point.line += st.line - en.line
+            if point.line == st.line:
+                point.pos += st.pos - en.pos
+        for i, p in enumerate(self._properties):
+            selSt = p.selectionStart()
+            selEn = p.selectionEnd()
+            self._document._dataLines[selSt.line] = self._document._dataLines[selSt.line].substring(to=selSt.pos) + \
+                               self._document._dataLines[selEn.line].substring(fr=selEn.pos)
+            self._document._dataLines = self._document._dataLines[:selSt.line+1] + self._document._dataLines[selEn.line+1:]
+            for pp in self._properties[i+1:]:
+                _alignPoint(pp.position, selSt, selEn)
+                _alignPoint(pp.anchor,   selSt, selEn)
+            self.setPosition(selSt.line, selSt.pos, cID=i)
+        self._checkCursors()
         return selSt.line, selEn.line-selSt.line, 1
 
     def removeSelectedText(self):
