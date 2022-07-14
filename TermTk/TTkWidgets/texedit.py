@@ -224,11 +224,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
 
-            p = self._textCursor.position()
-            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
-            dt, _ = self._textWrap._lines[cy]
-            # Don't Handle the special tab key, for now
-
             moveMode = TTkTextCursor.MoveAnchor
             if evt.mod==TTkK.ShiftModifier:
                 moveMode = TTkTextCursor.KeepAnchor
@@ -236,6 +231,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             ctrl = evt.mod==TTkK.ControlModifier
 
             if evt.key == TTkK.Key_Tab:
+                # Don't Handle the special tab key, for now
                 return False
             if ctrl:
                 p = self._textCursor.position()
@@ -250,9 +246,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
             elif evt.key == TTkK.Key_Home:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.StartOfLine)
             elif evt.key == TTkK.Key_PageUp:   self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy - h)
             elif evt.key == TTkK.Key_PageDown: self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy + h)
+            elif evt.key == TTkK.Key_Escape:   self._textCursor.cleanCursors()
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
-                self._setCursorPos(cx , cy)
             elif evt.key == TTkK.Key_Delete:
                 if not self._textCursor.hasSelection():
                     self._textCursor.movePosition(TTkTextCursor.Right, TTkTextCursor.KeepAnchor)
@@ -264,6 +260,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             elif evt.key == TTkK.Key_Enter:
                 self._textCursor.insertText('\n')
                 self._textCursor.movePosition(TTkTextCursor.Right)
+            # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
             self._scrolToInclude(cx,cy)
@@ -272,6 +269,10 @@ class _TTkTextEditView(TTkAbstractScrollView):
         else: # Input char
             self._textCursor.insertText(evt.key)
             self._textCursor.movePosition(TTkTextCursor.Right)
+            # Scroll to align to the cursor
+            p = self._textCursor.position()
+            cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+            self._scrolToInclude(cx,cy)
             self.update()
             return True
 

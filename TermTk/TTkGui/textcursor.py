@@ -163,8 +163,9 @@ class TTkTextCursor():
         def toNum(self):
             return self.pos | self.line << 16
 
-    __slots__ = ('_document', '_properties', '_cID')
+    __slots__ = ('_document', '_properties', '_cID', '_color')
     def __init__(self, *args, **kwargs):
+        self._color = None
         self._cID = 0
         self._properties = [TTkTextCursor._prop(
                                 TTkTextCursor._CP(),
@@ -186,8 +187,9 @@ class TTkTextCursor():
         self._checkCursors()
 
     def cleanCursors(self):
+        p = self._properties[self._cID]
         self._cID = 0
-        self._properties = self._properties[:1]
+        self._properties = [p]
 
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
         # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
@@ -269,12 +271,20 @@ class TTkTextCursor():
         for i, pr in enumerate(self._properties):
             l = pr.position.line
             p = pr.position.pos
-            # [TTkString(t) for t in text.split('\n')]
-            newLines = (self._document._dataLines[l].substring(to=p) + text + self._document._dataLines[l].substring(fr=p)).split('\n')
+
+            # Use the same color under the cursor if no color is defined:
+            ttktext = text
+            if self._color:
+                ttktext = TTkString(text, self._color)
+            elif isinstance(ttktext, str):
+                ttktext = TTkString(text, self._document._dataLines[l].colorAt(p))
+
+            newLines = (self._document._dataLines[l].substring(to=p) + ttktext + self._document._dataLines[l].substring(fr=p)).split('\n')
             self._document._dataLines[l] = newLines[0]
             for nl in reversed(newLines[1:]):
                 self._document._dataLines.insert(l+1, nl)
                 c+=1
+
             # 2 scenarios:
             #  1) No Newline(s) added
             #                p     p+1   p+2
