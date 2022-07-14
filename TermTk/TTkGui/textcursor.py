@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
@@ -265,14 +266,43 @@ class TTkTextCursor():
         l,b,c = 0,1,1
         if self.hasSelection():
             l,b,c = self._removeSelectedText()
-        l = self.position().line
-        p = self.position().pos
-        # [TTkString(t) for t in text.split('\n')]
-        newLines = (self._document._dataLines[l].substring(to=p) + text + self._document._dataLines[l].substring(fr=p)).split('\n')
-        self._document._dataLines[l] = newLines[0]
-        for nl in reversed(newLines[1:]):
-            self._document._dataLines.insert(l+1, nl)
-            c+=1
+        for i, pr in enumerate(self._properties):
+            l = pr.position.line
+            p = pr.position.pos
+            # [TTkString(t) for t in text.split('\n')]
+            newLines = (self._document._dataLines[l].substring(to=p) + text + self._document._dataLines[l].substring(fr=p)).split('\n')
+            self._document._dataLines[l] = newLines[0]
+            for nl in reversed(newLines[1:]):
+                self._document._dataLines.insert(l+1, nl)
+                c+=1
+            # 2 scenarios:
+            #  1) No Newline(s) added
+            #                p     p+1   p+2
+            #   from:  aaaaaaXaaaaaYaaaaaYaaaa
+            #
+            #   to:    aaaaaaX....aaaaaYaaaaaYaaaa
+            #                     diffPos = len(text)
+            #
+            #  2) Newlines are added
+            #                p     p+1   p+2
+            #   from:  aaaaaaXaaaaaYaaaaaYaaaa
+            #
+            #   to:    aaaaaaX...\n
+            #          ......\n
+            #          \n
+            #          .....aaaaaYaaaaaYaaaa
+            #               diffPos = len(text.split('\n')[-1]) - p
+            diffLine = len(newLines)-1
+            if diffLine:
+                diffPos = len(text.split('\n')[-1]) - p
+            else:
+                diffPos = len(text)
+            for pp in self._properties[i+1:]:
+                if pp.position.line == l:
+                    pp.position.pos  += diffPos
+                    pp.anchor.pos  += diffPos
+                pp.position.line += diffLine
+                pp.anchor.line += diffLine
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(l,b,c)
 
@@ -369,6 +399,13 @@ class TTkTextCursor():
             for s in sel:
                 _, _, prop = s
                 p = prop.position
-                ret[p.line-fr] = (ret[p.line-fr]+" ").setColor(color=color+TTkColor.BLINKING, posFrom=p.pos, posTo=p.pos+1)
+                ret[p.line-fr] = ret[p.line-fr].setColor(color=color+TTkColor.BLINKING, posFrom=p.pos, posTo=p.pos+1)
+                if p.pos == len(ret[p.line-fr]):
+                   ret[p.line-fr] = ret[p.line-fr]+TTkString('↵',color+TTkColor.BLINKING)
+                elif ret[p.line-fr].charAt(p.pos) == ' ':
+                    ret[p.line-fr].setCharAt(pos=p.pos, char='∙')
+                    # ret[p.line-fr].setColorAt(pos=p.pos, color=TTkCfg.theme.treeLineColor+TTkColor.BLINKING)
+                #elif ret[p.line-fr].charAt(p.pos) == '\t':
+                #    ret[p.line-fr].setCharAt(pos=p.pos, char='\t')
 
         return ret

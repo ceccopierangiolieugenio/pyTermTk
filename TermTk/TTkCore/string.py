@@ -137,6 +137,20 @@ class TTkString():
     def __gt__(self, other): return self._text >  other if type(other) is str else self._text >  other._text
     def __ge__(self, other): return self._text >= other if type(other) is str else self._text >= other._text
 
+    def charAt(self, pos):
+        return self._text[pos]
+
+    def setCharAt(self, pos, char):
+        self._text = self._text[:pos]+char+self._text[pos+1:]
+        return self
+
+    def colorAt(self, pos):
+        return self._colors[pos]
+
+    def setColorAt(self, pos, color):
+        self._colors[pos] = color
+        return self
+
     def tab2spaces(self, tabSpaces=4):
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
         if not self._hasTab: return self

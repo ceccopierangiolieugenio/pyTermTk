@@ -68,7 +68,8 @@ class TTkInput:
                 m = mouse_re.match(stdinRead)
                 if not m:
                     # TODO: Return Error
-                    TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>"))
+                    hex = [f"0x{ord(x):02x}" for x in stdinRead]
+                    TTkLog.error("UNHANDLED (mouse): "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
                     continue
                 code = int(m.group(1))
                 x = int(m.group(2))-1
@@ -128,7 +129,8 @@ class TTkInput:
                 mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
 
             if kevt is None and mevt is None:
-                TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>"))
+                hex = [f"0x{ord(x):02x}" for x in stdinRead]
+                TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
 
             if callback is not None:
                 if not callback(kevt, mevt):
