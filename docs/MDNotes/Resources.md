@@ -25,6 +25,10 @@
 https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#file-ansi-md
 #### Hyperlink
 https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+#### ANSI 16 256 24bit color conversion
+https://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
+#### ANSI Colors
+https://talyian.github.io/ansicolors/
 
 #### Blinking Text
 ```bash

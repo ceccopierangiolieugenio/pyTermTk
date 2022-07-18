@@ -30,8 +30,11 @@ class TTkTextDocument():
         '_dataLines',
         # Signals
         'contentsChange', 'contentsChanged',
+        'cursorPositionChanged'
         )
     def __init__(self, *args, **kwargs):
+        from TermTk.TTkGui.textcursor import TTkTextCursor
+        self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
         text =  kwargs.get('text',"")

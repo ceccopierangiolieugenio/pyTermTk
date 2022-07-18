@@ -69,6 +69,33 @@ class _TTkColor:
         self._mod = mod
         self._colorMod = colorMod
 
+    def foreground(self):
+        if self._fg:
+            return _TTkColor(fg=self._fg)
+        else:
+            return None
+
+    def background(self):
+        if self._bg:
+            return _TTkColor(fg=self._bg)
+        else:
+            return None
+
+    def bold(self) -> bool:
+        return TTkColor.BOLD._mod in self._mod
+
+    def italic(self) -> bool:
+        return TTkColor.ITALIC._mod in self._mod
+
+    def underline(self) -> bool:
+        return TTkColor.UNDERLINE._mod in self._mod
+
+    def strikethrough(self) -> bool:
+        return TTkColor.STRIKETROUGH._mod in self._mod
+
+    def blinking(self) -> bool:
+        return TTkColor.BLINKING._mod in self._mod
+
     def colorType(self):
         return \
             ( TTkK.Foreground if self._fg  != "" else TTkK.NONE ) | \

@@ -50,6 +50,18 @@ def demoTextEdit(root=None):
 
     te.setReadOnly(False)
 
+    @ttk.pyTTkSlot(ttk.TTkTextCharFormat)
+    def _currentCharFormatChangedCB(format):
+        fg = format.foreground()
+        bg = format.background()
+        bold = format.bold()
+        italic = format.italic()
+        underline = format.underline()
+        strikethrough = format.strikethrough()
+        ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
+
+    te.currentCharFormatChanged.connect(_currentCharFormatChangedCB)
+
     te.setText(ttk.TTkString("Text Edit DEMO\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD+ttk.TTkColor.ITALIC))
 
     # Load ANSI input
@@ -83,14 +95,28 @@ def demoTextEdit(root=None):
     # te.setLineWrapMode(ttk.TTkK.FixedWidth)
     # te.setWrapWidth(100)
 
-    frame.layout().addWidget(te,1,0,1,6)
-    frame.layout().addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
-    frame.layout().addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth']),0,1)
-    frame.layout().addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
-    frame.layout().addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], enabled=False),0,3)
-    frame.layout().addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
-    frame.layout().addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maximum=500, minimum=10, enabled=False),0,5)
+    frame.layout().addItem(wrapLayout := ttk.TTkGridLayout(), 0,0)
+    frame.layout().addItem(fontLayout := ttk.TTkGridLayout(), 1,0)
+    frame.layout().addWidget(te,2,0)
 
+    wrapLayout.addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
+    wrapLayout.addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth']),0,1)
+    wrapLayout.addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
+    wrapLayout.addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], enabled=False),0,3)
+    wrapLayout.addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
+    wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False),0,5)
+
+    fontLayout.addWidget(ttk.TTkCheckbox(text=" FG"),0,0)
+    fontLayout.addWidget(ttk.TTkColorButtonPicker(border=True, maxSize=(7,3)),1,0)
+    # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,1,2,1)
+    fontLayout.addWidget(ttk.TTkCheckbox(text=" BG"),0,2)
+    fontLayout.addWidget(ttk.TTkColorButtonPicker(border=True, maxSize=(7   ,3)),1,2)
+    # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,3,2,1)
+    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), text='a', color=ttk.TTkColor.BOLD),1,4)
+    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), text='a', color=ttk.TTkColor.ITALIC),1,5)
+    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), text='a', color=ttk.TTkColor.UNDERLINE),1,6)
+    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), text='a', color=ttk.TTkColor.STRIKETROUGH),1,7)
+    fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
 
     lineWrap.setCurrentIndex(0)
     wordWrap.setCurrentIndex(1)

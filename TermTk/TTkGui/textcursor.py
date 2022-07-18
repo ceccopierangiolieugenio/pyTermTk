@@ -24,8 +24,8 @@
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkGui.textformat import TTkTextCharFormat
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 class TTkTextCursor():
@@ -184,21 +184,32 @@ class TTkTextCursor():
                         TTkTextCursor._prop(
                                 TTkTextCursor._CP(line, pos),
                                 TTkTextCursor._CP(line, pos)))
-        self._checkCursors()
+        self._checkCursors(notify=True)
 
     def cleanCursors(self):
         p = self._properties[self._cID]
         self._cID = 0
         self._properties = [p]
 
+    def charFormat(self):
+        p = self.position()
+        l = self._document._dataLines[p.line]
+        if p.pos < len(l):
+            color = l.colorAt(p.pos)
+        else:
+            color = TTkColor()
+        return TTkTextCharFormat(color=color)
+
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
         # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
         self._properties[cID].position.set(line,pos)
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[cID].anchor.set(line,pos)
+        self._document.cursorPositionChanged.emit(self)
 
-    def _checkCursors(self):
+    def _checkCursors(self, notify=False):
         currCurs = self._properties[self._cID]
+        currPos = currCurs.position.toNum()
         # Sort the cursors based on the starting position
         self._properties = sorted(
                 self._properties,
@@ -221,8 +232,11 @@ class TTkTextCursor():
                     op.anchor=np.selectionEnd()
         self._properties = newProperties
         self._cID = self._properties.index(currCurs)
+        if notify or currPos != currCurs.position.toNum():
+            self._document.cursorPositionChanged.emit(self)
 
     def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1, textWrap=None):
+        currPos = self.position().toNum()
         def moveRight(cID,p,_):
             if p.pos < len(self._document._dataLines[p.line]):
                 self.setPosition(p.line, p.pos+1, moveMode, cID=cID)
@@ -259,7 +273,7 @@ class TTkTextCursor():
             p = prop.position
             operations.get(operation,lambda _:_)(cID,p,n)
 
-        self._checkCursors()
+        self._checkCursors(notify=self.position().toNum()!=currPos)
 
     def document(self):
         return self._document
@@ -315,6 +329,7 @@ class TTkTextCursor():
                 pp.anchor.line += diffLine
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(l,b,c)
+        self._document.cursorPositionChanged.emit(self)
 
     def selectionStart(self):
         return self._properties[self._cID].selectionStart()
@@ -323,6 +338,7 @@ class TTkTextCursor():
         return self._properties[self._cID].selectionEnd()
 
     def select(self, selection):
+        currPos = self.position().toNum()
         for p in self._properties:
             if   selection == TTkTextCursor.SelectionType.Document:
                 pass
@@ -347,7 +363,7 @@ class TTkTextCursor():
                     xTo += len(m.group(0))
                 p.position.pos = xTo
                 p.anchor.pos   = xFrom
-        self._checkCursors()
+        self._checkCursors(notify=self.position().toNum()!=currPos)
 
     def hasSelection(self):
         for p in self._properties:
@@ -361,6 +377,7 @@ class TTkTextCursor():
             p.anchor.line = p.position.line
 
     def _removeSelectedText(self):
+        currPos = self.position().toNum()
         def _alignPoint(point,st,en):
             point.line += st.line - en.line
             if point.line == st.line:
@@ -375,7 +392,7 @@ class TTkTextCursor():
                 _alignPoint(pp.position, selSt, selEn)
                 _alignPoint(pp.anchor,   selSt, selEn)
             self.setPosition(selSt.line, selSt.pos, cID=i)
-        self._checkCursors()
+        self._checkCursors(notify=self.position().toNum()!=currPos)
         return selSt.line, selEn.line-selSt.line, 1
 
     def removeSelectedText(self):

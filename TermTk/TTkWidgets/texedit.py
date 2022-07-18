@@ -31,6 +31,7 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkGui.textwrap import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
+from TermTk.TTkGui.textformat import TTkTextCharFormat
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
@@ -59,6 +60,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
+        self.currentCharFormatChanged = pyTTkSignal(TTkTextCharFormat)
         self._readOnly = True
         self._multiCursor = True
         self._hsize = 0
@@ -68,6 +70,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._lineWrapMode = TTkK.NoWrap
         self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textDocument.contentsChanged.connect(self._rewrap)
+        self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._replace = False
         self._cursorParams = None
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -112,10 +115,16 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._textDocument.appendText(text)
         self._updateSize()
 
+    @pyTTkSlot()
     def _rewrap(self):
         self._textWrap.rewrap()
         self.viewChanged.emit()
         self.update()
+
+    @pyTTkSlot(TTkTextCursor)
+    def _cursorPositionChanged(self, cursor):
+        if cursor == self._textCursor:
+            self.currentCharFormatChanged.emit(cursor.charFormat())
 
     def resizeEvent(self, w, h):
         if w != self._lastWrapUsed and w>self._textWrap._tabSpaces:
@@ -311,6 +320,9 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'wrapWidth', 'setWrapWidth',
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
+            # Signals
+            'focusChanged', 'currentCharFormatChanged'
+
         )
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -333,3 +345,4 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.setWordWrapMode = self._textEditView.setWordWrapMode
         # Forward Signals
         self.focusChanged = self._textEditView.focusChanged
+        self.currentCharFormatChanged = self._textEditView.currentCharFormatChanged
