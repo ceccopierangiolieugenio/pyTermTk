@@ -63,7 +63,7 @@ class TTkLog:
     @staticmethod
     def use_default_file_logging(file="session.log"):
         logging.basicConfig(level=logging.DEBUG,
-                    filename='session.log',
+                    filename=file,
                     format='%(levelname)s:(%(threadName)-9s) %(message)s',)
         TTkLog.installMessageHandler(TTkLog._logging_message_handler)
 
