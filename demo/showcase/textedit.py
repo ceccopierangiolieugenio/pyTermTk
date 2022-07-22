@@ -107,10 +107,10 @@ def demoTextEdit(root=None):
     wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False),0,5)
 
     fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
-    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, maxSize=(7,3)),1,0)
+    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3)),1,0)
     # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,1,2,1)
     fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
-    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, maxSize=(7   ,3)),1,2)
+    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7   ,3)),1,2)
     # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,3,2,1)
     fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
     fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
@@ -118,12 +118,13 @@ def demoTextEdit(root=None):
     fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
     fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
 
+
     def _setStyle():
         color = ttk.TTkColor()
         if cb_fg.checkState() == ttk.TTkK.Checked:
-            color += btn_fgColor.color()
+            color += btn_fgColor.color().invertFgBg()
         if cb_bg.checkState() == ttk.TTkK.Checked:
-            color += btn_bgColor.color().invertFgBg()
+            color += btn_bgColor.color()
         if btn_bold.isChecked():
             color += ttk.TTkColor.BOLD
         if btn_italic.isChecked():
@@ -136,6 +137,14 @@ def demoTextEdit(root=None):
         cursor.applyColor(color)
         cursor.setColor(color)
         te.setFocus()
+
+    cb_fg.stateChanged.connect(lambda x: btn_fgColor.setEnabled(x==ttk.TTkK.Checked))
+    cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==ttk.TTkK.Checked))
+    cb_fg.stateChanged.connect(lambda _: _setStyle())
+    cb_bg.stateChanged.connect(lambda _: _setStyle())
+
+    btn_fgColor.colorSelected.connect(lambda _: _setStyle())
+    btn_bgColor.colorSelected.connect(lambda _: _setStyle())
 
     btn_bold.toggled.connect(lambda _: _setStyle())
     btn_italic.toggled.connect(lambda _: _setStyle())

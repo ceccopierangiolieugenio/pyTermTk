@@ -127,8 +127,8 @@ class _TTkColor:
 
     def invertFgBg(self):
         ret = self.copy()
-        ret._fg = self._bg
-        ret._bg = self._fg
+        ret._fg = self._bg.replace('\033[48','\033[38')
+        ret._bg = self._fg.replace('\033[38','\033[48')
         return ret
 
     def __str__(self):
