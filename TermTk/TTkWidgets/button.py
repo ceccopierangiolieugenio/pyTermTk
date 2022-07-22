@@ -46,8 +46,15 @@ class TTkButton(TTkWidget):
 
     :param str text: the text shown on the button, defaults to ""
     :type text: str, optional
+
     :param bool border: the border of the button, defaults to "False"
     :type border: bool, optional
+
+    :param bool checked: checked status if the button is checkable, defaults to "False"
+    :type checked: bool, optional
+    :param bool checkable: define if the burtton is checkable, defaults to "False"
+    :type checkable: bool, optional
+
     :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonTextColor`
     :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
     :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor`
@@ -61,6 +68,14 @@ class TTkButton(TTkWidget):
             :signal:
 
             This signal is emitted when the button is activated
+
+        .. py:method:: toggled(checked)
+            :signal:
+
+            This signal is emitted whenever the button state changes if checkeable, i.e., whenever the user checks or unchecks it.
+
+            :param checked: True if checked otherwise False
+            :type checked: bool
 
     '''
 
