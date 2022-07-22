@@ -104,23 +104,39 @@ class TTkTheme():
     '''Default to **0**'''
     buttonBoxGridDisabled = 0
     '''Default to **0**'''
+    buttonBoxGridChecked = 1
+    '''Default to **0**'''
+    buttonBoxGridUnchecked = 3
+    '''Default to **2**'''
+
     buttonTextColor   = TTkColor.fg("#dddd88")+TTkColor.bg("#000044")
     '''Default to **TTkColor.fg("#dddd88")+TTkColor.bg("#000044")**'''
     buttonBorderColor = TTkColor.RST
     '''Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`'''
+
     buttonTextColorClicked   = TTkColor.fg("#ffffdd")+TTkColor.BOLD
     '''Default to **TTkColor.fg("#ffffdd")+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
     buttonBorderColorClicked = TTkColor.fg("#dddddd")+TTkColor.BOLD
     '''Default to **TTkColor.fg("#dddddd")+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
+
     buttonTextColorFocus     = buttonTextColor + TTkColor.BOLD
     '''Default to :class:`buttonTextColor` **+** :class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
     buttonBorderColorFocus   = TTkColor.fg("#ffff00") + TTkColor.BOLD
     '''Default to **TTkColor.fg("#ffff00") + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
+
     buttonTextColorDisabled  = TTkColor.fg("#888888")
     '''Default to **TTkColor.fg("#888888")**'''
     buttonBorderColorDisabled= TTkColor.fg("#888888")
     '''Default to **TTkColor.fg("#888888")**'''
 
+    buttonTextColorChecked   = TTkColor.fg("#dddd88")+TTkColor.bg("#004488")
+    '''Default to **TTkColor.fg("#dddd88")+TTkColor.bg("#004488")**'''
+    buttonTextColorUnchecked   = buttonTextColor
+    '''Default to :class:`buttonTextColor`'''
+    buttonBorderColorChecked= TTkColor.fg("#FFFFFF")
+    '''Default to **TTkColor.fg("#FFFFFF")**'''
+    buttonBorderColorUnchecked= buttonBorderColor
+    '''Default to :class:`buttonBorderColor`'''
 
     menuButtonShortcutColor = TTkColor.fg("#dddddd") + TTkColor.UNDERLINE
     '''Default to **TTkColor.fg("#dddddd") + TTkColor.UNDERLINE**'''
