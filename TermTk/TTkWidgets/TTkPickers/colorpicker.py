@@ -187,6 +187,9 @@ class _TTkColorButton(TTkButton):
         self._textColorFocus = color
         self.update()
 
+    def color(self):
+        return self._textColor
+
     def isCustom(self):
         return self._custom
 
@@ -443,7 +446,7 @@ class TTkColorButtonPicker(_TTkColorButton):
 
     @pyTTkSlot()
     def _colorClicked(self):
-        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,24), color=self._textColor, title="Test Color Picker", border=True)
+        colorPicker = TTkColorDialogPicker(pos = (3,3), size=(75,24), color=self.color(), title="Test Color Picker", border=True)
         colorPicker.colorSelected.connect(self.setColor)
         colorPicker.colorSelected.connect(self.colorSelected.emit)
         TTkHelper.overlay(self, colorPicker, -1,-1, True)

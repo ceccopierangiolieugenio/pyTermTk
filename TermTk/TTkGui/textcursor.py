@@ -172,6 +172,12 @@ class TTkTextCursor():
                                 TTkTextCursor._CP())]
         self._document = kwargs.get('document',TTkTextDocument())
 
+    def setColor(self, color):
+        self._color = color
+
+    def clearColor(self):
+        self._color = None
+
     def anchor(self):
         return self._properties[self._cID].anchor
 
@@ -400,6 +406,18 @@ class TTkTextCursor():
         a,b,c = self._removeSelectedText()
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(a,b,c)
+
+    def applyColor(self, color):
+        for p in self._properties:
+            selSt = p.selectionStart()
+            selEn = p.selectionEnd()
+            for l in range(selSt.line,selEn.line+1):
+                line = self._document._dataLines[l]
+                pf = 0         if l > selSt.line else selSt.pos
+                pt = len(line) if l < selEn.line else selEn.pos
+                self._document._dataLines[l] = line.setColor(color=color, posFrom=pf, posTo=pt)
+        self._document.contentsChanged.emit()
+        self._document.contentsChange.emit(0,0,0)
 
     def getHighlightedLines(self, fr, to, color):
         # Create a list of cursors (filtering out the ones which

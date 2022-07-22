@@ -305,10 +305,48 @@ class TTkString():
 
         return ret
 
+    def addColor(self, color, match=None, posFrom=None, posTo=None):
+        ''' Add the color of the entire string or a slice of it
+
+        If only the color is specified, the entire sting is colorized
+
+        :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :type color: :class:`~TermTk.TTkCore.color.TTkColor`
+        :param match: the match to colorize
+        :type match: str, optional
+        :param posFrom: the initial position of the color
+        :type posFrom: int, optional
+        :param posTo: the final position of the color
+        :type posTo: int, optional
+        '''
+        ret = TTkString()
+        ret._text  += self._text
+        ret._hasTab = self._hasTab
+        if match:
+            ret._colors += self._colors
+            start=0
+            lenMatch = len(match)
+            while pos := self._text.index(match, start) if match in self._text[start:] else None:
+                start = pos+lenMatch
+                for i in range(pos, pos+lenMatch):
+                    ret._colors[i] += color
+        elif posFrom == posTo == None:
+            ret._colors = [c+color for c in self._colors]
+        elif posFrom < posTo:
+            ret._colors += self._colors
+            posFrom = min(len(self._text),posFrom)
+            posTo   = min(len(self._text),posTo)
+            for i in range(posFrom, posTo):
+                ret._colors[i] += color
+        else:
+            ret._colors += self._colors
+        return ret
+
+
     def setColor(self, color, match=None, posFrom=None, posTo=None):
         ''' Set the color of the entire string or a slice of it
 
-        If only the color is specified, the entore sting is colorized
+        If only the color is specified, the entire sting is colorized
 
         :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
         :type color: :class:`~TermTk.TTkCore.color.TTkColor`

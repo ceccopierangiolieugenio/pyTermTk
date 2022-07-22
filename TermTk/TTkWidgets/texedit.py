@@ -82,6 +82,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self.wordWrapMode    = self._textWrap.wordWrapMode
         self.setWordWrapMode = self._textWrap.setWordWrapMode
 
+    def textCursor(self):
+        return self._textCursor
+
     def isReadOnly(self) -> bool :
         return self._readOnly
 
@@ -201,6 +204,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
         self._setCursorPos(evt.x + ox, evt.y + oy, addCursor=evt.mod&TTkK.ControlModifier==TTkK.ControlModifier)
+        self._textCursor.clearColor()
         self.update()
         return True
 
@@ -209,6 +213,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().mouseDragEvent(evt)
         ox, oy = self.getViewOffsets()
         x,y = self._setCursorPos(evt.x + ox, evt.y + oy, moveAnchor=False)
+        self._textCursor.clearColor()
         self._scrolToInclude(x,y)
         self.update()
         return True
@@ -217,6 +222,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
         self._textCursor.select(TTkTextCursor.WordUnderCursor)
+        self._textCursor.clearColor()
         self.update()
         return True
 
@@ -224,6 +230,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseTapEvent(evt)
         self._textCursor.select(TTkTextCursor.LineUnderCursor)
+        self._textCursor.clearColor()
         self.update()
         return True
 
@@ -245,17 +252,39 @@ class _TTkTextEditView(TTkAbstractScrollView):
             if ctrl:
                 p = self._textCursor.position()
                 cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
-                if evt.key == TTkK.Key_Up:     self._setCursorPos(cx, cy-1, addCursor=True)
-                if evt.key == TTkK.Key_Down:   self._setCursorPos(cx, cy+1, addCursor=True)
-            elif evt.key == TTkK.Key_Up:         self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap)
-            elif evt.key == TTkK.Key_Down:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap)
-            elif evt.key == TTkK.Key_Left:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Left)
-            elif evt.key == TTkK.Key_Right:    self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Right)
-            elif evt.key == TTkK.Key_End:      self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.EndOfLine)
-            elif evt.key == TTkK.Key_Home:     self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.StartOfLine)
-            elif evt.key == TTkK.Key_PageUp:   self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy - h)
-            elif evt.key == TTkK.Key_PageDown: self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy + h)
-            elif evt.key == TTkK.Key_Escape:   self._textCursor.cleanCursors()
+                if evt.key == TTkK.Key_Up:
+                    self._setCursorPos(cx, cy-1, addCursor=True)
+                    self._textCursor.clearColor()
+                if evt.key == TTkK.Key_Down:
+                    self._setCursorPos(cx, cy+1, addCursor=True)
+                    self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_Up:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_Down:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_Left:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Left)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_Right:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Right)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_End:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.EndOfLine)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_Home:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.StartOfLine)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_PageUp:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy - h)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_PageDown:
+                self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy + h)
+                self._textCursor.clearColor()
+            elif evt.key == TTkK.Key_Escape:
+                self._textCursor.cleanCursors()
+                self._textCursor.clearColor()
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
             elif evt.key == TTkK.Key_Delete:
@@ -320,6 +349,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'wrapWidth', 'setWrapWidth',
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
+            'textCursor', 'setFocus',
             # Signals
             'focusChanged', 'currentCharFormatChanged'
 
@@ -336,6 +366,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.append  = self._textEditView.append
         self.isReadOnly  = self._textEditView.isReadOnly
         self.setReadOnly = self._textEditView.setReadOnly
+        self.textCursor = self._textEditView.textCursor
+        self.setFocus = self._textEditView.setFocus
         # Forward Wrap Methods
         self.wrapWidth       = self._textEditView.wrapWidth
         self.setWrapWidth    = self._textEditView.setWrapWidth

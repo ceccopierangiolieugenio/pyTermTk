@@ -106,17 +106,41 @@ def demoTextEdit(root=None):
     wrapLayout.addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
     wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False),0,5)
 
-    fontLayout.addWidget(ttk.TTkCheckbox(text=" FG"),0,0)
-    fontLayout.addWidget(ttk.TTkColorButtonPicker(border=True, maxSize=(7,3)),1,0)
+    fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
+    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, maxSize=(7,3)),1,0)
     # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,1,2,1)
-    fontLayout.addWidget(ttk.TTkCheckbox(text=" BG"),0,2)
-    fontLayout.addWidget(ttk.TTkColorButtonPicker(border=True, maxSize=(7   ,3)),1,2)
+    fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
+    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, maxSize=(7   ,3)),1,2)
     # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,3,2,1)
-    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)),1,4)
-    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)),1,5)
-    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)),1,6)
-    fontLayout.addWidget(ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
+    fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
+    fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
+    fontLayout.addWidget(btn_underline     := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)   ),1,6)
+    fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
     fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
+
+    def _setStyle():
+        color = ttk.TTkColor()
+        if cb_fg.checkState() == ttk.TTkK.Checked:
+            color += btn_fgColor.color()
+        if cb_bg.checkState() == ttk.TTkK.Checked:
+            color += btn_bgColor.color().invertFgBg()
+        if btn_bold.isChecked():
+            color += ttk.TTkColor.BOLD
+        if btn_italic.isChecked():
+            color += ttk.TTkColor.ITALIC
+        if btn_underline.isChecked():
+            color += ttk.TTkColor.UNDERLINE
+        if btn_strikethrough.isChecked():
+            color += ttk.TTkColor.STRIKETROUGH
+        cursor = te.textCursor()
+        cursor.applyColor(color)
+        cursor.setColor(color)
+        te.setFocus()
+
+    btn_bold.toggled.connect(lambda _: _setStyle())
+    btn_italic.toggled.connect(lambda _: _setStyle())
+    btn_underline.toggled.connect(lambda _: _setStyle())
+    btn_strikethrough.toggled.connect(lambda _: _setStyle())
 
     lineWrap.setCurrentIndex(0)
     wordWrap.setCurrentIndex(1)

@@ -125,6 +125,12 @@ class _TTkColor:
         b = int(cc[4][:-1])
         return r,g,b
 
+    def invertFgBg(self):
+        ret = self.copy()
+        ret._fg = self._bg
+        ret._bg = self._fg
+        return ret
+
     def __str__(self):
         return self._fg+self._bg+self._mod
 
@@ -181,7 +187,7 @@ class _TTkColor:
         ret._fg  = self._fg
         ret._bg  = self._bg
         ret._mod = self._mod
-        if modifier:
+        if modifier and ret._colorMod:
             ret._colorMod = self._colorMod.copy()
         return ret
 

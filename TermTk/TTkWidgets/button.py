@@ -127,7 +127,7 @@ class TTkButton(TTkWidget):
         self.update()
 
     def isChecked(self):
-        self._checked
+        return self._checked
 
     def setChecked(self, ch):
         self._checked = ch
@@ -217,17 +217,17 @@ class TTkButton(TTkWidget):
         h = self.height()
         y = (h-1)//2
         l = len(text)
-        text = text.align(width=w, alignment=TTkK.CENTER_ALIGN)
+        text = text.align(width=w, alignment=TTkK.CENTER_ALIGN).addColor(textColor)
         if self._border:
             if self._border:
                 self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
                 for i in range(1,h-1):
-                    self._canvas.drawText(pos=(1,i), color=textColor ,text=" "*w)
-                self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
+                    self._canvas.drawText(pos=(1,i) ,text=" "*w)
+                self._canvas.drawText(pos=(1,y) ,text=text)
             else:
-                self._canvas.drawText(pos=(1,1), color=textColor ,text=text)
+                self._canvas.drawText(pos=(1,1) ,text=text)
         else:
             self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
             self._canvas.drawText(pos=(1+len(text),y), color=borderColor ,text=']')
-            self._canvas.drawText(pos=(1,y), color=textColor ,text=text)
+            self._canvas.drawText(pos=(1,y) ,text=text)
 
