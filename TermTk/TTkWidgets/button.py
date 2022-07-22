@@ -72,7 +72,7 @@ class TTkButton(TTkWidget):
         '_borderColorFocus',   '_textColorFocus'
         '_borderColorDisabled','_textColorDisabled',
         # Signals
-        'clicked'
+        'clicked', 'toggled'
         )
     def __init__(self, *args, **kwargs):
 
@@ -80,6 +80,7 @@ class TTkButton(TTkWidget):
         self._name = kwargs.get('name' , 'TTkButton' )
         # Define Signals
         self.clicked = pyTTkSignal()
+        self.toggled = pyTTkSignal(bool)
 
         self._text = TTkString(kwargs.get('text', ""))
         self._checked = kwargs.get('checked', False )
@@ -108,12 +109,15 @@ class TTkButton(TTkWidget):
 
     def setCheckable(self, ch):
         self._checkable = ch
+        self.update()
 
     def isChecked(self):
         self._checked
 
     def setChecked(self, ch):
         self._checked = ch
+        self.toggled.emit(self._checked)
+        self.update()
 
     def color(self):
         return self._textColor
@@ -150,6 +154,7 @@ class TTkButton(TTkWidget):
         self._pressed = False
         if self._checkable:
             self._checked = not self._checked
+            self.toggled.emit(self._checked)
         self.update()
         self.clicked.emit()
         return True
