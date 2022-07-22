@@ -50,18 +50,6 @@ def demoTextEdit(root=None):
 
     te.setReadOnly(False)
 
-    @ttk.pyTTkSlot(ttk.TTkTextCharFormat)
-    def _currentCharFormatChangedCB(format):
-        fg = format.foreground()
-        bg = format.background()
-        bold = format.bold()
-        italic = format.italic()
-        underline = format.underline()
-        strikethrough = format.strikethrough()
-        ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
-
-    te.currentCharFormatChanged.connect(_currentCharFormatChangedCB)
-
     te.setText(ttk.TTkString("Text Edit DEMO\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD+ttk.TTkColor.ITALIC))
 
     # Load ANSI input
@@ -118,6 +106,31 @@ def demoTextEdit(root=None):
     fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
     fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
 
+    @ttk.pyTTkSlot(ttk.TTkTextCharFormat)
+    def _currentCharFormatChangedCB(format):
+        if fg := format.foreground():
+            cb_fg.setCheckState(ttk.TTkK.Checked)
+            btn_fgColor.setEnabled()
+            btn_fgColor.setColor(fg.invertFgBg())
+        else:
+            cb_fg.setCheckState(ttk.TTkK.Unchecked)
+            btn_fgColor.setDisabled()
+
+        if bg := format.background():
+            cb_bg.setCheckState(ttk.TTkK.Checked)
+            btn_bgColor.setEnabled()
+            btn_bgColor.setColor(bg)
+        else:
+            cb_bg.setCheckState(ttk.TTkK.Unchecked)
+            btn_bgColor.setDisabled()
+
+        btn_bold.setChecked(format.bold())
+        btn_italic.setChecked(format.italic())
+        btn_underline.setChecked(format.underline())
+        btn_strikethrough.setChecked(format.strikethrough())
+        # ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
+
+    te.currentCharFormatChanged.connect(_currentCharFormatChangedCB)
 
     def _setStyle():
         color = ttk.TTkColor()

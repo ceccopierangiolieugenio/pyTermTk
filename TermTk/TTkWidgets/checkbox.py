@@ -99,8 +99,6 @@ class TTkCheckbox(TTkWidget):
         :param state: state of the checkbox
         :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
         '''
-
-
         self._checked = state == TTkK.Checked
         self.update()
 

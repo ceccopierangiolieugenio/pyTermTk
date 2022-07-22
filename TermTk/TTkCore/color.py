@@ -77,7 +77,7 @@ class _TTkColor:
 
     def background(self):
         if self._bg:
-            return _TTkColor(fg=self._bg)
+            return _TTkColor(bg=self._bg)
         else:
             return None
 
