@@ -110,8 +110,8 @@ def demoTextEdit(root=None):
     fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
     fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
 
-    @ttk.pyTTkSlot(ttk.TTkTextCharFormat)
-    def _currentCharFormatChangedCB(format):
+    @ttk.pyTTkSlot(ttk.TTkColor)
+    def _currentColorChangedCB(format):
         if fg := format.foreground():
             cb_fg.setCheckState(ttk.TTkK.Checked)
             btn_fgColor.setEnabled()
@@ -134,7 +134,7 @@ def demoTextEdit(root=None):
         btn_strikethrough.setChecked(format.strikethrough())
         # ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
 
-    te.currentCharFormatChanged.connect(_currentCharFormatChangedCB)
+    te.currentColorChanged.connect(_currentColorChangedCB)
 
     def _setStyle():
         color = ttk.TTkColor()

@@ -22,10 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkGui.textformat import TTkTextCharFormat
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 class TTkTextCursor():
@@ -197,14 +196,16 @@ class TTkTextCursor():
         self._cID = 0
         self._properties = [p]
 
-    def charFormat(self):
-        p = self.position()
+    def positionColor(self, cID=-1):
+        cID = self._cID if cID==-1 else cID
+        p = self._properties[cID].position
         l = self._document._dataLines[p.line]
-        if p.pos < len(l):
-            color = l.colorAt(p.pos)
+        pos = max(0,p.pos-1)
+        if pos < len(l):
+            color = l.colorAt(pos)
         else:
             color = TTkColor()
-        return TTkTextCharFormat(color=color)
+        return color
 
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
         # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
@@ -291,13 +292,12 @@ class TTkTextCursor():
         for i, pr in enumerate(self._properties):
             l = pr.position.line
             p = pr.position.pos
+            color = self._color if self._color else self.positionColor(i)
 
             # Use the same color under the cursor if no color is defined:
             ttktext = text
-            if self._color:
-                ttktext = TTkString(text, self._color)
-            elif isinstance(ttktext, str):
-                ttktext = TTkString(text, self._document._dataLines[l].colorAt(p))
+            if isinstance(ttktext, str):
+                ttktext = TTkString(text, color)
 
             newLines = (self._document._dataLines[l].substring(to=p) + ttktext + self._document._dataLines[l].substring(fr=p)).split('\n')
             self._document._dataLines[l] = newLines[0]

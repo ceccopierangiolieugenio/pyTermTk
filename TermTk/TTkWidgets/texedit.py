@@ -31,7 +31,6 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkGui.textwrap import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
-from TermTk.TTkGui.textformat import TTkTextCharFormat
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
@@ -47,7 +46,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             'wrapWidth',    'setWrapWidth',
             'wordWrapMode', 'setWordWrapMode',
             # Signals
-            'currentCharFormatChanged'
+            'currentColorChanged'
         )
     '''
         in order to support the line wrap, I need to divide the full data text in;
@@ -60,7 +59,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
-        self.currentCharFormatChanged = pyTTkSignal(TTkTextCharFormat)
+        self.currentColorChanged = pyTTkSignal(TTkColor)
         self._readOnly = True
         self._multiCursor = True
         self._hsize = 0
@@ -127,7 +126,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(TTkTextCursor)
     def _cursorPositionChanged(self, cursor):
         if cursor == self._textCursor:
-            self.currentCharFormatChanged.emit(cursor.charFormat())
+            self.currentColorChanged.emit(cursor.positionColor())
 
     def resizeEvent(self, w, h):
         if w != self._lastWrapUsed and w>self._textWrap._tabSpaces:
@@ -351,7 +350,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'wordWrapMode', 'setWordWrapMode',
             'textCursor', 'setFocus',
             # Signals
-            'focusChanged', 'currentCharFormatChanged'
+            'focusChanged', 'currentColorChanged'
 
         )
     def __init__(self, *args, **kwargs):
@@ -377,4 +376,4 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.setWordWrapMode = self._textEditView.setWordWrapMode
         # Forward Signals
         self.focusChanged = self._textEditView.focusChanged
-        self.currentCharFormatChanged = self._textEditView.currentCharFormatChanged
+        self.currentColorChanged = self._textEditView.currentColorChanged
