@@ -37,7 +37,7 @@ class TTkTextDocument():
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
-        text =  kwargs.get('text',"")
+        text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
 
     def lineCount(self):

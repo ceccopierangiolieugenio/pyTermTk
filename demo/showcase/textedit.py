@@ -47,10 +47,19 @@ def getWords(n):
 def getSentence(a,b,i):
     return ttk.TTkString(" ").join([f"{i} "]+[getWords(random.randint(1,4)) for i in range(0,random.randint(a,b))])
 
-def demoTextEdit(root=None):
+def demoTextEditSecondary(root=None, document=None):
+    te = ttk.TTkTextEdit(parent=root, document=document)
+    te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+    te.setWordWrapMode(ttk.TTkK.WordWrap)
+    te.setReadOnly(False)
+
+def demoTextEdit(root=None, document=None):
     frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkGridLayout())
 
-    te = ttk.TTkTextEdit()
+    # If no document is passed a default one is created,
+    # In this showcase I want to be able to share the same
+    # document among 2 textEdit widgets
+    te = ttk.TTkTextEdit(document=document)
 
     te.setReadOnly(False)
 
@@ -218,7 +227,11 @@ def main():
     else:
         rootTree = root
         root.setLayout(ttk.TTkGridLayout())
-    demoTextEdit(rootTree)
+    split = ttk.TTkSplitter(parent=rootTree)
+    document = ttk.TTkTextDocument()
+    demoTextEdit(split, document)
+    demoTextEditSecondary(split, document)
+    rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,0)
     root.mainloop()
 
 if __name__ == "__main__":

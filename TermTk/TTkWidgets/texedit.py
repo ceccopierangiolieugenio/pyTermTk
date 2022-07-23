@@ -42,9 +42,9 @@ class _TTkTextEditView(TTkAbstractScrollView):
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
             '_replace',
             '_readOnly', '_multiCursor',
-            # Forwarded Methods
-            'wrapWidth',    'setWrapWidth',
-            'wordWrapMode', 'setWordWrapMode',
+            # # Forwarded Methods
+            # 'wrapWidth',    'setWrapWidth',
+            # 'wordWrapMode', 'setWordWrapMode',
             # Signals
             'currentColorChanged'
         )
@@ -64,22 +64,36 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
-        self._textDocument = TTkTextDocument()
-        self._textCursor = TTkTextCursor(document=self._textDocument)
         self._lineWrapMode = TTkK.NoWrap
+        self._replace = False
+        self._cursorParams = None
+        self._textDocument = None
+        self._textCursor = None
+        self._textWrap = None
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.setDocument(kwargs.get('document', TTkTextDocument()))
+
+    def document(self):
+        return self._textDocument
+
+    def setDocument(self, document):
+        if self._textDocument:
+            self._textDocument.contentsChanged.disconnect(self._rewrap)
+            self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
+            self._textWrap.wrapChanged.disconnect(self.update)
+        self._textDocument = document
+        self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textDocument.contentsChanged.connect(self._rewrap)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
-        self._replace = False
-        self._cursorParams = None
-        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         # Trigger an update when the rewrap happen
         self._textWrap.wrapChanged.connect(self.update)
-        # forward textWrap Methods
-        self.wrapWidth       = self._textWrap.wrapWidth
-        self.setWrapWidth    = self._textWrap.setWrapWidth
-        self.wordWrapMode    = self._textWrap.wordWrapMode
-        self.setWordWrapMode = self._textWrap.setWordWrapMode
+
+    # forward textWrap Methods
+    def wrapWidth(self, *args, **kwargs):       return self._textWrap.wrapWidth(*args, **kwargs)
+    def setWrapWidth(self, *args, **kwargs):    return self._textWrap.setWrapWidth(*args, **kwargs)
+    def wordWrapMode(self, *args, **kwargs):    return self._textWrap.wordWrapMode(*args, **kwargs)
+    def setWordWrapMode(self, *args, **kwargs): return self._textWrap.setWordWrapMode(*args, **kwargs)
 
     def textCursor(self):
         return self._textCursor
@@ -130,6 +144,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
     def resizeEvent(self, w, h):
         if w != self._lastWrapUsed and w>self._textWrap._tabSpaces:
+            self._textWrap.setWrapWidth(w)
             self._lastWrapUsed = w
             self._rewrap()
         return super().resizeEvent(w,h)
@@ -330,6 +345,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
 
         h = self.height()
         subLines = self._textWrap._lines[oy:oy+h]
+        if not subLines: return
         outLines = self._textCursor.getHighlightedLines(subLines[0][0], subLines[-1][0], selectColor)
 
         for y, l in enumerate(subLines):
@@ -356,7 +372,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTextEdit' )
-        self._textEditView = _TTkTextEditView()
+        if 'parent' in kwargs: kwargs.pop('parent')
+        self._textEditView = _TTkTextEditView(*args, **kwargs)
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self.setViewport(self._textEditView)

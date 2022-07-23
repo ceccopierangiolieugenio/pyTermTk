@@ -162,14 +162,21 @@ class TTkTextCursor():
         def toNum(self):
             return self.pos | self.line << 16
 
-    __slots__ = ('_document', '_properties', '_cID', '_color')
+    __slots__ = ('_document', '_properties', '_cID', '_color', '_autoChanged')
     def __init__(self, *args, **kwargs):
         self._color = None
         self._cID = 0
+        self._autoChanged = False
         self._properties = [TTkTextCursor._prop(
                                 TTkTextCursor._CP(),
                                 TTkTextCursor._CP())]
         self._document = kwargs.get('document',TTkTextDocument())
+        self._document.contentsChanged.connect(self._documentContentChanged)
+
+    def _documentContentChanged(self):
+        if self._autoChanged: return True
+        self.cleanCursors()
+        self.clearSelection()
 
     def setColor(self, color):
         self._color = color
@@ -333,8 +340,10 @@ class TTkTextCursor():
                     pp.anchor.pos  += diffPos
                 pp.position.line += diffLine
                 pp.anchor.line += diffLine
+        self._autoChanged = True
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(l,b,c)
+        self._autoChanged = False
         self._document.cursorPositionChanged.emit(self)
 
     def selectionStart(self):
@@ -404,8 +413,10 @@ class TTkTextCursor():
     def removeSelectedText(self):
         if not self.hasSelection(): return
         a,b,c = self._removeSelectedText()
+        self._autoChanged = True
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(a,b,c)
+        self._autoChanged = False
 
     def applyColor(self, color):
         for p in self._properties:
@@ -416,8 +427,10 @@ class TTkTextCursor():
                 pf = 0         if l > selSt.line else selSt.pos
                 pt = len(line) if l < selEn.line else selEn.pos
                 self._document._dataLines[l] = line.setColor(color=color, posFrom=pf, posTo=pt)
+        self._autoChanged = True
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(0,0,0)
+        self._autoChanged = True
 
     def getHighlightedLines(self, fr, to, color):
         # Create a list of cursors (filtering out the ones which
