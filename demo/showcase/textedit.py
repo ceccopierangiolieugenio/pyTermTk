@@ -36,12 +36,16 @@ def randColor():
         ttk.TTkColor.RST,
         ttk.TTkColor.fg('#FFFF00'),
         ttk.TTkColor.fg('#00FFFF'),
-        ttk.TTkColor.fg('#FF00FF')
-    ][random.randint(0,3)]
-def getWord():
-    return ttk.TTkString(random.choice(words),randColor())
+        ttk.TTkColor.fg('#FF00FF'),
+        ttk.TTkColor.fg('#0000FF')+ttk.TTkColor.bg('#00FF00'),
+        ttk.TTkColor.fg('#00FF00')+ttk.TTkColor.UNDERLINE,
+        ttk.TTkColor.fg('#FF0000')+ttk.TTkColor.STRIKETROUGH,
+    ][random.randint(0,6)]
+def getWords(n):
+    www = [random.choice(words) for _ in range(n)]
+    return ttk.TTkString(" ".join(www), randColor())
 def getSentence(a,b,i):
-    return ttk.TTkString(" ").join([f"{i} "]+[getWord() for i in range(0,random.randint(a,b))])
+    return ttk.TTkString(" ").join([f"{i} "]+[getWords(random.randint(1,4)) for i in range(0,random.randint(a,b))])
 
 def demoTextEdit(root=None):
     frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkGridLayout())
@@ -71,7 +75,7 @@ def demoTextEdit(root=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
+    te.append(ttk.TTkString('\n').join([ getSentence(3,10,i) for i in range(50)]))
 
     te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
 
@@ -153,16 +157,16 @@ def demoTextEdit(root=None):
 
     cb_fg.stateChanged.connect(lambda x: btn_fgColor.setEnabled(x==ttk.TTkK.Checked))
     cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==ttk.TTkK.Checked))
-    cb_fg.stateChanged.connect(lambda _: _setStyle())
-    cb_bg.stateChanged.connect(lambda _: _setStyle())
+    cb_fg.clicked.connect(lambda _: _setStyle())
+    cb_bg.clicked.connect(lambda _: _setStyle())
 
     btn_fgColor.colorSelected.connect(lambda _: _setStyle())
     btn_bgColor.colorSelected.connect(lambda _: _setStyle())
 
-    btn_bold.toggled.connect(lambda _: _setStyle())
-    btn_italic.toggled.connect(lambda _: _setStyle())
-    btn_underline.toggled.connect(lambda _: _setStyle())
-    btn_strikethrough.toggled.connect(lambda _: _setStyle())
+    btn_bold.clicked.connect(_setStyle)
+    btn_italic.clicked.connect(_setStyle)
+    btn_underline.clicked.connect(_setStyle)
+    btn_strikethrough.clicked.connect(_setStyle)
 
     lineWrap.setCurrentIndex(0)
     wordWrap.setCurrentIndex(1)
