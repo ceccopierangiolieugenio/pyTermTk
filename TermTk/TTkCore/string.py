@@ -145,6 +145,8 @@ class TTkString():
         return self
 
     def colorAt(self, pos):
+        if pos >= len(self._colors):
+            return TTkColor()
         return self._colors[pos]
 
     def setColorAt(self, pos, color):
