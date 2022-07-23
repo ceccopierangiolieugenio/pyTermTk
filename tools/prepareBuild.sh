@@ -27,7 +27,13 @@ _PWD=`pwd`
 _TOOLS_BASE_PATH=$(dirname $(readlink -f $0))
 _BASE_PATH=${_TOOLS_BASE_PATH}/..
 _TMP_PATH=${_BASE_PATH}/tmp
-_VERSION=$(git describe | sed 's,\([^-]*\)-\([^-]*\)-[^-]*,\1\2,')
+
+_MAJOR=$(     git describe | sed 's,\([0-9]*\)\..*,\1,'                   )
+_MINOR=$(     git describe | sed 's,[0-9]*\.\([0-9]*\)\..*,\1,'           )
+_PATCH=$(( $( git describe | sed 's,[^x]*\.x[^0-9]*\([0-9]*\)[^0-9].*,\1,') + 0))
+_STAGE=$(     git describe | sed 's,.*\.x-\([^-]*\).*,\1,'                )
+
+_VERSION="${_MAJOR}.${_MINOR}.${_PATCH}-${_STAGE}"
 
 _tools_usage()
 {
