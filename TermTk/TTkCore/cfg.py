@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
+
 class TTkCfg:
     version="__VERSION__"
     name="__NAME__"

@@ -37,6 +37,7 @@ elif platform.system() == 'Emscripten':
     raise NotImplementedError('Pyodide not yet supported')
 
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.TTkTerm.inputkey   import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
@@ -58,15 +59,17 @@ class TTkInput:
     def get_key(self, callback=None):
         mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
         while stdinRead := self._readInput.read():
-            mevt = None
-            kevt = TTkKeyEvent.parse(stdinRead)
-            if kevt is None and \
-               stdinRead.startswith("\033[<"):
+            mevt,kevt = None, None
+            if not stdinRead.startswith("\033[<"):
+                # Key Event
+                kevt = TTkKeyEvent.parse(stdinRead)
+            else:
                 # Mouse Event
                 m = mouse_re.match(stdinRead)
                 if not m:
                     # TODO: Return Error
-                    TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>"))
+                    hex = [f"0x{ord(x):02x}" for x in stdinRead]
+                    TTkLog.error("UNHANDLED (mouse): "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
                     continue
                 code = int(m.group(1))
                 x = int(m.group(2))-1
@@ -84,6 +87,14 @@ class TTkInput:
                         else:
                             return t, 1
                     return lastTime, tap
+
+                mod = TTkK.NoModifier
+                if code & 0x10:
+                    code &= ~0x10
+                    mod |= TTkK.ControlModifier
+                if code & 0x08:
+                    code &= ~0x08
+                    mod |= TTkK.AltModifier
 
                 if code == 0x00:
                     self._leftLastTime, self._leftTap = _checkTap(self._leftLastTime, self._leftTap)
@@ -115,10 +126,11 @@ class TTkInput:
                 elif code == 0x41:
                     key = TTkMouseEvent.Wheel
                     evt = TTkMouseEvent.Down
-                mevt = TTkMouseEvent(x, y, key, evt, tap, m.group(0).replace("\033", "<ESC>"))
+                mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
 
             if kevt is None and mevt is None:
-                TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>"))
+                hex = [f"0x{ord(x):02x}" for x in stdinRead]
+                TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
 
             if callback is not None:
                 if not callback(kevt, mevt):

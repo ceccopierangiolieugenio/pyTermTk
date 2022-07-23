@@ -28,7 +28,10 @@ import time
 import queue
 
 from TermTk.TTkCore.TTkTerm.input import TTkInput
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
+from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import *
@@ -37,11 +40,18 @@ from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import *
 
 class TTk(TTkWidget):
-    __slots__ = ('_name', '_running', '_input', '_events', '_key_events', '_mouse_events', '_screen_events', '_title' )
+    __slots__ = (
+        '_name', '_running', '_input',
+        '_events', '_key_events', '_mouse_events', '_screen_events',
+        '_title',
+        #Signals
+        'eventKeyPress', 'eventMouse' )
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTk' )
+        self.eventKeyPress = pyTTkSignal(TTkKeyEvent)
+        self.eventMouse    = pyTTkSignal(TTkMouseEvent)
         self._running = False
         self._input = TTkInput()
         self._events = queue.Queue()
@@ -112,6 +122,8 @@ class TTk(TTkWidget):
             evt = self._events.get()
             if   evt is TTkK.MOUSE_EVENT:
                 mevt = self._mouse_events.get()
+                self.eventMouse.emit(mevt)
+
                 # Upload the global mouse position
                 # Mainly used by the drag pixmap display
                 TTkHelper.setMousePos((mevt.x,mevt.y))
@@ -161,9 +173,10 @@ class TTk(TTkWidget):
             elif evt is TTkK.KEY_EVENT:
                 keyHandled = False
                 kevt = self._key_events.get()
+                self.eventKeyPress.emit(kevt)
                 # TTkLog.debug(f"Key: {kevt}")
                 focusWidget = TTkHelper.getFocus()
-                TTkLog.debug(f"{focusWidget}")
+                # TTkLog.debug(f"{focusWidget}")
                 if focusWidget is not None:
                     TTkHelper.execShortcut(kevt.key,focusWidget)
                     keyHandled = focusWidget.keyEvent(kevt)

@@ -36,12 +36,16 @@ def randColor():
         ttk.TTkColor.RST,
         ttk.TTkColor.fg('#FFFF00'),
         ttk.TTkColor.fg('#00FFFF'),
-        ttk.TTkColor.fg('#FF00FF')
-    ][random.randint(0,3)]
-def getWord():
-    return ttk.TTkString(random.choice(words),randColor())
+        ttk.TTkColor.fg('#FF00FF'),
+        ttk.TTkColor.fg('#0000FF')+ttk.TTkColor.bg('#00FF00'),
+        ttk.TTkColor.fg('#00FF00')+ttk.TTkColor.UNDERLINE,
+        ttk.TTkColor.fg('#FF0000')+ttk.TTkColor.STRIKETROUGH,
+    ][random.randint(0,6)]
+def getWords(n):
+    www = [random.choice(words) for _ in range(n)]
+    return ttk.TTkString(" ".join(www), randColor())
 def getSentence(a,b,i):
-    return ttk.TTkString(" ").join([f"{i} "]+[getWord() for i in range(0,random.randint(a,b))])
+    return ttk.TTkString(" ").join([f"{i} "]+[getWords(random.randint(1,4)) for i in range(0,random.randint(a,b))])
 
 def demoTextEdit(root=None):
     frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkGridLayout())
@@ -71,7 +75,9 @@ def demoTextEdit(root=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    te.append(ttk.TTkString('\n').join([ getSentence(5,25,i) for i in range(50)]))
+    te.append(ttk.TTkString('\n').join([ getSentence(3,10,i) for i in range(50)]))
+
+    te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
 
     # use the widget size to wrap
     # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
@@ -81,14 +87,87 @@ def demoTextEdit(root=None):
     # te.setLineWrapMode(ttk.TTkK.FixedWidth)
     # te.setWrapWidth(100)
 
-    frame.layout().addWidget(te,1,0,1,6)
-    frame.layout().addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
-    frame.layout().addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth']),0,1)
-    frame.layout().addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
-    frame.layout().addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], enabled=False),0,3)
-    frame.layout().addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
-    frame.layout().addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maximum=500, minimum=10, enabled=False),0,5)
+    frame.layout().addItem(wrapLayout := ttk.TTkGridLayout(), 0,0)
+    frame.layout().addItem(fontLayout := ttk.TTkGridLayout(), 1,0)
+    frame.layout().addWidget(te,2,0)
 
+    wrapLayout.addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
+    wrapLayout.addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth'], maxWidth=20),0,1)
+    wrapLayout.addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
+    wrapLayout.addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], maxWidth=20, enabled=False),0,3)
+    wrapLayout.addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
+    wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False),0,5)
+    wrapLayout.addWidget(ttk.TTkSpacer(),0,10)
+
+    fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
+    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3)),1,0)
+    # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,1,2,1)
+    fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
+    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7   ,3)),1,2)
+    # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,3,2,1)
+    fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
+    fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
+    fontLayout.addWidget(btn_underline     := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)   ),1,6)
+    fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
+    fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
+
+    @ttk.pyTTkSlot(ttk.TTkColor)
+    def _currentColorChangedCB(format):
+        if fg := format.foreground():
+            cb_fg.setCheckState(ttk.TTkK.Checked)
+            btn_fgColor.setEnabled()
+            btn_fgColor.setColor(fg.invertFgBg())
+        else:
+            cb_fg.setCheckState(ttk.TTkK.Unchecked)
+            btn_fgColor.setDisabled()
+
+        if bg := format.background():
+            cb_bg.setCheckState(ttk.TTkK.Checked)
+            btn_bgColor.setEnabled()
+            btn_bgColor.setColor(bg)
+        else:
+            cb_bg.setCheckState(ttk.TTkK.Unchecked)
+            btn_bgColor.setDisabled()
+
+        btn_bold.setChecked(format.bold())
+        btn_italic.setChecked(format.italic())
+        btn_underline.setChecked(format.underline())
+        btn_strikethrough.setChecked(format.strikethrough())
+        # ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
+
+    te.currentColorChanged.connect(_currentColorChangedCB)
+
+    def _setStyle():
+        color = ttk.TTkColor()
+        if cb_fg.checkState() == ttk.TTkK.Checked:
+            color += btn_fgColor.color().invertFgBg()
+        if cb_bg.checkState() == ttk.TTkK.Checked:
+            color += btn_bgColor.color()
+        if btn_bold.isChecked():
+            color += ttk.TTkColor.BOLD
+        if btn_italic.isChecked():
+            color += ttk.TTkColor.ITALIC
+        if btn_underline.isChecked():
+            color += ttk.TTkColor.UNDERLINE
+        if btn_strikethrough.isChecked():
+            color += ttk.TTkColor.STRIKETROUGH
+        cursor = te.textCursor()
+        cursor.applyColor(color)
+        cursor.setColor(color)
+        te.setFocus()
+
+    cb_fg.stateChanged.connect(lambda x: btn_fgColor.setEnabled(x==ttk.TTkK.Checked))
+    cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==ttk.TTkK.Checked))
+    cb_fg.clicked.connect(lambda _: _setStyle())
+    cb_bg.clicked.connect(lambda _: _setStyle())
+
+    btn_fgColor.colorSelected.connect(lambda _: _setStyle())
+    btn_bgColor.colorSelected.connect(lambda _: _setStyle())
+
+    btn_bold.clicked.connect(_setStyle)
+    btn_italic.clicked.connect(_setStyle)
+    btn_underline.clicked.connect(_setStyle)
+    btn_strikethrough.clicked.connect(_setStyle)
 
     lineWrap.setCurrentIndex(0)
     wordWrap.setCurrentIndex(1)
@@ -107,6 +186,7 @@ def demoTextEdit(root=None):
             fixWidth.setDisabled()
         else:
             te.setLineWrapMode(ttk.TTkK.FixedWidth)
+            te.setWrapWidth(fixWidth.value())
             wordWrap.setEnabled()
             fixWidth.setEnabled()
 
@@ -125,17 +205,19 @@ def demoTextEdit(root=None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+    parser.add_argument('-w', help='Windowed',    action='store_true')
     args = parser.parse_args()
+    windowed = args.w
 
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    if args.f:
+    if windowed:
+        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
+    else:
         rootTree = root
         root.setLayout(ttk.TTkGridLayout())
-    else:
-        rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
     demoTextEdit(rootTree)
     root.mainloop()
 

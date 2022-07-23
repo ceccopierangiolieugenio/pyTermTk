@@ -39,9 +39,9 @@ def demoFormWidgets(root=None):
     frame = ttk.TTkFrame(parent=root, layout=win_form1_grid_layout, border=0)
 
     win_form1_grid_layout.addWidget(ttk.TTkButton(text='Button 1'),0,0)
-    win_form1_grid_layout.addWidget(ttk.TTkButton(text='Button 2'),1,0)
-    win_form1_grid_layout.addWidget(ttk.TTkButton(text='Button 3'),0,2)
-    win_form1_grid_layout.addWidget(ttk.TTkButton(text='Button 4'),1,2)
+    win_form1_grid_layout.addWidget(ttk.TTkButton(text='Button 2', border=True),1,0)
+    win_form1_grid_layout.addWidget(ttk.TTkButton(text='Checkable 1', checkable=True, maxHeight=3),0,2)
+    win_form1_grid_layout.addWidget(ttk.TTkButton(text='Checkable 2', checkable=True, border=True, maxHeight=3),1,2)
     row = 2
 
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo Box'),row,0)

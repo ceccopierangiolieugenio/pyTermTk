@@ -66,29 +66,29 @@ def stupidPythonHighlighter(txt):
         return ret
 
     # Operators
-    txt = _colorize(re.compile('[\+\*\/\=\-\<\>\!]'), txt, ttk.TTkColor.fg('#00AAAA'))
+    txt = _colorize(re.compile(r'[\+\*\/\=\-\<\>\!]'), txt, ttk.TTkColor.fg('#00AAAA'))
     # Bool
-    txt = _colorize(re.compile('True|False'), txt, ttk.TTkColor.fg('#0000FF'))
+    txt = _colorize(re.compile(r'True|False'), txt, ttk.TTkColor.fg('#0000FF'))
 
     # Numbers
-    txt = _colorize(re.compile('[0-9]'), txt, ttk.TTkColor.fg('#00FFFF'))
+    txt = _colorize(re.compile(r'[0-9]'), txt, ttk.TTkColor.fg('#00FFFF'))
 
     # Functions
-    txt = _colorize(re.compile('[ \t]*def[ \t]*'), txt, ttk.TTkColor.fg('#00FFFF'))
-    txt = _colorize(re.compile('[^= \t\.\()]*[\t ]*\('), txt, ttk.TTkColor.fg('#AAAA00'))
+    txt = _colorize(re.compile(r'[ \t]*def[ \t]*'), txt, ttk.TTkColor.fg('#00FFFF'))
+    txt = _colorize(re.compile(r'[^= \t\.\()]*[\t ]*\('), txt, ttk.TTkColor.fg('#AAAA00'))
     # Objects
-    txt = _colorize(re.compile('[^= \t\.\()]*\.'), txt, ttk.TTkColor.fg('#44AA00'))
+    txt = _colorize(re.compile(r'[^= \t\.\()]*\.'), txt, ttk.TTkColor.fg('#44AA00'))
 
     # Fix Extra colors
-    txt = _colorize(re.compile('[\(\)]'), txt, ttk.TTkColor.RST)
-    txt = _colorize(re.compile("'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile(r'[\(\)]'), txt, ttk.TTkColor.RST)
+    txt = _colorize(re.compile(r"'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
 
     # Strings
-    txt = _colorize(re.compile('"[^"]*"'), txt, ttk.TTkColor.fg('#FF8800'))
-    txt = _colorize(re.compile("'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile(r'"[^"]*"'), txt, ttk.TTkColor.fg('#FF8800'))
+    txt = _colorize(re.compile(r"'[^']*'"), txt, ttk.TTkColor.fg('#FF8800'))
 
     # Comments
-    txt = _colorize(re.compile('#.*\n'), txt, ttk.TTkColor.fg('#00FF00'))
+    txt = _colorize(re.compile(r'#.*\n'), txt, ttk.TTkColor.fg('#00FF00'))
     return txt
 
 def showSource(file):
@@ -102,18 +102,25 @@ def showSource(file):
     ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
 
 def demoShowcase(root=None, border=True, quit=None):
-    splitter = ttk.TTkSplitter(parent=root)
+    splitter = ttk.TTkSplitter()
+    root.layout().addWidget(splitter, 0, 0)
+
+    logInput = ttk.TTkKeyPressView(visible=False, maxHeight=3, minHeight=3)
+    root.layout().addWidget(logInput, 1, 0)
 
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
     themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkVBoxLayout(), maxHeight=5, minHeight=5)
     listMenu = ttk.TTkList(maxWidth=15, minWidth=10)
+    logInputToggler = ttk.TTkCheckbox(text='ShowInput')
+    logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
     quitButton.clicked.connect(quit)
 
     leftFrame.layout().addWidget(themesFrame, 0, 0)
     leftFrame.layout().addWidget(listMenu,    1, 0)
-    leftFrame.layout().addWidget(quitButton,  2, 0)
+    leftFrame.layout().addWidget(logInputToggler,  2, 0)
+    leftFrame.layout().addWidget(quitButton,  3, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
@@ -253,6 +260,6 @@ if __name__ == "__main__":
     main()
 
 def test_demo():
-    root = ttk.TTk()
+    root = ttk.TTk(layout=ttk.TTkGridLayout())
     assert demoShowcase(root) != None
     root.quit()

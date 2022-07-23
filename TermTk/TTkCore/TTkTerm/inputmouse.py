@@ -44,6 +44,10 @@ class TTkMouseEvent:
 
         The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton`)
 
+    .. py:attribute:: mod
+        :type: KeyModifier
+
+        The :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier` used, default :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier`
 
     .. py:attribute:: evt
         :type: MouseEvent
@@ -79,19 +83,20 @@ class TTkMouseEvent:
     Up      = TTkK.WHEEL_Up
     Down    = TTkK.WHEEL_Down
 
-    __slots__ = ('x','y','key','evt', 'tap', 'raw')
-    def __init__(self, x: int, y: int, key: int, evt: int, tap: int, raw: str):
+    __slots__ = ('x', 'y', 'key', 'evt', 'mod', 'tap', 'raw')
+    def __init__(self, x: int, y: int, key: int, evt: int, mod: int, tap: int, raw: str):
         self.x = x
         self.y = y
         self.key = key
         self.evt = evt
+        self.mod = mod
         self.raw = raw
         self.tap = tap
 
     def clone(self, pos=None, evt=None):
         x,y = pos or (self.x, self.y)
         evt = evt or self.evt
-        return TTkMouseEvent(x, y, self.key, evt, self.tap, self.raw)
+        return TTkMouseEvent(x, y, self.key, evt, self.mod, self.tap, self.raw)
 
     def key2str(self):
         return {
@@ -115,5 +120,17 @@ class TTkMouseEvent:
             TTkMouseEvent.Down    : "Down",
         }.get(self.evt, "Undefined")
 
+    def mod2str(self):
+        if self.mod == TTkK.NoModifier         : return "NoModifier"
+        ret = []
+        if self.mod & TTkK.ShiftModifier       : ret.append("Shift")
+        if self.mod & TTkK.ControlModifier     : ret.append("Control")
+        if self.mod & TTkK.AltModifier         : ret.append("Alt")
+        if self.mod & TTkK.MetaModifier        : ret.append("Meta")
+        if self.mod & TTkK.KeypadModifier      : ret.append("Keypad")
+        if self.mod & TTkK.GroupSwitchModifier : ret.append("GroupSwitch")
+        if ret: return ",".join(ret)
+        return "NONE!!!"
+
     def __str__(self):
-        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} tap:{self.tap} - {self.raw}"
+        return f"MouseEvent ({self.x},{self.y}) {self.key2str()} {self.evt2str()} {self.mod2str()} tap:{self.tap} - {self.raw}"

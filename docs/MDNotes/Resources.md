@@ -14,10 +14,23 @@
 #### Fullsize/Halfsize forms
     https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
     https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
+#### Ascii Fonts
+    https://github.com/phpjsnerd/ascii-fonts
+    https://github.com/phpjsnerd/ascii-fonts/blob/master/Calvin%20S.flf
+    https://www.texttool.com/ascii-font#p=display&f=Calvin%20S&t=Type%20Something%20%2012345
+    http://www.roysac.com/thedrawfonts-tdf.html#16
 
 ## Terminal
+#### ANSI Escape Sequences
+https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797#file-ansi-md
+https://conemu.github.io/en/AnsiEscapeCodes.html
 #### Hyperlink
 https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+#### ANSI 16 256 24bit color conversion
+https://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
+#### ANSI Colors
+https://talyian.github.io/ansicolors/
+http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html
 
 #### Blinking Text
 ```bash

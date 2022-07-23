@@ -557,6 +557,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
 
+    @pyTTkSlot(bool)
+    def setVisible(self, visible):
+        if visible: self.show()
+        else: self.hide()
+
     def isVisible(self):
         if self._parent is None:
             return self._visible
