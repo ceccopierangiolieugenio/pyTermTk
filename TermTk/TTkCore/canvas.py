@@ -654,7 +654,7 @@ class TTkCanvas:
                     ansi = TTkTerm.Cursor.moveTo(y+1,x+1)
                     empty = False
                 if color != lastcolor:
-                    ansi += color-lastcolor
+                    ansi += str(color-lastcolor)
                     lastcolor = color
                 ansi+=ch
             if not empty:
