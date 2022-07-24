@@ -53,7 +53,7 @@ class TTk(TTkWidget):
         self.eventKeyPress = pyTTkSignal(TTkKeyEvent)
         self.eventMouse    = pyTTkSignal(TTkMouseEvent)
         self._running = False
-        self._input = TTkInput()
+        self._input = None
         self._events = queue.Queue()
         self._key_events = queue.Queue()
         self._mouse_events = queue.Queue()
@@ -228,7 +228,9 @@ class TTk(TTkWidget):
                 self._events.put(TTkK.MOUSE_EVENT)
             return self._running
         # Start input key loop
+        self._input = TTkInput()
         self._input.get_key(_inputCallback)
+        self._input.close()
 
     def _canvas_thread(self):
         pass
@@ -236,7 +238,6 @@ class TTk(TTkWidget):
     def quit(self):
         '''Tells the application to exit with a return code.'''
         self._events.put(TTkK.QUIT_EVENT)
-        self._input.close()
         TTkTimer.quitAll()
         self._running = False
 
