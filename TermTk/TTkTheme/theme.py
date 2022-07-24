@@ -98,6 +98,11 @@ class TTkTheme():
     windowBorderColorFocus = TTkColor.fg("#ffff55")
     '''Default to **TTkColor.fg("#ffff55")**'''
 
+    textColorDisabled  = TTkColor.fg("#888888")
+    '''Default to **TTkColor.fg("#888888")**'''
+    borderColorDisabled= TTkColor.fg("#888888")
+    '''Default to **TTkColor.fg("#888888")**'''
+
     buttonBoxGrid = 1
     '''Default to **1**'''
     buttonBoxGridClicked = 0
@@ -124,10 +129,10 @@ class TTkTheme():
     buttonBorderColorFocus   = TTkColor.fg("#ffff00") + TTkColor.BOLD
     '''Default to **TTkColor.fg("#ffff00") + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
 
-    buttonTextColorDisabled  = TTkColor.fg("#888888")
-    '''Default to **TTkColor.fg("#888888")**'''
-    buttonBorderColorDisabled= TTkColor.fg("#888888")
-    '''Default to **TTkColor.fg("#888888")**'''
+    buttonTextColorDisabled  = textColorDisabled
+    '''Default to :class:`textColorDisabled`'''
+    buttonBorderColorDisabled= borderColorDisabled
+    '''Default to :class:`borderColorDisabled`'''
 
     buttonTextColorChecked   = TTkColor.fg("#dddd88")+TTkColor.bg("#004488")
     '''Default to **TTkColor.fg("#dddd88")+TTkColor.bg("#004488")**'''

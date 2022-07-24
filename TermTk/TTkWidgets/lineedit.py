@@ -94,7 +94,10 @@ class TTkLineEdit(TTkWidget):
         self.update()
 
     def paintEvent(self):
-        if self.hasFocus():
+        if not self.isEnabled():
+            color = TTkCfg.theme.textColorDisabled
+            selectColor = TTkCfg.theme.textColorDisabled
+        elif self.hasFocus():
             color = TTkCfg.theme.lineEditTextColorFocus
             selectColor = TTkCfg.theme.lineEditTextColorSelected
         else:

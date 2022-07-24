@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkLayouts import TTkGridLayout
@@ -49,7 +51,7 @@ class TTkSpinBox(TTkWidget):
         self._mouseDelta = 0
         self._valueDelta = 0
         self._draggable = False
-        self._lineEdit = TTkLineEdit(parent=self, text=str(self._value), inputType=TTkK.Input_Number)
+        self._lineEdit = TTkLineEdit(parent=self, text=str(self._value), inputType=TTkK.Input_Number, enabled=self.isEnabled())
         self._lineEdit.keyEvent = self.keyEvent
         self.setFocusPolicy(TTkK.ClickFocus)
         self._lineEdit.textEdited.connect(self._textEdited)
@@ -93,20 +95,28 @@ class TTkSpinBox(TTkWidget):
             self._draggable = True
             value -= 1
         self.setValue(value)
-        self._mouseDelta = y
+        self._mouseDelta = y-x
         self._valueDelta = self._value
         return True
 
     def mouseDragEvent(self, evt):
-        y = evt.y
+        d = evt.y-evt.x
         if self._draggable:
-            self.setValue(self._valueDelta + self._mouseDelta - y)
+            self.setValue(self._valueDelta + self._mouseDelta - d)
             return True
 
+    def setEnabled(self, enabled=True):
+        self._lineEdit.setEnabled(enabled)
+        return super().setEnabled(enabled)
+
     def paintEvent(self):
+        if not self.isEnabled():
+            textColor   = TTkCfg.theme.textColorDisabled
+        else:
+            textColor   = TTkColor.RST
         w = self.width()
-        self._canvas.drawChar(pos=(w-2,0),char="▲")
-        self._canvas.drawChar(pos=(w-1,0),char="▼")
+        self._canvas.drawChar(pos=(w-2,0),char="▲", color=textColor)
+        self._canvas.drawChar(pos=(w-1,0),char="▼", color=textColor)
 
     def focusOutEvent(self):
         self._draggable = False
