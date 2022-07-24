@@ -47,6 +47,11 @@ def getWords(n):
 def getSentence(a,b,i):
     return ttk.TTkString(" ").join([f"{i} "]+[getWords(random.randint(1,4)) for i in range(0,random.randint(a,b))])
 
+class superSimpleHorizontalLine(ttk.TTkWidget):
+    def paintEvent(self):
+        w,h = self.size()
+        self._canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=ttk.TTkColor.fg("#888888"))
+
 def demoTextEditSecondary(root=None, document=None):
     te = ttk.TTkTextEdit(parent=root, document=document)
     te.setLineWrapMode(ttk.TTkK.WidgetWidth)
@@ -118,7 +123,7 @@ def demoTextEdit(root=None, document=None):
     fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
     fontLayout.addWidget(btn_underline     := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)   ),1,6)
     fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
-    fontLayout.addWidget(ttk.TTkSpacer(),0,10,2,1)
+    fontLayout.addWidget(superSimpleHorizontalLine(),0,10,2,1)
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def _currentColorChangedCB(format):

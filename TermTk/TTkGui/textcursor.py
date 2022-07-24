@@ -292,6 +292,18 @@ class TTkTextCursor():
     def document(self):
         return self._document
 
+    def replaceText(self, text):
+        # if there is no selection, just select the next n chars till the end of the line
+        # the newline is not replaced
+        for p in self._properties:
+            if not p.hasSelection():
+                line    = p.position.line
+                pos  = p.position.pos
+                size = len(self._document._dataLines[line])
+                pos = min(size,pos+len(text))
+                p.anchor.set(line,pos)
+        return self.insertText(text)
+
     def insertText(self, text):
         l,b,c = 0,1,1
         if self.hasSelection():

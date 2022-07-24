@@ -150,7 +150,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         return super().resizeEvent(w,h)
 
     def _updateSize(self):
-        self._hsize = max( len(l) for l in self._textDocument._dataLines )
+        self._hsize = max( len(l) for l in self._textDocument._dataLines ) + 1
 
     def viewFullAreaSize(self) -> (int, int):
         if self.lineWrapMode() == TTkK.NoWrap:
@@ -209,7 +209,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         # Scroll the area (if required) to include the position x,y
         _,_,w,h = self.geometry()
         offx, offy = self.getViewOffsets()
-        offx = max(min(offx, x),x-w)
+        offx = max(min(offx, x),x-w+1)
         offy = max(min(offy, y),y-h+1)
         self.viewMoveTo(offx, offy)
 
@@ -253,6 +253,14 @@ class _TTkTextEditView(TTkAbstractScrollView):
             return super().keyEvent(evt)
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
+
+            # TODO: Remove this HACK As soon as possible
+            # Due to the lack of 'INS' key on many laptops
+            # I emulate this key using
+            #    CTRL + HOME
+            if evt.key == TTkK.Key_Home and evt.mod==TTkK.ControlModifier:
+                evt.key = TTkK.Key_Insert
+                evt.mod = TTkK.NoModifier
 
             moveMode = TTkTextCursor.MoveAnchor
             if evt.mod==TTkK.ShiftModifier:
@@ -315,15 +323,20 @@ class _TTkTextEditView(TTkAbstractScrollView):
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+            self._updateSize()
             self._scrolToInclude(cx,cy)
             self.update()
             return True
         else: # Input char
-            self._textCursor.insertText(evt.key)
+            if self._replace:
+                self._textCursor.replaceText(evt.key)
+            else:
+                self._textCursor.insertText(evt.key)
             self._textCursor.movePosition(TTkTextCursor.Right)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+            self._updateSize()
             self._scrolToInclude(cx,cy)
             self.update()
             return True

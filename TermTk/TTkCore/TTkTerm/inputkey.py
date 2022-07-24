@@ -89,8 +89,7 @@ def _translate_key(key):
         "\033[B"    : ( TTkK.Key_Down      , TTkK.NoModifier ) ,
         "\033[C"    : ( TTkK.Key_Right     , TTkK.NoModifier ) ,
         "\033[D"    : ( TTkK.Key_Left      , TTkK.NoModifier ) ,
-        "\033[5~"   : ( TTkK.Key_PageUp    , TTkK.NoModifier ) ,
-        "\033[6~"   : ( TTkK.Key_PageDown  , TTkK.NoModifier ) ,
+
         "\033[1;2A" : ( TTkK.Key_Up        , TTkK.ShiftModifier ) ,
         "\033[1;2B" : ( TTkK.Key_Down      , TTkK.ShiftModifier ) ,
         "\033[1;2C" : ( TTkK.Key_Right     , TTkK.ShiftModifier ) ,
@@ -108,6 +107,19 @@ def _translate_key(key):
         "\033[1;5C" : ( TTkK.Key_Right     , TTkK.ControlModifier ) ,
         "\033[1;5D" : ( TTkK.Key_Left      , TTkK.ControlModifier ) ,
 
+        "\033[5~"   : ( TTkK.Key_PageUp    , TTkK.NoModifier ) ,
+        "\033[6~"   : ( TTkK.Key_PageDown  , TTkK.NoModifier ) ,
+        "\033[5;2~" : ( TTkK.Key_PageUp    , TTkK.ShiftModifier ) ,
+        "\033[6;2~" : ( TTkK.Key_PageDown  , TTkK.ShiftModifier ) ,
+        "\033[5;3~" : ( TTkK.Key_PageUp    , TTkK.AltModifier ) ,
+        "\033[6;3~" : ( TTkK.Key_PageDown  , TTkK.AltModifier ) ,
+        "\033[5;4~" : ( TTkK.Key_PageUp    , TTkK.AltModifier | TTkK.ShiftModifier ) ,
+        "\033[6;4~" : ( TTkK.Key_PageDown  , TTkK.AltModifier | TTkK.ShiftModifier ) ,
+        "\033[5;5~" : ( TTkK.Key_PageUp    , TTkK.ControlModifier ) ,
+        "\033[6;5~" : ( TTkK.Key_PageDown  , TTkK.ControlModifier ) ,
+        "\033[5;7~" : ( TTkK.Key_PageUp    , TTkK.AltModifier | TTkK.ControlModifier ) ,
+        "\033[6;7~" : ( TTkK.Key_PageDown  , TTkK.AltModifier | TTkK.ControlModifier ) ,
+
     # Xterm
         "\033[F"    : ( TTkK.Key_End       , TTkK.NoModifier ) ,
         "\033[H"    : ( TTkK.Key_Home      , TTkK.NoModifier ) ,
@@ -116,6 +128,42 @@ def _translate_key(key):
         "\033[1~"   : ( TTkK.Key_Home      , TTkK.NoModifier ) ,
         "\033[2~"   : ( TTkK.Key_Insert    , TTkK.NoModifier ) ,
         "\033[3~"   : ( TTkK.Key_Delete    , TTkK.NoModifier ) ,
+
+        "\033[1;2F" : ( TTkK.Key_End       , TTkK.ShiftModifier ) ,
+        "\033[1;2H" : ( TTkK.Key_Home      , TTkK.ShiftModifier ) ,
+        "\033[2;2~" : ( TTkK.Key_Insert    , TTkK.ShiftModifier ) ,
+        "\033[3;2~" : ( TTkK.Key_Delete    , TTkK.ShiftModifier ) ,
+
+        "\033[1;3F" : ( TTkK.Key_End       , TTkK.AltModifier ) ,
+        "\033[1;3H" : ( TTkK.Key_Home      , TTkK.AltModifier ) ,
+        "\033[2;3~" : ( TTkK.Key_Insert    , TTkK.AltModifier ) ,
+        "\033[3;3~" : ( TTkK.Key_Delete    , TTkK.AltModifier ) ,
+
+        "\033[1;4F" : ( TTkK.Key_End       , TTkK.ShiftModifier | TTkK.AltModifier ) ,
+        "\033[1;4H" : ( TTkK.Key_Home      , TTkK.ShiftModifier | TTkK.AltModifier ) ,
+        "\033[2;4~" : ( TTkK.Key_Insert    , TTkK.ShiftModifier | TTkK.AltModifier ) ,
+        "\033[3;4~" : ( TTkK.Key_Delete    , TTkK.ShiftModifier | TTkK.AltModifier ) ,
+
+        "\033[1;5F" : ( TTkK.Key_End       , TTkK.ControlModifier ) ,
+        "\033[1;5H" : ( TTkK.Key_Home      , TTkK.ControlModifier ) ,
+        "\033[2;5~" : ( TTkK.Key_Insert    , TTkK.ControlModifier ) ,
+        "\033[3;5~" : ( TTkK.Key_Delete    , TTkK.ControlModifier ) ,
+
+        "\033[1;6F" : ( TTkK.Key_End       , TTkK.ShiftModifier | TTkK.ControlModifier) ,
+        "\033[1;6H" : ( TTkK.Key_Home      , TTkK.ShiftModifier | TTkK.ControlModifier) ,
+        "\033[2;6~" : ( TTkK.Key_Insert    , TTkK.ShiftModifier | TTkK.ControlModifier) ,
+        "\033[3;6~" : ( TTkK.Key_Delete    , TTkK.ShiftModifier | TTkK.ControlModifier) ,
+
+        "\033[1;7F" : ( TTkK.Key_End       , TTkK.AltModifier | TTkK.ControlModifier) ,
+        "\033[1;7H" : ( TTkK.Key_Home      , TTkK.AltModifier | TTkK.ControlModifier) ,
+        "\033[2;7~" : ( TTkK.Key_Insert    , TTkK.AltModifier | TTkK.ControlModifier) ,
+        "\033[3;7~" : ( TTkK.Key_Delete    , TTkK.AltModifier | TTkK.ControlModifier) ,
+
+        "\033[1;8F" : ( TTkK.Key_End       , TTkK.ShiftModifier | TTkK.AltModifier | TTkK.ControlModifier) ,
+        "\033[1;8H" : ( TTkK.Key_Home      , TTkK.ShiftModifier | TTkK.AltModifier | TTkK.ControlModifier) ,
+        "\033[2;8~" : ( TTkK.Key_Insert    , TTkK.ShiftModifier | TTkK.AltModifier | TTkK.ControlModifier) ,
+        "\033[3;8~" : ( TTkK.Key_Delete    , TTkK.ShiftModifier | TTkK.AltModifier | TTkK.ControlModifier) ,
+
         "\033"      : ( TTkK.Key_Escape    , TTkK.NoModifier ) ,
     # Function Key
         "\033OP"    : ( TTkK.Key_F1        , TTkK.NoModifier ) ,
