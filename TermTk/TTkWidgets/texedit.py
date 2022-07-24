@@ -81,6 +81,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             self._textDocument.contentsChanged.disconnect(self._rewrap)
             self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
             self._textWrap.wrapChanged.disconnect(self.update)
+        if not document:
+            document = TTkTextDocument()
         self._textDocument = document
         self._textCursor = TTkTextCursor(document=self._textDocument)
         self._textWrap = TTkTextWrap(document=self._textDocument)

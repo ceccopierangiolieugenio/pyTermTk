@@ -28,9 +28,10 @@ from time import time
 import platform
 
 if platform.system() == 'Linux':
-    from TermTk.TTkCore.TTkTerm.readinputlinux import ReadInput
+    # from .readinputlinux import ReadInput
+    from .readinputlinux_thread import ReadInput
 elif platform.system() == 'Darwin':
-    from TermTk.TTkCore.TTkTerm.readinputlinux import ReadInput
+    from .readinputlinux import ReadInput
 elif platform.system() == 'Windows':
     raise NotImplementedError('Windows OS not yet supported')
 elif platform.system() == 'Emscripten':
