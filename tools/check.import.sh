@@ -14,6 +14,9 @@ __check(){
             -e "log.py:from collections.abc import Callable, Set" \
             -e "from time" -e "input.py:import platform" \
             -e "readinputlinux.py:import sys, os, select" \
+            -e "readinputlinux_thread.py:import sys, os, select" \
+            -e "readinputlinux_thread.py:import threading" \
+            -e "readinputlinux_thread.py:import queue" \
             -e "term.py:import sys, os, signal" \
             -e "ttk.py:import signal" \
             -e "ttk.py:import time" \

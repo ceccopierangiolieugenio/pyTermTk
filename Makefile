@@ -63,6 +63,7 @@ deployTest: .venv
 	python3 -m twine upload --repository testpypi tmp/dist/* --verbose
 
 test: .venv
+	tools/check.import.sh
 	. .venv/bin/activate ; \
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp ; \
 	pytest demo/demo.py
