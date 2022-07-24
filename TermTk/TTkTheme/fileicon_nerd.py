@@ -229,7 +229,7 @@ class FileIcon():
 
     @staticmethod
     def getIcon(fileName):
-        fileName = os.path.basename(fileName)
+        fileName = os.path.basename(str(fileName))
 
         fileName = fileName.lower()
         # Check the exact match

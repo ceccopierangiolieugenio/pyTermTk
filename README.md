@@ -94,6 +94,7 @@ cprofilev -f profiler.bin
 
 ## Projects using [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 - [tlogg](https://github.com/ceccopierangiolieugenio/tlogg) - A fast, advanced log explorer.
+- [ttkode](https://github.com/ceccopierangiolieugenio/ttkode) - TerminalToolKit (Studio) Code (editor)
 - [pytest-fold](https://github.com/jeffwright13/pytest-fold) - A Pytest plugin to make console output more manageable when there are multiple failed tests
 - [pytest-tui](https://github.com/jeffwright13/pytest-tui) - A Text User Interface (TUI) for Pytest, automatically launched after your test run is finished
 
