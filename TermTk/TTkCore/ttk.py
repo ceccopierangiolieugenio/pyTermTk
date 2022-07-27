@@ -81,42 +81,47 @@ class TTk(TTkWidget):
             self.time  = curtime
 
     def mainloop(self):
-        '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
-        TTkLog.debug( "" )
-        TTkLog.debug( "         ████████╗            ████████╗    " )
-        TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
-        TTkLog.debug( "            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  " )
-        TTkLog.debug( "    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   " )
-        TTkLog.debug( "    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  " )
-        TTkLog.debug( "    ▌    ▐  ╚═╝                  ╚═╝       " )
-        TTkLog.debug( "      ▚▄▄▘                                 " )
-        TTkLog.debug( "" )
-        TTkLog.debug(f"  Version: {TTkCfg.version}" )
-        TTkLog.debug( "" )
-        TTkLog.debug( "Starting Main Loop..." )
-        # Register events
         try:
+            '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
+            TTkLog.debug( "" )
+            TTkLog.debug( "         ████████╗            ████████╗    " )
+            TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
+            TTkLog.debug( "            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  " )
+            TTkLog.debug( "    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   " )
+            TTkLog.debug( "    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  " )
+            TTkLog.debug( "    ▌    ▐  ╚═╝                  ╚═╝       " )
+            TTkLog.debug( "      ▚▄▄▘                                 " )
+            TTkLog.debug( "" )
+            TTkLog.debug(f"  Version: {TTkCfg.version}" )
+            TTkLog.debug( "" )
+            TTkLog.debug( "Starting Main Loop..." )
+
+            # Register events
             signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
             signal.signal(signal.SIGCONT, self._SIGCONT) # Resume
             signal.signal(signal.SIGINT,  self._SIGINT)  # Ctrl-C
-        except Exception as e:
-            TTkLog.error(f"{e}")
-            exit(1)
-        else:
+
             TTkLog.debug("Signal Event Registered")
 
+            TTkTerm.registerResizeCb(self._win_resize_cb)
+            threading.Thread(target=self._input_thread, daemon=True).start()
+            self._timer = TTkTimer()
+            self._timer.timeout.connect(self._time_event)
+            self._timer.start(0.1)
+            self.show()
 
-        TTkTerm.registerResizeCb(self._win_resize_cb)
-        threading.Thread(target=self._input_thread, daemon=True).start()
-        self._timer = TTkTimer()
-        self._timer.timeout.connect(self._time_event)
-        self._timer.start(0.1)
-        self.show()
+            self._running = True
+            # Keep track of the multiTap to avoid the extra key release
+            lastMultiTap = False
+            TTkTerm.init(title=self._title)
+            self._mainloop()
+        #except Exception as e:
+        #    TTkLog.error(f"{e}")
+        finally:
+            self.quit()
+            TTkTerm.exit()
 
-        self._running = True
-        # Keep track of the multiTap to avoid the extra key release
-        lastMultiTap = False
-        TTkTerm.init(title=self._title)
+    def _mainloop(self):
         while self._running:
             # Main Loop
             evt = self._events.get()
@@ -208,7 +213,6 @@ class TTk(TTkWidget):
             else:
                 TTkLog.error(f"Unhandled Event {evt}")
                 break
-        TTkTerm.exit()
 
     def _time_event(self):
         self._events.put(TTkK.TIME_EVENT)
@@ -252,6 +256,7 @@ class TTk(TTkWidget):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
         TTkTerm.cont()
+        TTkHelper.rePaintAll()
         # TODO: Restart threads
         # TODO: Redraw the screen
 

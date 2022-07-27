@@ -289,6 +289,12 @@ class TTkHelper:
                 TTkTerm.Cursor.show(TTkHelper._cursorType)
 
     @staticmethod
+    def rePaintAll():
+        if TTkHelper._rootCanvas and  TTkHelper._rootWidget:
+            TTkHelper._rootCanvas.cleanBuffers()
+            TTkHelper._rootWidget.update()
+
+    @staticmethod
     def widgetDepth(widget) -> int:
         if widget is None:
             return 0
