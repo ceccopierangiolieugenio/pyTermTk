@@ -226,17 +226,20 @@ def main():
 
     ttk.TTkLog.use_default_file_logging()
 
-    root = ttk.TTk()
+    root = ttk.TTk(sigmask=ttk.TTkTerm.Sigmask.CTRL_S | ttk.TTkTerm.Sigmask.CTRL_Z | ttk.TTkTerm.Sigmask.CTRL_C)
     if windowed:
         rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
     else:
         rootTree = root
         root.setLayout(ttk.TTkGridLayout())
-    split = ttk.TTkSplitter(parent=rootTree)
+    split = ttk.TTkSplitter()
     document = ttk.TTkTextDocument()
     demoTextEdit(split, document)
     demoTextEditSecondary(split, document)
-    rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,0)
+    rootTree.layout().addWidget(split,0,0,1,2)
+    rootTree.layout().addWidget(quitbtn := ttk.TTkButton(border=True, text="Quit", maxWidth=6),1,0)
+    rootTree.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3),1,1)
+    quitbtn.clicked.connect(root.quit)
     root.mainloop()
 
 if __name__ == "__main__":

@@ -41,7 +41,7 @@ class ReadInput():
         threading.Thread(target=self._pullInputThread).start()
 
     def _pullInputThread(self):
-        _fn = sys.stdin.fileno()
+        _fn = sys.stdin
         _attr = termios.tcgetattr(_fn)
         tty.setcbreak(_fn)
 

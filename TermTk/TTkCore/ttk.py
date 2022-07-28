@@ -44,6 +44,7 @@ class TTk(TTkWidget):
         '_name', '_running', '_input',
         '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
+        '_sigmask',
         #Signals
         'eventKeyPress', 'eventMouse' )
 
@@ -59,6 +60,7 @@ class TTk(TTkWidget):
         self._mouse_events = queue.Queue()
         self._screen_events = queue.Queue()
         self._title = kwargs.get('title','TermTk')
+        self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         try:
@@ -113,7 +115,7 @@ class TTk(TTkWidget):
             self._running = True
             # Keep track of the multiTap to avoid the extra key release
             lastMultiTap = False
-            TTkTerm.init(title=self._title)
+            TTkTerm.init(title=self._title, sigmask=self._sigmask)
             self._mainloop()
         #except Exception as e:
         #    TTkLog.error(f"{e}")
