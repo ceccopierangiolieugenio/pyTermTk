@@ -47,6 +47,13 @@ https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#directi
 https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#explicit-markup-blocks
 
 ## Disable SIGSTOP triggered by CTRL+S
+```bash
+# Disable
+stty stop ''
+# ReEnable = map stop top CTRL+S
+stty stop '^s'
+```
+
 ```python
 import sys, termios
 
