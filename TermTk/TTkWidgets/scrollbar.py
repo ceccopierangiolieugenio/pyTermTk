@@ -107,7 +107,7 @@ class TTkScrollBar(TTkWidget):
             if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
             asciiDrawingSize = size2 - asciiStep
             a = self._value - self._minimum
-            # covert i screen coordinates
+            # convert i screen coordinates
             aa = asciiDrawingSize * a // (self._maximum - self._minimum)
             bb = aa + asciiStep
         self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)

@@ -193,7 +193,7 @@ class TTkCanvas:
         '''
             NOTE:
             drawText is one of the most abused functions,
-            there is some reduntant code here in order to reduce the footprint
+            there is some redundant code here in order to reduce the footprint
         '''
         if not self._visible: return
 

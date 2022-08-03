@@ -235,7 +235,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _refreshCache(self):
-        ''' I save a representation fo the displayed tree in a cache array
+        ''' I save a representation of the displayed tree in a cache array
             to avoid eccessve recursion over the items and
             identify quickly the nth displayed line to improve the interaction
 

@@ -24,7 +24,7 @@
 
 import TermTk as ttk
 
-    # Set the VBoxLayout as defaut in the terminal widget
+    # Set the VBoxLayout as default in the terminal widget
 root = ttk.TTk(layout=ttk.TTkVBoxLayout())
 
     # Attach 4 buttons to the root widget

@@ -142,7 +142,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
                 self._children,
                 key = lambda x : x.sortData(self._sortColumn),
                 reverse = self._sortOrder == TTkK.DescendingOrder)
-        # Broadcast the sorting to the childrens
+        # Broadcast the sorting to the children
         if children:
             for c in self._children:
                 c.dataChanged.disconnect(self.emitDataChanged)
