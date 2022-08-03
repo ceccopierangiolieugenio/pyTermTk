@@ -69,7 +69,7 @@ class TTkRadioButton(TTkWidget):
         self.clicked = pyTTkSignal()
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkRadioButton' )
-        # self.cehcked = pyTTkSignal()
+        # self.checked = pyTTkSignal()
         self._checked = kwargs.get('checked', False )
         self._text = kwargs.get('text', '' )
         self.setMinimumSize(3 + len(self._text), 1)

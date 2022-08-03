@@ -44,7 +44,7 @@ class TTkComboBox(TTkWidget):
         self.editTextChanged     = pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
-        # self.cehcked = pyTTkSignal()
+        # self.checked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
         self._list = kwargs.get('list', [] )
         self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )

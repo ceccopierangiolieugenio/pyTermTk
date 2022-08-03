@@ -24,7 +24,7 @@
 
 import TermTk as ttk
 
-    # Set the GridLayout as defaut in the terminal widget
+    # Set the GridLayout as default in the terminal widget
 root = ttk.TTk()
 
 gridLayout = ttk.TTkGridLayout()

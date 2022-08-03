@@ -24,7 +24,7 @@
 
 import TermTk as ttk
 
-    # Set the HBoxLayout as defaut in the terminal widget
+    # Set the HBoxLayout as default in the terminal widget
 root = ttk.TTk()
 root.setLayout(ttk.TTkHBoxLayout())
 

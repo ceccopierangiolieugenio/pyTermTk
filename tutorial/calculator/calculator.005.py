@@ -68,7 +68,7 @@ winLayout.addWidget(btn9, 3,2)
     # Just to show off I am using another way to attach it to the grid layout
 winLayout.addWidget(btn0:=ttk.TTkButton(border=True, text="0"), 4,0, 1,2)
 
-    # Define the 2 algebric buttons
+    # Define the 2 algebraic buttons
 winLayout.addWidget(btnAdd:=ttk.TTkButton(border=True, text="+"), 1,3)
 winLayout.addWidget(btnSub:=ttk.TTkButton(border=True, text="-"), 2,3)
 

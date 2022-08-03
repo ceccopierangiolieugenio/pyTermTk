@@ -307,7 +307,7 @@ class TTkString():
     def addColor(self, color, match=None, posFrom=None, posTo=None):
         ''' Add the color of the entire string or a slice of it
 
-        If only the color is specified, the entire sting is colorized
+        If only the color is specified, the entire string is colorized
 
         :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
         :type color: :class:`~TermTk.TTkCore.color.TTkColor`
@@ -345,7 +345,7 @@ class TTkString():
     def setColor(self, color, match=None, posFrom=None, posTo=None):
         ''' Set the color of the entire string or a slice of it
 
-        If only the color is specified, the entire sting is colorized
+        If only the color is specified, the entire string is colorized
 
         :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
         :type color: :class:`~TermTk.TTkCore.color.TTkColor`
