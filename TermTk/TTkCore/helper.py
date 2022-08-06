@@ -95,6 +95,11 @@ class TTkHelper:
         TTkHelper._updateWidget = []
 
     @staticmethod
+    def quit():
+        if TTkHelper._rootWidget:
+            TTkHelper._rootWidget.quit()
+
+    @staticmethod
     def rootOverlay(widget):
         if widget is None:
             return None

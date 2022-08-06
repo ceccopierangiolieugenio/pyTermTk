@@ -75,3 +75,6 @@ termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attr)
  - CTRL-C -> termios.VINTR
  - CTRL-S -> termios.VSTOP
  - CTRL-Z -> termios.VSUSP
+ - CTRL-Q -> termios.VSTART
+
+Have a look at [test.termios.001.py](../../tests/test.termios.001.py)

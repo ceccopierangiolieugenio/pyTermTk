@@ -226,7 +226,11 @@ def main():
 
     ttk.TTkLog.use_default_file_logging()
 
-    root = ttk.TTk(sigmask=ttk.TTkTerm.Sigmask.CTRL_S | ttk.TTkTerm.Sigmask.CTRL_Z | ttk.TTkTerm.Sigmask.CTRL_C)
+    root = ttk.TTk(sigmask=(
+                    ttk.TTkTerm.Sigmask.CTRL_Q |
+                    ttk.TTkTerm.Sigmask.CTRL_S |
+                    ttk.TTkTerm.Sigmask.CTRL_Z |
+                    ttk.TTkTerm.Sigmask.CTRL_C ))
     if windowed:
         rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
     else:
