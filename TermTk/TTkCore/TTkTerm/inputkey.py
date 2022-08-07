@@ -223,8 +223,8 @@ def _translate_key(key):
         '\x06':       ( TTkK.Key_F         , TTkK.ControlModifier ),
         '\x07':       ( TTkK.Key_G         , TTkK.ControlModifier ),
         '\x08':       ( TTkK.Key_H         , TTkK.ControlModifier ),
-        '\x09':       ( TTkK.Key_I         , TTkK.ControlModifier ),
-        '\x0a':       ( TTkK.Key_J         , TTkK.ControlModifier ),
+        # '\x09':       ( TTkK.Key_I         , TTkK.ControlModifier ), # Tab   = '\t' = 0x09
+        # '\x0a':       ( TTkK.Key_J         , TTkK.ControlModifier ), # Enter = '\n' = 0x0a
         '\x0b':       ( TTkK.Key_K         , TTkK.ControlModifier ),
         '\x0c':       ( TTkK.Key_L         , TTkK.ControlModifier ),
         '\x0d':       ( TTkK.Key_M         , TTkK.ControlModifier ),
@@ -779,5 +779,5 @@ def key2str(k):
         TTkK.Key_Sleep                    :  "Key_Sleep" ,
         TTkK.Key_Zoom                     :  "Key_Zoom" ,
         TTkK.Key_Exit                     :  "Key_Exit" ,
-        TTkK.Key_Cancel                   :  "Key_Cancel" 
+        TTkK.Key_Cancel                   :  "Key_Cancel"
     }.get(k, "NONE!!!")

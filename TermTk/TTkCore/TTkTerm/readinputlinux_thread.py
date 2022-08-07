@@ -40,6 +40,9 @@ class ReadInput():
         self._inputs = queue.Queue()
         threading.Thread(target=self._pullInputThread).start()
 
+    def cont(self):
+        tty.setcbreak(sys.stdin)
+
     def _pullInputThread(self):
         _fn = sys.stdin
         _attr = termios.tcgetattr(_fn)

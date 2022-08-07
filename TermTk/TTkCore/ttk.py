@@ -251,6 +251,7 @@ class TTk(TTkWidget):
         """Reset terminal settings and stop background input read before putting to sleep"""
         TTkLog.debug("Captured SIGSTOP <CTRL-z>")
         TTkTerm.stop()
+        self._input.stop()
         # TODO: stop the threads
         os.kill(os.getpid(), signal.SIGSTOP)
 
@@ -258,6 +259,7 @@ class TTk(TTkWidget):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
         TTkTerm.cont()
+        self._input.cont()
         TTkHelper.rePaintAll()
         # TODO: Restart threads
         # TODO: Redraw the screen
