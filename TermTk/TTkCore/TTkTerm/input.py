@@ -28,8 +28,8 @@ from time import time
 import platform
 
 if platform.system() == 'Linux':
-    # from .readinputlinux import ReadInput
-    from .readinputlinux_thread import ReadInput
+    from .readinputlinux import ReadInput
+    # from .readinputlinux_thread import ReadInput
 elif platform.system() == 'Darwin':
     from .readinputlinux import ReadInput
 elif platform.system() == 'Windows':
@@ -56,6 +56,12 @@ class TTkInput:
 
     def close(self):
         self._readInput.close()
+
+    def stop(self):
+        pass
+
+    def cont(self):
+        self._readInput.cont()
 
     def get_key(self, callback=None):
         mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
