@@ -45,6 +45,7 @@ class TTk(TTkWidget):
         '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
         '_sigmask',
+        '_lastMultiTap',
         #Signals
         'eventKeyPress', 'eventMouse' )
 
@@ -114,7 +115,7 @@ class TTk(TTkWidget):
 
             self._running = True
             # Keep track of the multiTap to avoid the extra key release
-            lastMultiTap = False
+            self._lastMultiTap = False
             TTkTerm.init(title=self._title, sigmask=self._sigmask)
             self._mainloop()
         #except Exception as e:
@@ -128,77 +129,9 @@ class TTk(TTkWidget):
             # Main Loop
             evt = self._events.get()
             if   evt is TTkK.MOUSE_EVENT:
-                mevt = self._mouse_events.get()
-                self.eventMouse.emit(mevt)
-
-                # Upload the global mouse position
-                # Mainly used by the drag pixmap display
-                TTkHelper.setMousePos((mevt.x,mevt.y))
-
-                # Avoid to broadcast a key release after a multitap event
-                if mevt.evt == TTkK.Release and lastMultiTap: continue
-                lastMultiTap = mevt.tap > 1
-
-                if ( TTkHelper.isDnD() and
-                     mevt.evt != TTkK.Drag   and
-                     mevt.evt != TTkK.Release ):
-                    # Clean Drag Drop status for any event that is not
-                    # Mouse Drag, Key Release
-                    TTkHelper.dndEnd()
-
-                # Mouse Events forwarded straight to the Focus widget:
-                #  - Drag
-                #  - Move
-                #  - Release
-                focusWidget = TTkHelper.getFocus()
-                if ( focusWidget is not None and
-                     mevt.evt != TTkK.Press  and
-                     mevt.key != TTkK.Wheel  and
-                     not TTkHelper.isDnD()   ) :
-                    x,y = TTkHelper.absPos(focusWidget)
-                    nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
-                    focusWidget.mouseEvent(nmevt)
-                else:
-                    # Sometimes the release event is not retrieved
-                    if ( focusWidget and
-                         focusWidget._pendingMouseRelease and
-                         not TTkHelper.isDnD() ):
-                        focusWidget.mouseEvent(nmevt.clone(evt=TTkK.Release))
-                        focusWidget._pendingMouseRelease = False
-                    # Adding this Crappy logic to handle a corner case in the drop routine
-                    # where the mouse is leaving any widget able to handle the drop event
-                    if not self.mouseEvent(mevt):
-                        if dndw := TTkHelper.dndWidget():
-                            dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(mevt))
-                            TTkHelper.dndEnter(None)
-                        if mevt.evt == TTkK.Press and focusWidget:
-                            focusWidget.clearFocus()
-
-                # Clean the Drag and Drop in case of mouse release
-                if mevt.evt == TTkK.Release:
-                    TTkHelper.dndEnd()
+                self._mouse_event()
             elif evt is TTkK.KEY_EVENT:
-                keyHandled = False
-                kevt = self._key_events.get()
-                self.eventKeyPress.emit(kevt)
-                # TTkLog.debug(f"Key: {kevt}")
-                focusWidget = TTkHelper.getFocus()
-                # TTkLog.debug(f"{focusWidget}")
-                if focusWidget is not None:
-                    TTkHelper.execShortcut(kevt.key,focusWidget)
-                    keyHandled = focusWidget.keyEvent(kevt)
-                else:
-                    TTkHelper.execShortcut(kevt.key)
-                # Handle Next Focus Key Binding
-                if not keyHandled and \
-                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
-                   ( kevt.key == TTkK.Key_Right )):
-                        TTkHelper.nextFocus(focusWidget if focusWidget else self)
-                # Handle Prev Focus Key Binding
-                if not keyHandled and \
-                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
-                   ( kevt.key == TTkK.Key_Left )):
-                        TTkHelper.prevFocus(focusWidget if focusWidget else self)
+                self._key_event()
             elif evt is TTkK.TIME_EVENT:
                 size = os.get_terminal_size()
                 self.setGeometry(0,0,size.columns,size.lines)
@@ -215,6 +148,79 @@ class TTk(TTkWidget):
             else:
                 TTkLog.error(f"Unhandled Event {evt}")
                 break
+
+    def _mouse_event(self):
+        mevt = self._mouse_events.get()
+        self.eventMouse.emit(mevt)
+        # Upload the global mouse position
+        # Mainly used by the drag pixmap display
+        TTkHelper.setMousePos((mevt.x,mevt.y))
+
+        # Avoid to broadcast a key release after a multitap event
+        if mevt.evt == TTkK.Release and self._lastMultiTap: return
+        self._lastMultiTap = mevt.tap > 1
+
+        if ( TTkHelper.isDnD() and
+             mevt.evt != TTkK.Drag   and
+             mevt.evt != TTkK.Release ):
+            # Clean Drag Drop status for any event that is not
+            # Mouse Drag, Key Release
+            TTkHelper.dndEnd()
+
+        # Mouse Events forwarded straight to the Focus widget:
+        #  - Drag
+        #  - Move
+        #  - Release
+        focusWidget = TTkHelper.getFocus()
+        if ( focusWidget is not None and
+             mevt.evt != TTkK.Press  and
+             mevt.key != TTkK.Wheel  and
+             not TTkHelper.isDnD()   ) :
+            x,y = TTkHelper.absPos(focusWidget)
+            nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
+            focusWidget.mouseEvent(nmevt)
+        else:
+            # Sometimes the release event is not retrieved
+            if ( focusWidget and
+                 focusWidget._pendingMouseRelease and
+                 not TTkHelper.isDnD() ):
+                focusWidget.mouseEvent(mevt.clone(evt=TTkK.Release))
+                focusWidget._pendingMouseRelease = False
+            # Adding this Crappy logic to handle a corner case in the drop routine
+            # where the mouse is leaving any widget able to handle the drop event
+            if not self.mouseEvent(mevt):
+                if dndw := TTkHelper.dndWidget():
+                    dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(mevt))
+                    TTkHelper.dndEnter(None)
+                if mevt.evt == TTkK.Press and focusWidget:
+                    focusWidget.clearFocus()
+
+        # Clean the Drag and Drop in case of mouse release
+        if mevt.evt == TTkK.Release:
+            TTkHelper.dndEnd()
+
+    def _key_event(self):
+        kevt = self._key_events.get()
+        self.eventKeyPress.emit(kevt)
+        keyHandled = False
+        # TTkLog.debug(f"Key: {kevt}")
+        focusWidget = TTkHelper.getFocus()
+        # TTkLog.debug(f"{focusWidget}")
+        if focusWidget is not None:
+            TTkHelper.execShortcut(kevt.key,focusWidget)
+            keyHandled = focusWidget.keyEvent(kevt)
+        else:
+            TTkHelper.execShortcut(kevt.key)
+        # Handle Next Focus Key Binding
+        if not keyHandled and \
+           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
+           ( kevt.key == TTkK.Key_Right or kevt.key == TTkK.Key_Down)):
+                TTkHelper.nextFocus(focusWidget if focusWidget else self)
+        # Handle Prev Focus Key Binding
+        if not keyHandled and \
+           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
+           ( kevt.key == TTkK.Key_Left or kevt.key == TTkK.Key_Up)):
+                TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     def _time_event(self):
         self._events.put(TTkK.TIME_EVENT)
@@ -237,9 +243,6 @@ class TTk(TTkWidget):
         self._input = TTkInput()
         self._input.get_key(_inputCallback)
         self._input.close()
-
-    def _canvas_thread(self):
-        pass
 
     def quit(self):
         '''Tells the application to exit with a return code.'''

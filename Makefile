@@ -6,6 +6,13 @@
 	pip install -r docs/requirements.txt
 	# Add "Signal" option in the method domains
 	patch -p3 -d .venv/lib/python3*/ < docs/sphynx.001.signal.patch
+	#  Update/Regen
+	#    # Docs
+	#    pip install sphinx sphinx-epytext sphinx-autodocgen sphinx-rtd-theme
+	#    # Test
+	#    pip install flake8 pytest
+	#    # Build
+	#    pip install build twine
 	#  Regen requirements;
 	#    pip freeze > docs/requirements.txt
 

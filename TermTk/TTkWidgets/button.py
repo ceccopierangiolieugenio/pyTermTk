@@ -222,7 +222,7 @@ class TTkButton(TTkWidget):
             if self._border:
                 self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
                 for i in range(1,h-1):
-                    self._canvas.drawText(pos=(1,i) ,text=" "*w)
+                    self._canvas.drawText(pos=(1,i) ,text=TTkString(" "*w, textColor))
                 self._canvas.drawText(pos=(1,y) ,text=text)
             else:
                 self._canvas.drawText(pos=(1,1) ,text=text)
