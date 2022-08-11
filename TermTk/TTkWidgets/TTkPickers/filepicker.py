@@ -112,7 +112,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._btnCancel = TTkButton(text="Cancel",maxWidth=8)
 
         for f in self._filters.split(';;'):
-            if re.match(".*\(.*\)",f):
+            if re.match(r".*\(.*\)",f):
                 self._fileType.addItem(f)
         self._fileType.setCurrentIndex(0)
         self._fileType.currentTextChanged.connect(self._fileTypeChanged)
@@ -159,7 +159,7 @@ class TTkFileDialogPicker(TTkWindow):
 
     @pyTTkSlot(str)
     def _fileTypeChanged(self, type):
-        self._filter = re.match(".*\((.*)\)",type).group(1)
+        self._filter = re.match(r".*\((.*)\)",type).group(1)
         self._fileTree.setFilter(self._filter)
 
     @pyTTkSlot(str)

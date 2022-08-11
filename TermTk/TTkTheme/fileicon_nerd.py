@@ -78,15 +78,15 @@ class FileIcon():
         ('robots.txt'                       , 'ﮧ'))
 
     file_node_pattern_matches = (
-        ('.*angular.*\.js$'      , ''),
-        ('.*backbone.*\.js$'     , ''),
-        ('.*jquery.*\.js$'       , ''),
-        ('.*materialize.*\.css$' , ''),
-        ('.*materialize.*\.js$'  , ''),
-        ('.*mootools.*\.js$'     , ''),
-        ('.*require.*\.js$'      , ''),
-        ('.*vimrc.*'             , ''),
-        ('Vagrantfile$'          , ''))
+        (r'.*angular.*\.js$'      , ''),
+        (r'.*backbone.*\.js$'     , ''),
+        (r'.*jquery.*\.js$'       , ''),
+        (r'.*materialize.*\.css$' , ''),
+        (r'.*materialize.*\.js$'  , ''),
+        (r'.*mootools.*\.js$'     , ''),
+        (r'.*require.*\.js$'      , ''),
+        (r'.*vimrc.*'             , ''),
+        (r'Vagrantfile$'          , ''))
 
     file_node_extensions = (
         # Archives
