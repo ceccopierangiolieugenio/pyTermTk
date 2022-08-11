@@ -46,4 +46,7 @@ jobs:
 
     - name: Test with pytest
       run: |
+        # Download the input test
+        mkdir -p tmp
+        wget -O tmp/test.input.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
         pytest tests/pytest/test_001_demo.py

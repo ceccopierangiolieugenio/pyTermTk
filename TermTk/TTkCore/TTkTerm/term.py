@@ -187,10 +187,13 @@ class TTkTerm():
         else:   l &= ~termios.ECHO
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
 
+    @staticmethod
+    def getTerminalSize():
+        return os.get_terminal_size()
 
     @staticmethod
     def _sigWinCh(signum, frame):
-        TTkTerm.width, TTkTerm.height = os.get_terminal_size()
+        TTkTerm.width, TTkTerm.height = TTkTerm.getTerminalSize()
         if TTkTerm._sigWinChCb is not None:
             TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
 

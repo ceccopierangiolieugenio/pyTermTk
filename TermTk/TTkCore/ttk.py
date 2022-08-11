@@ -65,8 +65,8 @@ class TTk(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         try:
-            size = os.get_terminal_size()
-            self.setGeometry(0,0,size.columns,size.lines)
+            w,h = TTkTerm.getTerminalSize()
+            self.setGeometry(0,0,w,h)
         except OSError as e:
             print(f'ERROR: {e}')
         TTkCfg.theme = TTkTheme()
@@ -133,8 +133,8 @@ class TTk(TTkWidget):
             elif evt is TTkK.KEY_EVENT:
                 self._key_event()
             elif evt is TTkK.TIME_EVENT:
-                size = os.get_terminal_size()
-                self.setGeometry(0,0,size.columns,size.lines)
+                w,h = TTkTerm.getTerminalSize()
+                self.setGeometry(0,0,w,h)
                 TTkHelper.paintAll()
                 self._timer.start(1/TTkCfg.maxFps)
                 self._fps()

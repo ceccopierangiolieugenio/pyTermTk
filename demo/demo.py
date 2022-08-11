@@ -102,7 +102,7 @@ def showSource(file):
     texEdit.setText(content)
     ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
 
-def demoShowcase(root=None, border=True, quit=None):
+def demoShowcase(root=None, border=True):
     splitter = ttk.TTkSplitter()
     root.layout().addWidget(splitter, 0, 0)
 
@@ -116,7 +116,7 @@ def demoShowcase(root=None, border=True, quit=None):
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
-    quitButton.clicked.connect(quit)
+    quitButton.clicked.connect(ttk.TTkHelper.quit)
 
     leftFrame.layout().addWidget(themesFrame, 0, 0)
     leftFrame.layout().addWidget(listMenu,    1, 0)
@@ -255,7 +255,7 @@ def main():
         winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
         border = True
 
-    demoShowcase(winTabbed1, border, root.quit)
+    demoShowcase(winTabbed1, border)
 
     root.mainloop()
 

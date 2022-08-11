@@ -70,6 +70,8 @@ deployTest: .venv
 	python3 -m twine upload --repository testpypi tmp/dist/* --verbose
 
 test: .venv
+	mkdir -p tmp
+	wget -O tmp/test.input.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
 	tools/check.import.sh
 	. .venv/bin/activate ; \
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp ; \

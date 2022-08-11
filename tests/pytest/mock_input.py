@@ -24,14 +24,9 @@
 
 import sys
 
-from mock_term  import Mock_TTkTerm
-from mock_input import Mock_TTkInput
-
-moduleTerm = type(sys)('TermTk.TTkCore.TTkTerm.term')
-moduleTerm.TTkTerm = Mock_TTkTerm
-
-moduleInput = type(sys)('TermTk.TTkCore.TTkTerm.input')
-moduleInput.TTkInput = Mock_TTkInput
-
-sys.modules['TermTk.TTkCore.TTkTerm.term']  = moduleTerm
-sys.modules['TermTk.TTkCore.TTkTerm.input'] = moduleInput
+class Mock_TTkInput():
+    def __init__(self): pass
+    def close(self): pass
+    def stop(self): pass
+    def cont(self): pass
+    def get_key(self, callback=None): pass
