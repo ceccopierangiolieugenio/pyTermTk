@@ -70,6 +70,10 @@ deployTest: .venv
 	python3 -m twine upload --repository testpypi tmp/dist/* --verbose
 
 test: .venv
+	# Record a stream
+	#   tests/pytest/test_001_demo.py -r test.input.bin
+	# Play the test stream
+	#   tests/pytest/test_001_demo.py -p test.input.bin
 	mkdir -p tmp
 	wget -O tmp/test.input.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
 	tools/check.import.sh

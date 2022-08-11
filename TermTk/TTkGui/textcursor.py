@@ -308,7 +308,14 @@ class TTkTextCursor():
         l,b,c = 0,1,1
         if self.hasSelection():
             l,b,c = self._removeSelectedText()
+        # Check if the number of lines is the same as the cursor
+        # this is a corner case where each line belongs to a
+        # different cursor
+        textLines = text.split('\n')
+        if len(textLines) != len(self._properties):
+            textLines = [text]*len(self._properties)
         for i, pr in enumerate(self._properties):
+            text=textLines[i]
             l = pr.position.line
             p = pr.position.pos
             color = self._color if self._color else self.positionColor(i)
@@ -391,6 +398,22 @@ class TTkTextCursor():
                 p.position.pos = xTo
                 p.anchor.pos   = xFrom
         self._checkCursors(notify=self.position().toNum()!=currPos)
+
+    def selectedText(self):
+        def _getText(p):
+            _ret = []
+            selSt = p.selectionStart()
+            selEn = p.selectionEnd()
+            for l in range(selSt.line,selEn.line+1):
+                line = self._document._dataLines[l]
+                pf = 0         if l > selSt.line else selSt.pos
+                pt = len(line) if l < selEn.line else selEn.pos
+                _ret.append(line.substring(pf, pt))
+            return _ret
+        ret = []
+        for p in self._properties:
+            ret += _getText(p)
+        return TTkString('\n').join(ret)
 
     def hasSelection(self):
         for p in self._properties:

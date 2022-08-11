@@ -21,6 +21,7 @@ __check(){
             -e "ttk.py:import signal" \
             -e "ttk.py:import time" \
             -e "ttk.py:import queue" \
+            -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading"
 } ;
 

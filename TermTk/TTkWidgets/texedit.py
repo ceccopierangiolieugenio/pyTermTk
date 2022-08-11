@@ -29,6 +29,7 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
@@ -42,6 +43,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
             '_replace',
             '_readOnly', '_multiCursor',
+            '_clipboard',
             # # Forwarded Methods
             # 'wrapWidth',    'setWrapWidth',
             # 'wordWrapMode', 'setWordWrapMode',
@@ -70,6 +72,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._textDocument = None
         self._textCursor = None
         self._textWrap = None
+        self._clipboard = TTkClipboard()
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.setDocument(kwargs.get('document', TTkTextDocument()))
 
@@ -279,9 +282,15 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 if evt.key == TTkK.Key_Up:
                     self._setCursorPos(cx, cy-1, addCursor=True)
                     self._textCursor.clearColor()
-                if evt.key == TTkK.Key_Down:
+                elif evt.key == TTkK.Key_Down:
                     self._setCursorPos(cx, cy+1, addCursor=True)
                     self._textCursor.clearColor()
+                elif evt.key == TTkK.Key_C:
+                    txt = self._textCursor.selectedText()
+                    self._clipboard.setText(txt)
+                elif evt.key == TTkK.Key_V:
+                    txt = self._clipboard.text()
+                    self._textCursor.insertText(txt)
             elif evt.key == TTkK.Key_Up:
                 self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap)
                 self._textCursor.clearColor()
