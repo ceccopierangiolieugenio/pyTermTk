@@ -44,6 +44,8 @@ class TTk(TTkWidget):
         '_name', '_running', '_input',
         '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
+        '_sigmask',
+        '_lastMultiTap',
         #Signals
         'eventKeyPress', 'eventMouse' )
 
@@ -59,6 +61,7 @@ class TTk(TTkWidget):
         self._mouse_events = queue.Queue()
         self._screen_events = queue.Queue()
         self._title = kwargs.get('title','TermTk')
+        self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         try:
@@ -81,117 +84,54 @@ class TTk(TTkWidget):
             self.time  = curtime
 
     def mainloop(self):
-        '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
-        TTkLog.debug( "" )
-        TTkLog.debug( "         ████████╗            ████████╗    " )
-        TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
-        TTkLog.debug( "            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  " )
-        TTkLog.debug( "    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   " )
-        TTkLog.debug( "    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  " )
-        TTkLog.debug( "    ▌    ▐  ╚═╝                  ╚═╝       " )
-        TTkLog.debug( "      ▚▄▄▘                                 " )
-        TTkLog.debug( "" )
-        TTkLog.debug(f"  Version: {TTkCfg.version}" )
-        TTkLog.debug( "" )
-        TTkLog.debug( "Starting Main Loop..." )
-        # Register events
         try:
+            '''Enters the main event loop and waits until :meth:`~quit` is called or the main widget is destroyed.'''
+            TTkLog.debug( "" )
+            TTkLog.debug( "         ████████╗            ████████╗    " )
+            TTkLog.debug( "         ╚══██╔══╝            ╚══██╔══╝    " )
+            TTkLog.debug( "            ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖  " )
+            TTkLog.debug( "    ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘   " )
+            TTkLog.debug( "    ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄  " )
+            TTkLog.debug( "    ▌    ▐  ╚═╝                  ╚═╝       " )
+            TTkLog.debug( "      ▚▄▄▘                                 " )
+            TTkLog.debug( "" )
+            TTkLog.debug(f"  Version: {TTkCfg.version}" )
+            TTkLog.debug( "" )
+            TTkLog.debug( "Starting Main Loop..." )
+
+            # Register events
             signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
             signal.signal(signal.SIGCONT, self._SIGCONT) # Resume
             signal.signal(signal.SIGINT,  self._SIGINT)  # Ctrl-C
-        except Exception as e:
-            TTkLog.error(f"{e}")
-            exit(1)
-        else:
+
             TTkLog.debug("Signal Event Registered")
 
+            TTkTerm.registerResizeCb(self._win_resize_cb)
+            threading.Thread(target=self._input_thread, daemon=True).start()
+            self._timer = TTkTimer()
+            self._timer.timeout.connect(self._time_event)
+            self._timer.start(0.1)
+            self.show()
 
-        TTkTerm.registerResizeCb(self._win_resize_cb)
-        threading.Thread(target=self._input_thread, daemon=True).start()
-        self._timer = TTkTimer()
-        self._timer.timeout.connect(self._time_event)
-        self._timer.start(0.1)
-        self.show()
+            self._running = True
+            # Keep track of the multiTap to avoid the extra key release
+            self._lastMultiTap = False
+            TTkTerm.init(title=self._title, sigmask=self._sigmask)
+            self._mainloop()
+        #except Exception as e:
+        #    TTkLog.error(f"{e}")
+        finally:
+            self.quit()
+            TTkTerm.exit()
 
-        self._running = True
-        # Keep track of the multiTap to avoid the extra key release
-        lastMultiTap = False
-        TTkTerm.init(title=self._title)
+    def _mainloop(self):
         while self._running:
             # Main Loop
             evt = self._events.get()
             if   evt is TTkK.MOUSE_EVENT:
-                mevt = self._mouse_events.get()
-                self.eventMouse.emit(mevt)
-
-                # Upload the global mouse position
-                # Mainly used by the drag pixmap display
-                TTkHelper.setMousePos((mevt.x,mevt.y))
-
-                # Avoid to broadcast a key release after a multitap event
-                if mevt.evt == TTkK.Release and lastMultiTap: continue
-                lastMultiTap = mevt.tap > 1
-
-                if ( TTkHelper.isDnD() and
-                     mevt.evt != TTkK.Drag   and
-                     mevt.evt != TTkK.Release ):
-                    # Clean Drag Drop status for any event that is not
-                    # Mouse Drag, Key Release
-                    TTkHelper.dndEnd()
-
-                # Mouse Events forwarded straight to the Focus widget:
-                #  - Drag
-                #  - Move
-                #  - Release
-                focusWidget = TTkHelper.getFocus()
-                if ( focusWidget is not None and
-                     mevt.evt != TTkK.Press  and
-                     mevt.key != TTkK.Wheel  and
-                     not TTkHelper.isDnD()   ) :
-                    x,y = TTkHelper.absPos(focusWidget)
-                    nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
-                    focusWidget.mouseEvent(nmevt)
-                else:
-                    # Sometimes the release event is not retrieved
-                    if ( focusWidget and
-                         focusWidget._pendingMouseRelease and
-                         not TTkHelper.isDnD() ):
-                        focusWidget.mouseEvent(nmevt.clone(evt=TTkK.Release))
-                        focusWidget._pendingMouseRelease = False
-                    # Adding this Crappy logic to handle a corner case in the drop routine
-                    # where the mouse is leaving any widget able to handle the drop event
-                    if not self.mouseEvent(mevt):
-                        if dndw := TTkHelper.dndWidget():
-                            dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(mevt))
-                            TTkHelper.dndEnter(None)
-                        if mevt.evt == TTkK.Press and focusWidget:
-                            focusWidget.clearFocus()
-
-                # Clean the Drag and Drop in case of mouse release
-                if mevt.evt == TTkK.Release:
-                    TTkHelper.dndEnd()
+                self._mouse_event()
             elif evt is TTkK.KEY_EVENT:
-                keyHandled = False
-                kevt = self._key_events.get()
-                self.eventKeyPress.emit(kevt)
-                # TTkLog.debug(f"Key: {kevt}")
-                focusWidget = TTkHelper.getFocus()
-                # TTkLog.debug(f"{focusWidget}")
-                if focusWidget is not None:
-                    TTkHelper.execShortcut(kevt.key,focusWidget)
-                    keyHandled = focusWidget.keyEvent(kevt)
-                else:
-                    TTkHelper.execShortcut(kevt.key)
-                # Handle Next Focus Key Binding
-                if not keyHandled and \
-                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
-                   ( kevt.key == TTkK.Key_Right )):
-                        TTkHelper.nextFocus(focusWidget if focusWidget else self)
-                # Handle Prev Focus Key Binding
-                if not keyHandled and \
-                   ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
-                   ( kevt.key == TTkK.Key_Left )):
-                        TTkHelper.prevFocus(focusWidget if focusWidget else self)
+                self._key_event()
             elif evt is TTkK.TIME_EVENT:
                 size = os.get_terminal_size()
                 self.setGeometry(0,0,size.columns,size.lines)
@@ -208,7 +148,79 @@ class TTk(TTkWidget):
             else:
                 TTkLog.error(f"Unhandled Event {evt}")
                 break
-        TTkTerm.exit()
+
+    def _mouse_event(self):
+        mevt = self._mouse_events.get()
+        self.eventMouse.emit(mevt)
+        # Upload the global mouse position
+        # Mainly used by the drag pixmap display
+        TTkHelper.setMousePos((mevt.x,mevt.y))
+
+        # Avoid to broadcast a key release after a multitap event
+        if mevt.evt == TTkK.Release and self._lastMultiTap: return
+        self._lastMultiTap = mevt.tap > 1
+
+        if ( TTkHelper.isDnD() and
+             mevt.evt != TTkK.Drag   and
+             mevt.evt != TTkK.Release ):
+            # Clean Drag Drop status for any event that is not
+            # Mouse Drag, Key Release
+            TTkHelper.dndEnd()
+
+        # Mouse Events forwarded straight to the Focus widget:
+        #  - Drag
+        #  - Move
+        #  - Release
+        focusWidget = TTkHelper.getFocus()
+        if ( focusWidget is not None and
+             mevt.evt != TTkK.Press  and
+             mevt.key != TTkK.Wheel  and
+             not TTkHelper.isDnD()   ) :
+            x,y = TTkHelper.absPos(focusWidget)
+            nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
+            focusWidget.mouseEvent(nmevt)
+        else:
+            # Sometimes the release event is not retrieved
+            if ( focusWidget and
+                 focusWidget._pendingMouseRelease and
+                 not TTkHelper.isDnD() ):
+                focusWidget.mouseEvent(mevt.clone(evt=TTkK.Release))
+                focusWidget._pendingMouseRelease = False
+            # Adding this Crappy logic to handle a corner case in the drop routine
+            # where the mouse is leaving any widget able to handle the drop event
+            if not self.mouseEvent(mevt):
+                if dndw := TTkHelper.dndWidget():
+                    dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(mevt))
+                    TTkHelper.dndEnter(None)
+                if mevt.evt == TTkK.Press and focusWidget:
+                    focusWidget.clearFocus()
+
+        # Clean the Drag and Drop in case of mouse release
+        if mevt.evt == TTkK.Release:
+            TTkHelper.dndEnd()
+
+    def _key_event(self):
+        kevt = self._key_events.get()
+        self.eventKeyPress.emit(kevt)
+        keyHandled = False
+        # TTkLog.debug(f"Key: {kevt}")
+        focusWidget = TTkHelper.getFocus()
+        # TTkLog.debug(f"{focusWidget}")
+        if focusWidget is not None:
+            TTkHelper.execShortcut(kevt.key,focusWidget)
+            keyHandled = focusWidget.keyEvent(kevt)
+        else:
+            TTkHelper.execShortcut(kevt.key)
+        # Handle Next Focus Key Binding
+        if not keyHandled and \
+           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
+           ( kevt.key == TTkK.Key_Right or kevt.key == TTkK.Key_Down)):
+                TTkHelper.nextFocus(focusWidget if focusWidget else self)
+        # Handle Prev Focus Key Binding
+        if not keyHandled and \
+           ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.ShiftModifier) or
+           ( kevt.key == TTkK.Key_Left or kevt.key == TTkK.Key_Up)):
+                TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     def _time_event(self):
         self._events.put(TTkK.TIME_EVENT)
@@ -232,9 +244,6 @@ class TTk(TTkWidget):
         self._input.get_key(_inputCallback)
         self._input.close()
 
-    def _canvas_thread(self):
-        pass
-
     def quit(self):
         '''Tells the application to exit with a return code.'''
         self._events.put(TTkK.QUIT_EVENT)
@@ -245,6 +254,7 @@ class TTk(TTkWidget):
         """Reset terminal settings and stop background input read before putting to sleep"""
         TTkLog.debug("Captured SIGSTOP <CTRL-z>")
         TTkTerm.stop()
+        self._input.stop()
         # TODO: stop the threads
         os.kill(os.getpid(), signal.SIGSTOP)
 
@@ -252,6 +262,8 @@ class TTk(TTkWidget):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
         TTkTerm.cont()
+        self._input.cont()
+        TTkHelper.rePaintAll()
         # TODO: Restart threads
         # TODO: Redraw the screen
 

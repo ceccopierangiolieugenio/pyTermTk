@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,3 +21,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import sys, os
+
+sys.path.append(os.path.join(sys.path[0],'../../demo'))
+sys.path.append(os.path.join(sys.path[0],'../..'))
+
+import demo
+
+if __name__ == "__main__":
+    demo.main()
+
+def test_demo():
+    root = demo.ttk.TTk(layout=demo.ttk.TTkGridLayout())
+    assert demo.demoShowcase(root) != None
+    root.quit()

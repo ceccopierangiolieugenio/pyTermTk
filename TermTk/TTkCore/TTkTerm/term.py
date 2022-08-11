@@ -80,6 +80,12 @@ class TTkTerm():
         def hide():
             TTkTerm.push(TTkTerm.Cursor.HIDE)
 
+    class Sigmask():
+        CTRL_C = 0x0001
+        CTRL_S = 0x0002
+        CTRL_Z = 0x0004
+        CTRL_Q = 0x0008
+
     title: str = "TermTk"
     mouse: bool = True
     width: int = 0
@@ -87,20 +93,61 @@ class TTkTerm():
 
     _sigWinChCb = None
 
+    # Save treminal attributes during the initialization in order to
+    # restore later the original states
+    _termAttr = termios.tcgetattr(sys.stdin)
+
+    _termAttrBk = []
     @staticmethod
-    def init(mouse: bool = True, title: str = "TermTk"):
+    def saveTermAttr():
+        TTkTerm._termAttrBk.append(termios.tcgetattr(sys.stdin))
+
+    @staticmethod
+    def restoreTermAttr():
+        if TTkTerm._termAttrBk:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttrBk.pop())
+        else:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
+
+    @staticmethod
+    def setSigmask(mask, value=True):
+        attr = termios.tcgetattr(sys.stdin)
+        if mask & TTkTerm.Sigmask.CTRL_C:
+            attr[6][termios.VINTR]=  b'\x03' if value else 0
+        if mask & TTkTerm.Sigmask.CTRL_S:
+            attr[6][termios.VSTOP]=  b'\x13' if value else 0
+        if mask & TTkTerm.Sigmask.CTRL_Z:
+            attr[6][termios.VSUSP]=  b'\x1a' if value else 0
+        if mask & TTkTerm.Sigmask.CTRL_Q:
+            attr[6][termios.VSTART]= b'\x11' if value else 0
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attr)
+
+    @staticmethod
+    def getSigmask():
+        mask = 0x00
+        attr = termios.tcgetattr(sys.stdin)
+        mask |= TTkTerm.Sigmask.CTRL_C if attr[6][termios.VINTR]  else 0
+        mask |= TTkTerm.Sigmask.CTRL_S if attr[6][termios.VSTOP]  else 0
+        mask |= TTkTerm.Sigmask.CTRL_Z if attr[6][termios.VSUSP]  else 0
+        mask |= TTkTerm.Sigmask.CTRL_Q if attr[6][termios.VSTART] else 0
+        return mask
+
+    @staticmethod
+    def init(mouse: bool = True, title: str = "TermTk", sigmask=0):
         TTkTerm.title = title
         TTkTerm.mouse = mouse
         TTkTerm.push(TTkTerm.ALT_SCREEN + TTkTerm.CLEAR + TTkTerm.Cursor.HIDE + TTkTerm.escTitle(TTkTerm.title))
         if TTkTerm.mouse:
             TTkTerm.push(TTkTerm.Mouse.ON)
         TTkTerm.setEcho(False)
+        TTkTerm.setSigmask(sigmask, False)
 
     @staticmethod
     def exit():
         TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
         TTkTerm.push(TTkTerm.CLEAR + TTkTerm.NORMAL_SCREEN + TTkTerm.Cursor.SHOW + TTkTerm.escTitle())
         TTkTerm.setEcho(True)
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
 
     @staticmethod
     def stop():

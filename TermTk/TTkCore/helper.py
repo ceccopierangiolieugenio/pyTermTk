@@ -95,6 +95,11 @@ class TTkHelper:
         TTkHelper._updateWidget = []
 
     @staticmethod
+    def quit():
+        if TTkHelper._rootWidget:
+            TTkHelper._rootWidget.quit()
+
+    @staticmethod
     def rootOverlay(widget):
         if widget is None:
             return None
@@ -287,6 +292,12 @@ class TTkHelper:
                 x,y = TTkHelper._cursorPos
                 TTkTerm.push(TTkTerm.Cursor.moveTo(y+1,x+1))
                 TTkTerm.Cursor.show(TTkHelper._cursorType)
+
+    @staticmethod
+    def rePaintAll():
+        if TTkHelper._rootCanvas and  TTkHelper._rootWidget:
+            TTkHelper._rootCanvas.cleanBuffers()
+            TTkHelper._rootWidget.update()
 
     @staticmethod
     def widgetDepth(widget) -> int:

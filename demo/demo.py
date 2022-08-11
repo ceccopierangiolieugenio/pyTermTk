@@ -50,6 +50,7 @@ from  showcase.fancytree     import demoFancyTree
 from  showcase.textedit      import demoTextEdit
 from  showcase.dragndrop     import demoDnD
 from  showcase.dndtabs       import demoDnDTabs
+from  showcase.sigmask       import demoSigmask
 
 words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
 def getWord():
@@ -205,10 +206,12 @@ def demoShowcase(root=None, border=True, quit=None):
     tabArea.addTab(demoScrollArea(),  " Scroll Area ")
     tabArea.addTab(demoDnD(),         " Drag'n Drop ")
     tabArea.addTab(demoDnDTabs(),     " D'n D Tabs ")
+    tabArea.addTab(demoSigmask(),     " Sigmask ")
     tabAreaSources = [
         'showcase/scrollarea.py',
         'showcase/dragndrop.py',
-        'showcase/dndtabs.py' ]
+        'showcase/dndtabs.py',
+        'showcase/sigmask.py' ]
     tabArea.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabAreaSources[tabArea.currentIndex()]))
 
 
@@ -258,8 +261,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-def test_demo():
-    root = ttk.TTk(layout=ttk.TTkGridLayout())
-    assert demoShowcase(root) != None
-    root.quit()

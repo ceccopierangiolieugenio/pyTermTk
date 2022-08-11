@@ -55,7 +55,7 @@ exclude_patterns = []
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
+
 html_theme = 'sphinx_rtd_theme' # read-the-docs theme looks better than the default "classic" one but has bugs e.g. no table wrapping
 
 html_theme_options = {
@@ -77,11 +77,11 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_context = {'css_files': [
+html_css_files = [
     # Workaround for RTD 0.4.3 bug https://github.com/readthedocs/sphinx_rtd_theme/issues/117
-    '_static/theme_overrides.css',  # override wide tables in RTD theme
-    '_static/ttk.css'
-]}
+    'theme_overrides.css',  # override wide tables in RTD theme
+    'ttk.css'
+]
 
 # html_theme = 'bizstyle'
 

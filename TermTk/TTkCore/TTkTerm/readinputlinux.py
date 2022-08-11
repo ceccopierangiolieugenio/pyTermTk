@@ -31,29 +31,30 @@ except Exception as e:
 
 
 class ReadInput():
-    __slots__ = ('_readPipe')
+    __slots__ = ('_readPipe','_attr')
 
     def __init__(self):
         self._readPipe = os.pipe()
+        self._attr = termios.tcgetattr(sys.stdin)
+        tty.setcbreak(sys.stdin)
 
     def close(self):
+        termios.tcsetattr(sys.stdin, termios.TCSANOW, self._attr)
         os.write(self._readPipe[1], b'quit')
 
-    def read(self):
-        _fn = sys.stdin.fileno()
-        _attr = termios.tcgetattr(_fn)
-        tty.setcbreak(_fn)
-        rlist, _, _ = select.select( [sys.stdin, self._readPipe[0]], [], [] )
+    def cont(self):
+        tty.setcbreak(sys.stdin)
 
+    def read(self):
+        rlist, _, _ = select.select( [sys.stdin, self._readPipe[0]], [], [] )
         if self._readPipe[0] in rlist:
             return None
 
         if (stdinRead := sys.stdin.read(1)) == "\033":  # Check if the stream start with an escape sequence
-            _fl = fcntl.fcntl(_fn, fcntl.F_GETFL)
-            fcntl.fcntl(_fn, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
+            _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
+            fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
             stdinRead += sys.stdin.read(20)       # Check if the stream start with an escape sequence
             if stdinRead.startswith("\033[<"):    # Clear the buffer if this is a mouse code
                 sys.stdin.read(0x40)
-            fcntl.fcntl(_fn, fcntl.F_SETFL, _fl)
-        termios.tcsetattr(_fn, termios.TCSANOW, _attr)
+            fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl)
         return stdinRead

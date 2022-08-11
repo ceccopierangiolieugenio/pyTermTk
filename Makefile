@@ -6,6 +6,13 @@
 	pip install -r docs/requirements.txt
 	# Add "Signal" option in the method domains
 	patch -p3 -d .venv/lib/python3*/ < docs/sphynx.001.signal.patch
+	#  Update/Regen
+	#    # Docs
+	#    pip install sphinx sphinx-epytext sphinx-autodocgen sphinx-rtd-theme
+	#    # Test
+	#    pip install flake8 pytest
+	#    # Build
+	#    pip install build twine
 	#  Regen requirements;
 	#    pip freeze > docs/requirements.txt
 
@@ -66,4 +73,4 @@ test: .venv
 	tools/check.import.sh
 	. .venv/bin/activate ; \
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp ; \
-	pytest demo/demo.py
+	pytest tests/pytest/test_001_demo.py

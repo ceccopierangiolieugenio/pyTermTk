@@ -634,6 +634,15 @@ class TTkCanvas:
                 ansi+=ch
             TTkTerm.push(ansi)
 
+    def cleanBuffers(self):
+        if not self._visible: return
+        x,y = 0,0
+        w,h = self._width, self._height
+        for iy in range(y,y+h):
+            for ix in range(x,x+w):
+                self._bufferedData[iy][ix] = ' '
+                self._bufferedColors[iy][ix] = TTkColor.RST
+
     def pushToTerminalBuffered(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
         oldData, oldColors = self._bufferedData, self._bufferedColors
