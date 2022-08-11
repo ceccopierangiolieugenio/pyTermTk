@@ -261,8 +261,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-def test_demo():
-    root = ttk.TTk(layout=ttk.TTkGridLayout())
-    assert demoShowcase(root) != None
-    root.quit()

@@ -46,4 +46,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest demo/demo.py
+        pytest tests/pytest/test_001_demo.py
