@@ -1,73 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.2.0a documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkCore.drag" href="TermTk.TTkCore.drag.html" />
+    <link rel="next" title="TermTk.TTkCore.filebuffer" href="TermTk.TTkCore.filebuffer.html" />
     <link rel="prev" title="TermTk.TTkCore.color" href="TermTk.TTkCore.color.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> pyTermTk
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,19 +39,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p><span class="caption-text">Tutorials</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
@@ -95,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 </ul>
-<p><span class="caption-text">API Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a><ul class="current">
@@ -108,8 +61,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#ttkk">TTkK</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.drag.html">TermTk.TTkCore.drag</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.draw.html">TermTk.TTkCore.draw</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.filebuffer.html">TermTk.TTkCore.filebuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.helper.html">TermTk.TTkCore.helper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.log.html">TermTk.TTkCore.log</a></li>
@@ -124,91 +75,51 @@
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTheme.html">TermTk.TTkTheme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pyTermTk</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="TermTk.TTkCore.html">TermTk.TTkCore</a> &raquo;</li>
-        
       <li>TermTk.TTkCore.constant</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/autogen.TermTk/TermTk.TTkCore.constant.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="module-TermTk.TTkCore.constant">
-<span id="termtk-ttkcore-constant"></span><h1>TermTk.TTkCore.constant<a class="headerlink" href="#module-TermTk.TTkCore.constant" title="Permalink to this headline">¶</a></h1>
+<span id="termtk-ttkcore-constant"></span><h1>TermTk.TTkCore.constant<a class="headerlink" href="#module-TermTk.TTkCore.constant" title="Permalink to this heading"></a></h1>
 <section id="ttkconstant">
-<h2>TTkConstant<a class="headerlink" href="#ttkconstant" title="Permalink to this headline">¶</a></h2>
+<h2>TTkConstant<a class="headerlink" href="#ttkconstant" title="Permalink to this heading"></a></h2>
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkConstant</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkConstant</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant" title="Permalink to this definition"></a></dt>
 <dd><p>Class container of all the constants used in <a class="reference internal" href="TermTk.html#module-TermTk" title="TermTk"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TermTk</span></code></a></p>
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.Alignment">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Alignment</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.Alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alignment</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.Alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment" title="Permalink to this definition"></a></dt>
 <dd><p>This class type is used to describe alignment.</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -232,42 +143,42 @@
 </tbody>
 </table>
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN">
-<code class="sig-name descname"><span class="pre">CENTER_ALIGN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN">
+<span class="sig-name descname"><span class="pre">CENTER_ALIGN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN" title="Permalink to this definition"></a></dt>
 <dd><p>Centers horizontally in the available space.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.Alignment.JUSTIFY">
-<code class="sig-name descname"><span class="pre">JUSTIFY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">8</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.JUSTIFY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment.JUSTIFY">
+<span class="sig-name descname"><span class="pre">JUSTIFY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.JUSTIFY" title="Permalink to this definition"></a></dt>
 <dd><p>Justifies the text in the available space.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.Alignment.LEFT_ALIGN">
-<code class="sig-name descname"><span class="pre">LEFT_ALIGN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.LEFT_ALIGN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment.LEFT_ALIGN">
+<span class="sig-name descname"><span class="pre">LEFT_ALIGN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.LEFT_ALIGN" title="Permalink to this definition"></a></dt>
 <dd><p>Aligns with the left edge.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.Alignment.NONE">
-<code class="sig-name descname"><span class="pre">NONE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.NONE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.NONE" title="Permalink to this definition"></a></dt>
 <dd><p>No Alignment</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.Alignment.RIGHT_ALIGN">
-<code class="sig-name descname"><span class="pre">RIGHT_ALIGN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.RIGHT_ALIGN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment.RIGHT_ALIGN">
+<span class="sig-name descname"><span class="pre">RIGHT_ALIGN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment.RIGHT_ALIGN" title="Permalink to this definition"></a></dt>
 <dd><p>Aligns with the right edge.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.CheckState">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">CheckState</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.CheckState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.CheckState" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.CheckState">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CheckState</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.CheckState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.CheckState" title="Permalink to this definition"></a></dt>
 <dd><p>This class type is used to describe the check status.</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -287,166 +198,166 @@
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">KeyModifier</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.KeyModifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KeyModifier</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.KeyModifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier" title="Permalink to this definition"></a></dt>
 <dd><p>Input <a class="reference internal" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecialKey</span></code></a> modifiers</p>
 <p>Modifier reported by <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod"><code class="xref py py-class docutils literal notranslate"><span class="pre">mod</span></code></a></p>
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier">
-<code class="sig-name descname"><span class="pre">AltModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier">
+<span class="sig-name descname"><span class="pre">AltModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier" title="Permalink to this definition"></a></dt>
 <dd><p>An Alt key on the keyboard is pressed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ControlModifier">
-<code class="sig-name descname"><span class="pre">ControlModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">67108864</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ControlModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ControlModifier">
+<span class="sig-name descname"><span class="pre">ControlModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67108864</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ControlModifier" title="Permalink to this definition"></a></dt>
 <dd><p>A Ctrl key on the keyboard is pressed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.GroupSwitchModifier">
-<code class="sig-name descname"><span class="pre">GroupSwitchModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1073741824</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.GroupSwitchModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.GroupSwitchModifier">
+<span class="sig-name descname"><span class="pre">GroupSwitchModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1073741824</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.GroupSwitchModifier" title="Permalink to this definition"></a></dt>
 <dd><p>X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.KeypadModifier">
-<code class="sig-name descname"><span class="pre">KeypadModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">536870912</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.KeypadModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.KeypadModifier">
+<span class="sig-name descname"><span class="pre">KeypadModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">536870912</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.KeypadModifier" title="Permalink to this definition"></a></dt>
 <dd><p>A keypad button is pressed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier">
-<code class="sig-name descname"><span class="pre">MetaModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier">
+<span class="sig-name descname"><span class="pre">MetaModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier" title="Permalink to this definition"></a></dt>
 <dd><p>A Meta key on the keyboard is pressed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier">
-<code class="sig-name descname"><span class="pre">NoModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier">
+<span class="sig-name descname"><span class="pre">NoModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier" title="Permalink to this definition"></a></dt>
 <dd><p>No modifier key is pressed.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ShiftModifier">
-<code class="sig-name descname"><span class="pre">ShiftModifier</span></code><em class="property"> <span class="pre">=</span> <span class="pre">33554432</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ShiftModifier" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ShiftModifier">
+<span class="sig-name descname"><span class="pre">ShiftModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33554432</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ShiftModifier" title="Permalink to this definition"></a></dt>
 <dd><p>A Shift key on the keyboard is pressed.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyType">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">KeyType</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.KeyType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KeyType</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.KeyType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType" title="Permalink to this definition"></a></dt>
 <dd><p>Input Key Types</p>
 <p>Key type reported by <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key"><code class="xref py py-class docutils literal notranslate"><span class="pre">key</span></code></a></p>
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyType.Character">
-<code class="sig-name descname"><span class="pre">Character</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.Character" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyType.Character">
+<span class="sig-name descname"><span class="pre">Character</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.Character" title="Permalink to this definition"></a></dt>
 <dd><p>Input Char Key</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey">
-<code class="sig-name descname"><span class="pre">SpecialKey</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey">
+<span class="sig-name descname"><span class="pre">SpecialKey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="Permalink to this definition"></a></dt>
 <dd><p>Input Special Key</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">LayoutItemTypes</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.LayoutItemTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LayoutItemTypes</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.LayoutItemTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes" title="Permalink to this definition"></a></dt>
 <dd><p>Types used internally in <a class="reference internal" href="TermTk.TTkLayouts.html#module-TermTk.TTkLayouts" title="TermTk.TTkLayouts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TTkLayouts</span></code></a></p>
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.LayoutItem">
-<code class="sig-name descname"><span class="pre">LayoutItem</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.LayoutItem" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.LayoutItem">
+<span class="sig-name descname"><span class="pre">LayoutItem</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.LayoutItem" title="Permalink to this definition"></a></dt>
 <dd><p>Item Type Layout</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.WidgetItem">
-<code class="sig-name descname"><span class="pre">WidgetItem</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.WidgetItem" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.WidgetItem">
+<span class="sig-name descname"><span class="pre">WidgetItem</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes.WidgetItem" title="Permalink to this definition"></a></dt>
 <dd><p>Item Type Widget</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseEvent">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">MouseEvent</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.MouseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MouseEvent</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.MouseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Input Mouse Event</p>
 <p>Events reported by <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt"><code class="xref py py-class docutils literal notranslate"><span class="pre">evt</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">MouseKey</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.MouseKey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MouseKey</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.MouseKey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey" title="Permalink to this definition"></a></dt>
 <dd><p>Input Mouse Key</p>
 <p>Events reported by <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key"><code class="xref py py-class docutils literal notranslate"><span class="pre">key</span></code></a></p>
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.AllButtons">
-<code class="sig-name descname"><span class="pre">AllButtons</span></code><em class="property"> <span class="pre">=</span> <span class="pre">134217727</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.AllButtons" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.AllButtons">
+<span class="sig-name descname"><span class="pre">AllButtons</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217727</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.AllButtons" title="Permalink to this definition"></a></dt>
 <dd><p>This value corresponds to a mask of all possible mouse buttons. Use to set the ‘acceptedButtons’ property of a MouseArea to accept ALL mouse buttons.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton">
-<code class="sig-name descname"><span class="pre">LeftButton</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton">
+<span class="sig-name descname"><span class="pre">LeftButton</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton" title="Permalink to this definition"></a></dt>
 <dd><p>The left button is pressed, or an event refers to the left button. (The left button may be the right button on left-handed mice.)</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.MidButton">
-<code class="sig-name descname"><span class="pre">MidButton</span></code><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.MidButton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.MidButton">
+<span class="sig-name descname"><span class="pre">MidButton</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.MidButton" title="Permalink to this definition"></a></dt>
 <dd><p>The middle button.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.MiddleButton">
-<code class="sig-name descname"><span class="pre">MiddleButton</span></code><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.MiddleButton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.MiddleButton">
+<span class="sig-name descname"><span class="pre">MiddleButton</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.MiddleButton" title="Permalink to this definition"></a></dt>
 <dd><p>The middle button.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.NoButton">
-<code class="sig-name descname"><span class="pre">NoButton</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.NoButton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.NoButton">
+<span class="sig-name descname"><span class="pre">NoButton</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.NoButton" title="Permalink to this definition"></a></dt>
 <dd><p>The button state does not refer to any button.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.RightButton">
-<code class="sig-name descname"><span class="pre">RightButton</span></code><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.RightButton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.RightButton">
+<span class="sig-name descname"><span class="pre">RightButton</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.RightButton" title="Permalink to this definition"></a></dt>
 <dd><p>The right button.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.MouseKey.Wheel">
-<code class="sig-name descname"><span class="pre">Wheel</span></code><em class="property"> <span class="pre">=</span> <span class="pre">8</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.Wheel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.MouseKey.Wheel">
+<span class="sig-name descname"><span class="pre">Wheel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.MouseKey.Wheel" title="Permalink to this definition"></a></dt>
 <dd><p>The wheel control</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkConstant.WrapMode">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">WrapMode</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.WrapMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.WrapMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WrapMode</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.WrapMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode" title="Permalink to this definition"></a></dt>
 <dd><p>Those constants describes how text is wrapped in a document.</p>
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.WrapMode.WordWrap">
-<code class="sig-name descname"><span class="pre">WordWrap</span></code><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode.WordWrap" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.WrapMode.WordWrap">
+<span class="sig-name descname"><span class="pre">WordWrap</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode.WordWrap" title="Permalink to this definition"></a></dt>
 <dd><p>Text is wrapped at word boundaries.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAnywhere">
-<code class="sig-name descname"><span class="pre">WrapAnywhere</span></code><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAnywhere" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAnywhere">
+<span class="sig-name descname"><span class="pre">WrapAnywhere</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAnywhere" title="Permalink to this definition"></a></dt>
 <dd><p>Text can be wrapped at any point on a line, even if it occurs in the middle of a word.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAtWordBoundaryOrAnywhere">
-<code class="sig-name descname"><span class="pre">WrapAtWordBoundaryOrAnywhere</span></code><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAtWordBoundaryOrAnywhere" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAtWordBoundaryOrAnywhere">
+<span class="sig-name descname"><span class="pre">WrapAtWordBoundaryOrAnywhere</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.WrapMode.WrapAtWordBoundaryOrAnywhere" title="Permalink to this definition"></a></dt>
 <dd><p>If possible, wrapping occurs at a word boundary; otherwise it will occur at the appropriate point on the line, even in the middle of a word.</p>
 </dd></dl>
 
@@ -456,10 +367,10 @@
 
 </section>
 <section id="ttkk">
-<h2>TTkK<a class="headerlink" href="#ttkk" title="Permalink to this headline">¶</a></h2>
+<h2>TTkK<a class="headerlink" href="#ttkk" title="Permalink to this heading"></a></h2>
 <dl class="py class">
-<dt id="TermTk.TTkCore.constant.TTkK">
-<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TTkK</span></code><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkK"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkK</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkK"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -467,50 +378,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TermTk.TTkCore.drag.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.drag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TermTk.TTkCore.color.html" class="btn btn-neutral float-left" title="TermTk.TTkCore.color" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkCore.filebuffer.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.filebuffer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Eugenio Parodi.
-
-    </p>
+    <p>&#169; Copyright 2021, Eugenio Parodi.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

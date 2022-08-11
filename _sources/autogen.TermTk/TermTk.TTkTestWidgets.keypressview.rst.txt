@@ -1,0 +1,15 @@
+
+TermTk.TTkTestWidgets.keypressview
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTestWidgets.keypressview
+
+.. currentmodule:: TermTk.TTkTestWidgets.keypressview
+
+
+
+TTkKeyPressView
+===============
+
+.. autoclass:: TTkKeyPressView
+   :members:

@@ -16,5 +16,6 @@ TermTk
   TermTk.TTkLayouts
   TermTk.TTkTemplates
   TermTk.TTkTestWidgets
+  TermTk.TTkTheme
   TermTk.TTkTypes
   TermTk.TTkWidgets

@@ -152,7 +152,7 @@ Following is the code to execute `VBox Example`_ in pyTermTk_
 
     import TermTk as ttk
 
-        # Set the VBoxLayout as defaut in the terminal widget
+        # Set the VBoxLayout as default in the terminal widget
     root = ttk.TTk(layout=ttk.TTkVBoxLayout())
 
         # Attach 4 buttons to the root widget
@@ -198,7 +198,7 @@ Following is the code to execute `HBox Example`_ in pyTermTk_
 
     import TermTk as ttk
 
-        # Set the HBoxLayout as defaut in the terminal widget
+        # Set the HBoxLayout as default in the terminal widget
     root = ttk.TTk()
     root.setLayout(ttk.TTkHBoxLayout())
 
@@ -246,7 +246,7 @@ Following is the code to execute `HBox Example`_ in pyTermTk_
 
     import TermTk as ttk
 
-        # Set the GridLayout as defaut in the terminal widget
+        # Set the GridLayout as default in the terminal widget
     gridLayout = ttk.TTkGridLayout(columnMinHeight=0,columnMinWidth=2)
     root = ttk.TTk(layout=gridLayout)
 
@@ -290,7 +290,7 @@ Following is the code to execute `Nested Layouts Example`_ in pyTermTk_
 
     import TermTk as ttk
 
-        # Set the GridLayout as defaut in the terminal widget
+        # Set the GridLayout as default in the terminal widget
     root = ttk.TTk()
 
     gridLayout = ttk.TTkGridLayout()

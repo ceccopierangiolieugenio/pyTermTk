@@ -1,0 +1,8 @@
+
+TermTk.TTkGui.textdocument
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkGui.textdocument
+
+.. currentmodule:: TermTk.TTkGui.textdocument
+

@@ -1,0 +1,8 @@
+
+TermTk.TTkTheme.fileicon\_utf8
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTheme.fileicon_utf8
+
+.. currentmodule:: TermTk.TTkTheme.fileicon_utf8
+

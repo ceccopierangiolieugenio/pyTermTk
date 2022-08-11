@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TermTk.TTkTheme.theme &mdash; pyTermTk 0.2.0a documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TermTk.TTkTypes" href="TermTk.TTkTypes.html" />
+    <link rel="prev" title="TermTk.TTkTheme.fileicon_utf8" href="TermTk.TTkTheme.fileicon_utf8.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> pyTermTk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkTheme.html">TermTk.TTkTheme</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkTheme.draw_ascii.html">TermTk.TTkTheme.draw_ascii</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkTheme.draw_utf8.html">TermTk.TTkTheme.draw_utf8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkTheme.fileicon_ascii.html">TermTk.TTkTheme.fileicon_ascii</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkTheme.fileicon_nerd.html">TermTk.TTkTheme.fileicon_nerd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkTheme.fileicon_utf8.html">TermTk.TTkTheme.fileicon_utf8</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkTheme.theme</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttktheme">TTkTheme</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyTermTk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="TermTk.TTkTheme.html">TermTk.TTkTheme</a> &raquo;</li>
+      <li>TermTk.TTkTheme.theme</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/autogen.TermTk/TermTk.TTkTheme.theme.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-TermTk.TTkTheme.theme">
+<span id="termtk-ttktheme-theme"></span><h1>TermTk.TTkTheme.theme<a class="headerlink" href="#module-TermTk.TTkTheme.theme" title="Permalink to this heading"></a></h1>
+<section id="ttktheme">
+<h2>TTkTheme<a class="headerlink" href="#ttktheme" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTheme</span></span><a class="reference internal" href="../_modules/TermTk/TTkTheme/theme.html#TTkTheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme" title="Permalink to this definition"></a></dt>
+<dd><p>Default Theme Class
+This class can be reimplemented/extended to include new themes and default colors</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.borderColorDisabled">
+<span class="sig-name descname"><span class="pre">borderColorDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.borderColorDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#888888”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor">
+<span class="sig-name descname"><span class="pre">buttonBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorChecked">
+<span class="sig-name descname"><span class="pre">buttonBorderColorChecked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#FFFFFF”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorClicked">
+<span class="sig-name descname"><span class="pre">buttonBorderColorClicked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorClicked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddddd”)+</strong><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorDisabled">
+<span class="sig-name descname"><span class="pre">buttonBorderColorDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.borderColorDisabled" title="TermTk.TTkTheme.theme.TTkTheme.borderColorDisabled"><code class="xref py py-class docutils literal notranslate"><span class="pre">borderColorDisabled</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorFocus">
+<span class="sig-name descname"><span class="pre">buttonBorderColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a href="#id1"><span class="problematic" id="id2">**</span></a>TTkColor.fg(“#ffff00”) + <a href="#id3"><span class="problematic" id="id4">**</span></a><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorUnchecked">
+<span class="sig-name descname"><span class="pre">buttonBorderColorUnchecked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorUnchecked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBoxGrid">
+<span class="sig-name descname"><span class="pre">buttonBoxGrid</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBoxGrid" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>1</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridChecked">
+<span class="sig-name descname"><span class="pre">buttonBoxGridChecked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>0</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridClicked">
+<span class="sig-name descname"><span class="pre">buttonBoxGridClicked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridClicked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>0</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridDisabled">
+<span class="sig-name descname"><span class="pre">buttonBoxGridDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>0</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridUnchecked">
+<span class="sig-name descname"><span class="pre">buttonBoxGridUnchecked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBoxGridUnchecked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>2</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonTextColor">
+<span class="sig-name descname"><span class="pre">buttonTextColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddd88”)+TTkColor.bg(“#000044”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonTextColorChecked">
+<span class="sig-name descname"><span class="pre">buttonTextColorChecked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColorChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddd88”)+TTkColor.bg(“#004488”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonTextColorClicked">
+<span class="sig-name descname"><span class="pre">buttonTextColorClicked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColorClicked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffffdd”)+</strong><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonTextColorDisabled">
+<span class="sig-name descname"><span class="pre">buttonTextColorDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColorDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.textColorDisabled" title="TermTk.TTkTheme.theme.TTkTheme.textColorDisabled"><code class="xref py py-class docutils literal notranslate"><span class="pre">textColorDisabled</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonTextColorFocus">
+<span class="sig-name descname"><span class="pre">buttonTextColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonTextColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonTextColor</span></code></a> <strong>+</strong> <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.buttonTextColorUnchecked">
+<span class="sig-name descname"><span class="pre">buttonTextColorUnchecked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColorUnchecked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonTextColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonTextColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColor">
+<span class="sig-name descname"><span class="pre">checkboxBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColorFocus">
+<span class="sig-name descname"><span class="pre">checkboxBorderColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorFocus" title="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorFocus"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColorFocus</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.checkboxContentColor">
+<span class="sig-name descname"><span class="pre">checkboxContentColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxContentColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonTextColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonTextColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.checkboxContentColorFocus">
+<span class="sig-name descname"><span class="pre">checkboxContentColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxContentColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonTextColorFocus" title="TermTk.TTkTheme.theme.TTkTheme.buttonTextColorFocus"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonTextColorFocus</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.checkboxTextColor">
+<span class="sig-name descname"><span class="pre">checkboxTextColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxTextColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.checkboxTextColorFocus">
+<span class="sig-name descname"><span class="pre">checkboxTextColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxTextColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)+TTkColor.bg(“#111111”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.comboboxBorderColor">
+<span class="sig-name descname"><span class="pre">comboboxBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.comboboxBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.comboboxBorderColorDisabled">
+<span class="sig-name descname"><span class="pre">comboboxBorderColorDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.comboboxBorderColorDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#888888”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.comboboxBorderColorFocus">
+<span class="sig-name descname"><span class="pre">comboboxBorderColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.comboboxBorderColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorFocus" title="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColorFocus"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColorFocus</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.comboboxContentColor">
+<span class="sig-name descname"><span class="pre">comboboxContentColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.comboboxContentColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddd88”)+TTkColor.bg(“#111111”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.comboboxContentColorDisabled">
+<span class="sig-name descname"><span class="pre">comboboxContentColorDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.comboboxContentColorDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#888888”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.comboboxContentColorFocus">
+<span class="sig-name descname"><span class="pre">comboboxContentColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.comboboxContentColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)+TTkColor.bg(“#111111”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.executableColor">
+<span class="sig-name descname"><span class="pre">executableColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.executableColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#AAFFAA”) # Greenish</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.failNameColor">
+<span class="sig-name descname"><span class="pre">failNameColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.failNameColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#FF0000”) # Yellowish</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.fileIconColor">
+<span class="sig-name descname"><span class="pre">fileIconColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.fileIconColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#FFAAFF”) # Simil NerdTree purple</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.fileNameColor">
+<span class="sig-name descname"><span class="pre">fileNameColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.fileNameColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.RST # Simil NerdTree purple</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.folderIconColor">
+<span class="sig-name descname"><span class="pre">folderIconColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.folderIconColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#FFFFAA”) # Yellowish</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.folderNameColor">
+<span class="sig-name descname"><span class="pre">folderNameColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.folderNameColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#AAFFFF”) # Yellowish</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.frameBorderColor">
+<span class="sig-name descname"><span class="pre">frameBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.frameBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.frameTitleColor">
+<span class="sig-name descname"><span class="pre">frameTitleColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.frameTitleColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddddd”)+TTkColor.bg(“#222222”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.lineEditTextColor">
+<span class="sig-name descname"><span class="pre">lineEditTextColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.lineEditTextColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddddd”)+TTkColor.bg(“#222222”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.lineEditTextColorFocus">
+<span class="sig-name descname"><span class="pre">lineEditTextColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.lineEditTextColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddddd”)+TTkColor.bg(“#000044”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.lineEditTextColorSelected">
+<span class="sig-name descname"><span class="pre">lineEditTextColorSelected</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.lineEditTextColorSelected" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffffff”)+TTkColor.bg(“#008844”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.linkNameColor">
+<span class="sig-name descname"><span class="pre">linkNameColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.linkNameColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#00FFFF”) # Cyanish</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.listColor">
+<span class="sig-name descname"><span class="pre">listColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.listColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.listColorHighlighted">
+<span class="sig-name descname"><span class="pre">listColorHighlighted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.listColorHighlighted" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a href="#id5"><span class="problematic" id="id6">**</span></a>TTkColor.bg(“#000088”) + <a href="#id7"><span class="problematic" id="id8">**</span></a><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.listColorSelected">
+<span class="sig-name descname"><span class="pre">listColorSelected</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.listColorSelected" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a href="#id9"><span class="problematic" id="id10">**</span></a>TTkColor.fg(“#ffffdd”)+TTkColor.bg(“#000044”) + <a href="#id11"><span class="problematic" id="id12">**</span></a><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.menuButtonBorderColor">
+<span class="sig-name descname"><span class="pre">menuButtonBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.menuButtonBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.frameBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.frameBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">frameBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.menuButtonBorderColorClicked">
+<span class="sig-name descname"><span class="pre">menuButtonBorderColorClicked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.menuButtonBorderColorClicked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.frameBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.frameBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">frameBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.menuButtonColor">
+<span class="sig-name descname"><span class="pre">menuButtonColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.menuButtonColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.menuButtonColorClicked">
+<span class="sig-name descname"><span class="pre">menuButtonColorClicked</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.menuButtonColorClicked" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.menuButtonShortcutColor">
+<span class="sig-name descname"><span class="pre">menuButtonShortcutColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.menuButtonShortcutColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#dddddd”) + TTkColor.UNDERLINE</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.radioButtonBorderColor">
+<span class="sig-name descname"><span class="pre">radioButtonBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.radioButtonBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">checkboxBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.radioButtonBorderColorFocus">
+<span class="sig-name descname"><span class="pre">radioButtonBorderColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.radioButtonBorderColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColorFocus" title="TermTk.TTkTheme.theme.TTkTheme.checkboxBorderColorFocus"><code class="xref py py-class docutils literal notranslate"><span class="pre">checkboxBorderColorFocus</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.radioButtonContentColor">
+<span class="sig-name descname"><span class="pre">radioButtonContentColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.radioButtonContentColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxContentColor" title="TermTk.TTkTheme.theme.TTkTheme.checkboxContentColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">checkboxContentColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.radioButtonContentColorFocus">
+<span class="sig-name descname"><span class="pre">radioButtonContentColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.radioButtonContentColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxContentColorFocus" title="TermTk.TTkTheme.theme.TTkTheme.checkboxContentColorFocus"><code class="xref py py-class docutils literal notranslate"><span class="pre">checkboxContentColorFocus</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.radioButtonTextColor">
+<span class="sig-name descname"><span class="pre">radioButtonTextColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.radioButtonTextColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxTextColor" title="TermTk.TTkTheme.theme.TTkTheme.checkboxTextColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">checkboxTextColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.radioButtonTextColorFocus">
+<span class="sig-name descname"><span class="pre">radioButtonTextColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.radioButtonTextColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.checkboxTextColorFocus" title="TermTk.TTkTheme.theme.TTkTheme.checkboxTextColorFocus"><code class="xref py py-class docutils literal notranslate"><span class="pre">checkboxTextColorFocus</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabBorderColor">
+<span class="sig-name descname"><span class="pre">tabBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.frameBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.frameBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">frameBorderColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabBorderColorFocus">
+<span class="sig-name descname"><span class="pre">tabBorderColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabBorderColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabColor">
+<span class="sig-name descname"><span class="pre">tabColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#aaaaaa”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabColorFocus">
+<span class="sig-name descname"><span class="pre">tabColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#aaaaaa”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabOffsetColor">
+<span class="sig-name descname"><span class="pre">tabOffsetColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabOffsetColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.RST</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabOffsetColorFocus">
+<span class="sig-name descname"><span class="pre">tabOffsetColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabOffsetColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="#TermTk.TTkTheme.theme.TTkTheme.tabOffsetColor" title="TermTk.TTkTheme.theme.TTkTheme.tabOffsetColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">tabOffsetColor</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabSelectColor">
+<span class="sig-name descname"><span class="pre">tabSelectColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabSelectColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)+TTkColor.bg(“#000066”)+</strong><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.tabSelectColorFocus">
+<span class="sig-name descname"><span class="pre">tabSelectColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.tabSelectColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)+TTkColor.bg(“#000066”)+</strong><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.textColorDisabled">
+<span class="sig-name descname"><span class="pre">textColorDisabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.textColorDisabled" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#888888”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.treeHeaderColor">
+<span class="sig-name descname"><span class="pre">treeHeaderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.treeHeaderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffffff”)+TTkColor.bg(“#444444”)+</strong><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.treeLineColor">
+<span class="sig-name descname"><span class="pre">treeLineColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.treeLineColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#444444”)</strong></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.treeSelectedColor">
+<span class="sig-name descname"><span class="pre">treeSelectedColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.treeSelectedColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff88”)+TTkColor.bg(“#000066”)+</strong><a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.BOLD" title="TermTk.TTkCore.color.TTkColor.BOLD"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOLD</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.windowBorderColor">
+<span class="sig-name descname"><span class="pre">windowBorderColor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.windowBorderColor" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkTheme.theme.TTkTheme.windowBorderColorFocus">
+<span class="sig-name descname"><span class="pre">windowBorderColorFocus</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkTheme.theme.TTkTheme.windowBorderColorFocus" title="Permalink to this definition"></a></dt>
+<dd><p>Default to <strong>TTkColor.fg(“#ffff55”)</strong></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="TermTk.TTkTheme.fileicon_utf8.html" class="btn btn-neutral float-left" title="TermTk.TTkTheme.fileicon_utf8" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkTypes.html" class="btn btn-neutral float-right" title="TermTk.TTkTypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Eugenio Parodi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

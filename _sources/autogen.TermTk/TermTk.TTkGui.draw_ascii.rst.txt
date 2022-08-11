@@ -1,8 +1,0 @@
-
-TermTk.TTkGui.draw\_ascii
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkGui.draw_ascii
-
-.. currentmodule:: TermTk.TTkGui.draw_ascii
-

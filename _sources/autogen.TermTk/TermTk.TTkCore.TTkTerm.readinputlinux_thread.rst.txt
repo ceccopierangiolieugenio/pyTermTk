@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.TTkTerm.readinputlinux\_thread
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.TTkTerm.readinputlinux_thread
+
+.. currentmodule:: TermTk.TTkCore.TTkTerm.readinputlinux_thread
+

@@ -11,8 +11,10 @@ TermTk.TTkCore.TTkTerm
   :toctree: ./
 
   TermTk.TTkCore.TTkTerm.colors
+  TermTk.TTkCore.TTkTerm.colors_ansi_map
   TermTk.TTkCore.TTkTerm.input
   TermTk.TTkCore.TTkTerm.inputkey
   TermTk.TTkCore.TTkTerm.inputmouse
   TermTk.TTkCore.TTkTerm.readinputlinux
+  TermTk.TTkCore.TTkTerm.readinputlinux_thread
   TermTk.TTkCore.TTkTerm.term

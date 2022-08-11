@@ -15,8 +15,6 @@ TermTk.TTkCore
   TermTk.TTkCore.cfg
   TermTk.TTkCore.color
   TermTk.TTkCore.constant
-  TermTk.TTkCore.drag
-  TermTk.TTkCore.draw
   TermTk.TTkCore.filebuffer
   TermTk.TTkCore.helper
   TermTk.TTkCore.log

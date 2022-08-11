@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.draw
-~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.draw
-
-.. currentmodule:: TermTk.TTkCore.draw
-

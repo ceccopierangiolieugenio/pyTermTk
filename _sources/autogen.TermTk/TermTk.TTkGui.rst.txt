@@ -10,9 +10,7 @@ TermTk.TTkGui
 .. autosummary::
   :toctree: ./
 
-  TermTk.TTkGui.draw_ascii
-  TermTk.TTkGui.draw_utf8
-  TermTk.TTkGui.fileicon_ascii
-  TermTk.TTkGui.fileicon_nerd
-  TermTk.TTkGui.fileicon_utf8
-  TermTk.TTkGui.theme
+  TermTk.TTkGui.drag
+  TermTk.TTkGui.textcursor
+  TermTk.TTkGui.textdocument
+  TermTk.TTkGui.textwrap
