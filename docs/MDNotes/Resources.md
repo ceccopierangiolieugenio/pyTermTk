@@ -78,3 +78,6 @@ termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attr)
  - CTRL-Q -> termios.VSTART
 
 Have a look at [test.termios.001.py](../../tests/test.termios.001.py)
+
+### [GNU Nano](https://www.nano-editor.org) Terminal Initialization
+https://git.savannah.gnu.org/cgit/nano.git/tree/src/nano.c#n1199

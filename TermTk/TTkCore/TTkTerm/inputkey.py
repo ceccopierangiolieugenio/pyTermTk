@@ -85,6 +85,7 @@ def _translate_key(key):
         "\t"        : ( TTkK.Key_Tab       , TTkK.NoModifier ) ,
         "\033[Z"    : ( TTkK.Key_Tab       , TTkK.ShiftModifier ) ,
         "\n"        : ( TTkK.Key_Enter     , TTkK.NoModifier ) ,
+        "\r"        : ( TTkK.Key_Enter     , TTkK.NoModifier ) ,
         "\033[A"    : ( TTkK.Key_Up        , TTkK.NoModifier ) ,
         "\033[B"    : ( TTkK.Key_Down      , TTkK.NoModifier ) ,
         "\033[C"    : ( TTkK.Key_Right     , TTkK.NoModifier ) ,
@@ -224,10 +225,10 @@ def _translate_key(key):
         '\x07':       ( TTkK.Key_G         , TTkK.ControlModifier ),
         '\x08':       ( TTkK.Key_H         , TTkK.ControlModifier ),
         # '\x09':       ( TTkK.Key_I         , TTkK.ControlModifier ), # Tab   = '\t' = 0x09
-        # '\x0a':       ( TTkK.Key_J         , TTkK.ControlModifier ), # Enter = '\n' = 0x0a
+        '\x0a':       ( TTkK.Key_J         , TTkK.ControlModifier ), # Enter = '\n' = 0x0a
         '\x0b':       ( TTkK.Key_K         , TTkK.ControlModifier ),
         '\x0c':       ( TTkK.Key_L         , TTkK.ControlModifier ),
-        '\x0d':       ( TTkK.Key_M         , TTkK.ControlModifier ),
+        # '\x0d':       ( TTkK.Key_M         , TTkK.ControlModifier ), # Enter = '\r' = 0x0d
         '\x0e':       ( TTkK.Key_N         , TTkK.ControlModifier ),
         '\x0f':       ( TTkK.Key_O         , TTkK.ControlModifier ),
         '\x10':       ( TTkK.Key_P         , TTkK.ControlModifier ),

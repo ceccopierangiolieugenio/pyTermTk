@@ -140,6 +140,7 @@ class TTkTerm():
         if TTkTerm.mouse:
             TTkTerm.push(TTkTerm.Mouse.ON)
         TTkTerm.setEcho(False)
+        TTkTerm.CRNL(False)
         TTkTerm.setSigmask(sigmask, False)
 
     @staticmethod
@@ -147,6 +148,7 @@ class TTkTerm():
         TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
         TTkTerm.push(TTkTerm.CLEAR + TTkTerm.NORMAL_SCREEN + TTkTerm.Cursor.SHOW + TTkTerm.escTitle())
         TTkTerm.setEcho(True)
+        TTkTerm.CRNL(True)
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
 
     @staticmethod
@@ -154,6 +156,7 @@ class TTkTerm():
         TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
         TTkTerm.push(TTkTerm.CLEAR + TTkTerm.NORMAL_SCREEN + TTkTerm.Cursor.SHOW + TTkTerm.escTitle())
         TTkTerm.setEcho(True)
+        TTkTerm.CRNL(True)
 
     @staticmethod
     def cont():
@@ -161,6 +164,7 @@ class TTkTerm():
         if TTkTerm.mouse:
             TTkTerm.push(TTkTerm.Mouse.ON)
         TTkTerm.setEcho(False)
+        TTkTerm.CRNL(False)
 
     @staticmethod
     def escTitle(txt = "") -> str:
@@ -185,6 +189,16 @@ class TTkTerm():
         (i,o,c,l,isp,osp,cc) = termios.tcgetattr(sys.stdin.fileno())
         if val: l |= termios.ECHO
         else:   l &= ~termios.ECHO
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
+
+    @staticmethod
+    def CRNL(val: bool):
+        #Translate carriage return to newline on input (unless IGNCR is set).
+        # '\n' CTRL-J
+        # '\r' CTRL-M (Enter)
+        (i,o,c,l,isp,osp,cc) = termios.tcgetattr(sys.stdin.fileno())
+        if val: i |= termios.ICRNL
+        else:    i &= ~termios.ICRNL
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
 
     @staticmethod
