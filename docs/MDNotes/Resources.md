@@ -81,3 +81,20 @@ Have a look at [test.termios.001.py](../../tests/test.termios.001.py)
 
 ### [GNU Nano](https://www.nano-editor.org) Terminal Initialization
 https://git.savannah.gnu.org/cgit/nano.git/tree/src/nano.c#n1199
+
+## Terminal Multiplexer
+
+### Get Default shell
+
+```python
+import pwd, os
+pwd.getpwuid(os.getuid()).pw_shell # values from /etc/passwd = '/bin/bash'
+```
+
+Check as reference:
+
+ - https://github.com/tmux/tmux/blob/master/tmux.c#L63
+
+Pty Demo:
+
+ - https://docs.python.org/3/library/pty.html#example

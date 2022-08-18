@@ -365,16 +365,14 @@ class TTkString():
             lenMatch = len(match)
             while pos := self._text.index(match, start) if match in self._text[start:] else None:
                 start = pos+lenMatch
-                for i in range(pos, pos+lenMatch):
-                    ret._colors[i] = color
+                ret._colors[pos: pos+lenMatch] = [color]*lenMatch
         elif posFrom == posTo == None:
             ret._colors = [color]*len(self._text)
         elif posFrom < posTo:
             ret._colors += self._colors
             posFrom = min(len(self._text),posFrom)
             posTo   = min(len(self._text),posTo)
-            for i in range(posFrom, posTo):
-                ret._colors[i] = color
+            ret._colors[posFrom:posTo] = [color]*(posTo-posFrom)
         else:
             ret._colors += self._colors
         return ret

@@ -68,17 +68,19 @@ class TTkCanvas:
         w,h = self._newWidth, self._newHeight
         if w  == self._width and h == self._height:
             return
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
         self._data = [[]]*h
         self._colors = [[]]*h
         for i in range(0,h):
-            self._data[i] = [' ']*w
-            self._colors[i] = [TTkColor.RST]*w
+            self._data[i]   = baseData.copy()
+            self._colors[i] = baseColors.copy()
         if self._doubleBuffer:
             self._bufferedData = [[]]*h
             self._bufferedColors = [[]]*h
             for i in range(0,h):
-                self._bufferedData[i] = ['']*w
-                self._bufferedColors[i] = [TTkColor.RST]*w
+                self._bufferedData[i]   = baseData.copy()
+                self._bufferedColors[i] = baseColors.copy()
         self._height = h
         self._width  = w
 
@@ -98,21 +100,19 @@ class TTkCanvas:
         if not self._visible: return
         x,y = pos
         w,h = size or (self._width, self._height)
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
         for iy in range(y,y+h):
-            for ix in range(x,x+w):
-                self._data[iy][ix] = ' '
-                self._colors[iy][ix] = TTkColor.RST
+            self._data[iy][x:x+w]   = baseData.copy()
+            self._colors[iy][x:x+w] = baseColors.copy()
 
     def copy(self):
         w,h = self._width, self._height
         retData = [[]]*h
         retColors = [[]]*h
         for iy in range(h):
-            retData[iy] = [' ']*w
-            retColors[iy] = [TTkColor.RST]*w
-            for ix in range(w):
-                retData[iy][ix] = self._data[iy][ix]
-                retColors[iy][ix] = self._colors[iy][ix]
+            retData[iy] = self._data[iy].copy()
+            retColors[iy] = self._colors[iy].copy()
         return retData, retColors
 
     def hide(self):
@@ -609,16 +609,9 @@ class TTkCanvas:
         wslice = w if x+w < bx+bw else bx+bw-x
         hslice = h if y+h < by+bh else by+bh-y
 
-
         for iy in range(yoffset,hslice):
-            for ix in range(xoffset,wslice):
-                #TTkLog.debug(f"PaintCanvas:{(ix,iy)}")
-                if iy > len(canvas._data)-1:
-                    TTkLog.debug(f"{canvas._width, canvas._height} - {(yoffset,hslice)}, {(xoffset,wslice)}, {slice}")
-                b = canvas._data[iy]
-                a = b[ix]
-                self._data[y+iy][x+ix]   = a # canvas._data[iy][ix]
-                self._colors[y+iy][x+ix] = canvas._colors[iy][ix]
+            self._data[y+iy][x+xoffset:x+wslice]   = canvas._data[iy][xoffset:wslice]
+            self._colors[y+iy][x+xoffset:x+wslice] = canvas._colors[iy][xoffset:wslice]
 
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
@@ -638,10 +631,11 @@ class TTkCanvas:
         if not self._visible: return
         x,y = 0,0
         w,h = self._width, self._height
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
         for iy in range(y,y+h):
-            for ix in range(x,x+w):
-                self._bufferedData[iy][ix] = ' '
-                self._bufferedColors[iy][ix] = TTkColor.RST
+            self._bufferedData[iy]   = baseData.copy()
+            self._bufferedColors[iy] = baseColors.copy()
 
     def pushToTerminalBuffered(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
