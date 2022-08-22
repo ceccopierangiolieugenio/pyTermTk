@@ -22,9 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import importlib.util
+import pyodideProxy
 
-if importlib.util.find_spec('pyodideProxy'):
-    from .term_pyodide import TTkTerm
-else:
-    from .term_unix import TTkTerm
+from .term_base import TTkTermBase
+
+class TTkTerm(TTkTermBase):
+    @staticmethod
+    def _push(*args):
+        pyodideProxy.termPush(str(*args))
+    TTkTermBase.push = _push
+
+    @staticmethod
+    def _getTerminalSize():
+        return pyodideProxy.termSize()
+    TTkTermBase.getTerminalSize = _getTerminalSize
+
+    @staticmethod
+    def _registerResizeCb(callback):
+        TTkTerm._sigWinChCb = callback
+    TTkTermBase.registerResizeCb = _registerResizeCb

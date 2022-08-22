@@ -39,14 +39,18 @@ class TTkKeyPressView(TTkWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbstractScrollView')
-        TTkHelper._rootWidget.eventKeyPress.connect(self._addKey)
-        TTkHelper._rootWidget.eventMouse.connect(self._addMouse)
+        TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
         self._keys = []
         self._period = 0.1
         self._fade = 10
         self._timer = TTkTimer()
         self._timer.timeout.connect(self._timerEvent)
         self._timer.start(self._period)
+
+    @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
+    def _processInput(self, kevt, mevt):
+        if kevt is not None: self._addKey(kevt)
+        if mevt is not None: self._addMouse(mevt)
 
     @pyTTkSlot(TTkKeyEvent)
     def _addKey(self, evt):

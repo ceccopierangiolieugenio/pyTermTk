@@ -35,18 +35,26 @@ elif platform.system() == 'Darwin':
 elif platform.system() == 'Windows':
     raise NotImplementedError('Windows OS not yet supported')
 elif platform.system() == 'Emscripten':
-    raise NotImplementedError('Pyodide not yet supported')
+    pass
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.TTkTerm.inputkey   import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TTkInput:
-    __slots__ = ('_readInput', '_leftLastTime', '_midLastTime', '_rightLastTime', '_leftTap', '_midTap', '_rightTap')
+    __slots__ = (
+            '_readInput',
+            '_leftLastTime', '_midLastTime', '_rightLastTime',
+            '_leftTap', '_midTap', '_rightTap',
+            # Signals
+            'inputEvent'
+            )
 
     def __init__(self):
-        self._readInput = ReadInput()
+        self.inputEvent = pyTTkSignal(TTkKeyEvent, TTkMouseEvent)
+        self._readInput = None
         self._leftLastTime = 0
         self._midLastTime = 0
         self._rightLastTime = 0
@@ -55,94 +63,100 @@ class TTkInput:
         self._rightTap = 0
 
     def close(self):
-        self._readInput.close()
+        if self._readInput:
+            self._readInput.close()
 
     def stop(self):
         pass
 
     def cont(self):
-        self._readInput.cont()
+        if self._readInput:
+            self._readInput.cont()
 
-    def get_key(self, callback=None):
-        mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
+    def start(self):
+        self._readInput = ReadInput()
         while stdinRead := self._readInput.read():
-            mevt,kevt = None, None
-            if not stdinRead.startswith("\033[<"):
-                # Key Event
-                kevt = TTkKeyEvent.parse(stdinRead)
-            else:
-                # Mouse Event
-                m = mouse_re.match(stdinRead)
-                if not m:
-                    # TODO: Return Error
-                    hex = [f"0x{ord(x):02x}" for x in stdinRead]
-                    TTkLog.error("UNHANDLED (mouse): "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
-                    continue
-                code = int(m.group(1))
-                x = int(m.group(2))-1
-                y = int(m.group(3))-1
-                state = m.group(4)
-                key = TTkMouseEvent.NoButton
-                evt = TTkMouseEvent.NoEvent
-                tap = 0
-
-                def _checkTap(lastTime, tap):
-                    if state=="M":
-                        t = time()
-                        if (t-lastTime) < 0.4:
-                            return t, tap+1
-                        else:
-                            return t, 1
-                    return lastTime, tap
-
-                mod = TTkK.NoModifier
-                if code & 0x10:
-                    code &= ~0x10
-                    mod |= TTkK.ControlModifier
-                if code & 0x08:
-                    code &= ~0x08
-                    mod |= TTkK.AltModifier
-
-                if code == 0x00:
-                    self._leftLastTime, self._leftTap = _checkTap(self._leftLastTime, self._leftTap)
-                    tap = self._leftTap
-                    key = TTkMouseEvent.LeftButton
-                    evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
-                elif code == 0x01:
-                    self._midLastTime, self._midTap = _checkTap(self._midLastTime, self._midTap)
-                    tap = self._midTap
-                    key = TTkMouseEvent.MidButton
-                    evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
-                elif code == 0x02:
-                    self._rightLastTime, self._rightTap = _checkTap(self._rightLastTime, self._rightTap)
-                    tap = self._rightTap
-                    key = TTkMouseEvent.RightButton
-                    evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
-                elif code == 0x20:
-                    key = TTkMouseEvent.LeftButton
-                    evt = TTkMouseEvent.Drag
-                elif code == 0x21:
-                    key = TTkMouseEvent.MidButton
-                    evt = TTkMouseEvent.Drag
-                elif code == 0x22:
-                    key = TTkMouseEvent.RightButton
-                    evt = TTkMouseEvent.Drag
-                elif code == 0x40:
-                    key = TTkMouseEvent.Wheel
-                    evt = TTkMouseEvent.Up
-                elif code == 0x41:
-                    key = TTkMouseEvent.Wheel
-                    evt = TTkMouseEvent.Down
-                mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
-
-            if kevt is None and mevt is None:
-                hex = [f"0x{ord(x):02x}" for x in stdinRead]
-                TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
-
-            if callback is not None:
-                if not callback(kevt, mevt):
-                    break
+            kevt, mevt = self.key_process(stdinRead)
+            self.inputEvent.emit(kevt, mevt)
         TTkLog.debug("Close TTkInput")
+
+    mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
+    def key_process(self, stdinRead):
+        mevt,kevt = None, None
+        if not stdinRead.startswith("\033[<"):
+            # Key Event
+            kevt = TTkKeyEvent.parse(stdinRead)
+        else:
+            # Mouse Event
+            m = self.mouse_re.match(stdinRead)
+            if not m:
+                # TODO: Return Error
+                hex = [f"0x{ord(x):02x}" for x in stdinRead]
+                TTkLog.error("UNHANDLED (mouse): "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
+                return None, None
+            code = int(m.group(1))
+            x = int(m.group(2))-1
+            y = int(m.group(3))-1
+            state = m.group(4)
+            key = TTkMouseEvent.NoButton
+            evt = TTkMouseEvent.NoEvent
+            tap = 0
+
+            def _checkTap(lastTime, tap):
+                if state=="M":
+                    t = time()
+                    if (t-lastTime) < 0.4:
+                        return t, tap+1
+                    else:
+                        return t, 1
+                return lastTime, tap
+
+            mod = TTkK.NoModifier
+            if code & 0x10:
+                code &= ~0x10
+                mod |= TTkK.ControlModifier
+            if code & 0x08:
+                code &= ~0x08
+                mod |= TTkK.AltModifier
+
+            if code == 0x00:
+                self._leftLastTime, self._leftTap = _checkTap(self._leftLastTime, self._leftTap)
+                tap = self._leftTap
+                key = TTkMouseEvent.LeftButton
+                evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
+            elif code == 0x01:
+                self._midLastTime, self._midTap = _checkTap(self._midLastTime, self._midTap)
+                tap = self._midTap
+                key = TTkMouseEvent.MidButton
+                evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
+            elif code == 0x02:
+                self._rightLastTime, self._rightTap = _checkTap(self._rightLastTime, self._rightTap)
+                tap = self._rightTap
+                key = TTkMouseEvent.RightButton
+                evt = TTkMouseEvent.Press if state=="M" else TTkMouseEvent.Release
+            elif code == 0x20:
+                key = TTkMouseEvent.LeftButton
+                evt = TTkMouseEvent.Drag
+            elif code == 0x21:
+                key = TTkMouseEvent.MidButton
+                evt = TTkMouseEvent.Drag
+            elif code == 0x22:
+                key = TTkMouseEvent.RightButton
+                evt = TTkMouseEvent.Drag
+            elif code == 0x40:
+                key = TTkMouseEvent.Wheel
+                evt = TTkMouseEvent.Up
+            elif code == 0x41:
+                key = TTkMouseEvent.Wheel
+                evt = TTkMouseEvent.Down
+            mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
+
+        if kevt is None and mevt is None:
+            hex = [f"0x{ord(x):02x}" for x in stdinRead]
+            TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
+
+        return kevt, mevt
+
 
 def main():
     print("Retrieve Keyboard, Mouse press/drag/wheel Events")

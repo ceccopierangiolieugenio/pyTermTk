@@ -26,6 +26,7 @@ import os
 import signal
 import time
 import queue
+import threading
 
 from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
@@ -45,30 +46,27 @@ class TTk(TTkWidget):
         '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
         '_sigmask',
-        '_lastMultiTap',
-        #Signals
-        'eventKeyPress', 'eventMouse' )
+        '_drawMutex',
+        '_lastMultiTap')
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTk' )
-        self.eventKeyPress = pyTTkSignal(TTkKeyEvent)
-        self.eventMouse    = pyTTkSignal(TTkMouseEvent)
         self._running = False
-        self._input = None
+        self._input = TTkInput()
+        self._input.inputEvent.connect(self._processInput)
         self._events = queue.Queue()
         self._key_events = queue.Queue()
         self._mouse_events = queue.Queue()
         self._screen_events = queue.Queue()
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
+        self._drawMutex = threading.Lock()
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
-        try:
-            w,h = TTkTerm.getTerminalSize()
-            self.setGeometry(0,0,w,h)
-        except OSError as e:
-            print(f'ERROR: {e}')
+        w,h = TTkTerm.getTerminalSize()
+        self.setGeometry(0,0,w,h)
+
         TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootWidget(self)
 
@@ -107,7 +105,7 @@ class TTk(TTkWidget):
             TTkLog.debug("Signal Event Registered")
 
             TTkTerm.registerResizeCb(self._win_resize_cb)
-            threading.Thread(target=self._input_thread, daemon=True).start()
+
             self._timer = TTkTimer()
             self._timer.timeout.connect(self._time_event)
             self._timer.start(0.1)
@@ -117,41 +115,21 @@ class TTk(TTkWidget):
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
             TTkTerm.init(title=self._title, sigmask=self._sigmask)
-            self._mainloop()
-        #except Exception as e:
-        #    TTkLog.error(f"{e}")
+            self._input.start()
         finally:
             self.quit()
             TTkTerm.exit()
 
-    def _mainloop(self):
-        while self._running:
-            # Main Loop
-            evt = self._events.get()
-            if   evt is TTkK.MOUSE_EVENT:
-                self._mouse_event()
-            elif evt is TTkK.KEY_EVENT:
-                self._key_event()
-            elif evt is TTkK.TIME_EVENT:
-                w,h = TTkTerm.getTerminalSize()
-                self.setGeometry(0,0,w,h)
-                TTkHelper.paintAll()
-                self._timer.start(1/TTkCfg.maxFps)
-                self._fps()
-                pass
-            elif evt is TTkK.SCREEN_EVENT:
-                self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
-                TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
-            elif evt is TTkK.QUIT_EVENT:
-                TTkLog.debug("Quit.")
-                break
-            else:
-                TTkLog.error(f"Unhandled Event {evt}")
-                break
+    @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
+    def _processInput(self, kevt, mevt):
+        self._drawMutex.acquire()
+        if kevt is not None:
+            self._key_event(kevt)
+        if mevt is not None:
+            self._mouse_event(mevt)
+        self._drawMutex.release()
 
-    def _mouse_event(self):
-        mevt = self._mouse_events.get()
-        self.eventMouse.emit(mevt)
+    def _mouse_event(self, mevt):
         # Upload the global mouse position
         # Mainly used by the drag pixmap display
         TTkHelper.setMousePos((mevt.x,mevt.y))
@@ -199,9 +177,7 @@ class TTk(TTkWidget):
         if mevt.evt == TTkK.Release:
             TTkHelper.dndEnd()
 
-    def _key_event(self):
-        kevt = self._key_events.get()
-        self.eventKeyPress.emit(kevt)
+    def _key_event(self, kevt):
         keyHandled = False
         # TTkLog.debug(f"Key: {kevt}")
         focusWidget = TTkHelper.getFocus()
@@ -223,31 +199,26 @@ class TTk(TTkWidget):
                 TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     def _time_event(self):
-        self._events.put(TTkK.TIME_EVENT)
+        w,h = TTkTerm.getTerminalSize()
+        self.setGeometry(0,0,w,h)
+        self._drawMutex.acquire()
+        TTkHelper.paintAll()
+        self._drawMutex.release()
+        self._timer.start(1/TTkCfg.maxFps)
+        self._fps()
 
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)
         TTkGlbl.term_h = int(height)
-        self._events.put(TTkK.SCREEN_EVENT)
+        self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
+        TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
 
-    def _input_thread(self):
-        def _inputCallback(kevt=None, mevt=None):
-            if kevt is not None:
-                self._key_events.put(kevt)
-                self._events.put(TTkK.KEY_EVENT)
-            if mevt is not None:
-                self._mouse_events.put(mevt)
-                self._events.put(TTkK.MOUSE_EVENT)
-            return self._running
-        # Start input key loop
-        self._input = TTkInput()
-        self._input.get_key(_inputCallback)
-        self._input.close()
 
     def quit(self):
         '''Tells the application to exit with a return code.'''
         self._events.put(TTkK.QUIT_EVENT)
         TTkTimer.quitAll()
+        self._input.close()
         self._running = False
 
     def _SIGSTOP(self, signum, frame):
