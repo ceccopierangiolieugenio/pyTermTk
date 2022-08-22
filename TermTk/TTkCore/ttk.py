@@ -27,22 +27,24 @@ import signal
 import time
 import queue
 import threading
+import platform
 
 from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
-from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import *
-from TermTk.TTkCore.timer import *
+from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
+from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkTheme.theme import TTkTheme
-from TermTk.TTkWidgets.widget import *
+from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTk(TTkWidget):
     __slots__ = (
-        '_name', '_running', '_input',
+        '_name', '_input',
         '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
         '_sigmask',
@@ -52,7 +54,6 @@ class TTk(TTkWidget):
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTk' )
-        self._running = False
         self._input = TTkInput()
         self._input.inputEvent.connect(self._processInput)
         self._events = queue.Queue()
@@ -111,10 +112,11 @@ class TTk(TTkWidget):
             self._timer.start(0.1)
             self.show()
 
-            self._running = True
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
             TTkTerm.init(title=self._title, sigmask=self._sigmask)
+            if platform.system() == 'Emscripten':
+                return
             self._input.start()
         finally:
             self.quit()
@@ -219,7 +221,6 @@ class TTk(TTkWidget):
         self._events.put(TTkK.QUIT_EVENT)
         TTkTimer.quitAll()
         self._input.close()
-        self._running = False
 
     def _SIGSTOP(self, signum, frame):
         """Reset terminal settings and stop background input read before putting to sleep"""

@@ -34,8 +34,6 @@ elif platform.system() == 'Darwin':
     from .readinputlinux import ReadInput
 elif platform.system() == 'Windows':
     raise NotImplementedError('Windows OS not yet supported')
-elif platform.system() == 'Emscripten':
-    pass
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
@@ -76,8 +74,7 @@ class TTkInput:
     def start(self):
         self._readInput = ReadInput()
         while stdinRead := self._readInput.read():
-            kevt, mevt = self.key_process(stdinRead)
-            self.inputEvent.emit(kevt, mevt)
+            self.key_process(stdinRead)
         TTkLog.debug("Close TTkInput")
 
     mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
@@ -155,7 +152,7 @@ class TTkInput:
             hex = [f"0x{ord(x):02x}" for x in stdinRead]
             TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
 
-        return kevt, mevt
+        self.inputEvent.emit(kevt, mevt)
 
 
 def main():

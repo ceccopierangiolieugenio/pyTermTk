@@ -23,57 +23,97 @@
 # SOFTWARE.
 
 import threading, time
+import importlib
 
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 
-class TTkTimer(threading.Thread):
-    _timers = []
-    __slots__ = (
-        'timeout', '_timerEvent',
-        '_delay', '_delayLock', '_quit',
-        '_stopTime')
-    def __init__(self):
-        # Define Signals
-        self.timeout = pyTTkSignal()
+if importlib.util.find_spec('pyodideProxy'):
+    import pyodideProxy
+    class TTkTimer():
+        _timers = []
+        __slots__ = (
+            '_id',
+            'timeout', '_timerEvent',
+            '_delay', '_delayLock', '_quit',
+            '_stopTime')
+        def __init__(self):
+            # Define Signals
+            self.timeout = pyTTkSignal()
 
-        self._timerEvent = threading.Event()
-        self._quit = threading.Event()
-        self._stopTime = 0
-        self._delay=0
-        self._delayLock = threading.Lock()
-        threading.Thread.__init__(self)
-        TTkTimer._timers.append(self)
-        threading.Thread.start(self)
+            self._id = len(TTkTimer._timers)
+            TTkTimer._timers.append(self)
 
-    @staticmethod
-    def quitAll():
-        for timer in TTkTimer._timers:
-            timer.quit()
+        @staticmethod
+        def triggerTimerId(tid):
+            TTkTimer._timers[tid].timeout.emit()
 
-    def quit(self):
-        self._quit.set()
-        self._timerEvent.set()
+        @staticmethod
+        def quitAll():
+            for timer in TTkTimer._timers:
+                timer.quit()
 
-    def run(self):
-        while self._timerEvent.wait():
-            self._timerEvent.clear()
-            while self._delay > 0:
-                # self._delayLock.acquire()
-                delay = self._delay
-                self._delay = 0
-                # self._delayLock.release()
-                if self._quit.wait(delay):
-                    return
-            self.timeout.emit()
+        def quit(self):
+            pass
 
-    @pyTTkSlot(int)
-    def start(self, sec=0):
-        self._lastTime = time.time()
-        self._delay = sec
-        self._timerEvent.set()
+        def run(self):
+            pass
 
-    @pyTTkSlot()
-    def stop(self):
-        # TODO: Timer.stop()
-        self._stopTime = time.time()
+        @pyTTkSlot(int)
+        def start(self, sec=0):
+            pyodideProxy.setTimeout(int(sec*1000), self._id)
+
+        @pyTTkSlot()
+        def stop(self):
+            pass
+else:
+    class TTkTimer(threading.Thread):
+        _timers = []
+        __slots__ = (
+            'timeout', '_timerEvent',
+            '_delay', '_delayLock', '_quit',
+            '_stopTime')
+        def __init__(self):
+            # Define Signals
+            self.timeout = pyTTkSignal()
+
+            self._timerEvent = threading.Event()
+            self._quit = threading.Event()
+            self._stopTime = 0
+            self._delay=0
+            self._delayLock = threading.Lock()
+            threading.Thread.__init__(self)
+            TTkTimer._timers.append(self)
+            threading.Thread.start(self)
+
+        @staticmethod
+        def quitAll():
+            for timer in TTkTimer._timers:
+                timer.quit()
+
+        def quit(self):
+            self._quit.set()
+            self._timerEvent.set()
+
+        def run(self):
+            while self._timerEvent.wait():
+                self._timerEvent.clear()
+                while self._delay > 0:
+                    # self._delayLock.acquire()
+                    delay = self._delay
+                    self._delay = 0
+                    # self._delayLock.release()
+                    if self._quit.wait(delay):
+                        return
+                self.timeout.emit()
+
+        @pyTTkSlot(int)
+        def start(self, sec=0):
+            self._lastTime = time.time()
+            self._delay = sec
+            self._timerEvent.set()
+
+        @pyTTkSlot()
+        def stop(self):
+            # TODO: Timer.stop()
+            self._stopTime = time.time()
