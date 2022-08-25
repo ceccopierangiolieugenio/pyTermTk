@@ -11,6 +11,8 @@ profiler.*
 .vscode
 docs/html
 experiments
+sandbox
+!tests/sandbox
 
 # C extensions
 *.so
