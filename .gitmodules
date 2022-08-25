@@ -1,0 +1,6 @@
+[submodule "sandbox/modules/rubbish"]
+	path = sandbox/modules/rubbish
+	url = git@github.com:ceccopierangiolieugenio/rubbish.git
+[submodule "sandbox/modules/binaryRepo"]
+	path = sandbox/modules/binaryRepo
+	url = git@github.com:ceccopierangiolieugenio/binaryRepo.git
