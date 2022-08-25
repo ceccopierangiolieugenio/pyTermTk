@@ -29,8 +29,8 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 - The native **Windows** porting is not ready yet but it works with [Cygwin](https://www.cygwin.com) or **WSL**.
 - Only the key combinations forwarded by the terminal emulator used are detected (ALT,CTRL may not be handled)
 
-## Try
-[![screenshot](https://github.com/ceccopierangiolieugenio/binaryRepo/blob/master/pyTermTk/replit.pytermtk.banner.png?raw=true)](https://replit.com/@EugenioP/pyTermTk?v=1)
+## Try the Sandbox
+[![screenshot](https://github.com/ceccopierangiolieugenio/binaryRepo/blob/master/pyTermTk/replit.pytermtk.banner.png?raw=true)](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html)
 
 ## [Tutorial](tutorial)
 Be inspired by the [tutorial examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial)

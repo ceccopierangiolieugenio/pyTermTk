@@ -31,6 +31,9 @@ www:
 buildSandbox: www
 	rm -rf bin
 	mkdir -p bin
-	find ../../TermTk/  -name "*.py" | sort | xargs tar cvzf bin/TermTk.tgz
+
+	$( cd ../../ ; tools/prepareBuild.sh release ; )
+
+	find ../../tmp/TermTk/  -name "*.py" | sed 's,.*tmp/,,' | sort | xargs tar cvzf bin/TermTk.tgz -C ../../tmp
 	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
 	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz
