@@ -154,19 +154,19 @@
 
         term.write('Pyodide Proxy - Loaded\n\r')
 
-        let zipResponse = await fetch("TermTk.tgz");
+        let zipResponse = await fetch("bin/TermTk.tgz");
         let zipBinary = await zipResponse.arrayBuffer();
         pyodide.unpackArchive(zipBinary, ".tar.gz");
 
         term.write('TermTk - Loaded\n\r')
 
-        zipResponse = await fetch("demo.tgz");
+        zipResponse = await fetch("bin/demo.tgz");
         zipBinary = await zipResponse.arrayBuffer();
         pyodide.unpackArchive(zipBinary, ".tar.gz");
 
         term.write('Demos - Loaded\n\r')
 
-        zipResponse = await fetch("tutorial.tgz");
+        zipResponse = await fetch("bin/tutorial.tgz");
         zipBinary = await zipResponse.arrayBuffer();
         pyodide.unpackArchive(zipBinary, ".tar.gz");
 

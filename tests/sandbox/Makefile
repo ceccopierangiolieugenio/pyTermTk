@@ -6,7 +6,6 @@ testSandbox:
 www:
 	mkdir -p www/pyodide www/xterm/ www/xterm-addon-fit www/codemirror www/codemirror/theme www/codemirror/modes
 
-
 	wget  -P www/xterm    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css
 	wget  -P www/xterm    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js
 	wget  -P www/xterm    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js.map
@@ -30,7 +29,8 @@ www:
 
 
 buildSandbox: www
-	rm -f TermTk.tgz demo.tgz tutorial.tgz
-	find ../../TermTk/  -name "*.py" | sort | xargs tar cvzf TermTk.tgz
-	find ../../tutorial -name "*.py" | sort | xargs tar cvzf tutorial.tgz
-	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf demo.tgz
+	rm -rf bin
+	mkdir -p bin
+	find ../../TermTk/  -name "*.py" | sort | xargs tar cvzf bin/TermTk.tgz
+	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
+	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz

@@ -59,13 +59,13 @@
 
         term.write('Pyodide Proxy - Loaded\n\r')
 
-        let zipResponse = await fetch("TermTk.tgz");
+        let zipResponse = await fetch("bin/TermTk.tgz");
         let zipBinary = await zipResponse.arrayBuffer();
         pyodide.unpackArchive(zipBinary, ".tar.gz");
 
         term.write('TermTk - Loaded\n\r')
 
-        zipResponse = await fetch("demo.tgz");
+        zipResponse = await fetch("bin/demo.tgz");
         zipBinary = await zipResponse.arrayBuffer();
         pyodide.unpackArchive(zipBinary, ".tar.gz");
 
@@ -139,11 +139,11 @@
         term.onData((d, evt) => { ttk_input(d) })
 
         pyodide.runPython(`
-        import sys,os
-        sys.path.append(os.path.join(sys.path[0],'demo'))
-        __file__='/home/pyodide/demo/demo.py'
-        __name__ = "__main__"
-        os.chdir('/home/pyodide/demo')
+          import sys,os
+          sys.path.append(os.path.join(sys.path[0],'demo'))
+          __file__='/home/pyodide/demo/demo.py'
+          __name__ = "__main__"
+          os.chdir('/home/pyodide/demo')
         `,{ globals: namespace }
         );
 
