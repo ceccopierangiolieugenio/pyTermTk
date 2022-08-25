@@ -6,3 +6,5 @@ tests
 demo
 session.*
 /TermTk
+tmp
+*.swp
