@@ -163,7 +163,7 @@ def main():
         container = root
         border = False
     else:
-        container = TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=layout)
+        container = TTkWindow(parent=root,pos=(0,0), size=(100,40), title="pyTermTk Showcase", border=True, layout=layout)
         border = True
 
     splitter = TTkSplitter(parent=container)

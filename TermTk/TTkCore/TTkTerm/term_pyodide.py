@@ -40,4 +40,7 @@ class TTkTerm(TTkTermBase):
     @staticmethod
     def _registerResizeCb(callback):
         TTkTerm._sigWinChCb = callback
+        # Dummy call to retrieve the terminal size
+        TTkTerm.width, TTkTerm.height = TTkTerm.getTerminalSize()
+        callback(TTkTerm.width, TTkTerm.height)
     TTkTermBase.registerResizeCb = _registerResizeCb

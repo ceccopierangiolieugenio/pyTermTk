@@ -67,6 +67,7 @@ def pyTTkSignal(*args, **kwargs):
     return _pyTTkSignal_obj(*args, **kwargs)
 
 class _pyTTkSignal_obj():
+    _signals = []
     __slots__ = ('_types', '_name', '_revision', '_connected_slots')
     def __init__(self, *args, **kwargs):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
@@ -85,6 +86,7 @@ class _pyTTkSignal_obj():
         self._name = kwargs.get('name', None)
         self._revision = kwargs.get('revision', 0)
         self._connected_slots = []
+        _pyTTkSignal_obj._signals.append(self)
 
     def connect(self, slot):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
@@ -122,6 +124,11 @@ class _pyTTkSignal_obj():
 
     def clear(self):
         self._connected_slots = []
+
+    @staticmethod
+    def clearAll():
+        for s in _pyTTkSignal_obj._signals:
+            s.clear()
 
     def forward(self):
         def _ret(*args, **kwargs):

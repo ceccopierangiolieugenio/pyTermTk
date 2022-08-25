@@ -119,8 +119,9 @@ class TTk(TTkWidget):
                 return
             self._input.start()
         finally:
-            self.quit()
-            TTkTerm.exit()
+            if platform.system() != 'Emscripten':
+                self.quit()
+                TTkTerm.exit()
 
     @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
     def _processInput(self, kevt, mevt):
@@ -202,12 +203,12 @@ class TTk(TTkWidget):
 
     def _time_event(self):
         w,h = TTkTerm.getTerminalSize()
-        self.setGeometry(0,0,w,h)
         self._drawMutex.acquire()
+        self.setGeometry(0,0,w,h)
+        self._fps()
         TTkHelper.paintAll()
         self._drawMutex.release()
         self._timer.start(1/TTkCfg.maxFps)
-        self._fps()
 
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)
@@ -219,6 +220,7 @@ class TTk(TTkWidget):
     def quit(self):
         '''Tells the application to exit with a return code.'''
         self._events.put(TTkK.QUIT_EVENT)
+        self._input.inputEvent.clear()
         TTkTimer.quitAll()
         self._input.close()
 

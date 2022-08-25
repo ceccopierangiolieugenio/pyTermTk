@@ -31,27 +31,40 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 if importlib.util.find_spec('pyodideProxy'):
     import pyodideProxy
     class TTkTimer():
-        _timers = []
+        _timers = {}
+        _uid = 0
+
         __slots__ = (
-            '_id',
+            '_id', '_running',
             'timeout', '_timerEvent',
             '_delay', '_delayLock', '_quit',
             '_stopTime')
+
         def __init__(self):
             # Define Signals
             self.timeout = pyTTkSignal()
+            self._running = True
 
-            self._id = len(TTkTimer._timers)
-            TTkTimer._timers.append(self)
+            self._id = TTkTimer._uid
+            TTkTimer._uid +=1
+            TTkTimer._timers[self._id] = self
 
         @staticmethod
         def triggerTimerId(tid):
-            TTkTimer._timers[tid].timeout.emit()
+            if tid in TTkTimer._timers:
+                TTkTimer._timers[tid].timeout.emit()
 
         @staticmethod
         def quitAll():
+            pass
+
+        @staticmethod
+        def pyodideQuit():
             for timer in TTkTimer._timers:
-                timer.quit()
+                TTkTimer._timers[timer].timeout.clearAll()
+                TTkTimer._timers[timer]._running = False
+                TTkTimer._timers[timer].quit()
+            TTkTimer._timers = {}
 
         def quit(self):
             pass
@@ -61,7 +74,8 @@ if importlib.util.find_spec('pyodideProxy'):
 
         @pyTTkSlot(int)
         def start(self, sec=0):
-            pyodideProxy.setTimeout(int(sec*1000), self._id)
+            if self._running:
+                pyodideProxy.setTimeout(int(sec*1000), self._id)
 
         @pyTTkSlot()
         def stop(self):

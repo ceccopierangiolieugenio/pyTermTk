@@ -73,7 +73,7 @@ def main():
         rootGraph = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootGraph = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Graph", border=True, layout=ttk.TTkGridLayout())
+        rootGraph = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Scroll Area", border=True, layout=ttk.TTkGridLayout())
     demoScrollArea(rootGraph)
     root.mainloop()
 

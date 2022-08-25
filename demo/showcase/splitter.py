@@ -60,7 +60,7 @@ def main():
         rootSplitter = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootSplitter = ttk.TTkWindow(parent=root,pos = (10,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
+        rootSplitter = ttk.TTkWindow(parent=root,pos = (5,5), size=(100,40), title="Test Splitter", border=True, layout=ttk.TTkGridLayout())
     demoSplitter(rootSplitter)
     root.mainloop()
 

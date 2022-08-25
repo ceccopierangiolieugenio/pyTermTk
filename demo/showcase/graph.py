@@ -27,7 +27,6 @@ import sys, os, argparse, math, random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-
 class graphTimerEvent():
     def __init__(self, w, type, delay):
         self.timer = ttk.TTkTimer()
@@ -87,6 +86,7 @@ def demoGraph(root= None):
     graphTimerEvent(graphWidget5, 5, 0.1)
     graphTimerEvent(graphWidget6, 6, 0.1)
     return frame
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', help='Full Screen', action='store_true')

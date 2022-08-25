@@ -241,19 +241,21 @@ def demoShowcase(root=None, border=True):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+    parser.add_argument('-w', help='Windowed',    action='store_true')
     args = parser.parse_args()
+    windowed = args.w
 
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk(title="pyTermTk Demo")
-    if args.f:
+    if windowed:
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
+        border = True
+    else:
         root.setLayout(ttk.TTkGridLayout())
         winTabbed1 = root
         border = False
-    else:
-        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
-        border = True
 
     demoShowcase(winTabbed1, border)
 
