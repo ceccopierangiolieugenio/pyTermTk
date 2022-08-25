@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="www/pyodide/pyodide.js"></script>
+    <!--
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js"></script>
+    -->
+
+    <link  href="www/xterm/xterm.css" rel="stylesheet" />
+    <script src="www/xterm/xterm.js"></script>
+    <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
+    <!--
+      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-fit/xterm-addon-fit.js"></script>
+    -->
+
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css" />
+    <!--
+      <script src="jquery/jquery-3.5.0.min.js"></script>
+      <script type="text/javascript" src="w2ui/w2ui.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="w2ui/w2ui.min.css" />
+    -->
+
+    <link  href="www/codemirror/theme/mbo.css" rel="stylesheet" >
+    <link  href="www/codemirror/codemirror.css" rel="stylesheet" />
+    <script src="www/codemirror/codemirror.js"></script>
+    <script src="www/codemirror/modes/python.js"></script>
+    <!--
+      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.css" rel="stylesheet" />
+      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/theme/mbo.css" rel="stylesheet" >
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.js"></script>
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/modes/python.js"></script>
+    -->
+    <style>
+      .CodeMirror { height: 100%; }
+      </style>
+  </head>
+  <body>
+
+    <div id="layout" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
+
+    <script type="text/javascript">
+          let pstyle = 'border: 1px solid #efefef; padding: 5px;';
+          let expand = 'position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px';
+          new w2layout({
+              box: '#layout',
+              name: 'layout_pyTermTk_sandbox',
+              padding: 4,
+              panels: [
+                  //{ type: 'top', size: 50, resizable: true, style: pstyle, html: 'top' },
+                  { type: 'left', size: 200, resizable: true, style: pstyle,
+                    html: '<div id="sidebar" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' },
+                  { type: 'main', style: pstyle,
+                    toolbar: {
+                      items: [
+                        { type: 'button', id: 'run_button', text: 'Run', icon: 'icon-play-circle' },
+                        { type: 'html',  id: 'uri',
+                            html(item) {
+                              let html =
+                                '<div style="padding: 0px 10px; margin-top: -2px;">'+
+                                ' URI: <input id="codeUri" size="50"/>'+
+                                '</div>';
+                              return html;
+                              },
+                        },
+                      ],
+                      onClick(event) { run(); }
+                    },
+                      html: '<div id="codeArea" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 25px"></div>'+
+                            `<div id="codeArea" style="position: absolute; left: 15px;          right: 0px; bottom: 0px">
+                              <a href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> sandbox,
+                              Powered by <a href="https://pyodide.org/">Pyodide</a>
+                              and <a href="https://xtermjs.org">xterm.js</a>
+                              and <a href="https://codemirror.net/5/">CodeMirror5</a>
+                              and <a href="https://w2ui.com/">w2ui</a>
+                             </div>`},
+                  { type: 'right', size: 1000, resizable: true, style: pstyle,
+                    html: '<div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
+              ]
+          });
+    </script>
+
+    <script type="text/javascript">
+      /* xterm.js demo */
+      const fitAddon = new FitAddon.FitAddon();
+
+      var term = new Terminal();
+      term.loadAddon(fitAddon);
+
+      term.open(document.getElementById('terminal'));
+
+      term.write('xterm.js - Loaded\n\r')
+
+      fitAddon.fit()
+
+      w2ui.layout_pyTermTk_sandbox.on('resize', (event) => {
+            setTimeout(()=>{fitAddon.fit()},0.5)
+      });
+
+      /* Code Mirror */
+      let myCodeMirror = CodeMirror(document.getElementById('codeArea'), {
+          mode:  "python",
+          lineNumbers: true,
+          styleActiveLine: true,
+          matchBrackets: true
+      });
+      myCodeMirror.setOption("theme", "mbo");
+      let getCode = function(){
+        return myCodeMirror.getValue()
+      }
+      let setCode = function(txt){
+        myCodeMirror.setValue(txt)
+      }
+
+
+      /* pyodide demo */
+      var pyodide = null
+      var run = null
+      var namespace = null
+      async function main(){
+        pyodide = await loadPyodide();
+
+        let pyodideProxy = {
+          consoleLog: function(m){
+            console.log("TTk:",m)
+          },
+          termPush: function (s) {
+            term.write(s);
+          },
+          termSize: function () {
+            return [term.cols, term.rows]
+          },
+          setTimeout: function(t, i) {
+            // console.log("TIME",i,t)
+            setTimeout(() => ttk_timer(i), t)
+          },
+          clearTimeout: function(){
+            let highestTimeoutId = setTimeout(";");
+            for (let i = 0 ; i < highestTimeoutId ; i++) {
+              clearTimeout(i);
+            }
+          },
+          setInterval: function(t, i) {
+            setTinterval(() => console.log('WIP -> Interval' + i), t)
+          }
+        };
+        pyodide.registerJsModule("pyodideProxy", pyodideProxy);
+
+        term.write('Pyodide Proxy - Loaded\n\r')
+
+        let zipResponse = await fetch("bin/TermTk.tgz");
+        let zipBinary = await zipResponse.arrayBuffer();
+        pyodide.unpackArchive(zipBinary, ".tar.gz");
+
+        term.write('TermTk - Loaded\n\r')
+
+        zipResponse = await fetch("bin/demo.tgz");
+        zipBinary = await zipResponse.arrayBuffer();
+        pyodide.unpackArchive(zipBinary, ".tar.gz");
+
+        term.write('Demos - Loaded\n\r')
+
+        zipResponse = await fetch("bin/tutorial.tgz");
+        zipBinary = await zipResponse.arrayBuffer();
+        pyodide.unpackArchive(zipBinary, ".tar.gz");
+
+        term.write('Tutorials - Loaded\n\r')
+
+        term.write('Starting Demo...\n\r')
+
+        namespace = pyodide.globals.get("dict")();
+        pyodide.runPython(`
+            import sys
+            import TermTk as ttk
+            import pyodideProxy
+
+            def ttk_input(val):
+              if ttk.TTkHelper._rootWidget and ttk.TTkHelper._rootWidget._input:
+                ttk.TTkHelper._rootWidget._input.key_process(val)
+
+            def ttk_resize(w,h):
+              ttk.TTkLog.debug(f"Resize: {w=} {h=}")
+              if ttk.TTkHelper._rootWidget:
+                ttk.TTkHelper._rootWidget._win_resize_cb(w,h)
+                ttk.TTkHelper.rePaintAll()
+              # TODO: I need to get rid of this:
+              ttk.TTkTerm.push(ttk.TTkTerm.ALT_SCREEN + ttk.TTkTerm.CLEAR + ttk.TTkTerm.Cursor.HIDE + ttk.TTkTerm.escTitle(ttk.TTkTerm.title))
+              ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON)
+
+            def ttk_timer(tid):
+              ttk.TTkTimer.triggerTimerId(tid)
+
+            def ttk_log(val):
+              # hex = [f"0x{ord(x):02x}" for x in val]
+              ttk.TTkLog.debug("---> "+val.replace("\\033","<ESC>") + " - ")
+              ttk.TTkHelper.paintAll()
+
+            def ttk_clean():
+              if ttk.TTkHelper._rootWidget:
+                ttk.TTkTimer.pyodideQuit()
+                ttk.TTkHelper._rootWidget.quit()
+                ttk.TTkHelper._focusWidget = None
+                ttk.TTkHelper._rootCanvas = None
+                ttk.TTkHelper._rootWidget = None
+                ttk.TTkHelper._updateBuffer = []
+                ttk.TTkHelper._updateWidget = []
+                ttk.TTkHelper._overlay = []
+                ttk.TTkHelper._shortcut = []
+                ttk.TTkLog._messageHandler = [message_handler]
+
+            def message_handler(mode, context, message):
+                msgType = "DEBUG"
+                if mode == ttk.TTkLog.InfoMsg:       msgType = "[INFO]"
+                elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
+                elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
+                elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
+                elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+                pyodideProxy.consoleLog(f"{msgType} {context.file} {message}")
+            # Register the callback to the message handler
+            ttk.TTkLog.installMessageHandler(message_handler)
+        `,{ globals: namespace }
+        );
+
+        let ttk_log    = namespace.get("ttk_log");
+        let ttk_input  = namespace.get("ttk_input");
+        let ttk_timer  = namespace.get("ttk_timer");
+        let ttk_resize = namespace.get("ttk_resize");
+        let ttk_clean  = namespace.get("ttk_clean");
+
+        term.onResize( (obj) => {
+          term.reset()
+          ttk_resize(obj.cols, obj.rows)
+        });
+        term.onData((d, evt) => { ttk_input(d) })
+
+        pyodide.runPython(`
+        import sys,os
+        sys.path.append(os.path.join(sys.path[0],'demo'))
+        __name__ = "__main__"
+        `,{ globals: namespace }
+        );
+
+        /* Sidebar
+          Fetch all the files in the pyodide.FS
+          And push them in the sidebar
+        */
+        let getAllFiles = function(p){
+          let ls = pyodide.FS.readdir(p)
+          let ret = []
+          for(let i=0 ; i<ls.length; i++){
+            let n = p+"/"+ls[i]
+            if(ls[i]=='.' || ls[i]=='..' || n==(pyodide.FS.currentPath+"/TermTk")) continue;
+            if( pyodide.FS.isDir(pyodide.FS.lstat(n).mode)){
+              ret.push({id:n, text:ls[i], expanded: true, nodes:getAllFiles(n)})
+            }else{
+              if(n.endsWith('.py')){
+                ret.push({id:n, text:ls[i]})
+              }
+            }
+          }
+          return ret
+        }
+        let files = getAllFiles(pyodide.FS.currentPath)
+
+        new w2sidebar({
+          box: '#sidebar',
+          name: 'sidebar',
+          nodes: files })
+
+        w2ui.sidebar.on('click', function (event) {
+          console.log('Last Event: ' + event.type + ' Target: ' + event.target);
+          loadFile(event.target)
+        });
+
+        var loadFile = function(f){
+          let content = pyodide.FS.readFile(f, {encoding:'utf8'})
+          setCode(content)
+          document.getElementById("codeUri").value = f
+        }
+        loadFile(pyodide.FS.currentPath+"/demo/demo.py")
+        //loadFile("/home/pyodide/tutorial/calculator/calculator.005.py")
+        w2ui.sidebar.select(pyodide.FS.currentPath+"/demo/demo.py")
+
+        run = function(){
+          ttk_clean()
+          console.log("Run App")
+
+          let filename = document.getElementById("codeUri").value
+          let pwd = pyodide.PATH.dirname(filename)
+
+          pyodide.runPython(`
+            __file__='`+filename+`'
+            os.chdir('`+pwd+`')`,{ globals: namespace })
+
+          let content = getCode()
+          pyodide.runPython(content,{ globals: namespace });
+
+          // TODO: I need to get rid of this:
+          pyodide.runPython(`
+            # TODO: I need to get rid of this:
+            ttk.TTkTerm.push(ttk.TTkTerm.ALT_SCREEN + ttk.TTkTerm.CLEAR + ttk.TTkTerm.Cursor.HIDE + ttk.TTkTerm.escTitle(ttk.TTkTerm.title))
+            ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON)
+            `,{ globals: namespace }
+          );
+          ttk_log(filename + " - LOADED")
+        };
+        run()
+      }
+      main()
+      console.log(pyodide)
+    </script>
+
+  </body>
+</html>
