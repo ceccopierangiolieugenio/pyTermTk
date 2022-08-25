@@ -72,7 +72,14 @@
                       ],
                       onClick(event) { run(); }
                     },
-                      html: '<div id="codeArea" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>'},
+                      html: '<div id="codeArea" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 25px"></div>'+
+                            `<div id="codeArea" style="position: absolute; left: 15px;          right: 0px; bottom: 0px">
+                              <a href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> sandbox,
+                              Powered by <a href="https://pyodide.org/">Pyodide</a>
+                              and <a href="https://xtermjs.org">xterm.js</a>
+                              and <a href="https://codemirror.net/5/">CodeMirror5</a>
+                              and <a href="https://w2ui.com/">w2ui</a>
+                             </div>`},
                   { type: 'right', size: 1000, resizable: true, style: pstyle,
                     html: '<div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
               ]
