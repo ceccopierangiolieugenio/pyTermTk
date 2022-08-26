@@ -32,3 +32,5 @@ class Mock_TTkInput():
     class inputEvent():
         def connect(*args):
             pass
+        def clear():
+            pass
