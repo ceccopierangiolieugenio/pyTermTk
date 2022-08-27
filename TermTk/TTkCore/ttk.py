@@ -115,13 +115,16 @@ class TTk(TTkWidget):
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
             TTkTerm.init(title=self._title, sigmask=self._sigmask)
-            if platform.system() == 'Emscripten':
-                return
-            self._input.start()
+            self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
                 self.quit()
                 TTkTerm.exit()
+
+    def _mainLoop(self):
+        if platform.system() == 'Emscripten':
+            return
+        self._input.start()
 
     @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
     def _processInput(self, kevt, mevt):

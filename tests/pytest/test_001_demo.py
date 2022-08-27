@@ -25,6 +25,7 @@ import sys, os
 import argparse
 import queue
 import pickle
+import threading
 
 sys.path.append(os.path.join(sys.path[0],'../../demo'))
 sys.path.append(os.path.join(sys.path[0],'../..'))
@@ -62,6 +63,23 @@ class TTkRecord(demo.ttk.TTk):
         self._key_events    = TTkRecord._RecordQueue()
         self._mouse_events  = TTkRecord._RecordQueue()
         self._screen_events = TTkRecord._RecordQueue()
+
+    MOUSE_EVENT  = 0x01
+    KEY_EVENT    = 0x02
+    SCREEN_EVENT = 0x04
+    QUIT_EVENT   = 0x08
+    TIME_EVENT   = 0x10
+
+    def _mainLoop(self):
+        while (evt := self._events.get()) != self.QUIT_EVENT:
+            mevt,kevt = None, None
+            if evt == self.MOUSE_EVENT:
+                mevt = self._mouse_events.get()
+            if evt == self.KEY_EVENT:
+                kevt = self._key_events.get()
+            if evt == self.TIME_EVENT:
+                self._time_event()
+            self._processInput(kevt, mevt)
 
     def saveQueue(self, fd):
         data = {'events': self._events.getData(),
