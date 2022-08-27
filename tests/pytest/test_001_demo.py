@@ -155,7 +155,7 @@ def test_demo():
 
 def test_recording1():
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
-    root.loadQueue(open('tmp/test.input.002.bin', 'rb'))
+    root.loadQueue(open('tmp/test.input.bin', 'rb'))
     winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
