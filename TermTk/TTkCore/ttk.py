@@ -45,7 +45,6 @@ from TermTk.TTkWidgets.widget import TTkWidget
 class TTk(TTkWidget):
     __slots__ = (
         '_name', '_input',
-        '_events', '_key_events', '_mouse_events', '_screen_events',
         '_title',
         '_sigmask',
         '_drawMutex',
@@ -56,10 +55,6 @@ class TTk(TTkWidget):
         self._name = kwargs.get('name' , 'TTk' )
         self._input = TTkInput()
         self._input.inputEvent.connect(self._processInput)
-        self._events = queue.Queue()
-        self._key_events = queue.Queue()
-        self._mouse_events = queue.Queue()
-        self._screen_events = queue.Queue()
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self._drawMutex = threading.Lock()
@@ -222,7 +217,6 @@ class TTk(TTkWidget):
 
     def quit(self):
         '''Tells the application to exit with a return code.'''
-        self._events.put(TTkK.QUIT_EVENT)
         self._input.inputEvent.clear()
         TTkTimer.quitAll()
         self._input.close()
