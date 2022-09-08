@@ -296,6 +296,7 @@ class TTkHelper:
     @staticmethod
     def rePaintAll():
         if TTkHelper._rootCanvas and  TTkHelper._rootWidget:
+            TTkTerm.push(TTkTerm.CLEAR)
             TTkHelper._rootCanvas.cleanBuffers()
             TTkHelper._rootWidget.update()
 

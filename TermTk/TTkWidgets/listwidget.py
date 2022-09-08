@@ -204,9 +204,8 @@ class TTkListWidget(TTkAbstractScrollView):
     def moveItem(self, fr, to):
         fr = max(min(fr,len(self._items)-1),0)
         to = max(min(to,len(self._items)-1),0)
-        tmp = self._items[to]
-        self._items[to] = self._items[fr]
-        self._items[fr] = tmp
+        # Swap
+        self._items[to] , self._items[fr] = self._items[fr] , self._items[to]
         self._placeItems()
 
     def removeItem(self, item):

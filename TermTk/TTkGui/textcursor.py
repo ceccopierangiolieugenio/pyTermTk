@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from xml.dom.minidom import Document
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
@@ -133,6 +134,9 @@ class TTkTextCursor():
             self.anchor = anchor
             self.position = position
 
+        def copy(self):
+            return TTkTextCursor._prop(self.anchor.copy(), self.position.copy())
+
         def selectionStart(self):
             if self.position.toNum() > self.anchor.toNum():
                 return self.anchor
@@ -156,6 +160,8 @@ class TTkTextCursor():
         __slots__ = ('line','pos')
         def __init__(self, l=0, p=0):
             self.set(l,p)
+        def copy(self):
+            return TTkTextCursor._CP(self.pos, self.line)
         def set(self, l, p):
             self.pos  = p
             self.line = l
@@ -177,6 +183,23 @@ class TTkTextCursor():
         if self._autoChanged: return True
         self.cleanCursors()
         self.clearSelection()
+
+    def copy(self):
+        ret = TTkTextCursor()
+        ret._document = self._document
+        ret._properties = [p.copy() for p in self._properties]
+        ret._cID = self._cID
+        ret._color = self._color
+        ret._autoChanged = self._autoChanged
+        return ret
+
+    def restore(self, cursor):
+        self._document = cursor._document
+        self._properties = [p.copy() for p in cursor._properties]
+        self._cID = cursor._cID
+        self._color = cursor._color
+        self._autoChanged = cursor._autoChanged
+        self._document.cursorPositionChanged.emit(self)
 
     def setColor(self, color):
         self._color = color
@@ -360,6 +383,7 @@ class TTkTextCursor():
                 pp.position.line += diffLine
                 pp.anchor.line += diffLine
         self._autoChanged = True
+        self._document._changed = True
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(l,b,c)
         self._autoChanged = False
@@ -449,6 +473,7 @@ class TTkTextCursor():
         if not self.hasSelection(): return
         a,b,c = self._removeSelectedText()
         self._autoChanged = True
+        self._document._changed = True
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(a,b,c)
         self._autoChanged = False
@@ -463,6 +488,7 @@ class TTkTextCursor():
                 pt = len(line) if l < selEn.line else selEn.pos
                 self._document._dataLines[l] = line.setColor(color=color, posFrom=pf, posTo=pt)
         self._autoChanged = True
+        self._document._changed = True
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(0,0,0)
         self._autoChanged = True

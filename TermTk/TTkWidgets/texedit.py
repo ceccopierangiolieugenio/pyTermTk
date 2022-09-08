@@ -134,7 +134,18 @@ class _TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(str)
     def append(self, text):
         self._textDocument.appendText(text)
+        self._textDocument.saveSnapshot(self._textCursor.copy())
         self._updateSize()
+
+    @pyTTkSlot()
+    def undo(self):
+        if c := self._textDocument.restoreSnapshotPrev():
+            self._textCursor.restore(c)
+
+    @pyTTkSlot()
+    def redo(self):
+        if c := self._textDocument.restoreSnapshotNext():
+            self._textCursor.restore(c)
 
     @pyTTkSlot()
     def _rewrap(self):
@@ -256,6 +267,21 @@ class _TTkTextEditView(TTkAbstractScrollView):
     def keyEvent(self, evt):
         if self._readOnly:
             return super().keyEvent(evt)
+
+        # Keep a snapshot in case of those actions
+        if (( evt.type == TTkK.Character and (
+              ( evt.key == ' ' ) or
+              ( evt.key == '\n') or
+              ( evt.key == '\t') or
+              ( self._textCursor.hasSelection() ) )  )  or
+            ( evt.type == TTkK.SpecialKey and (
+              ( evt.key == TTkK.Key_Enter     ) or
+              ( evt.key == TTkK.Key_Delete    ) or
+              ( evt.key == TTkK.Key_Backspace ) or
+              ( self._textDocument.changed()  and evt.key == TTkK.Key_Z ) or
+              ( evt.mod==TTkK.ControlModifier and evt.key == TTkK.Key_V ) ) ) ):
+            self._textDocument.saveSnapshot(self._textCursor.copy())
+
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
 
@@ -291,6 +317,10 @@ class _TTkTextEditView(TTkAbstractScrollView):
                 elif evt.key == TTkK.Key_V:
                     txt = self._clipboard.text()
                     self._textCursor.insertText(txt)
+                elif evt.key == TTkK.Key_Z:
+                    self.undo()
+                elif evt.key == TTkK.Key_Y:
+                    self.redo()
             elif evt.key == TTkK.Key_Up:
                 self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap)
                 self._textCursor.clearColor()
@@ -389,6 +419,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
             'textCursor', 'setFocus',
+            'undo', 'redo',
             # Signals
             'focusChanged', 'currentColorChanged'
 
@@ -408,6 +439,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.setReadOnly = self._textEditView.setReadOnly
         self.textCursor = self._textEditView.textCursor
         self.setFocus = self._textEditView.setFocus
+        self.undo = self._textEditView.undo
+        self.redo = self._textEditView.redo
         # Forward Wrap Methods
         self.wrapWidth       = self._textEditView.wrapWidth
         self.setWrapWidth    = self._textEditView.setWrapWidth
