@@ -87,7 +87,7 @@ def main():
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
-    win_table = ttk.TTkWindow(parent=root,pos = (3,3), size=(150,40), title="Test Table 1", layout=ttk.TTkHBoxLayout(), border=True)
+    win_table = ttk.TTkWindow(parent=root,pos = (3,3), size=(100,40), title="Test Table 1", layout=ttk.TTkHBoxLayout(), border=True)
     demoFancyTable(win_table)
     root.mainloop()
 

@@ -22,11 +22,15 @@
 
 # Thanks to: https://stackoverflow.com/questions/43162722/mocking-a-module-import-in-pytest
 
-import sys
-
 class Mock_TTkInput():
     def __init__(self): pass
     def close(self): pass
     def stop(self): pass
     def cont(self): pass
     def get_key(self, callback=None): pass
+    def start(self): pass
+    class inputEvent():
+        def connect(*args):
+            pass
+        def clear():
+            pass

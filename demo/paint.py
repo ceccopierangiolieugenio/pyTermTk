@@ -174,7 +174,7 @@ if fullscreen:
     root.setLayout(TTkGridLayout())
 else:
     root = TTk()
-    paint = TTkWindow(parent=root,pos = (1,1), size=(100,30), title="Paint...", border=True, layout=TTkGridLayout())
+    paint = TTkWindow(parent=root,pos = (1,1), size=(90,45), title="Paint...", border=True, layout=TTkGridLayout())
 
 pc = PaintCanvas()
 r1 = TTkRadioButton(text="Single ┼ ", name="line", maxWidth=12, checked=True)

@@ -1,4 +1,4 @@
-.PHONY: doc runGittk runDemo build deploy buildTest deployTest
+.PHONY: doc runGittk runDemo build deploy buildTest deployTest deploySandbox
 
 .venv:
 	python3 -m venv .venv
@@ -58,10 +58,23 @@ buildTest: .venv
 
 deployDoc:
 	git checkout gh-pages
+
+	# Update the doc files
 	rm -rf *.inv *.html *.js _* autogen.* tutorial
 	cp -a docs/build/html/* .
 	find *.html *.inv *.js autogen.TermTk _* tutorial | xargs git add
+
 	git commit -m "Doc Updated"
+	git push origin gh-pages
+	git checkout main
+
+deploySandbox:
+	cp -a tests/sandbox tmp/
+
+	git checkout gh-pages
+	cp tmp/sandbox/*.html sandbox
+
+	git commit -m "Sandbox Updated"
 	git push origin gh-pages
 	git checkout main
 

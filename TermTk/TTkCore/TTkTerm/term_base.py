@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import os
+
+class TTkTermBase():
+    CLEAR         = "\033[2J\033[0;0f" # Clear screen and set cursor to position 0,0
+    ALT_SCREEN    = "\033[?1049h"                       #* Switch to alternate screen
+    NORMAL_SCREEN = "\033[?1049l"                       #* Switch to normal screen
+
+    class Mouse():
+        ON         = "\033[?1002h\033[?1015h\033[?1006h" # Enable reporting of mouse position on click and release
+        OFF        = "\033[?1002l"                       # Disable mouse reporting
+        DIRECT_ON  = "\033[?1003h"                       # Enable reporting of mouse position at any movement
+        DIRECT_OFF = "\033[?1003l"                       # Disable direct mouse reporting
+
+    class Cursor():
+        # from:
+        # https://superuser.com/questions/607478/how-do-you-change-the-xterm-cursor-to-an-i-beam-or-vertical-bar
+        # echo -e -n "\x1b[\x30 q" # changes to blinking block
+        # echo -e -n "\x1b[\x31 q" # changes to blinking block also
+        # echo -e -n "\x1b[\x32 q" # changes to steady block
+        # echo -e -n "\x1b[\x33 q" # changes to blinking underline
+        # echo -e -n "\x1b[\x34 q" # changes to steady underline
+        # echo -e -n "\x1b[\x35 q" # changes to blinking bar
+        # echo -e -n "\x1b[\x36 q" # changes to steady bar
+        BLINKING_BLOCK      = "\033[\x30 q"
+        BLINKING_BLOCK_ALSO = "\033[\x31 q"
+        STEADY_BLOCK        = "\033[\x32 q"
+        BLINKING_UNDERLINE  = "\033[\x33 q"
+        STEADY_UNDERLINE    = "\033[\x34 q"
+        BLINKING_BAR        = "\033[\x35 q"
+        STEADY_BAR          = "\033[\x36 q"
+
+        HIDE = "\033[?25l"
+        SHOW = "\033[?25h"
+
+        @staticmethod
+        def moveTo(y:int,x:int)->str: return f'\033[{y};{x}f'
+        @staticmethod
+        def moveRight(n:int)->str: return f'\033[{n}C'
+        @staticmethod
+        def moveLeft(n:int)->str:  return f'\033[{n}D'
+        @staticmethod
+        def modeUp(n:int)->str:    return f'\033[{n}A'
+        @staticmethod
+        def moveDown(n:int)->str:  return f'\033[{n}B'
+
+        @staticmethod
+        def show(cursorType):
+            TTkTermBase.push(cursorType)
+            TTkTermBase.push(TTkTermBase.Cursor.SHOW)
+        @staticmethod
+        def hide():
+            TTkTermBase.push(TTkTermBase.Cursor.HIDE)
+
+    class Sigmask():
+        CTRL_C = 0x0001
+        CTRL_S = 0x0002
+        CTRL_Z = 0x0004
+        CTRL_Q = 0x0008
+
+    title: str = "TermTk"
+    mouse: bool = True
+    width: int = 0
+    height: int = 0
+
+    _sigWinChCb = None
+
+    @staticmethod
+    def init(mouse: bool = True, title: str = "TermTk", sigmask=0):
+        TTkTermBase.title = title
+        TTkTermBase.mouse = mouse
+        TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
+        if TTkTermBase.mouse:
+            TTkTermBase.push(TTkTermBase.Mouse.ON)
+        TTkTermBase.setEcho(False)
+        TTkTermBase.CRNL(False)
+        TTkTermBase.setSigmask(sigmask, False)
+
+    @staticmethod
+    def exit():
+        TTkTermBase.push(TTkTermBase.Mouse.OFF + TTkTermBase.Mouse.DIRECT_OFF)
+        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
+        TTkTermBase.setEcho(True)
+        TTkTermBase.CRNL(True)
+
+    @staticmethod
+    def stop():
+        TTkTermBase.push(TTkTermBase.Mouse.OFF + TTkTermBase.Mouse.DIRECT_OFF)
+        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
+        TTkTermBase.setEcho(True)
+        TTkTermBase.CRNL(True)
+
+    @staticmethod
+    def cont():
+        TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
+        if TTkTermBase.mouse:
+            TTkTermBase.push(TTkTermBase.Mouse.ON)
+        TTkTermBase.setEcho(False)
+        TTkTermBase.CRNL(False)
+
+    @staticmethod
+    def escTitle(txt = "") -> str:
+        tt = os.environ.get("TERMINAL_TITLE", "")
+        if tt and txt:
+            return f'\033]0;{tt} {txt}\a'
+        else:
+            return f'\033]0;{tt}{txt}\a'
+
+    # NOTE: Due to "I have no idea how to do it in a better way",
+    # those methods are supposed to be overwritten with the
+    # compatible one in "term_unix.py" or "term_pyodide.py"
+    setSigmask = lambda *args: None
+    push       = lambda *args: None
+    flush      = lambda *args: None
+    setEcho    = lambda *args: None
+    CRNL       = lambda *args: None
+    getTerminalSize  = lambda *args: None
+    registerResizeCb = lambda *args: None

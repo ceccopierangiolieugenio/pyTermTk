@@ -17,10 +17,16 @@ __check(){
             -e "readinputlinux_thread.py:import sys, os, select" \
             -e "readinputlinux_thread.py:import threading" \
             -e "readinputlinux_thread.py:import queue" \
-            -e "term.py:import sys, os, signal" \
+            -e "term.py:import importlib.util" \
+            -e "term.*.py:import sys, os, signal" \
+            -e "term.*.py:from .term_base import TTkTermBase" \
+            -e "term_pyodide.py:import pyodideProxy" \
+            -e "timer.py:import importlib" \
             -e "ttk.py:import signal" \
             -e "ttk.py:import time" \
             -e "ttk.py:import queue" \
+            -e "ttk.py:import threading" \
+            -e "ttk.py:import platform" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading"
 } ;

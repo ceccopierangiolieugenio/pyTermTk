@@ -23,57 +23,111 @@
 # SOFTWARE.
 
 import threading, time
+import importlib
 
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 
-class TTkTimer(threading.Thread):
-    _timers = []
-    __slots__ = (
-        'timeout', '_timerEvent',
-        '_delay', '_delayLock', '_quit',
-        '_stopTime')
-    def __init__(self):
-        # Define Signals
-        self.timeout = pyTTkSignal()
+if importlib.util.find_spec('pyodideProxy'):
+    import pyodideProxy
+    class TTkTimer():
+        _timers = {}
+        _uid = 0
 
-        self._timerEvent = threading.Event()
-        self._quit = threading.Event()
-        self._stopTime = 0
-        self._delay=0
-        self._delayLock = threading.Lock()
-        threading.Thread.__init__(self)
-        TTkTimer._timers.append(self)
-        threading.Thread.start(self)
+        __slots__ = (
+            '_id', '_running',
+            'timeout', '_timerEvent',
+            '_delay', '_delayLock', '_quit',
+            '_stopTime')
 
-    @staticmethod
-    def quitAll():
-        for timer in TTkTimer._timers:
-            timer.quit()
+        def __init__(self):
+            # Define Signals
+            self.timeout = pyTTkSignal()
+            self._running = True
 
-    def quit(self):
-        self._quit.set()
-        self._timerEvent.set()
+            self._id = TTkTimer._uid
+            TTkTimer._uid +=1
+            TTkTimer._timers[self._id] = self
 
-    def run(self):
-        while self._timerEvent.wait():
-            self._timerEvent.clear()
-            while self._delay > 0:
-                # self._delayLock.acquire()
-                delay = self._delay
-                self._delay = 0
-                # self._delayLock.release()
-                if self._quit.wait(delay):
-                    return
-            self.timeout.emit()
+        @staticmethod
+        def triggerTimerId(tid):
+            if tid in TTkTimer._timers:
+                TTkTimer._timers[tid].timeout.emit()
 
-    @pyTTkSlot(int)
-    def start(self, sec=0):
-        self._lastTime = time.time()
-        self._delay = sec
-        self._timerEvent.set()
+        @staticmethod
+        def quitAll():
+            pass
 
-    @pyTTkSlot()
-    def stop(self):
-        # TODO: Timer.stop()
-        self._stopTime = time.time()
+        @staticmethod
+        def pyodideQuit():
+            for timer in TTkTimer._timers:
+                TTkTimer._timers[timer].timeout.clearAll()
+                TTkTimer._timers[timer]._running = False
+                TTkTimer._timers[timer].quit()
+            TTkTimer._timers = {}
+
+        def quit(self):
+            pass
+
+        def run(self):
+            pass
+
+        @pyTTkSlot(int)
+        def start(self, sec=0):
+            if self._running:
+                pyodideProxy.setTimeout(int(sec*1000), self._id)
+
+        @pyTTkSlot()
+        def stop(self):
+            pass
+else:
+    class TTkTimer(threading.Thread):
+        _timers = []
+        __slots__ = (
+            'timeout', '_timerEvent',
+            '_delay', '_delayLock', '_quit',
+            '_stopTime')
+        def __init__(self):
+            # Define Signals
+            self.timeout = pyTTkSignal()
+
+            self._timerEvent = threading.Event()
+            self._quit = threading.Event()
+            self._stopTime = 0
+            self._delay=0
+            self._delayLock = threading.Lock()
+            threading.Thread.__init__(self)
+            TTkTimer._timers.append(self)
+            threading.Thread.start(self)
+
+        @staticmethod
+        def quitAll():
+            for timer in TTkTimer._timers:
+                timer.quit()
+
+        def quit(self):
+            self._quit.set()
+            self._timerEvent.set()
+
+        def run(self):
+            while self._timerEvent.wait():
+                self._timerEvent.clear()
+                while self._delay > 0:
+                    # self._delayLock.acquire()
+                    delay = self._delay
+                    self._delay = 0
+                    # self._delayLock.release()
+                    if self._quit.wait(delay):
+                        return
+                self.timeout.emit()
+
+        @pyTTkSlot(int)
+        def start(self, sec=0):
+            self._lastTime = time.time()
+            self._delay = sec
+            self._timerEvent.set()
+
+        @pyTTkSlot()
+        def stop(self):
+            # TODO: Timer.stop()
+            self._stopTime = time.time()

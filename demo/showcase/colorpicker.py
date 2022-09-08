@@ -62,7 +62,7 @@ def main():
         root.setLayout(ttk.TTkGridLayout())
         winColor1 = root
     else:
-        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(120,50), title="Test Color Picker", border=True, layout=ttk.TTkGridLayout())
+        winColor1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(80,30), title="Test Color Picker", border=True, layout=ttk.TTkGridLayout())
 
     demoColorPicker(winColor1)
 

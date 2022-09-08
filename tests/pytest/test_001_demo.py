@@ -25,6 +25,7 @@ import sys, os
 import argparse
 import queue
 import pickle
+import threading
 
 sys.path.append(os.path.join(sys.path[0],'../../demo'))
 sys.path.append(os.path.join(sys.path[0],'../..'))
@@ -55,15 +56,59 @@ class TTkRecord(demo.ttk.TTk):
             for d in data:
                 self.put(d)
 
+    __slots__ = ('_record', '_events', '_key_events', '_mouse_events', '_screen_events')
     def __init__(self, *args, **kwargs):
         super().__init__( *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkRecord' )
-        self._events        = TTkRecord._RecordQueue()
-        self._key_events    = TTkRecord._RecordQueue()
-        self._mouse_events  = TTkRecord._RecordQueue()
-        self._screen_events = TTkRecord._RecordQueue()
+        self._record = kwargs.get('record', True)
+        self._events        = self._RecordQueue()
+        self._key_events    = self._RecordQueue()
+        self._mouse_events  = self._RecordQueue()
+        self._screen_events = self._RecordQueue()
+
+    MOUSE_EVENT  = 0x01
+    KEY_EVENT    = 0x02
+    SCREEN_EVENT = 0x04
+    QUIT_EVENT   = 0x08
+    TIME_EVENT   = 0x10
+
+    def _mainLoop(self):
+        if self._record:
+            return super()._mainLoop()
+        while (evt := self._events.get()) != self.QUIT_EVENT:
+            mevt,kevt = None, None
+            if evt == self.MOUSE_EVENT:
+                mevt = self._mouse_events.get()
+            if evt == self.KEY_EVENT:
+                kevt = self._key_events.get()
+            if evt == self.TIME_EVENT:
+                super()._time_event()
+                continue
+            #if evt == self.SCREEN_EVENT:
+            #    width, height = self._screen_events.get()
+            #    super()._win_resize_cb(width, height)
+            super()._processInput(kevt, mevt)
+
+    def _processInput(self, kevt, mevt):
+        if mevt:
+            self._events.put(self.MOUSE_EVENT)
+            self._mouse_events.put(mevt)
+        if kevt:
+            self._events.put(self.KEY_EVENT)
+            self._key_events.put(kevt)
+        super()._processInput(kevt,mevt)
+
+    def _time_event(self):
+        self._events.put(self.TIME_EVENT)
+        super()._time_event()
+
+    def _win_resize_cb(self, width, height):
+        self._events.put(self.SCREEN_EVENT)
+        self._screen_events.put((width, height))
+        super()._win_resize_cb(width, height)
 
     def saveQueue(self, fd):
+        self._events.put(self.QUIT_EVENT)
         data = {'events': self._events.getData(),
                 'key':    self._key_events.getData(),
                 'mouse':  self._mouse_events.getData(),
@@ -88,14 +133,14 @@ if __name__ == "__main__":
     print(args)
 
     if args.record:
-        root = TTkRecord(title="pyTermTk Demo Record")
+        root = TTkRecord(title="pyTermTk Demo Record", record=True)
         winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
         demo.demoShowcase(winTabbed1, True)
         root.mainloop()
         root.saveQueue(args.record)
         args.record.close()
     elif args.play:
-        root = TTkRecord(title="pyTermTk Demo Record")
+        root = TTkRecord(title="pyTermTk Demo Record", record=False)
         root.loadQueue(args.play)
         winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
         demo.demoShowcase(winTabbed1, True)
@@ -109,7 +154,7 @@ def test_demo():
     root.quit()
 
 def test_recording1():
-    root = TTkRecord(title="pyTermTk Demo Record")
+    root = TTkRecord(title="pyTermTk Demo Record", record=False)
     root.loadQueue(open('tmp/test.input.bin', 'rb'))
     winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
