@@ -279,7 +279,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
               ( evt.key == TTkK.Key_Delete    ) or
               ( evt.key == TTkK.Key_Backspace ) or
               ( self._textDocument.changed()  and evt.key == TTkK.Key_Z ) or
-              ( evt.mod==TTkK.ControlModifier and evt.key == TTkK.Key_V ) ) ) ):
+              ( evt.mod==TTkK.ControlModifier and
+                (   evt.key == TTkK.Key_V or
+                  ( evt.key == TTkK.Key_Z and self._textDocument.changed() ) )
+              ) ) ) ):
+            # TTkLog.debug(f"Saving {self._textCursor.selectedText()} {self._textCursor._properties[0].anchor.pos}")
             self._textDocument.saveSnapshot(self._textCursor.copy())
 
         if evt.type == TTkK.SpecialKey:

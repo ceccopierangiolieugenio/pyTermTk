@@ -26,6 +26,13 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
 
+# def ccc(c,dl):
+#     pp = c._properties[0].selectionStart().pos
+#     pl = c._properties[0].selectionStart().line
+#     ap = c._properties[0].selectionEnd().pos
+#     al = c._properties[0].selectionEnd().line
+#     return f"{pp=},{pl=},{ap=},{al=} -> {dl[pl].substring(pp,ap)}"
+
 class TTkTextDocument():
     class _snapDiff():
         '''
@@ -69,6 +76,7 @@ class TTkTextDocument():
         self._diffs = []
         self._snapshots = []
         self._snapshotId = -1
+        self.saveSnapshot(TTkTextCursor(document=self))
 
     def changed(self):
         return self._changed
@@ -100,15 +108,13 @@ class TTkTextDocument():
     def saveSnapshot(self, cursor):
         # TTkLog.debug(f"snaps: {len(self._snapshots)} id:{self._snapshotId}")
         # TTkLog.debug(f"Cur: {self._dataLines[0]}")
-        if not self._changed:
-            return
         self._changed = False
         self._snapshots = self._snapshots[:max(0,self._snapshotId+1)]
         self._snapshotId = len(self._snapshots)
         self._snapshots.append(
                 TTkTextDocument._snapshot(self._dataLines.copy(), cursor))
         # for i,s in enumerate(self._snapshots):
-        #     TTkLog.debug(f"{i=} {s._lines[0]}")
+        #     TTkLog.debug(f"{i=} {s._lines[0]}, {ccc(s._cursor, s._lines)}")
 
     def restoreSnapshot(self, inc=0):
         # TTkLog.debug(f"R: snaps: {len(self._snapshots)} id:{self._snapshotId}")
@@ -117,6 +123,7 @@ class TTkTextDocument():
             snap = self._snapshots[self._snapshotId]
             self._dataLines = snap._lines.copy()
             self.contentsChanged.emit()
+            # TTkLog.debug(f"R: id={self._snapshotId} {snap._lines[0]} {ccc(snap._cursor, snap._lines)}")
             return snap._cursor
         return None
 

@@ -160,7 +160,7 @@ class TTkTextCursor():
         def __init__(self, l=0, p=0):
             self.set(l,p)
         def copy(self):
-            return TTkTextCursor._CP(self.pos, self.line)
+            return TTkTextCursor._CP(self.line, self.pos)
         def set(self, l, p):
             self.pos  = p
             self.line = l
@@ -175,8 +175,9 @@ class TTkTextCursor():
         self._properties = [TTkTextCursor._prop(
                                 TTkTextCursor._CP(),
                                 TTkTextCursor._CP())]
-        self._document = kwargs.get('document',TTkTextDocument())
-        self._document.contentsChanged.connect(self._documentContentChanged)
+        if 'document' in kwargs:
+            self._document = kwargs.get('document')
+            self._document.contentsChanged.connect(self._documentContentChanged)
 
     def _documentContentChanged(self):
         if self._autoChanged: return True
