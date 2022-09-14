@@ -45,47 +45,32 @@ doc2 = doc1.copy()
 doc2[5000:5050] = [ getSentence(3,10,i) for i in range(50) ]
 
 
-w,h = 200,50
+nn = 1000
+
+class I():
+    def __init__(self, i):
+        self.z = i
+
+ii = [ I(random.randint(0,10000)) for _ in range(nn)]
+
 
 def test():
-    baseData = [' ']*w
-    baseColors = [ttk.TTkColor.RST]*w
-    _data = [[]]*h
-    _colors = [[]]*h
-
-    _data = [[]]*h
-    _colors = [[]]*h
-    for i in range(0,h):
-        _data[i]   = baseData.copy()
-        _colors[i] = baseColors.copy()
-    return len(_data), len(_colors)
+    minz = 0
+    for i in ii:
+        minz=min(i.z-1,minz)
+    return minz
 
 def test1():
-    baseData = [' ']*w
-    baseColors = [ttk.TTkColor.RST]*w
-    _data   = [baseData.copy()   for _ in range(h)]
-    _colors = [baseColors.copy() for _ in range(h)]
-    return len(_data), len(_colors)
+    return min([i.z-1 for i in ii])
 
-def test2(): # tbd
-    for i in range(len(doc1)):
-        if i >= len(doc2) or doc2[-i-1] != doc1[-i-1]:
-            return i
-    return None
+def test2():
+    return min([i.z for i in ii])-1
 
 def test3(): # tbd
-    for i,(a,b) in enumerate(zip(reversed(doc1),reversed(doc2))):
-        if a!=b:
-            return f"{i}\n - {a}\n - {b}"
-    return None
+    return 0
 
 def test4(): # tbd
-    for i,(a,b) in enumerate(zip(doc1,doc2)):
-        if a!=b:
-            return f"{i}\n - {a}\n - {b}"
-    return None
-
-print()
+    return 0
 
 loop = 1000
 
