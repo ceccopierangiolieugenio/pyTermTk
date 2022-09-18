@@ -51,7 +51,7 @@ def demoTextEdit(root=None, document=None):
 
     te.setReadOnly(False)
 
-    te.setText("Text Edit DEMO Eugenio Parodi\n")
+    te.setText("Text Edit DEMO Eugenio Parodi")
 
     # use the widget size to wrap
     # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
@@ -190,7 +190,8 @@ def main():
                     ttk.TTkTerm.Sigmask.CTRL_Q |
                     ttk.TTkTerm.Sigmask.CTRL_S |
                     ttk.TTkTerm.Sigmask.CTRL_Z |
-                    ttk.TTkTerm.Sigmask.CTRL_C ))
+                    # ttk.TTkTerm.Sigmask.CTRL_C ))
+                    0 ))
     if windowed:
         rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
     else:
