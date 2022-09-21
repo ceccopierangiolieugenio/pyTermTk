@@ -211,7 +211,10 @@ class TTk(TTkWidget):
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)
         TTkGlbl.term_h = int(height)
+        self._drawMutex.acquire()
         self.setGeometry(0,0,TTkGlbl.term_w,TTkGlbl.term_h)
+        TTkHelper.rePaintAll()
+        self._drawMutex.release()
         TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
 
 

@@ -22,12 +22,87 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
 
+# def ccc(c,dl):
+#     pp = c._properties[0].selectionStart().pos
+#     pl = c._properties[0].selectionStart().line
+#     ap = c._properties[0].selectionEnd().pos
+#     al = c._properties[0].selectionEnd().line
+#     return f"{pp=},{pl=},{ap=},{al=} -> {dl[pl].substring(pp,ap)}"
+
+# def ddd(td):
+#     ii = td._diffId
+#     TTkLog.debug(f"id={ii}")
+#     for i,d in enumerate(td._diffs):
+#         for s in d._slice1:
+#             TTkLog.debug(f"{i} {' ' if i!=ii else '*' if     td._diffIdFw else '>'} s1 {str(s)}")
+#         for s in d._slice2:
+#             TTkLog.debug(f"{i} {' ' if i!=ii else '*' if not td._diffIdFw else '>'} s2 {str(s)}")
+
 class TTkTextDocument():
+    '''
+        Undo,Redo Logic
+
+        Old:
+            _snapshotId: = last saved/undo/redo state
+                                   3 = doc4
+            _snapshots:
+                [doc1, doc2, doc3, doc4, doc5, doc6, . . .]
+
+        New:
+            _diffs:
+              [d01, d12,  d23,  d34,  d45,  d56,  . . .   ]
+               d01 = diff between the first doc and the empty string
+
+            _lastSnap:             doc4   -> the current full snapshot (required to gen the diff)
+
+          Undo: (need to move to doc3)
+            _lastSnap = _lastSnap (doc4) - d34 = doc3
+            _diffId -= 1
+
+          Redo: (need to move to doc4)
+            _diffId += 1 = 4
+            _lastSnap = _lastSnap (doc4) + d45 = doc5
+
+          SaveSnapshot:
+            diff = newDoc - _lastSnap ( doc4 )
+            if diff == 0:
+                replace doc4, d34
+            else:
+                add new doc5, d45
+                _diffId += 1
+                _lastSnap = newDoc
+    '''
+    class _snapDiff():
+        '''
+        Doc:
+                  0<--i1-->f1      t1<--i2-->l1
+         Base:    |---------aaaaaaaa---------|
+         Mod:     |---------bbbbb   ---------|
+                  0        f2   t2           l2 = l1 - (t1-f1) + (t2-f2)
+        '''
+        __slots__ = ('_slice1','_slice2', '_i1', '_i2', '_cursor1', '_cursor2')
+        def __init__(self, doc1, doc2, cursor1, cursor2, i1, i2):
+            self._slice1 = doc1
+            self._slice2 = doc2
+            self._cursor1 = cursor1
+            self._cursor2 = cursor2
+            self._i1 = i1
+            self._i2 = i2
+
+    class _snapshot():
+        __slots__ = ('_lines', '_cursor')
+        def __init__(self, lines, cursor):
+            self._lines  = lines
+            self._cursor = cursor
+
     __slots__ = (
-        '_dataLines',
+        '_dataLines', '_changed',
+        '_diffs', '_diffId', '_diffIdFw',
+        '_lastSnap', '_lastCursor',
         # Signals
         'contentsChange', 'contentsChanged',
         'cursorPositionChanged'
@@ -39,6 +114,16 @@ class TTkTextDocument():
         self.contentsChanged = pyTTkSignal()
         text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
+        self._changed = False
+        self._diffs = []
+        self._lastSnap = self._dataLines.copy()
+        self._lastCursor = TTkTextCursor(document=self)
+        self._diffId = -1
+        self._diffIdFw = False
+        # self.saveSnapshot(self._lastCursor)
+
+    def changed(self):
+        return self._changed
 
     def lineCount(self):
         return len(self._dataLines)
@@ -48,6 +133,7 @@ class TTkTextDocument():
 
     def setText(self, text):
         self._dataLines = [TTkString(t) for t in text.split('\n')]
+        self._changed = True
         self.contentsChanged.emit()
         self.contentsChange.emit(0,0,len(self._dataLines))
 
@@ -56,7 +142,90 @@ class TTkTextDocument():
             text = TTkString() + text
         oldLines = len(self._dataLines)
         self._dataLines += text.split('\n')
+        self._changed = True
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
+
+    def hasSnapshots(self):
+        return len(self._diffs)>0
+
+    def saveSnapshot(self, cursor):
+        docA = self._lastSnap
+        docB = self._dataLines
+
+        i1 = min(len(docA),len(docB))
+        for i,(a,b) in enumerate(zip(docA,docB)):
+            if a!=b:
+                i1 = i
+                break
+
+        i2 = min(len(docA),len(docB))-i1
+        for i,(a,b) in enumerate(zip(reversed(docA[i1:]),reversed(docB[i1:]))):
+            if a!=b:
+                i2 = i
+                break
+
+        if i2 == 0:
+            sliceA = docA[i1:]
+            sliceB = docB[i1:]
+        else:
+            sliceA = docA[i1:-i2]
+            sliceB = docB[i1:-i2]
+
+        self._diffIdFw = True
+
+        self._diffs = self._diffs[:max(0,self._diffId+1)]
+        if sliceA or sliceB or not self._diffs:
+            snap = TTkTextDocument._snapDiff(sliceA, sliceB, self._lastCursor, cursor, i1, i2)
+            self._diffs.append(snap)
+        else:
+            self._diffs[-1]._cursor2 = cursor
+        self._diffId = len(self._diffs)-1
+
+        self._changed = False
+        self._lastSnap = self._dataLines.copy()
+        self._lastCursor = cursor
+        # ddd(self)
+
+    def restoreSnapshotDiff(self, inc=0):
+        # ddd(self)
+        # if not (0 <= self._diffId+inc < len(self._diffs)):
+        #     return None
+        if ( ( inc == 1   and     self._diffIdFw ) or
+             ( inc == -1  and not self._diffIdFw ) ):
+            if 0<= self._diffId+inc < len(self._diffs) :
+                self._diffId += inc
+            else:
+                return None
+        d = self._diffs[self._diffId]
+
+        if inc == -1:
+            sl = d._slice1
+            cu = d._cursor1
+            self._diffIdFw = False
+        elif inc == 1:
+            sl = d._slice2
+            cu = d._cursor2
+            self._diffIdFw = True
+        else:
+            return None
+
+        if d._i2 == 0:
+            self._dataLines[d._i1:] = sl
+        else:
+            self._dataLines[d._i1:-d._i2] = sl
+
+        self._lastSnap = self._dataLines.copy()
+        self._lastCursor = cu.copy()
+
+        self.contentsChanged.emit()
+        # ddd(self)
+        return cu
+
+    def restoreSnapshotPrev(self):
+        return self.restoreSnapshotDiff(-1)
+
+    def restoreSnapshotNext(self):
+        return self.restoreSnapshotDiff(+1)
 
 

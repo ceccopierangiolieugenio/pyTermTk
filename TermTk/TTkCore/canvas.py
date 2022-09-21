@@ -70,17 +70,11 @@ class TTkCanvas:
             return
         baseData = [' ']*w
         baseColors = [TTkColor.RST]*w
-        self._data = [[]]*h
-        self._colors = [[]]*h
-        for i in range(0,h):
-            self._data[i]   = baseData.copy()
-            self._colors[i] = baseColors.copy()
+        self._data   = [baseData.copy()   for _ in range(h)]
+        self._colors = [baseColors.copy() for _ in range(h)]
         if self._doubleBuffer:
-            self._bufferedData = [[]]*h
-            self._bufferedColors = [[]]*h
-            for i in range(0,h):
-                self._bufferedData[i]   = baseData.copy()
-                self._bufferedColors[i] = baseColors.copy()
+            self._bufferedData   = [baseData.copy()   for _ in range(h)]
+            self._bufferedColors = [baseColors.copy() for _ in range(h)]
         self._height = h
         self._width  = w
 
@@ -96,23 +90,18 @@ class TTkCanvas:
         self._newWidth = w
         self._newHeight = h
 
-    def clean(self, pos=(0, 0), size=None):
+    def clean(self):
         if not self._visible: return
-        x,y = pos
-        w,h = size or (self._width, self._height)
+        w,h = self._width, self._height
         baseData = [' ']*w
         baseColors = [TTkColor.RST]*w
-        for iy in range(y,y+h):
-            self._data[iy][x:x+w]   = baseData.copy()
-            self._colors[iy][x:x+w] = baseColors.copy()
+        self._data   = [baseData.copy()   for _ in range(h)]
+        self._colors = [baseColors.copy() for _ in range(h)]
 
     def copy(self):
-        w,h = self._width, self._height
-        retData = [[]]*h
-        retColors = [[]]*h
-        for iy in range(h):
-            retData[iy] = self._data[iy].copy()
-            retColors[iy] = self._colors[iy].copy()
+        h = self._height
+        retData   = [self._data[i].copy()   for i in range(h)]
+        retColors = [self._colors[i].copy() for i in range(h)]
         return retData, retColors
 
     def hide(self):
@@ -629,13 +618,11 @@ class TTkCanvas:
 
     def cleanBuffers(self):
         if not self._visible: return
-        x,y = 0,0
         w,h = self._width, self._height
         baseData = [' ']*w
         baseColors = [TTkColor.RST]*w
-        for iy in range(y,y+h):
-            self._bufferedData[iy]   = baseData.copy()
-            self._bufferedColors[iy] = baseColors.copy()
+        self._bufferedData   = [baseData.copy()   for _ in range(h)]
+        self._bufferedColors = [baseColors.copy() for _ in range(h)]
 
     def pushToTerminalBuffered(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")

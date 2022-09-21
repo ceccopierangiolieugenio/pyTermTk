@@ -269,21 +269,15 @@ class TTkLayout(TTkLayoutItem):
         return None
 
     def raiseWidget(self, widget):
-        maxz = 0
         item = self.findBranchWidget(widget)
-        for i in self._items:
-            maxz=max(i.z+1,maxz)
-        item.z = maxz
+        item.z = max([i.z for i in self._items])+1
         if item.layoutItemType == TTkK.LayoutItem:
             item.raiseWidget(widget)
         self._zSortItems()
 
     def lowerWidget(self, widget):
-        minz = 0
         item = self.findBranchWidget(widget)
-        for i in self._items:
-            minz=min(i.z-1,minz)
-        item.z = minz
+        item.z = min([i.z for i in self._items])-1
         if item.layoutItemType == TTkK.LayoutItem:
             item.lowerWidget(widget)
         self._zSortItems()
