@@ -33,14 +33,14 @@ from TermTk.TTkCore.string import TTkString
 #     al = c._properties[0].selectionEnd().line
 #     return f"{pp=},{pl=},{ap=},{al=} -> {dl[pl].substring(pp,ap)}"
 
-def ddd(td):
-    ii = td._snapshotId
-    TTkLog.debug(f"id={ii}")
-    for i,d in enumerate(td._diffs):
-        for s in d._slice1:
-            TTkLog.debug(f"{i} {' ' if i!=ii else '*' if     td._snapshotIdFw else '>'} s1 {str(s)}")
-        for s in d._slice2:
-            TTkLog.debug(f"{i} {' ' if i!=ii else '*' if not td._snapshotIdFw else '>'} s2 {str(s)}")
+# def ddd(td):
+#     ii = td._diffId
+#     TTkLog.debug(f"id={ii}")
+#     for i,d in enumerate(td._diffs):
+#         for s in d._slice1:
+#             TTkLog.debug(f"{i} {' ' if i!=ii else '*' if     td._diffIdFw else '>'} s1 {str(s)}")
+#         for s in d._slice2:
+#             TTkLog.debug(f"{i} {' ' if i!=ii else '*' if not td._diffIdFw else '>'} s2 {str(s)}")
 
 class TTkTextDocument():
     '''
@@ -61,10 +61,10 @@ class TTkTextDocument():
 
           Undo: (need to move to doc3)
             _lastSnap = _lastSnap (doc4) - d34 = doc3
-            _snapshotId -= 1
+            _diffId -= 1
 
           Redo: (need to move to doc4)
-            _snapshotId += 1 = 4
+            _diffId += 1 = 4
             _lastSnap = _lastSnap (doc4) + d45 = doc5
 
           SaveSnapshot:
@@ -73,7 +73,7 @@ class TTkTextDocument():
                 replace doc4, d34
             else:
                 add new doc5, d45
-                _snapshotId += 1
+                _diffId += 1
                 _lastSnap = newDoc
     '''
     class _snapDiff():
@@ -100,8 +100,9 @@ class TTkTextDocument():
             self._cursor = cursor
 
     __slots__ = (
-        '_dataLines', '_snapshots', '_snapshotId', '_changed',
-        '_diffs', '_lastSnap', '_lastCursor', '_snapshotIdFw',
+        '_dataLines', '_changed',
+        '_diffs', '_diffId', '_diffIdFw',
+        '_lastSnap', '_lastCursor',
         # Signals
         'contentsChange', 'contentsChanged',
         'cursorPositionChanged'
@@ -115,12 +116,11 @@ class TTkTextDocument():
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._changed = False
         self._diffs = []
-        self._lastSnap = [TTkString(" ")]
+        self._lastSnap = self._dataLines.copy()
         self._lastCursor = TTkTextCursor(document=self)
-        self._snapshots = []
-        self._snapshotId = -1
-        self._snapshotIdFw = False
-        self.saveSnapshot(self._lastCursor)
+        self._diffId = -1
+        self._diffIdFw = False
+        # self.saveSnapshot(self._lastCursor)
 
     def changed(self):
         return self._changed
@@ -149,7 +149,7 @@ class TTkTextDocument():
     def hasSnapshots(self):
         return len(self._diffs)>0
 
-    def _saveSnapDiff(self, cursor):
+    def saveSnapshot(self, cursor):
         docA = self._lastSnap
         docB = self._dataLines
 
@@ -172,48 +172,41 @@ class TTkTextDocument():
             sliceA = docA[i1:-i2]
             sliceB = docB[i1:-i2]
 
-        self._snapshotIdFw = True
+        self._diffIdFw = True
 
-        snap = TTkTextDocument._snapDiff(sliceA, sliceB, self._lastCursor, cursor, i1, i2)
+        self._diffs = self._diffs[:max(0,self._diffId+1)]
+        if sliceA or sliceB or not self._diffs:
+            snap = TTkTextDocument._snapDiff(sliceA, sliceB, self._lastCursor, cursor, i1, i2)
+            self._diffs.append(snap)
+        else:
+            self._diffs[-1]._cursor2 = cursor
+        self._diffId = len(self._diffs)-1
 
-        self._diffs = self._diffs[:max(0,self._snapshotId+1)]
-        self._diffs.append(snap)
-
-    def saveSnapshot(self, cursor):
-        self._saveSnapDiff(cursor)
-        # TTkLog.debug(f"snaps: {len(self._snapshots)} id:{self._snapshotId}")
-        # TTkLog.debug(f"Cur: {self._dataLines[0]}")
         self._changed = False
-        self._snapshots = self._snapshots[:max(0,self._snapshotId+1)]
-        self._snapshotId = len(self._snapshots)
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = cursor
-        self._snapshots.append(
-                TTkTextDocument._snapshot(self._lastSnap, cursor))
-        ddd(self)
-        # for i,s in enumerate(self._snapshots):
-        #     TTkLog.debug(f"{i=} {s._lines[0]}, {ccc(s._cursor, s._lines)}")
+        # ddd(self)
 
     def restoreSnapshotDiff(self, inc=0):
         # ddd(self)
-        # if not (0 <= self._snapshotId+inc < len(self._diffs)):
+        # if not (0 <= self._diffId+inc < len(self._diffs)):
         #     return None
-        if ( ( inc == 1   and     self._snapshotIdFw ) or
-             ( inc == -1  and not self._snapshotIdFw ) ):
-            if 0<= self._snapshotId+inc < len(self._diffs) :
-                self._snapshotId += inc
+        if ( ( inc == 1   and     self._diffIdFw ) or
+             ( inc == -1  and not self._diffIdFw ) ):
+            if 0<= self._diffId+inc < len(self._diffs) :
+                self._diffId += inc
             else:
                 return None
-        d = self._diffs[self._snapshotId]
+        d = self._diffs[self._diffId]
 
         if inc == -1:
             sl = d._slice1
             cu = d._cursor1
-            self._snapshotIdFw = False
+            self._diffIdFw = False
         elif inc == 1:
             sl = d._slice2
             cu = d._cursor2
-            self._snapshotIdFw = True
+            self._diffIdFw = True
         else:
             return None
 
@@ -226,19 +219,8 @@ class TTkTextDocument():
         self._lastCursor = cu.copy()
 
         self.contentsChanged.emit()
-        ddd(self)
+        # ddd(self)
         return cu
-
-    def restoreSnapshot(self, inc=0):
-        # TTkLog.debug(f"R: snaps: {len(self._snapshots)} id:{self._snapshotId}")
-        self._snapshotId = min((max(-1,self._snapshotId+inc)),len(self._snapshots))
-        if self._snapshots and 0 <= self._snapshotId < len(self._snapshots):
-            snap = self._snapshots[self._snapshotId]
-            self._dataLines = snap._lines.copy()
-            self.contentsChanged.emit()
-            # TTkLog.debug(f"R: id={self._snapshotId} {snap._lines[0]} {ccc(snap._cursor, snap._lines)}")
-            return snap._cursor
-        return None
 
     def restoreSnapshotPrev(self):
         return self.restoreSnapshotDiff(-1)

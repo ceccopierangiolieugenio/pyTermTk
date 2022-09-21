@@ -51,16 +51,6 @@ def demoTextEdit(root=None, document=None):
 
     te.setReadOnly(False)
 
-    te.setText("Text Edit DEMO Eugenio Parodi")
-
-    # use the widget size to wrap
-    # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
-    # te.setWordWrapMode(ttk.TTkK.WordWrap)
-
-    # Use a fixed wrap size
-    # te.setLineWrapMode(ttk.TTkK.FixedWidth)
-    # te.setWrapWidth(100)
-
     frame.layout().addItem(wrapLayout := ttk.TTkGridLayout(), 0,0)
     frame.layout().addItem(fontLayout := ttk.TTkGridLayout(), 1,0)
     frame.layout().addWidget(te,2,0)
@@ -198,7 +188,7 @@ def main():
         rootTree = root
         root.setLayout(ttk.TTkGridLayout())
     split = ttk.TTkSplitter()
-    document = ttk.TTkTextDocument()
+    document = ttk.TTkTextDocument(text="Text Edit DEMO Eugenio Parodi")
     demoTextEdit(split, document)
     demoTextEditSecondary(split, document)
     rootTree.layout().addWidget(split,0,0,1,2)
