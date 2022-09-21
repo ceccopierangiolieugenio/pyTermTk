@@ -75,6 +75,7 @@ deploySandbox:
 	cp tmp/sandbox/*.html sandbox
 
 	git submodule foreach git pull
+	git add sandbox
 
 	git commit -m "Sandbox Updated"
 	git push origin gh-pages
