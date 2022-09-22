@@ -284,6 +284,8 @@
           document.getElementById("codeUri").value = f
         }
 
+        /* check the "fileUri" field in the address
+           and load it if defined */
         const queryString = window.location.search;
         console.log(queryString);
         const urlParams = new URLSearchParams(queryString);

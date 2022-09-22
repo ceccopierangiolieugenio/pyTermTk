@@ -102,7 +102,7 @@ def demoTextEdit(root=None, document=None):
     # te.setWrapWidth(100)
 
     frame.layout().addItem(wrapLayout := ttk.TTkGridLayout(), 0,0)
-    frame.layout().addItem(fontLayout := ttk.TTkGridLayout(), 1,0)
+    frame.layout().addItem(fontLayout := ttk.TTkGridLayout(columnMinWidth=1), 1,0)
     frame.layout().addWidget(te,2,0)
 
     wrapLayout.addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
@@ -113,17 +113,38 @@ def demoTextEdit(root=None, document=None):
     wrapLayout.addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maxWidth=5, maximum=500, minimum=10, enabled=False),0,5)
     wrapLayout.addWidget(ttk.TTkSpacer(),0,10)
 
+    # Empty columns/cells are 1 char wide due to "columnMinWidth=1" parameter in the GridLayout
+    #           1       3                    8                11
+    #    0       2       4    5    6    7     9       10       12
+    # 0  [ ] FG  [ ] BG
+    # 1  ┌─────┐ ┌─────┐ ╒═══╕╒═══╕╒═══╕╒═══╕ ┌──────┐┌──────┐
+    # 2  │     │ │     │ │ a ││ a ││ a ││ a │ │ UNDO ││ REDO │
+    # 3  └─────┘ └─────┘ └───┘└───┘└───┘└───┘ ╘══════╛└──────┘ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+
+    # Char Fg/Bg buttons
     fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
     fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3)),1,0)
-    # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,1,2,1)
+
     fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
     fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7   ,3)),1,2)
-    # fontLayout.addWidget(ttk.TTkSpacer(maxWidth=3),0,3,2,1)
+
+    # Char style buttons
     fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
     fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
     fontLayout.addWidget(btn_underline     := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)   ),1,6)
     fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
-    fontLayout.addWidget(superSimpleHorizontalLine(),0,10,2,1)
+
+    # Undo/Redo buttons
+    fontLayout.addWidget(btn_undo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=te.isUndoAvailable(), text=' UNDO '),1,9 )
+    fontLayout.addWidget(btn_redo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=te.isRedoAvailable(), text=' REDO '),1,10)
+    # Undo/Redo events
+    te.undoAvailable.connect(btn_undo.setEnabled)
+    te.redoAvailable.connect(btn_redo.setEnabled)
+    btn_undo.clicked.connect(te.undo)
+    btn_redo.clicked.connect(te.redo)
+
+    # Useless custom horizontal bar for aestetic reason
+    fontLayout.addWidget(superSimpleHorizontalLine(),0,12,2,1)
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def _currentColorChangedCB(format):

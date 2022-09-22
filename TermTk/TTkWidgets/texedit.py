@@ -48,7 +48,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
             # 'wrapWidth',    'setWrapWidth',
             # 'wordWrapMode', 'setWordWrapMode',
             # Signals
-            'currentColorChanged'
+            'currentColorChanged',
+            'undoAvailable', 'redoAvailable'
         )
     '''
         in order to support the line wrap, I need to divide the full data text in;
@@ -62,6 +63,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , '_TTkTextEditView' )
         self.currentColorChanged = pyTTkSignal(TTkColor)
+        self.undoAvailable = pyTTkSignal(bool)
+        self.redoAvailable = pyTTkSignal(bool)
         self._readOnly = True
         self._multiCursor = True
         self._hsize = 0
@@ -76,6 +79,24 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.setDocument(kwargs.get('document', TTkTextDocument()))
 
+    @pyTTkSlot(bool)
+    def _undoAvailable(self, available):
+        self.undoAvailable.emit(available)
+
+    @pyTTkSlot(bool)
+    def _redoAvailable(self, available):
+        self.redoAvailable.emit(available)
+
+    def isUndoAvailable(self):
+        if self._textDocument:
+            return self._textDocument.isUndoAvailable()
+        return False
+
+    def isRedoAvailable(self):
+        if self._textDocument:
+            return self._textDocument.isRedoAvailable()
+        return False
+
     def document(self):
         return self._textDocument
 
@@ -83,6 +104,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         if self._textDocument:
             self._textDocument.contentsChanged.disconnect(self._rewrap)
             self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
+            self._textDocument.undoAvailable.disconnect(self._undoAvailable)
+            self._textDocument.redoAvailable.disconnect(self._redoAvailable)
             self._textWrap.wrapChanged.disconnect(self.update)
         if not document:
             document = TTkTextDocument()
@@ -91,6 +114,8 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._textWrap = TTkTextWrap(document=self._textDocument)
         self._textDocument.contentsChanged.connect(self._rewrap)
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
+        self._textDocument.undoAvailable.connect(self._undoAvailable)
+        self._textDocument.redoAvailable.connect(self._redoAvailable)
         # Trigger an update when the rewrap happen
         self._textWrap.wrapChanged.connect(self.update)
 
@@ -423,10 +448,10 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
             'textCursor', 'setFocus',
-            'undo', 'redo',
+            'undo', 'redo', 'isUndoAvailable', 'isRedoAvailable',
             # Signals
-            'focusChanged', 'currentColorChanged'
-
+            'focusChanged', 'currentColorChanged',
+            'undoAvilable', 'redoAvailable'
         )
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -445,6 +470,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.setFocus = self._textEditView.setFocus
         self.undo = self._textEditView.undo
         self.redo = self._textEditView.redo
+        self.isUndoAvailable = self._textEditView.isUndoAvailable
+        self.isRedoAvailable = self._textEditView.isRedoAvailable
         # Forward Wrap Methods
         self.wrapWidth       = self._textEditView.wrapWidth
         self.setWrapWidth    = self._textEditView.setWrapWidth
@@ -455,3 +482,5 @@ class TTkTextEdit(TTkAbstractScrollArea):
         # Forward Signals
         self.focusChanged = self._textEditView.focusChanged
         self.currentColorChanged = self._textEditView.currentColorChanged
+        self.undoAvailable = self._textEditView.undoAvailable
+        self.redoAvailable = self._textEditView.redoAvailable

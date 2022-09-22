@@ -105,13 +105,16 @@ class TTkTextDocument():
         '_lastSnap', '_lastCursor',
         # Signals
         'contentsChange', 'contentsChanged',
-        'cursorPositionChanged'
+        'cursorPositionChanged',
+        'undoAvailable', 'redoAvailable'
         )
     def __init__(self, *args, **kwargs):
         from TermTk.TTkGui.textcursor import TTkTextCursor
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
+        self.undoAvailable = pyTTkSignal(bool)
+        self.redoAvailable = pyTTkSignal(bool)
         text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._changed = False
@@ -145,6 +148,14 @@ class TTkTextDocument():
         self._changed = True
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
+
+    def isUndoAvailable(self):
+        return (   self._diffId >  0 or
+                 ( self._diffId == 0 and self._diffIdFw ) )
+
+    def isRedoAvailable(self):
+        return (   self._diffId <  len(self._diffs)-1 or
+                 ( self._diffId == len(self._diffs)-1 and not self._diffIdFw ) )
 
     def hasSnapshots(self):
         return len(self._diffs)>0
@@ -185,6 +196,8 @@ class TTkTextDocument():
         self._changed = False
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = cursor
+        self.undoAvailable.emit(self.isUndoAvailable())
+        self.redoAvailable.emit(self.isRedoAvailable())
         # ddd(self)
 
     def restoreSnapshotDiff(self, inc=0):
@@ -219,6 +232,8 @@ class TTkTextDocument():
         self._lastCursor = cu.copy()
 
         self.contentsChanged.emit()
+        self.undoAvailable.emit(self.isUndoAvailable())
+        self.redoAvailable.emit(self.isRedoAvailable())
         # ddd(self)
         return cu
 
