@@ -52,7 +52,7 @@ class TTkTextDocument():
             _snapshots:
                 [doc1, doc2, doc3, doc4, doc5, doc6, . . .]
 
-        New:
+        New 1:
             _diffs:
               [d01, d12,  d23,  d34,  d45,  d56,  . . .   ]
                d01 = diff between the first doc and the empty string
@@ -75,6 +75,22 @@ class TTkTextDocument():
                 add new doc5, d45
                 _diffId += 1
                 _lastSnap = newDoc
+
+         New 2:
+            SnapshotId:
+                              2
+            Snapshots:                  _lastSnap     _dataLines (unstaged)
+                ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕         ╒═══╕
+                │ 0 │ │ 1 │ │ 2 │ │ 3 │ │ 4 │         │ 5 │
+                └───┘ └───┘ └───┘ └───┘ └───┘         └───┘
+            Cursors:
+                 c0,   c1,   c2,   c3,   c4            c5 = _lastCursor
+            Diffs:
+                [   d01,  d12,  d23,  d34   ]
+            Slices: = common txt slices between snapshots
+                [   s01,  s12,  s23,  s34   ]
+
+
     '''
     class _snapDiff():
         '''
@@ -93,11 +109,11 @@ class TTkTextDocument():
             self._i1 = i1
             self._i2 = i2
 
-    class _snapshot():
-        __slots__ = ('_lines', '_cursor')
-        def __init__(self, lines, cursor):
-            self._lines  = lines
-            self._cursor = cursor
+    # class _snapshot():
+    #     __slots__ = ('_lines', '_cursor')
+    #     def __init__(self, lines, cursor):
+    #         self._lines  = lines
+    #         self._cursor = cursor
 
     __slots__ = (
         '_dataLines', '_changed',
@@ -136,7 +152,9 @@ class TTkTextDocument():
 
     def setText(self, text):
         self._dataLines = [TTkString(t) for t in text.split('\n')]
-        self._changed = True
+        self._changed = False
+        self._diffs = []
+        self._lastSnap = self._dataLines.copy()
         self.contentsChanged.emit()
         self.contentsChange.emit(0,0,len(self._dataLines))
 
@@ -145,7 +163,9 @@ class TTkTextDocument():
             text = TTkString() + text
         oldLines = len(self._dataLines)
         self._dataLines += text.split('\n')
-        self._changed = True
+        self._changed = False
+        self._diffs = []
+        self._lastSnap = self._dataLines.copy()
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
 
@@ -154,8 +174,8 @@ class TTkTextDocument():
                  ( self._diffId == 0 and self._diffIdFw ) )
 
     def isRedoAvailable(self):
-        return (   self._diffId <  len(self._diffs)-1 or
-                 ( self._diffId == len(self._diffs)-1 and not self._diffIdFw ) )
+        return (   0 <= self._diffId <  len(self._diffs)-1 or
+                 ( 0 <= self._diffId == len(self._diffs)-1 and not self._diffIdFw ) )
 
     def hasSnapshots(self):
         return len(self._diffs)>0
@@ -183,14 +203,18 @@ class TTkTextDocument():
             sliceA = docA[i1:-i2]
             sliceB = docB[i1:-i2]
 
-        self._diffIdFw = True
-
         self._diffs = self._diffs[:max(0,self._diffId+1)]
         if sliceA or sliceB or not self._diffs:
-            snap = TTkTextDocument._snapDiff(sliceA, sliceB, self._lastCursor, cursor, i1, i2)
-            self._diffs.append(snap)
+            if self._diffIdFw or not self._diffs:
+                snap = TTkTextDocument._snapDiff(sliceA, sliceB, self._lastCursor, cursor, i1, i2)
+                self._diffs.append(snap)
+            else:
+                snap = TTkTextDocument._snapDiff(sliceA, sliceB, self._diffs[-1]._cursor1, cursor, i1, i2)
+                self._diffs[-1] = snap
+            self._diffIdFw = True
         else:
-            self._diffs[-1]._cursor2 = cursor
+            if self._diffIdFw:
+                self._diffs[-1]._cursor2 = cursor
         self._diffId = len(self._diffs)-1
 
         self._changed = False

@@ -159,7 +159,6 @@ class _TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot(str)
     def append(self, text):
         self._textDocument.appendText(text)
-        self._textDocument.saveSnapshot(self._textCursor.copy())
         self._updateSize()
 
     @pyTTkSlot()
