@@ -52,19 +52,21 @@ class TTkTextDocument():
                 [   s01,  s12,  s23,  s34   ]
 
             Data Structure
-            Snap:
-                 s0 . . . . . . . . .s3
-                cursor = c0         cursor = c3
-                next = d01          next = d34
-                prev = None         prev = d32
-
-            Diff:
-                    d01                d34
-                   snap = s1          snap = s4
-
-                    d10          d32
-                   snap = s0    snap = s2
-
+                        ╔═══════════════╗                         ╔═══════════════╗
+                        ║   Snapshot B  ║          ┌─────────────>║   Snapshot C  ║
+                        ╟───────────────╢          │              ╟───────────────╢
+                        ║ _nextDiff     ║──────┐   │              ║ _nextDiff     ║───> Next snapshot
+                    ┌───║ _prevDiff     ║      │   │          ┌───║ _prevDiff     ║  or Null if at the end
+                    │   ╚═══════════════╝      │   │          │   ╚═══════════════╝
+                    V              A           V   │          V
+                ╔═══════════════╗  │  ╔═══════════════╗   ╔═══════════════╗
+                ║   Diff B->A   ║  │  ║   Diff B->C   ║   ║   Diff C->B   ║
+                ╟───────────────╢  │  ╟───────────────╢   ╟───────────────╢
+                ║ slice = txtBA ║  │  ║ slice = txtBC ║   ║ slice = txtBA ║
+                ║ snap          ║  │  ║ snap          ║   ║ snap          ║
+                ╚═══════════════╝  │  ╚═══════════════╝   ╚═══════════════╝
+                                   │                             │
+                                   └─────────────────────────────┘
     '''
     class _snapDiff():
         '''
@@ -75,10 +77,14 @@ class TTkTextDocument():
                   0        f2   t2           l2 = l1 - (t1-f1) + (t2-f2)
         '''
         __slots__ = ('_slice', '_i1', '_i2', '_snap')
-        def __init__(self, doc, i1, i2, snap):
-            self._slice = doc
+        def __init__(self, txt, i1, i2, snap):
+            # The text slice required to change the current snap to the next one
+            self._slice = txt
+            # i1 are the num. of common lines from the starting between the 2 snaps
             self._i1 = i1
+            # i1 are the num. of common lines from the ending between the 2 snaps
             self._i2 = i2
+            # This is the link to the next _snapshot structure
             self._snap = snap
 
     class _snapshot():
