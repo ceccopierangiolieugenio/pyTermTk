@@ -194,14 +194,17 @@ class TTkTextDocument():
             sliceA = docA[i1:-i2]
             sliceB = docB[i1:-i2]
 
-        # current snapshot
-        # is becoming the previous one
-        snapA  = self._snap
-        diffBA = TTkTextDocument._snapDiff(sliceA, i1, i2, snapA)
-        snapB  = TTkTextDocument._snapshot(cursor, None, diffBA)
-        diffAB = TTkTextDocument._snapDiff(sliceB, i1, i2, snapB)
-        snapA._nextDiff = diffAB
-        self._snap = snapB
+        if sliceA or sliceB:
+            # current snapshot
+            # is becoming the previous one
+            snapA  = self._snap
+            diffBA = TTkTextDocument._snapDiff(sliceA, i1, i2, snapA)
+            snapB  = TTkTextDocument._snapshot(cursor, None, diffBA)
+            diffAB = TTkTextDocument._snapDiff(sliceB, i1, i2, snapB)
+            snapA._nextDiff = diffAB
+            self._snap = snapB
+        else:
+            self._snap._cursor = cursor
 
         self._changed = False
         self._lastSnap = self._dataLines.copy()
