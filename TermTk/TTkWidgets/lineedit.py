@@ -63,12 +63,12 @@ class TTkLineEdit(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     @pyTTkSlot(str)
-    def setText(self, text, cursorPos=-1):
+    def setText(self, text, cursorPos=0x1000):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = text
-            self._cursorPos = cursorPos if cursorPos >= 0 else len(text)
-            self.update()
+            self._cursorPos = max(0,min(cursorPos, len(text)))
+            self._pushCursor()
 
     def text(self):
         return self._text
@@ -203,6 +203,10 @@ class TTkLineEdit(TTkWidget):
                    self._text = self._text[:self._cursorPos-1] + self._text[self._cursorPos:]
                    self._cursorPos -= 1
 
+            if self._inputType & TTkK.Input_Number and \
+               not self._text.lstrip('-').isdigit():
+                self.setText('0', 1)
+
             self._pushCursor()
 
             if evt.key == TTkK.Key_Enter:
@@ -224,7 +228,7 @@ class TTkLineEdit(TTkWidget):
             text = pre + evt.key + post
             if self._inputType & TTkK.Input_Number and \
                not text.lstrip('-').isdigit():
-                return
+                return True
             self.setText(text, self._cursorPos+1)
 
             self._pushCursor()
