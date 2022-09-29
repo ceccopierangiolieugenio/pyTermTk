@@ -118,5 +118,12 @@ class TTkSpinBox(TTkWidget):
         self._canvas.drawChar(pos=(w-2,0),char="▲", color=textColor)
         self._canvas.drawChar(pos=(w-1,0),char="▼", color=textColor)
 
+    def focusInEvent(self):
+        self._lineEdit._color = TTkCfg.theme.lineEditTextColorFocus
+        self._lineEdit.update()
+
     def focusOutEvent(self):
         self._draggable = False
+        self._lineEdit._color = TTkCfg.theme.lineEditTextColor
+        self._lineEdit.focusOutEvent()
+        self._lineEdit.update()

@@ -39,7 +39,7 @@ from TermTk.TTkWidgets.widget import *
 '''
 class TTkLineEdit(TTkWidget):
     __slots__ = (
-        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo',
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo', '_color',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, *args, **kwargs):
@@ -53,6 +53,7 @@ class TTkLineEdit(TTkWidget):
         self._text = kwargs.get('text' , '' )
         if self._inputType & TTkK.Input_Number and\
            not self._text.lstrip('-').isdigit(): self._text = ""
+        self._color = TTkCfg.theme.lineEditTextColor
         self._offset = 0
         self._cursorPos = 0
         self._selectionFrom = 0
@@ -101,7 +102,7 @@ class TTkLineEdit(TTkWidget):
             color = TTkCfg.theme.lineEditTextColorFocus
             selectColor = TTkCfg.theme.lineEditTextColorSelected
         else:
-            color = TTkCfg.theme.lineEditTextColor
+            color = self._color
             selectColor = TTkCfg.theme.lineEditTextColorSelected
         w = self.width()
         text = TTkString() + color
