@@ -30,11 +30,11 @@ class TTkSplitter(TTkFrame):
     __slots__ = (
         '_splitterInitialized', '_orientation',
         '_separators', '_separatorsRef', '_sizeRef', '_initSizes',
-        '_widgets', '_separatorSelected')
+        '_items', '_separatorSelected')
     def __init__(self, *args, **kwargs):
         self._splitterInitialized = False
 
-        self._widgets = []
+        self._items = []
         self._separators = []
         self._separatorsRef = []
         self._sizeRef = 0
@@ -63,23 +63,38 @@ class TTkSplitter(TTkFrame):
         return self._orientation
 
     def count(self):
-        return len(self._widgets)
+        return len(self._items)
 
     def indexOf(self, widget):
-        return self._widgets.index(widget)
+        return self._items.index(widget)
 
     def widget(self, index):
-        return self._widgets[index]
+        return self._items[index]
+
+    def replaceItem(self, index, item):
+        TTkLayout.removeItem(self.layout(), self._items[index])
+        TTkLayout.insertItem(self.layout(), index, item)
+        self._items[index] = item
+        self._updateGeometries()
 
     def replaceWidget(self, index, widget):
-        TTkLayout.removeWidget(self.layout(), self._widgets[index])
+        TTkLayout.removeWidget(self.layout(), self._items[index])
         TTkLayout.insertWidget(self.layout(), index, widget)
-        self._widgets[index] = widget
+        self._items[index] = widget
+        self._updateGeometries()
+
+    def removeItem(self, item):
+        index = self.indexOf(item)
+        self._items.pop(index)
+        self._initSizes.pop(index)
+        self._separators.pop(index)
+        self._separatorsRef = [s for s in self._separators]
+        TTkLayout.removeItem(self.layout(), item)
         self._updateGeometries()
 
     def removeWidget(self, widget):
         index = self.indexOf(widget)
-        self._widgets.pop(index)
+        self._items.pop(index)
         self._initSizes.pop(index)
         self._separators.pop(index)
         self._separatorsRef = [s for s in self._separators]
@@ -87,14 +102,14 @@ class TTkSplitter(TTkFrame):
         self._updateGeometries()
 
     def addItem(self, item, size=None):
-        self.insertItem(len(self._widgets), item, size)
+        self.insertItem(len(self._items), item, size)
 
     def insertItem(self, index, item, size=None):
         TTkLayout.insertItem(self.layout(), index, item)
         self._insertWidgetItem(index, item, size)
 
     def addWidget(self, widget, size=None):
-        self.insertWidget(len(self._widgets), widget, size)
+        self.insertWidget(len(self._items), widget, size)
 
     def insertWidget(self, index, widget, size=None):
         TTkLayout.insertWidget(self.layout(), index, widget)
@@ -105,8 +120,8 @@ class TTkSplitter(TTkFrame):
         if self.border():
             w-=2
             h-=2
-        self._widgets.insert(index, widgetItem)
-        numW = len(self._widgets)
+        self._items.insert(index, widgetItem)
+        numW = len(self._items)
 
         if self._orientation == TTkK.HORIZONTAL:
             fullSize = w
@@ -139,7 +154,7 @@ class TTkSplitter(TTkFrame):
         minsize = -1
         maxsize = -1
         for i in range(self._separatorSelected+1):
-            item = self._widgets[i]
+            item = self._items[i]
             minsize += item.minDimension(self._orientation)+1
             maxsize += item.maxDimension(self._orientation)+1
         return minsize, maxsize
@@ -150,7 +165,7 @@ class TTkSplitter(TTkFrame):
         minsize = 0x0
         maxsize = 0x0
         for i in range(self._separatorSelected+1, len(self._separators)):
-            item = self._widgets[i]
+            item = self._items[i]
             minsize += item.minDimension(self._orientation)+1
             maxsize += item.maxDimension(self._orientation)+1
         return minsize, maxsize
@@ -158,13 +173,13 @@ class TTkSplitter(TTkFrame):
     def _updateGeometries(self, resized=False):
         if not self.isVisible(): return
         _,_,w,h = self.geometry()
-        sep = self._separators = self._separators[0:len(self._widgets)]
+        sep = self._separators = self._separators[0:len(self._items)]
         if self.border():
             w-=2
             h-=2
 
         def _processGeometry(index, forward):
-            item = self._widgets[index]
+            item = self._items[index]
             pa = -1 if index==0 else sep[index-1]
             pb = sep[index]
 
@@ -303,11 +318,11 @@ class TTkSplitter(TTkFrame):
         ret = 2 if self.border() else 0
         if not self._splitterInitialized: return ret
         if self._orientation == TTkK.VERTICAL:
-            for item in self._widgets:
+            for item in self._items:
                 ret+=item.minimumHeight()+1
             ret = max(0,ret-1)
         else:
-            for item in self._widgets:
+            for item in self._items:
                 if ret < item.minimumHeight():
                     ret = item.minimumHeight()
         return ret
@@ -316,11 +331,11 @@ class TTkSplitter(TTkFrame):
         ret = 2 if self.border() else 0
         if not self._splitterInitialized: return ret
         if self._orientation == TTkK.HORIZONTAL:
-            for item in self._widgets:
+            for item in self._items:
                 ret+=item.minimumWidth()+1
             ret = max(0,ret-1)
         else:
-            for item in self._widgets:
+            for item in self._items:
                 if ret < item.minimumWidth():
                     ret = item.minimumWidth()
         return ret
@@ -330,12 +345,12 @@ class TTkSplitter(TTkFrame):
         if not self._splitterInitialized: return 0x10000
         if self._orientation == TTkK.VERTICAL:
             ret = b
-            for item in self._widgets:
+            for item in self._items:
                 ret+=item.maximumHeight()+1
             ret = max(b,ret-1)
         else:
             ret = 0x10000
-            for item in self._widgets:
+            for item in self._items:
                 if ret > item.maximumHeight():
                     ret = item.maximumHeight()
         return ret
@@ -345,12 +360,12 @@ class TTkSplitter(TTkFrame):
         if not self._splitterInitialized: return 0x10000
         if self._orientation == TTkK.HORIZONTAL:
             ret = b
-            for item in self._widgets:
+            for item in self._items:
                 ret+=item.maximumHeight()+1
             ret = max(b,ret-1)
         else:
             ret = 0x10000
-            for item in self._widgets:
+            for item in self._items:
                 if ret > item.maximumWidth():
                     ret = item.maximumWidth()
         return ret
