@@ -33,7 +33,7 @@ _MINOR=$( git describe | sed 's,[0-9]*\.\([0-9]*\)\..*,\1,'             )
 _PATCH=$( git describe | sed 's,[0-9]*\.[0-9]*\.\([0-9]*\)[^0-9].*,\1,' )
 _STAGE=$( git describe | sed 's,[^-]*-a-\?\([0-9]*\).*,\1,'             )
 
-_VERSION="${_MAJOR}.${_MINOR}.${_PATCH}-a-${_STAGE}"
+_VERSION="${_MAJOR}.${_MINOR}.${_PATCH}-a${_STAGE}"
 
 _tools_usage()
 {

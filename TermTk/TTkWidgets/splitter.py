@@ -53,6 +53,10 @@ class TTkSplitter(TTkFrame):
                 self.insertWidget(index, widget)
             def addWidget(_, widget):
                 self.addWidget(widget)
+            def inserItem(_, item):
+                self.inserItem(item)
+            def addItem(_, item):
+                self.addItem(item)
         self.setLayout(_SplitterLayout())
 
     def orientation(self):
@@ -82,16 +86,26 @@ class TTkSplitter(TTkFrame):
         TTkLayout.removeWidget(self.layout(), widget)
         self._updateGeometries()
 
+    def addItem(self, item, size=None):
+        self.insertItem(len(self._widgets), item, size)
+
+    def insertItem(self, index, item, size=None):
+        TTkLayout.insertItem(self.layout(), index, item)
+        self._insertWidgetItem(index, item, size)
+
     def addWidget(self, widget, size=None):
         self.insertWidget(len(self._widgets), widget, size)
 
     def insertWidget(self, index, widget, size=None):
         TTkLayout.insertWidget(self.layout(), index, widget)
+        self._insertWidgetItem(index, widget, size)
+
+    def _insertWidgetItem(self, index, widgetItem, size=None):
         _,_,w,h = self.geometry()
         if self.border():
             w-=2
             h-=2
-        self._widgets.insert(index, widget)
+        self._widgets.insert(index, widgetItem)
         numW = len(self._widgets)
 
         if self._orientation == TTkK.HORIZONTAL:
