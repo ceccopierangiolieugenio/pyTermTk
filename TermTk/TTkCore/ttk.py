@@ -39,24 +39,41 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTk(TTkWidget):
     class _mouseCursor(TTkWidget):
+        __slots__ = ('_cursor','_color')
         def __init__(self, input):
             super().__init__()
             self._name = 'mouseCursor'
+            self._cursor = '✠'
+            self._color = TTkColor.RST
             self.resize(1,1)
             input.inputEvent.connect(self._mouseInput)
         @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
         def _mouseInput(self, kevt, mevt):
             if mevt is not None:
+                self._cursor = '✠'
+                self._color = TTkColor.RST
+                if mevt.key == TTkK.Wheel:
+                    if mevt.evt == TTkK.WHEEL_Up:
+                        self._cursor = '⇑'
+                    else:
+                        self._cursor = '⇓'
+                elif mevt.evt == TTkK.Press:
+                    self._color = TTkColor.bg('#FFFF00') + TTkColor.fg('#000000')
+                elif mevt.evt == TTkK.Drag:
+                    self._color = TTkColor.bg('#666600') + TTkColor.fg('#FFFF00')
+                # elif mevt.evt == TTkK.Release:
+                #     self._color = TTkColor.bg('#006600') + TTkColor.fg('#00FFFF')
                 self.move(mevt.x, mevt.y)
                 self.update()
                 self.raiseWidget()
         def paintEvent(self):
-            self._canvas.drawChar((0,0),'✠')
+            self._canvas.drawChar((0,0), self._cursor, self._color)
             #self._canvas.drawChar((0,0),'✜')
 
     __slots__ = (
