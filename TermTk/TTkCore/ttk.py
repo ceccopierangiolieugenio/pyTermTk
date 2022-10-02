@@ -43,9 +43,26 @@ from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTk(TTkWidget):
+    class _mouseCursor(TTkWidget):
+        def __init__(self, input):
+            super().__init__()
+            self._name = 'mouseCursor'
+            self.resize(1,1)
+            input.inputEvent.connect(self._mouseInput)
+        @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
+        def _mouseInput(self, kevt, mevt):
+            if mevt is not None:
+                self.move(mevt.x, mevt.y)
+                self.update()
+                self.raiseWidget()
+        def paintEvent(self):
+            self._canvas.drawChar((0,0),'✠')
+            #self._canvas.drawChar((0,0),'✜')
+
     __slots__ = (
-        '_name', '_input',
+        '_input',
         '_title',
+        '_showMouseCursor',
         '_sigmask',
         '_drawMutex',
         '_lastMultiTap')
@@ -57,6 +74,7 @@ class TTk(TTkWidget):
         self._input.inputEvent.connect(self._processInput)
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
+        self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
         self._drawMutex = threading.Lock()
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
@@ -110,6 +128,12 @@ class TTk(TTkWidget):
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
             TTkTerm.init(title=self._title, sigmask=self._sigmask)
+
+            if self._showMouseCursor:
+                TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
+                m = TTk._mouseCursor(self._input)
+                self.rootLayout().addWidget(m)
+
             self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
