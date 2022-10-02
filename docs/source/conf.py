@@ -133,3 +133,10 @@ autodocgen_config = {
         # choose a different title for specific modules, e.g. the toplevel one
         #'module_title_decider': lambda modulename: 'API Reference' if modulename=='TermTk' else modulename,
 }
+
+# Mock pyodide to avoid autogen failure
+class pyodideProxy(): pass
+moduleInput = type(sys)('pyodideProxy')
+moduleInput.pyodideProxy = pyodideProxy
+
+sys.modules['pyodideProxy']  = moduleInput
