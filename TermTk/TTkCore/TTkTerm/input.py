@@ -146,6 +146,12 @@ class TTkInput:
             elif code == 0x41:
                 key = TTkMouseEvent.Wheel
                 evt = TTkMouseEvent.Down
+            elif code == 0x23:
+                evt = TTkMouseEvent.Move
+            elif code == 0x27:
+                mod |= TTkK.ShiftModifier
+                evt = TTkMouseEvent.Move
+
             mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
 
         if kevt is None and mevt is None:
