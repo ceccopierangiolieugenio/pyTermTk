@@ -45,7 +45,15 @@ TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
 TTkLog.info("Press q or <ESC> to exit")
 
 TTkTerm.push(TTkTerm.Mouse.ON)
+TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
 TTkTerm.setEcho(False)
+
+def winCallback(width, height):
+    TTkLog.info(f"Resize: w:{width}, h:{height}")
+
+TTkTerm.registerResizeCb(winCallback)
+
+input = TTkInput()
 
 def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
@@ -56,15 +64,14 @@ def keyCallback(kevt=None, mevt=None):
         else:
             TTkLog.info(f"Key Event: Special '{kevt}'")
         if kevt.key == "q":
+            input.close()
             return False
     return True
 
-def winCallback(width, height):
-    TTkLog.info(f"Resize: w:{width}, h:{height}")
+input.inputEvent.connect(keyCallback)
 
-TTkTerm.registerResizeCb(winCallback)
-input = TTkInput()
-input.get_key(keyCallback)
-
-TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
-TTkTerm.setEcho(True)
+try:
+    input.start()
+finally:
+    TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
+    TTkTerm.setEcho(True)

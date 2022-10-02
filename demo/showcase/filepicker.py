@@ -32,11 +32,11 @@ def demoFilePicker(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
     # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
-    btn1 = ttk.TTkButton( parent=frame, pos=(0,0),  size=(8,3),  border=True, text='File' )
-    btn3 = ttk.TTkButton( parent=frame, pos=(8,0),  size=(13,3), border=True, text='Directory' )
-    btn2 = ttk.TTkButton( parent=frame, pos=(21,0), size=(17,3), border=True, text='Existing File', enabled=False )
-    btn4 = ttk.TTkButton( parent=frame, pos=(38,0), size=(18,3), border=True, text='Existing Files', enabled=False )
-    label = ttk.TTkLabel(parent=frame, pos=(1,5), size=(30,1), text="...")
+    btn1 = ttk.TTkButton( parent=frame, pos=(0,0),  border=True, text='File' )
+    btn3 = ttk.TTkButton( parent=frame, pos=(8,0),  border=True, text='Directory' )
+    btn2 = ttk.TTkButton( parent=frame, pos=(21,0), border=True, text='Existing File', enabled=False )
+    btn4 = ttk.TTkButton( parent=frame, pos=(38,0), border=True, text='Existing Files', enabled=False )
+    label = ttk.TTkLabel(parent=frame,  pos=(1,5),  text="...")
 
 
     def _showDialog(fm):

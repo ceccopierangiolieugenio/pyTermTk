@@ -153,6 +153,12 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def __del__(self):
         ''' .. caution:: Don't touch this! '''
         # TTkLog.debug("DESTRUCTOR")
+
+        # clean all the signals, slots
+        #for an in dir(self):
+        #    att = self.__getattribute__(an)
+        #    # TODO: TBD, I need to find the time to do this
+
         if self._parent and self._parent.layout():
             self._parent.layout().removeWidget(self)
             self._parent = None
@@ -238,6 +244,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def resizeEvent(self, w: int, h: int):
         ''' Event Callback triggered after a successful resize'''
         pass
+
+    def setDefaultSize(self, arg, width, height):
+        if ( 'size' in arg or
+             'width' in arg or
+             'height' in arg ):
+             return
+        arg['width'] = width
+        arg['height'] = height
 
     def move(self, x: int, y: int):
         ''' Move the widget

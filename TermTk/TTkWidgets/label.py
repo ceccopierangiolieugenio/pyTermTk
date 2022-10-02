@@ -32,6 +32,9 @@ class TTkLabel(TTkWidget, TColor, TText):
     def __init__(self, *args, **kwargs):
         TColor.__init__(self, *args, **kwargs)
         TText.__init__(self, *args, **kwargs)
+
+        self.setDefaultSize(kwargs, len(self.text), 1)
+
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkLabel' )
         # self.setMinimumSize(len(self.text), 1)
