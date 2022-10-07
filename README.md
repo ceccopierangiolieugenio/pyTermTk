@@ -80,7 +80,7 @@ python3 demo/gittk.py
 # Text edit with "Pygments" highlight integrated
 # it require pygments
 #   pip install pygments
-python3 tests/test.ui.018.TextEdit.Pygments.py REAMDE.md
+python3 tests/test.ui.018.TextEdit.Pygments.py README.md
 ```
 #### Profiling
 ##### [cProfile](https://docs.python.org/3/library/profile.html), [cProfilev](https://github.com/ymichael/cprofilev)
