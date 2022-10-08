@@ -269,7 +269,7 @@ class TTkTabBar(TTkWidget):
         self._updateTabs()
 
     def addTab(self, label, data=None):
-        self.insertTab(len(self._tabButtons), label, data)
+        return self.insertTab(len(self._tabButtons), label, data)
 
     def insertTab(self, index, label, data=None):
         if index <= self._currentIndex:
@@ -281,6 +281,7 @@ class TTkTabBar(TTkWidget):
         button.clicked.connect(lambda :self.setCurrentIndex(self._tabButtons.index(button)))
         button.closeClicked.connect(lambda :self.tabCloseRequested.emit(self._tabButtons.index(button)))
         self._updateTabs()
+        return index
 
     @pyTTkSlot(int)
     def removeTab(self, index):
@@ -295,10 +296,10 @@ class TTkTabBar(TTkWidget):
         self._highlighted = self._currentIndex
         self._updateTabs()
 
-    def data(self, index):
+    def tabData(self, index):
         return self._tabData[index]
 
-    def setData(self, index, data):
+    def setTabData(self, index, data):
         self._tabData[index] = data
 
     def borderColor(self):
@@ -472,7 +473,7 @@ class TTkTabWidget(TTkFrame):
         'currentChanged', 'tabBarClicked',
         # forward methods
         'tabsClosable', 'setTabsClosable',
-        'data', 'setData',
+        'tabData', 'setData',
         'currentIndex', 'setCurrentIndex', 'tabCloseRequested')
 
     def __init__(self, *args, **kwargs):
@@ -507,8 +508,8 @@ class TTkTabWidget(TTkFrame):
         # forwarded methods
         self.currentIndex    = self._tabBar.currentIndex
         self.setCurrentIndex = self._tabBar.setCurrentIndex
-        self.data    = self._tabBar.data
-        self.setData = self._tabBar.setData
+        self.tabData    = self._tabBar.tabData
+        self.setTabData = self._tabBar.setTabData
         self.tabsClosable    = self._tabBar.tabsClosable
         self.setTabsClosable = self._tabBar.setTabsClosable
         # forwarded Signals
@@ -563,7 +564,7 @@ class TTkTabWidget(TTkFrame):
         tw = data.tabWidget()
         index  = tw._tabBar._tabButtons.index(tb)
         widget = tw.widget(index)
-        data   = tw.data(index)
+        data   = tw.tabData(index)
         if TTkHelper.isParent(self, tw):
             return False
         if y < 3:

@@ -107,6 +107,7 @@ else:
 
         def quit(self):
             self._quit.set()
+            self._delay=1
             self._timerEvent.set()
 
         def run(self):

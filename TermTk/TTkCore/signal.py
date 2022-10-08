@@ -113,7 +113,8 @@ class _pyTTkSignal_obj():
 
     def disconnect(self, *args, **kwargs):
         for slot in args:
-            self._connected_slots.remove(slot)
+            if slot in self._connected_slots:
+                self._connected_slots.remove(slot)
 
     def emit(self, *args, **kwargs):
         if len(args) != len(self._types):

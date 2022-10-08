@@ -36,7 +36,7 @@ from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-class _TTkTextEditView(TTkAbstractScrollView):
+class TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_textDocument', '_hsize',
             '_textCursor', '_textColor', '_cursorParams',
@@ -61,11 +61,11 @@ class _TTkTextEditView(TTkAbstractScrollView):
     '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTextEditView' )
+        self._name = kwargs.get('name' , 'TTkTextEditView' )
         self.currentColorChanged = pyTTkSignal(TTkColor)
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
-        self._readOnly = True
+        self._readOnly = kwargs.get('readOnly', True)
         self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
@@ -78,6 +78,7 @@ class _TTkTextEditView(TTkAbstractScrollView):
         self._clipboard = TTkClipboard()
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.setDocument(kwargs.get('document', TTkTextDocument()))
+        self._updateSize()
 
     @pyTTkSlot(bool)
     def _undoAvailable(self, available):
@@ -456,7 +457,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkTextEdit' )
         if 'parent' in kwargs: kwargs.pop('parent')
-        self._textEditView = _TTkTextEditView(*args, **kwargs)
+        self._textEditView = kwargs.get('textEditView', TTkTextEditView(*args, **kwargs))
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self.setViewport(self._textEditView)

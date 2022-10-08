@@ -37,6 +37,7 @@ class TTkAbstractScrollArea(TTkWidget):
         '_horizontalScrollBar', '_horizontalScrollBarPolicy',)
 
     def __init__(self, *args, **kwargs):
+        self._viewport = None
         super().__init__(*args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbstractScrollArea')
         self.setLayout(TTkGridLayout())
@@ -116,3 +117,8 @@ class TTkAbstractScrollArea(TTkWidget):
 
     def viewport(self):
         return self._viewport
+
+    def update(self, repaint=True, updateLayout=False, updateParent=False):
+        if self._viewport:
+            self._viewport.update(repaint, updateLayout, updateParent)
+        return super().update(repaint, updateLayout, updateParent)

@@ -8,6 +8,7 @@
 - [ ] [UTF-8] Handle "Fullwidth" forms characters
       https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
       https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
+      https://stackoverflow.com/questions/68412744/count-length-of-value-within-a-cell-with-full-width-characters
 - [ ] Support Hyperlink: (gnome-terminal)
       https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 - [x] Process child events before parent
