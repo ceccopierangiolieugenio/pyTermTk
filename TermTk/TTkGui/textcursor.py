@@ -452,10 +452,29 @@ class TTkTextCursor():
 
     def _removeSelectedText(self):
         currPos = self.position().toNum()
+
+        lineFirst = self._properties[0].selectionStart().line
+        lineAdd = 0
+        lineRem = 0
+
+        for p in self._properties:
+            # Check how many lines are removed/added after this operation
+            selSt = p.selectionStart()
+            selEn = p.selectionEnd()
+
+            if (lineFirst + lineRem) > selSt.line:
+                _lineAdd = 0
+            else:
+                _lineAdd = 0 if selSt.pos == selEn.pos == 0 else 1
+
+            lineAdd += selSt.line - lineFirst - lineRem + _lineAdd
+            lineRem = selEn.line - lineFirst + _lineAdd
+
         def _alignPoint(point,st,en):
             point.line += st.line - en.line
             if point.line == st.line:
                 point.pos += st.pos - en.pos
+
         for i, p in enumerate(self._properties):
             selSt = p.selectionStart()
             selEn = p.selectionEnd()
@@ -466,8 +485,10 @@ class TTkTextCursor():
                 _alignPoint(pp.position, selSt, selEn)
                 _alignPoint(pp.anchor,   selSt, selEn)
             self.setPosition(selSt.line, selSt.pos, cID=i)
+
         self._checkCursors(notify=self.position().toNum()!=currPos)
-        return selSt.line, selEn.line-selSt.line, 1
+
+        return lineFirst, lineRem, lineAdd
 
     def removeSelectedText(self):
         if not self.hasSelection(): return

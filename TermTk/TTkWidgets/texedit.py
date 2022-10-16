@@ -33,6 +33,7 @@ from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
@@ -44,6 +45,8 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
+            '_lineNumber', '_lineNumberWidth',
+            '_preview', '_previewWidth',
             # # Forwarded Methods
             # 'wrapWidth',    'setWrapWidth',
             # 'wordWrapMode', 'setWordWrapMode',
@@ -66,6 +69,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self._readOnly = kwargs.get('readOnly', True)
+        self._lineNumber = kwargs.get('lineNumber', False)
         self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
