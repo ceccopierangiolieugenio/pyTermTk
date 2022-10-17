@@ -53,10 +53,12 @@ class superSimpleHorizontalLine(ttk.TTkWidget):
         self._canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=ttk.TTkColor.fg("#888888"))
 
 def demoTextEditSecondary(root=None, document=None):
-    te = ttk.TTkTextEdit(parent=root, document=document)
+    te = ttk.TTkTextEdit(parent=root, document=document, lineNumber=True)
     te.setLineWrapMode(ttk.TTkK.WidgetWidth)
     te.setWordWrapMode(ttk.TTkK.WordWrap)
     te.setReadOnly(False)
+    # print the document events for debugging purposes
+    document.contentsChange.connect(lambda line,rem,add: ttk.TTkLog.debug(f"{line=} {rem=} {add=}"))
 
 def demoTextEdit(root=None, document=None):
     frame = ttk.TTkFrame(parent=root, border=False, layout=ttk.TTkGridLayout())

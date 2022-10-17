@@ -144,12 +144,13 @@ class TTkTextDocument():
         return sum([len[x] for x in self._dataLines])+self.lineCount()
 
     def setText(self, text):
+        remLines = len(self._dataLines)
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._changed = False
         self._lastSnap = self._dataLines.copy()
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
-        self.contentsChange.emit(0,0,len(self._dataLines))
+        self.contentsChange.emit(0,remLines,len(self._dataLines))
 
     def appendText(self, text):
         if type(text) == str:

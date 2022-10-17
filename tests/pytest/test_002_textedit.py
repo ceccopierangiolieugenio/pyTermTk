@@ -83,7 +83,7 @@ def test_demo1():
 # __........
 # rem=8 add=5
 
-def test_demo1():
+def test_demo2():
     doc = ttk.TTkTextDocument(text=txt)
     cur = ttk.TTkTextCursor(document=doc)
 
@@ -107,3 +107,36 @@ def test_demo1():
     assert cbLine == 0
     assert cbRem  == 8
     assert cbAdd  == 5
+
+# ..........
+# __..__..__
+# __..______
+# __........
+# ..........
+# ..__......
+# ..........
+# rem=5 add=3
+
+def test_demo3():
+    doc = ttk.TTkTextDocument(text=txt)
+    cur = ttk.TTkTextCursor(document=doc)
+
+    _setCursor(cur, [
+        ((1,0),(1,2)),
+        ((1,4),(1,6)),
+        ((1,8),(2,2)),
+        ((2,4),(3,2)),
+        ((5,2),(5,4))])
+    cbLine, cbRem, cbAdd = -1,-1,-1
+
+    def _cb(a,b,c):
+        nonlocal cbLine, cbRem, cbAdd
+        cbLine, cbRem, cbAdd = a,b,c
+
+    doc.contentsChange.connect(_cb)
+    cur.removeSelectedText()
+    print(f"{cbLine=}, {cbRem=}, {cbAdd=}")
+
+    assert cbLine == 1
+    assert cbRem  == 5
+    assert cbAdd  == 3

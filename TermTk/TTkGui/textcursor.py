@@ -327,16 +327,75 @@ class TTkTextCursor():
                 p.anchor.set(line,pos)
         return self.insertText(text)
 
+    # I need this moethod to cover the math of merging
+    # multiples retuen values to be used in the contentsChange
+    # method
+    #
+    #         ┬    ┬         ┬    ┬
+    # x2     -│----│-----l2 ┬┼----┼┐
+    # x1 l1  ┬┼----┼┐       ││    ││
+    #        ││    ││ a1 r2 ││    ││ a2
+    #        ││   /┼┘-------││-.  ││
+    #    r1  ││  /.│--------└┼-.. ││
+    #        ││ /. │         │  \.││-z1
+    # y1     └┼'. /┴         ┴-. -┼┘-z2
+    # y2     _│. /              \ │
+    #         │ /                -┴
+    #         ┴'
+    #
+    # x1 = l1
+    # x2 = l2
+    # y1 = l1+r1
+    # y2 = l2+r2 + (r1-a1)
+    # z1 = l1+a1 + (a2-r2)
+    # z2 = l2+a2
+
+    @staticmethod
+    def _mergeChangesSlices(ch1,ch2):
+        l1,r1,a1 = ch1
+        l2,r2,a2 = ch2
+        x1 = l1
+        x2 = l2
+        y1 = l1+r1
+        y2 = l2+r2 + (r1-a1)
+        z1 = l1+a1 + (a2-r2)
+        z2 = l2+a2
+        a = min(x1,x2)
+        b = max(y1,y2) - a
+        c = max(z1,z2) - a
+        return a,b,c
+
     def insertText(self, text):
-        l,b,c = 0,1,1
+        _lineFirst = -1
         if self.hasSelection():
-            l,b,c = self._removeSelectedText()
-        # Check if the number of lines is the same as the cursor
+            _lineFirst, _lineRem, _lineAdd = self._removeSelectedText()
+
+        lineFirst = self._properties[0].position.line
+        lineRem, lineAdd = 0,0
+
+        # Check if the number of lines is the same as the number of cursors
         # this is a corner case where each line belongs to a
         # different cursor
-        textLines = text.split('\n')
+        textLines = text.split('\n') if len(text)>1 else text
         if len(textLines) != len(self._properties):
             textLines = [text]*len(self._properties)
+
+        # Calc the added and removed lines
+        for i, pr in enumerate(self._properties):
+            lenNewLines=len(textLines[i].split('\n'))
+            l = pr.position.line
+            if textLines[i] == '\n':
+                lineAdd += 1 + l-lineFirst-lineRem
+                lineRem = l - lineFirst
+            elif (lineFirst + lineRem) > l:
+                lineAdd += lenNewLines-1
+            else:
+                lineAdd += lenNewLines + l-lineFirst-lineRem
+                lineRem = l - lineFirst + 1
+        if _lineFirst != -1:
+            lineFirst, lineRem, lineAdd = TTkTextCursor._mergeChangesSlices(
+                                                (_lineFirst, _lineRem, _lineAdd),
+                                                ( lineFirst,  lineRem,  lineAdd))
         for i, pr in enumerate(self._properties):
             text=textLines[i]
             l = pr.position.line
@@ -348,11 +407,12 @@ class TTkTextCursor():
             if isinstance(ttktext, str):
                 ttktext = TTkString(text, color)
 
-            newLines = (self._document._dataLines[l].substring(to=p) + ttktext + self._document._dataLines[l].substring(fr=p)).split('\n')
+            newLines = ( self._document._dataLines[l].substring(to=p) +
+                         ttktext +
+                         self._document._dataLines[l].substring(fr=p) ).split('\n')
             self._document._dataLines[l] = newLines[0]
             for nl in reversed(newLines[1:]):
                 self._document._dataLines.insert(l+1, nl)
-                c+=1
 
             # 2 scenarios:
             #  1) No Newline(s) added
@@ -385,7 +445,7 @@ class TTkTextCursor():
         self._autoChanged = True
         self._document._changed = True
         self._document.contentsChanged.emit()
-        self._document.contentsChange.emit(l,b,c)
+        self._document.contentsChange.emit(lineFirst,  lineRem,  lineAdd)
         self._autoChanged = False
         self._document.cursorPositionChanged.emit(self)
 
@@ -511,7 +571,7 @@ class TTkTextCursor():
         self._autoChanged = True
         self._document._changed = True
         self._document.contentsChanged.emit()
-        self._document.contentsChange.emit(0,0,0)
+        # self._document.contentsChange.emit(0,0,0)
         self._autoChanged = True
 
     def getHighlightedLines(self, fr, to, color):
