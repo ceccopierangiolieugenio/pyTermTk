@@ -384,9 +384,13 @@ class TTkTextCursor():
         for i, pr in enumerate(self._properties):
             lenNewLines=len(textLines[i].split('\n'))
             l = pr.position.line
-            if textLines[i] == '\n':
-                lineAdd += 1 + l-lineFirst-lineRem
-                lineRem = l - lineFirst
+            p = pr.position.pos
+            if (  textLines[i] == '\n' and
+                  l == lineFirst != _lineFirst and
+                  p==len(self._document._dataLines[l]) ):
+                lineFirst = l+1
+                lineAdd = 1
+                lineRem = 0
             elif (lineFirst + lineRem) > l:
                 lineAdd += lenNewLines-1
             else:
