@@ -177,6 +177,32 @@ class TTkTextEditView(TTkAbstractScrollView):
             self._textCursor.restore(c)
 
     @pyTTkSlot()
+    def clear(self):
+        pass
+
+    @pyTTkSlot()
+    def copy(self):
+        if not self._textCursor.hasSelection():
+            txt = TTkString('\n').join(self._textCursor.getLinesUnderCursor())
+        else:
+            txt = self._textCursor.selectedText()
+        self._clipboard.setText(txt)
+
+    @pyTTkSlot()
+    def cut(self):
+        if not self._textCursor.hasSelection():
+            self._textCursor.movePosition(moveMode=TTkTextCursor.MoveAnchor, operation=TTkTextCursor.StartOfLine)
+            self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.EndOfLine)
+            self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.Right)
+        self.copy()
+        self._textCursor.removeSelectedText()
+
+    @pyTTkSlot()
+    def paste(self):
+        txt = self._clipboard.text()
+        self._textCursor.insertText(txt)
+
+    @pyTTkSlot()
     def _rewrap(self):
         self._textWrap.rewrap()
         self.viewChanged.emit()
@@ -244,7 +270,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         if addCursor:
             self._textCursor.addCursor(line, pos)
         else:
-            self._textCursor.cleanCursors()
+            self._textCursor.clearCursors()
             self._textCursor.setPosition(line, pos,
                             moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor )
         self._scrolToInclude(x,y)
@@ -267,6 +293,11 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
+    def mouseReleaseEvent(self, evt) -> bool:
+        if self._textCursor.hasSelection():
+            self.copy()
+        return True
+
     def mouseDragEvent(self, evt) -> bool:
         if self._readOnly:
             return super().mouseDragEvent(evt)
@@ -281,6 +312,8 @@ class TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
         self._textCursor.select(TTkTextCursor.WordUnderCursor)
+        if self._textCursor.hasSelection():
+            self.copy()
         self._textCursor.clearColor()
         self.update()
         return True
@@ -289,6 +322,8 @@ class TTkTextEditView(TTkAbstractScrollView):
         if self._readOnly:
             return super().mouseTapEvent(evt)
         self._textCursor.select(TTkTextCursor.LineUnderCursor)
+        if self._textCursor.hasSelection():
+            self.copy()
         self._textCursor.clearColor()
         self.update()
         return True
@@ -310,6 +345,7 @@ class TTkTextEditView(TTkAbstractScrollView):
               ( self._textDocument.changed()  and evt.key == TTkK.Key_Z ) or
               ( evt.mod==TTkK.ControlModifier and
                 (   evt.key == TTkK.Key_V or
+                    evt.key == TTkK.Key_X or
                   ( evt.key == TTkK.Key_Z and self._textDocument.changed() ) )
               ) ) ) ):
             # TTkLog.debug(f"Saving {self._textCursor.selectedText()} {self._textCursor._properties[0].anchor.pos}")
@@ -345,11 +381,11 @@ class TTkTextEditView(TTkAbstractScrollView):
                     self._setCursorPos(cx, cy+1, addCursor=True)
                     self._textCursor.clearColor()
                 elif evt.key == TTkK.Key_C:
-                    txt = self._textCursor.selectedText()
-                    self._clipboard.setText(txt)
+                    self.copy()
                 elif evt.key == TTkK.Key_V:
-                    txt = self._clipboard.text()
-                    self._textCursor.insertText(txt)
+                    self.paste()
+                elif evt.key == TTkK.Key_X:
+                    self.cut()
                 elif evt.key == TTkK.Key_Z:
                     self.undo()
                 elif evt.key == TTkK.Key_Y:
@@ -379,7 +415,8 @@ class TTkTextEditView(TTkAbstractScrollView):
                 self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Down, textWrap=self._textWrap, n=h) #self._setCursorPos(cx , cy + h)
                 self._textCursor.clearColor()
             elif evt.key == TTkK.Key_Escape:
-                self._textCursor.cleanCursors()
+                self._textCursor.clearCursors()
+                self._textCursor.clearSelection()
                 self._textCursor.clearColor()
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace

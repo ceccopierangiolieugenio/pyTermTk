@@ -176,7 +176,6 @@ class TTkTextDocument():
             self._snapChanged = TTkTextDocument._mergeChangesSlices(self._snapChanged,(a,b,c))
         else:
             self._snapChanged = (a,b,c)
-        TTkLog.debug(f" - {(a,b,c)=} - {self._snapChanged=}")
 
     def changed(self):
         return self._changed

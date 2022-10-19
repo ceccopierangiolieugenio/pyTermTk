@@ -181,7 +181,7 @@ class TTkTextCursor():
 
     def _documentContentChanged(self):
         if self._autoChanged: return True
-        self.cleanCursors()
+        self.clearCursors()
         self.clearSelection()
 
     def copy(self):
@@ -221,10 +221,14 @@ class TTkTextCursor():
                                 TTkTextCursor._CP(line, pos)))
         self._checkCursors(notify=True)
 
-    def cleanCursors(self):
+    def clearCursors(self):
         p = self._properties[self._cID]
         self._cID = 0
         self._properties = [p]
+
+    def clearSelection(self):
+        for p in self._properties:
+            p.anchor.line,p.anchor.pos = p.position.line,p.position.pos
 
     def positionColor(self, cID=-1):
         cID = self._cID if cID==-1 else cID
@@ -243,6 +247,9 @@ class TTkTextCursor():
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[cID].anchor.set(line,pos)
         self._document.cursorPositionChanged.emit(self)
+
+    def getLinesUnderCursor(self):
+        return [ self._document._dataLines[p.position.line] for p in self._properties ]
 
     def _checkCursors(self, notify=False):
         currCurs = self._properties[self._cID]
@@ -338,7 +345,7 @@ class TTkTextCursor():
         # Check if the number of lines is the same as the number of cursors
         # this is a corner case where each line belongs to a
         # different cursor
-        textLines = text.split('\n') if len(text)>1 else text
+        textLines = text.split('\n') if len(text)>1 else [text]
         if len(textLines) != len(self._properties):
             textLines = [text]*len(self._properties)
 
