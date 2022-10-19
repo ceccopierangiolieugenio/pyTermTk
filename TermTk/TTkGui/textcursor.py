@@ -327,44 +327,6 @@ class TTkTextCursor():
                 p.anchor.set(line,pos)
         return self.insertText(text)
 
-    # I need this moethod to cover the math of merging
-    # multiples retuen values to be used in the contentsChange
-    # method
-    #
-    #         ┬    ┬         ┬    ┬
-    # x2     -│----│-----l2 ┬┼----┼┐
-    # x1 l1  ┬┼----┼┐       ││    ││
-    #        ││    ││ a1 r2 ││    ││ a2
-    #        ││   /┼┘-------││-.  ││
-    #    r1  ││  /.│--------└┼-.. ││
-    #        ││ /. │         │  \.││-z1
-    # y1     └┼'. /┴         ┴-. -┼┘-z2
-    # y2     _│. /              \ │
-    #         │ /                -┴
-    #         ┴'
-    #
-    # x1 = l1
-    # x2 = l2
-    # y1 = l1+r1
-    # y2 = l2+r2 + (r1-a1)
-    # z1 = l1+a1 + (a2-r2)
-    # z2 = l2+a2
-
-    @staticmethod
-    def _mergeChangesSlices(ch1,ch2):
-        l1,r1,a1 = ch1
-        l2,r2,a2 = ch2
-        x1 = l1
-        x2 = l2
-        y1 = l1+r1
-        y2 = l2+r2 + (r1-a1)
-        z1 = l1+a1 + (a2-r2)
-        z2 = l2+a2
-        a = min(x1,x2)
-        b = max(y1,y2) - a
-        c = max(z1,z2) - a
-        return a,b,c
-
     def insertText(self, text):
         _lineFirst = -1
         if self.hasSelection():
@@ -397,7 +359,7 @@ class TTkTextCursor():
                 lineAdd += lenNewLines + l-lineFirst-lineRem
                 lineRem = l - lineFirst + 1
         if _lineFirst != -1:
-            lineFirst, lineRem, lineAdd = TTkTextCursor._mergeChangesSlices(
+            lineFirst, lineRem, lineAdd = TTkTextDocument._mergeChangesSlices(
                                                 (_lineFirst, _lineRem, _lineAdd),
                                                 ( lineFirst,  lineRem,  lineAdd))
         for i, pr in enumerate(self._properties):

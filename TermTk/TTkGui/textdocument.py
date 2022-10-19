@@ -113,7 +113,7 @@ class TTkTextDocument():
 
     __slots__ = (
         '_dataLines', '_changed',
-        '_snap',
+        '_snap', '_snapChanged',
         '_lastSnap', '_lastCursor',
         # Signals
         'contentsChange', 'contentsChanged',
@@ -130,9 +130,57 @@ class TTkTextDocument():
         text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._changed = False
+        self._snapChanged = None
+        self.contentsChange.connect(self._saveSnapChanged)
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = TTkTextCursor(document=self)
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
+
+    # I need this moethod to cover the math of merging
+    # multiples retuen values to be used in the contentsChange
+    # method
+    #
+    #         ┬    ┬         ┬    ┬
+    # x2     -│----│-----l2 ┬┼----┼┐
+    # x1 l1  ┬┼----┼┐       ││    ││
+    #        ││    ││ a1 r2 ││    ││ a2
+    #        ││   /┼┘-------││-.  ││
+    #    r1  ││  /.│--------└┼-.. ││
+    #        ││ /. │         │  \.││-z1
+    # y1     └┼'. /┴         ┴-. -┼┘-z2
+    # y2     _│. /              \ │
+    #         │ /                -┴
+    #         ┴'
+    #
+    # x1 = l1
+    # x2 = l2
+    # y1 = l1+r1
+    # y2 = l2+r2 + (r1-a1)
+    # z1 = l1+a1 + (a2-r2)
+    # z2 = l2+a2
+
+    @staticmethod
+    def _mergeChangesSlices(ch1,ch2):
+        l1,r1,a1 = ch1
+        l2,r2,a2 = ch2
+        x1 = l1
+        x2 = l2
+        y1 = l1+r1
+        y2 = l2+r2 + (r1-a1)
+        z1 = l1+a1 + (a2-r2)
+        z2 = l2+a2
+        a = min(x1,x2)
+        b = max(y1,y2) - a
+        c = max(z1,z2) - a
+        return a,b,c
+
+    @pyTTkSlot(int,int,int)
+    def _saveSnapChanged(self,a,b,c):
+        if self._snapChanged:
+            self._snapChanged = TTkTextDocument._mergeChangesSlices(self._snapChanged,(a,b,c))
+        else:
+            self._snapChanged = (a,b,c)
+        TTkLog.debug(f" - {(a,b,c)=} - {self._snapChanged=}")
 
     def changed(self):
         return self._changed
@@ -151,6 +199,7 @@ class TTkTextDocument():
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
         self.contentsChange.emit(0,remLines,len(self._dataLines))
+        self._snapChanged = None
 
     def appendText(self, text):
         if type(text) == str:
@@ -162,6 +211,7 @@ class TTkTextDocument():
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
+        self._snapChanged = None
 
     def isUndoAvailable(self):
         return self._snap and self._snap._prevDiff
@@ -188,12 +238,26 @@ class TTkTextDocument():
                 i2 = i
                 break
 
+        aa,bb,cc = self._snapChanged if self._snapChanged else (0,0,0)
+        TTkLog.debug(f"Save: {i1},{len(docA)-i2},{len(docB)-i2} - {i1=} {i2=}=({len(docA)-i2},{len(docB)-i2})")
+        TTkLog.debug(f"Save: {aa},{aa+bb},{aa+cc} - {self._snapChanged=}")
+        self._snapChanged = None
+
         if i2 == 0:
             sliceA = docA[i1:]
             sliceB = docB[i1:]
         else:
             sliceA = docA[i1:-i2]
             sliceB = docB[i1:-i2]
+
+        ssa = docA[aa:aa+bb]
+        ssb = docB[aa:aa+cc]
+
+        TTkLog.debug(len(sliceA))
+        TTkLog.debug(len(ssa))
+        TTkLog.debug(len(sliceB))
+        TTkLog.debug(len(ssb))
+
 
         if sliceA or sliceB:
             # current snapshot
