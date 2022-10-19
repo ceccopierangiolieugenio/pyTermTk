@@ -71,18 +71,18 @@ class TTkTextDocument():
     class _snapDiff():
         '''
         Doc:
-                  0<--i1-->f1      t1<--i2-->l1
+                  0         i1      12
          Base:    |---------aaaaaaaa---------|
          Mod:     |---------bbbbb   ---------|
-                  0        f2   t2           l2 = l1 - (t1-f1) + (t2-f2)
+                  0         slice
         '''
         __slots__ = ('_slice', '_i1', '_i2', '_snap')
         def __init__(self, txt, i1, i2, snap):
             # The text slice required to change the current snap to the next one
             self._slice = txt
-            # i1 are the num. of common lines from the starting between the 2 snaps
+            # Starting position of the slice to be removed
             self._i1 = i1
-            # i1 are the num. of common lines from the ending between the 2 snaps
+            # Ending position of the slice to be removed
             self._i2 = i2
             # This is the link to the next _snapshot structure
             self._snap = snap
@@ -102,12 +102,7 @@ class TTkTextDocument():
             return self._getSnap(lines, self._prevDiff)
 
         def _getSnap(self, lines, d):
-            i1 = d._i1
-            i2 = d._i2
-            if d._i2 == 0:
-                lines[d._i1:] = d._slice
-            else:
-                lines[d._i1:-d._i2] = d._slice
+            lines[d._i1:d._i2] = d._slice
             return d._snap
 
 
@@ -130,6 +125,7 @@ class TTkTextDocument():
         text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._changed = False
+        # Cumulative changes since the lasrt snapshot
         self._snapChanged = None
         self.contentsChange.connect(self._saveSnapChanged)
         self._lastSnap = self._dataLines.copy()
@@ -226,46 +222,24 @@ class TTkTextDocument():
         docA = self._lastSnap
         docB = self._dataLines
 
-        i1 = min(len(docA),len(docB))
-        for i,(a,b) in enumerate(zip(docA,docB)):
-            if a!=b:
-                i1 = i
-                break
-
-        i2 = min(len(docA),len(docB))-i1
-        for i,(a,b) in enumerate(zip(reversed(docA[i1:]),reversed(docB[i1:]))):
-            if a!=b:
-                i2 = i
-                break
-
-        aa,bb,cc = self._snapChanged if self._snapChanged else (0,0,0)
-        TTkLog.debug(f"Save: {i1},{len(docA)-i2},{len(docB)-i2} - {i1=} {i2=}=({len(docA)-i2},{len(docB)-i2})")
-        TTkLog.debug(f"Save: {aa},{aa+bb},{aa+cc} - {self._snapChanged=}")
+        # get the
+        #   sa = starting line
+        #   sb = removed lines
+        #   sc = added lines
+        # of the cumulative changes applied since the last snapshot
+        sa,sb,sc = self._snapChanged if self._snapChanged else (0,0,0)
         self._snapChanged = None
 
-        if i2 == 0:
-            sliceA = docA[i1:]
-            sliceB = docB[i1:]
-        else:
-            sliceA = docA[i1:-i2]
-            sliceB = docB[i1:-i2]
-
-        ssa = docA[aa:aa+bb]
-        ssb = docB[aa:aa+cc]
-
-        TTkLog.debug(len(sliceA))
-        TTkLog.debug(len(ssa))
-        TTkLog.debug(len(sliceB))
-        TTkLog.debug(len(ssb))
-
+        sliceA = docA[sa:sa+sb]
+        sliceB = docB[sa:sa+sc]
 
         if sliceA or sliceB:
             # current snapshot
             # is becoming the previous one
             snapA  = self._snap
-            diffBA = TTkTextDocument._snapDiff(sliceA, i1, i2, snapA)
+            diffBA = TTkTextDocument._snapDiff(sliceA, sa, sa+sc, snapA)
             snapB  = TTkTextDocument._snapshot(cursor, None, diffBA)
-            diffAB = TTkTextDocument._snapDiff(sliceB, i1, i2, snapB)
+            diffAB = TTkTextDocument._snapDiff(sliceB, sa, sa+sb, snapB)
             snapA._nextDiff = diffAB
             self._snap = snapB
         else:
@@ -276,7 +250,6 @@ class TTkTextDocument():
         self._lastCursor = cursor
         self.undoAvailable.emit(self.isUndoAvailable())
         self.redoAvailable.emit(self.isRedoAvailable())
-        # ddd(self)
 
     def _restoreSnapshotDiff(self, next=True):
         if ( not self._snap or
