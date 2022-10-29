@@ -570,6 +570,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._parent.rootLayout().removeWidget(self)
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
+        self.hide()
 
     @pyTTkSlot(bool)
     def setVisible(self, visible):

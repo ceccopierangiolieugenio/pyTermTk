@@ -257,6 +257,9 @@ class TTkLayout(TTkLayoutItem):
             if item.layoutItemType == TTkK.WidgetItem and \
                item.widget() == widget:
                 self.removeItem(item)
+                return
+            elif item.layoutItemType == TTkK.LayoutItem:
+                item.removeWidget(widget)
 
     def findBranchWidget(self, widget):
         for item in self._items:
