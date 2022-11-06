@@ -95,7 +95,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
         # Signals
-         'viewMovedTo', 'viewSizeChanged', 'viewChanged')
+         'viewMovedTo', 'viewSizeChanged', 'viewChanged', '_excludeEvent')
 
     def __init__(self, *args, **kwargs):
         # Signals
@@ -105,6 +105,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         TTkGridLayout.__init__(self, *args, **kwargs)
         self._viewOffsetX = 0
         self._viewOffsetY = 0
+        self._excludeEvent = False
 
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x, y):
@@ -119,8 +120,10 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         if self._viewOffsetX == x and \
            self._viewOffsetY == y: # Nothong to do
             return
+        self._excludeEvent = True
         for widget in self.iterWidgets():
             widget.viewMoveTo(x,y)
+        self._excludeEvent = False
         self._viewOffsetX = x
         self._viewOffsetY = y
         self.viewMovedTo.emit(x,y)
@@ -132,13 +135,18 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         self.viewChanged.emit()
 
     def _viewChanged(self):
-        pass
-        #self.viewChanged.emit()
+        if self._excludeEvent: return
+        self.viewChanged.emit()
+
+    def _viewMovedTo(self, x, y):
+        if self._excludeEvent: return
+        self.viewMoveTo(x, y)
 
     def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1):
         if not issubclass(type(widget),TTkAbstractScrollViewInterface):
             raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollViewGridLayout.addWidget(...)")
         widget.viewChanged.connect(self._viewChanged)
+        widget.viewMovedTo.connect(self._viewMovedTo)
         return TTkGridLayout.addWidget(self, widget, row, col, rowspan, colspan)
 
     def addItem(self, item, row=None, col=None, rowspan=1, colspan=1):
