@@ -28,7 +28,7 @@ from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
 
 class TTkAbstractScrollArea(TTkWidget):
     __slots__ = (
@@ -39,7 +39,6 @@ class TTkAbstractScrollArea(TTkWidget):
     def __init__(self, *args, **kwargs):
         self._viewport = None
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkAbstractScrollArea')
         self.setLayout(TTkGridLayout())
         self._verticalScrollBar = TTkScrollBar(orientation=TTkK.VERTICAL)
         self._horizontalScrollBar = TTkScrollBar(orientation=TTkK.HORIZONTAL)
@@ -99,13 +98,18 @@ class TTkAbstractScrollArea(TTkWidget):
         self._viewport.viewMoveTo(val, oy)
 
     def setViewport(self, viewport):
-        if not isinstance(viewport, TTkAbstractScrollView):
-            raise TypeError("TTkAbstractScrollView is required in TTkAbstractScrollArea.setVewport(viewport)")
+        if not isinstance(viewport, TTkAbstractScrollViewInterface):
+            raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollArea.setVewport(viewport)")
         self._viewport = viewport
         self._viewport.viewChanged.connect(self._viewportChanged)
         self._verticalScrollBar.sliderMoved.connect(self._vscrollMoved)
         self._horizontalScrollBar.sliderMoved.connect(self._hscrollMoved)
-        self.layout().addWidget(viewport,0,0)
+        # TODO: Remove this check once
+        #  unified  "addWidget" and "addItem" in the TTKGridLayout
+        if isinstance(viewport, TTkWidget):
+            self.layout().addWidget(viewport,0,0)
+        else:
+            self.layout().addItem(viewport,0,0)
         self.layout().addWidget(self._verticalScrollBar,0,1)
         self.layout().addWidget(self._horizontalScrollBar,1,0)
 
