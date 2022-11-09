@@ -38,7 +38,6 @@ class TTkKeyPressView(TTkWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkAbstractScrollView')
         TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
         self._keys = []
         self._period = 0.1

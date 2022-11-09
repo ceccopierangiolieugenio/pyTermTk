@@ -64,7 +64,6 @@ class TTkTextEditView(TTkAbstractScrollView):
     '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTextEditView' )
         self.currentColorChanged = pyTTkSignal(TTkColor)
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
@@ -173,6 +172,8 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def redo(self):
+        # TODO: Get rid Of this check
+        if self._textDocument.changed(): return
         if c := self._textDocument.restoreSnapshotNext():
             self._textCursor.restore(c)
 
