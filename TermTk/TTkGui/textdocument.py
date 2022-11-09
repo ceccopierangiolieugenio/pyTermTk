@@ -71,18 +71,18 @@ class TTkTextDocument():
     class _snapDiff():
         '''
         Doc:
-                  0<--i1-->f1      t1<--i2-->l1
+                  0         i1      12
          Base:    |---------aaaaaaaa---------|
          Mod:     |---------bbbbb   ---------|
-                  0        f2   t2           l2 = l1 - (t1-f1) + (t2-f2)
+                  0         slice
         '''
         __slots__ = ('_slice', '_i1', '_i2', '_snap')
         def __init__(self, txt, i1, i2, snap):
             # The text slice required to change the current snap to the next one
             self._slice = txt
-            # i1 are the num. of common lines from the starting between the 2 snaps
+            # Starting position of the slice to be removed
             self._i1 = i1
-            # i1 are the num. of common lines from the ending between the 2 snaps
+            # Ending position of the slice to be removed
             self._i2 = i2
             # This is the link to the next _snapshot structure
             self._snap = snap
@@ -102,18 +102,13 @@ class TTkTextDocument():
             return self._getSnap(lines, self._prevDiff)
 
         def _getSnap(self, lines, d):
-            i1 = d._i1
-            i2 = d._i2
-            if d._i2 == 0:
-                lines[d._i1:] = d._slice
-            else:
-                lines[d._i1:-d._i2] = d._slice
+            lines[d._i1:d._i2] = d._slice
             return d._snap
 
 
     __slots__ = (
         '_dataLines', '_changed',
-        '_snap',
+        '_snap', '_snapChanged',
         '_lastSnap', '_lastCursor',
         # Signals
         'contentsChange', 'contentsChanged',
@@ -130,9 +125,57 @@ class TTkTextDocument():
         text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._changed = False
+        # Cumulative changes since the lasrt snapshot
+        self._snapChanged = None
+        self.contentsChange.connect(self._saveSnapChanged)
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = TTkTextCursor(document=self)
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
+
+    # I need this moethod to cover the math of merging
+    # multiples retuen values to be used in the contentsChange
+    # method
+    #
+    #         ┬    ┬         ┬    ┬
+    # x2     -│----│-----l2 ┬┼----┼┐
+    # x1 l1  ┬┼----┼┐       ││    ││
+    #        ││    ││ a1 r2 ││    ││ a2
+    #        ││   /┼┘-------││-.  ││
+    #    r1  ││  /.│--------└┼-.. ││
+    #        ││ /. │         │  \.││-z1
+    # y1     └┼'. /┴         ┴-. -┼┘-z2
+    # y2     _│. /              \ │
+    #         │ /                -┴
+    #         ┴'
+    #
+    # x1 = l1
+    # x2 = l2
+    # y1 = l1+r1
+    # y2 = l2+r2 + (r1-a1)
+    # z1 = l1+a1 + (a2-r2)
+    # z2 = l2+a2
+
+    @staticmethod
+    def _mergeChangesSlices(ch1,ch2):
+        l1,r1,a1 = ch1
+        l2,r2,a2 = ch2
+        x1 = l1
+        x2 = l2
+        y1 = l1+r1
+        y2 = l2+r2 + (r1-a1)
+        z1 = l1+a1 + (a2-r2)
+        z2 = l2+a2
+        a = min(x1,x2)
+        b = max(y1,y2) - a
+        c = max(z1,z2) - a
+        return a,b,c
+
+    @pyTTkSlot(int,int,int)
+    def _saveSnapChanged(self,a,b,c):
+        if self._snapChanged:
+            self._snapChanged = TTkTextDocument._mergeChangesSlices(self._snapChanged,(a,b,c))
+        else:
+            self._snapChanged = (a,b,c)
 
     def changed(self):
         return self._changed
@@ -151,6 +194,7 @@ class TTkTextDocument():
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
         self.contentsChange.emit(0,remLines,len(self._dataLines))
+        self._snapChanged = None
 
     def appendText(self, text):
         if type(text) == str:
@@ -162,6 +206,7 @@ class TTkTextDocument():
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
+        self._snapChanged = None
 
     def isUndoAvailable(self):
         return self._snap and self._snap._prevDiff
@@ -176,32 +221,24 @@ class TTkTextDocument():
         docA = self._lastSnap
         docB = self._dataLines
 
-        i1 = min(len(docA),len(docB))
-        for i,(a,b) in enumerate(zip(docA,docB)):
-            if a!=b:
-                i1 = i
-                break
+        # get the
+        #   sa = starting line
+        #   sb = removed lines
+        #   sc = added lines
+        # of the cumulative changes applied since the last snapshot
+        sa,sb,sc = self._snapChanged if self._snapChanged else (0,0,0)
+        self._snapChanged = None
 
-        i2 = min(len(docA),len(docB))-i1
-        for i,(a,b) in enumerate(zip(reversed(docA[i1:]),reversed(docB[i1:]))):
-            if a!=b:
-                i2 = i
-                break
-
-        if i2 == 0:
-            sliceA = docA[i1:]
-            sliceB = docB[i1:]
-        else:
-            sliceA = docA[i1:-i2]
-            sliceB = docB[i1:-i2]
+        sliceA = docA[sa:sa+sb]
+        sliceB = docB[sa:sa+sc]
 
         if sliceA or sliceB:
             # current snapshot
             # is becoming the previous one
             snapA  = self._snap
-            diffBA = TTkTextDocument._snapDiff(sliceA, i1, i2, snapA)
+            diffBA = TTkTextDocument._snapDiff(sliceA, sa, sa+sc, snapA)
             snapB  = TTkTextDocument._snapshot(cursor, None, diffBA)
-            diffAB = TTkTextDocument._snapDiff(sliceB, i1, i2, snapB)
+            diffAB = TTkTextDocument._snapDiff(sliceB, sa, sa+sb, snapB)
             snapA._nextDiff = diffAB
             self._snap = snapB
         else:
@@ -212,7 +249,6 @@ class TTkTextDocument():
         self._lastCursor = cursor
         self.undoAvailable.emit(self.isUndoAvailable())
         self.redoAvailable.emit(self.isRedoAvailable())
-        # ddd(self)
 
     def _restoreSnapshotDiff(self, next=True):
         if ( not self._snap or
