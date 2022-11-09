@@ -23,27 +23,12 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
-class TTkAbstractScrollView(TTkWidget):
-    __slots__ = (
-        '_viewOffsetX', '_viewOffsetY',
-        # Signals
-         'viewMovedTo', 'viewSizeChanged', 'viewChanged')
-
-    def __init__(self, *args, **kwargs):
-        # Signals
-        self.viewMovedTo = pyTTkSignal(int, int) # x, y
-        self.viewSizeChanged = pyTTkSignal(int, int) # w, h
-        self.viewChanged = pyTTkSignal()
-        super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkAbstractScrollView')
-
-        self._viewOffsetX = 0
-        self._viewOffsetY = 0
-
+class TTkAbstractScrollViewInterface():
     # Override this function
     def viewFullAreaSize(self) -> (int, int):
         raise NotImplementedError()
@@ -54,7 +39,29 @@ class TTkAbstractScrollView(TTkWidget):
 
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x, y):
-        fw, fh  = self.viewFullAreaSize()
+        raise NotImplementedError()
+
+    def getViewOffsets(self):
+        return self._viewOffsetX, self._viewOffsetY
+
+class TTkAbstractScrollView(TTkWidget, TTkAbstractScrollViewInterface):
+    __slots__ = (
+        '_viewOffsetX', '_viewOffsetY',
+        # Signals
+         'viewMovedTo', 'viewSizeChanged', 'viewChanged')
+
+    def __init__(self, *args, **kwargs):
+        # Signals
+        self.viewMovedTo = pyTTkSignal(int, int) # x, y
+        self.viewSizeChanged = pyTTkSignal(int, int) # w, h
+        self.viewChanged = pyTTkSignal()
+        TTkWidget.__init__(self, *args, **kwargs)
+        self._viewOffsetX = 0
+        self._viewOffsetY = 0
+
+    @pyTTkSlot(int, int)
+    def viewMoveTo(self, x, y):
+        fw, fh = self.viewFullAreaSize()
         dw, dh = self.viewDisplayedSize()
         rangex = fw - dw
         rangey = fh - dh
@@ -84,6 +91,84 @@ class TTkAbstractScrollView(TTkWidget):
         self.viewSizeChanged.emit(w,h)
         self.viewChanged.emit()
 
-    def getViewOffsets(self):
-        return self._viewOffsetX, self._viewOffsetY
+class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterface):
+    __slots__ = (
+        '_viewOffsetX', '_viewOffsetY',
+        # Signals
+         'viewMovedTo', 'viewSizeChanged', 'viewChanged', '_excludeEvent')
+
+    def __init__(self, *args, **kwargs):
+        # Signals
+        self.viewMovedTo = pyTTkSignal(int, int) # x, y
+        self.viewSizeChanged = pyTTkSignal(int, int) # w, h
+        self.viewChanged = pyTTkSignal()
+        TTkGridLayout.__init__(self, *args, **kwargs)
+        self._viewOffsetX = 0
+        self._viewOffsetY = 0
+        self._excludeEvent = False
+
+    @pyTTkSlot(int, int)
+    def viewMoveTo(self, x, y):
+        fw, fh = self.viewFullAreaSize()
+        dw, dh = self.viewDisplayedSize()
+        rangex = fw - dw
+        rangey = fh - dh
+        # TTkLog.debug(f"x:{x},y:{y}, full:{fw,fh}, display:{dw,dh}, range:{rangex,rangey}")
+        x = max(0,min(rangex,x))
+        y = max(0,min(rangey,y))
+        # TTkLog.debug(f"x:{x},y:{y}, wo:{self._viewOffsetX,self._viewOffsetY}")
+        if self._viewOffsetX == x and \
+           self._viewOffsetY == y: # Nothong to do
+            return
+        self._excludeEvent = True
+        for widget in self.iterWidgets():
+            widget.viewMoveTo(x,y)
+        self._excludeEvent = False
+        self._viewOffsetX = x
+        self._viewOffsetY = y
+        self.viewMovedTo.emit(x,y)
+        self.viewChanged.emit()
+        self.update()
+
+    def setGeometry(self, x, y, w, h):
+        TTkGridLayout.setGeometry(self, x, y, w, h)
+        self.viewChanged.emit()
+
+    def _viewChanged(self):
+        if self._excludeEvent: return
+        self.viewChanged.emit()
+
+    def _viewMovedTo(self, x, y):
+        if self._excludeEvent: return
+        self.viewMoveTo(x, y)
+
+    def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1):
+        if not issubclass(type(widget),TTkAbstractScrollViewInterface):
+            raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollViewGridLayout.addWidget(...)")
+        widget.viewChanged.connect(self._viewChanged)
+        widget.viewMovedTo.connect(self._viewMovedTo)
+        return TTkGridLayout.addWidget(self, widget, row, col, rowspan, colspan)
+
+    def addItem(self, item, row=None, col=None, rowspan=1, colspan=1):
+        if not issubclass(type(item),TTkAbstractScrollViewInterface):
+            raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollViewGridLayout.addItem(...)")
+        return TTkGridLayout.addItem(self, item, row, col, rowspan, colspan)
+
+    # Override this function
+    def viewFullAreaSize(self) -> (int, int):
+        w,h=0,0
+        for widget in self.iterWidgets():
+            ww,wh = widget.viewFullAreaSize()
+            w = max(w,ww)
+            h = max(h,wh)
+        return w,h
+
+    # Override this function
+    def viewDisplayedSize(self) -> (int, int):
+        w,h=0,0
+        for widget in self.iterWidgets():
+            ww,wh = widget.viewDisplayedSize()
+            w = max(w,ww)
+            h = max(h,wh)
+        return w,h
 

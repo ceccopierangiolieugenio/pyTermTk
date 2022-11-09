@@ -25,7 +25,7 @@
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollView
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from dataclasses import dataclass

@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+
+class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
+    ID = 1
+    __slots__ = ('_areaPos','_areaSize')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._name = kwargs.get('name' , f"TTkTestAbstractScrollWidget-{TTkTestAbstractScrollWidget.ID}" )
+        self._areaSize = kwargs.get('areaSize',(10,10))
+        self._areaPos = kwargs.get('areaPos',(0,0))
+        TTkTestAbstractScrollWidget.ID+=1
+        self.viewChanged.connect(self._viewChangedHandler)
+
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        self._areaPos = self.getViewOffsets()
+        self.update()
+
+    def paintEvent(self):
+        self._canvas.drawBox(pos=(0,0),size=(self._width,self._height))
+        t,_,l,_ = self.getPadding()
+        self._canvas.drawText(pos=(l+1,t+1+0), text=f"Test Widget [{self._name}]")
+        self._canvas.drawText(pos=(l+1,t+1+1), text=f"x,y ({self._x},{self._y})")
+        self._canvas.drawText(pos=(l+1,t+1+2), text=f"w,h ({self._width},{self._height})")
+        self._canvas.drawText(pos=(l+1,t+1+3), text=f"max w,h ({self._maxw},{self._maxh})")
+        self._canvas.drawText(pos=(l+1,t+1+4), text=f"min w,h ({self._minw},{self._minh})")
+        self._canvas.drawText(pos=(l+1,t+1+5), text=f"areaSize {self._areaSize}")
+        self._canvas.drawText(pos=(l+1,t+1+6), text=f"areaPos1  {self._areaPos}")
+        self._canvas.drawText(pos=(l+1,t+1+7), text=f"areaPos2  ({self._areaPos[0]+self._width},{self._areaPos[1]+self._height})")
+
+    def mousePressEvent(self, evt): return True
+    def mouseReleaseEvent(self, evt): return True
+
+    def viewFullAreaSize(self) -> (int, int):
+        return self._areaSize
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+
