@@ -101,7 +101,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         #Signals
         self.focusChanged = pyTTkSignal(bool)
 
-        self._name = kwargs.get('name', 'TTkWidget' )
+        self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
 
         self._pendingMouseRelease = False
