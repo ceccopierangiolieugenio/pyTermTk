@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from math import log10, ceil
+
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
@@ -35,7 +37,46 @@ from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
+
+class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
+    __slots__ = ('_textWrap')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMaximumWidth(20)
+        self._textWrap = None
+
+    def _wrapChanged(self):
+        dt = max(1,self._textWrap._lines[-1][0])
+        width = 1+ceil(log10(dt))
+        self.setMaximumWidth(width)
+
+    def setTextWrap(self, tw):
+        self._textWrap = tw
+        tw.wrapChanged.connect(self._wrapChanged)
+        self._wrapChanged()
+        self.update()
+
+    def viewFullAreaSize(self) -> (int, int):
+        if self._textWrap:
+            return 5, self._textWrap.size()
+        else:
+            return self.size()
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+    def paintEvent(self):
+        if not self._textWrap: return
+        ox, oy = self.getViewOffsets()
+        h = self.height()
+        if self._textWrap:
+            for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
+                if not fr:
+                    self._canvas.drawText(pos=(0,i), text=f"{dt}")
+        else:
+            for y in range(h):
+                self._canvas.drawText(pos=(0,y), text=f"{y+oy}")
 
 class TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
@@ -172,8 +213,6 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def redo(self):
-        # TODO: Get rid Of this check
-        if self._textDocument.changed(): return
         if c := self._textDocument.restoreSnapshotNext():
             self._textCursor.restore(c)
 
@@ -502,7 +541,14 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._textEditView = kwargs.get('textEditView', TTkTextEditView(*args, **kwargs))
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
-        self.setViewport(self._textEditView)
+
+        textEditLayout = TTkAbstractScrollViewGridLayout()
+        textEditLayout.addWidget(self._textEditView,0,1)
+        textEditLineNumber = _TTkTextEditViewLineNumber()
+        textEditLineNumber.setTextWrap(self._textEditView._textWrap)
+        textEditLayout.addWidget(textEditLineNumber,0,0)
+        self.setViewport(textEditLayout)
+
         self.clear   = self._textEditView.clear
         self.setText = self._textEditView.setText
         self.append  = self._textEditView.append

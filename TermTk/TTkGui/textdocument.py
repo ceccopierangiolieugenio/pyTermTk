@@ -180,6 +180,11 @@ class TTkTextDocument():
     def changed(self):
         return self._changed
 
+    def setChanged(self, c):
+        self._changed = c
+        if c and self._snap:
+            self._snap._nextDiff = None
+
     def lineCount(self):
         return len(self._dataLines)
 
