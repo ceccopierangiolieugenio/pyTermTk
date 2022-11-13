@@ -50,12 +50,12 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         dt = max(1,self._textWrap._lines[-1][0])
         width = 1+ceil(log10(dt))
         self.setMaximumWidth(width)
+        self.update()
 
     def setTextWrap(self, tw):
         self._textWrap = tw
         tw.wrapChanged.connect(self._wrapChanged)
         self._wrapChanged()
-        self.update()
 
     def viewFullAreaSize(self) -> (int, int):
         if self._textWrap:
@@ -68,15 +68,23 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
 
     def paintEvent(self):
         if not self._textWrap: return
-        ox, oy = self.getViewOffsets()
-        h = self.height()
+        _, oy = self.getViewOffsets()
+        w, h = self.size()
         if self._textWrap:
             for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
-                if not fr:
-                    self._canvas.drawText(pos=(0,i), text=f"{dt}")
+                if fr:
+                    txt = "<"
+                    color = TTkCfg.theme.textEditLineNumberWrapcharColor
+                else:
+                    txt = f"{dt}"
+                    color = TTkCfg.theme.textEditLineNumberColor
+                self._canvas.drawText(pos=(0,i), text=txt, width=w, color=color)
+                self._canvas.drawChar(pos=(w-1,i), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
         else:
+            color = TTkCfg.theme.textEditLineNumberColor
             for y in range(h):
-                self._canvas.drawText(pos=(0,y), text=f"{y+oy}")
+                self._canvas.drawText(pos=(0,y), text=f"{y+oy}", width=w, color=color)
+                self._canvas.drawChar(pos=(w-1,y), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
 
 class TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
@@ -86,7 +94,6 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
-            '_lineNumber', '_lineNumberWidth',
             '_preview', '_previewWidth',
             # # Forwarded Methods
             # 'wrapWidth',    'setWrapWidth',
@@ -109,7 +116,6 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self._readOnly = kwargs.get('readOnly', True)
-        self._lineNumber = kwargs.get('lineNumber', False)
         self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
@@ -254,7 +260,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             self.currentColorChanged.emit(cursor.positionColor())
 
     def resizeEvent(self, w, h):
-        if w != self._lastWrapUsed and w>self._textWrap._tabSpaces:
+        if ( self.lineWrapMode() == TTkK.WidgetWidth and
+             w != self._lastWrapUsed and
+             w > self._textWrap._tabSpaces ):
             self._textWrap.setWrapWidth(w)
             self._lastWrapUsed = w
             self._rewrap()
@@ -523,6 +531,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 class TTkTextEdit(TTkAbstractScrollArea):
     __slots__ = (
             '_textEditView',
+            '_lineNumberView', '_lineNumber',
             # Forwarded Methods
             'clear', 'setText', 'append', 'isReadOnly', 'setReadOnly'
             'wrapWidth', 'setWrapWidth',
@@ -541,12 +550,13 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self._textEditView = kwargs.get('textEditView', TTkTextEditView(*args, **kwargs))
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
+        self._lineNumber = kwargs.get('lineNumber', False)
 
         textEditLayout = TTkAbstractScrollViewGridLayout()
         textEditLayout.addWidget(self._textEditView,0,1)
-        textEditLineNumber = _TTkTextEditViewLineNumber()
-        textEditLineNumber.setTextWrap(self._textEditView._textWrap)
-        textEditLayout.addWidget(textEditLineNumber,0,0)
+        self._lineNumberView = _TTkTextEditViewLineNumber(visible=self._lineNumber)
+        self._lineNumberView.setTextWrap(self._textEditView._textWrap)
+        textEditLayout.addWidget(self._lineNumberView,0,0)
         self.setViewport(textEditLayout)
 
         self.clear   = self._textEditView.clear
@@ -572,3 +582,6 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.currentColorChanged = self._textEditView.currentColorChanged
         self.undoAvailable = self._textEditView.undoAvailable
         self.redoAvailable = self._textEditView.redoAvailable
+
+    def setLineNumber(self, ln):
+        self._lineNumberView.setVisible(ln)

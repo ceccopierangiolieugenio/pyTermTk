@@ -230,3 +230,10 @@ class TTkTheme():
     '''Default to **TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
     treeLineColor     = TTkColor.fg("#444444")
     '''Default to **TTkColor.fg("#444444")**'''
+
+    textEditLineNumberColor = TTkColor.fg("#88aaaa")+TTkColor.bg("#333333")
+    '''Default to **TTkColor.fg("#aaaaaa")+TTkColor.bg("#333333")**'''
+    textEditLineNumberWrapcharColor = TTkColor.fg("#888888")+TTkColor.bg("#333333")
+    '''Default to **TTkColor.fg("#aaaaaa")+TTkColor.bg("#333333")**'''
+    textEditLineNumberSeparatorColor = TTkColor.fg("#444444")
+    '''Default to **TTkColor.fg("#444444")**'''

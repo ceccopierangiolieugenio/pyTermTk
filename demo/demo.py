@@ -112,7 +112,7 @@ def demoShowcase(root=None, border=True):
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
     themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkVBoxLayout(), maxHeight=5, minHeight=5)
-    listMenu = ttk.TTkList(maxWidth=15, minWidth=10)
+    listMenu = ttk.TTkList(maxWidth=30, minWidth=10)
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
@@ -124,6 +124,9 @@ def demoShowcase(root=None, border=True):
     leftFrame.layout().addWidget(quitButton,  3, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
+
+    # Set the size of the left column (quite useless but required by my OCD)
+    splitter.setSizes([15,root.width()-11])
 
     # Themes
     themesFrame.layout().addWidget(r1 := ttk.TTkRadioButton(text="ASCII", name="theme"))
