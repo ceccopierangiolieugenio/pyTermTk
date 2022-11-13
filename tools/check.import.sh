@@ -28,7 +28,9 @@ __check(){
             -e "ttk.py:import threading" \
             -e "ttk.py:import platform" \
             -e "clipboard.py:import importlib.util" \
-            -e "filebuffer.py:import threading"
+            -e "filebuffer.py:import threading" \
+            -e "texedit.py:from math import log10, ceil"
+
 } ;
 
 if __check ;  then
