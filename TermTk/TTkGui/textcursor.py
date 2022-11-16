@@ -416,7 +416,7 @@ class TTkTextCursor():
                 pp.position.line += diffLine
                 pp.anchor.line += diffLine
         self._autoChanged = True
-        self._document._changed = True
+        self._document.setChanged(True)
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(lineFirst,  lineRem,  lineAdd)
         self._autoChanged = False
@@ -527,7 +527,7 @@ class TTkTextCursor():
         if not self.hasSelection(): return
         a,b,c = self._removeSelectedText()
         self._autoChanged = True
-        self._document._changed = True
+        self._document.setChanged(True)
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(a,b,c)
         self._autoChanged = False
@@ -542,7 +542,7 @@ class TTkTextCursor():
                 pt = len(line) if l < selEn.line else selEn.pos
                 self._document._dataLines[l] = line.setColor(color=color, posFrom=pf, posTo=pt)
         self._autoChanged = True
-        self._document._changed = True
+        self._document.setChanged(True)
         self._document.contentsChanged.emit()
         # self._document.contentsChange.emit(0,0,0)
         self._autoChanged = True

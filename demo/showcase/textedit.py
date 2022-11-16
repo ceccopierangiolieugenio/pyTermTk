@@ -66,7 +66,7 @@ def demoTextEdit(root=None, document=None):
     # If no document is passed a default one is created,
     # In this showcase I want to be able to share the same
     # document among 2 textEdit widgets
-    te = ttk.TTkTextEdit(document=document)
+    te = ttk.TTkTextEdit(document=document, lineNumber=True)
 
     te.setReadOnly(False)
 
@@ -118,7 +118,7 @@ def demoTextEdit(root=None, document=None):
     # Empty columns/cells are 1 char wide due to "columnMinWidth=1" parameter in the GridLayout
     #           1       3                    8                11
     #    0       2       4    5    6    7     9       10       12
-    # 0  [ ] FG  [ ] BG
+    # 0  [ ] FG  [ ] BG  [ ] LineNumber
     # 1  ┌─────┐ ┌─────┐ ╒═══╕╒═══╕╒═══╕╒═══╕ ┌──────┐┌──────┐
     # 2  │     │ │     │ │ a ││ a ││ a ││ a │ │ UNDO ││ REDO │
     # 3  └─────┘ └─────┘ └───┘└───┘└───┘└───┘ ╘══════╛└──────┘ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
@@ -129,6 +129,8 @@ def demoTextEdit(root=None, document=None):
 
     fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
     fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7   ,3)),1,2)
+
+    fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
 
     # Char style buttons
     fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
@@ -197,6 +199,8 @@ def demoTextEdit(root=None, document=None):
     cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==ttk.TTkK.Checked))
     cb_fg.clicked.connect(lambda _: _setStyle())
     cb_bg.clicked.connect(lambda _: _setStyle())
+
+    cb_linenumber.stateChanged.connect(lambda x: te.setLineNumber(x==ttk.TTkK.Checked))
 
     btn_fgColor.colorSelected.connect(lambda _: _setStyle())
     btn_bgColor.colorSelected.connect(lambda _: _setStyle())
