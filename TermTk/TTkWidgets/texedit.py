@@ -522,7 +522,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         for y, l in enumerate(subLines):
             t = outLines[l[0]-subLines[0][0]]
-            self._canvas.drawText(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
+            self._canvas.drawTTkString(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
 
         if self._lineWrapMode == TTkK.FixedWidth:
             self._canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
@@ -533,7 +533,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             '_textEditView',
             '_lineNumberView', '_lineNumber',
             # Forwarded Methods
-            'clear', 'setText', 'append', 'isReadOnly', 'setReadOnly'
+            'clear', 'setText', 'append', 'isReadOnly', 'setReadOnly', 'document',
             'wrapWidth', 'setWrapWidth',
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
@@ -562,6 +562,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.clear   = self._textEditView.clear
         self.setText = self._textEditView.setText
         self.append  = self._textEditView.append
+        self.document = self._textEditView.document
         self.isReadOnly  = self._textEditView.isReadOnly
         self.setReadOnly = self._textEditView.setReadOnly
         self.textCursor = self._textEditView.textCursor

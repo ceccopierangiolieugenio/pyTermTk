@@ -21,50 +21,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-class A_Meta(type):
-    def __new__(mcs, name, bases, d):
-        print(f"{mcs=}")
-        print(f"{name=}")
-        print(f"{bases=}")
-        print(f"{d=}")
-        return type.__new__(mcs, name, bases, d)
 
-class A(metaclass=A_Meta):
+class A():
+    test = True
+    def __new__(cls, *args, **kwargs):
+        print(f"New:  {args=} {kwargs=} {cls=}")
+        if kwargs.get('mod'):
+            return super().__new__(A_Mod)
+        return super().__new__(cls)
+
     def __init__(self, *args, **kwargs):
-        pass
-    def test(self):
-        pass
+        print(f"Init: {args=} {kwargs=}")
 
-print(f"{A=}")
-
-a = A(1,2,3,4)
-
-print(f"A ---> {a=}\n")
-
-class B(A_Meta):
+class A_Mod(A):
+    test = False
     def __init__(self, *args, **kwargs):
-        pass
-    def test(self):
-        pass
+        print(f"Init: Mod {args=} {kwargs=}")
 
-b = B("NB",(),{})
+a = A(1,2,3,aa=1,bb=2,cc=3)
+print(f"A ---> {a=} {a.test=}")
+b = A(1,2,3,aa=1,bb=2,cc=3,mod=4)
+print(f"B ---> {b=} {b.test=}")
 
-print(f"B ---> {b=}\n")
+def test(x):
+    print(f"Test {x=}")
+    return x == 5
 
-class C():
-    def __init__(self) -> None:
-        print(f"C {type(self)=}")
-class D():
-    def __init__(self) -> None:
-        print(f"D {type(self)=}")
-class E(C,D):
-    def __init__(self) -> None:
-        print(f"{super()=}")
-        super().__init__()
-    def pippo(self):
-        print(f"{super()=}")
-
-e = E()
-e.pippo()
-
-print(f"E,D ---> {issubclass(E,D)=} {issubclass(E,C)=}")
+print(f"{any(test(x) for x in range(10))=}")

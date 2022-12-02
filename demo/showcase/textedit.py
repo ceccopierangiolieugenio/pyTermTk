@@ -77,6 +77,25 @@ def demoTextEdit(root=None, document=None):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.ANSI.txt')) as f:
         te.append(f.read())
 
+    # Test Variable sized chars
+    te.append(ttk.TTkString("Test Variable sized chars\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
+    te.append( "Emoticons: -😁😂😍😎----")
+    te.append( "           --😐😁😂😍😎-")
+    te.append("")
+
+    te.append( "    UTF-8: £ @ £ ¬ ` 漢 _ _ あ _ _")
+    te.append( "           |.|.|.|.|.||.|.|.||.|.|.")
+    te.append("")
+
+
+    zc1 = chr(0x07a6)
+    zc2 = chr(0x20D7)
+    zc3 = chr(0x065f)
+    te.append( "           - |  |  |  |  | -")
+    te.append(f"Zero Size: - o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
+    te.append( "           - |  |  |  |  | -")
+    te.append("")
+
     # Test Tabs
     te.append(ttk.TTkString("Tabs Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     te.append("Word\tAnother Word\tYet more words")

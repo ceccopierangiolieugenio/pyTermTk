@@ -203,6 +203,20 @@ def test11():
              sum([unicodedata.east_asian_width(ch) == 'W' for ch in cstr]) -
              sum([unicodedata.category(ch) in ('Me','Mn') for ch in cstr]) )
 
+def test12():
+    retTxt = []
+    retCol = []
+    for i,ch in enumerate(cstr):
+        if unicodedata.east_asian_width(ch) == 'W':
+            retTxt += (ch,'')
+            retCol += (ch,ch)
+        if unicodedata.category(ch) in ('Me','Mn'):
+            retTxt[-1]+=ch
+        else:
+            retTxt.append(ch)
+            retCol.append(ch)
+    return (len(retTxt), len(retCol))
+
 
 loop = 100
 
@@ -222,6 +236,10 @@ result = timeit.timeit('test8()', globals=globals(), number=loop)
 print(f"8  {result / loop:.10f} - {result / loop} {test8()}")
 result = timeit.timeit('test9()', globals=globals(), number=loop)
 print(f"9  {result / loop:.10f} - {result / loop} {test9()}")
+result = timeit.timeit('test12()', globals=globals(), number=loop)
+print(f"12 {result / loop:.10f} - {result / loop} {test12()}")
+
+
 
 result = timeit.timeit('test3()', globals=globals(), number=loop)
 print(f"3w {result / loop:.10f} - {result / loop} {test3()}")

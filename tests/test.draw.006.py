@@ -21,50 +21,42 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-class A_Meta(type):
-    def __new__(mcs, name, bases, d):
-        print(f"{mcs=}")
-        print(f"{name=}")
-        print(f"{bases=}")
-        print(f"{d=}")
-        return type.__new__(mcs, name, bases, d)
 
-class A(metaclass=A_Meta):
-    def __init__(self, *args, **kwargs):
-        pass
-    def test(self):
-        pass
+import sys, os
+import logging
+import time
 
-print(f"{A=}")
+sys.path.append(os.path.join(sys.path[0],'..'))
+from TermTk import TTkLog
+from TermTk.TTkCore import TTkColor
+from TermTk.TTkCore import TTkHelper
+from TermTk.TTkCore import TTkString
+from TermTk.TTkCore import TTkTerm
 
-a = A(1,2,3,4)
 
-print(f"A ---> {a=}\n")
+# TTkLog.use_default_file_logging()
+TTkLog.use_default_stdout_logging()
 
-class B(A_Meta):
-    def __init__(self, *args, **kwargs):
-        pass
-    def test(self):
-        pass
+# TTkTerm.init(mouse=False)
+TTkLog.info("Starting")
 
-b = B("NB",(),{})
+s1 = TTkString("-😁😂😍😎----")
+s2 = TTkString("--😐😁😂😍😎-")
 
-print(f"B ---> {b=}\n")
+zc1 = chr(0x07a6)
+zc2 = chr(0x20D7)
+zc3 = chr(0x065f)
+s3 = TTkString(f"Zero Size: - o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
 
-class C():
-    def __init__(self) -> None:
-        print(f"C {type(self)=}")
-class D():
-    def __init__(self) -> None:
-        print(f"D {type(self)=}")
-class E(C,D):
-    def __init__(self) -> None:
-        print(f"{super()=}")
-        super().__init__()
-    def pippo(self):
-        print(f"{super()=}")
+s4 = TTkString("This is a notmal string")
 
-e = E()
-e.pippo()
+print(s1.getData()[0])
+print(s2.getData()[0])
+print(s3.getData()[0])
+print(s4.getData()[0])
 
-print(f"E,D ---> {issubclass(E,D)=} {issubclass(E,C)=}")
+# time.sleep(5)
+
+TTkLog.info("Ending")
+
+# TTkTerm.exit()
