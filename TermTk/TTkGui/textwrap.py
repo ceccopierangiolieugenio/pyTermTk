@@ -113,7 +113,7 @@ class TTkTextWrap():
         for i, (dt, (fr, to)) in enumerate(self._lines):
             if dt == line and fr <= pos <= to:
                 l = self._textDocument._dataLines[dt].substring(fr,pos).tab2spaces(self._tabSpaces)
-                return len(l), i
+                return l.termWidth(), i
         return 0,0
 
     def screenToDataPosition(self, x, y):
@@ -135,5 +135,5 @@ class TTkTextWrap():
         x = max(0,x)
         s = self._textDocument._dataLines[dt].substring(fr,to)
         x = s.tabCharPos(x, self._tabSpaces)
-        x = len(s.substring(0,x).tab2spaces(self._tabSpaces))
+        x = s.substring(0,x).tab2spaces(self._tabSpaces).termWidth()
         return x, y

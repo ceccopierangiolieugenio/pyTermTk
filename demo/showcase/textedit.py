@@ -96,6 +96,9 @@ def demoTextEdit(root=None, document=None):
     te.append( "           - |  |  |  |  | -")
     te.append("")
 
+    te.append(f"Plus Tabs: -\t😁\t😍\to{zc1}{zc2}{zc3}\t😎\to{zc1}{zc2}{zc3}\t😂-")
+    te.append("")
+
     # Test Tabs
     te.append(ttk.TTkString("Tabs Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     te.append("Word\tAnother Word\tYet more words")

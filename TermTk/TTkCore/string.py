@@ -171,15 +171,16 @@ class TTkString():
         ret._colors += self._colors[0:pos]
         for s in slices[1:]:
             c  = self._colors[pos]
-            lentxt = len(ret._text)
+            lentxt = ret.termWidth()
             spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
             ret._text   += " "*spaces + s
             ret._colors += [c]*spaces + self._colors[pos+1:pos+1+len(s)]
+            ret._checkWidth()
             pos+=len(s)+1
         return ret
 
     def tabCharPos(self, pos, tabSpaces=4, alignTabRight=False):
-        '''Return the char position in the string from the position in its representation with the tab solved
+        '''Return the char position in the string from the position in its representation with the tab and variable char sizes are solved
 
         i.e.
 
@@ -187,12 +188,14 @@ class TTkString():
 
             pos                   X = 11
             tab2Spaces |----------|---------------------|
-            Tabs            |--|  |  |-|     |-|   |
-            _text      Lorem    ipsum   dolor   sit amet,
-            chars      .....t   .....t  .....t  ...t.....
-            ret                   x = 8 (tab is a char)
+            Tabs             |-|  |  |-|     |-|   |
+            _text      L😁rem   ipsum   dolor   sit amet,
+            chars      .. ...t  .....t  .....t  ...t.....
+            ret                   x = 7 (tab is a char)
+
         '''
-        if not self._hasTab: return pos
+        if not self._hasTab and not self._hasSpecialWidth: return pos
+        if self._hasSpecialWidth: return self._tabCharPosWideChar(pos, tabSpaces, alignTabRight)
         slices = self._text.split("\t")
         postxt = 0 # position of the text
         lentxt = 0 # length of the text with resolved tabs
@@ -211,6 +214,37 @@ class TTkString():
             pos += 1-spaces
             lentxt += spaces
             postxt += 1
+        return len(self._text)
+
+    def _tabCharPosWideChar(self, pos, tabSpaces=4, alignTabRight=False):
+        '''Return the char position in the string from the position in its representation with the tab and variable char sizes are solved
+
+        i.e.
+
+        ::
+
+            pos                   X = 11
+            tab2Spaces |----------|---------------------|
+            Tabs             |-|  |  |-|     |-|   |
+            _text      L😁rem   ipsum   dolor   sit amet,
+            chars      .. ...t  .....t  .....t  ...t.....
+            ret                   x = 7 (tab is a char)
+
+        '''
+        # get pos in the slice:
+        dx = pos
+        pp = 0
+        for i,ch in enumerate(self._text):
+            if ch=='\t':
+                pass
+            elif unicodedata.east_asian_width(ch) == 'W':
+                pp += 2
+            elif unicodedata.category(ch) in ('Me','Mn'):
+                pass
+            else:
+                pp += 1
+            if dx < pp:
+                return i
         return len(self._text)
 
     def toAscii(self):
@@ -476,6 +510,12 @@ class TTkString():
         return ( unicodedata.east_asian_width(ch) == 'W' or
                  unicodedata.category(ch) in ('Me','Mn') )
 
+    @staticmethod
+    def _getWidthText(txt):
+        return ( len(txt) +
+             sum(unicodedata.east_asian_width(ch) == 'W' for ch in txt) -
+             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
+
     def _checkWidth(self):
         self._hasSpecialWidth = (
                 any(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) or
@@ -487,8 +527,8 @@ class TTkString():
         This value consider the displayed size (Zero, Half, Full) of each character.
         '''
         return ( len(self._text) +
-             sum([unicodedata.east_asian_width(ch) == 'W' for ch in self._text]) -
-             sum([unicodedata.category(ch) in ('Me','Mn') for ch in self._text]) )
+             sum(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) -
+             sum(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) )
 
     def _getDataW(self):
         retTxt = []
