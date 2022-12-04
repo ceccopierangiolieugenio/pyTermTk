@@ -272,7 +272,7 @@ class TTkString():
         :param alignment: the alignment of the text to the full width :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
         :type alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
         '''
-        lentxt = len(self._text)
+        lentxt = self.termWidth()
         if not width or width == lentxt: return self
 
         ret = TTkString()

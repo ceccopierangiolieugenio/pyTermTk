@@ -48,7 +48,7 @@ zc2 = chr(0x20D7)
 zc3 = chr(0x065f)
 s3 = TTkString(f"Zero Size: - o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
 
-s4 = TTkString("This is a notmal string")
+s4 = TTkString("This is a normal string")
 
 s5 = TTkString(f"-😁😂😍😎- o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
 
