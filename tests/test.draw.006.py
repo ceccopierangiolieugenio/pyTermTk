@@ -51,12 +51,16 @@ s3 = TTkString(f"Zero Size: - o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{z
 s4 = TTkString("This is a normal string")
 
 s5 = TTkString(f"-😁😂😍😎- o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
+s6 = TTkString(f"{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
+print(f"o{zc1}{zc2}{zc3} - XXXX")
+print(f"{zc1}{zc2}{zc3} - XXXX")
 
 print(s1.getData()[0])
 print(s2.getData()[0])
 print(s3.getData()[0])
 print(s4.getData()[0])
 print(s5.getData()[0])
+print(s6.getData()[0])
 
 s5.tabCharPos(1,tabSpaces=4)
 s5.tabCharPos(5,tabSpaces=4)

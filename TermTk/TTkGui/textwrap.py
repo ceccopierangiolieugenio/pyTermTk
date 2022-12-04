@@ -91,7 +91,7 @@ class TTkTextWrap():
                     return
                 while len(l):
                     fl = l.tab2spaces(self._tabSpaces)
-                    if len(fl) <= w:
+                    if fl.termWidth() <= w:
                         self._lines.append((i,(fr,fr+len(l)+1)))
                         l=[]
                     else:

@@ -236,7 +236,7 @@ class TTkString():
         pp = 0
         for i,ch in enumerate(self._text):
             if ch=='\t':
-                pass
+                pp += tabSpaces - (pp+tabSpaces)%tabSpaces
             elif unicodedata.east_asian_width(ch) == 'W':
                 pp += 2
             elif unicodedata.category(ch) in ('Me','Mn'):
@@ -513,8 +513,30 @@ class TTkString():
     @staticmethod
     def _getWidthText(txt):
         return ( len(txt) +
-             sum(unicodedata.east_asian_width(ch) == 'W' for ch in txt) -
-             sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
+            sum(unicodedata.east_asian_width(ch) == 'W' for ch in txt) -
+            sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
+
+    @staticmethod
+    def _getLenTextWoZero(txt):
+        return ( len(txt) -
+            sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
+
+    def nextPos(self, pos):
+        pos += 1
+        for i,ch in enumerate(self._text[pos:]):
+            if not unicodedata.category(ch) in ('Me','Mn'):
+                return pos+i
+        return len(self._text)
+
+    def prevPos(self, pos):
+        # from TermTk.TTkCore.log import TTkLog
+        # TTkLog.debug(f"->{self._text[:pos]}<- {pos=}")
+        # TTkLog.debug(f"{str(reversed(self._text[:pos]))} {pos=}")
+        for i,ch in enumerate(reversed(self._text[:pos])):
+            # TTkLog.debug(f"{i}---> {ch}    ")
+            if not unicodedata.category(ch) in ('Me','Mn'):
+                return pos-i-1
+        return 0
 
     def _checkWidth(self):
         self._hasSpecialWidth = (
@@ -538,7 +560,11 @@ class TTkString():
                 retTxt += (ch,'')
                 retCol += (self._colors[i],self._colors[i])
             elif unicodedata.category(ch) in ('Me','Mn'):
-                retTxt[-1]+=ch
+                if retTxt:
+                    retTxt[-1]+=ch
+                else:
+                    retTxt = [f" {ch}"]
+                    retCol = [TTkColor.RST]
             else:
                 retTxt.append(ch)
                 retCol.append(self._colors[i])
