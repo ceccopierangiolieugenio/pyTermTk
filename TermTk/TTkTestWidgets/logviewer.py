@@ -26,6 +26,7 @@ import os
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
@@ -35,7 +36,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkLogViewer' )
-        self._messages = [""]
+        self._messages = [TTkString()]
         self._cwd = os.getcwd()
         self._follow = kwargs.get('follow' , False )
         TTkLog.installMessageHandler(self.loggingCallback)
@@ -46,7 +47,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
         self.update()
 
     def viewFullAreaSize(self) -> (int, int):
-        w = max( len(m) for m in self._messages)
+        w = max( m.termWidth() for m in self._messages)
         h = len(self._messages)
         return w , h
 
@@ -55,13 +56,13 @@ class _TTkLogViewer(TTkAbstractScrollView):
 
     def loggingCallback(self, mode, context, message):
         logType = "NONE"
-        if mode == TTkLog.InfoMsg:       logType = "INFO "
-        elif mode == TTkLog.DebugMsg:    logType = "DEBUG"
-        elif mode == TTkLog.ErrorMsg:    logType = "ERROR"
-        elif mode == TTkLog.FatalMsg:    logType = "FATAL"
-        elif mode == TTkLog.WarningMsg:  logType = "WARNING "
-        elif mode == TTkLog.CriticalMsg: logType = "CRITICAL"
-        self._messages.append(f"{logType}: {context.file}:{context.line} {message}".replace(self._cwd,"_"))
+        if mode == TTkLog.InfoMsg:       logType = TTkString("INFO "   ,TTkColor.fg("#00ff00"))
+        elif mode == TTkLog.DebugMsg:    logType = TTkString("DEBUG"   ,TTkColor.fg("#00ffff"))
+        elif mode == TTkLog.ErrorMsg:    logType = TTkString("ERROR"   ,TTkColor.fg("#ff0000"))
+        elif mode == TTkLog.FatalMsg:    logType = TTkString("FATAL"   ,TTkColor.fg("#ff0000"))
+        elif mode == TTkLog.WarningMsg:  logType = TTkString("WARNING ",TTkColor.fg("#ff0000"))
+        elif mode == TTkLog.CriticalMsg: logType = TTkString("CRITICAL",TTkColor.fg("#ff0000"))
+        self._messages.append(logType+TTkString(f": {context.file}:{context.line} {message}".replace(self._cwd,"_")))
         offx, offy = self.getViewOffsets()
         _,h = self.size()
         if self._follow or offy == len(self._messages)-h-1:
@@ -73,14 +74,8 @@ class _TTkLogViewer(TTkAbstractScrollView):
     def paintEvent(self):
         ox,oy = self.getViewOffsets()
         _,h = self.size()
-        for y, message in enumerate(self._messages[oy:]):
-            self._canvas.drawText(pos=(0,y),text=message[ox:])
-            c = TTkColor.RST
-            if   message.startswith("INFO ") : c = TTkColor.fg("#00ff00")
-            elif message.startswith("DEBUG") : c = TTkColor.fg("#00ffff")
-            elif message.startswith("ERROR") : c = TTkColor.fg("#ff0000")
-            elif message.startswith("FATAL") : c = TTkColor.fg("#ff0000")
-            self._canvas.drawText(pos=(-ox,y),text=message[:5], color=c)
+        for y, message in enumerate(self._messages[oy:oy+h]):
+            self._canvas.drawTTkString(pos=(-ox,y),text=message)
 
 class TTkLogViewer(TTkAbstractScrollArea):
     __slots__ = ('_logView')

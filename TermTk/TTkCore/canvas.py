@@ -227,6 +227,8 @@ class TTkCanvas:
             there is some redundant code here in order to reduce the footprint
         '''
         if not self._visible: return
+        if isinstance(text, TTkString):
+            return self.drawTTkString(pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False)
 
         # Check the size and bounds
         x,y = pos
@@ -238,39 +240,26 @@ class TTkCanvas:
 
         if x+width<0 or x>=self._width : return
 
-        if isinstance(text, TTkString):
-            text = text.align(width=width, alignment=alignment, color=color)
-            txt, colors = text.tab2spaces().getData()
-            if forceColor:
-                colors=[color]*len(colors)
-            for i in range(max(0,-x), min(len(txt),self._width-x)):
-                #self._set(y, x+i, txt[i-x], colors[i-x])
-                self._data[y][x+i] = txt[i]
-                if colors[i] == TTkColor.RST != color:
-                    self._colors[y][x+i] =  color.mod(x+i,y)
-                else:
-                    self._colors[y][x+i] =  colors[i].mod(x+i,y)
+        text = text.replace('\t','    ')
+        if lentxt < width:
+            pad = width-lentxt
+            if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
+                text = text + " "*pad
+            elif alignment == TTkK.RIGHT_ALIGN:
+                text = " "*pad + text
+            elif alignment == TTkK.CENTER_ALIGN:
+                p1 = pad//2
+                p2 = pad-p1
+                text = " "*p1 + text+" "*p2
+            elif alignment == TTkK.JUSTIFY:
+                # TODO: Text Justification
+                text = text + " "*pad
         else:
-            text = text.replace('\t','    ')
-            if lentxt < width:
-                pad = width-lentxt
-                if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
-                    text = text + " "*pad
-                elif alignment == TTkK.RIGHT_ALIGN:
-                    text = " "*pad + text
-                elif alignment == TTkK.CENTER_ALIGN:
-                    p1 = pad//2
-                    p2 = pad-p1
-                    text = " "*p1 + text+" "*p2
-                elif alignment == TTkK.JUSTIFY:
-                    # TODO: Text Justification
-                    text = text + " "*pad
-            else:
-                text=text[:width]
+            text=text[:width]
 
-            arr = list(text)
-            for i in range(0, min(len(arr),self._width-x)):
-                self._set(y, x+i, arr[i], color)
+        arr = list(text)
+        for i in range(0, min(len(arr),self._width-x)):
+            self._set(y, x+i, arr[i], color)
 
     def drawBoxTitle(self, pos, size, text, align=TTkK.CENTER_ALIGN, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
         if not self._visible: return
@@ -597,7 +586,7 @@ class TTkCanvas:
                 self._set(y,x+width-1, mb[5], color)
             off = 0
         for i in shortcuts:
-            self._set(y,x+i+off, text[i], shortcutColor)
+            self._set(y,x+i+off, text.charAt(i), shortcutColor)
 
     def execPaint(self, winw, winh):
         pass
