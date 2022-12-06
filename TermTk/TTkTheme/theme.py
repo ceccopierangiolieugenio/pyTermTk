@@ -51,6 +51,7 @@ class TTkTheme():
     menuBar   = draw_utf8.TTkTheme.menuBar
     tab       = draw_utf8.TTkTheme.tab
     braille   = draw_utf8.TTkTheme.braille
+    unicodeWideOverflowCh = draw_utf8.TTkTheme.unicodeWideOverflowCh
 
     fileNameColor   = TTkColor.RST # Simil NerdTree purple
     '''Default to **TTkColor.RST # Simil NerdTree purple**'''
@@ -82,6 +83,7 @@ class TTkTheme():
         TTkTheme.menuBar   = theme['draw'].TTkTheme.menuBar
         TTkTheme.tab       = theme['draw'].TTkTheme.tab
         TTkTheme.braille   = theme['draw'].TTkTheme.braille
+        TTkTheme.unicodeWideOverflowCh = theme['draw'].TTkTheme.unicodeWideOverflowCh
 
         TTkTheme.fileIcon    = theme['file'].FileIcon
         TTkHelper.updateAll()
@@ -237,3 +239,6 @@ class TTkTheme():
     '''Default to **TTkColor.fg("#aaaaaa")+TTkColor.bg("#333333")**'''
     textEditLineNumberSeparatorColor = TTkColor.fg("#444444")
     '''Default to **TTkColor.fg("#444444")**'''
+
+    unicodeWideOverflowColor = TTkColor.fg("#888888")+TTkColor.bg("#000088")
+    '''Default to **TTkColor.fg("#888888")**+**TTkColor.bg("#000088")**'''

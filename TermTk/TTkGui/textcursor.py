@@ -283,12 +283,14 @@ class TTkTextCursor():
         currPos = self.position().toNum()
         def moveRight(cID,p,_):
             if p.pos < len(self._document._dataLines[p.line]):
-                self.setPosition(p.line, p.pos+1, moveMode, cID=cID)
+                nextPos = self._document._dataLines[p.line].nextPos(p.pos)
+                self.setPosition(p.line, nextPos, moveMode, cID=cID)
             elif p.line < len(self._document._dataLines)-1:
                 self.setPosition(p.line+1, 0, moveMode, cID=cID)
         def moveLeft(cID,p,_):
             if p.pos > 0:
-                self.setPosition(p.line, p.pos-1, moveMode, cID=cID)
+                prevPos = self._document._dataLines[p.line].prevPos(p.pos)
+                self.setPosition(p.line, prevPos, moveMode, cID=cID)
             elif p.line > 0:
                 self.setPosition(p.line-1, len(self._document._dataLines[p.line-1]) , moveMode, cID=cID)
         def moveUpDown(offset):
@@ -327,10 +329,13 @@ class TTkTextCursor():
         # the newline is not replaced
         for p in self._properties:
             if not p.hasSelection():
-                line    = p.position.line
+                line = p.position.line
                 pos  = p.position.pos
+                lenWoZero = TTkString._getLenTextWoZero(text)
                 size = len(self._document._dataLines[line])
-                pos = min(size,pos+len(text))
+                for _ in range(lenWoZero):
+                    pos = self._document._dataLines[line].nextPos(pos)
+                pos = min(size,pos)
                 p.anchor.set(line,pos)
         return self.insertText(text)
 
@@ -447,7 +452,7 @@ class TTkTextCursor():
                 splitAfter =  self._document._dataLines[line].substring(fr=pos)
                 xFrom = pos
                 xTo   = pos
-                selectRE = '[a-zA-Z0-9:,./]*'
+                selectRE = '[^ \t\r\n\(\)\[\]\.\,\+\-\*\/]*'
                 if m := splitBefore.search(selectRE+'$'):
                     xFrom -= len(m.group(0))
                 if m := splitAfter.search('^'+selectRE):

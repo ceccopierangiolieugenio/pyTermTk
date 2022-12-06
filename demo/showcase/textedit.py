@@ -30,22 +30,8 @@ import argparse
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
-def randColor():
-    return [
-        ttk.TTkColor.RST,
-        ttk.TTkColor.fg('#FFFF00'),
-        ttk.TTkColor.fg('#00FFFF'),
-        ttk.TTkColor.fg('#FF00FF'),
-        ttk.TTkColor.fg('#0000FF')+ttk.TTkColor.bg('#00FF00'),
-        ttk.TTkColor.fg('#00FF00')+ttk.TTkColor.UNDERLINE,
-        ttk.TTkColor.fg('#FF0000')+ttk.TTkColor.STRIKETROUGH,
-    ][random.randint(0,6)]
-def getWords(n):
-    www = [random.choice(words) for _ in range(n)]
-    return ttk.TTkString(" ".join(www), randColor())
-def getSentence(a,b,i):
-    return ttk.TTkString(" ").join([f"{i} "]+[getWords(random.randint(1,4)) for i in range(0,random.randint(a,b))])
+sys.path.append(os.path.join(sys.path[0],'..'))
+from showcase._showcasehelper import getUtfColoredSentence
 
 class superSimpleHorizontalLine(ttk.TTkWidget):
     def paintEvent(self):
@@ -77,6 +63,28 @@ def demoTextEdit(root=None, document=None):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'textedit.ANSI.txt')) as f:
         te.append(f.read())
 
+    # Test Variable sized chars
+    te.append(ttk.TTkString("Test Variable sized chars\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
+    te.append( "Emoticons: -😁😂😍😎----")
+    te.append( "           --😐😁😂😍😎-")
+    te.append("")
+
+    te.append( "    UTF-8: £ @ £ ¬ ` 漢 _ _ あ _ _")
+    te.append( "           |.|.|.|.|.||.|.|.||.|.|.")
+    te.append("")
+
+
+    zc1 = chr(0x07a6)
+    zc2 = chr(0x20D7)
+    zc3 = chr(0x065f)
+    te.append( "           - |  |  |  |  | -")
+    te.append(f"Zero Size: - o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
+    te.append( "           - |  |  |  |  | -")
+    te.append("")
+
+    te.append(f"Plus Tabs: -\t😁\t😍\to{zc1}{zc2}{zc3}\t😎\to{zc1}{zc2}{zc3}\t😂-")
+    te.append("")
+
     # Test Tabs
     te.append(ttk.TTkString("Tabs Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
     te.append("Word\tAnother Word\tYet more words")
@@ -91,7 +99,7 @@ def demoTextEdit(root=None, document=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    te.append(ttk.TTkString('\n').join([ getSentence(3,10,i) for i in range(50)]))
+    te.append(ttk.TTkString('\n').join([ getUtfColoredSentence(3,10) for _ in range(50)]))
 
     te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
 

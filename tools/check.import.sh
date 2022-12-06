@@ -29,8 +29,9 @@ __check(){
             -e "ttk.py:import platform" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
-            -e "texedit.py:from math import log10, ceil"
-
+            -e "texedit.py:from math import log10, ceil" \
+            -e "canvas.py:import unicodedata" \
+            -e "string.py:import unicodedata"
 } ;
 
 if __check ;  then

@@ -23,7 +23,9 @@
 # SOFTWARE.
 
 import re
+import unicodedata
 
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor, _TTkColor
 
@@ -56,7 +58,7 @@ class TTkString():
         # Combination of constructors (Highly Unrecommended)
         str7 = TTkString("test 7", color=TTkColor.fg('#FF0000'))
     '''
-    __slots__ = ('_text','_colors','_baseColor','_hasTab')
+    __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
 
     def __init__(self, text="", color=None):
         if issubclass(type(text), TTkString):
@@ -67,6 +69,7 @@ class TTkString():
             self._baseColor = TTkColor.RST if color is None else color
             self._text, self._colors = TTkString._parseAnsi(str(text), self._baseColor)
         self._hasTab = '\t' in self._text
+        self._checkWidth()
         # raise AttributeError(f"{type(text)} not supported in TTkString")
 
     @staticmethod
@@ -84,6 +87,12 @@ class TTkString():
         txtret += text[pos:]
         colret += [color]*(len(text)-pos)
         return txtret, colret
+
+    def termWidth(self):
+        if self._hasSpecialWidth:
+            return self._termWidthW()
+        else:
+            return len(self)
 
     def __len__(self):
         return len(self._text)
@@ -106,6 +115,7 @@ class TTkString():
             ret._colors = self._colors
             ret._baseColor = other
         ret._hasTab = '\t' in ret._text
+        ret._checkWidth()
         return ret
 
     def __radd__(self, other):
@@ -118,6 +128,7 @@ class TTkString():
             ret._text   = other + self._text
             ret._colors = [self._baseColor]*len(other) + self._colors
         ret._hasTab = '\t' in ret._text
+        ret._checkWidth()
         return ret
 
     def __setitem__(self, index, value):
@@ -134,11 +145,21 @@ class TTkString():
     def __gt__(self, other): return self._text >  other if type(other) is str else self._text >  other._text
     def __ge__(self, other): return self._text >= other if type(other) is str else self._text >= other._text
 
+    def isdigit(self):
+        return self._text.isdigit()
+
+    def lstrip(self, ch):
+        ret = TTkString()
+        ret._text = self._text.lstrip(ch)
+        ret._colors = self._colors[-len(ret._text):]
+        return ret
+
     def charAt(self, pos):
         return self._text[pos]
 
     def setCharAt(self, pos, char):
         self._text = self._text[:pos]+char+self._text[pos+1:]
+        self._checkWidth()
         return self
 
     def colorAt(self, pos):
@@ -160,15 +181,16 @@ class TTkString():
         ret._colors += self._colors[0:pos]
         for s in slices[1:]:
             c  = self._colors[pos]
-            lentxt = len(ret._text)
+            lentxt = ret.termWidth()
             spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
             ret._text   += " "*spaces + s
             ret._colors += [c]*spaces + self._colors[pos+1:pos+1+len(s)]
+            ret._checkWidth()
             pos+=len(s)+1
         return ret
 
     def tabCharPos(self, pos, tabSpaces=4, alignTabRight=False):
-        '''Return the char position in the string from the position in its representation with the tab solved
+        '''Return the char position in the string from the position in its representation with the tab and variable char sizes are solved
 
         i.e.
 
@@ -176,12 +198,14 @@ class TTkString():
 
             pos                   X = 11
             tab2Spaces |----------|---------------------|
-            Tabs            |--|  |  |-|     |-|   |
-            _text      Lorem    ipsum   dolor   sit amet,
-            chars      .....t   .....t  .....t  ...t.....
-            ret                   x = 8 (tab is a char)
+            Tabs             |-|  |  |-|     |-|   |
+            _text      L😁rem   ipsum   dolor   sit amet,
+            chars      .. ...t  .....t  .....t  ...t.....
+            ret                   x = 7 (tab is a char)
+
         '''
-        if not self._hasTab: return pos
+        if not self._hasTab and not self._hasSpecialWidth: return pos
+        if self._hasSpecialWidth: return self._tabCharPosWideChar(pos, tabSpaces, alignTabRight)
         slices = self._text.split("\t")
         postxt = 0 # position of the text
         lentxt = 0 # length of the text with resolved tabs
@@ -200,6 +224,37 @@ class TTkString():
             pos += 1-spaces
             lentxt += spaces
             postxt += 1
+        return len(self._text)
+
+    def _tabCharPosWideChar(self, pos, tabSpaces=4, alignTabRight=False):
+        '''Return the char position in the string from the position in its representation with the tab and variable char sizes are solved
+
+        i.e.
+
+        ::
+
+            pos                   X = 11
+            tab2Spaces |----------|---------------------|
+            Tabs             |-|  |  |-|     |-|   |
+            _text      L😁rem   ipsum   dolor   sit amet,
+            chars      .. ...t  .....t  .....t  ...t.....
+            ret                   x = 7 (tab is a char)
+
+        '''
+        # get pos in the slice:
+        dx = pos
+        pp = 0
+        for i,ch in enumerate(self._text):
+            if ch=='\t':
+                pp += tabSpaces - (pp+tabSpaces)%tabSpaces
+            elif unicodedata.east_asian_width(ch) == 'W':
+                pp += 2
+            elif unicodedata.category(ch) in ('Me','Mn'):
+                pass
+            else:
+                pp += 1
+            if dx < pp:
+                return i
         return len(self._text)
 
     def toAscii(self):
@@ -227,7 +282,7 @@ class TTkString():
         :param alignment: the alignment of the text to the full width :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
         :type alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
         '''
-        lentxt = len(self._text)
+        lentxt = self.termWidth()
         if not width or width == lentxt: return self
 
         ret = TTkString()
@@ -249,11 +304,32 @@ class TTkString():
                 # TODO: Text Justification
                 ret._text   = self._text   + " "    *pad
                 ret._colors = self._colors + [color]*pad
+        elif self._hasSpecialWidth:
+            # Trim the string to a fixed size taking care of the variable width unicode chars
+            rt = ""
+            sz = 0
+            for ch in self._text:
+                if unicodedata.category(ch) in ('Me','Mn'):
+                    rt += ch
+                    continue
+                if sz == width:
+                    ret._text   =  rt
+                    ret._colors =  self._colors[:len(rt)]
+                    break
+                elif sz > width:
+                    ret._text   =  rt[:-1]+TTkCfg.theme.unicodeWideOverflowCh[1]
+                    ret._colors =  self._colors[:len(ret._text)]
+                    ret._colors[-1] = TTkCfg.theme.unicodeWideOverflowColor
+                    break
+                rt += ch
+                sz += 2 if unicodedata.east_asian_width(ch) == 'W' else 1
         else:
+            # Legacy, trim the string
             ret._text   =  self._text[:width]
             ret._colors =  self._colors[:width]
 
         ret._hasTab = '\t' in ret._text
+        ret._checkWidth()
 
         return ret
 
@@ -301,6 +377,7 @@ class TTkString():
             ret._text   = self._text.replace(*args, **kwargs)
 
         ret._hasTab = '\t' in ret._text
+        ret._checkWidth()
 
         return ret
 
@@ -321,6 +398,7 @@ class TTkString():
         ret = TTkString()
         ret._text  += self._text
         ret._hasTab = self._hasTab
+        ret._hasSpecialWidth = self._hasSpecialWidth
         if match:
             ret._colors += self._colors
             start=0
@@ -359,6 +437,7 @@ class TTkString():
         ret = TTkString()
         ret._text  += self._text
         ret._hasTab = self._hasTab
+        ret._hasSpecialWidth = self._hasSpecialWidth
         if match:
             ret._colors += self._colors
             start=0
@@ -389,6 +468,7 @@ class TTkString():
         ret._text   = self._text[fr:to]
         ret._colors = self._colors[fr:to]
         ret._hasTab = '\t' in ret._text
+        ret._checkWidth()
         return ret
 
     def split(self, separator ):
@@ -413,7 +493,10 @@ class TTkString():
         return ret
 
     def getData(self):
-        return (self._text,self._colors)
+        if self._hasSpecialWidth:
+            return self._getDataW()
+        else:
+            return (tuple(self._text), self._colors)
 
     def search(self, regexp, ignoreCase=False):
         ''' Return the **re.match** of the **regexp**
@@ -424,6 +507,9 @@ class TTkString():
         :type ignoreCase: bool
         '''
         return re.search(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
+
+    def find(self, *args, **kwargs):
+        return self._text.find(*args, **kwargs)
 
     def findall(self, regexp, ignoreCase=False):
         ''' FindAll the **regexp** matches in the string
@@ -450,3 +536,69 @@ class TTkString():
         for s in strings[1:]:
             ret += self + s
         return ret
+
+    # Zero/Half/Normal sized chars helpers:
+    @staticmethod
+    def _isSpecialWidthChar(ch):
+        return ( unicodedata.east_asian_width(ch) == 'W' or
+                 unicodedata.category(ch) in ('Me','Mn') )
+
+    @staticmethod
+    def _getWidthText(txt):
+        return ( len(txt) +
+            sum(unicodedata.east_asian_width(ch) == 'W' for ch in txt) -
+            sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
+
+    @staticmethod
+    def _getLenTextWoZero(txt):
+        return ( len(txt) -
+            sum(unicodedata.category(ch) in ('Me','Mn') for ch in txt) )
+
+    def nextPos(self, pos):
+        pos += 1
+        for i,ch in enumerate(self._text[pos:]):
+            if not unicodedata.category(ch) in ('Me','Mn'):
+                return pos+i
+        return len(self._text)
+
+    def prevPos(self, pos):
+        # from TermTk.TTkCore.log import TTkLog
+        # TTkLog.debug(f"->{self._text[:pos]}<- {pos=}")
+        # TTkLog.debug(f"{str(reversed(self._text[:pos]))} {pos=}")
+        for i,ch in enumerate(reversed(self._text[:pos])):
+            # TTkLog.debug(f"{i}---> {ch}    ")
+            if not unicodedata.category(ch) in ('Me','Mn'):
+                return pos-i-1
+        return 0
+
+    def _checkWidth(self):
+        self._hasSpecialWidth = (
+                any(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) or
+                any(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) )
+
+    def _termWidthW(self):
+        ''' String displayed length
+
+        This value consider the displayed size (Zero, Half, Full) of each character.
+        '''
+        return ( len(self._text) +
+             sum(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) -
+             sum(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) )
+
+    def _getDataW(self):
+        retTxt = []
+        retCol = []
+        for i,ch in enumerate(self._text):
+            if unicodedata.east_asian_width(ch) == 'W':
+                retTxt += (ch,'')
+                retCol += (self._colors[i],self._colors[i])
+            elif unicodedata.category(ch) in ('Me','Mn'):
+                if retTxt:
+                    retTxt[-1]+=ch
+                #else:
+                #    retTxt = [f"{ch}"]
+                #    retCol = [TTkColor.RST]
+            else:
+                retTxt.append(ch)
+                retCol.append(self._colors[i])
+        return (retTxt, retCol)

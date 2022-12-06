@@ -28,11 +28,8 @@ import random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
-def getWord():
-    return random.choice(words)
-def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
+sys.path.append(os.path.join(sys.path[0],'..'))
+from showcase._showcasehelper import getUtfSentence, getUtfWord
 
 table_ii = 1000
 
@@ -62,7 +59,7 @@ def demoFancyTable(root=None):
         ))
     table1.appendItem((" - ","","You see it's all clear, You were meant to be here, From the beginning","",""))
     for i in range(0, 5):
-        table1.appendItem((str(i), getWord(), getSentence(8,30), getWord(), getWord()))
+        table1.appendItem((str(i), getUtfWord(), getUtfSentence(8,30), getUtfWord(), getUtfWord()))
     table1.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 
     # Attach the add Event
@@ -70,14 +67,14 @@ def demoFancyTable(root=None):
     def add():
         global table_ii
         table_ii+=1
-        table1.appendItem((str(table_ii), getWord(), getSentence(8,30), getWord(), getWord()))
+        table1.appendItem((str(table_ii), getUtfWord(), getUtfSentence(8,30), getUtfWord(), getUtfWord()))
     btn1.clicked.connect(add)
 
     def addMany():
         global table_ii
         for i in range(0, 500):
             table_ii+=1
-            table1.appendItem((str(table_ii), getWord(), getSentence(8,30), getWord(), getWord()))
+            table1.appendItem((str(table_ii), getUtfWord(), getUtfSentence(8,30), getUtfWord(), getUtfWord()))
         table1.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
     btn2.clicked.connect(addMany)
 

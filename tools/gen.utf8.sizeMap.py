@@ -21,50 +21,36 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-class A_Meta(type):
-    def __new__(mcs, name, bases, d):
-        print(f"{mcs=}")
-        print(f"{name=}")
-        print(f"{bases=}")
-        print(f"{d=}")
-        return type.__new__(mcs, name, bases, d)
 
-class A(metaclass=A_Meta):
-    def __init__(self, *args, **kwargs):
-        pass
-    def test(self):
-        pass
+import urllib.request
+import re
 
-print(f"{A=}")
+URI='http://www.unicode.org/Public/UCD/latest/ucd/DerivedAge.txt'
 
-a = A(1,2,3,4)
+response = urllib.request.urlopen(URI)
 
-print(f"A ---> {a=}\n")
+# Matching:
+#   "FE24..FE26    ; 5.1 #   [3] COMBINING MACRON LEFT HALF..COMBINING CONJOINING MACRON"
+#   "10190..1019B  ; 5.1 #  [12] ROMAN SEXTANS SIGN..ROMAN CENTURIAL SIGN"
+rangeMatch = re.compile(r'^([0-9A-F]+)\.\.([0-9A-F]+) *; ([0-9\.]+) (#.*)$')
 
-class B(A_Meta):
-    def __init__(self, *args, **kwargs):
-        pass
-    def test(self):
-        pass
+# Matching:
+#   "A95F          ; 5.1 #       REJANG SECTION MARK"
+#   "1093F         ; 5.1 #       LYDIAN TRIANGULAR MARK"
+singleMatch = re.compile(r'^([0-9A-F]+) *; ([0-9\.]+) (#.*)$')
 
-b = B("NB",(),{})
 
-print(f"B ---> {b=}\n")
 
-class C():
-    def __init__(self) -> None:
-        print(f"C {type(self)=}")
-class D():
-    def __init__(self) -> None:
-        print(f"D {type(self)=}")
-class E(C,D):
-    def __init__(self) -> None:
-        print(f"{super()=}")
-        super().__init__()
-    def pippo(self):
-        print(f"{super()=}")
-
-e = E()
-e.pippo()
-
-print(f"E,D ---> {issubclass(E,D)=} {issubclass(E,C)=}")
+for line in response.readlines():
+    # print(line.decode('utf-8'))
+    if m := rangeMatch.match(line.decode('utf-8')):
+        rfr = m.group(1)
+        rto = m.group(2)
+        rver = m.group(3)
+        rdesc = m.group(4)
+        print(f"{rver=} {rfr=} {rto=} {rdesc=}")
+    elif m := singleMatch.match(line.decode('utf-8')):
+        rm = m.group(1)
+        rver = m.group(2)
+        rdesc = m.group(3)
+        print(f"{rver=} {rm=} {rdesc=}")

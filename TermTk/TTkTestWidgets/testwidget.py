@@ -33,14 +33,14 @@ from TermTk.TTkWidgets.frame import *
 class _TestContent(TTkWidget):
     def paintEvent(self):
         # TTkLog.debug(f"Test Paint - {self._name}")
-        y=0;  self._canvas.drawText(pos=(-5,y),color=TTkColor.fg("#ff0000"),text="     Lorem ipsum dolor sit amet,")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff8800"),text="consectetur adipiscing elit,")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ffff00"),text="sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#00ff00"),text="Ut enim ad minim veniam,")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#00ffff"),text="quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#0088ff"),text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#0000ff"),text="Excepteur sint occaecat cupidatat non proident,")
-        y+=1; self._canvas.drawText(pos=(0,y),color=TTkColor.fg("#ff00ff"),text="sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        y=0;  self._canvas.drawText(pos=(-5,y),text=TTkString(color=TTkColor.fg("#ff0000") ,text="     L😎rem ipsum dolor sit amet,"))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#ff8800") ,text="consectetur adipiscing elit,"))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#ffff00") ,text="sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#00ff00") ,text="Ut enim ad minim veniam,"))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#00ffff") ,text="quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#0088ff") ,text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#0000ff") ,text="Excepteur sint occaecat cupidatat non proident,"))
+        y+=1; self._canvas.drawText(pos=(0,y), text=TTkString(color=TTkColor.fg("#ff00ff") ,text="sunt in culpa qui officia deserunt mollit anim id est laborum."))
         y+=1; self._canvas.drawGrid(
                 pos=(0,y),size=(self._width,self._height-y),
                 hlines=(2,5,7), vlines=(4,7,15,30),

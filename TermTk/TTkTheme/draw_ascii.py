@@ -126,3 +126,5 @@ class TTkTheme():
       'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X',
       'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X',
       'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X')
+
+    unicodeWideOverflowCh = ('<','>')

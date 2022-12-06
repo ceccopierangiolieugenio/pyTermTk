@@ -33,11 +33,8 @@ import argparse
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
-def getWord():
-    return random.choice(words)
-def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
+sys.path.append(os.path.join(sys.path[0],'..'))
+from showcase._showcasehelper import getUtfWord
 
 def demoTree(root=None):
     tw = ttk.TTkTree(parent=root)
@@ -77,7 +74,7 @@ def demoTree(root=None):
     def updateChildren(item):
         if item.children(): return
         for _ in range(0,random.randint(3,8)):
-            child = ttk.TTkTreeWidgetItem([getWord(),getWord(),getWord()])
+            child = ttk.TTkTreeWidgetItem([getUtfWord(),getUtfWord(),getUtfWord()])
             if random.randint(0,10)>5:
                 child.setChildIndicatorPolicy(ttk.TTkK.ShowIndicator)
             item.addChild(child)

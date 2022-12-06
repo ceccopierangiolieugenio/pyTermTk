@@ -22,10 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.string import TTkString
+
 class TText():
     #__slots__ = ('_text')
     def __init__(self, *args, **kwargs):
-        self._text  = kwargs.get('text', "" )
+        text = kwargs.get('text', TTkString() )
+        if issubclass(type(text), TTkString):
+            self._text  = text
+        else:
+            self._text  = TTkString(text)
 
     def textUpdated(self, text): pass
 
@@ -36,6 +42,9 @@ class TText():
     @text.setter
     def text(self, text):
         if self.text != text:
-            self._text = text
+            if issubclass(type(text), TTkString):
+                self._text  = text
+            else:
+                self._text  = TTkString(text)
             self.textUpdated(text)
 

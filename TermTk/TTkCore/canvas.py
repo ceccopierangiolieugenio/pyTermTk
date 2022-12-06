@@ -22,13 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import unicodedata
+
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-
 
 class TTkCanvas:
     ''' Init the Canvas object
@@ -153,24 +154,7 @@ class TTkCanvas:
             color = colors[i]
             align = alignments[i]
             if w > 0:
-                line = ""
-                lentxt = len(txt)
-                if lentxt > w:
-                    line += txt[0:w]
-                else:
-                    pad = w-lentxt
-                    if align in [TTkK.NONE,TTkK.LEFT_ALIGN]:
-                        line += txt + " "*pad
-                    elif align == TTkK.RIGHT_ALIGN:
-                        line += " "*pad + txt
-                    elif align == TTkK.CENTER_ALIGN:
-                        p1 = pad//2
-                        p2 = pad-p1
-                        line += " "*p1 + txt+" "*p2
-                    elif align == TTkK.JUSTIFY:
-                        # TODO: Text Justification
-                        line += txt + " "*pad
-                self.drawText(pos=(x,y), text=line, color=color)
+                self.drawTTkString(pos=(x,y), text=txt, width=w, color=color, alignment=align)
                 x += w + 1
 
     def drawChar(self, pos, char, color=TTkColor.RST):
@@ -178,7 +162,8 @@ class TTkCanvas:
         x,y = pos
         self._set(y, x, char, color)
 
-    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+
+    def drawTTkString(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
             NOTE:
             drawText is one of the most abused functions,
@@ -190,45 +175,73 @@ class TTkCanvas:
         x,y = pos
         if y<0 or y>=self._height : return
 
+        lentxt = text.termWidth()
+        if width is None or width<0:
+            width = lentxt
+
+        if x+width<0 or x>=self._width : return
+
+        text = text.align(width=width, alignment=alignment, color=color)
+        txt, colors = text.tab2spaces().getData()
+        if forceColor:
+            colors=[color]*len(colors)
+        a,b = max(0,-x), min(len(txt),self._width-x)
+        for i in range(a,b):
+            #self._set(y, x+i, txt[i-x], colors[i-x])
+            self._data[y][x+i] = txt[i]
+            if colors[i] == TTkColor.RST != color:
+                self._colors[y][x+i] =  color.mod(x+i,y)
+            else:
+                self._colors[y][x+i] =  colors[i].mod(x+i,y)
+        # Check the full wide chars on the edge of the two canvasses
+        if self._data[y][x+a] == '':
+            self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
+            self._colors[y][x+a] = TTkCfg.theme.unicodeWideOverflowColor
+        if ( len(ch:=self._data[y][x+b-1])==1
+             and unicodedata.east_asian_width(ch)=='W'):
+            self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
+            self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
+
+    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+        '''
+            NOTE:
+            drawText is one of the most abused functions,
+            there is some redundant code here in order to reduce the footprint
+        '''
+        if not self._visible: return
+        if isinstance(text, TTkString):
+            return self.drawTTkString(pos, text, width, color, alignment, forceColor)
+
+        # Check the size and bounds
+        x,y = pos
+        if y<0 or y>=self._height : return
+
         lentxt = len(text)
         if width is None or width<0:
             width = lentxt
 
         if x+width<0 or x>=self._width : return
 
-        if isinstance(text, TTkString):
-            text = text.align(width=width, alignment=alignment, color=color)
-            txt, colors = text.tab2spaces().getData()
-            if forceColor:
-                colors=[color]*len(colors)
-            for i in range(max(0,-x), min(len(txt),self._width-x)):
-                #self._set(y, x+i, txt[i-x], colors[i-x])
-                self._data[y][x+i] = txt[i]
-                if colors[i] == TTkColor.RST != color:
-                    self._colors[y][x+i] =  color.mod(x+i,y)
-                else:
-                    self._colors[y][x+i] =  colors[i].mod(x+i,y)
+        text = text.replace('\t','    ')
+        if lentxt < width:
+            pad = width-lentxt
+            if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
+                text = text + " "*pad
+            elif alignment == TTkK.RIGHT_ALIGN:
+                text = " "*pad + text
+            elif alignment == TTkK.CENTER_ALIGN:
+                p1 = pad//2
+                p2 = pad-p1
+                text = " "*p1 + text+" "*p2
+            elif alignment == TTkK.JUSTIFY:
+                # TODO: Text Justification
+                text = text + " "*pad
         else:
-            text = text.replace('\t','    ')
-            if lentxt < width:
-                pad = width-lentxt
-                if alignment in [TTkK.NONE, TTkK.LEFT_ALIGN]:
-                    text = text + " "*pad
-                elif alignment == TTkK.RIGHT_ALIGN:
-                    text = " "*pad + text
-                elif alignment == TTkK.CENTER_ALIGN:
-                    p1 = pad//2
-                    p2 = pad-p1
-                    text = " "*p1 + text+" "*p2
-                elif alignment == TTkK.JUSTIFY:
-                    # TODO: Text Justification
-                    text = text + " "*pad
-            else:
-                text=text[:width]
+            text=text[:width]
 
-            arr = list(text)
-            for i in range(0, min(len(arr),self._width-x)):
-                self._set(y, x+i, arr[i], color)
+        arr = list(text)
+        for i in range(0, min(len(arr),self._width-x)):
+            self._set(y, x+i, arr[i], color)
 
     def drawBoxTitle(self, pos, size, text, align=TTkK.CENTER_ALIGN, color=TTkColor.RST, colorText=TTkColor.RST, grid=0):
         if not self._visible: return
@@ -555,7 +568,7 @@ class TTkCanvas:
                 self._set(y,x+width-1, mb[5], color)
             off = 0
         for i in shortcuts:
-            self._set(y,x+i+off, text[i], shortcutColor)
+            self._set(y,x+i+off, text.charAt(i), shortcutColor)
 
     def execPaint(self, winw, winh):
         pass
@@ -599,8 +612,26 @@ class TTkCanvas:
         hslice = h if y+h < by+bh else by+bh-y
 
         for iy in range(yoffset,hslice):
-            self._data[y+iy][x+xoffset:x+wslice]   = canvas._data[iy][xoffset:wslice]
-            self._colors[y+iy][x+xoffset:x+wslice] = canvas._colors[iy][xoffset:wslice]
+            a, b = x+xoffset, x+wslice
+            self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
+            self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+
+            # Check the full wide chars on the edge of the two canvasses
+            if self._data[y+iy][a]=='':
+                self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
+                self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
+            if ( len(ch:=self._data[y+iy][b-1])==1
+                 and unicodedata.east_asian_width(ch)=='W'):
+                self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
+                self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
+            if ( a and len(ch:=self._data[y+iy][a-1])==1
+                 and unicodedata.east_asian_width(ch)=='W'):
+                self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
+                self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
+            if ( b<self._width-1 and self._data[y+iy][b]=='' ):
+                self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
+                self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
+
 
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
