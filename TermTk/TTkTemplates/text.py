@@ -42,6 +42,9 @@ class TText():
     @text.setter
     def text(self, text):
         if self.text != text:
-            self._text = text
+            if issubclass(type(text), TTkString):
+                self._text  = text
+            else:
+                self._text  = TTkString(text)
             self.textUpdated(text)
 

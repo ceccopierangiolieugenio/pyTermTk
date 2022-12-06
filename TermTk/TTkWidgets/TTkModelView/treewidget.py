@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -250,9 +251,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
                 if _icon:
                     _icon = ' '+_icon+' '
                 if _il==0:
-                    _data.append('  '*_level+_icon+_child.data(_il))
+                    _data.append(TTkString('  '*_level+_icon+_child.data(_il)))
                 else:
-                    _data.append(_icon+_child.data(_il))
+                    _data.append(TTkString(_icon+_child.data(_il)))
 
             self._cache.append(TTkTreeWidget._Cache(
                                 item  = _child,

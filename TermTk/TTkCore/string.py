@@ -294,7 +294,27 @@ class TTkString():
                 # TODO: Text Justification
                 ret._text   = self._text   + " "    *pad
                 ret._colors = self._colors + [color]*pad
+        elif self._hasSpecialWidth:
+            # Trim the string to a fixed size taking care of the variable width unicode chars
+            rt = ""
+            sz = 0
+            for ch in self._text:
+                if unicodedata.category(ch) in ('Me','Mn'):
+                    rt += ch
+                    continue
+                if sz == width:
+                    ret._text   =  rt
+                    ret._colors =  self._colors[:len(rt)]
+                    break
+                elif sz > width:
+                    ret._text   =  rt[:-1]+">"
+                    ret._colors =  self._colors[:len(ret._text)]
+                    ret._colors[-1] = TTkColor.fg("#888888")+TTkColor.bg("000088")
+                    break
+                rt += ch
+                sz += 2 if unicodedata.east_asian_width(ch) == 'W' else 1
         else:
+            # Legacy, trim the string
             ret._text   =  self._text[:width]
             ret._colors =  self._colors[:width]
 
@@ -565,9 +585,9 @@ class TTkString():
             elif unicodedata.category(ch) in ('Me','Mn'):
                 if retTxt:
                     retTxt[-1]+=ch
-                else:
-                    retTxt = [f" {ch}"]
-                    retCol = [TTkColor.RST]
+                #else:
+                #    retTxt = [f"{ch}"]
+                #    retCol = [TTkColor.RST]
             else:
                 retTxt.append(ch)
                 retCol.append(self._colors[i])

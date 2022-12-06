@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
@@ -41,7 +42,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
         super().__init__(*args, **kwargs)
         self._children = []
-        self._data = args[0] if len(args)>0 and type(args[0])==list else ['']
+        data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
+        self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
         self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
         self._parent = kwargs.get('parent', None)
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)

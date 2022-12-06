@@ -80,8 +80,6 @@ s01 = TTkString(f"👩🏽‍🔧   = {chr(0x1F469)}{chr(0x1F3FD)}{chr(0x0200D)}
 s01 = TTkString(f"👩🏾‍🔧   = {chr(0x1F469)}{chr(0x1F3FE)}{chr(0x0200D)}{chr(0x1F527)}") # 1F469 1F3FE 200D 1F527 : 👩🏾‍🔧
 s01 = TTkString(f"👩🏿‍🔧   = {chr(0x1F469)}{chr(0x1F3FF)}{chr(0x0200D)}{chr(0x1F527)}") # 1F469 1F3FF 200D 1F527 : 👩🏿‍🔧
 
-
-
 print(s1.getData()[0])
 print(s2.getData()[0])
 print(s3.getData()[0])
