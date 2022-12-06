@@ -79,10 +79,10 @@ class TTkMenuButton(TTkAbstractListItem):
         self._menu = []
         while self.text.find('&') != -1:
             index = self.text.find('&')
-            shortcut = self.text[index+1]
+            shortcut = self.text.charAt(index+1)
             TTkHelper.addShortcut(self, shortcut)
             self._shortcut.append(index)
-            self.text = self.text[:index]+self.text[index+1:]
+            self.text = self.text.substring(to=index)+self.text.substring(fr=index+1)
         txtlen = len(self.text)
         self.resize(txtlen,1)
         self.setMinimumSize(txtlen+2,1)
