@@ -27,6 +27,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.list_ import TTkList
@@ -43,7 +44,6 @@ class TTkComboBox(TTkWidget):
         self.currentTextChanged  = pyTTkSignal(str)
         self.editTextChanged     = pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkComboBox' )
         # self.checked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
         self._list = kwargs.get('list', [] )
@@ -120,7 +120,7 @@ class TTkComboBox(TTkWidget):
             text = self._list[self._id]
         w = self.width()
 
-        self._canvas.drawText(pos=(1,0), text=text, width=w-2, alignment=self._textAlign, color=color)
+        self._canvas.drawTTkString(pos=(1,0), text=TTkString(text), width=w-2, alignment=self._textAlign, color=color)
         self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
         if self._editable:
             self._canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)

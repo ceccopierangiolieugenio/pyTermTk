@@ -28,11 +28,11 @@ import random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
-def getWord():
-    return random.choice(words)
-def getSentence(a,b):
-    return " ".join([getWord() for i in range(0,random.randint(a,b))])
+zc1 = chr(0x07a6) # Sero width chars oަ
+zc2 = chr(0x20D7) # Sero width chars o⃗
+zc3 = chr(0x065f) # Sero width chars oٟ
+
+from showcase._showcasehelper import getUtfSentence
 
 def demoFormWidgets(root=None):
     win_form1_grid_layout = ttk.TTkGridLayout(columnMinWidth=1)
@@ -47,11 +47,11 @@ def demoFormWidgets(root=None):
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo Box'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=['One','Two','Some Long Sentence That Is Not a Written Number','Three']),row,2)
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo long Box'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=[getSentence(1,4) for i in range(100)]),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkComboBox(list=[getUtfSentence(1,4) for i in range(100)]),row,2)
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo Box Edit. Bottom Insert'),row,0)
-    win_form1_grid_layout.addWidget(comboEdit1 := ttk.TTkComboBox(list=[getSentence(1,4) for i in range(10)]),row,2)
+    win_form1_grid_layout.addWidget(comboEdit1 := ttk.TTkComboBox(list=[getUtfSentence(1,4) for i in range(10)]),row,2)
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Combo Box Edit. Top Insert'),row,0)
-    win_form1_grid_layout.addWidget(comboEdit2 := ttk.TTkComboBox(list=[getSentence(1,4) for i in range(10)]),row,2)
+    win_form1_grid_layout.addWidget(comboEdit2 := ttk.TTkComboBox(list=[getUtfSentence(1,4) for i in range(10)]),row,2)
 
     comboEdit1.setEditable(True)
     comboEdit2.setEditable(True)

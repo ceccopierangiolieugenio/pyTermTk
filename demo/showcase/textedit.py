@@ -30,22 +30,7 @@ import argparse
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
-def randColor():
-    return [
-        ttk.TTkColor.RST,
-        ttk.TTkColor.fg('#FFFF00'),
-        ttk.TTkColor.fg('#00FFFF'),
-        ttk.TTkColor.fg('#FF00FF'),
-        ttk.TTkColor.fg('#0000FF')+ttk.TTkColor.bg('#00FF00'),
-        ttk.TTkColor.fg('#00FF00')+ttk.TTkColor.UNDERLINE,
-        ttk.TTkColor.fg('#FF0000')+ttk.TTkColor.STRIKETROUGH,
-    ][random.randint(0,6)]
-def getWords(n):
-    www = [random.choice(words) for _ in range(n)]
-    return ttk.TTkString(" ".join(www), randColor())
-def getSentence(a,b,i):
-    return ttk.TTkString(" ").join([f"{i} "]+[getWords(random.randint(1,4)) for i in range(0,random.randint(a,b))])
+from showcase._showcasehelper import getUtfColoredSentence
 
 class superSimpleHorizontalLine(ttk.TTkWidget):
     def paintEvent(self):
@@ -113,7 +98,7 @@ def demoTextEdit(root=None, document=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    te.append(ttk.TTkString('\n').join([ getSentence(3,10,i) for i in range(50)]))
+    te.append(ttk.TTkString('\n').join([ getUtfColoredSentence(3,10) for _ in range(50)]))
 
     te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
 

@@ -5,10 +5,12 @@
 - [ ] Remove Duplicate functionalities (i.e. Widget)
   - [ ] Use @property/@setter when possible
   - [ ] Uniform the setter/getter/signal/slots
-- [ ] [UTF-8] Handle "Fullwidth" forms characters
+- [x] [UTF-8] Handle "Fullwidth" forms characters
       https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
       https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)
       https://stackoverflow.com/questions/68412744/count-length-of-value-within-a-cell-with-full-width-characters
+  - [ ] Handle Zero Width Joiner (i.e.👩🔧 -> 👩‍🔧👩🏻‍🔧👩🏻‍🔧👩🏼‍🔧👩🏽‍🔧👩🏾‍🔧👩🏿‍🔧):
+        https://github.com/luchr/WidthInTerminals
 - [ ] Support Hyperlink: (gnome-terminal)
       https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 - [x] Process child events before parent
@@ -45,7 +47,7 @@
 - [ ] Allow dynamic depth change
 - [x] Define a gradient feature
 ## Canvas Class
-- [ ] Have a look to the Unicode chartable: https://www.utf8-chartable.de/unicode-utf8-table.pl
+- [x] Have a look to the Unicode chartable: https://www.utf8-chartable.de/unicode-utf8-table.pl
 
 ## Signal/Slots
 - [x] Implement Signal/Slots
