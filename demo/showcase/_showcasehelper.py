@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import random
+import sys, os, random
 
+sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 zc1 = chr(0x07a6) # Zero width chars oަ
@@ -64,3 +65,11 @@ def getUtfColoredWords(n):
     return ttk.TTkString(" ".join(www), randColor())
 def getUtfColoredSentence(a,b):
     return ttk.TTkString(" ").join([getUtfColoredWords(random.randint(1,4)) for _ in range(0,random.randint(a,b))])
+
+def main():
+    root = ttk.TTk()
+    ttk.TTkLabel(parent=root, text=getUtfColoredSentence(20,50))
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
