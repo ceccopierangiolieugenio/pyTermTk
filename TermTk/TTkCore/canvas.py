@@ -228,7 +228,7 @@ class TTkCanvas:
         '''
         if not self._visible: return
         if isinstance(text, TTkString):
-            return self.drawTTkString(pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False)
+            return self.drawTTkString(pos, text, width, color, alignment, forceColor)
 
         # Check the size and bounds
         x,y = pos
