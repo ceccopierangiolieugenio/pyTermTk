@@ -30,6 +30,7 @@ import argparse
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfColoredSentence
 
 class superSimpleHorizontalLine(ttk.TTkWidget):

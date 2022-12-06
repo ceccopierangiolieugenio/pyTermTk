@@ -32,6 +32,7 @@ zc1 = chr(0x07a6) # Sero width chars oަ
 zc2 = chr(0x20D7) # Sero width chars o⃗
 zc3 = chr(0x065f) # Sero width chars oٟ
 
+sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfSentence
 
 def demoFormWidgets(root=None):

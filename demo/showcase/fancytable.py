@@ -28,6 +28,7 @@ import random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfSentence, getUtfWord
 
 table_ii = 1000

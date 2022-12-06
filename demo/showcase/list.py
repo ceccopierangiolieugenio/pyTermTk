@@ -28,6 +28,7 @@ import sys, os, argparse, math, random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfWord
 
 def demoList(root= None):
