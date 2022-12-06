@@ -194,14 +194,13 @@ class TTkCanvas:
             else:
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)
         # Check the full wide chars on the edge of the two canvasses
-        wcColor = TTkColor.fg("#888888")+TTkColor.bg("000088")
         if self._data[y][x+a] == '':
-            self._data[y][x+a]   = '<'
-            self._colors[y][x+a] = wcColor
+            self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
+            self._colors[y][x+a] = TTkCfg.theme.unicodeWideOverflowColor
         if ( len(ch:=self._data[y][x+b-1])==1
              and unicodedata.east_asian_width(ch)=='W'):
-            self._data[y][x+b-1]   = '>'
-            self._colors[y][x+b-1] = wcColor
+            self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
+            self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
 
     def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
@@ -612,8 +611,6 @@ class TTkCanvas:
         wslice = w if x+w < bx+bw else bx+bw-x
         hslice = h if y+h < by+bh else by+bh-y
 
-        wcColor = TTkColor.fg("#888888")+TTkColor.bg("000088")
-
         for iy in range(yoffset,hslice):
             a, b = x+xoffset, x+wslice
             self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
@@ -621,19 +618,19 @@ class TTkCanvas:
 
             # Check the full wide chars on the edge of the two canvasses
             if self._data[y+iy][a]=='':
-                self._data[y+iy][a]   = '<'
-                self._colors[y+iy][a] = wcColor
+                self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
+                self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
             if ( len(ch:=self._data[y+iy][b-1])==1
                  and unicodedata.east_asian_width(ch)=='W'):
-                self._data[y+iy][b-1]   = '>'
-                self._colors[y+iy][b-1] = wcColor
+                self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
+                self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
             if ( a and len(ch:=self._data[y+iy][a-1])==1
                  and unicodedata.east_asian_width(ch)=='W'):
-                self._data[y+iy][a-1]   = '>'
-                self._colors[y+iy][a-1] = wcColor
+                self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
+                self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
             if ( b<self._width-1 and self._data[y+iy][b]=='' ):
-                self._data[y+iy][b]   = '<'
-                self._colors[y+iy][b] = wcColor
+                self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
+                self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
 
 
     def pushToTerminal(self, x, y, w, h):

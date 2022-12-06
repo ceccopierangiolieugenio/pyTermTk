@@ -25,6 +25,7 @@
 import re
 import unicodedata
 
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor, _TTkColor
 
@@ -316,9 +317,9 @@ class TTkString():
                     ret._colors =  self._colors[:len(rt)]
                     break
                 elif sz > width:
-                    ret._text   =  rt[:-1]+">"
+                    ret._text   =  rt[:-1]+TTkCfg.theme.unicodeWideOverflowCh[1]
                     ret._colors =  self._colors[:len(ret._text)]
-                    ret._colors[-1] = TTkColor.fg("#888888")+TTkColor.bg("000088")
+                    ret._colors[-1] = TTkCfg.theme.unicodeWideOverflowColor
                     break
                 rt += ch
                 sz += 2 if unicodedata.east_asian_width(ch) == 'W' else 1
