@@ -452,7 +452,7 @@ class TTkTextCursor():
                 splitAfter =  self._document._dataLines[line].substring(fr=pos)
                 xFrom = pos
                 xTo   = pos
-                selectRE = '[a-zA-Z0-9:,./]*'
+                selectRE = '[^ \t\r\n\(\)\[\]\.\,\+\-\*\/]*'
                 if m := splitBefore.search(selectRE+'$'):
                     xFrom -= len(m.group(0))
                 if m := splitAfter.search('^'+selectRE):

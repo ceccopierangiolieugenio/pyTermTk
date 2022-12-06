@@ -144,6 +144,15 @@ class TTkString():
     def __gt__(self, other): return self._text >  other if type(other) is str else self._text >  other._text
     def __ge__(self, other): return self._text >= other if type(other) is str else self._text >= other._text
 
+    def isdigit(self):
+        return self._text.isdigit()
+
+    def lstrip(self, ch):
+        ret = TTkString()
+        ret._text = self._text.lstrip(ch)
+        ret._colors = self._colors[-len(ret._text):]
+        return ret
+
     def charAt(self, pos):
         return self._text[pos]
 

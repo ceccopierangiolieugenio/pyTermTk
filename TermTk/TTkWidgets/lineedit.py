@@ -25,10 +25,11 @@
 import re
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkWidgets.widget import *
+from TermTk.TTkWidgets.widget import TTkWidget
 
 
 '''
@@ -48,11 +49,10 @@ class TTkLineEdit(TTkWidget):
         self.textChanged =  pyTTkSignal(str)
         self.textEdited =  pyTTkSignal(str)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLineEdit' )
         self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
-        self._text = kwargs.get('text' , '' )
+        self._text = TTkString(kwargs.get('text' , '' ))
         if self._inputType & TTkK.Input_Number and\
-           not self._text.lstrip('-').isdigit(): self._text = ""
+           not self._text.lstrip('-').isdigit(): self._text = TTkString()
         self._color = TTkCfg.theme.lineEditTextColor
         self._offset = 0
         self._cursorPos = 0
@@ -67,7 +67,7 @@ class TTkLineEdit(TTkWidget):
     def setText(self, text, cursorPos=0x1000):
         if text != self._text:
             self.textChanged.emit(text)
-            self._text = text
+            self._text = TTkString(text)
             self._cursorPos = max(0,min(cursorPos, len(text)))
             self._pushCursor()
 
@@ -82,12 +82,13 @@ class TTkLineEdit(TTkWidget):
         # Align the text and the offset and the cursor to the current view
         self._offset = max(0, min(self._offset, len(self._text)-w))
         # Scroll to the right if reached the edge
-        if self._cursorPos - self._offset > w:
-            self._offset = self._cursorPos-w
-        if self._cursorPos - self._offset < 0:
-            self._offset = self._cursorPos
+        cursorPos = self._text.substring(to=self._cursorPos).termWidth()
+        if cursorPos - self._offset > w:
+            self._offset = cursorPos-w
+        if cursorPos - self._offset < 0:
+            self._offset = cursorPos
 
-        TTkHelper.moveCursor(self,self._cursorPos-self._offset,0)
+        TTkHelper.moveCursor(self,cursorPos-self._offset,0)
         if self._replace:
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
         else:
@@ -116,9 +117,7 @@ class TTkLineEdit(TTkWidget):
         self._canvas.drawText(pos=(0,0), text=text, color=color, width=w)
 
     def mousePressEvent(self, evt):
-        txtPos = evt.x+self._offset
-        if txtPos > len(self._text):
-            txtPos = len(self._text)
+        txtPos = self._text.tabCharPos(evt.x+self._offset)
         self._cursorPos     = txtPos
         self._selectionFrom = txtPos
         self._selectionTo   = txtPos
@@ -126,7 +125,7 @@ class TTkLineEdit(TTkWidget):
         return True
 
     def mouseDragEvent(self, evt) -> bool:
-        txtPos = evt.x+self._offset
+        txtPos = self._text.tabCharPos(evt.x+self._offset)
         self._selectionFrom = max(0,              min(txtPos,self._cursorPos))
         self._selectionTo   = min(len(self._text),max(txtPos,self._cursorPos))
         if self._selectionFrom < self._selectionTo:
@@ -135,17 +134,17 @@ class TTkLineEdit(TTkWidget):
         return True
 
     def mouseDoubleClickEvent(self, evt) -> bool:
-        before = self._text[:self._cursorPos]
-        after =  self._text[self._cursorPos:]
+        before = self._text.substring(to=self._cursorPos)
+        after =  self._text.substring(fr=self._cursorPos)
 
         self._selectionFrom = len(before)
         self._selectionTo = len(before)
 
-        selectRE = '[a-zA-Z0-9:,./]*'
+        selectRE = '[^ \t\r\n\(\)\[\]\.\,\+\-\*\/]*'
 
-        if m := re.search(selectRE+'$',before):
+        if m := before.search(selectRE+'$'):
             self._selectionFrom -= len(m.group(0))
-        if m := re.search('^'+selectRE,after):
+        if m := after.search('^'+selectRE):
             self._selectionTo += len(m.group(0))
 
         # TTkLog.debug("x"*self._selectionFrom)
@@ -177,13 +176,11 @@ class TTkLineEdit(TTkWidget):
             elif evt.key == TTkK.Key_Left:
                 if self._selectionFrom < self._selectionTo:
                     self._cursorPos = self._selectionTo
-                if self._cursorPos > 0:
-                    self._cursorPos -= 1
+                self._cursorPos = self._text.prevPos(self._cursorPos)
             elif evt.key == TTkK.Key_Right:
                 if self._selectionFrom < self._selectionTo:
                     self._cursorPos = self._selectionTo-1
-                if self._cursorPos < len(self._text):
-                    self._cursorPos += 1
+                self._cursorPos = self._text.nextPos(self._cursorPos)
             elif evt.key == TTkK.Key_End:
                 self._cursorPos = len(self._text)
             elif evt.key == TTkK.Key_Home:
@@ -192,17 +189,18 @@ class TTkLineEdit(TTkWidget):
                 self._replace = not self._replace
             elif evt.key == TTkK.Key_Delete:
                 if self._selectionFrom < self._selectionTo:
-                    self._text = self._text[:self._selectionFrom] + self._text[self._selectionTo:]
+                    self._text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
                     self._cursorPos = self._selectionFrom
                 else:
-                    self._text = self._text[:self._cursorPos] + self._text[self._cursorPos+1:]
+                    self._text = self._text.substring(to=self._cursorPos) + self._text.substring(fr=self._text.nextPos(self._cursorPos))
             elif evt.key == TTkK.Key_Backspace:
                 if self._selectionFrom < self._selectionTo:
-                    self._text = self._text[:self._selectionFrom] + self._text[self._selectionTo:]
+                    self._text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
                     self._cursorPos = self._selectionFrom
                 elif self._cursorPos > 0:
-                   self._text = self._text[:self._cursorPos-1] + self._text[self._cursorPos:]
-                   self._cursorPos -= 1
+                   prev = self._text.prevPos(self._cursorPos)
+                   self._text = self._text.substring(to=prev) + self._text.substring(fr=self._cursorPos)
+                   self._cursorPos = prev
 
             if self._inputType & TTkK.Input_Number and \
                not self._text.lstrip('-').isdigit():
@@ -216,15 +214,15 @@ class TTkLineEdit(TTkWidget):
             text = self._text
 
             if self._selectionFrom < self._selectionTo:
-                pre  = text[:self._selectionFrom]
-                post = text[self._selectionTo:]
+                pre  = text.substring(to=self._selectionFrom)
+                post = text.substring(fr=self._selectionTo)
                 self._cursorPos = self._selectionFrom
             else:
-                pre = text[:self._cursorPos]
+                pre = text.substring(to=self._cursorPos)
                 if self._replace:
-                    post = text[self._cursorPos+1:]
+                    post = text.substring(fr=self._cursorPos+1)
                 else:
-                    post = text[self._cursorPos:]
+                    post = text.substring(fr=self._cursorPos)
 
             text = pre + evt.key + post
             if self._inputType & TTkK.Input_Number and \

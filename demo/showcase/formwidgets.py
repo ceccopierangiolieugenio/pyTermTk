@@ -28,10 +28,6 @@ import random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-zc1 = chr(0x07a6) # Sero width chars oަ
-zc2 = chr(0x20D7) # Sero width chars o⃗
-zc3 = chr(0x065f) # Sero width chars oٟ
-
 sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfSentence
 
@@ -61,9 +57,9 @@ def demoFormWidgets(root=None):
     row +=1;  win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 1'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 1'),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 2'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 2'),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 2 😎 -'),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 3'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 3'),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 3 oަ -'),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 4'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 4'),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 5'),row,0)
