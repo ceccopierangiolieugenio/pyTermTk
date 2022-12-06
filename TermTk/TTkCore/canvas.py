@@ -154,24 +154,7 @@ class TTkCanvas:
             color = colors[i]
             align = alignments[i]
             if w > 0:
-                line = ""
-                lentxt = len(txt)
-                if lentxt > w:
-                    line += txt[0:w]
-                else:
-                    pad = w-lentxt
-                    if align in [TTkK.NONE,TTkK.LEFT_ALIGN]:
-                        line += txt + " "*pad
-                    elif align == TTkK.RIGHT_ALIGN:
-                        line += " "*pad + txt
-                    elif align == TTkK.CENTER_ALIGN:
-                        p1 = pad//2
-                        p2 = pad-p1
-                        line += " "*p1 + txt+" "*p2
-                    elif align == TTkK.JUSTIFY:
-                        # TODO: Text Justification
-                        line += txt + " "*pad
-                self.drawText(pos=(x,y), text=line, color=color)
+                self.drawTTkString(pos=(x,y), text=txt, width=w, color=color, alignment=align)
                 x += w + 1
 
     def drawChar(self, pos, char, color=TTkColor.RST):

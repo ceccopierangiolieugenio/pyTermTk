@@ -25,6 +25,7 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
@@ -35,7 +36,7 @@ class _TTkFancyTableViewHeader(TTkWidget):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkFancyTableViewHeader' )
         self._columns = kwargs.get('columns' , [-1] )
-        self._header = [""]*len(self._columns)
+        self._header = [TTkString()]*len(self._columns)
         self._alignments = [TTkK.NONE]*len(self._columns)
         self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
         self.setMaximumHeight(1)
@@ -49,11 +50,12 @@ class _TTkFancyTableViewHeader(TTkWidget):
     def setHeader(self, header):
         if len(header) != len(self._columns):
             return
-        self._header = header
+        self._header = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else "" for i in header]
+
 
     def setColumnSize(self, columns):
         self._columns = columns
-        self._header += [""]*(len(self._columns)-len(self._header))
+        self._header += [TTkString()]*(len(self._columns)-len(self._header))
         self._alignments = [TTkK.NONE]*len(self._columns)
 
     def paintEvent(self):
@@ -198,7 +200,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
     def appendItem(self, item, id=None):
         if len(item) != len(self._columns):
             return
-        textItem = [i if isinstance(i,str) else "" for i in item]
+        textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else "" for i in item]
         widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
         if id is not None:
             self._tableDataId.append(id)
@@ -212,7 +214,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
     def insertItem(self, index, item, id=None):
         if len(item) != len(self._columns):
             return#
-        textItem = [i if isinstance(i,str) else "" for i in item]
+        textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else "" for i in item]
         widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
         if id is not None:
             self._tableDataId.insert(index, id)
