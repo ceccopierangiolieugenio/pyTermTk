@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
@@ -52,7 +53,7 @@ class _TTkDisplayedTreeItem(TTkWidget):
 
         self._name = kwargs.get('name' , '_TTkDisplayedTreeItem' )
         self._depth = kwargs.get('depth' , 0 )
-        self._text = kwargs.get('text' , "" )
+        self._text = TTkString(kwargs.get('text' , "" ))
         self._id = kwargs.get('id' , 0 )
         self._treeWidgetItem = kwargs.get('treeWidgetItem', None)
         self._isLeaf  = self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicator

@@ -50,7 +50,7 @@ class _TTkFancyTableViewHeader(TTkWidget):
     def setHeader(self, header):
         if len(header) != len(self._columns):
             return
-        self._header = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else "" for i in header]
+        self._header = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else TTkString() for i in header]
 
 
     def setColumnSize(self, columns):
@@ -200,7 +200,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
     def appendItem(self, item, id=None):
         if len(item) != len(self._columns):
             return
-        textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else "" for i in item]
+        textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else TTkString() for i in item]
         widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
         if id is not None:
             self._tableDataId.append(id)
@@ -214,7 +214,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
     def insertItem(self, index, item, id=None):
         if len(item) != len(self._columns):
             return#
-        textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else "" for i in item]
+        textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else TTkString() for i in item]
         widgetItem = [i if isinstance(i,TTkWidget) else None for i in item]
         if id is not None:
             self._tableDataId.insert(index, id)
