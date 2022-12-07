@@ -109,13 +109,16 @@ def demoShowcase(root=None, border=True):
     listMenu = ttk.TTkList(maxWidth=30, minWidth=10)
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
+    mouseToggler = ttk.TTkCheckbox(text='Mouse', checked=True)
+    mouseToggler.stateChanged.connect(lambda x: ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON if x==ttk.TTkK.Checked else ttk.TTkTerm.Mouse.OFF))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
     quitButton.clicked.connect(ttk.TTkHelper.quit)
 
-    leftFrame.layout().addWidget(themesFrame, 0, 0)
-    leftFrame.layout().addWidget(listMenu,    1, 0)
-    leftFrame.layout().addWidget(logInputToggler,  2, 0)
-    leftFrame.layout().addWidget(quitButton,  3, 0)
+    leftFrame.layout().addWidget(themesFrame,     0, 0)
+    leftFrame.layout().addWidget(listMenu,        1, 0)
+    leftFrame.layout().addWidget(mouseToggler,    2, 0)
+    leftFrame.layout().addWidget(logInputToggler, 3, 0)
+    leftFrame.layout().addWidget(quitButton,      4, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
