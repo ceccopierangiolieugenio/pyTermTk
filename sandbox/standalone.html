@@ -8,6 +8,7 @@
 
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
+    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
     <!--
       <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
       <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
@@ -19,7 +20,14 @@
 
     <script type="text/javascript">
       /* xterm.js demo */
-      var term = new Terminal();
+      /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+      const unicode11Addon = new Unicode11Addon.Unicode11Addon();
+
+      var term = new Terminal({allowProposedApi: true});
+      term.loadAddon(unicode11Addon);
+
+      term.unicode.activeVersion = '11';
+
       term.open(document.getElementById('terminal'));
 
       term.write('xterm.js - Loaded\n\r')
