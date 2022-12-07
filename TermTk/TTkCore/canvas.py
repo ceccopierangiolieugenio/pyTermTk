@@ -22,8 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import unicodedata
-
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -197,8 +195,7 @@ class TTkCanvas:
         if self._data[y][x+a] == '':
             self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
             self._colors[y][x+a] = TTkCfg.theme.unicodeWideOverflowColor
-        if ( len(ch:=self._data[y][x+b-1])==1
-             and unicodedata.east_asian_width(ch)=='W'):
+        if TTkString._isWideCharData(self._data[y][x+b-1]):
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
             self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
 
@@ -620,18 +617,15 @@ class TTkCanvas:
             if self._data[y+iy][a]=='':
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
-            if ( len(ch:=self._data[y+iy][b-1])==1
-                 and unicodedata.east_asian_width(ch)=='W'):
+            if TTkString._isWideCharData(self._data[y+iy][b-1]):
                 self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
-            if ( a and len(ch:=self._data[y+iy][a-1])==1
-                 and unicodedata.east_asian_width(ch)=='W'):
+            if TTkString._isWideCharData(self._data[y+iy][a-1]):
                 self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
             if ( b<self._width-1 and self._data[y+iy][b]=='' ):
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
-
 
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")

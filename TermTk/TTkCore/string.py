@@ -537,7 +537,15 @@ class TTkString():
             ret += self + s
         return ret
 
-    # Zero/Half/Normal sized chars helpers:
+    # Unicode Zero/Half/Normal sized chars helpers:
+    @staticmethod
+    def _isWideCharData(ch):
+        if len(ch) == 1:
+            return unicodedata.east_asian_width(ch)=='W'
+        if len(ch) > 1:
+            return unicodedata.east_asian_width(ch[0])=='W'
+        return False
+
     @staticmethod
     def _isSpecialWidthChar(ch):
         return ( unicodedata.east_asian_width(ch) == 'W' or
@@ -594,7 +602,10 @@ class TTkString():
                 retCol += (self._colors[i],self._colors[i])
             elif unicodedata.category(ch) in ('Me','Mn'):
                 if retTxt:
-                    retTxt[-1]+=ch
+                    if len(retTxt)>1 and retTxt[-1] == '':
+                        retTxt[-2]+=ch
+                    else:
+                        retTxt[-1]+=ch
                 #else:
                 #    retTxt = [f"{ch}"]
                 #    retCol = [TTkColor.RST]
