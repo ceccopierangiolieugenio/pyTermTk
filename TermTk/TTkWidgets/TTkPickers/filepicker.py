@@ -164,6 +164,7 @@ class TTkFileDialogPicker(TTkWindow):
 
     @pyTTkSlot(str)
     def _checkFileName(self, fileName):
+        fileName = str(fileName)
         valid = False
         if self._fileMode == TTkK.FileMode.AnyFile:
             valid = os.path.exists(fileName) and os.path.isfile(fileName)
@@ -178,7 +179,7 @@ class TTkFileDialogPicker(TTkWindow):
 
     @pyTTkSlot()
     def _open(self):
-        fileName = self._fileName.text()
+        fileName = str(self._fileName.text())
         if not os.path.exists(fileName): return
         if self._fileMode == TTkK.FileMode.AnyFile   and not os.path.isfile(fileName): return
         if self._fileMode == TTkK.FileMode.Directory and not os.path.isdir(fileName):  return
@@ -197,7 +198,7 @@ class TTkFileDialogPicker(TTkWindow):
 
     @pyTTkSlot(TTkFileTreeWidgetItem, int)
     def _activatedItem(self, item, _):
-        path = item.path()
+        path = str(item.path())
         if os.path.isdir(path):
              self._openNewPath(path, True)
         elif os.path.isfile(path):
