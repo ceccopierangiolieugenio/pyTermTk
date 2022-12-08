@@ -8,7 +8,7 @@
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
 [![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 
-[![screenshot](https://user-images.githubusercontent.com/8876552/206436589-8e8f89df-6490-490f-b4bf-3214a29bcd4e.png)](https://pypi.org/project/pyTermTk)
+[![screenshot](https://user-images.githubusercontent.com/8876552/206444177-d7e7eb0f-5651-48c7-a38a-76af02312958.png)](https://pypi.org/project/pyTermTk)
 
 ## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
