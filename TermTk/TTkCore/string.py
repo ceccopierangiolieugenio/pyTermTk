@@ -309,9 +309,12 @@ class TTkString():
             rt = ""
             sz = 0
             for ch in self._text:
+                rt += ch
                 if unicodedata.category(ch) in ('Me','Mn'):
-                    rt += ch
                     continue
+
+                sz += 2 if unicodedata.east_asian_width(ch) == 'W' else 1
+
                 if sz == width:
                     ret._text   =  rt
                     ret._colors =  self._colors[:len(rt)]
@@ -321,8 +324,6 @@ class TTkString():
                     ret._colors =  self._colors[:len(ret._text)]
                     ret._colors[-1] = TTkCfg.theme.unicodeWideOverflowColor
                     break
-                rt += ch
-                sz += 2 if unicodedata.east_asian_width(ch) == 'W' else 1
         else:
             # Legacy, trim the string
             ret._text   =  self._text[:width]
