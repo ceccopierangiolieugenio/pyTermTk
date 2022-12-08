@@ -10,9 +10,9 @@
 
 [![screenshot](https://user-images.githubusercontent.com/8876552/206436589-8e8f89df-6490-490f-b4bf-3214a29bcd4e.png)](https://pypi.org/project/pyTermTk)
 
-## [python Terminal Toolkit](https://github.com/ceccopierangiolieugenio/pyTermTk)
+## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
-Text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface))
+(**py**thon **Term**inal **T**ool**k**it) is a Text-based user interface library ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface))
 Evolved from the discontinued project [pyCuT](https://github.com/ceccopierangiolieugenio/pyCuT)
 and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/),[GTK](https://pygobject.readthedocs.io/en/latest/), and [tkinter](https://docs.python.org/3/library/tkinter.html) api definition with a touch of personal interpretation
 
@@ -23,7 +23,7 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 - Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
 - True color support
-- [TBD] Fullsize/Halfsize UTF-8 characters
+- Fullsize/Halfsize UTF-8 characters 😎
 
 ## Limitations
 - The native **Windows** porting is not ready yet but it works with [Cygwin](https://www.cygwin.com) or **WSL**.
@@ -31,7 +31,7 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 
 ## Try the [Sandbox](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html) straight from your browser
 
-[![screenshot](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/sandbox.001.png)](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html)
+[![SandBox](https://user-images.githubusercontent.com/8876552/206438915-fdc868b1-32e0-46e8-9e2c-e29f4a7a0e75.png)](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html)
 
 Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) and [CodeMirror5](https://codemirror.net/5/) and [w2ui](https://w2ui.com/)
 
