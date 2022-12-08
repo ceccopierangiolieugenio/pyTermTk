@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkWidgets.widget import *
 
@@ -78,7 +79,7 @@ class TTkCheckbox(TTkWidget):
         self.stateChanged = pyTTkSignal(int)
         self.clicked = pyTTkSignal(bool)
         self._checked = kwargs.get('checked', False )
-        self._text = kwargs.get('text', '' )
+        self._text = TTkString(kwargs.get('text', '' ))
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)

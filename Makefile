@@ -95,5 +95,7 @@ test: .venv
 	tools/check.import.sh
 	. .venv/bin/activate ; \
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp ; \
+	pytest tests/pytest/test_003_string.py ; \
 	pytest tests/pytest/test_002_textedit.py ; \
 	pytest tests/pytest/test_001_demo.py ;
+

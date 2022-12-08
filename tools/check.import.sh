@@ -30,7 +30,6 @@ __check(){
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
             -e "texedit.py:from math import log10, ceil" \
-            -e "canvas.py:import unicodedata" \
             -e "string.py:import unicodedata"
 } ;
 

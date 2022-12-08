@@ -92,7 +92,7 @@ def showSource(file):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),file)) as f:
         content = stupidPythonHighlighter( ttk.TTkString() + f.read() )
     sourceWin = ttk.TTkWindow(size=(100,40), title=file, layout=ttk.TTkGridLayout())
-    texEdit = ttk.TTkTextEdit(parent=sourceWin)
+    texEdit = ttk.TTkTextEdit(parent=sourceWin, lineNumber=True)
     texEdit.setText(content)
     ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
 
@@ -109,7 +109,7 @@ def demoShowcase(root=None, border=True):
     listMenu = ttk.TTkList(maxWidth=30, minWidth=10)
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
-    mouseToggler = ttk.TTkCheckbox(text='Mouse', checked=True)
+    mouseToggler = ttk.TTkCheckbox(text='Mouse 🐀', checked=True)
     mouseToggler.stateChanged.connect(lambda x: ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON if x==ttk.TTkK.Checked else ttk.TTkTerm.Mouse.OFF))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
     quitButton.clicked.connect(ttk.TTkHelper.quit)
