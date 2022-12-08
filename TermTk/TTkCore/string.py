@@ -309,19 +309,18 @@ class TTkString():
             rt = ""
             sz = 0
             for ch in self._text:
+                rt += ch
                 if unicodedata.category(ch) in ('Me','Mn'):
-                    rt += ch
                     continue
-                delta_sz = 2 if unicodedata.east_asian_width(ch) == 'W' else 1 # (*)
-                if sz + delta_sz <= width:
-                    rt += ch
-                    sz += delta_sz
-                    if sz == width:
-                        ret._text   = rt
-                        ret._colors = self._colors[:len(rt)]
-                        break
-                else: # sz +delta_sz == width + 1, because of (*)
-                    ret._text   =  rt+TTkCfg.theme.unicodeWideOverflowCh[1]
+
+                sz += 2 if unicodedata.east_asian_width(ch) == 'W' else 1
+
+                if sz == width:
+                    ret._text   =  rt
+                    ret._colors =  self._colors[:len(rt)]
+                    break
+                elif sz > width:
+                    ret._text   =  rt[:-1]+TTkCfg.theme.unicodeWideOverflowCh[1]
                     ret._colors =  self._colors[:len(ret._text)]
                     ret._colors[-1] = TTkCfg.theme.unicodeWideOverflowColor
                     break
