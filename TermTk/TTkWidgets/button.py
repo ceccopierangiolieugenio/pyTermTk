@@ -91,8 +91,9 @@ class TTkButton(TTkWidget):
         )
     def __init__(self, *args, **kwargs):
         self._text = TTkString(kwargs.get('text', ""))
+        textWidth = self._text.termWidth()
         self._border = kwargs.get('border', False )
-        self.setDefaultSize(kwargs, 2 + len(self._text), 3 if self._border else 1 )
+        self.setDefaultSize(kwargs, 2 + textWidth, 3 if self._border else 1 )
 
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkButton' )
@@ -114,9 +115,9 @@ class TTkButton(TTkWidget):
         self._pressed = False
         self._keyPressed = False
         if self._border:
-            self.setMinimumSize(2+len(self._text), 3)
+            self.setMinimumSize(2+textWidth, 3)
         else:
-            self.setMinimumSize(len(self._text)+2, 1)
+            self.setMinimumSize(textWidth+2, 1)
             self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
@@ -156,7 +157,7 @@ class TTkButton(TTkWidget):
     @text.setter
     def text(self, text):
         self._text = TTkString(text)
-        self.setMinimumSize(len(text), 1)
+        self.setMinimumSize(self._text.termWidth()+2, 1)
         self.update()
 
     def mousePressEvent(self, evt):
@@ -217,7 +218,6 @@ class TTkButton(TTkWidget):
         w = self.width()-2
         h = self.height()
         y = (h-1)//2
-        l = len(text)
         text = text.align(width=w, alignment=TTkK.CENTER_ALIGN).addColor(textColor)
         if self._border:
             if self._border:
@@ -229,6 +229,6 @@ class TTkButton(TTkWidget):
                 self._canvas.drawText(pos=(1,1) ,text=text)
         else:
             self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
-            self._canvas.drawText(pos=(1+len(text),y), color=borderColor ,text=']')
+            self._canvas.drawText(pos=(1+text.termWidth(),y), color=borderColor ,text=']')
             self._canvas.drawText(pos=(1,y) ,text=text)
 
