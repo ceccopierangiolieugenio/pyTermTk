@@ -46,5 +46,5 @@ class TText():
                 self._text  = text
             else:
                 self._text  = TTkString(text)
-            self.textUpdated(text)
+            self.textUpdated(self._text)
 
