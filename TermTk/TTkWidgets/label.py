@@ -33,11 +33,11 @@ class TTkLabel(TTkWidget, TColor, TText):
         TColor.__init__(self, *args, **kwargs)
         TText.__init__(self, *args, **kwargs)
 
-        self.setDefaultSize(kwargs, len(self.text), 1)
+        self.setDefaultSize(kwargs, self.text.termWidth(), 1)
 
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkLabel' )
-        # self.setMinimumSize(len(self.text), 1)
+        # self.setMinimumSize(self.text.termWidth(), 1)
         self.textUpdated(self.text)
 
     @pyTTkSlot(str)
@@ -51,9 +51,10 @@ class TTkLabel(TTkWidget, TColor, TText):
 
     def textUpdated(self, text):
         w, h = self.size()
-        if w<len(text) or h<1:
-            self.resize(len(text),1)
-        self.setMinimumSize(len(text), 1)
+        textWidth = text.termWidth()
+        if w<textWidth or h<1:
+            self.resize(textWidth,1)
+        self.setMinimumSize(textWidth, 1)
         self.update()
 
     def colorUpdated(self, color):
