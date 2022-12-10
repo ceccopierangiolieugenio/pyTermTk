@@ -89,10 +89,7 @@ class TTkString():
         return txtret, colret
 
     def termWidth(self):
-        if self._hasSpecialWidth:
-            return self._termWidthW()
-        else:
-            return len(self)
+        return self._hasSpecialWidth if self._hasSpecialWidth is not None else len(self)
 
     def __len__(self):
         return len(self._text)
@@ -204,8 +201,9 @@ class TTkString():
             ret                   x = 7 (tab is a char)
 
         '''
-        if not self._hasTab and not self._hasSpecialWidth: return pos
-        if self._hasSpecialWidth: return self._tabCharPosWideChar(pos, tabSpaces, alignTabRight)
+        if not self._hasTab and self._hasSpecialWidth is None: return pos
+        if self._hasSpecialWidth is not None:
+            return self._tabCharPosWideChar(pos, tabSpaces, alignTabRight)
         slices = self._text.split("\t")
         postxt = 0 # position of the text
         lentxt = 0 # length of the text with resolved tabs
@@ -304,7 +302,7 @@ class TTkString():
                 # TODO: Text Justification
                 ret._text   = self._text   + " "    *pad
                 ret._colors = self._colors + [color]*pad
-        elif self._hasSpecialWidth:
+        elif self._hasSpecialWidth is not None:
             # Trim the string to a fixed size taking care of the variable width unicode chars
             rt = ""
             sz = 0
@@ -494,7 +492,7 @@ class TTkString():
         return ret
 
     def getData(self):
-        if self._hasSpecialWidth:
+        if self._hasSpecialWidth is not None:
             return self._getDataW()
         else:
             return (tuple(self._text), self._colors)
@@ -581,9 +579,9 @@ class TTkString():
         return 0
 
     def _checkWidth(self):
-        self._hasSpecialWidth = (
+        self._hasSpecialWidth = self._termWidthW() if (
                 any(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) or
-                any(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) )
+                any(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) ) else None
 
     def _termWidthW(self):
         ''' String displayed length
