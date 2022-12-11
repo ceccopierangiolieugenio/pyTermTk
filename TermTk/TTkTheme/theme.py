@@ -52,6 +52,7 @@ class TTkTheme():
     tab       = draw_utf8.TTkTheme.tab
     braille   = draw_utf8.TTkTheme.braille
     unicodeWideOverflowCh = draw_utf8.TTkTheme.unicodeWideOverflowCh
+    progressbarBlocks = draw_utf8.TTkTheme.progressbarBlocks
 
     fileNameColor   = TTkColor.RST # Simil NerdTree purple
     '''Default to **TTkColor.RST # Simil NerdTree purple**'''
@@ -242,3 +243,9 @@ class TTkTheme():
 
     unicodeWideOverflowColor = TTkColor.fg("#888888")+TTkColor.bg("#000088")
     '''Default to **TTkColor.fg("#888888")**+**TTkColor.bg("#000088")**'''
+
+    progresssBarColor = TTkColor.fg('#0000aa')+TTkColor.bg("#000044")
+    '''Default to **TTkColor.fg('#0000aa')**+**TTkColor.bg("#000044")**'''
+
+    progressBarTextColor = TTkColor.fg('#ffffff')+TTkColor.bg('#0000aa')
+    '''Default to **TTkColor.fg('#ffffff')**+**TTkColor.bg('#0000aa')**'''
