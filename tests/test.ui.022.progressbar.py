@@ -47,10 +47,8 @@ def main():
     timer = ttk.TTkTimer()
 
     def _timerEvent():
-        if pb1.value == 1:
-            pb1.value = 0
-        else:
-            pb1.value += 0.02
+        last_value = pb1.value()
+        pb1.setValue(0 if last_value == 1 else last_value + 0.02)
         timer.start(0.2)
 
     timer.timeout.connect(_timerEvent)
