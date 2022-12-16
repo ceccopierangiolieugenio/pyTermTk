@@ -85,7 +85,7 @@ class TTkTheme():
         TTkTheme.tab       = theme['draw'].TTkTheme.tab
         TTkTheme.braille   = theme['draw'].TTkTheme.braille
         TTkTheme.unicodeWideOverflowCh = theme['draw'].TTkTheme.unicodeWideOverflowCh
-        TTkTheme.progressbarBlocks = theme['draw'].progressbarBlocks
+        TTkTheme.progressbarBlocks = theme['draw'].TTkTheme.progressbarBlocks
 
         TTkTheme.fileIcon    = theme['file'].FileIcon
         TTkHelper.updateAll()
