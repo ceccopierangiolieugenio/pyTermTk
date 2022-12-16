@@ -28,6 +28,7 @@ from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 from TermTk.TTkTemplates.dragevents import TDragEvents
 from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
@@ -79,6 +80,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param int minHeight: the minHeight of the widget, defaults to 0
     :param [int,int] minSize: the minSize [width,height] of the widget, optional
 
+    :param lookAndFeel: the style helper to be used for any customization
+    :type lookAndFeel: :class:`~TermTk.TTkTemplates.lookandfeel.TTkTTkLookAndFeel`
+
     :param bool,optional visible: the visibility, optional, defaults to True
     :param bool,optional enabled: the ability to handle input events, optional, defaults to True
     :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
@@ -94,6 +98,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_visible', '_transparent',
         '_pendingMouseRelease',
         '_enabled',
+        '_lookAndFeel',
         #Signals
         'focusChanged')
 
@@ -103,6 +108,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
+
+        self._lookAndFeel = None
+        self.setLookAndFeel(kwargs.get('lookAndFeel', TTkLookAndFeel()))
 
         self._pendingMouseRelease = False
 
@@ -653,3 +661,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     @pyTTkSlot(bool)
     def setDisabled(self, disabled=True):
         self.setEnabled(not disabled)
+
+    def lookAndFeel(self):
+        return self._lookAndFeel
+
+    def setLookAndFeel(self, laf):
+        if self._lookAndFeel:
+            self._lookAndFeel.modified.disconnect(self.update)
+        if not laf:
+            laf = TTkLookAndFeel()
+        self._lookAndFeel = laf
+        self._lookAndFeel.modified.connect(self.update)
