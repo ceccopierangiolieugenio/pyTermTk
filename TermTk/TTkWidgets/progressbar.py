@@ -1,4 +1,25 @@
-#!/usr/bin/env python3
+# MIT License
+#
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#                    Luchr          <https://github.com/luchr>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import math
 
@@ -7,15 +28,14 @@ from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.signal    import pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 
-def default_look_and_feel(bar):
-    '''return (text, color_bar) for progressbar's state.'''
-
-    vmin, vmax, value = bar.value_min, bar.value_max, bar.value
-    percent = round(100*(value-vmin)/(vmax-vmin))
-    text = TTkString(f"{percent}%", color=TTkCfg.theme.progressBarTextColor)
-    return (text, TTkCfg.theme.progresssBarColor)
-
+class TTkLookAndFeelPBar(TTkLookAndFeel):
+    def color(self, value, min, max):
+        return TTkCfg.theme.progresssBarColor
+    def text(self, value, min, max):
+        percent = round(100*(value-min)/(max-min))
+        return TTkString(f"{percent}%", color=TTkCfg.theme.progressBarTextColor)
 
 '''
      Progressbar:  |████████▌      |
@@ -25,21 +45,18 @@ def default_look_and_feel(bar):
 class TTkProgressBar(TTkWidget):
     __slots__ = (
         '_value', '_value_min', '_value_max',
-        '_look_and_feel',
         # Signals
         'valueChanged')
 
     def __init__(self, *args, **kwargs):
         self.valueChanged = pyTTkSignal(float)
         TTkWidget.__init__(self, *args, **kwargs)
+        self.setLookAndFeel(TTkLookAndFeelPBar())
         self._value_min = float(kwargs.get('value_min', 0.0))
         self._value_max = float(kwargs.get('value_max', 1.0))
         self._value = float(kwargs.get('value', 0.0))
         if not (self._value_min <= self._value <= self._value_max):
             self._value = self._value_min
-        self._look_and_feel = kwargs.get('look_and_feel', None)
-        if self._look_and_feel is None:
-            self._look_and_feel = default_look_and_feel
         self.setMaximumHeight(1)
         self.setMinimumSize(3, 1)
 
@@ -63,7 +80,8 @@ class TTkProgressBar(TTkWidget):
 
     def paintEvent(self):
         width, height = self.size()
-        text, color_bar = self._look_and_feel(self)
+        text = self.lookAndFeel().text(self._value, self._value_min, self._value_max)
+        color_bar = self.lookAndFeel().color(self._value, self._value_min, self._value_max)
         blocks = TTkCfg.theme.progressbarBlocks
         canvas = self._canvas
 
@@ -71,20 +89,11 @@ class TTkProgressBar(TTkWidget):
         full = math.floor(virt_width // 8)
         rest = math.floor(virt_width - 8*full)
 
-        if text is not None and text.termWidth() <= full:
-            pad = full - text.termWidth()
-            pad1 = pad//2
-            full_part = (
-                TTkString(blocks[8]*pad1, color=color_bar) + text +
-                TTkString(blocks[8]*(pad-pad1), color=color_bar))
-        else:
-            full_part = TTkString(blocks[8]*full, color=color_bar)
-
-        canvas.drawText(pos=(0, 0), text=full_part)
+        canvas.drawText(pos=(0, 0), text='',   width=width, color=color_bar)
+        if full:
+            canvas.drawText(pos=(0, 0), text=text, width=full,color=color_bar.invertFgBg(), alignment=TTkK.CENTER_ALIGN)
         if full < width:
             canvas.drawText(pos=(full, 0), text=blocks[rest], color=color_bar)
-        if full + 1 < width:
-            canvas.drawText(pos=(full+1, 0), text=' '*(width-full-1), color=color_bar)
 
 
 
