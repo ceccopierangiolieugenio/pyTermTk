@@ -85,6 +85,7 @@ class TTkTheme():
         TTkTheme.tab       = theme['draw'].TTkTheme.tab
         TTkTheme.braille   = theme['draw'].TTkTheme.braille
         TTkTheme.unicodeWideOverflowCh = theme['draw'].TTkTheme.unicodeWideOverflowCh
+        TTkTheme.progressbarBlocks = theme['draw'].TTkTheme.progressbarBlocks
 
         TTkTheme.fileIcon    = theme['file'].FileIcon
         TTkHelper.updateAll()
@@ -247,5 +248,5 @@ class TTkTheme():
     progresssBarColor = TTkColor.fg('#0000aa')+TTkColor.bg("#000044")
     '''Default to **TTkColor.fg('#0000aa')**+**TTkColor.bg("#000044")**'''
 
-    progressBarTextColor = TTkColor.fg('#ffffff')+TTkColor.bg('#0000aa')
-    '''Default to **TTkColor.fg('#ffffff')**+**TTkColor.bg('#0000aa')**'''
+    progressBarTextColor = TTkColor.fg('#ffffff')
+    '''Default to **TTkColor.fg('#ffffff')**'''

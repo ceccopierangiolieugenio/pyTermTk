@@ -35,20 +35,34 @@ def main():
     ttk.TTkLog.use_default_file_logging()
 
     root = ttk.TTk()
+    layout = ttk.TTkGridLayout(columnMinHeight=1)
     if args.f:
         rootW = root
-        root.setLayout(ttk.TTkGridLayout())
+        root.setLayout(layout)
     else:
-        rootW = ttk.TTkWindow(parent=root,pos=(1,1), size=(55,10), title="Test Graph", border=True, layout=ttk.TTkGridLayout())
+        rootW = ttk.TTkWindow(
+            parent=root,pos=(1,1), size=(55,9), border=True, layout=layout,
+            title="Test Progressbar (resize me)")
 
-    rootW.layout().addWidget(pb1 := ttk.TTkProgressBar())
+    rootW.layout().addWidget(pb1 := ttk.TTkProgressBar(), row=0, col=0)
+    rootW.layout().addWidget(pb2 := ttk.TTkProgressBar(textWidth=0), row=2, col=0)
+    rootW.layout().addWidget(pb3 := ttk.TTkProgressBar(textWidth=6), row=4, col=0)
 
+    def fade_green_red(value, minimum, maximum):
+        red, green = round(value*255), round((1-value)*255)
+        fg = f"#{red:02x}{green:02x}00"
+        return ttk.TTkColor.fg(fg)
+
+    pb2.lookAndFeel().color = fade_green_red
+    pb3.lookAndFeel().text = lambda value, minimum, maximum: 'low' if value < 0.5 else 'high'
 
     timer = ttk.TTkTimer()
 
     def _timerEvent():
-        val = pb1.value()
-        pb1.setValue(0 if val>= 1 else (val+0.01))
+        for pb in (pb1, pb2, pb3):
+            last_value = pb.value()
+            pb.setValue(0 if last_value == 1 else last_value + 0.01)
+
         timer.start(0.1)
 
     timer.timeout.connect(_timerEvent)
