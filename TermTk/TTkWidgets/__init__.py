@@ -24,4 +24,4 @@ from .image           import TTkImage
 from .about           import TTkAbout
 from .TTkModelView    import *
 from .Fancy           import *
-from .progressbar     import TTkProgressBar
+from .progressbar     import TTkProgressBar, TTkLookAndFeelPBar
