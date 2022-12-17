@@ -26,7 +26,7 @@ import math
 from TermTk.TTkCore.cfg       import TTkCfg
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.string    import TTkString
-from TermTk.TTkCore.signal    import pyTTkSignal
+from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 
@@ -44,7 +44,7 @@ class TTkLookAndFeelPBar(TTkLookAndFeel):
 '''
 class TTkProgressBar(TTkWidget):
     __slots__ = (
-        '_value', '_value_min', '_value_max',
+        '_value', '_minimum', '_maximum',
         # Signals
         'valueChanged')
 
@@ -52,40 +52,36 @@ class TTkProgressBar(TTkWidget):
         self.valueChanged = pyTTkSignal(float)
         TTkWidget.__init__(self, *args, **kwargs)
         self.setLookAndFeel(TTkLookAndFeelPBar())
-        self._value_min = float(kwargs.get('value_min', 0.0))
-        self._value_max = float(kwargs.get('value_max', 1.0))
+        self._minimum = float(kwargs.get('minimum', 0.0))
+        self._maximum = float(kwargs.get('maximum', 1.0))
         self._value = float(kwargs.get('value', 0.0))
-        if not (self._value_min <= self._value <= self._value_max):
-            self._value = self._value_min
+        self._value = min(max(self._value, self._minimum), self._maximum)
         self.setMaximumHeight(1)
         self.setMinimumSize(3, 1)
 
-    @property
-    def value_min(self):
-        return self._value_min
+    def minimum(self):
+        return self._minimum
 
-    @property
-    def value_max(self):
-        return self._value_max
+    def maximum(self):
+        return self._maximum
 
-    @property
     def value(self):
         return self._value
 
-    @value.setter
-    def value(self, value):
-        self._value = min(max(float(value), self._value_min), self._value_max)
+    @pyTTkSlot(int)
+    def setValue(self, value):
+        self._value = min(max(float(value), self._minimum), self._maximum)
         self.valueChanged.emit(self._value)
         self.update()
 
     def paintEvent(self):
         width, height = self.size()
-        text = self.lookAndFeel().text(self._value, self._value_min, self._value_max)
-        color_bar = self.lookAndFeel().color(self._value, self._value_min, self._value_max)
+        text = self.lookAndFeel().text(self._value, self._minimum, self._maximum)
+        color_bar = self.lookAndFeel().color(self._value, self._minimum, self._maximum)
         blocks = TTkCfg.theme.progressbarBlocks
         canvas = self._canvas
 
-        virt_width = 8 * width * (self._value - self._value_min)/(self._value_max - self._value_min)
+        virt_width = 8 * width * (self._value - self._minimum)/(self._maximum - self._minimum)
         full = math.floor(virt_width // 8)
         rest = math.floor(virt_width - 8*full)
 

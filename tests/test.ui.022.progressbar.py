@@ -39,7 +39,7 @@ def main():
         rootW = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootW = ttk.TTkWindow(parent=root,pos=(1,1), size=(55,20), title="Test Graph", border=True, layout=ttk.TTkGridLayout())
+        rootW = ttk.TTkWindow(parent=root,pos=(1,1), size=(55,10), title="Test Graph", border=True, layout=ttk.TTkGridLayout())
 
     rootW.layout().addWidget(pb1 := ttk.TTkProgressBar())
 
@@ -47,11 +47,9 @@ def main():
     timer = ttk.TTkTimer()
 
     def _timerEvent():
-        if pb1.value == 1:
-            pb1.value = 0
-        else:
-            pb1.value += 0.02
-        timer.start(0.2)
+        val = pb1.value()
+        pb1.setValue(0 if val>= 1 else (val+0.01))
+        timer.start(0.1)
 
     timer.timeout.connect(_timerEvent)
     timer.start(1)
