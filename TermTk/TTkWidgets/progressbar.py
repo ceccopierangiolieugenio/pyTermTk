@@ -26,13 +26,38 @@ import math
 from TermTk.TTkCore.cfg       import TTkCfg
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.string    import TTkString
-from TermTk.TTkCore.signal    import pyTTkSignal
+from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 
 class TTkLookAndFeelPBar(TTkLookAndFeel):
+    __slots__ = ('_textWidth', '_showText')
+    def __init__(self, showText=True, textWidth=4):
+        super().__init__()
+        self._textWidth = textWidth
+        self._showText = showText
+
+    def showText(self):
+        return self._showText
+
+    @pyTTkSlot(bool)
+    def setShowText(self, st):
+        if st == self._showText: return
+        self._showText = st
+        self.modified.emit()
+
+    def textWidth(self):
+        return self._textWidth
+
+    @pyTTkSlot(int)
+    def setTextWidth(self, tw):
+        if tw == self._textWidth: return
+        self._textWidth = tw
+        self.modified.emit()
+
     def color(self, value, minimum, maximum):
         return TTkCfg.theme.progresssBarColor
+
     def text(self, value, minimum, maximum):
         percent = round(100*(value-minimum)/(maximum-minimum))
         return TTkString(f"{percent:3}%", color=TTkCfg.theme.progressBarTextColor)
@@ -51,8 +76,8 @@ class TTkProgressBar(TTkWidget):
     def __init__(self, *args, **kwargs):
         self.valueChanged = pyTTkSignal(float)
         TTkWidget.__init__(self, *args, **kwargs)
-        self.setLookAndFeel(TTkLookAndFeelPBar())
-        self._textWidth = kwargs.get('textWidth', 4)
+        if not kwargs.get('lookAndFeel'):
+            self.setLookAndFeel(TTkLookAndFeelPBar())
         self._value_min, self._value_max, self._value = 0.0, 1.0, 0.0
         self.setMinimumMaximum(
             kwargs.get('minimum', 0.0), kwargs.get('maximum', 1.0))
@@ -63,6 +88,7 @@ class TTkProgressBar(TTkWidget):
     def value(self):
         return self._value
 
+    @pyTTkSlot(float)
     def setValue(self, new_value):
         new_value = min(max(float(new_value), self._value_min), self._value_max)
         if new_value == self._value:
@@ -125,12 +151,10 @@ class TTkProgressBar(TTkWidget):
         color_bar = laf.color(self._value, self._value_min, self._value_max)
         blocks = TTkCfg.theme.progressbarBlocks
         canvas = self._canvas
-        show_text = (
-            text is not None  and  self._textWidth > 0  and 
-            width > 3 + self._textWidth)
+        show_text = laf.showText()
 
         if show_text:
-            width -= self._textWidth
+            width -= laf.textWidth()
 
         virt_width = 8 * width * (self._value - self._value_min)/(self._value_max - self._value_min)
         full = math.floor(virt_width // 8)
@@ -143,6 +167,6 @@ class TTkProgressBar(TTkWidget):
             canvas.drawText(pos=(full, 0), text=blocks[rest], color=color_bar)
         if show_text:
             canvas.drawText(
-                pos=(width, 0), text=text, width=self._textWidth,
+                pos=(width, 0), text=text, width=laf.textWidth(),
                 alignment=TTkK.RIGHT_ALIGN)
 
