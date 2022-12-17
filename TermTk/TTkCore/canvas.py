@@ -192,10 +192,10 @@ class TTkCanvas:
             else:
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)
         # Check the full wide chars on the edge of the two canvasses
-        if self._data[y][x+a] == '':
+        if 0 <= (x+a) < self._width and self._data[y][x+a] == '':
             self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
             self._colors[y][x+a] = TTkCfg.theme.unicodeWideOverflowColor
-        if TTkString._isWideCharData(self._data[y][x+b-1]):
+        if 0 <= (x+b-1) < self._width and TTkString._isWideCharData(self._data[y][x+b-1]):
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
             self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
 

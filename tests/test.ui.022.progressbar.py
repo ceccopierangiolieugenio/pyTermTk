@@ -41,29 +41,40 @@ def main():
         root.setLayout(layout)
     else:
         rootW = ttk.TTkWindow(
-            parent=root,pos=(1,1), size=(55,9), border=True, layout=layout,
+            parent=root,pos=(1,1), size=(55,15), border=True, layout=layout,
             title="Test Progressbar (resize me)")
 
+    class TextLAF(ttk.TTkLookAndFeelPBar):
+        def text(self, value, max, min):
+            return 'low' if value < 0.5 else 'high'
+
+    class ColorLAF(ttk.TTkLookAndFeelPBar):
+        def color(self, value,max,min):
+            red, green = round(value*255), round((1-value)*255)
+            fg = f"#{red:02x}{green:02x}00"
+            return ttk.TTkColor.fg(fg)
+
+    claf = ColorLAF(textWidth=10)
+
     rootW.layout().addWidget(pb1 := ttk.TTkProgressBar(), row=0, col=0)
-    rootW.layout().addWidget(pb2 := ttk.TTkProgressBar(textWidth=0), row=2, col=0)
-    rootW.layout().addWidget(pb3 := ttk.TTkProgressBar(textWidth=6), row=4, col=0)
+    rootW.layout().addWidget(pb2 := ttk.TTkProgressBar(lookAndFeel=ColorLAF(showText=False)), row=2, col=0)
+    rootW.layout().addWidget(pb3 := ttk.TTkProgressBar(lookAndFeel=TextLAF(textWidth=6)),     row=3, col=0)
 
-    def fade_green_red(value, minimum, maximum):
-        red, green = round(value*255), round((1-value)*255)
-        fg = f"#{red:02x}{green:02x}00"
-        return ttk.TTkColor.fg(fg)
+    rootW.layout().addWidget(pb4 := ttk.TTkProgressBar(lookAndFeel=claf), row=4, col=0)
+    rootW.layout().addWidget(pb5 := ttk.TTkProgressBar(lookAndFeel=claf), row=5, col=0)
 
-    pb2.lookAndFeel().color = fade_green_red
-    pb3.lookAndFeel().text = lambda value, minimum, maximum: 'low' if value < 0.5 else 'high'
+    rootW.layout().addWidget(cbt := ttk.TTkCheckbox(text=" - Rem/Add Text", checked=True), row=6, col=0)
+
+    cbt.stateChanged.connect(lambda x: claf.setShowText(x==ttk.TTkK.Checked))
 
     timer = ttk.TTkTimer()
 
     def _timerEvent():
-        for pb in (pb1, pb2, pb3):
+        for pb in (pb1, pb2, pb3, pb4, pb5):
             last_value = pb.value()
-            pb.setValue(0 if last_value == 1 else last_value + 0.02)
+            pb.setValue(0 if last_value == 1 else last_value + 0.01)
 
-        timer.start(0.2)
+        timer.start(0.1)
 
     timer.timeout.connect(_timerEvent)
     timer.start(1)
