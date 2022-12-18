@@ -25,24 +25,55 @@
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
+from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 
 class TTkWindow(TTkResizableFrame):
-    __slots__ = ('_title', '_mouseDelta', '_draggable')
+    __slots__ = (
+            '_title', '_mouseDelta', '_draggable',
+            '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
+            '_flags', '_winTopLayout' )
     def __init__(self, *args, **kwargs):
         TTkResizableFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkWindow' )
         self._title = kwargs.get('title' , '' )
+        self._flags = TTkK.NONE
         self.setPadding(3,1,1,1)
         self._mouseDelta = (0,0)
         self.setFocusPolicy(TTkK.ClickFocus)
         self._draggable = False
         self._menubarTopPosition = 2
 
+        # Add the top Layout to keep the windows action buttons
+        self._winTopLayout = TTkGridLayout()
+        self.rootLayout().addItem(self._winTopLayout)
+        self._winTopLayout.setGeometry(1,1,self.width()-2,1)
+        # Close Button
+        self._btnClose = TTkButton(border=False, text="x", size=(3,1), maxWidth=3, minWidth=3, visible=False)
+        self._btnClose.clicked.connect(self.close)
+
+        self._winTopLayout.addItem(TTkLayout(),0,0)
+        self._winTopLayout.addWidget(self._btnClose,0,1)
+
+        self.setWindowFlag(kwargs.get('flags', TTkK.NONE))
+
     def setTitle(self, title):
         self._title = title
         self.update()
+
+    def setWindowFlag(self, flag):
+        if self._flags == flag: return
+        self._flags = flag
+        if flag & TTkK.WindowFlag.WindowCloseButtonHint:
+            self._btnClose.show()
+        else:
+            self._btnClose.hide()
+        self.update()
+
+    def resizeEvent(self, w, h):
+        self._winTopLayout.setGeometry(1,1,self.width()-2,1)
+        super().resizeEvent(w,h)
 
     def getTitle(self):
         return self._title

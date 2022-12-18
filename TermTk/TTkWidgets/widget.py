@@ -568,6 +568,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             self._parent.rootLayout().removeWidget(self)
+            self._parent.update()
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
         self.hide()
