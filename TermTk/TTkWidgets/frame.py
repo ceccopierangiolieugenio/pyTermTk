@@ -77,6 +77,7 @@ class TTkFrame(TTkWidget):
     def resizeEvent(self, w, h):
         if self._menubarTop:
             self._menubarTop.setGeometry(1,self._menubarTopPosition,w-2,1)
+        super().resizeEvent(w,h)
 
     def title(self):
         return self._title
