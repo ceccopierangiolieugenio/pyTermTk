@@ -34,7 +34,6 @@ class _TTkFancyTableViewHeader(TTkWidget):
     __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkFancyTableViewHeader' )
         self._columns = kwargs.get('columns' , [-1] )
         self._header = [TTkString()]*len(self._columns)
         self._alignments = [TTkK.NONE]*len(self._columns)
@@ -86,6 +85,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             '_columns', '_columnColors',
             '_tableDataId', '_tableDataText', '_tableDataWidget', '_shownWidgets',
             '_selectColor', '_selected',
+            '_tableWidth',
             # Signals
             'activated', 'doubleClicked')
     def __init__(self, *args, **kwargs):
@@ -94,11 +94,11 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self._tableDataWidget = []
         self._shownWidgets = []
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkFancyTableView' )
         # define signals
         self.activated = pyTTkSignal(int) # Value
         self.doubleClicked = pyTTkSignal(int) # Value
 
+        self._tableWidth = 0
         self._columns = kwargs.get('columns' , [-1] )
         self._alignments = [TTkK.NONE]*len(self._columns)
         self._columnColors = kwargs.get('columnColors' , [TTkColor.RST]*len(self._columns) )
@@ -175,7 +175,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
 
     def viewFullAreaSize(self) -> (int, int):
-        return self.width(), len(self._tableDataText)
+        return self._tableWidth, len(self._tableDataText)
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
@@ -197,6 +197,15 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             return
         self._columnColors = colors
 
+    def _processValues(self):
+        size = 0
+        for txt in self._tableDataText:
+            size=max(size,sum(t.termWidth() for t in txt))
+        if self._tableWidth != size:
+            self._tableWidth = size
+            self.viewChanged.emit()
+
+
     def appendItem(self, item, id=None):
         if len(item) != len(self._columns):
             return
@@ -208,6 +217,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             self._tableDataId.append(item)
         self._tableDataText.append(textItem)
         self._tableDataWidget.append(widgetItem)
+        self._processValues()
         self.viewChanged.emit()
         self.update()
 
@@ -222,12 +232,14 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             self._tableDataId.insert(index, item)
         self._tableDataText.insert(index, textItem)
         self._tableDataWidget.insert(index, widgetItem)
+        self._processValues()
         self.viewChanged.emit()
         self.update()
 
     def removeItem(self, item):
         index = self.indexOf(item)
         self.removeItemAt(index)
+        self._processValues()
         self.viewChanged.emit()
         self.update()
 
@@ -237,6 +249,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         del self._tableDataId[index]
         del self._tableDataText[index]
         del self._tableDataWidget[index]
+        self._processValues()
         self.viewChanged.emit()
         self.update()
 
@@ -246,6 +259,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self._tableDataId = self._tableDataId[:index]
         self._tableDataText = self._tableDataText[:index]
         self._tableDataWidget = self._tableDataWidget[:index]
+        self._processValues()
         self.viewChanged.emit()
         self.update()
 
@@ -294,7 +308,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
     def paintEvent(self):
         w,h = self.size()
-        _, oy = self.getViewOffsets()
+        ox, oy = self.getViewOffsets()
         total = 0
         variableCols = 0
         # Retrieve the free size
@@ -305,10 +319,12 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 variableCols += 1
         # Define the list of cols sizes
         sizes = []
+        varSizes = []
         for width in self._columns:
             if width > 0:
                 sizes.append(width)
             else:
+                varSizes.append(len(sizes))
                 sizes.append((w-total)//variableCols)
                 variableCols -= 1
 
@@ -321,13 +337,15 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         # TTkLog.debug(f"moveto:{self._moveTo}, maxItems:{maxItems}, f:{itemFrom}, t{itemTo}, h:{h}, sel:{self._selected}")
 
         for y, it in enumerate(range(itemFrom, itemTo)):
-            item = self._tableDataText[it]
+            item = self._tableDataText[it].copy()
             if self._selected > 0:
                 val = self._selected - itemFrom
             else:
                 val = h//2
             if val < 0 : val = 0
             if val > h : val = h
+            for vid in varSizes:
+                item[vid] = item[vid].substring(fr=ox)
             if it == self._selected:
                 colors = [self._selectColor]*len(self._columnColors)
                 self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
@@ -344,7 +362,6 @@ class TTkFancyTableView(TTkAbstractScrollView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTableView' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._showHeader = kwargs.get('showHeader', True)
         self.setLayout(TTkGridLayout())
