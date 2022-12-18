@@ -59,7 +59,7 @@ def demoFancyTable(root=None):
         ))
     table1.appendItem((" - ","","You see it's all clear, You were meant to be here, From the beginning","",""))
     for i in range(0, 5):
-        table1.appendItem((str(i), getUtfWord(), getUtfSentence(8,30), getUtfWord(), getUtfWord()))
+        table1.appendItem((str(i), getUtfWord(), getUtfSentence(8,20), getUtfWord(), getUtfWord()))
     table1.appendItem((" - ","This is the end", "Beautiful friend, This is the end My only friend", "the end", "..."))
 
     # Attach the add Event
