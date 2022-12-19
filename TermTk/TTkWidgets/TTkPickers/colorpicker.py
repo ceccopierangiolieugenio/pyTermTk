@@ -308,8 +308,8 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         @pyTTkSlot()
         def _leHTMLChanged():
             text = leHTML.text()
-            if re.match('#[a-f0-9]{6}', text.lower()):
-                _controlSetRGBColor(int(text[1:], 16))
+            if re.match('#[a-f0-9]{6}', str(text).lower()):
+                _controlSetRGBColor(int(str(text)[1:], 16))
 
         leHTML.returnPressed.connect(_leHTMLChanged)
 
