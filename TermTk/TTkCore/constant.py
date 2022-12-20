@@ -289,14 +289,16 @@ class TTkConstant:
         # ''' Gives the window a title bar.'''
         # WindowSystemMenuHint        = 0x00002000
         # ''' Adds a window system menu, and possibly a close button (for example on Mac). If you need to hide or show a close button, it is more portable to use WindowCloseButtonHint.'''
-        # WindowMinimizeButtonHint    = 0x00004000
-        # ''' Adds a minimize button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.'''
-        # WindowMaximizeButtonHint    = 0x00008000
-        # ''' Adds a maximize button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.'''
-        # WindowMinMaxButtonsHint     = WindowMinimizeButtonHint
-        # ''' | WindowMaximizeButtonHint	Adds a minimize and a maximize button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.'''
+        WindowReduceButtonHint      = 0x00000200
+        ''' Adds a reduce button.'''
+        WindowMinimizeButtonHint    = 0x00004000
+        ''' Adds a minimize button.'''
+        WindowMaximizeButtonHint    = 0x00008000
+        ''' Adds a maximize button.'''
+        WindowMinMaxButtonsHint     = WindowMinimizeButtonHint | WindowMaximizeButtonHint
+        ''' Adds a minimize and a maximize button.'''
         WindowCloseButtonHint       = 0x08000000
-        ''' Adds a close button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.'''
+        ''' Adds a close button.'''
         # WindowFullscreenButtonHint  = 0x80000000
         # ''' On macOS adds a fullscreen button.'''
         # WindowShadeButtonHint       = 0x00020000

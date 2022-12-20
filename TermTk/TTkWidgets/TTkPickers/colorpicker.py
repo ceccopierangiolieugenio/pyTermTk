@@ -244,7 +244,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self.colorSelected = pyTTkSignal(TTkColor)
         TTkWindow.__init__(self, *args, **kwargs)
         TColor.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkColorPicker' )
+        self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
         self.setLayout(TTkGridLayout())
 
         colorLayout = TTkGridLayout() # Right
@@ -308,8 +308,8 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         @pyTTkSlot()
         def _leHTMLChanged():
             text = leHTML.text()
-            if re.match('#[a-f0-9]{6}', text.lower()):
-                _controlSetRGBColor(int(text[1:], 16))
+            if re.match('#[a-f0-9]{6}', str(text).lower()):
+                _controlSetRGBColor(int(str(text)[1:], 16))
 
         leHTML.returnPressed.connect(_leHTMLChanged)
 

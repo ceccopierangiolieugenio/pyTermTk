@@ -38,6 +38,7 @@ from  showcase.tab           import demoTab
 from  showcase.graph         import demoGraph
 from  showcase.splitter      import demoSplitter
 from  showcase.windows       import demoWindows
+from  showcase.windowsflags  import demoWindowsFlags
 from  showcase.formwidgets   import demoFormWidgets
 from  showcase.scrollarea    import demoScrollArea
 from  showcase.list          import demoList
@@ -91,7 +92,7 @@ def showSource(file):
     content = "Nothing"
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),file)) as f:
         content = stupidPythonHighlighter( ttk.TTkString() + f.read() )
-    sourceWin = ttk.TTkWindow(size=(100,40), title=file, layout=ttk.TTkGridLayout())
+    sourceWin = ttk.TTkWindow(size=(100,40), title=file, layout=ttk.TTkGridLayout(), flags=ttk.TTkK.WindowFlag.WindowMaximizeButtonHint|ttk.TTkK.WindowFlag.WindowCloseButtonHint)
     texEdit = ttk.TTkTextEdit(parent=sourceWin, lineNumber=True)
     texEdit.setText(content)
     ttk.TTkHelper.overlay(None, sourceWin, 2, 2)
@@ -198,7 +199,8 @@ def demoShowcase(root=None, border=True):
     listMenu.addItem(f"Windows")
     tabWindows = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabWindows.addTab(demoWindows(),     " Windows Test ")
-    tabWindowsSources = [ 'showcase/windows.py' ]
+    tabWindows.addTab(demoWindowsFlags()," Windows Flags ")
+    tabWindowsSources = [ 'showcase/windows.py', 'showcase/windowsflags.py' ]
     tabWindows.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabWindowsSources[tabWindows.currentIndex()]))
 
     listMenu.addItem(f"Extra")
@@ -250,7 +252,7 @@ def main():
 
     root = ttk.TTk(title="pyTermTk Demo")
     if windowed:
-        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout())
+        winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout(), flags=ttk.TTkK.NONE)
         border = True
     else:
         root.setLayout(ttk.TTkGridLayout())
