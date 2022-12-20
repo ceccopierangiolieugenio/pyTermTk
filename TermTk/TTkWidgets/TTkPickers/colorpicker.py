@@ -244,7 +244,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self.colorSelected = pyTTkSignal(TTkColor)
         TTkWindow.__init__(self, *args, **kwargs)
         TColor.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkColorPicker' )
+        self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
         self.setLayout(TTkGridLayout())
 
         colorLayout = TTkGridLayout() # Right

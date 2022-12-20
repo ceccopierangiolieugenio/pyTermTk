@@ -72,8 +72,8 @@ class TTkFileDialogPicker(TTkWindow):
         self.filesPicked = pyTTkSignal(list)
         self.folderPicked = pyTTkSignal(str)
 
-        TTkWindow.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFileDialogPicker' )
+        super().__init__(*args, **kwargs)
+        self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
 
         self._recentPathId = -1
         self._recentPath = []
