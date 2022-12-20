@@ -280,6 +280,34 @@ class TTkConstant:
     LayoutItem = LayoutItemTypes.LayoutItem
     WidgetItem = LayoutItemTypes.WidgetItem
 
+    class WindowFlag:
+        # FramelessWindowHint         = 0x00000800
+        # ''' Produces a borderless window.'''
+        # CustomizeWindowHint         = 0x02000000
+        # ''' Turns off the default window title hints.'''
+        # WindowTitleHint             = 0x00001000
+        # ''' Gives the window a title bar.'''
+        # WindowSystemMenuHint        = 0x00002000
+        # ''' Adds a window system menu, and possibly a close button (for example on Mac). If you need to hide or show a close button, it is more portable to use WindowCloseButtonHint.'''
+        WindowReduceButtonHint      = 0x00000200
+        ''' Adds a reduce button.'''
+        WindowMinimizeButtonHint    = 0x00004000
+        ''' Adds a minimize button.'''
+        WindowMaximizeButtonHint    = 0x00008000
+        ''' Adds a maximize button.'''
+        WindowMinMaxButtonsHint     = WindowMinimizeButtonHint | WindowMaximizeButtonHint
+        ''' Adds a minimize and a maximize button.'''
+        WindowCloseButtonHint       = 0x08000000
+        ''' Adds a close button.'''
+        # WindowFullscreenButtonHint  = 0x80000000
+        # ''' On macOS adds a fullscreen button.'''
+        # WindowShadeButtonHint       = 0x00020000
+        # ''' Adds a shade button in place of the minimize button if the underlying window manager supports it.'''
+        # WindowStaysOnTopHint        = 0x00040000
+        # ''' Informs the window system that the window should stay on top of all other windows. Note that on some window managers on X11 you also have to pass Qt::X11BypassWindowManagerHint for this flag to work correctly.'''
+        # WindowStaysOnBottomHint     = 0x04000000
+        # ''' Informs the window system that the window should stay on bottom of all other windows.'''
+
     class KeyType():
         '''Input Key Types
 

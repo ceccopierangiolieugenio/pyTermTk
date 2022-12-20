@@ -528,29 +528,12 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
 
-    @staticmethod
-    def _propagateShowToLayout(layout):
-        ''' .. caution:: Don't touch this! '''
-        if layout is None: return
-        for item in layout.zSortedItems:
-            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
-                child = item.widget()
-                child._propagateShow()
-            else:
-                TTkWidget._propagateShowToLayout(item)
-
-    def _propagateShow(self):
-        ''' .. caution:: Don't touch this! '''
-        if not self._visible: return
-        self.update(updateLayout=True, updateParent=True)
-        TTkWidget._propagateShowToLayout(self.rootLayout())
-
     @pyTTkSlot()
     def show(self):
         if self._visible: return
         self._visible = True
         self._canvas.show()
-        self._propagateShow()
+        self.update(updateLayout=True, updateParent=True)
 
     @pyTTkSlot()
     def hide(self):
@@ -576,6 +559,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             self._parent.rootLayout().removeWidget(self)
+            self._parent.update()
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
         self.hide()
@@ -585,11 +569,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if visible: self.show()
         else: self.hide()
 
-    def isVisible(self):
+    def isVisibleAndParent(self):
         if self._parent is None:
             return self._visible
         else:
             return self._visible & self._parent.isVisible()
+
+    def isVisible(self):
+        return self._visible
 
     # Event to be sent
     # TODO: Remove This
