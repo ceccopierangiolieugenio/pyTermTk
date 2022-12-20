@@ -79,10 +79,7 @@ class TTkProgressBar(TTkWidget):
         if not kwargs.get('lookAndFeel'):
             self.setLookAndFeel(TTkLookAndFeelPBar())
         self._value_min, self._value_max, self._value = 0.0, 1.0, 0.0
-        self.setMinimumMaximum(
-            kwargs.get('minimum', 0.0), kwargs.get('maximum', 1.0))
         self.setValue(kwargs.get('value', 0.0))
-        self.setMaximumHeight(1)
         self.setMinimumSize(3, 1)
 
     def value(self):
@@ -161,13 +158,11 @@ class TTkProgressBar(TTkWidget):
         full = math.floor(virt_width // 8)
         rest = math.floor(virt_width - 8*full)
 
-        canvas.drawText(pos=(0, 0), text='',   width=width, color=color_bar)
-        if full:
-            canvas.drawText(pos=(0, 0), text=blocks[8]*full, color=color_bar)
-        if full < width:
-            canvas.drawText(pos=(full, 0), text=blocks[rest], color=color_bar)
+        for y in range(height):
+            bar = TTkString((blocks[8]*full)+blocks[rest], color_bar)
+            canvas.drawText(pos=(0, y), text=bar, width=width, color=color_bar)
         if show_text:
             canvas.drawText(
-                pos=(width, 0), text=text, width=laf.textWidth(),
+                pos=(width, (height-1)//2), text=text, width=laf.textWidth(),
                 alignment=TTkK.RIGHT_ALIGN)
 

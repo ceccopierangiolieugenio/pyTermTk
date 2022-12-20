@@ -52,16 +52,16 @@ def main():
         def color(self, value,max,min):
             red, green = round(value*255), round((1-value)*255)
             fg = f"#{red:02x}{green:02x}00"
-            return ttk.TTkColor.fg(fg)
+            return ttk.TTkColor.fg(fg) + ttk.TTkColor.bg("#004444")
 
-    claf = ColorLAF(textWidth=10)
+    claf = ColorLAF(textWidth=5)
 
     rootW.layout().addWidget(pb1 := ttk.TTkProgressBar(), row=0, col=0)
     rootW.layout().addWidget(pb2 := ttk.TTkProgressBar(lookAndFeel=ColorLAF(showText=False)), row=2, col=0)
     rootW.layout().addWidget(pb3 := ttk.TTkProgressBar(lookAndFeel=TextLAF(textWidth=6)),     row=3, col=0)
 
-    rootW.layout().addWidget(pb4 := ttk.TTkProgressBar(lookAndFeel=claf), row=4, col=0)
-    rootW.layout().addWidget(pb5 := ttk.TTkProgressBar(lookAndFeel=claf), row=5, col=0)
+    rootW.layout().addWidget(pb4 := ttk.TTkProgressBar(lookAndFeel=claf),            row=4, col=0)
+    rootW.layout().addWidget(pb5 := ttk.TTkProgressBar(lookAndFeel=claf, value=0.5), row=5, col=0)
 
     rootW.layout().addWidget(cbt := ttk.TTkCheckbox(text=" - Rem/Add Text", checked=True), row=6, col=0)
 
