@@ -155,6 +155,7 @@ class TTkProgressBar(TTkWidget):
 
         if show_text:
             width -= laf.textWidth()
+            width = max(width, 0)
 
         virt_width = 8 * width * (self._value - self._value_min)/(self._value_max - self._value_min)
         full = math.floor(virt_width // 8)
