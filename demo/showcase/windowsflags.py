@@ -28,7 +28,7 @@ sys.path.append(os.path.join(sys.path[0],'../../tmp'))
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-
+# Testing Window with a checkbox to enable/disable any control button
 class WindowFlagsTest(ttk.TTkWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,6 +45,7 @@ class WindowFlagsTest(ttk.TTkWindow):
                     parent=self, pos=(0,3), size=(20,1), text='Close    Button',
                     checked=bool(self.windowFlag()&ttk.TTkK.WindowFlag.WindowCloseButtonHint))
 
+        # Set the window flag/field based on the checkbox state
         def _cbStateChanged(state,field):
             if state==ttk.TTkK.Checked:
                 self.setWindowFlag(self.windowFlag()|field)
@@ -61,13 +62,18 @@ class WindowFlagsTest(ttk.TTkWindow):
 def demoWindowsFlags(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
+    # Standard window (the close button is enabled by default)
     WindowFlagsTest(parent=frame, pos = (0,0), size=(40,8), title="Test Window 1")
+    # Enable Max anc Close button
     WindowFlagsTest(parent=frame, pos = (2,2), size=(40,8), title="Test Window 2",
                     flags = ttk.TTkK.WindowFlag.WindowMaximizeButtonHint | ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+    # Disable all the control buttons
     WindowFlagsTest(parent=frame, pos = (4,4), size=(40,8), title="Test Window 3",
                     flags = ttk.TTkK.NONE)
+    # Enable only the Max and Min Buttons
     WindowFlagsTest(parent=frame, pos = (6,6), size=(40,8), title="Test Window 4",
                     flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
+    # Enable only the Minimize button
     WindowFlagsTest(parent=frame, pos = (8,8), size=(40,8), title="Test Window 5",
                     flags = ttk.TTkK.WindowFlag.WindowReduceButtonHint)
 
