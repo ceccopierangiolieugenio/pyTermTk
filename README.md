@@ -23,7 +23,7 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 - Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
 - True color support
-- Fullsize/Halfsize UTF-8 characters 😎
+- Ful/Half/Zero sized Unicode characters 😎
 
 ## Limitations
 - The native **Windows** porting is not ready yet but it works with [Cygwin](https://www.cygwin.com) or **WSL**.

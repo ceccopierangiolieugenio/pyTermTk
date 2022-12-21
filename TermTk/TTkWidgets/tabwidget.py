@@ -61,7 +61,6 @@ class TTkTabButton(TTkButton):
         self._closable = kwargs.get('closable', False)
         self.closeClicked = pyTTkSignal()
         TTkButton.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTabButton' )
         size = len(self.text) + 2
         if self._closable:
             size += 3
@@ -128,7 +127,6 @@ class TTkTabButton(TTkButton):
 class _TTkTabMenuButton(TTkMenuButton):
     def __init__(self, *args, **kwargs):
         TTkMenuButton.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTabMenuButton')
 
     def paintEvent(self):
         if self._pressed:
@@ -148,7 +146,6 @@ class _TTkTabScrollerButton(TTkButton):
         self._side = kwargs.get('side',TTkK.LEFT)
         self._sideEnd = self._side
         TTkButton.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTabScrollerButton' )
         if self._border:
             self.resize(2, 3)
             self.setMinimumSize(2, 3)
@@ -243,7 +240,6 @@ class TTkTabBar(TTkWidget):
         self._rightScroller.clicked.connect(self._andMoveToTheRight)
 
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkTabs')
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.focusChanged.connect(self._focusChanged)
 
@@ -482,7 +478,6 @@ class TTkTabWidget(TTkFrame):
         self._borderColor = TTkCfg.theme.tabBorderColor
 
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTabWidget')
 
         self._tabBar = TTkTabBar(small = not self.border(), closable=kwargs.get('closable', False))
         self._topLeftLayout   = None

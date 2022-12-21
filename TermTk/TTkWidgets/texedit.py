@@ -32,7 +32,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkGui.clipboard import TTkClipboard
-from TermTk.TTkGui.textwrap import TTkTextWrap
+from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
