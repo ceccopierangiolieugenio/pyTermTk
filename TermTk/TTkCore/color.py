@@ -184,22 +184,34 @@ class _TTkColorModifier():
     def copy(self): return self
 
 class TTkColorGradient(_TTkColorModifier):
-    __slots__ = ('_increment', '_val', '_buffer')
+    __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
     _increment: int; _val: int
     def __init__(self, *args, **kwargs):
         _TTkColorModifier.__init__(self, *args, **kwargs)
-        self._increment = kwargs.get("increment",0)
+        if "increment" in kwargs:
+            self._fgincrement = kwargs.get("increment")
+            self._bgincrement = kwargs.get("increment")
+        else:
+            self._fgincrement = kwargs.get("fgincrement",0)
+            self._bgincrement = kwargs.get("bgincrement",0)
+        self._orientation = kwargs.get("orientation", TTkK.VERTICAL)
         self._val = 0
+        self._step = 1
         self._buffer = {}
+
     def setParam(self, *args, **kwargs):
         self._val = kwargs.get("val",0)
+        self._step = kwargs.get("step",1)
+
     def exec(self, x, y, color):
-        def _applyGradient(c):
+        vx = x if self._orientation == TTkK.HORIZONTAL else y
+        step = self._step
+        def _applyGradient(c,incr):
             if not c: return c
-            multiplier = abs(self._val + y)
-            r = int(c[0])+ self._increment * multiplier
-            g = int(c[1])+ self._increment * multiplier
-            b = int(c[2])+ self._increment * multiplier
+            multiplier = abs(self._val + vx)
+            r = int(c[0])+ incr * multiplier // step
+            g = int(c[1])+ incr * multiplier // step
+            b = int(c[2])+ incr * multiplier // step
             r = max(min(255,r),0)
             g = max(min(255,g),0)
             b = max(min(255,b),0)
@@ -209,12 +221,12 @@ class TTkColorGradient(_TTkColorModifier):
         # I made a buffer to keep all the gradient values to speed up the paint process
         if bname not in self._buffer:
             self._buffer[bname] = [None]*(256*2)
-        id = self._val + y - 256
+        id = self._val + vx - 256
         if self._buffer[bname][id] is not None:
             return self._buffer[bname][id]
         copy = color.copy(modifier=False)
-        copy._fg = _applyGradient(color._fg)
-        copy._bg = _applyGradient(color._bg)
+        copy._fg = _applyGradient(color._fg, self._fgincrement)
+        copy._bg = _applyGradient(color._bg, self._bgincrement)
         self._buffer[bname][id] = copy
         return self._buffer[bname][id]
 
