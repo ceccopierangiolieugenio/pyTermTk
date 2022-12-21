@@ -13,6 +13,9 @@ www:
 	wget  -P www/xterm-addon-fit   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-fit/xterm-addon-fit.js
 	wget  -P www/xterm-addon-fit   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-fit/xterm-addon-fit.js.map
 
+	wget  -P www/xterm-addon-unicode11   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-unicode11/xterm-addon-unicode11.js
+	wget  -P www/xterm-addon-unicode11   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-unicode11/xterm-addon-unicode11.js.map
+
 	wget  -P www/codemirror   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.js
 	wget  -P www/codemirror   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.css
 	wget  -P www/codemirror/theme   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/theme/mbo.css

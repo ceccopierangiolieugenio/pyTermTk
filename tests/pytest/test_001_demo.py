@@ -153,7 +153,18 @@ def test_demo():
     assert demo.demoShowcase(root) != None
     root.quit()
 
+def message_handler(mode, context, message):
+    msgType = "NONE"
+    if   mode == demo.ttk.TTkLog.InfoMsg:     msgType = "[INFO]"
+    elif mode == demo.ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
+    elif mode == demo.ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
+    elif mode == demo.ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
+    elif mode == demo.ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
+    print(f"{msgType} {context.file} {message}")
+
 def test_recording1():
+    # demo.ttk.TTkLog.use_default_file_logging()
+    demo.ttk.TTkLog.installMessageHandler(message_handler)
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
     root.loadQueue(open('tmp/test.input.bin', 'rb'))
     winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())

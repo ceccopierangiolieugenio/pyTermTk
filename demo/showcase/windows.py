@@ -32,15 +32,15 @@ import TermTk as ttk
 def demoWindows(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
-    win2_1 = ttk.TTkWindow(parent=frame,pos = (0,0), size=(50,30), title="Test Window 1", border=True)
+    win2_1 = ttk.TTkWindow(parent=frame,pos = (0,0), size=(50,30), title="Test Window 1")
     win2_1.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkTestWidget(parent=win2_1, border=False)
 
-    win2_2 = ttk.TTkWindow(parent=frame,pos = (15,4), size=(87,20), title="Log Window", border=True)
+    win2_2 = ttk.TTkWindow(parent=frame,pos = (15,4), size=(87,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
     win2_2.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkLogViewer(parent=win2_2, follow=True )
 
-    win2_3 = ttk.TTkWindow(parent=frame,pos = (5,25), size=(85,7), title="Captured Input", border=True)
+    win2_3 = ttk.TTkWindow(parent=frame,pos = (5,25), size=(85,7), title="Captured Input")
     win2_3.setLayout(ttk.TTkHBoxLayout())
     ttk.TTkKeyPressView(parent=win2_3)
 

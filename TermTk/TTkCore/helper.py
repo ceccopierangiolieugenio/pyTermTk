@@ -62,7 +62,7 @@ class TTkHelper:
     def execShortcut(letter, widget=None):
         if not isinstance(letter, str): return
         for sc in TTkHelper._shortcut:
-            if sc._letter == letter.lower() and sc._widget.isVisible():
+            if sc._letter == letter.lower() and sc._widget.isVisibleAndParent():
                 if not widget or TTkHelper.isParent(widget, sc._widget):
                     sc._widget.shortcutEvent()
                     return
@@ -76,7 +76,7 @@ class TTkHelper:
 
     @staticmethod
     def addUpdateWidget(widget):
-        if not widget.isVisible(): return
+        if not widget.isVisibleAndParent(): return
         if widget not in TTkHelper._updateWidget:
             TTkHelper._updateWidget.append(widget)
 
@@ -249,7 +249,7 @@ class TTkHelper:
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
         for widget in TTkHelper._updateWidget:
-            if not widget.isVisible(): continue
+            if not widget.isVisibleAndParent(): continue
             parent = widget.parentWidget()
             while parent is not None:
                 if parent not in updateBuffers:
@@ -263,7 +263,7 @@ class TTkHelper:
 
         # Paint all the canvas
         for widget in updateBuffers:
-            if not widget.isVisible(): continue
+            if not widget.isVisibleAndParent(): continue
             # Resize the canvas just before the paintEvent
             # to avoid too many allocations
             widget.getCanvas().updateSize()
@@ -277,7 +277,7 @@ class TTkHelper:
         sortedUpdateWidget = sorted(sortedUpdateWidget, key=lambda w: -w[1])
         for w in sortedUpdateWidget:
             widget = w[0]
-            if not widget.isVisible(): continue
+            if not widget.isVisibleAndParent(): continue
             pushToTerminal = True
             widget.paintChildCanvas()
 

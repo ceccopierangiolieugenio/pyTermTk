@@ -70,7 +70,7 @@ class TTkSpinBox(TTkWidget):
 
     @pyTTkSlot(str)
     def _textEdited(self, text):
-        self.setValue(int(text))
+        self.setValue(int(str(text)))
         self._lineEdit.setText(str(self._value))
 
     def keyEvent(self, evt):
