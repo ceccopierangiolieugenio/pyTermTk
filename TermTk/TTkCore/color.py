@@ -221,6 +221,54 @@ class TTkColorGradient(_TTkColorModifier):
     def copy(self):
         return self
 
+class TTkLinearGradient(_TTkColorModifier):
+    __slots__ = (
+        '_direction', '_direction_squaredlength',
+        '_base_pos', '_target_color')
+
+    default_target_color = _TTkColor(fg=(0,255,0), bg=(255,0,0))
+    
+    def __init__(self, *args, **kwargs):
+        _TTkColorModifier.__init__(self, *args, **kwargs)
+        self._base_pos = (0, 0)
+        self._direction = (30, 30)
+        self._target_color = self.default_target_color
+        self.setParam(*args, **kwargs)
+
+    def setParam(self, *args, **kwargs):
+        self._base_pos = tuple(kwargs.get('base_pos', self._base_pos))
+        direct = tuple(kwargs.get('direction', self._direction))
+        self._direction = direct
+        self._direction_squaredlength = direct[0]*direct[0] + direct[1]*direct[1]
+        self._target_color = kwargs.get('target_color', self._target_color)
+        if self._target_color._fg is None:
+            self._target_color._fg = self.default_target_color._fg
+        if self._target_color._bg is None:
+            self._target_color._bg = self.default_target_color._fg
+
+    def exec(self, x, y, base_color):
+        diffx, diffy = x - self._base_pos[0], y - self._base_pos[1]
+        prod = diffx * self._direction[0] + diffy * self._direction[1]
+        beta = prod/self._direction_squaredlength
+        if beta <= 0:
+            return base_color
+        target_color = self._target_color
+        if beta >= 1:
+            return target_color
+        alpha = 1.0 - beta
+        copy = base_color.copy(modifier=False)
+        if copy._fg is not None:
+            copy._fg = (
+                int(alpha*base_color._fg[0] + beta*target_color._fg[0]),
+                int(alpha*base_color._fg[1] + beta*target_color._fg[1]),
+                int(alpha*base_color._fg[2] + beta*target_color._fg[2]))
+        if copy._bg is not None:
+            copy._bg = (
+                int(alpha*base_color._bg[0] + beta*target_color._bg[0]),
+                int(alpha*base_color._bg[1] + beta*target_color._bg[1]),
+                int(alpha*base_color._bg[2] + beta*target_color._bg[2]))
+        return copy
+
 class TTkColor(_TTkColor):
     ''' TermTk Color helper
 
