@@ -253,12 +253,12 @@ class TTkLinearGradient(_TTkColorModifier):
             return target_color
         alpha = 1.0 - beta
         copy = base_color.copy(modifier=False)
-        if copy._fg is not None:
+        if copy._fg is not None  and  target_color._fg is not None:
             copy._fg = (
                 int(alpha*base_color._fg[0] + beta*target_color._fg[0]),
                 int(alpha*base_color._fg[1] + beta*target_color._fg[1]),
                 int(alpha*base_color._fg[2] + beta*target_color._fg[2]))
-        if copy._bg is not None:
+        if copy._bg is not None  and  target_color._bg is not None:
             copy._bg = (
                 int(alpha*base_color._bg[0] + beta*target_color._bg[0]),
                 int(alpha*base_color._bg[1] + beta*target_color._bg[1]),
