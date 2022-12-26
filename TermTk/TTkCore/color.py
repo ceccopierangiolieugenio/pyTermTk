@@ -227,7 +227,7 @@ class TTkLinearGradient(_TTkColorModifier):
         '_base_pos', '_target_color')
 
     default_target_color = _TTkColor(fg=(0,255,0), bg=(255,0,0))
-    
+
     def __init__(self, *args, **kwargs):
         _TTkColorModifier.__init__(self, *args, **kwargs)
         self._base_pos = (0, 0)
@@ -241,10 +241,6 @@ class TTkLinearGradient(_TTkColorModifier):
         self._direction = direct
         self._direction_squaredlength = direct[0]*direct[0] + direct[1]*direct[1]
         self._target_color = kwargs.get('target_color', self._target_color)
-        if self._target_color._fg is None:
-            self._target_color._fg = self.default_target_color._fg
-        if self._target_color._bg is None:
-            self._target_color._bg = self.default_target_color._fg
 
     def exec(self, x, y, base_color):
         diffx, diffy = x - self._base_pos[0], y - self._base_pos[1]
@@ -257,12 +253,12 @@ class TTkLinearGradient(_TTkColorModifier):
             return target_color
         alpha = 1.0 - beta
         copy = base_color.copy(modifier=False)
-        if copy._fg is not None:
+        if copy._fg is not None  and  target_color._fg is not None:
             copy._fg = (
                 int(alpha*base_color._fg[0] + beta*target_color._fg[0]),
                 int(alpha*base_color._fg[1] + beta*target_color._fg[1]),
                 int(alpha*base_color._fg[2] + beta*target_color._fg[2]))
-        if copy._bg is not None:
+        if copy._bg is not None  and  target_color._bg is not None:
             copy._bg = (
                 int(alpha*base_color._bg[0] + beta*target_color._bg[0]),
                 int(alpha*base_color._bg[1] + beta*target_color._bg[1]),
