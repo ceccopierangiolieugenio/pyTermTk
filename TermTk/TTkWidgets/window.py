@@ -46,6 +46,7 @@ class TTkWindow(TTkResizableFrame):
             '_flags', '_winTopLayout',
             '_maxBk', '_redBk' )
     def __init__(self, *args, **kwargs):
+        self._winTopLayout = TTkGridLayout()
         super().__init__(*args, **kwargs)
         self._title = kwargs.get('title' , '' )
         self._flags = TTkK.NONE
@@ -56,7 +57,7 @@ class TTkWindow(TTkResizableFrame):
         self._menubarTopPosition = 2
 
         # Add the top Layout to keep the windows action buttons
-        self._winTopLayout = TTkGridLayout()
+        # self._winTopLayout = TTkGridLayout()
         self.rootLayout().addItem(self._winTopLayout)
         # Close Button
         self._btnClose = TTkButton(border=False, text="x", size=(3,1), maxWidth=3, minWidth=3, visible=False)
