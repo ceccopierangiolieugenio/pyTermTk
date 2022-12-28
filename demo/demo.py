@@ -40,7 +40,8 @@ from  showcase.splitter      import demoSplitter
 from  showcase.windows       import demoWindows
 from  showcase.windowsflags  import demoWindowsFlags
 from  showcase.formwidgets   import demoFormWidgets
-from  showcase.scrollarea    import demoScrollArea
+from  showcase.scrollarea01  import demoScrollArea01
+from  showcase.scrollarea02  import demoScrollArea02
 from  showcase.list          import demoList
 from  showcase.menubar       import demoMenuBar
 from  showcase.filepicker    import demoFilePicker
@@ -205,12 +206,14 @@ def demoShowcase(root=None, border=True):
 
     listMenu.addItem(f"Extra")
     tabArea = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabArea.addTab(demoScrollArea(),  " Scroll Area ")
+    tabArea.addTab(demoScrollArea01()," Scroll Area 1 ")
+    tabArea.addTab(demoScrollArea02()," Scroll Area 2 ")
     tabArea.addTab(demoDnD(),         " Drag'n Drop ")
     tabArea.addTab(demoDnDTabs(),     " D'n D Tabs ")
     tabArea.addTab(demoSigmask(),     " Sigmask ")
     tabAreaSources = [
-        'showcase/scrollarea.py',
+        'showcase/scrollarea01.py',
+        'showcase/scrollarea02.py',
         'showcase/dragndrop.py',
         'showcase/dndtabs.py',
         'showcase/sigmask.py' ]

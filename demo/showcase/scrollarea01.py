@@ -47,7 +47,7 @@ class graphTimerEvent():
         self.w.addValue(plot)
         self.timer.start(self.delay)
 
-def demoScrollArea(root= None):
+def demoScrollArea01(root= None):
     scrollArea = ttk.TTkScrollArea(parent=root)
     ttk.TTkTestWidget(pos=(0,0)   , size=(50,25), parent=scrollArea.viewport(), border=True)
     ttk.TTkTestWidgetSizes(pos=(10,25) , size=(40,20), parent=scrollArea.viewport(), border=True)
@@ -74,7 +74,7 @@ def main():
         root.setLayout(ttk.TTkGridLayout())
     else:
         rootGraph = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Scroll Area", border=True, layout=ttk.TTkGridLayout())
-    demoScrollArea(rootGraph)
+    demoScrollArea01(rootGraph)
     root.mainloop()
 
 if __name__ == "__main__":
