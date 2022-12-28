@@ -128,3 +128,6 @@ class TTkTheme():
       'X','X','X','X','X','X','X','X','X','X','X','X','X','X','X','X')
 
     unicodeWideOverflowCh = ('<','>')
+
+    #                          012345678
+    progressbarBlocks = tuple('     ||||')

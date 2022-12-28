@@ -225,3 +225,6 @@ class TTkTheme():
       '⡇','⡏','⡗','⡟','⡧','⡯','⡷','⡿','⣇','⣏','⣗','⣟','⣧','⣯','⣷','⣿')
 
     unicodeWideOverflowCh = ('≼','≽')
+
+    #                          012345678
+    progressbarBlocks = tuple(' ▏▎▍▌▋▊▉█')

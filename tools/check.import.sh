@@ -30,7 +30,8 @@ __check(){
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
             -e "texedit.py:from math import log10, ceil" \
-            -e "string.py:import unicodedata"
+            -e "string.py:import unicodedata" \
+            -e "progressbar.py:import math"
 } ;
 
 if __check ;  then
