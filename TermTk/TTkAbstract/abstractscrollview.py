@@ -91,6 +91,11 @@ class TTkAbstractScrollView(TTkWidget, TTkAbstractScrollViewInterface):
         self.viewSizeChanged.emit(w,h)
         self.viewChanged.emit()
 
+    def update(self, repaint=True, updateLayout=False, updateParent=False):
+        if updateLayout:
+            self.viewChanged.emit()
+        return super().update(repaint, updateLayout, updateParent)
+
 class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterface):
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
