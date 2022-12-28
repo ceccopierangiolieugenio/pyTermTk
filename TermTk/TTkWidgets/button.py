@@ -84,7 +84,7 @@ class TTkButton(TTkWidget):
         '_checkable', '_checked',
         '_borderColor',        '_textColor',
         '_borderColorClicked', '_textColorClicked',
-        '_borderColorFocus',   '_textColorFocus'
+        '_borderColorFocus',   '_textColorFocus',
         '_borderColorDisabled','_textColorDisabled',
         # Signals
         'clicked', 'toggled'

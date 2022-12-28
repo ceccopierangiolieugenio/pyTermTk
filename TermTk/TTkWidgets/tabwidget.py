@@ -215,7 +215,7 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
 
 class TTkTabBar(TTkWidget):
     __slots__ = (
-        '_tabButtons', '_tabData', '_small',
+        '_tabButtons', '_tabData', '_tabMovable', '_small',
         '_highlighted', '_currentIndex','_lastIndex',
         '_leftScroller', '_rightScroller',
         '_borderColor', '_tabClosable',
@@ -469,7 +469,7 @@ class TTkTabWidget(TTkFrame):
         'currentChanged', 'tabBarClicked',
         # forward methods
         'tabsClosable', 'setTabsClosable',
-        'tabData', 'setData',
+        'tabData', 'setData', 'setTabData',
         'currentIndex', 'setCurrentIndex', 'tabCloseRequested')
 
     def __init__(self, *args, **kwargs):
