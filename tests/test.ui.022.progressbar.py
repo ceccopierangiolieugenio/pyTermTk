@@ -52,7 +52,8 @@ def main():
         def color(self, value,max,min):
             red, green = round(value*255), round((1-value)*255)
             fg = f"#{red:02x}{green:02x}00"
-            return ttk.TTkColor.fg(fg) + ttk.TTkColor.bg("#004444")
+            return ( ttk.TTkColor.fg(fg) +
+                     ttk.TTkColor.bg("#004444", modifier=ttk.TTkColorGradient(orientation=ttk.TTkK.HORIZONTAL, fgincrement=100, bgincrement=100)) )
 
     claf = ColorLAF(textWidth=5)
 

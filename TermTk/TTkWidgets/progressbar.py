@@ -159,6 +159,7 @@ class TTkProgressBar(TTkWidget):
         rest = math.floor(virt_width - 8*full)
 
         for y in range(height):
+            color_bar = color_bar.modParam(step=width)
             bar = TTkString((blocks[8]*full)+blocks[rest], color_bar)
             canvas.drawText(pos=(0, y), text=bar, width=width, color=color_bar)
         if show_text:
