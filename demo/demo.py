@@ -105,12 +105,17 @@ def demoShowcase(root=None, border=True):
     logInput = ttk.TTkKeyPressView(visible=False, maxHeight=3, minHeight=3)
     root.layout().addWidget(logInput, 1, 0)
 
+    domTree = ttk.TTkFrame(parent=root, title="Dom Tree", border=True, visible=False, layout=ttk.TTkGridLayout())
+    ttk.TTkDomTreeView(parent=domTree)
+
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
     themesFrame = ttk.TTkFrame(title="Theme", border=True, layout=ttk.TTkVBoxLayout(), maxHeight=5, minHeight=5)
     listMenu = ttk.TTkList(maxWidth=30, minWidth=10)
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
+    domTreeToggler = ttk.TTkCheckbox(text='Dom Tree')
+    domTreeToggler.stateChanged.connect(lambda x: domTree.setVisible(x==ttk.TTkK.Checked))
     mouseToggler = ttk.TTkCheckbox(text='Mouse 🐀', checked=True)
     mouseToggler.stateChanged.connect(lambda x: ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON if x==ttk.TTkK.Checked else ttk.TTkTerm.Mouse.OFF))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
@@ -119,8 +124,9 @@ def demoShowcase(root=None, border=True):
     leftFrame.layout().addWidget(themesFrame,     0, 0)
     leftFrame.layout().addWidget(listMenu,        1, 0)
     leftFrame.layout().addWidget(mouseToggler,    2, 0)
-    leftFrame.layout().addWidget(logInputToggler, 3, 0)
-    leftFrame.layout().addWidget(quitButton,      4, 0)
+    leftFrame.layout().addWidget(domTreeToggler,  3, 0)
+    leftFrame.layout().addWidget(logInputToggler, 4, 0)
+    leftFrame.layout().addWidget(quitButton,      5, 0)
 
     mainFrame = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
