@@ -42,8 +42,8 @@ class TTkAbstractScrollArea(TTkWidget):
         self.setLayout(TTkGridLayout())
         self._verticalScrollBar = TTkScrollBar(orientation=TTkK.VERTICAL)
         self._horizontalScrollBar = TTkScrollBar(orientation=TTkK.HORIZONTAL)
-        self._verticalScrollBarPolicy = TTkK.ScrollBarAsNeeded
-        self._horizontalScrollBarPolicy = TTkK.ScrollBarAsNeeded
+        self._verticalScrollBarPolicy   = kwargs.get("verticalScrollBarPolicy",  TTkK.ScrollBarAsNeeded)
+        self._horizontalScrollBarPolicy = kwargs.get("horizontalScrollBarPolicy",TTkK.ScrollBarAsNeeded)
 
     @pyTTkSlot()
     def _viewportChanged(self):
@@ -74,7 +74,7 @@ class TTkAbstractScrollArea(TTkWidget):
         elif self._verticalScrollBarPolicy == TTkK.ScrollBarAlwaysOn:
             self._verticalScrollBar.show()
         else:
-            self._verticalScrollBar.show()
+            self._verticalScrollBar.hide()
 
         if self._horizontalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
             if hrange<=0:
@@ -85,7 +85,7 @@ class TTkAbstractScrollArea(TTkWidget):
         elif self._horizontalScrollBarPolicy == TTkK.ScrollBarAlwaysOn:
             self._horizontalScrollBar.show()
         else:
-            self._horizontalScrollBar.show()
+            self._horizontalScrollBar.hide()
 
     @pyTTkSlot(int)
     def _vscrollMoved(self, val):
@@ -114,10 +114,14 @@ class TTkAbstractScrollArea(TTkWidget):
         self.layout().addWidget(self._horizontalScrollBar,1,0)
 
     def setVerticalScrollBarPolicy(self, policy):
-        self._verticalScrollBarPolicy = policy
+        if policy != self._verticalScrollBarPolicy:
+            self._verticalScrollBarPolicy = policy
+            self._viewportChanged()
 
     def setHorizontalScrollBarPolicy(self, policy):
-        self._horizontalScrollBarPolicy = policy
+        if policy != self._horizontalScrollBarPolicy:
+            self._horizontalScrollBarPolicy = policy
+            self._viewportChanged()
 
     def viewport(self):
         return self._viewport
