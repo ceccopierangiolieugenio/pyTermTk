@@ -175,7 +175,7 @@ class TTkMenuButton(TTkAbstractListItem):
         self.highlighted=False
 
 class TTkMenuLayout(TTkHBoxLayout):
-    __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
+    __slots__ = ('_borderColor', '_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
     def __init__(self, *args, **kwargs):
         self._buttons = []
         TTkHBoxLayout.__init__(self, *args, **kwargs)

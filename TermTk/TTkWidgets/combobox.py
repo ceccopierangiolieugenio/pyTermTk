@@ -35,7 +35,7 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
-    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign'
+    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
     def __init__(self, *args, **kwargs):
