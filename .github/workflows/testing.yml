@@ -47,7 +47,8 @@ jobs:
       run: |
         # Download the input test
         mkdir -p tmp
-        wget -O tmp/test.input.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
+        wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
+        wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
         pytest tests/pytest/test_003_string.py
         pytest tests/pytest/test_002_textedit.py
         pytest tests/pytest/test_001_demo.py
