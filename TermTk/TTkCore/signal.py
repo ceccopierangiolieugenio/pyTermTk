@@ -56,6 +56,72 @@ Methods
 .. autofunction:: TermTk.pyTTkSignal
 .. autodecorator:: TermTk.pyTTkSlot
 '''
+
+import weakref
+
+class WeakrefSlot:
+    '''
+    A WeakrefSlot instance saves a slot as weakref (or WeakMethod).
+
+    Hence the slots may be garbage collected, leaving this WeakrefSlot
+    without a referent.
+
+    WeakrefSlots are callable. They call the referent slot (if available).
+
+    WeakrefSlots have no __eq__ method hence they are compared with
+    python's "is" operator (identitiy check). This is important for
+    WekrefSlots inside lists.
+
+    WeakrefSlots have the _referent_gone flag which is set after the
+    WeakrefSlot has detected that the referent was already garbage
+    collected. This flag may be used to easily delete WeakrefSlots
+    without referents.
+    '''
+    __slots__ = ('_weak_slotref', '_referent_gone')
+
+    def __init__(self, slot):
+        '''
+        initialize WekrefSlot for the input argument slot (which must be callable).
+
+        WeakMethod is used for bounded methods.
+
+        Attention:
+        A slot object which has no (other) references than the given
+        slot may be garbage collected immediately after this call.
+        They are "dead on arrival". A typical example for this is a
+        inline lambda function. That's *the* feature of WeakrefSlots.
+        '''
+        if not callable(slot):
+            raise TypeError(f'slot must be callable; I found {type(slot)=}')
+        self._referent_gone = False
+        bound_method = hasattr(slot, '__self__')  and  hasattr(slot, '__func__')
+        self._weak_slotref = (
+            weakref.WeakMethod(slot) if bound_method else weakref.ref(slot))
+
+    def __str__(self):
+        '''show target (if avail).'''
+        target = None if self._referent_gone else self._weak_slotref()
+        target_str = 'dead' if target is None else f'to {str(target)}'
+        return f'<{self.__class__.__name__} at {hex(id(self))}; {target_str}>'
+
+    def __call__(self, *args, **kwargs):
+        '''
+        If the referent of _weak_slotref was not garbage collected, then
+        call the referent.
+
+        Checks and updates _referent_gone flag.
+        '''
+        if self._referent_gone:
+            return  # Nothing to do; we already know the referent is gone
+        func = self._weak_slotref()
+        if func is None:
+            # referent was gargabe collected (since the last test)
+            self._referent_gone = True
+            return # Nothing to do
+        func(*args, **kwargs)  # call referent slot
+        # throw away the (strong) reference "func" now
+
+
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function
@@ -88,7 +154,7 @@ class _pyTTkSignal_obj():
         self._connected_slots = []
         _pyTTkSignal_obj._signals.append(self)
 
-    def connect(self, slot):
+    def connect(self, slot, use_weak_ref=False):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
 
         # connect(slot[, type=PyQt5.QtCore.Qt.AutoConnection[, no_receiver_check=False]]) -> PyQt5.QtCore.QMetaObject.Connection
@@ -108,8 +174,11 @@ class _pyTTkSignal_obj():
                 if not issubclass(a,b):
                     error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                     raise TypeError(error)
+        if use_weak_ref:
+            slot = WeakrefSlot(slot)  # replace slot with WeakrefSlot
         if slot not in self._connected_slots:
             self._connected_slots.append(slot)
+        return slot # may return WeakrefSlot which may be used for disconnect
 
     def disconnect(self, *args, **kwargs):
         for slot in args:
@@ -120,8 +189,18 @@ class _pyTTkSignal_obj():
         if len(args) != len(self._types):
             error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
             raise TypeError(error)
+
+        need_weakref_cleanup = False  # have we seen WeakrefSlots without referent?
         for slot in self._connected_slots:
             slot(*args, **kwargs)
+            if isinstance(slot, WeakrefSlot)  and  slot._referent_gone:
+                need_weakref_cleanup = True
+
+        if need_weakref_cleanup:
+            # remove WeakrefSlots where referent was gone
+            for slot in self._connected_slots[:]: # do a slice for safe removal
+                if isinstance(slot, WeakrefSlot)  and  slot._referent_gone:
+                    self._connected_slots.remove(slot)
 
     def clear(self):
         self._connected_slots = []

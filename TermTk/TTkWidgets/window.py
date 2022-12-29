@@ -34,10 +34,13 @@ class _MinimizedButton(TTkButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._windowWidget = kwargs.get('windowWidget')
-        def _cb():
+        self.clicked.connect(self.perfomAction, use_weak_ref=True)
+
+    def perfomAction(self):
+        '''show _windowWidget and close self.'''
+        if self._windowWidget is not None:
             self._windowWidget.show()
-            self.close()
-        self.clicked.connect(_cb)
+        self.close()
 
 class TTkWindow(TTkResizableFrame):
     __slots__ = (
@@ -61,18 +64,18 @@ class TTkWindow(TTkResizableFrame):
         self.rootLayout().addItem(self._winTopLayout)
         # Close Button
         self._btnClose = TTkButton(border=False, text="x", size=(3,1), maxWidth=3, minWidth=3, visible=False)
-        self._btnClose.clicked.connect(self.close)
+        self._btnClose.clicked.connect(self.close, use_weak_ref=True)
         # Max Button
         self._maxBk = None
         self._btnMax = TTkButton(border=False, text="^", size=(3,1), maxWidth=3, minWidth=3, visible=False)
-        self._btnMax.clicked.connect(self._maximize)
+        self._btnMax.clicked.connect(self._maximize, use_weak_ref=True)
         # Min Button
         self._btnMin = TTkButton(border=False, text="_", size=(3,1), maxWidth=3, minWidth=3, visible=False)
-        self._btnMin.clicked.connect(self._minimize)
+        self._btnMin.clicked.connect(self._minimize, use_weak_ref=True)
         # Button Reduce_border
         self._redBk = None
         self._btnReduce = TTkButton(border=False, text=".", size=(3,1), maxWidth=3, minWidth=3, visible=False)
-        self._btnReduce.clicked.connect(self._reduce)
+        self._btnReduce.clicked.connect(self._reduce, use_weak_ref=True)
 
         self._winTopLayout.addItem(TTkLayout(),0,0)
         self._winTopLayout.addWidget(self._btnClose, 0,4)
