@@ -534,6 +534,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._visible = True
         self._canvas.show()
         self.update(updateLayout=True, updateParent=True)
+        for w in self.rootLayout().iterWidgets(onlyVisible=True):
+            w.update()
 
     @pyTTkSlot()
     def hide(self):
@@ -570,10 +572,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         else: self.hide()
 
     def isVisibleAndParent(self):
-        if self._parent is None:
-            return self._visible
-        else:
-            return self._visible & self._parent.isVisible()
+        return ( self._visible and
+            ( self._parent is not None ) and
+            self._parent.isVisibleAndParent() )
 
     def isVisible(self):
         return self._visible

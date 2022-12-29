@@ -288,3 +288,6 @@ class TTk(TTkWidget):
         # so CTRL-C can be redirected to the default handler if the app does not exit
         signal.signal(signal.SIGINT,  signal.SIG_DFL)
         self.quit()
+
+    def isVisibleAndParent(self):
+        return self.isVisible()
