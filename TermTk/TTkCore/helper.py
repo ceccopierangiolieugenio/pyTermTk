@@ -158,6 +158,8 @@ class TTkHelper:
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
+        for w in widget.rootLayout().iterWidgets(onlyVisible=True):
+            w.update()
 
     @staticmethod
     def getOverlay():
