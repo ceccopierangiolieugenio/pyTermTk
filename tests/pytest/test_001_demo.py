@@ -166,7 +166,16 @@ def test_recording1():
     # demo.ttk.TTkLog.use_default_file_logging()
     demo.ttk.TTkLog.installMessageHandler(message_handler)
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
-    root.loadQueue(open('tmp/test.input.bin', 'rb'))
+    root.loadQueue(open('tmp/test.input.001.bin', 'rb'))
+    winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+    demo.demoShowcase(winTabbed1, True)
+    root.mainloop()
+
+def test_recording2():
+    # demo.ttk.TTkLog.use_default_file_logging()
+    demo.ttk.TTkLog.installMessageHandler(message_handler)
+    root = TTkRecord(title="pyTermTk Demo Record", record=False)
+    root.loadQueue(open('tmp/test.input.002.bin', 'rb'))
     winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()
