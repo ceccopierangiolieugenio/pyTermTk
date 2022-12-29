@@ -658,4 +658,4 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if not laf:
             laf = TTkLookAndFeel()
         self._lookAndFeel = laf
-        self._lookAndFeel.modified.connect(self.update)
+        self._lookAndFeel.modified.connect(self.update, use_weak_ref=True)
