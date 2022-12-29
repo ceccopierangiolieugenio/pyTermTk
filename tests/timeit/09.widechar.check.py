@@ -40,7 +40,7 @@ print(f"Create CharSetStringTest...")
 cstr  = ""
 cstrw = ""
 for _ in range(0x4000):
-    cstr  += chr(random.randint(0x100,0x300))
+    cstr  += chr(random.randint(0x100,0x2FF))
     cstrw += chr(random.randint(0x100,0x20000))
 print(f"Create CharSetStringTest DONE!!!")
 
@@ -50,42 +50,40 @@ print(f"len cstrw 0x{len(cstrw):04x}")
 # print([f"'{ch}':{unicodedata.east_asian_width(ch)}:{unicodedata.category(ch)}" for ch in cstr])
 # print([f"'{ch}':{unicodedata.east_asian_width(ch)}:{unicodedata.category(ch)}" for ch in cstrw])
 
-a=10
 
-def test1(x):
-    text = cstr
+def _tw(text):
+    return ( len(text) +
+         sum(unicodedata.east_asian_width(ch) == 'W' for ch in text) -
+         sum(unicodedata.category(ch) in ('Me','Mn') for ch in text) )
+
+def test1(text):
     return ( len(text) +
              sum(unicodedata.east_asian_width(ch) == 'W' for ch in text) -
              sum(unicodedata.category(ch) in ('Me','Mn') for ch in text) )
 
-def test2(x):
-    text = cstrw
-    return ( len(text) +
-             sum(unicodedata.east_asian_width(ch) == 'W' for ch in text) -
-             sum(unicodedata.category(ch) in ('Me','Mn') for ch in text) )
+def test2(text):
+        tw = _tw(text) if any(ord(ch)>=0x300 for ch in text) else None
+        return tw if tw != len(text) else None
 
-def test3(x):
-    text = cstr
+def test3(text):
     return ( any(unicodedata.east_asian_width(ch) == 'W' for ch in text) or
              any(unicodedata.category(ch) in ('Me','Mn') for ch in text) )
 
-def test4(x):
-    text = cstrw
-    return ( any(unicodedata.east_asian_width(ch) == 'W' for ch in text) or
-             any(unicodedata.category(ch) in ('Me','Mn') for ch in text) )
+def test4(text):
+    return (any(ord(ch)>=0x300 for ch in text) and
+             ( any(unicodedata.east_asian_width(ch) == 'W' for ch in text) or
+               any(unicodedata.category(ch) in ('Me','Mn') for ch in text) ) )
 
-def test5(x):
-    text = cstr
+def test5(text):
     return  any(ord(ch)>=0x300 for ch in text)
 
-def test6(x):
-    text = cstrw
+def test6(text):
     return  any(ord(ch)>=0x300 for ch in text)
 
+loop = 200
 
 
-loop = 100
-
+a=cstr
 result = timeit.timeit('test1(a)', globals=globals(), number=loop)
 print(f"1a  {result / loop:.10f} - {result / loop} {test1(a)}")
 result = timeit.timeit('test2(a)', globals=globals(), number=loop)
@@ -98,3 +96,17 @@ result = timeit.timeit('test5(a)', globals=globals(), number=loop)
 print(f"5a  {result / loop:.10f} - {result / loop} {test5(a)}")
 result = timeit.timeit('test6(a)', globals=globals(), number=loop)
 print(f"6a  {result / loop:.10f} - {result / loop} {test6(a)}")
+
+a=cstrw
+result = timeit.timeit('test1(a)', globals=globals(), number=loop)
+print(f"1b  {result / loop:.10f} - {result / loop} {test1(a)}")
+result = timeit.timeit('test2(a)', globals=globals(), number=loop)
+print(f"2b  {result / loop:.10f} - {result / loop} {test2(a)}")
+result = timeit.timeit('test3(a)', globals=globals(), number=loop)
+print(f"3b  {result / loop:.10f} - {result / loop} {test3(a)}")
+result = timeit.timeit('test4(a)', globals=globals(), number=loop)
+print(f"4b  {result / loop:.10f} - {result / loop} {test4(a)}")
+result = timeit.timeit('test5(a)', globals=globals(), number=loop)
+print(f"5b  {result / loop:.10f} - {result / loop} {test5(a)}")
+result = timeit.timeit('test6(a)', globals=globals(), number=loop)
+print(f"6b  {result / loop:.10f} - {result / loop} {test6(a)}")

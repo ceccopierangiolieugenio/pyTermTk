@@ -589,10 +589,12 @@ class TTkString():
                 a is None and b is None ) else self._termWidthW()
 
     def _checkWidth(self):
-        self._hasSpecialWidth = self._termWidthW() if (
-                any(ord(ch)>=0x300 for ch in self._text) and (
-                  any(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) or
-                  any(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) ) ) else None
+        # from: tests/timeit/09.widechar.check.py
+        # the first not halfsize char is 0x300
+        # this check is ~3 times faster than the 2 combined unicode checks
+        # and will quickly filter out the (more common) simple ascii text
+        tw = self._termWidthW() if any(ord(ch)>=0x300 for ch in self._text) else None
+        self._hasSpecialWidth = tw if tw != len(self._text) else None
 
     def _termWidthW(self):
         ''' String displayed length
