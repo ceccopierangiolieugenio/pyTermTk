@@ -98,6 +98,12 @@ class WeakrefSlot:
         self._weak_slotref = (
             weakref.WeakMethod(slot) if bound_method else weakref.ref(slot))
 
+    def __str__(self):
+        '''show target (if avail).'''
+        target = None if self._referent_gone else self._weak_slotref()
+        target_str = 'dead' if target is None else f'to {str(target)}'
+        return f'<{self.__class__.__name__} at {hex(id(self))}; {target_str}>'
+
     def __call__(self, *args, **kwargs):
         '''
         If the referent of _weak_slotref was not garbage collected, then
