@@ -103,16 +103,20 @@ class TTkString():
         if   isinstance(other, TTkString):
             ret._text   = self._text   + other._text
             ret._colors = self._colors + other._colors
+            ret._hasTab = '\t' in ret._text
+            ret._fastCheckWidth(self._hasSpecialWidth, other._hasSpecialWidth)
         elif isinstance(other, str):
             atxt, acol = TTkString._parseAnsi(other, self._baseColor)
             ret._text   = self._text   + atxt
             ret._colors = self._colors + acol
+            ret._hasTab = '\t' in ret._text
+            ret._checkWidth()
         elif isinstance(other, _TTkColor):
             ret._text   = self._text
             ret._colors = self._colors
+            ret._hasSpecialWidth = self._hasSpecialWidth
+            ret._hasTab = self._hasTab
             ret._baseColor = other
-        ret._hasTab = '\t' in ret._text
-        ret._checkWidth()
         return ret
 
     def __radd__(self, other):
@@ -121,11 +125,13 @@ class TTkString():
         if  isinstance(other, TTkString):
             ret._text   = other._text   + self._text
             ret._colors = other._colors + self._colors
+            ret._hasTab = '\t' in ret._text
+            ret._fastCheckWidth(self._hasSpecialWidth, other._hasSpecialWidth)
         elif isinstance(other, str):
             ret._text   = other + self._text
             ret._colors = [self._baseColor]*len(other) + self._colors
-        ret._hasTab = '\t' in ret._text
-        ret._checkWidth()
+            ret._hasTab = '\t' in ret._text
+            ret._checkWidth()
         return ret
 
     def __setitem__(self, index, value):
@@ -182,7 +188,7 @@ class TTkString():
             spaces = tabSpaces - (lentxt+tabSpaces)%tabSpaces
             ret._text   += " "*spaces + s
             ret._colors += [c]*spaces + self._colors[pos+1:pos+1+len(s)]
-            ret._checkWidth()
+            ret._fastCheckWidth(self._hasSpecialWidth)
             pos+=len(s)+1
         return ret
 
@@ -328,7 +334,7 @@ class TTkString():
             ret._colors =  self._colors[:width]
 
         ret._hasTab = '\t' in ret._text
-        ret._checkWidth()
+        ret._fastCheckWidth(self._hasSpecialWidth)
 
         return ret
 
@@ -467,7 +473,7 @@ class TTkString():
         ret._text   = self._text[fr:to]
         ret._colors = self._colors[fr:to]
         ret._hasTab = '\t' in ret._text
-        ret._checkWidth()
+        ret._fastCheckWidth(self._hasSpecialWidth)
         return ret
 
     def split(self, separator ):
@@ -578,10 +584,15 @@ class TTkString():
                 return pos-i-1
         return 0
 
+    def _fastCheckWidth(self,a,b=None):
+        self._hasSpecialWidth = None if (
+                a is None and b is None ) else self._termWidthW()
+
     def _checkWidth(self):
         self._hasSpecialWidth = self._termWidthW() if (
-                any(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) or
-                any(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) ) else None
+                any(ord(ch)>=0x300 for ch in self._text) and (
+                  any(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) or
+                  any(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) ) ) else None
 
     def _termWidthW(self):
         ''' String displayed length
