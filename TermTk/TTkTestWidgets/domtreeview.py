@@ -23,10 +23,15 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.label import TTkLabel
+from TermTk.TTkWidgets.lineedit import TTkLineEdit
+from TermTk.TTkWidgets.combobox import TTkComboBox
+from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
@@ -122,12 +127,30 @@ class TTkDomTreeView(TTkWidget):
                         if prop not in proplist:
                             proplist.append(prop)
                             if 'get' in prop:
-                                value = prop['get']['cb'](domw)
+                                def _bound(_f,_w,_l):
+                                    def _ret(_v):
+                                        _f(_w,_l(_v))
+                                    return _ret
                                 gl.addWidget(TTkLabel(
                                         minSize=(30,1), maxHeight=1,
                                         color=TTkColor.bg('#222222')+TTkColor.fg('#88ffff'),
                                         text=f" - {p}"),i,0)
-                                gl.addWidget(TTkLabel(minSize=(30,1), maxHeight=1, text=f"{value}"),i,1)
+                                getval = prop['get']['cb'](domw)
+                                if prop['get']['type'] == bool and 'set' in prop:
+                                    value = TTkComboBox(list=['True','False'])
+                                    value.setCurrentIndex(0 if getval else 1)
+                                    value.currentIndexChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==0))
+                                elif prop['get']['type'] == int and 'set' in prop:
+                                    value = TTkSpinBox(value=getval)
+                                    value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                                elif prop['get']['type'] == TTkString and 'set' in prop:
+                                    value = TTkLineEdit(text=getval)
+                                    value.textEdited.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                                else:
+                                    if issubclass(prop['get']['type'], TTkLayout):
+                                        getval = getval.__class__.__name__
+                                    value = TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}")
+                                gl.addWidget(value,i,1)
                                 i+=1
         else:
             self._detail = TTkFrame(title=f"None")

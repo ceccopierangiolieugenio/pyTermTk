@@ -664,19 +664,45 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     _ttkProperties = {
         'x' : {
-                'init': {'name':'x', 'type':int },
-                'get': { 'cb':x,     'type':int } },
+                'init': {'name':'x', 'type':int } ,
+                'get':  { 'cb':x,    'type':int } },
         'y' : {
-                'init': {'name':'y', 'type':int },
-                'get': { 'cb':y,     'type':int } },
+                'init': {'name':'y', 'type':int } ,
+                'get':  { 'cb':y,    'type':int } },
+        'width' : {
+                'init': {'name':'width', 'type':int } ,
+                'get':  { 'cb':width,    'type':int } },
+        'height' : {
+                'init': {'name':'height', 'type':int } ,
+                'get':  { 'cb':height,    'type':int } },
+        'minWidth' : {
+                'init': {'name':'minWidth',    'type':int } ,
+                'get':  { 'cb':minimumWidth,   'type':int } ,
+                'set':  { 'cb':setMinimumWidth,'type':int } },
+        'minHeight' : {
+                'init': {'name':'minHeight',    'type':int } ,
+                'get':  { 'cb':minimumHeight,   'type':int } ,
+                'set':  { 'cb':setMinimumHeight,'type':int } },
+        'maxWidth' : {
+                'init': {'name':'maxWidth',    'type':int } ,
+                'get':  { 'cb':maximumWidth,   'type':int } ,
+                'set':  { 'cb':setMaximumWidth,'type':int } },
+        'maxHeight' : {
+                'init': {'name':'maxHeight',    'type':int } ,
+                'get':  { 'cb':maximumHeight,   'type':int } ,
+                'set':  { 'cb':setMaximumHeight,'type':int } },
+        'layout' : {
+                'init': {'name':'layout', 'type':TTkLayout} ,
+                'get':  { 'cb':layout,    'type':TTkLayout} ,
+                'set':  { 'cb':setLayout, 'type':TTkLayout} },
         'name' : {
                 'init': {'name':'name', 'type':str } },
         'visible' : {
-                'init': {'name':'visible', 'type':bool },
+                'init': {'name':'visible', 'type':bool } ,
                 'get':  {'cb':isVisible,   'type':bool } ,
                 'set':  {'cb':setVisible,  'type':bool } },
         'enabled' : {
-                'init': {'name':'enabled', 'type':bool },
+                'init': {'name':'enabled', 'type':bool } ,
                 'get':  {'cb':isEnabled,   'type':bool } ,
                 'set':  {'cb':setEnabled,  'type':bool } },
     }
