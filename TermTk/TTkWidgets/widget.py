@@ -88,6 +88,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
     :type layout: :mod:`TermTk.TTkLayouts`
     '''
+
     __slots__ = (
         '_name', '_parent',
         '_x', '_y', '_width', '_height',
@@ -660,3 +661,22 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             laf = TTkLookAndFeel()
         self._lookAndFeel = laf
         self._lookAndFeel.modified.connect(self.update)
+
+    _ttkProperties = {
+        'x' : {
+                'init': {'name':'x', 'type':int },
+                'get': { 'cb':x,     'type':int } },
+        'y' : {
+                'init': {'name':'y', 'type':int },
+                'get': { 'cb':y,     'type':int } },
+        'name' : {
+                'init': {'name':'name', 'type':str } },
+        'visible' : {
+                'init': {'name':'visible', 'type':bool },
+                'get':  {'cb':isVisible,   'type':bool } ,
+                'set':  {'cb':setVisible,  'type':bool } },
+        'enabled' : {
+                'init': {'name':'enabled', 'type':bool },
+                'get':  {'cb':isEnabled,   'type':bool } ,
+                'set':  {'cb':setEnabled,  'type':bool } },
+    }

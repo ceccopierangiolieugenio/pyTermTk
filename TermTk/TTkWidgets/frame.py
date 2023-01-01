@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.menubar import TTkMenuLayout
 
@@ -115,3 +116,14 @@ class TTkFrame(TTkWidget):
                                 colorText=self._titleColor)
         elif self._menubarTop:
             self._canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+
+    _ttkProperties = {
+        'border' : {
+                'init': {'name':'border', 'type':bool },
+                'get':  {'cb':border,     'type':bool } ,
+                'set':  {'cb':setBorder,  'type':bool } },
+        'title' : {
+                'init': {'name':'title',  'type':TTkString },
+                'get':  {'cb':title,      'type':TTkString } ,
+                'set':  {'cb':setTitle,   'type':TTkString } },
+    }
