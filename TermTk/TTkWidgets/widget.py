@@ -228,17 +228,18 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                         (   lx,    ly, lw, lh)) # bound
         else:
             for child in item.zSortedItems:
-                ix, iy, iw, ih = item.geometry()
+                # The geometry include the padding of the layout
+                igx, igy, igw, igh = item.geometry()
                 iox, ioy = item.offset()
-                ix+=ox+iox
-                iy+=oy+ioy
-                iw-=iox
-                ih-=ioy
+                ix = igx+ox+iox
+                iy = igy+oy+ioy
+                iw = igw-iox
+                ih = igh-ioy
                 # child outside the bound
                 if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
                 # Reduce the bound to the minimum visible
-                bx = max(ix,lx)
-                by = max(iy,ly)
+                bx = max(igx,ix,lx)
+                by = max(igy,iy,ly)
                 bw = min(ix+iw,lx+lw)-bx
                 bh = min(iy+ih,ly+lh)-by
                 TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix,iy))
