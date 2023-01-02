@@ -27,6 +27,8 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkLayouts.boxlayout import TTkVBoxLayout
@@ -160,108 +162,169 @@ class TTkDomTreeView(TTkWidget):
         btnRefresh = TTkButton(text="refresh")
         btnRefresh.clicked.connect(self._refresh)
 
-        layout.addWidget(btnRefresh, 0,0)
-        layout.addWidget(self._splitter, 1,0)
+        btnPick = TTkButton(text="pick")
+        btnPick.clicked.connect(self._btnPickCb)
 
-        self._domTree.itemActivated.connect(self._setDetail)
+        layout.addWidget(btnPick,    0,0)
+        layout.addWidget(btnRefresh, 0,1)
+        layout.addWidget(self._splitter, 1,0,1,2)
+
+        self._domTree.itemClicked.connect(self._setDetail)
+
+    @staticmethod
+    def _findWidget(evt, layout):
+        ''' .. caution:: Don't touch this! '''
+        x, y = evt.x, evt.y
+        lx,ly,lw,lh =layout.geometry()
+        lox, loy = layout.offset()
+        lx,ly,lw,lh = lx+lox, ly+loy, lw-lox, lh-loy
+        # opt of bounds
+        if x<lx or x>=lx+lw or y<ly or y>=lh+ly:
+            return False
+        x-=lx
+        y-=ly
+        for item in reversed(layout.zSortedItems):
+        # for item in layout.zSortedItems:
+            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+                widget = item.widget()
+                if not widget._visible: continue
+                if isinstance(evt, TTkMouseEvent):
+                    wx,wy,ww,wh = widget.geometry()
+                    # Skip the mouse event if outside this widget
+                    if wx <= x < wx+ww and wy <= y < wy+wh:
+                        wevt = evt.clone(pos=(x-wx, y-wy))
+                        return TTkDomTreeView._findWidget(wevt,widget.rootLayout())
+                    continue
+
+            elif item.layoutItemType == TTkK.LayoutItem:
+                levt = evt.clone(pos=(x, y))
+                if (wid:=TTkDomTreeView._findWidget(levt, item)) is not None:
+                    return wid
+        return layout.parentWidget()
+
+    @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
+    def _processInput(self, kevt, mevt):
+        TTkLog.debug(f"{kevt} {mevt}")
+        if mevt.evt == TTkK.Press:
+            TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
+            widget = TTkDomTreeView._findWidget(mevt,TTkHelper._rootWidget.rootLayout())
+            TTkLog.debug(f"{widget=}")
+            if widget:
+                self._makeDetail(widget)
+            else:
+                self._detail = TTkFrame(title=f"None")
+            self._splitter.replaceWidget(1,self._detail)
+            self._refresh(widget)
 
     @pyTTkSlot()
-    def _refresh(self):
+    def _btnPickCb(self):
+        TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
+
+    @pyTTkSlot()
+    def _refresh(self, widget=None):
         self._domTree.clear()
-        self._domTree.addTopLevelItem(TTkDomTreeView._getDomTreeItem(TTkHelper._rootWidget._widgetItem))
+        self._domTree.addTopLevelItem(TTkDomTreeView._getDomTreeItem(TTkHelper._rootWidget._widgetItem, widget))
 
     @pyTTkSlot(_TTkDomTreeWidgetItem, int)
     def _setDetail(self, widget, _):
         if domw :=  widget.domWidget():
-            self._detail = TTkScrollArea(verticalScrollBarPolicy=TTkK.ScrollBarAlwaysOn)
-            dlfv =_DetailLazyFormView()
-            self._detail.setViewport(dlfv)
-            proplist = []
-            for cc in reversed(type(domw).__mro__):
-                if hasattr(cc,'_ttkProperties'):
-                    dlfv.addFormRow(TTkLabel(
-                            minSize=(30,1), maxHeight=1,
-                            color=TTkColor.bg('#000099')+TTkColor.fg('#ffff00'),
-                            text=f"{cc.__name__}"))
-                    for p in cc._ttkProperties:
-                        prop = cc._ttkProperties[p]
-                        if prop not in proplist:
-                            proplist.append(prop)
-                            if 'get' in prop:
-                                def _bound(_f,_w,_l):
-                                    def _ret(_v):
-                                        _f(_w,_l(_v))
-                                    return _ret
-                                def _boundFlags(_f,_g,_w,_l,_flag):
-                                    def _ret(_v):
-                                        _val = _g(_w)
-                                        _val = _val|_flag if _l(_v) else _val&~_flag
-                                        _f(_w,_val)
-                                    return _ret
-                                getval = prop['get']['cb'](domw)
-                                if prop['get']['type'] == 'multiflags' and 'set' in prop:
-                                    flags = prop['get']['flags']
-                                    value = TTkFrame(layout=TTkVBoxLayout(), height=len(flags), border=False)
-                                    for fl in flags:
-                                        value.layout().addWidget(fcb := TTkCheckbox(text=f" {fl}"))
-                                        fcb.stateChanged.connect(_boundFlags(
-                                                    prop['set']['cb'], prop['get']['cb'],
-                                                    domw, lambda v: v==TTkK.Checked, flags[fl]))
-                                if prop['get']['type'] == 'singleflag' and 'set' in prop:
-                                    flags = prop['get']['flags']
-                                    items = [(k,v) for k,v in flags.items()]
-                                    value = TTkComboBox(list=[n for n,_ in items], height=1)
-                                    value.setCurrentIndex([cs for _,cs in items].index(getval))
-                                    value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:flags[v]))
-                                elif prop['get']['type'] == bool and 'set' in prop:
-                                    # value = TTkComboBox(list=['True','False'])
-                                    # value.setCurrentIndex(0 if getval else 1)
-                                    # value.currentIndexChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==0))
-                                    value = TTkCheckbox(text=f" {p}", checked=getval, height=1)
-                                    value.stateChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==TTkK.Checked))
-                                elif prop['get']['type'] == int and 'set' in prop:
-                                    value = TTkSpinBox(value=getval, height=1)
-                                    value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
-                                elif prop['get']['type'] == TTkString and 'set' in prop:
-                                    value = TTkLineEdit(text=getval, height=1)
-                                    value.textEdited.connect(_bound(prop['set']['cb'],domw,lambda v:v))
-                                else:
-                                    if issubclass(prop['get']['type'], TTkLayout):
-                                        getval = getval.__class__.__name__
-                                    value = TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}", height=1)
-                                dlfv.addFormRow(
-                                    TTkLabel(
-                                        minSize=(30,1), maxHeight=1,
-                                        color=TTkColor.bg('#222222')+TTkColor.fg('#88ffff'),
-                                        text=f" - {p}"),
-                                    value,)
+            self._makeDetail(domw)
         else:
             self._detail = TTkFrame(title=f"None")
         self._splitter.replaceWidget(1,self._detail)
 
+    def _makeDetail(self, domw):
+        self._detail = TTkScrollArea(verticalScrollBarPolicy=TTkK.ScrollBarAlwaysOn)
+        dlfv =_DetailLazyFormView()
+        self._detail.setViewport(dlfv)
+        proplist = []
+        for cc in reversed(type(domw).__mro__):
+            if hasattr(cc,'_ttkProperties'):
+                dlfv.addFormRow(TTkLabel(
+                        minSize=(30,1), maxHeight=1,
+                        color=TTkColor.bg('#000099')+TTkColor.fg('#ffff00'),
+                        text=f"{cc.__name__}"))
+                for p in cc._ttkProperties:
+                    prop = cc._ttkProperties[p]
+                    if prop not in proplist:
+                        proplist.append(prop)
+                        if 'get' in prop:
+                            def _bound(_f,_w,_l):
+                                def _ret(_v):
+                                    _f(_w,_l(_v))
+                                return _ret
+                            def _boundFlags(_f,_g,_w,_l,_flag):
+                                def _ret(_v):
+                                    _val = _g(_w)
+                                    _val = _val|_flag if _l(_v) else _val&~_flag
+                                    _f(_w,_val)
+                                return _ret
+                            getval = prop['get']['cb'](domw)
+                            if prop['get']['type'] == 'multiflags' and 'set' in prop:
+                                flags = prop['get']['flags']
+                                value = TTkFrame(layout=TTkVBoxLayout(), height=len(flags), border=False)
+                                for fl in flags:
+                                    value.layout().addWidget(fcb := TTkCheckbox(text=f" {fl}", checked=bool(prop['get']['cb'](domw)&flags[fl])))
+                                    fcb.stateChanged.connect(_boundFlags(
+                                                prop['set']['cb'], prop['get']['cb'],
+                                                domw, lambda v: v==TTkK.Checked, flags[fl]))
+                            elif prop['get']['type'] == 'singleflag' and 'set' in prop:
+                                flags = prop['get']['flags']
+                                items = [(k,v) for k,v in flags.items()]
+                                value = TTkComboBox(list=[n for n,_ in items], height=1)
+                                value.setCurrentIndex([cs for _,cs in items].index(getval))
+                                value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:flags[v]))
+                            elif prop['get']['type'] == bool and 'set' in prop:
+                                # value = TTkComboBox(list=['True','False'])
+                                # value.setCurrentIndex(0 if getval else 1)
+                                # value.currentIndexChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==0))
+                                value = TTkCheckbox(text=f" {p}", checked=getval, height=1)
+                                value.stateChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==TTkK.Checked))
+                            elif prop['get']['type'] == int and 'set' in prop:
+                                value = TTkSpinBox(value=getval, height=1)
+                                value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                            elif prop['get']['type'] == TTkString and 'set' in prop:
+                                value = TTkLineEdit(text=getval, height=1)
+                                value.textEdited.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                            else:
+                                if type(prop['get']['type']) == str:
+                                    getval = f"{prop['get']['type']} = {getval}"
+                                elif issubclass(prop['get']['type'], TTkLayout):
+                                    getval = getval.__class__.__name__
+                                value = TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}", height=1)
+                            dlfv.addFormRow(
+                                TTkLabel(
+                                    minSize=(30,1), maxHeight=1,
+                                    color=TTkColor.bg('#222222')+TTkColor.fg('#88ffff'),
+                                    text=f" - {p}"),
+                                value,)
+
+
     @staticmethod
-    def _getDomTreeItem(layoutItem):
+    def _getDomTreeItem(layoutItem, widSelected=None):
         if layoutItem.layoutItemType == TTkK.WidgetItem:
             widget = layoutItem.widget()
+            expanded = TTkHelper.isParent(widSelected,widget) if widSelected else False
             top = _TTkDomTreeWidgetItem([
                         widget._name,   widget.__class__.__name__,
                         str(widget.isVisible()),
                         widget.layout().__class__.__name__],
-                        domWidget=widget)
+                        domWidget=widget,
+                        expanded=expanded)
             for c in widget.layout().children():
-                top.addChild(TTkDomTreeView._getDomTreeItem(c))
+                top.addChild(TTkDomTreeView._getDomTreeItem(c,widSelected))
 
             for c in widget.rootLayout().children():
                 if c == widget.layout(): continue
                 top.addChild(tc:=_TTkDomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
                 for cc in c.children():
-                    tc.addChild(TTkDomTreeView._getDomTreeItem(cc))
+                    tc.addChild(TTkDomTreeView._getDomTreeItem(cc,widSelected))
             return top
 
         if layoutItem.layoutItemType == TTkK.LayoutItem:
             top = _TTkDomTreeWidgetItem(["layout", layoutItem.__class__.__name__,"",layoutItem.__class__.__name__])
             for c in layoutItem.children():
-                top.addChild(TTkDomTreeView._getDomTreeItem(c))
+                top.addChild(TTkDomTreeView._getDomTreeItem(c,widSelected))
             return top
 
         return _TTkDomTreeWidgetItem(["ERROR!!!", "None"])

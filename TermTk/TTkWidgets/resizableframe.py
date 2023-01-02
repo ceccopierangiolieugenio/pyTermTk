@@ -29,7 +29,6 @@ class TTkResizableFrame(TTkFrame):
     __slots__ = ('_mouseDelta', '_resizable')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkResizableFrame' )
         self.setBorder(True)
         self._mouseDelta = (0,0)
         self._resizable = TTkK.NONE

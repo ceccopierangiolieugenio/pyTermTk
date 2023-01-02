@@ -105,8 +105,9 @@ def demoShowcase(root=None, border=True):
     logInput = ttk.TTkKeyPressView(visible=False, maxHeight=3, minHeight=3)
     root.layout().addWidget(logInput, 1, 0)
 
-    domTree = ttk.TTkFrame(parent=root, title="Dom Tree", border=True, visible=False, layout=ttk.TTkGridLayout())
+    domTree = ttk.TTkFrame(title="Dom Inspector", border=True, visible=False, layout=ttk.TTkGridLayout())
     ttk.TTkDomTreeView(parent=domTree)
+    root.layout().addWidget(domTree, 0, 1)
 
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
 
