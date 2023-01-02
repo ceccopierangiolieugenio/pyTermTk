@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
@@ -28,9 +29,11 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkLayouts.boxlayout import TTkVBoxLayout
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.combobox import TTkComboBox
+from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.splitter import TTkSplitter
@@ -66,6 +69,67 @@ class _DetailGridView(TTkAbstractScrollView):
 
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
+
+class _DetailLazyFormView(TTkAbstractScrollView):
+    __slots__ = ('_gridLayout', '_lazyRows', '_lastRow')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setPadding(1,0,0,0)
+        self._lastRow = 0
+        self._lazyRows = []
+        self.viewChanged.connect(self._viewChangedHandler)
+
+    def resizeEvent(self, w, h):
+        for row in self._lazyRows:
+            if len(row) == 1:
+                _w = [w]
+                _x = [0]
+            else:
+                _w = [w//2,w//2]
+                _x = [0,w//2]
+            for i,wid in enumerate(row):
+                wx, wy, ww, wh = wid.geometry()
+                wid.setGeometry(_x[i],wy,_w[i],wh)
+        return super().resizeEvent(w, h)
+
+    def addFormRow(self, *args):
+        w = self.width()
+        x = 0
+        h = 0
+        row = []
+        for wid in args:
+            ww,wh = wid.size()
+            row.append(wid)
+            self.layout().addWidget(wid)
+            wid.setGeometry(x,self._lastRow,w//len(args),wh)
+            x+=w//len(args)
+            h = max(h,wh)
+        self._lazyRows.append(row)
+        self._lastRow+=h
+
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        x,y = self.getViewOffsets()
+        self.layout().setOffset(-x,-y)
+
+    def viewFullAreaSize(self) -> (int, int):
+        _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        return w , h+1
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+    def paintEvent(self):
+        x,y = self.getViewOffsets()
+        w,h = self.size()
+        tt = TTkCfg.theme.tree
+        header=["Property","Value"]
+        columnsPos = [self.width()//2,self.width()]
+
+        for i,l in enumerate(header):
+            hx  = 0 if i==0 else columnsPos[i-1]+1
+            hx1 = columnsPos[i]
+            self._canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=TTkCfg.theme.treeHeaderColor)
 
 class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     __slots__ = ('_domWidget')
@@ -110,18 +174,15 @@ class TTkDomTreeView(TTkWidget):
     def _setDetail(self, widget, _):
         if domw :=  widget.domWidget():
             self._detail = TTkScrollArea(verticalScrollBarPolicy=TTkK.ScrollBarAlwaysOn)
-            dgv = _DetailGridView()
-            gl = dgv.gridLayout()
-            self._detail.setViewport(dgv)
-            i = 0
+            dlfv =_DetailLazyFormView()
+            self._detail.setViewport(dlfv)
             proplist = []
             for cc in reversed(type(domw).__mro__):
                 if hasattr(cc,'_ttkProperties'):
-                    gl.addWidget(TTkLabel(
+                    dlfv.addFormRow(TTkLabel(
                             minSize=(30,1), maxHeight=1,
                             color=TTkColor.bg('#000099')+TTkColor.fg('#ffff00'),
-                            text=f"{cc.__name__}"),i,0,1,2)
-                    i+=1
+                            text=f"{cc.__name__}"))
                     for p in cc._ttkProperties:
                         prop = cc._ttkProperties[p]
                         if prop not in proplist:
@@ -131,27 +192,43 @@ class TTkDomTreeView(TTkWidget):
                                     def _ret(_v):
                                         _f(_w,_l(_v))
                                     return _ret
-                                gl.addWidget(TTkLabel(
-                                        minSize=(30,1), maxHeight=1,
-                                        color=TTkColor.bg('#222222')+TTkColor.fg('#88ffff'),
-                                        text=f" - {p}"),i,0)
+                                def _boundFlags(_f,_g,_w,_l,_flag):
+                                    def _ret(_v):
+                                        _val = _g(_w)
+                                        _val = _val|_flag if _l(_v) else _val&~_flag
+                                        _f(_w,_val)
+                                    return _ret
                                 getval = prop['get']['cb'](domw)
-                                if prop['get']['type'] == bool and 'set' in prop:
-                                    value = TTkComboBox(list=['True','False'])
-                                    value.setCurrentIndex(0 if getval else 1)
-                                    value.currentIndexChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==0))
+                                if prop['get']['type'] == 'multiflags' and 'set' in prop:
+                                    flags = prop['get']['flags']
+                                    value = TTkFrame(layout=TTkVBoxLayout(), height=len(flags), border=False)
+                                    for fl in flags:
+                                        value.layout().addWidget(fcb := TTkCheckbox(text=f" {fl}"))
+                                        fcb.stateChanged.connect(_boundFlags(
+                                                    prop['set']['cb'], prop['get']['cb'],
+                                                    domw, lambda v: v==TTkK.Checked, flags[fl]))
+                                elif prop['get']['type'] == bool and 'set' in prop:
+                                    # value = TTkComboBox(list=['True','False'])
+                                    # value.setCurrentIndex(0 if getval else 1)
+                                    # value.currentIndexChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==0))
+                                    value = TTkCheckbox(text=f" {p}", checked=getval, height=1)
+                                    value.stateChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==TTkK.Checked))
                                 elif prop['get']['type'] == int and 'set' in prop:
-                                    value = TTkSpinBox(value=getval)
+                                    value = TTkSpinBox(value=getval, height=1)
                                     value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
                                 elif prop['get']['type'] == TTkString and 'set' in prop:
-                                    value = TTkLineEdit(text=getval)
+                                    value = TTkLineEdit(text=getval, height=1)
                                     value.textEdited.connect(_bound(prop['set']['cb'],domw,lambda v:v))
                                 else:
                                     if issubclass(prop['get']['type'], TTkLayout):
                                         getval = getval.__class__.__name__
-                                    value = TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}")
-                                gl.addWidget(value,i,1)
-                                i+=1
+                                    value = TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}", height=1)
+                                dlfv.addFormRow(
+                                    TTkLabel(
+                                        minSize=(30,1), maxHeight=1,
+                                        color=TTkColor.bg('#222222')+TTkColor.fg('#88ffff'),
+                                        text=f" - {p}"),
+                                    value,)
         else:
             self._detail = TTkFrame(title=f"None")
         self._splitter.replaceWidget(1,self._detail)

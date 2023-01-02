@@ -48,7 +48,6 @@ class TTkWindow(TTkResizableFrame):
     def __init__(self, *args, **kwargs):
         self._winTopLayout = TTkGridLayout()
         super().__init__(*args, **kwargs)
-        self._title = kwargs.get('title' , '' )
         self._flags = TTkK.NONE
         self.setPadding(3,1,1,1)
         self._mouseDelta = (0,0)
@@ -121,10 +120,6 @@ class TTkWindow(TTkResizableFrame):
         pw.rootLayout().addWidget(mb)
         self.hide()
 
-    def setTitle(self, title):
-        self._title = title
-        self.update()
-
     def windowFlag(self):
         return self._flags
 
@@ -142,9 +137,6 @@ class TTkWindow(TTkResizableFrame):
         self._redBk = None
         self._winTopLayout.setGeometry(1,1,w-2,1)
         super().resizeEvent(w,h)
-
-    def getTitle(self):
-        return self._title
 
     def paintEvent(self):
         if self.hasFocus():
@@ -187,3 +179,26 @@ class TTkWindow(TTkResizableFrame):
         if self._menubarTop:
             self._menubarTop.setBorderColor(TTkColor.RST)
         self.update()
+
+    _ttkProperties = {
+        'Window Flags' : {
+                'init': { 'name':'flags', 'type':'multiflags',
+                    'flags': {
+                        'Close Button'   : TTkK.WindowFlag.WindowCloseButtonHint    ,
+                        'Maximize Button': TTkK.WindowFlag.WindowMaximizeButtonHint ,
+                        'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
+                        'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
+                'get' : { 'cb':windowFlag,      'type':'multiflags',
+                     'flags': {
+                        'Close Button'   : TTkK.WindowFlag.WindowCloseButtonHint    ,
+                        'Maximize Button': TTkK.WindowFlag.WindowMaximizeButtonHint ,
+                        'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
+                        'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
+                'set' : { 'cb':setWindowFlag,   'type':'multiflags',
+                    'flags': {
+                        'Close Button'   : TTkK.WindowFlag.WindowCloseButtonHint    ,
+                        'Maximize Button': TTkK.WindowFlag.WindowMaximizeButtonHint ,
+                        'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
+                        'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
+         },
+    }

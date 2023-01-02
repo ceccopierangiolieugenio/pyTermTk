@@ -64,7 +64,7 @@ class TTkAbout(TTkWindow):
         TTkWindow.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkAbout' )
         self._image = TTkImage(parent=self, pos=(0,0), data=TTkAbout.peppered)
-        if not self.getTitle():
+        if not self.title():
             self.setTitle('About...')
         self.resize(55,15)
 
