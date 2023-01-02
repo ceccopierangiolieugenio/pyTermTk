@@ -207,6 +207,12 @@ class TTkDomTreeView(TTkWidget):
                                         fcb.stateChanged.connect(_boundFlags(
                                                     prop['set']['cb'], prop['get']['cb'],
                                                     domw, lambda v: v==TTkK.Checked, flags[fl]))
+                                if prop['get']['type'] == 'singleflag' and 'set' in prop:
+                                    flags = prop['get']['flags']
+                                    items = [(k,v) for k,v in flags.items()]
+                                    value = TTkComboBox(list=[n for n,_ in items], height=1)
+                                    value.setCurrentIndex([cs for _,cs in items].index(getval))
+                                    value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:flags[v]))
                                 elif prop['get']['type'] == bool and 'set' in prop:
                                     # value = TTkComboBox(list=['True','False'])
                                     # value.setCurrentIndex(0 if getval else 1)

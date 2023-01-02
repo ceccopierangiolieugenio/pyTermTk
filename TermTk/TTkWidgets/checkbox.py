@@ -39,6 +39,11 @@ class TTkCheckbox(TTkWidget):
 
         [ ]CheckBox
 
+    **Partially Checked**
+    ::
+
+        [/]CheckBox
+
     :Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
 
     :param str text: the text shown on the checkbox, defaults to ""
@@ -57,6 +62,11 @@ class TTkCheckbox(TTkWidget):
 
             :param checked: True if checked otherwise False
             :type checked: bool
+            :param checkStatus: The state of the checkbox
+            :type checkStatus: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+            :param tristate: | This property holds whether the checkbox is a tri-state checkbox
+                             | The default is false, i.e., the checkbox has only two states.
+            :type tristate: bool
 
         .. py:method:: stateChanged(state)
             :signal:
@@ -68,7 +78,7 @@ class TTkCheckbox(TTkWidget):
 
      '''
     __slots__ = (
-        '_checked', '_text',
+        '_checkStatus', '_text', '_tristate',
         # Signals
         'clicked', 'stateChanged'
         )
@@ -76,23 +86,57 @@ class TTkCheckbox(TTkWidget):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , 'TTkCheckbox' )
         # Define Signals
-        self.stateChanged = pyTTkSignal(int)
+        self.stateChanged = pyTTkSignal(TTkK.CheckState)
         self.clicked = pyTTkSignal(bool)
-        self._checked = kwargs.get('checked', False )
+        if 'checkStatus' in kwargs:
+            self._checkStatus = kwargs.get('checkStatus', TTkK.Unchecked )
+        else:
+            self._checkStatus = TTkK.Checked if kwargs.get('checked', False ) else TTkK.Unchecked
+        self._tristate = kwargs.get('tristate', False)
         self._text = TTkString(kwargs.get('text', '' ))
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
+    def isTristate(self):
+        ''' This property holds whether the checkbox is a tri-state checkbox
+
+        :return: bool
+        '''
+        return self._tristate
+
+    def setTristate(self, tristate):
+        ''' Enable/Disable the tristate property
+
+        :param tristate:
+        :type tristate: bool
+        '''
+        if tristate == self._tristate: return
+        self._tristate = tristate
+        self.update()
+
+    def isChecked(self):
+        ''' This property holds whether the button is checked
+
+        :return: bool - True if :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.Checked` or :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.PartiallyChecked`
+        '''
+        return self._checkStatus != TTkK.Unchecked
+
+    def setChecked(self, state):
+        ''' Set the check status
+
+        :param state:
+        :type tate: bool
+        '''
+        self.setCheckState(TTkK.Checked if state else TTkK.Unchecked)
+
 
     def checkState(self):
         ''' Retrieve the state of the checkbox
 
         :return: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
         '''
-        if self._checked:
-            return TTkK.Checked
-        else:
-            return TTkK.Unchecked
+        return self._checkStatus
 
     def setCheckState(self, state):
         ''' Sets the checkbox's check state.
@@ -100,7 +144,9 @@ class TTkCheckbox(TTkWidget):
         :param state: state of the checkbox
         :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
         '''
-        self._checked = state == TTkK.Checked
+        if self._checkStatus == state: return
+        if state==TTkK.PartiallyChecked and not self._tristate: return
+        self._checkStatus = state
         self.update()
 
     def paintEvent(self):
@@ -114,15 +160,22 @@ class TTkCheckbox(TTkWidget):
             xColor      = TTkCfg.theme.checkboxContentColor
         self._canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
         self._canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
-        if self._checked:
-            self._canvas.drawText(pos=(1,0), color=xColor ,text="X")
-        else:
-            self._canvas.drawText(pos=(1,0), color=xColor ,text=" ")
+        text = {
+            TTkK.Checked :   "X",
+            TTkK.Unchecked : " ",
+            TTkK.PartiallyChecked: "/"}.get(self._checkStatus, " ")
+        self._canvas.drawText(pos=(1,0), color=xColor ,text=text)
 
     def _pressEvent(self):
-        self._checked = not self._checked
-        self.clicked.emit(self._checked)
-        self.stateChanged.emit(self.checkState())
+        self._checkStatus = {
+            TTkK.Unchecked:        TTkK.PartiallyChecked,
+            TTkK.PartiallyChecked: TTkK.Checked,
+            TTkK.Checked:          TTkK.Unchecked,
+        }.get(self._checkStatus,TTkK.Unchecked)
+        if not self._tristate and self._checkStatus == TTkK.PartiallyChecked:
+            self._checkStatus = TTkK.Checked
+        self.clicked.emit(self._checkStatus!=TTkK.Unchecked)
+        self.stateChanged.emit(self._checkStatus)
         self.update()
         return True
 
@@ -136,3 +189,31 @@ class TTkCheckbox(TTkWidget):
             self._pressEvent()
             return True
         return False
+
+    _ttkProperties = {
+        'tristate' : {
+                'init': {'name':'tristate', 'type':bool } ,
+                'get':  {'cb':isTristate,   'type':bool } ,
+                'set':  {'cb':setTristate,  'type':bool } },
+        'checked' : {
+                'init': {'name':'checked', 'type':bool } ,
+                'get':  {'cb':isChecked,   'type':bool } ,
+                'set':  {'cb':setChecked,  'type':bool } },
+        'Check State' : {
+                'init': { 'name':'checked', 'type':'singleflag',
+                    'flags': {
+                        'Checked'          : TTkK.Checked    ,
+                        'Unchecked'        : TTkK.Unchecked  ,
+                        'Partially Checked': TTkK.PartiallyChecked } },
+                'get' : { 'cb':checkState,      'type':'singleflag',
+                    'flags': {
+                        'Checked'          : TTkK.Checked    ,
+                        'Unchecked'        : TTkK.Unchecked  ,
+                        'Partially Checked': TTkK.PartiallyChecked } },
+                'set' : { 'cb':setCheckState,   'type':'singleflag',
+                    'flags': {
+                        'Checked'          : TTkK.Checked    ,
+                        'Unchecked'        : TTkK.Unchecked  ,
+                        'Partially Checked': TTkK.PartiallyChecked } },
+         },
+    }
