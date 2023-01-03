@@ -52,7 +52,7 @@ class TTkButton(TTkWidget):
 
     :param bool checked: checked status if the button is checkable, defaults to "False"
     :type checked: bool, optional
-    :param bool checkable: define if the burtton is checkable, defaults to "False"
+    :param bool checkable: define if the button is checkable, defaults to "False"
     :type checkable: bool, optional
 
     :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonTextColor`
@@ -96,7 +96,6 @@ class TTkButton(TTkWidget):
         self.setDefaultSize(kwargs, 2 + textWidth, 3 if self._border else 1 )
 
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkButton' )
         # Define Signals
         self.clicked = pyTTkSignal()
         self.toggled = pyTTkSignal(bool)
@@ -122,16 +121,36 @@ class TTkButton(TTkWidget):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def isCheckable(self):
+        ''' This property holds whether the button is checkable
+
+        :return: bool
+        '''
         return self._checkable
 
     def setCheckable(self, ch):
+        ''' Enable/Disable the checkable property
+
+        :param ch: Checkable
+        :type ch: bool
+        '''
         self._checkable = ch
         self.update()
 
     def isChecked(self):
+        ''' This property holds whether the button is checked
+
+        Only checkable buttons can be checked. By default, the button is unchecked.
+
+        :return: bool
+        '''
         return self._checked
 
     def setChecked(self, ch):
+        ''' Set the checked status
+
+        :param ch: Checked
+        :type ch: bool
+        '''
         self._checked = ch
         self.toggled.emit(self._checked)
         self.update()
@@ -150,12 +169,20 @@ class TTkButton(TTkWidget):
         self._borderColor = color
         self.update()
 
-    @property
     def text(self):
+        ''' This property holds the text shown on the button
+
+        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
         return self._text
 
-    @text.setter
-    def text(self, text):
+    def setText(self, text):
+        ''' This property holds the text shown on the button
+
+        :param text:
+        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
+        if self._text == text: return
         self._text = TTkString(text)
         self.setMinimumSize(self._text.termWidth()+2, 1)
         self.update()
@@ -232,3 +259,17 @@ class TTkButton(TTkWidget):
             self._canvas.drawText(pos=(1+text.termWidth(),y), color=borderColor ,text=']')
             self._canvas.drawText(pos=(1,y) ,text=text)
 
+    _ttkProperties = {
+        'text' : {
+                'init': {'name':'text', 'type':TTkString },
+                'get':  {'cb':text,     'type':TTkString } ,
+                'set':  {'cb':setText,  'type':TTkString } },
+        'checkable' : {
+                'init': {'name':'checkable', 'type':bool },
+                'get':  {'cb':isCheckable,   'type':bool } ,
+                'set':  {'cb':setCheckable,  'type':bool } },
+        'checked' : {
+                'init': {'name':'checked', 'type':bool },
+                'get':  {'cb':isChecked,   'type':bool } ,
+                'set':  {'cb':setChecked,  'type':bool } },
+    }

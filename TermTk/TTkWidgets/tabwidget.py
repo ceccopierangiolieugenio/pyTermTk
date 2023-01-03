@@ -61,7 +61,7 @@ class TTkTabButton(TTkButton):
         self._closable = kwargs.get('closable', False)
         self.closeClicked = pyTTkSignal()
         TTkButton.__init__(self, *args, **kwargs)
-        size = len(self.text) + 2
+        size = self.text().termWidth() + 2
         if self._closable:
             size += 3
             self._closeButton = TTkButton(parent=self, border=False, text="x", pos=(size-4,1 if self._border else 0), size=(3,1))
@@ -122,7 +122,7 @@ class TTkTabButton(TTkButton):
             small=(not self._border),
             sideEnd=self._sideEnd, status=self._tabStatus,
             color=self._borderColor )
-        self._canvas.drawText(pos=(1,1 if self._border else 0), text=self.text, color=self.color())
+        self._canvas.drawText(pos=(1,1 if self._border else 0), text=self.text(), color=self.color())
 
 class _TTkTabMenuButton(TTkMenuButton):
     def __init__(self, *args, **kwargs):
