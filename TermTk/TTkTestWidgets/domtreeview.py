@@ -159,15 +159,15 @@ class TTkDomTreeView(TTkWidget):
         self._splitter.addWidget(self._domTree)
         self._splitter.addWidget(self._detail)
 
-        btnRefresh = TTkButton(text="refresh")
+        btnRefresh = TTkButton(text="Refresh")
         btnRefresh.clicked.connect(self._refresh)
 
-        btnPick = TTkButton(text="pick")
+        btnPick = TTkButton(text="Pick 🔍")
         btnPick.clicked.connect(self._btnPickCb)
 
         layout.addWidget(btnPick,    0,0)
-        layout.addWidget(btnRefresh, 0,1)
-        layout.addWidget(self._splitter, 1,0,1,2)
+        layout.addWidget(btnRefresh, 0,1,1,2)
+        layout.addWidget(self._splitter, 1,0,1,3)
 
         self._domTree.itemClicked.connect(self._setDetail)
 

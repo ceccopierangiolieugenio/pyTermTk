@@ -181,7 +181,8 @@ class TTkComboBox(TTkWidget):
 
     @pyTTkSlot(str)
     def _callback(self, label):
-        self._lineEdit.setText(label)
+        if self._editable:
+            self._lineEdit.setText(label)
         self.setCurrentIndex(self._list.index(label))
         TTkHelper.removeOverlayAndChild(self._popupFrame)
         self._popupFrame = None
