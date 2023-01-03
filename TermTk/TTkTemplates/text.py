@@ -24,7 +24,7 @@
 
 from TermTk.TTkCore.string import TTkString
 
-class TText():
+class DeprecatedTText():
     #__slots__ = ('_text')
     def __init__(self, *args, **kwargs):
         text = kwargs.get('text', TTkString() )

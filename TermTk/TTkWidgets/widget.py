@@ -664,45 +664,45 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._lookAndFeel.modified.connect(self.update)
 
     _ttkProperties = {
-        'x' : {
+        'X' : {
                 'init': {'name':'x', 'type':int } ,
                 'get':  { 'cb':x,    'type':int } },
-        'y' : {
+        'Y' : {
                 'init': {'name':'y', 'type':int } ,
                 'get':  { 'cb':y,    'type':int } },
-        'width' : {
+        'Width' : {
                 'init': {'name':'width', 'type':int } ,
                 'get':  { 'cb':width,    'type':int } },
-        'height' : {
+        'Height' : {
                 'init': {'name':'height', 'type':int } ,
                 'get':  { 'cb':height,    'type':int } },
-        'minWidth' : {
+        'Min Width' : {
                 'init': {'name':'minWidth',    'type':int } ,
                 'get':  { 'cb':minimumWidth,   'type':int } ,
                 'set':  { 'cb':setMinimumWidth,'type':int } },
-        'minHeight' : {
+        'Min Height' : {
                 'init': {'name':'minHeight',    'type':int } ,
                 'get':  { 'cb':minimumHeight,   'type':int } ,
                 'set':  { 'cb':setMinimumHeight,'type':int } },
-        'maxWidth' : {
+        'Max Width' : {
                 'init': {'name':'maxWidth',    'type':int } ,
                 'get':  { 'cb':maximumWidth,   'type':int } ,
                 'set':  { 'cb':setMaximumWidth,'type':int } },
-        'maxHeight' : {
+        'Max Height' : {
                 'init': {'name':'maxHeight',    'type':int } ,
                 'get':  { 'cb':maximumHeight,   'type':int } ,
                 'set':  { 'cb':setMaximumHeight,'type':int } },
-        'layout' : {
+        'Layout' : {
                 'init': {'name':'layout', 'type':TTkLayout} ,
                 'get':  { 'cb':layout,    'type':TTkLayout} ,
                 'set':  { 'cb':setLayout, 'type':TTkLayout} },
-        'name' : {
+        'Name' : {
                 'init': {'name':'name', 'type':str } },
-        'visible' : {
+        'Visible' : {
                 'init': {'name':'visible', 'type':bool } ,
                 'get':  {'cb':isVisible,   'type':bool } ,
                 'set':  {'cb':setVisible,  'type':bool } },
-        'enabled' : {
+        'Enabled' : {
                 'init': {'name':'enabled', 'type':bool } ,
                 'get':  {'cb':isEnabled,   'type':bool } ,
                 'set':  {'cb':setEnabled,  'type':bool } },

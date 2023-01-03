@@ -222,3 +222,10 @@ class TTkComboBox(TTkWidget):
     def focusInEvent(self):
         if self._editable:
             self._lineEdit.setFocus()
+
+    _ttkProperties = {
+        'Editable' : {
+                'init': {'name':'editable', 'type':bool } ,
+                'get':  {'cb':isEditable,   'type':bool } ,
+                'set':  {'cb':setEditable,  'type':bool } },
+    }

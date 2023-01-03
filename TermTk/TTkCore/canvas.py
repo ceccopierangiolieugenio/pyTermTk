@@ -247,15 +247,15 @@ class TTkCanvas:
         if w < 4: return
         gg = TTkCfg.theme.grid[grid]
 
-        if len(text) > w-4:
-            text = text[:w-4]
+        if text.termWidth() > w-4:
+            text = text.substring(to=w-4)
         if align == TTkK.CENTER_ALIGN:
-            l = (w-2-len(text))//2
+            l = (w-2-text.termWidth())//2
         elif align == TTkK.LEFT_ALIGN:
             l=1
         else:
-            l = w-2-len(text)
-        r = l+len(text)+1
+            l = w-2-text.termWidth()
+        r = l+text.termWidth()+1
 
         self._set(y,l, gg[7], color)
         self._set(y,r, gg[6], color)
@@ -583,7 +583,7 @@ class TTkCanvas:
     self._canvas:         |----|xxxxxx|----------|
     '''
     def paintCanvas(self, canvas, geom, slice, bound):
-        # TTkLog.debug(f"PaintCanvas:{(x,y,w,h)}")
+        # TTkLog.debug(f"PaintCanvas:{geom=} {bound=} {self._widget._name=} {self._data[0] if self._data else 1234}")
         x, y, w, h  = geom
         bx,by,bw,bh = bound
         # out of bound

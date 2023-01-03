@@ -191,11 +191,11 @@ class TTkCheckbox(TTkWidget):
         return False
 
     _ttkProperties = {
-        'tristate' : {
+        'Tristate' : {
                 'init': {'name':'tristate', 'type':bool } ,
                 'get':  {'cb':isTristate,   'type':bool } ,
                 'set':  {'cb':setTristate,  'type':bool } },
-        'checked' : {
+        'Checked' : {
                 'init': {'name':'checked', 'type':bool } ,
                 'get':  {'cb':isChecked,   'type':bool } ,
                 'set':  {'cb':setChecked,  'type':bool } },

@@ -23,35 +23,46 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.widget import *
+from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkTemplates.color import TColor
-from TermTk.TTkTemplates.text  import TText
 
-class TTkLabel(TTkWidget, TColor, TText):
-    __slots__ = ()
+class TTkLabel(TTkWidget, TColor):
+    __slots__ = ('_text')
     def __init__(self, *args, **kwargs):
         TColor.__init__(self, *args, **kwargs)
-        TText.__init__(self, *args, **kwargs)
 
-        self.setDefaultSize(kwargs, self.text.termWidth(), 1)
+        text = kwargs.get('text', TTkString() )
+        if issubclass(type(text), TTkString):
+            self._text = text
+        else:
+            self._text = TTkString(text)
 
+        self.setDefaultSize(kwargs, self._text.termWidth(), 1)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLabel' )
-        # self.setMinimumSize(self.text.termWidth(), 1)
-        self.textUpdated(self.text)
+        self._textUpdated()
+
+    def text(self):
+        return self._text
 
     @pyTTkSlot(str)
     def setText(self, text):
-        self.text = text
+        if self._text != text:
+            if issubclass(type(text), TTkString):
+                self._text  = text
+            else:
+                self._text  = TTkString(text)
+            self._textUpdated()
 
     def paintEvent(self):
         forceColor = self.color!=TTkColor.RST
         self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color, forceColor=forceColor)
-        self._canvas.drawText(pos=(0,0), text=self.text, color=self.color, forceColor=forceColor)
+        self._canvas.drawText(pos=(0,0), text=self._text, color=self.color, forceColor=forceColor)
 
-    def textUpdated(self, text):
+    def _textUpdated(self):
         w, h = self.size()
-        textWidth = text.termWidth()
+        textWidth = self._text.termWidth()
         if w<textWidth or h<1:
             self.resize(textWidth,1)
         self.setMinimumSize(textWidth, 1)
@@ -59,3 +70,10 @@ class TTkLabel(TTkWidget, TColor, TText):
 
     def colorUpdated(self, color):
         self.update()
+
+    _ttkProperties = {
+        'Text' : {
+                'init': {'name':'text',  'type':TTkString },
+                'get':  {'cb':text,      'type':TTkString } ,
+                'set':  {'cb':setText,   'type':TTkString } },
+    }

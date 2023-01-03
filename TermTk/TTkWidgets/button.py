@@ -260,15 +260,15 @@ class TTkButton(TTkWidget):
             self._canvas.drawText(pos=(1,y) ,text=text)
 
     _ttkProperties = {
-        'text' : {
+        'Text' : {
                 'init': {'name':'text', 'type':TTkString },
                 'get':  {'cb':text,     'type':TTkString } ,
                 'set':  {'cb':setText,  'type':TTkString } },
-        'checkable' : {
+        'Checkable' : {
                 'init': {'name':'checkable', 'type':bool },
                 'get':  {'cb':isCheckable,   'type':bool } ,
                 'set':  {'cb':setCheckable,  'type':bool } },
-        'checked' : {
+        'Checked' : {
                 'init': {'name':'checked', 'type':bool },
                 'get':  {'cb':isChecked,   'type':bool } ,
                 'set':  {'cb':setChecked,  'type':bool } },

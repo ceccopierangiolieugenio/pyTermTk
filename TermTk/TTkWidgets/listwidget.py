@@ -139,7 +139,7 @@ class TTkListWidget(TTkAbstractScrollView):
         self._highlighted = label
         self.setFocus()
         self.itemClicked.emit(label)
-        self.textClicked.emit(label.text)
+        self.textClicked.emit(label.text())
 
     def setSelectionMode(self, mode):
         self._selectionMode = mode
@@ -148,7 +148,7 @@ class TTkListWidget(TTkAbstractScrollView):
         return self._selectedItems
 
     def selectedLabels(self):
-        return [i.text for i in self._selectedItems]
+        return [i.text() for i in self._selectedItems]
 
     def items(self):
         return self._items

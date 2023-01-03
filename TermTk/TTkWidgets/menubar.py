@@ -77,13 +77,13 @@ class TTkMenuButton(TTkAbstractListItem):
         self._menuOffset = kwargs.get('menuOffset', (-1,0) )
         self._shortcut = []
         self._menu = []
-        while self.text.find('&') != -1:
-            index = self.text.find('&')
-            shortcut = self.text.charAt(index+1)
+        while self.text().find('&') != -1:
+            index = self.text().find('&')
+            shortcut = self.text().charAt(index+1)
             TTkHelper.addShortcut(self, shortcut)
             self._shortcut.append(index)
-            self.text = self.text.substring(to=index)+self.text.substring(fr=index+1)
-        txtlen = len(self.text)
+            self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
+        txtlen = self.text().termWidth()
         self.resize(txtlen,1)
         self.setMinimumSize(txtlen+2,1)
         self.setMaximumSize(txtlen+2,1)
@@ -136,7 +136,7 @@ class TTkMenuButton(TTkAbstractListItem):
             frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight))
             pos = (self.width(), -1)
         else:
-            frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self.text, titleAlign=TTkK.LEFT_ALIGN)
+            frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self.text(), titleAlign=TTkK.LEFT_ALIGN)
             pos = self._menuOffset
         menuListWidget = _TTkMenuListWidget()
         listw = TTkList(parent=frame, listWidget = menuListWidget)
@@ -159,7 +159,7 @@ class TTkMenuButton(TTkAbstractListItem):
             textColor   = self._color
             scColor     =  TTkCfg.theme.menuButtonShortcutColor
         self._canvas.drawMenuBarButton(
-                        pos=(0,0),text=self.text,
+                        pos=(0,0),text=self.text(),
                         width=self.width(),
                         shortcuts=self._shortcut,
                         border=self._border,

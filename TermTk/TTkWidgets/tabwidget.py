@@ -137,7 +137,7 @@ class _TTkTabMenuButton(TTkMenuButton):
             borderColor = self._borderColor
             textColor   = self._color
             # scColor     =  TTkCfg.theme.menuButtonShortcutColor
-        text = TTkString('[',borderColor) + TTkString(self.text,textColor) + TTkString(']',borderColor)
+        text = TTkString('[',borderColor) + TTkString(self.text(),textColor) + TTkString(']',borderColor)
         self._canvas.drawText(pos=(0,0),text=text)
 
 class _TTkTabScrollerButton(TTkButton):
@@ -572,13 +572,13 @@ class TTkTabWidget(TTkFrame):
                 if index <= newIndex:
                     newIndex -= 1
             tw.removeTab(index)
-            self.insertTab(newIndex, widget, tb.text, data)
+            self.insertTab(newIndex, widget, tb.text(), data)
             self.setCurrentIndex(newIndex)
             #self._tabChanged(newIndex)
         elif tw != self:
             tw.removeTab(index)
             newIndex = len(self._tabWidgets)
-            self.addTab(widget, tb.text, data)
+            self.addTab(widget, tb.text(), data)
             self.setCurrentIndex(newIndex)
             self._tabChanged(newIndex)
 
