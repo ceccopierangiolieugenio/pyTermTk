@@ -44,6 +44,7 @@ from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.scrollarea import TTkScrollArea, TTkAbstractScrollView
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
+from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
 class _DetailGridView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout')
@@ -286,6 +287,9 @@ class TTkDomTreeView(TTkWidget):
                             elif prop['get']['type'] == TTkString and 'set' in prop:
                                 value = TTkLineEdit(text=getval, height=1)
                                 value.textEdited.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                            elif prop['get']['type'] == TTkColor and 'set' in prop:
+                                value = TTkColorButtonPicker(color=getval, height=1)
+                                value.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))
                             else:
                                 if type(prop['get']['type']) == str:
                                     getval = f"{prop['get']['type']} = {getval}"
