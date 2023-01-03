@@ -24,7 +24,7 @@
 
 from TermTk.TTkCore.color import TTkColor
 
-class TColor():
+class DeprecatedTColor():
     #__slots__ = ('_color')
     def __init__(self, *args, **kwargs):
         self._color = kwargs.get('color', TTkColor.RST )

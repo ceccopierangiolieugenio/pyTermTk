@@ -38,7 +38,6 @@ class TTkAbstractListItem(TTkLabel, TData):
     def __init__(self, *args, **kwargs):
         TData.__init__(self, *args, **kwargs)
         TTkLabel.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkAbstractListItem' )
         # Define Signals
         self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
         self._selected = False
@@ -49,13 +48,13 @@ class TTkAbstractListItem(TTkLabel, TData):
     def _updateColor(self):
         if self._highlighted:
             if self._selected:
-                self.color = TTkCfg.theme.listColorHighlighted + TTkColor.UNDERLINE
+                self.setColor(TTkCfg.theme.listColorHighlighted + TTkColor.UNDERLINE)
             else:
-                self.color = TTkCfg.theme.listColorHighlighted
+                self.setColor(TTkCfg.theme.listColorHighlighted)
         elif self._selected:
-            self.color = TTkCfg.theme.listColorSelected
+            self.setColor(TTkCfg.theme.listColorSelected)
         else:
-            self.color = TTkCfg.theme.listColor
+            self.setColor(TTkCfg.theme.listColor)
 
     def keyEvent(self, evt):
         return self.parentWidget().keyEvent(evt)

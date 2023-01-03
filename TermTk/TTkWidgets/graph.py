@@ -27,22 +27,30 @@
 # And of course:
 # https://github.com/aristocratos/bpytop
 
-from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkTemplates.color import TColor
 
-class TTkGraph(TTkWidget, TColor):
-    __slots__ = ('_data', '_maxData', '_offset', '_direction', '_align')
+class TTkGraph(TTkWidget):
+    __slots__ = ('_data', '_maxData', '_offset', '_direction', '_align', '_color')
     def __init__(self, *args, **kwargs):
         self._data = [[0]]
         self._offset = 0
-        TTkWidget.__init__(self, *args, **kwargs)
-        TColor.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self._color = kwargs.get('color', TTkColor.RST )
         self._name = kwargs.get('name' , 'TTkGraph' )
         self._maxData = kwargs.get('maxData', 0x1000)
         self._direction = kwargs.get('direction', TTkK.RIGHT)
         self._align = kwargs.get('align', TTkK.CENTER)
+
+    def color(self):
+        return self._color
+
+    def setColor(self, color):
+        if self._color != color:
+            self._color = color
+            self.update()
 
     def addValue(self, values):
         self._data.append(values)
@@ -71,11 +79,11 @@ class TTkGraph(TTkWidget, TColor):
             v1 = data[i]
             if i%2==0:
                 if self._direction == TTkK.RIGHT:
-                    self._canvas.drawHChart(pos=(x+i//2,y),values=(v2,v1), zoom=zoom, color=self.color.modParam(val=-y))
+                    self._canvas.drawHChart(pos=(x+i//2,y),values=(v2,v1), zoom=zoom, color=self._color.modParam(val=-y))
                 else:
-                    self._canvas.drawHChart(pos=(w-(x+i//2),y),values=(v1,v2), zoom=zoom, color=self.color.modParam(val=-y))
+                    self._canvas.drawHChart(pos=(w-(x+i//2),y),values=(v1,v2), zoom=zoom, color=self._color.modParam(val=-y))
         if i%2==1:
             if self._direction == TTkK.RIGHT:
-                self._canvas.drawHChart(pos=(x+i//2+1,y),values=(v1,v1), zoom=zoom, color=self.color.modParam(val=-y))
+                self._canvas.drawHChart(pos=(x+i//2+1,y),values=(v1,v1), zoom=zoom, color=self._color.modParam(val=-y))
             else:
-                self._canvas.drawHChart(pos=(w-(x+i//2+1),y),values=(v1,v1), zoom=zoom, color=self.color.modParam(val=-y))
+                self._canvas.drawHChart(pos=(w-(x+i//2+1),y),values=(v1,v1), zoom=zoom, color=self._color.modParam(val=-y))

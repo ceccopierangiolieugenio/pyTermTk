@@ -26,13 +26,11 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkTemplates.color import TColor
 
-class TTkLabel(TTkWidget, TColor):
-    __slots__ = ('_text')
+class TTkLabel(TTkWidget):
+    __slots__ = ('_text','_color')
     def __init__(self, *args, **kwargs):
-        TColor.__init__(self, *args, **kwargs)
-
+        self._color = kwargs.get('color', TTkColor.RST )
         text = kwargs.get('text', TTkString() )
         if issubclass(type(text), TTkString):
             self._text = text
@@ -40,8 +38,16 @@ class TTkLabel(TTkWidget, TColor):
             self._text = TTkString(text)
 
         self.setDefaultSize(kwargs, self._text.termWidth(), 1)
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._textUpdated()
+
+    def color(self):
+        return self._color
+
+    def setColor(self, color):
+        if self._color != color:
+            self._color = color
+            self.update()
 
     def text(self):
         return self._text
@@ -56,9 +62,9 @@ class TTkLabel(TTkWidget, TColor):
             self._textUpdated()
 
     def paintEvent(self):
-        forceColor = self.color!=TTkColor.RST
-        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color, forceColor=forceColor)
-        self._canvas.drawText(pos=(0,0), text=self._text, color=self.color, forceColor=forceColor)
+        forceColor = self.color()!=TTkColor.RST
+        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color(), forceColor=forceColor)
+        self._canvas.drawText(pos=(0,0), text=self._text, color=self.color(), forceColor=forceColor)
 
     def _textUpdated(self):
         w, h = self.size()
@@ -76,4 +82,8 @@ class TTkLabel(TTkWidget, TColor):
                 'init': {'name':'text',  'type':TTkString },
                 'get':  {'cb':text,      'type':TTkString } ,
                 'set':  {'cb':setText,   'type':TTkString } },
+        'Color' : {
+                'init': {'name':'color',  'type':TTkColor },
+                'get':  {'cb':color,      'type':TTkColor } ,
+                'set':  {'cb':setColor,   'type':TTkColor } },
     }
