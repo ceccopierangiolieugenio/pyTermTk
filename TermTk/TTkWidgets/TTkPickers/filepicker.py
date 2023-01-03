@@ -142,7 +142,7 @@ class TTkFileDialogPicker(TTkWindow):
         bookmarks.addItem(TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.computer + TTkColor.RST+" Computer", data='/')
         bookmarks.addItem(TTkString() + TTkCfg.theme.fileIconColor + TTkCfg.theme.fileIcon.home     + TTkColor.RST+" Home", data=os.path.expanduser("~"))
         def _bookmarksCallback(item):
-            self._openNewPath(item.data)
+            self._openNewPath(item.data())
         bookmarks.itemClicked.connect(_bookmarksCallback)
 
         # Home Folder (Win Compatible):

@@ -31,13 +31,12 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
-from TermTk.TTkTemplates.data import TData
 
-class TTkAbstractListItem(TTkLabel, TData):
-    __slots__ = ('_pressed', '_selected', '_highlighted', 'listItemClicked')
+class TTkAbstractListItem(TTkLabel):
+    __slots__ = ('_pressed', '_selected', '_highlighted', 'listItemClicked', '_data')
     def __init__(self, *args, **kwargs):
-        TData.__init__(self, *args, **kwargs)
         TTkLabel.__init__(self, *args, **kwargs)
+        self._data  = kwargs.get('data', "" )
         # Define Signals
         self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
         self._selected = False
@@ -55,6 +54,14 @@ class TTkAbstractListItem(TTkLabel, TData):
             self.setColor(TTkCfg.theme.listColorSelected)
         else:
             self.setColor(TTkCfg.theme.listColor)
+
+    def data(self):
+        return self._data
+
+    def setData(self, data):
+        if self._data != data:
+            self._data = data
+            self.update()
 
     def keyEvent(self, evt):
         return self.parentWidget().keyEvent(evt)
