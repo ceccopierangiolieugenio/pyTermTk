@@ -77,6 +77,10 @@ class TTkLineEdit(TTkWidget):
         '''text'''
         return self._text
 
+    def inputType(self):
+        '''inputType'''
+        return self._inputType
+
     def _pushCursor(self):
         w = self.width()
 
@@ -247,3 +251,21 @@ class TTkLineEdit(TTkWidget):
         self._selectionTo   = 0
         TTkHelper.hideCursor()
         self.update()
+
+    _ttkProperties = {
+        'Input Type' : {
+                'init': {'name':'inputType', 'type':'multiflags',
+                    'flags': {
+                        'Text'    : TTkK.Input_Text     ,
+                        'Number'  : TTkK.Input_Number   ,
+                        'Password': TTkK.Input_Password } },
+                'get': {'cb':inputType,      'type':'multiflags',
+                    'flags': {
+                        'Text'    : TTkK.Input_Text     ,
+                        'Number'  : TTkK.Input_Number   ,
+                        'Password': TTkK.Input_Password } } },
+        'Text' : {
+                'init': {'name':'text', 'type':TTkString } ,
+                'get':  {'cb':text,     'type':TTkString } ,
+                'set':  {'cb':setText,  'type':TTkString } }
+    }

@@ -264,20 +264,26 @@ class TTkDomTreeView(TTkWidget):
                                     _f(_w,_val)
                                 return _ret
                             getval = prop['get']['cb'](domw)
-                            if prop['get']['type'] == 'multiflags' and 'set' in prop:
+                            if prop['get']['type'] == 'multiflags':
                                 flags = prop['get']['flags']
                                 value = TTkFrame(layout=TTkVBoxLayout(), height=len(flags), border=False)
                                 for fl in flags:
-                                    value.layout().addWidget(fcb := TTkCheckbox(text=f" {fl}", checked=bool(prop['get']['cb'](domw)&flags[fl])))
-                                    fcb.stateChanged.connect(_boundFlags(
-                                                prop['set']['cb'], prop['get']['cb'],
-                                                domw, lambda v: v==TTkK.Checked, flags[fl]))
-                            elif prop['get']['type'] == 'singleflag' and 'set' in prop:
+                                    if 'set' in prop:
+                                        value.layout().addWidget(fcb := TTkCheckbox(text=f" {fl}", checked=bool(prop['get']['cb'](domw)&flags[fl])))
+                                        fcb.stateChanged.connect(_boundFlags(
+                                                    prop['set']['cb'], prop['get']['cb'],
+                                                    domw, lambda v: v==TTkK.Checked, flags[fl]))
+                                    else:
+                                        value.layout().addWidget(fcb := TTkCheckbox(text=f" {fl}", checked=bool(prop['get']['cb'](domw)&flags[fl]), enabled=False))
+                            elif prop['get']['type'] == 'singleflag':
                                 flags = prop['get']['flags']
                                 items = [(k,v) for k,v in flags.items()]
-                                value = TTkComboBox(list=[n for n,_ in items], height=1, textAlign=TTkK.LEFT_ALIGN)
-                                value.setCurrentIndex([cs for _,cs in items].index(getval))
-                                value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:flags[v]))
+                                if 'set' in prop:
+                                    value = TTkComboBox(list=[n for n,_ in items], height=1, textAlign=TTkK.LEFT_ALIGN)
+                                    value.setCurrentIndex([cs for _,cs in items].index(getval))
+                                    value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:flags[v]))
+                                else:
+                                    value = TTkLabel(text=items[[cs for _,cs in items].index(getval)][0])
                             elif prop['get']['type'] == bool and 'set' in prop:
                                 # value = TTkComboBox(list=['True','False'])
                                 # value.setCurrentIndex(0 if getval else 1)
