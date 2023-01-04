@@ -26,6 +26,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.frame import TTkFrame
 
 class TTkResizableFrame(TTkFrame):
+    '''TTkResizableFrame'''
     __slots__ = ('_mouseDelta', '_resizable')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)

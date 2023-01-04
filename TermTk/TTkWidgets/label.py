@@ -28,6 +28,7 @@ from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkLabel(TTkWidget):
+    '''TTkLabel'''
     __slots__ = ('_text','_color')
     def __init__(self, *args, **kwargs):
         self._color = kwargs.get('color', TTkColor.RST )
@@ -42,18 +43,22 @@ class TTkLabel(TTkWidget):
         self._textUpdated()
 
     def color(self):
+        '''color'''
         return self._color
 
     def setColor(self, color):
+        '''setColor'''
         if self._color != color:
             self._color = color
             self.update()
 
     def text(self):
+        '''text'''
         return self._text
 
     @pyTTkSlot(str)
     def setText(self, text):
+        '''setText'''
         if self._text != text:
             if issubclass(type(text), TTkString):
                 self._text  = text

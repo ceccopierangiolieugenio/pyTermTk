@@ -27,6 +27,7 @@ from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.frame import *
 
 class TTkSplitter(TTkFrame):
+    '''TTkSplitter'''
     __slots__ = (
         '_splitterInitialized', '_orientation',
         '_separators', '_separatorsRef', '_sizeRef', '_initSizes',
@@ -42,7 +43,6 @@ class TTkSplitter(TTkFrame):
         self._separatorSelected = None
         self._orientation = TTkK.HORIZONTAL
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkSpacer')
         self._orientation = kwargs.get('orientation', TTkK.HORIZONTAL)
         self.setBorder(kwargs.get('border' , False))
         self.setFocusPolicy(TTkK.ClickFocus)
@@ -60,30 +60,37 @@ class TTkSplitter(TTkFrame):
         self.setLayout(_SplitterLayout())
 
     def orientation(self):
+        '''orientation'''
         return self._orientation
 
     def count(self):
+        '''count'''
         return len(self._items)
 
     def indexOf(self, widget):
+        '''indexOf'''
         return self._items.index(widget)
 
     def widget(self, index):
+        '''widget'''
         return self._items[index]
 
     def replaceItem(self, index, item):
+        '''replaceItem'''
         TTkLayout.removeItem(self.layout(), self._items[index])
         TTkLayout.insertItem(self.layout(), index, item)
         self._items[index] = item
         self._updateGeometries()
 
     def replaceWidget(self, index, widget):
+        '''replaceWidget'''
         TTkLayout.removeWidget(self.layout(), self._items[index])
         TTkLayout.insertWidget(self.layout(), index, widget)
         self._items[index] = widget
         self._updateGeometries()
 
     def removeItem(self, item):
+        '''removeItem'''
         index = self.indexOf(item)
         self._items.pop(index)
         self._initSizes.pop(index)
@@ -93,6 +100,7 @@ class TTkSplitter(TTkFrame):
         self._updateGeometries()
 
     def removeWidget(self, widget):
+        '''removeWidget'''
         index = self.indexOf(widget)
         self._items.pop(index)
         self._initSizes.pop(index)
@@ -102,16 +110,20 @@ class TTkSplitter(TTkFrame):
         self._updateGeometries()
 
     def addItem(self, item, size=None):
+        '''addItem'''
         self.insertItem(len(self._items), item, size)
 
     def insertItem(self, index, item, size=None):
+        '''insertItem'''
         TTkLayout.insertItem(self.layout(), index, item)
         self._insertWidgetItem(index, item, size)
 
     def addWidget(self, widget, size=None):
+        '''addWidget'''
         self.insertWidget(len(self._items), widget, size)
 
     def insertWidget(self, index, widget, size=None):
+        '''insertWidget'''
         TTkLayout.insertWidget(self.layout(), index, widget)
         self._insertWidgetItem(index, widget, size)
 
@@ -137,6 +149,7 @@ class TTkSplitter(TTkFrame):
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def setSizes(self, sizes):
+        '''setSizes'''
         s = 0
         sizes=sizes[:len(self._separators)]
         for i, l in enumerate(sizes):

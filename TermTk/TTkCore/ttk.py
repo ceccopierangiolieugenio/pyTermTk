@@ -48,7 +48,7 @@ class TTk(TTkWidget):
         __slots__ = ('_cursor','_color')
         def __init__(self, input):
             super().__init__()
-            self._name = 'mouseCursor'
+            self._name = 'MouseCursor'
             self._cursor = '✠'
             self._color = TTkColor.RST
             self.resize(1,1)
@@ -85,8 +85,7 @@ class TTk(TTkWidget):
         '_lastMultiTap')
 
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTk' )
+        super().__init__(*args, **kwargs)
         self._input = TTkInput()
         self._input.inputEvent.connect(self._processInput)
         self._title = kwargs.get('title','TermTk')

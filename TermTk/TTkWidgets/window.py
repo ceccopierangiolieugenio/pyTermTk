@@ -40,6 +40,7 @@ class _MinimizedButton(TTkButton):
         self.clicked.connect(_cb)
 
 class TTkWindow(TTkResizableFrame):
+    '''TTkWindow'''
     __slots__ = (
             '_title', '_mouseDelta', '_draggable',
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
@@ -121,9 +122,11 @@ class TTkWindow(TTkResizableFrame):
         self.hide()
 
     def windowFlag(self):
+        '''windowFlag'''
         return self._flags
 
     def setWindowFlag(self, flag):
+        '''setWindowFlag'''
         if self._flags == flag: return
         self._flags = flag
         self._btnClose.setVisible( bool(flag & TTkK.WindowFlag.WindowCloseButtonHint))

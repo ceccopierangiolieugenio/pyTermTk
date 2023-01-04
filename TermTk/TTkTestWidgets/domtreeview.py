@@ -180,8 +180,7 @@ class TTkDomTreeView(TTkWidget):
         lox, loy = layout.offset()
         lx,ly,lw,lh = lx+lox, ly+loy, lw-lox, lh-loy
         # opt of bounds
-        if x<lx or x>=lx+lw or y<ly or y>=lh+ly:
-            return False
+        if x<lx or x>=lx+lw or y<ly or y>=lh+ly: return None
         x-=lx
         y-=ly
         for item in reversed(layout.zSortedItems):
@@ -199,7 +198,7 @@ class TTkDomTreeView(TTkWidget):
 
             elif item.layoutItemType == TTkK.LayoutItem:
                 levt = evt.clone(pos=(x, y))
-                if (wid:=TTkDomTreeView._findWidget(levt, item)) is not None:
+                if (wid:=TTkDomTreeView._findWidget(levt, item)):
                     return wid
         return layout.parentWidget()
 
@@ -207,6 +206,8 @@ class TTkDomTreeView(TTkWidget):
     def _processInput(self, kevt, mevt):
         TTkLog.debug(f"{kevt} {mevt}")
         if mevt.evt == TTkK.Press:
+            # TTkHelper._rootWidget.setEnabled(True)
+            # TTkHelper._rootWidget._input.inputEvent.connect(TTkHelper._rootWidget._processInput)
             TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
             widget = TTkDomTreeView._findWidget(mevt,TTkHelper._rootWidget.rootLayout())
             TTkLog.debug(f"{widget=}")
@@ -219,6 +220,8 @@ class TTkDomTreeView(TTkWidget):
 
     @pyTTkSlot()
     def _btnPickCb(self):
+        # TTkHelper._rootWidget.setEnabled(True)
+        # TTkHelper._rootWidget._input.inputEvent.disconnect(TTkHelper._rootWidget._processInput)
         TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
 
     @pyTTkSlot()
@@ -272,7 +275,7 @@ class TTkDomTreeView(TTkWidget):
                             elif prop['get']['type'] == 'singleflag' and 'set' in prop:
                                 flags = prop['get']['flags']
                                 items = [(k,v) for k,v in flags.items()]
-                                value = TTkComboBox(list=[n for n,_ in items], height=1)
+                                value = TTkComboBox(list=[n for n,_ in items], height=1, textAlign=TTkK.LEFT_ALIGN)
                                 value.setCurrentIndex([cs for _,cs in items].index(getval))
                                 value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:flags[v]))
                             elif prop['get']['type'] == bool and 'set' in prop:
@@ -320,9 +323,10 @@ class TTkDomTreeView(TTkWidget):
 
             for c in widget.rootLayout().children():
                 if c == widget.layout(): continue
-                top.addChild(tc:=_TTkDomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
-                for cc in c.children():
-                    tc.addChild(TTkDomTreeView._getDomTreeItem(cc,widSelected))
+                if c.layoutItemType == TTkK.LayoutItem:
+                    top.addChild(tc:=_TTkDomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
+                    for cc in c.children():
+                        tc.addChild(TTkDomTreeView._getDomTreeItem(cc,widSelected))
             return top
 
         if layoutItem.layoutItemType == TTkK.LayoutItem:

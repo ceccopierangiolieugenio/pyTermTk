@@ -68,6 +68,8 @@ class TTkLookAndFeelPBar(TTkLookAndFeel):
         full blocks ^^^^^^^^
 '''
 class TTkProgressBar(TTkWidget):
+    '''TTkProgressBar'''
+
     __slots__ = (
         '_value', '_minimum', '_maximum',
         # Signals
@@ -83,10 +85,12 @@ class TTkProgressBar(TTkWidget):
         self.setMinimumSize(3, 1)
 
     def value(self):
+        '''value'''
         return self._value
 
     @pyTTkSlot(float)
     def setValue(self, new_value):
+        '''setValue'''
         new_value = min(max(float(new_value), self._value_min), self._value_max)
         if new_value == self._value:
             return
@@ -95,9 +99,11 @@ class TTkProgressBar(TTkWidget):
         self.update()
 
     def minimum(self):
+        '''minimum'''
         return self._value_min
 
     def setMinimum(self, new_value):
+        '''setMinimum'''
         if not math.isfinite(new_value):
             raise ValueError(f'minimum must be finite, but value was {new_value}')
         if not new_value < self._value_max:
@@ -109,9 +115,11 @@ class TTkProgressBar(TTkWidget):
             self.setValue(self._value_min)
 
     def maximum(self):
+        '''maximum'''
         return self._value_max
 
     def setMaximum(self, new_value):
+        '''setMaximum'''
         if not math.isfinite(new_value):
             raise ValueError(f'maximum must be finite, but value was {new_value}')
         if not new_value > self._value_min:
@@ -123,6 +131,7 @@ class TTkProgressBar(TTkWidget):
             self.setValue(self._value_max)
 
     def setMinimumMaximum(self, new_min, new_max):
+        '''setMinimumMaximum'''
         if not math.isfinite(new_min) or not math.isfinite(new_max):
             raise ValueError(
                 f'minimum and maximum must be finite, but '
@@ -136,9 +145,11 @@ class TTkProgressBar(TTkWidget):
             self.setValue(self._value) # setValue takes care for min/max-constraint
 
     def textWidth(self):
+        '''textWidth'''
         return self._textWidth
 
     def setTextWidth(self, new_width):
+        '''setTextWidth'''
         self._textWidth = max(0, new_width)
 
     def paintEvent(self):

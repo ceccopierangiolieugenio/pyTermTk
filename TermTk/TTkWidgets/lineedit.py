@@ -39,6 +39,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
             <-->           Offset
 '''
 class TTkLineEdit(TTkWidget):
+    '''TTkLineEdit'''
     __slots__ = (
         '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo', '_color',
         # Signals
@@ -65,6 +66,7 @@ class TTkLineEdit(TTkWidget):
 
     @pyTTkSlot(str)
     def setText(self, text, cursorPos=0x1000):
+        '''setText'''
         if text != self._text:
             self.textChanged.emit(text)
             self._text = TTkString(text)
@@ -72,6 +74,7 @@ class TTkLineEdit(TTkWidget):
             self._pushCursor()
 
     def text(self):
+        '''text'''
         return self._text
 
     def _pushCursor(self):

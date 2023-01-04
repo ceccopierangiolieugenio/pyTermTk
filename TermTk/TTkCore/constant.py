@@ -104,13 +104,22 @@ class TTkConstant:
     Checked          = CheckState.Checked
 
     class InsertPolicy(int):
-        NoInsert               = 0x00   # The string will not be inserted into the combobox.
-        InsertAtTop            = 0x01   # The string will be inserted as the first item in the combobox.
-        # InsertAtCurrent      = 0x02   # The current item will be replaced by the string.
-        InsertAtBottom         = 0x03   # The string will be inserted after the last item in the combobox.
-        # InsertAfterCurrent   = 0x04   # The string is inserted after the current item in the combobox.
-        # InsertBeforeCurrent  = 0x05   # The string is inserted before the current item in the combobox.
-        # InsertAlphabetically = 0x06   # The string is inserted in the alphabetic order in the combobox.
+        '''Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.
+        '''
+        NoInsert               = 0x00
+        '''The string will not be inserted into the combobox.'''
+        InsertAtTop            = 0x01
+        '''The string will be inserted as the first item in the combobox.'''
+        # InsertAtCurrent      = 0x02
+        # '''The current item will be replaced by the string.'''
+        InsertAtBottom         = 0x03
+        '''The string will be inserted after the last item in the combobox.'''
+        # InsertAfterCurrent   = 0x04
+        # '''The string is inserted after the current item in the combobox.'''
+        # InsertBeforeCurrent  = 0x05
+        # '''The string is inserted before the current item in the combobox.'''
+        # InsertAlphabetically = 0x06
+        # '''The string is inserted in the alphabetic order in the combobox.'''
 
     class ChildIndicatorPolicy(int):
         ShowIndicator                  = 0x00 #The controls for expanding and collapsing will be shown for this item even if there are no children.
@@ -232,7 +241,7 @@ class TTkConstant:
 
     # Alignment
     class Alignment(int):
-        ''' This class type is used to describe alignment.
+        ''' This type is used to describe alignment.
 
         .. autosummary::
           NONE

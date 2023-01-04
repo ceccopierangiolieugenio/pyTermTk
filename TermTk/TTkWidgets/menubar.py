@@ -36,7 +36,6 @@ class _TTkMenuListWidget(TTkListWidget):
     __slots__ = ('_previous')
     def __init__(self, *args, **kwargs):
         TTkListWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkMenuListWidget' )
         self._previous = kwargs.get('previous',TTkHelper.getFocus())
 
     def keyEvent(self, evt):
@@ -58,17 +57,16 @@ class _TTkMenuListWidget(TTkListWidget):
 class _TTkMenuSpacer(TTkAbstractListItem):
     def __init__(self, *args, **kwargs):
         TTkAbstractListItem.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkMenuSpacer' )
         self.resize(1,1)
 
     def paintEvent(self):
         self._canvas.drawText(pos=(0,0), text="-"*self.width())
 
 class TTkMenuButton(TTkAbstractListItem):
+    '''TTkMenuButton'''
     __slots__ = ('_border', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked', '_menuOffset')
     def __init__(self, *args, **kwargs):
         TTkAbstractListItem.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkMenuButton' )
         # signals
         self.menuButtonClicked = pyTTkSignal(TTkButton)
         self._color = kwargs.get('color', TTkCfg.theme.menuButtonColor )
@@ -90,12 +88,14 @@ class TTkMenuButton(TTkAbstractListItem):
         self.listItemClicked.connect(self.menuButtonEvent)
 
     def addMenu(self, text):
+        '''addMenu'''
         button = TTkMenuButton(text=text, borderColor=self._borderColor, border=False)
         button.menuButtonClicked.connect(self._menuCallback)
         self._menu.append(button)
         return button
 
     def addSpacer(self):
+        '''addSpacer'''
         self._menu.append(_TTkMenuSpacer())
 
     def setColor(self, color):
@@ -175,6 +175,7 @@ class TTkMenuButton(TTkAbstractListItem):
         self.highlighted=False
 
 class TTkMenuLayout(TTkHBoxLayout):
+    '''TTkMenuLayout'''
     __slots__ = ('_borderColor', '_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
     def __init__(self, *args, **kwargs):
         self._buttons = []
@@ -196,6 +197,7 @@ class TTkMenuLayout(TTkHBoxLayout):
         self.update()
 
     def addMenu(self, text, alignment=TTkK.LEFT_ALIGN):
+        '''addMenu'''
         button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
         if  alignment == TTkK.LEFT_ALIGN:
             self._itemsLeft.addWidget(button)

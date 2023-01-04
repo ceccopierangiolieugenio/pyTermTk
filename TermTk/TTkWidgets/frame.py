@@ -63,7 +63,6 @@ class TTkFrame(TTkWidget):
         self._menubarTop = None
         self._menubarBottom = None
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFrame' )
         self.setBorder(self._border)
 
     def menubarTop(self):
@@ -81,19 +80,23 @@ class TTkFrame(TTkWidget):
         super().resizeEvent(w,h)
 
     def title(self):
+        '''title'''
         return self._title
 
     def setTitle(self, title):
+        '''setTitle'''
         self._title = title
         self.update()
 
     def setBorder(self, border):
+        '''setBorder'''
         self._border = border
         if border: self.setPadding(1,1,1,1)
         else:      self.setPadding(0,0,0,0)
         self.update()
 
     def border(self):
+        '''border'''
         return self._border
 
     def borderColor(self):

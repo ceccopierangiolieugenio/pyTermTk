@@ -33,6 +33,7 @@ from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class TTkAbstractListItem(TTkLabel):
+    '''TTkAbstractListItem'''
     __slots__ = ('_pressed', '_selected', '_highlighted', 'listItemClicked', '_data')
     def __init__(self, *args, **kwargs):
         TTkLabel.__init__(self, *args, **kwargs)
@@ -56,9 +57,11 @@ class TTkAbstractListItem(TTkLabel):
             self.setColor(TTkCfg.theme.listColor)
 
     def data(self):
+        '''data'''
         return self._data
 
     def setData(self, data):
+        '''setData'''
         if self._data != data:
             self._data = data
             self.update()
@@ -100,6 +103,7 @@ class TTkAbstractListItem(TTkLabel):
 
 
 class TTkListWidget(TTkAbstractScrollView):
+    '''TTkListWidget'''
     __slots__ = ('itemClicked', 'textClicked', '_color', '_selectedColor', '_selectedItems', '_selectionMode', '_highlighted', '_items')
     def __init__(self, *args, **kwargs):
         # Default Class Specific Values
@@ -114,7 +118,6 @@ class TTkListWidget(TTkAbstractScrollView):
         self.textClicked = pyTTkSignal(str)
         # Init Super
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkListWidget' )
         self.viewChanged.connect(self._viewChangedHandler)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
@@ -148,15 +151,19 @@ class TTkListWidget(TTkAbstractScrollView):
         self.textClicked.emit(label.text())
 
     def setSelectionMode(self, mode):
+        '''setSelectionMode'''
         self._selectionMode = mode
 
     def selectedItems(self):
+        '''selectedItems'''
         return self._selectedItems
 
     def selectedLabels(self):
+        '''selectedLabels'''
         return [i.text() for i in self._selectedItems]
 
     def items(self):
+        '''items'''
         return self._items
 
     def resizeEvent(self, w, h):
@@ -177,6 +184,7 @@ class TTkListWidget(TTkAbstractScrollView):
         return self.size()
 
     def addItem(self, item, data=None):
+        '''addItem'''
         self.addItemAt(item, len(self._items), data)
 
     def _placeItems(self):
@@ -188,6 +196,7 @@ class TTkListWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
 
     def addItemAt(self, item, pos, data=None):
+        '''addItemAt'''
         if isinstance(item, str) or isinstance(item, TTkString):
             #label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
             label = TTkAbstractListItem(text=item, data=data)
@@ -199,15 +208,18 @@ class TTkListWidget(TTkAbstractScrollView):
         self._placeItems()
 
     def indexOf(self, item):
+        '''indexOf'''
         for i, it in enumerate(self._items):
             if it == item:
                 return i
         return -1
 
     def itemAt(self, pos):
+        '''itemAt'''
         return self._items[pos]
 
     def moveItem(self, fr, to):
+        '''moveItem'''
         fr = max(min(fr,len(self._items)-1),0)
         to = max(min(to,len(self._items)-1),0)
         # Swap
@@ -215,6 +227,7 @@ class TTkListWidget(TTkAbstractScrollView):
         self._placeItems()
 
     def removeItem(self, item):
+        '''removeItem'''
         self.removeWidget(item)
         self._items.remove(item)
         if item in self._selectedItems:
@@ -222,14 +235,17 @@ class TTkListWidget(TTkAbstractScrollView):
         self._placeItems()
 
     def removeAt(self, pos):
+        '''removeAt'''
         self.removeItem(self._items[pos])
 
     def setCurrentRow(self, row):
+        '''setCurrentRow'''
         if row<len(self._items):
             item = self._items[row]
             self.setCurrentItem(item)
 
     def setCurrentItem(self, item):
+        '''setCurrentItem'''
         item.listItemClicked.emit(item)
 
     def _moveToHighlighted(self):
