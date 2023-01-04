@@ -98,6 +98,24 @@ class TTkCheckbox(TTkWidget):
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
+    def text(self):
+        ''' This property holds the text shown on the checkhox
+
+        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
+        return self._text
+
+    def setText(self, text):
+        ''' This property holds the text shown on the checkhox
+
+        :param text:
+        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
+        if self._text == text: return
+        self._text = TTkString(text)
+        self.setMinimumSize(3 + len(self._text), 1)
+        self.update()
+
     def isTristate(self):
         ''' This property holds whether the checkbox is a tri-state checkbox
 
@@ -116,7 +134,7 @@ class TTkCheckbox(TTkWidget):
         self.update()
 
     def isChecked(self):
-        ''' This property holds whether the button is checked
+        ''' This property holds whether the checkbox is checked
 
         :return: bool - True if :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.Checked` or :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.PartiallyChecked`
         '''
@@ -129,7 +147,6 @@ class TTkCheckbox(TTkWidget):
         :type tate: bool
         '''
         self.setCheckState(TTkK.Checked if state else TTkK.Unchecked)
-
 
     def checkState(self):
         ''' Retrieve the state of the checkbox
@@ -191,6 +208,10 @@ class TTkCheckbox(TTkWidget):
         return False
 
     _ttkProperties = {
+        'Text' : {
+                'init': {'name':'text', 'type':TTkString } ,
+                'get':  {'cb':text,     'type':TTkString } ,
+                'set':  {'cb':setText,  'type':TTkString } },
         'Tristate' : {
                 'init': {'name':'tristate', 'type':bool } ,
                 'get':  {'cb':isTristate,   'type':bool } ,
