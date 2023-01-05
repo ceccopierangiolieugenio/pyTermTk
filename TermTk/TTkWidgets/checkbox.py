@@ -166,7 +166,11 @@ class TTkCheckbox(TTkWidget):
         self.update()
 
     def paintEvent(self):
-        if self.hasFocus():
+        if not self.isEnabled():
+            textColor   = TTkCfg.theme.checkboxTextColor
+            borderColor = TTkCfg.theme.textColorDisabled
+            xColor = TTkCfg.theme.textColorDisabled
+        elif self.hasFocus():
             borderColor = TTkCfg.theme.checkboxBorderColorFocus
             textColor   = TTkCfg.theme.checkboxTextColorFocus
             xColor      = TTkCfg.theme.checkboxContentColorFocus
