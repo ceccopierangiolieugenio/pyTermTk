@@ -105,8 +105,8 @@ def demoShowcase(root=None, border=True):
     logInput = ttk.TTkKeyPressView(visible=False, maxHeight=3, minHeight=3)
     root.layout().addWidget(logInput, 1, 0)
 
-    domTree = ttk.TTkFrame(title="Dom Inspector", border=True, visible=False, layout=ttk.TTkGridLayout())
-    ttk.TTkDomTreeView(parent=domTree)
+    domTree = ttk.TTkFrame(title="Tom Inspector", border=True, visible=False, layout=ttk.TTkGridLayout())
+    ttk.TTkTomInspector(parent=domTree)
     root.layout().addWidget(domTree, 0, 1)
 
     leftFrame   = ttk.TTkFrame(parent=splitter, layout=ttk.TTkGridLayout(), border=False)
@@ -115,8 +115,8 @@ def demoShowcase(root=None, border=True):
     listMenu = ttk.TTkList(maxWidth=30, minWidth=10)
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
-    domTreeToggler = ttk.TTkCheckbox(text='Dom Tree')
-    domTreeToggler.stateChanged.connect(lambda x: domTree.setVisible(x==ttk.TTkK.Checked))
+    tomTreeToggler = ttk.TTkCheckbox(text='Tom View')
+    tomTreeToggler.stateChanged.connect(lambda x: domTree.setVisible(x==ttk.TTkK.Checked))
     mouseToggler = ttk.TTkCheckbox(text='Mouse 🐀', checked=True)
     mouseToggler.stateChanged.connect(lambda x: ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON if x==ttk.TTkK.Checked else ttk.TTkTerm.Mouse.OFF))
     quitButton = ttk.TTkButton(text="Quit", border=True, maxHeight=3)
@@ -125,7 +125,7 @@ def demoShowcase(root=None, border=True):
     leftFrame.layout().addWidget(themesFrame,     0, 0)
     leftFrame.layout().addWidget(listMenu,        1, 0)
     leftFrame.layout().addWidget(mouseToggler,    2, 0)
-    leftFrame.layout().addWidget(domTreeToggler,  3, 0)
+    leftFrame.layout().addWidget(tomTreeToggler,  3, 0)
     leftFrame.layout().addWidget(logInputToggler, 4, 0)
     leftFrame.layout().addWidget(quitButton,      5, 0)
 

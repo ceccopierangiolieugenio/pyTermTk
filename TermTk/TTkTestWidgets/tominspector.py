@@ -142,7 +142,7 @@ class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     def domWidget(self):
         return self._domWidget
 
-class TTkDomTreeView(TTkWidget):
+class TTkTomInspector(TTkWidget):
     __slots__ = ('_domTree','_detail','_splitter')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -152,7 +152,7 @@ class TTkDomTreeView(TTkWidget):
 
         self._domTree = TTkTree()
         self._domTree.setHeaderLabels(["Object", "Class", "Visibility", "Layout"])
-        self._domTree.addTopLevelItem(TTkDomTreeView._getDomTreeItem(TTkHelper._rootWidget._widgetItem))
+        self._domTree.addTopLevelItem(TTkTomInspector._getTomTreeItem(TTkHelper._rootWidget._widgetItem))
 
         self._detail = TTkFrame()
 
@@ -193,12 +193,12 @@ class TTkDomTreeView(TTkWidget):
                     # Skip the mouse event if outside this widget
                     if wx <= x < wx+ww and wy <= y < wy+wh:
                         wevt = evt.clone(pos=(x-wx, y-wy))
-                        return TTkDomTreeView._findWidget(wevt,widget.rootLayout())
+                        return TTkTomInspector._findWidget(wevt,widget.rootLayout())
                     continue
 
             elif item.layoutItemType == TTkK.LayoutItem:
                 levt = evt.clone(pos=(x, y))
-                if (wid:=TTkDomTreeView._findWidget(levt, item)):
+                if (wid:=TTkTomInspector._findWidget(levt, item)):
                     return wid
         return layout.parentWidget()
 
@@ -209,7 +209,7 @@ class TTkDomTreeView(TTkWidget):
             # TTkHelper._rootWidget.setEnabled(True)
             # TTkHelper._rootWidget._input.inputEvent.connect(TTkHelper._rootWidget._processInput)
             TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
-            widget = TTkDomTreeView._findWidget(mevt,TTkHelper._rootWidget.rootLayout())
+            widget = TTkTomInspector._findWidget(mevt,TTkHelper._rootWidget.rootLayout())
             TTkLog.debug(f"{widget=}")
             if widget:
                 self._makeDetail(widget)
@@ -227,7 +227,7 @@ class TTkDomTreeView(TTkWidget):
     @pyTTkSlot()
     def _refresh(self, widget=None):
         self._domTree.clear()
-        self._domTree.addTopLevelItem(TTkDomTreeView._getDomTreeItem(TTkHelper._rootWidget._widgetItem, widget))
+        self._domTree.addTopLevelItem(TTkTomInspector._getTomTreeItem(TTkHelper._rootWidget._widgetItem, widget))
 
     @pyTTkSlot(_TTkDomTreeWidgetItem, int)
     def _setDetail(self, widget, _):
@@ -285,9 +285,6 @@ class TTkDomTreeView(TTkWidget):
                                 else:
                                     value = TTkLabel(text=items[[cs for _,cs in items].index(getval)][0])
                             elif prop['get']['type'] == bool and 'set' in prop:
-                                # value = TTkComboBox(list=['True','False'])
-                                # value.setCurrentIndex(0 if getval else 1)
-                                # value.currentIndexChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==0))
                                 value = TTkCheckbox(text=f" {p}", checked=getval, height=1)
                                 value.stateChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==TTkK.Checked))
                             elif prop['get']['type'] == int and 'set' in prop:
@@ -314,7 +311,7 @@ class TTkDomTreeView(TTkWidget):
 
 
     @staticmethod
-    def _getDomTreeItem(layoutItem, widSelected=None):
+    def _getTomTreeItem(layoutItem, widSelected=None):
         if layoutItem.layoutItemType == TTkK.WidgetItem:
             widget = layoutItem.widget()
             expanded = TTkHelper.isParent(widSelected,widget) if widSelected else False
@@ -325,20 +322,20 @@ class TTkDomTreeView(TTkWidget):
                         domWidget=widget,
                         expanded=expanded)
             for c in widget.layout().children():
-                top.addChild(TTkDomTreeView._getDomTreeItem(c,widSelected))
+                top.addChild(TTkTomInspector._getTomTreeItem(c,widSelected))
 
             for c in widget.rootLayout().children():
                 if c == widget.layout(): continue
                 if c.layoutItemType == TTkK.LayoutItem:
                     top.addChild(tc:=_TTkDomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
                     for cc in c.children():
-                        tc.addChild(TTkDomTreeView._getDomTreeItem(cc,widSelected))
+                        tc.addChild(TTkTomInspector._getTomTreeItem(cc,widSelected))
             return top
 
         if layoutItem.layoutItemType == TTkK.LayoutItem:
             top = _TTkDomTreeWidgetItem(["layout", layoutItem.__class__.__name__,"",layoutItem.__class__.__name__])
             for c in layoutItem.children():
-                top.addChild(TTkDomTreeView._getDomTreeItem(c,widSelected))
+                top.addChild(TTkTomInspector._getTomTreeItem(c,widSelected))
             return top
 
         return _TTkDomTreeWidgetItem(["ERROR!!!", "None"])

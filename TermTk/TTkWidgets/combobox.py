@@ -124,9 +124,12 @@ class TTkComboBox(TTkWidget):
             self._textAlign = align
             self.update()
 
-    def addItem(self,item):
-        '''addItem'''
-        self._list.append(item)
+    def addItem(self, text, userData=None):
+        '''addItem
+
+        Adds an item to the combobox with the given text, and containing the specified userData (stored in the Qt::UserRole). The item is appended to the list of existing items.
+        '''
+        self._list.append(text)
         self.update()
 
     def addItems(self,items):

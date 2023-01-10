@@ -3,4 +3,4 @@ from .testwidget import TTkTestWidget
 from .testwidgetsizes import TTkTestWidgetSizes
 from .testabstractscroll import TTkTestAbstractScrollWidget
 from .keypressview import TTkKeyPressView
-from .domtreeview import TTkDomTreeView
+from .tominspector import TTkTomInspector
