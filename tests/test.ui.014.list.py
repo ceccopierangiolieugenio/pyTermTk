@@ -54,12 +54,12 @@ def demoList(root= None):
     @ttk.pyTTkSlot(str)
     def _listCallback1(label):
         ttk.TTkLog.info(f"Clicked label1: {label}")
-        label1.text = f"[ list1 ] clicked {label}"
+        label1.setText(f"[ list1 ] clicked {label}")
 
     @ttk.pyTTkSlot(str)
     def _listCallback2(label):
         ttk.TTkLog.info(f"Clicked label2: {label} - selected: {listWidgetMulti.selectedLabels()}")
-        label2.text = f"[ list2 ] {listWidgetMulti.selectedLabels()}"
+        label2.setText(f"[ list2 ] {listWidgetMulti.selectedLabels()}")
 
     # Connect the signals to the 2 slots defines
     listWidgetSingle.textClicked.connect(_listCallback1)

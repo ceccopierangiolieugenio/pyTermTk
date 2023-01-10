@@ -35,6 +35,30 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class TTkComboBox(TTkWidget):
+    ''' TTkComboBox:
+
+    Editable = False
+    ::
+
+         [ - select -  ^]
+
+    Editable = True
+    ::
+
+         [ Text       [^]
+
+    :param list: the list of the items selectable by this combobox, defaults to "[]"
+    :type list: list(str), optional
+
+    :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy.InsertAtBottom`
+    :type insertPolicy: :class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy`, optional
+
+    :param textAlign: This enum type is used to define the text alignment, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN`
+    :tye textAlign: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
+
+    :param editable: This property holds whether the combo box can be edited by the user, defaults to False
+    :type editable: bool, optional
+    '''
     __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
@@ -83,15 +107,38 @@ class TTkComboBox(TTkWidget):
         self.currentTextChanged.emit(text)
         self.editTextChanged.emit(text)
 
-    def addItem(self,item):
-        self._list.append(item)
+    def textAlign(self):
+        '''his property holds the displayed text alignment
+
+        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+        '''
+        return self._textAlign
+
+    def setTextAlign(self, align):
+        '''This property holds the displayed text alignment
+
+        :param align:
+        :type align: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+        '''
+        if self._textAlign != align:
+            self._textAlign = align
+            self.update()
+
+    def addItem(self, text, userData=None):
+        '''addItem
+
+        Adds an item to the combobox with the given text, and containing the specified userData (stored in the Qt::UserRole). The item is appended to the list of existing items.
+        '''
+        self._list.append(text)
         self.update()
 
     def addItems(self,items):
+        '''addItems'''
         for item in items:
             self.addItem(item)
 
     def clear(self):
+        '''clear'''
         self._lineEdit.setText("")
         self._list = []
         self._id = -1
@@ -120,7 +167,7 @@ class TTkComboBox(TTkWidget):
             text = self._list[self._id]
         w = self.width()
 
-        self._canvas.drawTTkString(pos=(1,0), text=TTkString(text), width=w-2, alignment=self._textAlign, color=color)
+        self._canvas.drawTTkString(pos=(1,0), text=TTkString(text), width=w-3, alignment=self._textAlign, color=color)
         self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
         if self._editable:
             self._canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
@@ -128,6 +175,7 @@ class TTkComboBox(TTkWidget):
             self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
 
     def currentText(self):
+        '''currentText'''
         if self._editable:
             return self._lineEdit.text()
         elif self._id >= 0:
@@ -135,10 +183,12 @@ class TTkComboBox(TTkWidget):
         return ""
 
     def currentIndex(self):
+        '''currentIndex'''
         return self._id
 
     @pyTTkSlot(int)
     def setCurrentIndex(self, index):
+        '''setCurrentIndex'''
         if index > len(self._list)-1: return
         self._id = index
         if self._editable:
@@ -150,6 +200,7 @@ class TTkComboBox(TTkWidget):
 
     @pyTTkSlot(str)
     def setCurrentText(self, text):
+        '''setCurrentText'''
         if self._editable:
             self.setEditText(text)
         else:
@@ -158,19 +209,24 @@ class TTkComboBox(TTkWidget):
 
     @pyTTkSlot(str)
     def setEditText(self, text):
+        '''setEditText'''
         if self._editable:
             self._lineEdit.setText(text)
 
     def insertPolicy(self):
+        '''insertPolicy'''
         return self._insertPolicy
 
     def setInsertPolicy(self, ip):
+        '''setInsertPolicy'''
         self._insertPolicy = ip
 
     def isEditable(self):
+        '''isEditable'''
         return self._editable
 
     def setEditable(self, editable):
+        '''setEditable'''
         self._editable = editable
         if editable:
             self._lineEdit.show()
@@ -181,7 +237,8 @@ class TTkComboBox(TTkWidget):
 
     @pyTTkSlot(str)
     def _callback(self, label):
-        self._lineEdit.setText(label)
+        if self._editable:
+            self._lineEdit.setText(label)
         self.setCurrentIndex(self._list.index(label))
         TTkHelper.removeOverlayAndChild(self._popupFrame)
         self._popupFrame = None
@@ -221,3 +278,48 @@ class TTkComboBox(TTkWidget):
     def focusInEvent(self):
         if self._editable:
             self._lineEdit.setFocus()
+
+    _ttkProperties = {
+        'Editable' : {
+                'init': {'name':'editable', 'type':bool } ,
+                'get':  {'cb':isEditable,   'type':bool } ,
+                'set':  {'cb':setEditable,  'type':bool } },
+        'Text Align.' : {
+                'init': {'name':'textAlign', 'type':'singleflag',
+                    'flags': {
+                        'None'   : TTkK.Alignment.NONE,
+                        'Left'   : TTkK.Alignment.LEFT_ALIGN,
+                        'Right'  : TTkK.Alignment.RIGHT_ALIGN,
+                        'Center' : TTkK.Alignment.CENTER_ALIGN,
+                        'Justify': TTkK.Alignment.JUSTIFY } },
+                'get':  {'cb':textAlign,    'type':'singleflag',
+                    'flags': {
+                        'None'   : TTkK.Alignment.NONE,
+                        'Left'   : TTkK.Alignment.LEFT_ALIGN,
+                        'Right'  : TTkK.Alignment.RIGHT_ALIGN,
+                        'Center' : TTkK.Alignment.CENTER_ALIGN,
+                        'Justify': TTkK.Alignment.JUSTIFY } } ,
+                'set':  {'cb':setTextAlign, 'type':'singleflag',
+                    'flags': {
+                        'None'   : TTkK.Alignment.NONE,
+                        'Left'   : TTkK.Alignment.LEFT_ALIGN,
+                        'Right'  : TTkK.Alignment.RIGHT_ALIGN,
+                        'Center' : TTkK.Alignment.CENTER_ALIGN,
+                        'Justify': TTkK.Alignment.JUSTIFY } } },
+        'Insert Policy' : {
+                'init': {'name':'insertPolicy', 'type':'singleflag',
+                    'flags': {
+                        'No Insert'   : TTkK.InsertPolicy.NoInsert,
+                        'At Top'      : TTkK.InsertPolicy.InsertAtTop,
+                        'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } },
+                'get':  {'cb':insertPolicy,    'type':'singleflag',
+                    'flags': {
+                        'No Insert'   : TTkK.InsertPolicy.NoInsert,
+                        'At Top'      : TTkK.InsertPolicy.InsertAtTop,
+                        'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } },
+                'set':  {'cb':setInsertPolicy, 'type':'singleflag',
+                    'flags': {
+                        'No Insert'   : TTkK.InsertPolicy.NoInsert,
+                        'At Top'      : TTkK.InsertPolicy.InsertAtTop,
+                        'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } } },
+    }

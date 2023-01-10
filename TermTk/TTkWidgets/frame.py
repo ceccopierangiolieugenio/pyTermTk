@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.menubar import TTkMenuLayout
 
@@ -56,13 +57,12 @@ class TTkFrame(TTkWidget):
         self._borderColor = kwargs.get('borderColor', TTkCfg.theme.frameBorderColor )
         self._titleColor = kwargs.get('titleColor', TTkCfg.theme.frameTitleColor )
         self._titleAlign = kwargs.get('titleAlign' , TTkK.CENTER_ALIGN )
-        self._title = kwargs.get('title' , '' )
+        self._title = TTkString(kwargs.get('title' , '' ))
         self._border = kwargs.get('border', True )
         self._menubarTopPosition = 0
         self._menubarTop = None
         self._menubarBottom = None
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFrame' )
         self.setBorder(self._border)
 
     def menubarTop(self):
@@ -80,19 +80,23 @@ class TTkFrame(TTkWidget):
         super().resizeEvent(w,h)
 
     def title(self):
+        '''title'''
         return self._title
 
     def setTitle(self, title):
+        '''setTitle'''
         self._title = title
         self.update()
 
     def setBorder(self, border):
+        '''setBorder'''
         self._border = border
         if border: self.setPadding(1,1,1,1)
         else:      self.setPadding(0,0,0,0)
         self.update()
 
     def border(self):
+        '''border'''
         return self._border
 
     def borderColor(self):
@@ -105,7 +109,7 @@ class TTkFrame(TTkWidget):
     def paintEvent(self):
         if self._border:
             self._canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=self._borderColor)
-            if self._title != '':
+            if len(self._title) != 0:
                 self._canvas.drawBoxTitle(
                                 pos=(0,0),
                                 size=(self._width,self._height),
@@ -115,3 +119,14 @@ class TTkFrame(TTkWidget):
                                 colorText=self._titleColor)
         elif self._menubarTop:
             self._canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+
+    _ttkProperties = {
+        'Border' : {
+                'init': {'name':'border', 'type':bool },
+                'get':  {'cb':border,     'type':bool } ,
+                'set':  {'cb':setBorder,  'type':bool } },
+        'Title' : {
+                'init': {'name':'title',  'type':TTkString },
+                'get':  {'cb':title,      'type':TTkString } ,
+                'set':  {'cb':setTitle,   'type':TTkString } },
+    }

@@ -31,6 +31,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
     ref: https://doc.qt.io/qt-5/qscrollbar.html
 '''
 class TTkScrollBar(TTkWidget):
+    '''TTkScrollBar'''
     __slots__ = (
         '_orientation',
         '_minimum', '_maximum',
@@ -49,7 +50,6 @@ class TTkScrollBar(TTkWidget):
 
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkScrollBar' )
         # Define Signals
         self.valueChanged = pyTTkSignal(int) #  Value
         self.rangeChanged = pyTTkSignal(int, int) # Min, Max
@@ -185,14 +185,17 @@ class TTkScrollBar(TTkWidget):
 
     @pyTTkSlot(int)
     def setPageStep(self, pageStep):
+        '''setPageStep'''
         self._pagestep = pageStep
 
     @pyTTkSlot(int)
     def setRangeTo(self, max):
+        '''setRangeTo'''
         self.setRange(0,max)
 
     @pyTTkSlot(int, int)
     def setRange(self, min, max):
+        '''setRange'''
         if self._minimum == min and \
            self._maximum == max :
             return
@@ -202,6 +205,7 @@ class TTkScrollBar(TTkWidget):
 
     @pyTTkSlot(int)
     def setValue(self, v):
+        '''setValue'''
         self.value = v
 
     @property

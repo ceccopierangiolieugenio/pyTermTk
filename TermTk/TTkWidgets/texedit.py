@@ -87,6 +87,7 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
                 self._canvas.drawChar(pos=(w-1,y), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
 
 class TTkTextEditView(TTkAbstractScrollView):
+    '''TTkTextEditView'''
     __slots__ = (
             '_textDocument', '_hsize',
             '_textCursor', '_textColor', '_cursorParams',
@@ -529,6 +530,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._pushCursor()
 
 class TTkTextEdit(TTkAbstractScrollArea):
+    '''TTkTextEdit'''
     __slots__ = (
             '_textEditView',
             '_lineNumberView', '_lineNumber',
@@ -545,7 +547,6 @@ class TTkTextEdit(TTkAbstractScrollArea):
         )
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTextEdit' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._textEditView = kwargs.get('textEditView', TTkTextEditView(*args, **kwargs))
         # self.setFocusPolicy(self._textEditView.focusPolicy())

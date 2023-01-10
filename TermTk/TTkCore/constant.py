@@ -34,7 +34,7 @@ class TTkConstant:
     DEP_24: int = 0x18
 
     # Color Type
-    class ColorType:
+    class ColorType(int):
         Foreground = 0x01
         Background = 0x02
         Modifier   = 0x03
@@ -78,7 +78,7 @@ class TTkConstant:
     HORIZONTAL = 0x01
     VERTICAL   = 0x02
 
-    class ScrollBarPolicy:
+    class ScrollBarPolicy(int):
         ScrollBarAsNeeded  =  0x00
         ScrollBarAlwaysOff =  0x01
         ScrollBarAlwaysOn  =  0x02
@@ -87,7 +87,7 @@ class TTkConstant:
     ScrollBarAlwaysOff = ScrollBarPolicy.ScrollBarAlwaysOff
     ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
 
-    class CheckState:
+    class CheckState(int):
         ''' This class type is used to describe the check status.
 
         .. autosummary::
@@ -103,16 +103,25 @@ class TTkConstant:
     PartiallyChecked = CheckState.PartiallyChecked
     Checked          = CheckState.Checked
 
-    class InsertPolicy:
-        NoInsert               = 0x00   # The string will not be inserted into the combobox.
-        InsertAtTop            = 0x01   # The string will be inserted as the first item in the combobox.
-        # InsertAtCurrent      = 0x02   # The current item will be replaced by the string.
-        InsertAtBottom         = 0x03   # The string will be inserted after the last item in the combobox.
-        # InsertAfterCurrent   = 0x04   # The string is inserted after the current item in the combobox.
-        # InsertBeforeCurrent  = 0x05   # The string is inserted before the current item in the combobox.
-        # InsertAlphabetically = 0x06   # The string is inserted in the alphabetic order in the combobox.
+    class InsertPolicy(int):
+        '''Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.
+        '''
+        NoInsert               = 0x00
+        '''The string will not be inserted into the combobox.'''
+        InsertAtTop            = 0x01
+        '''The string will be inserted as the first item in the combobox.'''
+        # InsertAtCurrent      = 0x02
+        # '''The current item will be replaced by the string.'''
+        InsertAtBottom         = 0x03
+        '''The string will be inserted after the last item in the combobox.'''
+        # InsertAfterCurrent   = 0x04
+        # '''The string is inserted after the current item in the combobox.'''
+        # InsertBeforeCurrent  = 0x05
+        # '''The string is inserted before the current item in the combobox.'''
+        # InsertAlphabetically = 0x06
+        # '''The string is inserted in the alphabetic order in the combobox.'''
 
-    class ChildIndicatorPolicy:
+    class ChildIndicatorPolicy(int):
         ShowIndicator                  = 0x00 #The controls for expanding and collapsing will be shown for this item even if there are no children.
         DontShowIndicator              = 0x01 #The controls for expanding and collapsing will never be shown even if there are children. If the node is forced open the user will not be able to expand or collapse the item.
         DontShowIndicatorWhenChildless = 0x02 #The controls for expanding and collapsing will be shown if the item contains children.
@@ -121,7 +130,7 @@ class TTkConstant:
     DontShowIndicator              = ChildIndicatorPolicy.DontShowIndicator
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
-    class SortOrder:
+    class SortOrder(int):
         AscendingOrder  = 0x00
         DescendingOrder = 0x01
 
@@ -137,7 +146,7 @@ class TTkConstant:
     # InsertAlphabetically = InsertPolicy.InsertAlphabetically
 
     # Keys
-    class MouseKey():
+    class MouseKey(int):
         '''Input Mouse Key
 
         Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
@@ -165,7 +174,7 @@ class TTkConstant:
     MiddleButton  = MouseKey.MiddleButton
     Wheel         = MouseKey.Wheel
 
-    class WrapMode():
+    class WrapMode(int):
         '''Those constants describes how text is wrapped in a document.'''
         # NoWrap        = 0x00
         # '''Text is not wrapped at all.'''
@@ -184,7 +193,7 @@ class TTkConstant:
     WrapAnywhere = WrapMode.WrapAnywhere
     WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
 
-    class LineWrapMode():
+    class LineWrapMode(int):
         NoWrap       =  0x00
         WidgetWidth  =  0x01
         FixedWidth   =  0x03
@@ -195,7 +204,7 @@ class TTkConstant:
 
 
     # Events
-    class MouseEvent():
+    class MouseEvent(int):
         '''Input Mouse Event
 
         Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
@@ -231,8 +240,8 @@ class TTkConstant:
     Input_Password  = 0x04
 
     # Alignment
-    class Alignment:
-        ''' This class type is used to describe alignment.
+    class Alignment(int):
+        ''' This type is used to describe alignment.
 
         .. autosummary::
           NONE
@@ -257,7 +266,7 @@ class TTkConstant:
     CENTER_ALIGN = Alignment.CENTER_ALIGN
     JUSTIFY      = Alignment.JUSTIFY
 
-    class FileMode():
+    class FileMode(int):
         AnyFile        = 0 #The name of a file, whether it exists or not.
         # ExistingFile   = 1 #The name of a single existing file.
         Directory      = 2 #The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.
@@ -269,7 +278,7 @@ class TTkConstant:
     # ExistingFiles = FileMode.ExistingFiles
 
     # LayoutItem Types
-    class LayoutItemTypes:
+    class LayoutItemTypes(int):
         '''Types used internally in :mod:`~TermTk.TTkLayouts`'''
         LayoutItem = 0x01
         '''Item Type Layout'''
@@ -280,7 +289,7 @@ class TTkConstant:
     LayoutItem = LayoutItemTypes.LayoutItem
     WidgetItem = LayoutItemTypes.WidgetItem
 
-    class WindowFlag:
+    class WindowFlag(int):
         # FramelessWindowHint         = 0x00000800
         # ''' Produces a borderless window.'''
         # CustomizeWindowHint         = 0x02000000
@@ -308,7 +317,7 @@ class TTkConstant:
         # WindowStaysOnBottomHint     = 0x04000000
         # ''' Informs the window system that the window should stay on bottom of all other windows.'''
 
-    class KeyType():
+    class KeyType(int):
         '''Input Key Types
 
         Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
@@ -322,7 +331,7 @@ class TTkConstant:
     SpecialKey = KeyType.SpecialKey
 
 
-    class KeyModifier():
+    class KeyModifier(int):
         '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
 
         Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`

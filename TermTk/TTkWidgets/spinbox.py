@@ -32,6 +32,7 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
 
 class TTkSpinBox(TTkWidget):
+    '''TTkSpinBox'''
     __slots__= (
         '_lineEdit', '_value', '_maximum', '_minimum',
         '_mouseDelta', '_valueDelta', '_draggable',
@@ -41,7 +42,6 @@ class TTkSpinBox(TTkWidget):
         # Signals
         self.valueChanged=pyTTkSignal(int)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkSpinBox' )
         self._value = kwargs.get("value",0)
         self._maximum = kwargs.get("maximum",99)
         self._minimum = kwargs.get("minimum",0)
@@ -57,10 +57,12 @@ class TTkSpinBox(TTkWidget):
         self._lineEdit.textEdited.connect(self._textEdited)
 
     def value(self):
+        '''value'''
         return self._value
 
     @pyTTkSlot(int)
     def setValue(self, value):
+        '''setValue'''
         value = min(value,self._maximum)
         value = max(value,self._minimum)
         if self._value == value: return

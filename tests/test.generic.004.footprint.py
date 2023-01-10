@@ -22,20 +22,41 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class TData():
-    #__slots__ = ('_data')
-    def __init__(self, *args, **kwargs):
-        self._data  = kwargs.get('data', "" )
+import sys
 
-    def dataUpdated(self, data): pass
+class A():
+    def a(self): print(f"{self=}")
+class B(A): pass
+class C(B): pass
 
-    @property
-    def data(self):
-        return self._data
+class Aa():
+    _euVars = {'aa':1, 'ab':2}
 
-    @data.setter
-    def data(self, data):
-        if self.data != data:
-            self._data = data
-            self.dataUpdated(data)
+class Bb(Aa):
+    _euVars = {'ba':1, 'bb':2}
 
+class Cc(Bb):
+    _euVars = {'ca':1, 'cb':2}
+
+c = C()
+cc = Cc()
+
+print(cc)
+print(cc.__class__.__name__)
+print(Cc.__mro__)
+
+print(f"{sys.getsizeof(c)=}")
+print(f"{sys.getsizeof(cc)=}")
+
+print(f"{sys.getsizeof(A)=}")
+print(f"{sys.getsizeof(B)=}")
+print(f"{sys.getsizeof(C)=}")
+
+print(f"{sys.getsizeof(Aa)=}")
+print(f"{sys.getsizeof(Bb)=}")
+print(f"{sys.getsizeof(Cc)=}")
+
+
+for co in reversed(type(cc).__mro__):
+    if hasattr(co,'_euVars'):
+        print(f"{co} -> {co.__name__} -> {co.__class__} -> {co.__class__.__name__} -> {co._euVars}")

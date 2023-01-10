@@ -22,21 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.color import TTkColor
+class A():
+    _euVars = {'aa':1, 'ab':2}
 
-class TColor():
-    #__slots__ = ('_color')
-    def __init__(self, *args, **kwargs):
-        self._color = kwargs.get('color', TTkColor.RST )
+class B(A):
+    _euVars = {'ba':1, 'bb':2}
 
-    def colorUpdated(self, color): pass
+class C(B):
+    _euVars = {'ca':1, 'cb':2}
 
-    @property
-    def color(self):
-        return self._color
+c = C()
 
-    @color.setter
-    def color(self, color):
-        if self.color != color:
-            self._color = color
-            self.colorUpdated(color)
+print(c)
+print(c.__class__.__name__)
+print(C.__mro__)
+
+for cc in reversed(type(c).__mro__):
+    if hasattr(cc,'_euVars'):
+        print(f"{cc} -> {cc.__name__} -> {cc.__class__} -> {cc.__class__.__name__} -> {cc._euVars}")

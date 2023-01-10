@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkWidgets.widget import *
 
@@ -68,10 +69,9 @@ class TTkRadioButton(TTkWidget):
         # Define Signals
         self.clicked = pyTTkSignal()
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkRadioButton' )
         # self.checked = pyTTkSignal()
         self._checked = kwargs.get('checked', False )
-        self._text = kwargs.get('text', '' )
+        self._text = TTkString(kwargs.get('text', '' ))
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -80,11 +80,62 @@ class TTkRadioButton(TTkWidget):
         else:
             TTkRadioButton._radioLists[self._name].append(self)
 
+    def text(self):
+        ''' This property holds the text shown on the checkhox
+
+        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
+        return self._text
+
+    def setText(self, text):
+        ''' This property holds the text shown on the checkhox
+
+        :param text:
+        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
+        if self._text == text: return
+        self._text = TTkString(text)
+        self.setMinimumSize(3 + len(self._text), 1)
+        self.update()
+
+    def isChecked(self):
+        ''' This property holds whether the radiobutton is checked
+
+        :return: bool - True if :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.Checked` or :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.PartiallyChecked`
+        '''
+        return self._checked
+
+    def setChecked(self, state):
+        ''' Set the check status
+
+        :param state:
+        :type tate: bool
+        '''
+        self.setCheckState(TTkK.Checked if state else TTkK.Unchecked)
+
     def checkState(self):
+        ''' Retrieve the state of the radiobutton
+
+        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
+        '''
         if self._checked:
             return TTkK.Checked
         else:
             return TTkK.Unchecked
+
+    def setCheckState(self, state):
+        ''' Sets the radiobutton's check state.
+
+        :param state: state of the checkbox
+        :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+        '''
+        if not self._checked and state == TTkK.Unchecked: return
+        if self._checked and state != TTkK.Unchecked: return
+        if self._checked and state == TTkK.Unchecked:
+            self._checked = False
+        else:
+            self._checkEvent()
+        self.update()
 
     def paintEvent(self):
         if self.hasFocus():
@@ -102,7 +153,7 @@ class TTkRadioButton(TTkWidget):
         else:
             self._canvas.drawText(pos=(1,0), color=xColor ,text=" ")
 
-    def _pressEvent(self):
+    def _checkEvent(self):
         # Uncheck the radio already checked;
         for radio in TTkRadioButton._radioLists[self._name]:
             if self != radio != None:
@@ -110,6 +161,9 @@ class TTkRadioButton(TTkWidget):
                     radio._checked = False
                     radio.update()
         self._checked = True
+
+    def _pressEvent(self):
+        self._checkEvent()
         self.clicked.emit()
         self.update()
 
@@ -123,3 +177,28 @@ class TTkRadioButton(TTkWidget):
             self._pressEvent()
             return True
         return False
+
+    _ttkProperties = {
+        'Text' : {
+                'init': {'name':'text', 'type':TTkString } ,
+                'get':  {'cb':text,     'type':TTkString } ,
+                'set':  {'cb':setText,  'type':TTkString } },
+        'Checked' : {
+                'init': {'name':'checked', 'type':bool } ,
+                'get':  {'cb':isChecked,   'type':bool } ,
+                'set':  {'cb':setChecked,  'type':bool } },
+        'Check State' : {
+                'init': { 'name':'checked', 'type':'singleflag',
+                    'flags': {
+                        'Checked'          : TTkK.Checked    ,
+                        'Unchecked'        : TTkK.Unchecked  } },
+                'get' : { 'cb':checkState,      'type':'singleflag',
+                    'flags': {
+                        'Checked'          : TTkK.Checked    ,
+                        'Unchecked'        : TTkK.Unchecked  } },
+                'set' : { 'cb':setCheckState,   'type':'singleflag',
+                    'flags': {
+                        'Checked'          : TTkK.Checked    ,
+                        'Unchecked'        : TTkK.Unchecked  } },
+         },
+    }

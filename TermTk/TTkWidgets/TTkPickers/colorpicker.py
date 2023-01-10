@@ -29,6 +29,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.window import TTkWindow
@@ -38,7 +39,6 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkTemplates.color import TColor
 
 class _TTkHueCanvas(TTkWidget):
     __slots__ = ('_hueList', '_selected', 'colorPicked')
@@ -47,7 +47,6 @@ class _TTkHueCanvas(TTkWidget):
         self.colorPicked=pyTTkSignal(int)
 
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkHueCanvas' )
 
         self.setMaximumHeight(1)
         self.setMinimumSize(6,1)
@@ -102,7 +101,6 @@ class _TTkColorCanvas(TTkWidget):
         self.colorPicked=pyTTkSignal(int)
         self._selected=(-1,-1)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkColorPicker' )
         self._hue = 0xff0000
         self.setFocusPolicy(TTkK.ClickFocus)
 
@@ -148,35 +146,38 @@ class _TTkColorCanvas(TTkWidget):
                 else:
                     self._canvas.drawText(pos=(x,y), text=" ", color=color)
 
-class _TTkShowColor(TTkWidget,TColor):
+class _TTkShowColor(TTkWidget):
+    __slots__ = ('_color')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        TColor.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkShowColor' )
+        self._color = kwargs.get('color', TTkColor.RST )
 
-    @pyTTkSlot(int)
-    def setRGBColor(self, color):
-        self.color = TTkColor.bg( f"#{color:06x}" )
-        self.update()
+    def color(self):
+        return self._color
 
     @pyTTkSlot(TTkColor)
     def setColor(self, color):
-        self.color = color
+        if self._color != color:
+            self._color = color
+            self.update()
+
+    @pyTTkSlot(int)
+    def setRGBColor(self, color):
+        self.setColor(TTkColor.bg( f"#{color:06x}" ))
         self.update()
 
     def paintEvent(self):
         w,h = self.size()
         for y in range(h):
-            self._canvas.drawText(pos=(0,y),text=" "*w, color=self.color)
+            self._canvas.drawText(pos=(0,y),text=" "*w, color=self._color)
 
 class _TTkColorButton(TTkButton):
     lastClicked = None
-    __slots__ = ('colorClicked','_custom')
+    __slots__ = ('colorClicked','_custom','_color')
     def __init__(self, *args, **kwargs):
         self.colorClicked = pyTTkSignal(TTkColor)
         TTkButton.__init__(self, *args, **kwargs)
-        TColor.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkColorButton' )
+        self._color = kwargs.get('color', TTkColor.RST )
         self._custom = kwargs.get('custom', False)
         self.clicked.connect(self._clicked)
         self._textColorFocus = self._textColor
@@ -199,7 +200,7 @@ class _TTkColorButton(TTkButton):
             _TTkColorButton.lastClicked = self
         self.colorClicked.emit(self._textColor)
 
-class TTkColorDialogPicker(TTkWindow,TColor):
+class TTkColorDialogPicker(TTkWindow):
     ''' Color Picker Layout sizes:
 
     ::
@@ -242,8 +243,8 @@ class TTkColorDialogPicker(TTkWindow,TColor):
     def __init__(self, *args, **kwargs):
         # Signals
         self.colorSelected = pyTTkSignal(TTkColor)
-        TTkWindow.__init__(self, *args, **kwargs)
-        TColor.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self._color = kwargs.get('color', TTkColor.RST )
         self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
         self.setLayout(TTkGridLayout())
 
@@ -278,15 +279,15 @@ class TTkColorDialogPicker(TTkWindow,TColor):
 
         @pyTTkSlot()
         def _okPressed():
-            self.color = sc.color
-            self.colorSelected.emit(self.color)
+            self.setColor(sc.color())
+            self.colorSelected.emit(self._color)
             self.close()
 
         okButton.clicked.connect(_okPressed)
 
         @pyTTkSlot()
         def _cancelPressed():
-            self.colorSelected.emit(self.color)
+            self.colorSelected.emit(self._color)
             self.close()
 
         cancelButton.clicked.connect(_cancelPressed)
@@ -325,7 +326,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         leG.valueChanged.connect(_leRGBChanged)
         leB.valueChanged.connect(_leRGBChanged)
 
-        _controlSetColor(self.color)
+        _controlSetColor(self._color)
 
         # Palette Layout Widgets
         paletteLayout.addWidget(b:=_TTkColorButton(color=TTkColor.bg('#ff0000'), border=True, maxSize=(8,3)),0,0,1,2)
@@ -394,7 +395,7 @@ class TTkColorDialogPicker(TTkWindow,TColor):
             if btn is not None and \
                btn.isCustom():
                 TTkLog.debug(f"2 {btn}")
-                btn.setColor(sc.color)
+                btn.setColor(sc.color())
         b.clicked.connect(_addCustomPressed)
 
         # Events
@@ -406,6 +407,14 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         leftLayout.addItem(paletteLayout)
         leftLayout.addItem(customLayout)
         leftLayout.addItem(controlLayout)
+
+    def color(self):
+        return self._color
+
+    def setColor(self, color):
+        if self._color != color:
+            self._color = color
+            self.update()
 
     def paintEvent(self):
         TTkWindow.paintEvent(self)
@@ -421,9 +430,9 @@ class TTkColorDialogPicker(TTkWindow,TColor):
         self._canvas.drawChar(pos=(0,2),  char=gg[0x08], color=color)
         self._canvas.drawChar(pos=(25,2), char=gg[0x02], color=color)
         self._canvas.drawChar(pos=(25,self._height-1), char=gg[0x0E], color=color)
-        self._canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=" Basic colors ", align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
-        self._canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=" Custom colors ", align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
-        self._canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=" Conrols ", align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        self._canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=TTkString(" Basic colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        self._canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=TTkString(" Custom colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        self._canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=TTkString(" Conrols "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
 
 class TTkColorButtonPicker(_TTkColorButton):
     __slots__ = ('_type', 'colorSelected')
@@ -431,18 +440,11 @@ class TTkColorButtonPicker(_TTkColorButton):
         # Signals
         self.colorSelected = pyTTkSignal(TTkColor)
         _TTkColorButton.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkColorButtonPicker' )
         self._custom = False
         self.clicked.connect(self._colorClicked)
         self._type = self._textColor.colorType()
         hexColor =  self._textColor.getHex(self._type)
         self.setColor(TTkColor.bg(hexColor))
-
-    #@pyTTkSlot(TTkColor)
-    #def colorSelected(self, color):
-    #    self.setColor(color)
-    #    #self.setFocus()
-    #    #self.update()
 
     @pyTTkSlot()
     def _colorClicked(self):

@@ -31,7 +31,6 @@ class _TTkAreaWidget(TTkAbstractScrollView):
     __slots__ = ()
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkAreaWidget' )
         self.viewChanged.connect(self._viewChangedHandler)
 
     @pyTTkSlot()
@@ -47,10 +46,10 @@ class _TTkAreaWidget(TTkAbstractScrollView):
         return self.size()
 
 class TTkScrollArea(TTkAbstractScrollArea):
+    '''TTkScrollArea'''
     __slots__ = ('_areaView')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkScrollArea' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._areaView = _TTkAreaWidget(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)

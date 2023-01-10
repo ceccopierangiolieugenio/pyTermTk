@@ -54,6 +54,7 @@ class _TTkTabBarDragData():
     def tabBar(self): return self._tabBar
 
 class TTkTabButton(TTkButton):
+    '''TTkTabButton'''
     __slots__ = ('_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButton')
     def __init__(self, *args, **kwargs):
         self._sideEnd = TTkK.NONE
@@ -61,7 +62,7 @@ class TTkTabButton(TTkButton):
         self._closable = kwargs.get('closable', False)
         self.closeClicked = pyTTkSignal()
         TTkButton.__init__(self, *args, **kwargs)
-        size = len(self.text) + 2
+        size = self.text().termWidth() + 2
         if self._closable:
             size += 3
             self._closeButton = TTkButton(parent=self, border=False, text="x", pos=(size-4,1 if self._border else 0), size=(3,1))
@@ -122,7 +123,7 @@ class TTkTabButton(TTkButton):
             small=(not self._border),
             sideEnd=self._sideEnd, status=self._tabStatus,
             color=self._borderColor )
-        self._canvas.drawText(pos=(1,1 if self._border else 0), text=self.text, color=self.color())
+        self._canvas.drawText(pos=(1,1 if self._border else 0), text=self.text(), color=self.color())
 
 class _TTkTabMenuButton(TTkMenuButton):
     def __init__(self, *args, **kwargs):
@@ -137,7 +138,7 @@ class _TTkTabMenuButton(TTkMenuButton):
             borderColor = self._borderColor
             textColor   = self._color
             # scColor     =  TTkCfg.theme.menuButtonShortcutColor
-        text = TTkString('[',borderColor) + TTkString(self.text,textColor) + TTkString(']',borderColor)
+        text = TTkString('[',borderColor) + TTkString(self.text(),textColor) + TTkString(']',borderColor)
         self._canvas.drawText(pos=(0,0),text=text)
 
 class _TTkTabScrollerButton(TTkButton):
@@ -214,6 +215,7 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
 '''
 
 class TTkTabBar(TTkWidget):
+    '''TTkTabBar'''
     __slots__ = (
         '_tabButtons', '_tabData', '_tabMovable', '_small',
         '_highlighted', '_currentIndex','_lastIndex',
@@ -265,9 +267,11 @@ class TTkTabBar(TTkWidget):
         self._updateTabs()
 
     def addTab(self, label, data=None):
+        '''addTab'''
         return self.insertTab(len(self._tabButtons), label, data)
 
     def insertTab(self, index, label, data=None):
+        '''insertTab'''
         if index <= self._currentIndex:
             self._currentIndex += 1
         button = TTkTabButton(parent=self, text=label, border=not self._small, closable=self._tabClosable)
@@ -281,6 +285,7 @@ class TTkTabBar(TTkWidget):
 
     @pyTTkSlot(int)
     def removeTab(self, index):
+        '''removeTab'''
         button = self._tabButtons[index]
         self.layout().removeWidget(button)
         self._tabButtons.pop(index)
@@ -293,9 +298,11 @@ class TTkTabBar(TTkWidget):
         self._updateTabs()
 
     def tabData(self, index):
+        '''tabData'''
         return self._tabData[index]
 
     def setTabData(self, index, data):
+        '''setTabData'''
         self._tabData[index] = data
 
     def borderColor(self):
@@ -310,16 +317,20 @@ class TTkTabBar(TTkWidget):
         self.update()
 
     def tabsClosable(self):
+        '''tabsClosable'''
         return self._tabClosable
 
     def setTabsClosable(self, closable):
+        '''setTabsClosable'''
         self._tabClosable = closable
 
     def currentIndex(self):
+        '''currentIndex'''
         return self._currentIndex
 
     @pyTTkSlot(int)
     def setCurrentIndex(self, index):
+        '''setCurrentIndex'''
         TTkLog.debug(index)
         if 0 <= index < len(self._tabButtons):
             self._currentIndex = index
@@ -462,6 +473,7 @@ class TTkTabBar(TTkWidget):
 '''
 
 class TTkTabWidget(TTkFrame):
+    '''TTkTabWidget'''
     __slots__ = (
         '_tabBarTopLayout', '_tabBar', '_topLeftLayout', '_topRightLayout',
         '_tabWidgets', '_spacer',
@@ -513,9 +525,11 @@ class TTkTabWidget(TTkFrame):
         self.tabCloseRequested = self._tabBar.tabCloseRequested
 
     def widget(self, index):
+        '''widget'''
         return self._tabWidgets[index]
 
     def currentWidget(self):
+        '''currentWidget'''
         for w in self._tabWidgets:
             if w.isVisible():
                 return w
@@ -523,6 +537,7 @@ class TTkTabWidget(TTkFrame):
 
     @pyTTkSlot(TTkWidget)
     def setCurrentWidget(self, widget):
+        '''setCurrentWidget'''
         for i, w in enumerate(self._tabWidgets):
             if widget == w:
                 self.setCurrentIndex(i)
@@ -572,13 +587,13 @@ class TTkTabWidget(TTkFrame):
                 if index <= newIndex:
                     newIndex -= 1
             tw.removeTab(index)
-            self.insertTab(newIndex, widget, tb.text, data)
+            self.insertTab(newIndex, widget, tb.text(), data)
             self.setCurrentIndex(newIndex)
             #self._tabChanged(newIndex)
         elif tw != self:
             tw.removeTab(index)
             newIndex = len(self._tabWidgets)
-            self.addTab(widget, tb.text, data)
+            self.addTab(widget, tb.text(), data)
             self.setCurrentIndex(newIndex)
             self._tabChanged(newIndex)
 
@@ -586,6 +601,7 @@ class TTkTabWidget(TTkFrame):
         return True
 
     def addMenu(self, text, position=TTkK.LEFT):
+        '''addMenu'''
         button = _TTkTabMenuButton(text=text, borderColor=TTkCfg.theme.tabBorderColor)
         self._tabBar.setSideEnd(self._tabBar.sideEnd() & ~position)
         if position==TTkK.LEFT:
@@ -602,12 +618,14 @@ class TTkTabWidget(TTkFrame):
         return button
 
     def addTab(self, widget, label, data=None):
+        '''addTab'''
         widget.hide()
         self._tabWidgets.append(widget)
         self.layout().addWidget(widget)
         self._tabBar.addTab(label, data)
 
     def insertTab(self, index, widget, label, data=None):
+        '''insertTab'''
         widget.hide()
         self._tabWidgets.insert(index, widget)
         self.layout().addWidget(widget)
@@ -615,6 +633,7 @@ class TTkTabWidget(TTkFrame):
 
     @pyTTkSlot(int)
     def removeTab(self, index):
+        '''removeTab'''
         self.layout().removeWidget(self._tabWidgets[index])
         self._tabWidgets.pop(index)
         self._tabBar.removeTab(index)

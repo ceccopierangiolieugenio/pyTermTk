@@ -80,12 +80,11 @@ class TTkTestWidget(TTkFrame):
 
     def paintEvent(self):
         TTkFrame.paintEvent(self)
-        self._l[0].text=f"Test Widget [{self._name}]"
-        self._l[1].text=f"x,y ({self._x},{self._y})"
-        self._l[2].text=f"w,h ({self._width},{self._height})"
-        self._l[3].text=f"max w,h ({self._maxw},{self._maxh})"
-        self._l[4].text=f"min w,h ({self._minw},{self._minh})"
-
+        self._l[0].setText(f"Test Widget [{self._name}]")
+        self._l[1].setText(f"x,y ({self._x},{self._y})")
+        self._l[2].setText(f"w,h ({self._width},{self._height})")
+        self._l[3].setText(f"max w,h ({self._maxw},{self._maxh})")
+        self._l[4].setText(f"min w,h ({self._minw},{self._minh})")
 
     def mousePressEvent(self, evt):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")

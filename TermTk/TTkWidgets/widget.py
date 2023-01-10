@@ -88,6 +88,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
     :type layout: :mod:`TermTk.TTkLayouts`
     '''
+
     __slots__ = (
         '_name', '_parent',
         '_x', '_y', '_width', '_height',
@@ -227,17 +228,18 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                         (   lx,    ly, lw, lh)) # bound
         else:
             for child in item.zSortedItems:
-                ix, iy, iw, ih = item.geometry()
+                # The geometry include the padding of the layout
+                igx, igy, igw, igh = item.geometry()
                 iox, ioy = item.offset()
-                ix+=ox+iox
-                iy+=oy+ioy
-                iw-=iox
-                ih-=ioy
+                ix = igx+ox+iox
+                iy = igy+oy+ioy
+                iw = igw-iox
+                ih = igh-ioy
                 # child outside the bound
                 if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
                 # Reduce the bound to the minimum visible
-                bx = max(ix,lx)
-                by = max(iy,ly)
+                bx = max(igx,ix,lx)
+                by = max(igy,iy,ly)
                 bw = min(ix+iw,lx+lw)-bx
                 bh = min(iy+ih,ly+lh)-by
                 TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix,iy))
@@ -660,3 +662,48 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             laf = TTkLookAndFeel()
         self._lookAndFeel = laf
         self._lookAndFeel.modified.connect(self.update)
+
+    _ttkProperties = {
+        'X' : {
+                'init': {'name':'x', 'type':int } ,
+                'get':  { 'cb':x,    'type':int } },
+        'Y' : {
+                'init': {'name':'y', 'type':int } ,
+                'get':  { 'cb':y,    'type':int } },
+        'Width' : {
+                'init': {'name':'width', 'type':int } ,
+                'get':  { 'cb':width,    'type':int } },
+        'Height' : {
+                'init': {'name':'height', 'type':int } ,
+                'get':  { 'cb':height,    'type':int } },
+        'Min Width' : {
+                'init': {'name':'minWidth',    'type':int } ,
+                'get':  { 'cb':minimumWidth,   'type':int } ,
+                'set':  { 'cb':setMinimumWidth,'type':int } },
+        'Min Height' : {
+                'init': {'name':'minHeight',    'type':int } ,
+                'get':  { 'cb':minimumHeight,   'type':int } ,
+                'set':  { 'cb':setMinimumHeight,'type':int } },
+        'Max Width' : {
+                'init': {'name':'maxWidth',    'type':int } ,
+                'get':  { 'cb':maximumWidth,   'type':int } ,
+                'set':  { 'cb':setMaximumWidth,'type':int } },
+        'Max Height' : {
+                'init': {'name':'maxHeight',    'type':int } ,
+                'get':  { 'cb':maximumHeight,   'type':int } ,
+                'set':  { 'cb':setMaximumHeight,'type':int } },
+        'Layout' : {
+                'init': {'name':'layout', 'type':TTkLayout} ,
+                'get':  { 'cb':layout,    'type':TTkLayout} ,
+                'set':  { 'cb':setLayout, 'type':TTkLayout} },
+        'Name' : {
+                'init': {'name':'name', 'type':str } },
+        'Visible' : {
+                'init': {'name':'visible', 'type':bool } ,
+                'get':  {'cb':isVisible,   'type':bool } ,
+                'set':  {'cb':setVisible,  'type':bool } },
+        'Enabled' : {
+                'init': {'name':'enabled', 'type':bool } ,
+                'get':  {'cb':isEnabled,   'type':bool } ,
+                'set':  {'cb':setEnabled,  'type':bool } },
+    }

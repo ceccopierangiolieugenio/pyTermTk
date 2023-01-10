@@ -60,10 +60,6 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 2 😎 -'),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 3'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 3 oަ -'),row,2)
-    row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 4'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 4'),row,2)
-    row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 5'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='Line Edit Test 5'),row,2)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Number'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkLineEdit(text='123456', inputType=ttk.TTkK.Input_Number),row,2)
@@ -84,6 +80,8 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(ttk.TTkCheckbox(text='CheckBox 1'),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Checkbox Checked'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkCheckbox(text='CheckBox 2', checked=True),row,2)
+    row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Checkbox Tristate'),row,0)
+    win_form1_grid_layout.addWidget(ttk.TTkCheckbox(text='CheckBox 3', checkStatus=ttk.TTkK.PartiallyChecked, tristate=True),row,2)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Default)'),row,0)
     win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton   1'),row,2)

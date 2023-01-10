@@ -26,6 +26,7 @@ from TermTk.TTkWidgets.listwidget import TTkListWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkList(TTkAbstractScrollArea):
+    '''TTkList'''
     __slots__ = (
         '_listView', 'itemClicked', 'textClicked',
         # Forwarded Methods
@@ -36,7 +37,6 @@ class TTkList(TTkAbstractScrollArea):
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkList' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._listView = kwargs.get('listWidget',TTkListWidget(*args, **kwargs))
         self.setViewport(self._listView)
