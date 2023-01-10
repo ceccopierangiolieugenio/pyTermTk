@@ -1,8 +1,0 @@
-
-TermTk.TTkTemplates.data
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTemplates.data
-
-.. currentmodule:: TermTk.TTkTemplates.data
-

@@ -13,3 +13,10 @@ TTkAbstractScrollView
 
 .. autoclass:: TTkAbstractScrollView
    :members:
+
+
+TTkAbstractScrollViewGridLayout
+===============================
+
+.. autoclass:: TTkAbstractScrollViewGridLayout
+   :members:

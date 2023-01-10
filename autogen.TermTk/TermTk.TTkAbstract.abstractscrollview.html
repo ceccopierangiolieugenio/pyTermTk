@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkAbstract.abstractscrollarea.html">TermTk.TTkAbstract.abstractscrollarea</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkAbstract.abstractscrollview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ttkabstractscrollview">TTkAbstractScrollView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ttkabstractscrollviewgridlayout">TTkAbstractScrollViewGridLayout</a></li>
 </ul>
 </li>
 </ul>
@@ -127,6 +128,48 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="ttkabstractscrollviewgridlayout">
+<h2>TTkAbstractScrollViewGridLayout<a class="headerlink" href="#ttkabstractscrollviewgridlayout" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkAbstractScrollViewGridLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkAbstract/abstractscrollview.html#TTkAbstractScrollViewGridLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout.addItem">
+<span class="sig-name descname"><span class="pre">addItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkAbstract/abstractscrollview.html#TTkAbstractScrollViewGridLayout.addItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout.addItem" title="Permalink to this definition"></a></dt>
+<dd><p>Add the item to this <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkGridLayout</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayoutItem" title="TermTk.TTkLayouts.layout.TTkLayoutItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayoutItem</span></code></a>) – the item to be added</p></li>
+<li><p><strong>row</strong> (<em>int</em>) – the row of the grid, optional, defaults to None</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – the col of the grid, optional, defaults to None</p></li>
+<li><p><strong>rowspan</strong> (<em>int</em>) – the rows used by the item, optional, defaults to 1</p></li>
+<li><p><strong>colspan</strong> (<em>int</em>) – the cols used by the item, optional, defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout.addWidget">
+<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkAbstract/abstractscrollview.html#TTkAbstractScrollViewGridLayout.addWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout.addWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Add the widget to this <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkGridLayout</span></code>, this function uses <a class="reference internal" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout.addItem" title="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout.addItem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addItem()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget</strong> (<a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget" title="TermTk.TTkWidgets.widget.TTkWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code></a>) – the widget to be added</p></li>
+<li><p><strong>row</strong> (<em>int</em>) – the row of the grid, optional, defaults to None</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – the col of the grid, optional, defaults to None</p></li>
+<li><p><strong>rowspan</strong> (<em>int</em>) – the rows used by the widget, optional, defaults to 1</p></li>
+<li><p><strong>colspan</strong> (<em>int</em>) – the cols used by the widget, optional, defaults to 1</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

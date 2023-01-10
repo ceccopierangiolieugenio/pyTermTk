@@ -111,60 +111,115 @@
 <span class="c1"># SOFTWARE.</span>
 
 <span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 
 
-<div class="viewcode-block" id="TTkTimer"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer">[docs]</a><span class="k">class</span> <span class="nc">TTkTimer</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-    <span class="n">_timers</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="s1">&#39;_timerEvent&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_delay&#39;</span><span class="p">,</span> <span class="s1">&#39;_delayLock&#39;</span><span class="p">,</span> <span class="s1">&#39;_quit&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_stopTime&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Define Signals</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;pyodideProxy&#39;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">pyodideProxy</span>
+    <span class="k">class</span> <span class="nc">TTkTimer</span><span class="p">():</span>
+        <span class="n">_timers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">_uid</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stopTime</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">=</span><span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delayLock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
-        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="s1">&#39;_running&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="s1">&#39;_timerEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_delay&#39;</span><span class="p">,</span> <span class="s1">&#39;_delayLock&#39;</span><span class="p">,</span> <span class="s1">&#39;_quit&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_stopTime&#39;</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">quitAll</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">timer</span> <span class="ow">in</span> <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">:</span>
-            <span class="n">timer</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Define Signals</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_uid</span>
+            <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_uid</span> <span class="o">+=</span><span class="mi">1</span>
+            <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="TTkTimer.run"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># self._delayLock.acquire()</span>
-                <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c1"># self._delayLock.release()</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">delay</span><span class="p">):</span>
-                    <span class="k">return</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">triggerTimerId</span><span class="p">(</span><span class="n">tid</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tid</span> <span class="ow">in</span> <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">:</span>
+                <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TTkTimer.start"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer.start">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lastTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="n">sec</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">quitAll</span><span class="p">():</span>
+            <span class="k">pass</span>
 
-    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># TODO: Timer.stop()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stopTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">pyodideQuit</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">timer</span> <span class="ow">in</span> <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">:</span>
+                <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">[</span><span class="n">timer</span><span class="p">]</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">clearAll</span><span class="p">()</span>
+                <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">[</span><span class="n">timer</span><span class="p">]</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">[</span><span class="n">timer</span><span class="p">]</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+            <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+                <span class="n">pyodideProxy</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sec</span><span class="o">*</span><span class="mi">1000</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
+
+        <span class="nd">@pyTTkSlot</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+<div class="viewcode-block" id="TTkTimer"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer">[docs]</a>    <span class="k">class</span> <span class="nc">TTkTimer</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+        <span class="n">_timers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="s1">&#39;_timerEvent&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_delay&#39;</span><span class="p">,</span> <span class="s1">&#39;_delayLock&#39;</span><span class="p">,</span> <span class="s1">&#39;_quit&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_stopTime&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Define Signals</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stopTime</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">=</span><span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delayLock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+            <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">quitAll</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">timer</span> <span class="ow">in</span> <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">:</span>
+                <span class="n">timer</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">=</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TTkTimer.run"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer.run">[docs]</a>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># self._delayLock.acquire()</span>
+                    <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="c1"># self._delayLock.release()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">delay</span><span class="p">):</span>
+                        <span class="k">return</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TTkTimer.start"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer.html#TermTk.TTkCore.timer.TTkTimer.start">[docs]</a>        <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="n">sec</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timerEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+        <span class="nd">@pyTTkSlot</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># TODO: Timer.stop()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stopTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

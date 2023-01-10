@@ -119,14 +119,13 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.label</span> <span class="kn">import</span> <span class="n">TTkLabel</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkAbstract.abstractscrollview</span> <span class="kn">import</span> <span class="n">TTkAbstractScrollView</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkTemplates.data</span> <span class="kn">import</span> <span class="n">TData</span>
 
-<div class="viewcode-block" id="TTkAbstractListItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkAbstractListItem">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractListItem</span><span class="p">(</span><span class="n">TTkLabel</span><span class="p">,</span> <span class="n">TData</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_pressed&#39;</span><span class="p">,</span> <span class="s1">&#39;_selected&#39;</span><span class="p">,</span> <span class="s1">&#39;_highlighted&#39;</span><span class="p">,</span> <span class="s1">&#39;listItemClicked&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkAbstractListItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkAbstractListItem">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractListItem</span><span class="p">(</span><span class="n">TTkLabel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;TTkAbstractListItem&#39;&#39;&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_pressed&#39;</span><span class="p">,</span> <span class="s1">&#39;_selected&#39;</span><span class="p">,</span> <span class="s1">&#39;_highlighted&#39;</span><span class="p">,</span> <span class="s1">&#39;listItemClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_data&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">TData</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">TTkLabel</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkAbstractListItem&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span>
         <span class="c1"># Define Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">listItemClicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="n">TTkAbstractListItem</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_selected</span> <span class="o">=</span> <span class="kc">False</span>
@@ -137,13 +136,23 @@
     <span class="k">def</span> <span class="nf">_updateColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_highlighted</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColorHighlighted</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColorHighlighted</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColorHighlighted</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColorHighlighted</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColorSelected</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColorSelected</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">listColor</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TTkAbstractListItem.data"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;data&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
+
+<div class="viewcode-block" id="TTkAbstractListItem.setData"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.setData">[docs]</a>    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setData&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">!=</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TTkAbstractListItem.keyEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.keyEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">keyEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span></div>
@@ -182,6 +191,7 @@
 
 
 <div class="viewcode-block" id="TTkListWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget">[docs]</a><span class="k">class</span> <span class="nc">TTkListWidget</span><span class="p">(</span><span class="n">TTkAbstractScrollView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;TTkListWidget&#39;&#39;&#39;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;itemClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;textClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_color&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectedColor&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectedItems&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionMode&#39;</span><span class="p">,</span> <span class="s1">&#39;_highlighted&#39;</span><span class="p">,</span> <span class="s1">&#39;_items&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Default Class Specific Values</span>
@@ -196,7 +206,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">textClicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="c1"># Init Super</span>
         <span class="n">TTkAbstractScrollView</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkListWidget&#39;</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewChangedHandler</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
 
@@ -227,19 +236,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_highlighted</span> <span class="o">=</span> <span class="n">label</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">itemClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">setSelectionMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_selectionMode</span> <span class="o">=</span> <span class="n">mode</span>
+<div class="viewcode-block" id="TTkListWidget.setSelectionMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.setSelectionMode">[docs]</a>    <span class="k">def</span> <span class="nf">setSelectionMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setSelectionMode&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selectionMode</span> <span class="o">=</span> <span class="n">mode</span></div>
 
-    <span class="k">def</span> <span class="nf">selectedItems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectedItems</span>
+<div class="viewcode-block" id="TTkListWidget.selectedItems"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.selectedItems">[docs]</a>    <span class="k">def</span> <span class="nf">selectedItems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;selectedItems&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectedItems</span></div>
 
-    <span class="k">def</span> <span class="nf">selectedLabels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectedItems</span><span class="p">]</span>
+<div class="viewcode-block" id="TTkListWidget.selectedLabels"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.selectedLabels">[docs]</a>    <span class="k">def</span> <span class="nf">selectedLabels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;selectedLabels&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectedItems</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span>
+<div class="viewcode-block" id="TTkListWidget.items"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;items&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span></div>
 
 <div class="viewcode-block" id="TTkListWidget.resizeEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.resizeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
         <span class="n">maxw</span> <span class="o">=</span> <span class="mi">0</span>
@@ -258,8 +271,9 @@
     <span class="k">def</span> <span class="nf">viewDisplayedSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addItemAt</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkListWidget.addItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.addItem">[docs]</a>    <span class="k">def</span> <span class="nf">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;addItem&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addItemAt</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_placeItems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">minw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
@@ -269,7 +283,8 @@
             <span class="n">item</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">minw</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">addItemAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkListWidget.addItemAt"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.addItemAt">[docs]</a>    <span class="k">def</span> <span class="nf">addItemAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;addItemAt&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">TTkString</span><span class="p">):</span>
             <span class="c1">#label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))</span>
             <span class="n">label</span> <span class="o">=</span> <span class="n">TTkAbstractListItem</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
@@ -278,42 +293,48 @@
         <span class="c1"># item.listItemClicked.connect(self._labelSelectedHandler)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">indexOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkListWidget.indexOf"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.indexOf">[docs]</a>    <span class="k">def</span> <span class="nf">indexOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;indexOf&#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">it</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">i</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
 
-    <span class="k">def</span> <span class="nf">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+<div class="viewcode-block" id="TTkListWidget.itemAt"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.itemAt">[docs]</a>    <span class="k">def</span> <span class="nf">itemAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;itemAt&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">moveItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fr</span><span class="p">,</span> <span class="n">to</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkListWidget.moveItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.moveItem">[docs]</a>    <span class="k">def</span> <span class="nf">moveItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fr</span><span class="p">,</span> <span class="n">to</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;moveItem&#39;&#39;&#39;</span>
         <span class="n">fr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">to</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">to</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">to</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">fr</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">fr</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span>
+        <span class="c1"># Swap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">to</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">fr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">fr</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">to</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkListWidget.removeItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.removeItem">[docs]</a>    <span class="k">def</span> <span class="nf">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;removeItem&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectedItems</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_selectedItems</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_placeItems</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">removeAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+<div class="viewcode-block" id="TTkListWidget.removeAt"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.removeAt">[docs]</a>    <span class="k">def</span> <span class="nf">removeAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;removeAt&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span></div>
 
-    <span class="k">def</span> <span class="nf">setCurrentRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkListWidget.setCurrentRow"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.setCurrentRow">[docs]</a>    <span class="k">def</span> <span class="nf">setCurrentRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setCurrentRow&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">row</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">):</span>
             <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">listItemClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkListWidget.setCurrentItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.listwidget.html#TermTk.TTkWidgets.listwidget.TTkListWidget.setCurrentItem">[docs]</a>    <span class="k">def</span> <span class="nf">setCurrentItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setCurrentItem&#39;&#39;&#39;</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">listItemClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_moveToHighlighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_highlighted</span><span class="p">)</span>

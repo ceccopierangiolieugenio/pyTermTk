@@ -6,3 +6,10 @@ TermTk.TTkGui.textdocument
 
 .. currentmodule:: TermTk.TTkGui.textdocument
 
+
+
+TTkTextDocument
+===============
+
+.. autoclass:: TTkTextDocument
+   :members:

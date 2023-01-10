@@ -1,8 +1,0 @@
-
-TermTk.TTkGui.textwrap
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkGui.textwrap
-
-.. currentmodule:: TermTk.TTkGui.textwrap
-

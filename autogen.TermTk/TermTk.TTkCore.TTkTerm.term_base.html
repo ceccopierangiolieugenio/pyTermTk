@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkGui.textwrap &mdash; pyTermTk 0.2.0a documentation</title>
+  <title>TermTk.TTkCore.TTkTerm.term_base &mdash; pyTermTk 0.2.0a documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkLayouts" href="TermTk.TTkLayouts.html" />
-    <link rel="prev" title="TermTk.TTkGui.textdocument" href="TermTk.TTkGui.textdocument.html" /> 
+    <link rel="next" title="TermTk.TTkCore.TTkTerm.term_pyodide" href="TermTk.TTkCore.TTkTerm.term_pyodide.html" />
+    <link rel="prev" title="TermTk.TTkCore.TTkTerm.term" href="TermTk.TTkCore.TTkTerm.term.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,14 +52,21 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
-<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.drag.html">TermTk.TTkGui.drag</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textcursor.html">TermTk.TTkGui.textcursor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textdocument.html">TermTk.TTkGui.textdocument</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkGui.textwrap</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.colors.html">TermTk.TTkCore.TTkTerm.colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.colors_ansi_map.html">TermTk.TTkCore.TTkTerm.colors_ansi_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.input.html">TermTk.TTkCore.TTkTerm.input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html">TermTk.TTkCore.TTkTerm.inputkey</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html">TermTk.TTkCore.TTkTerm.inputmouse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.readinputlinux.html">TermTk.TTkCore.TTkTerm.readinputlinux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.readinputlinux_thread.html">TermTk.TTkCore.TTkTerm.readinputlinux_thread</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.term.html">TermTk.TTkCore.TTkTerm.term</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.TTkTerm.term_base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.term_pyodide.html">TermTk.TTkCore.TTkTerm.term_pyodide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.term_unix.html">TermTk.TTkCore.TTkTerm.term_unix</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
@@ -84,10 +91,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="TermTk.TTkGui.html">TermTk.TTkGui</a> &raquo;</li>
-      <li>TermTk.TTkGui.textwrap</li>
+          <li><a href="TermTk.TTkCore.html">TermTk.TTkCore</a> &raquo;</li>
+          <li><a href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a> &raquo;</li>
+      <li>TermTk.TTkCore.TTkTerm.term_base</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/autogen.TermTk/TermTk.TTkGui.textwrap.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/autogen.TermTk/TermTk.TTkCore.TTkTerm.term_base.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -95,16 +103,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-TermTk.TTkGui.textwrap">
-<span id="termtk-ttkgui-textwrap"></span><h1>TermTk.TTkGui.textwrap<a class="headerlink" href="#module-TermTk.TTkGui.textwrap" title="Permalink to this heading"></a></h1>
+  <section id="module-TermTk.TTkCore.TTkTerm.term_base">
+<span id="termtk-ttkcore-ttkterm-term-base"></span><h1>TermTk.TTkCore.TTkTerm.term_base<a class="headerlink" href="#module-TermTk.TTkCore.TTkTerm.term_base" title="Permalink to this heading"></a></h1>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="TermTk.TTkGui.textdocument.html" class="btn btn-neutral float-left" title="TermTk.TTkGui.textdocument" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="TermTk.TTkLayouts.html" class="btn btn-neutral float-right" title="TermTk.TTkLayouts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkCore.TTkTerm.term.html" class="btn btn-neutral float-left" title="TermTk.TTkCore.TTkTerm.term" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkCore.TTkTerm.term_pyodide.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.TTkTerm.term_pyodide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

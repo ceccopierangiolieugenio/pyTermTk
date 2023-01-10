@@ -78,6 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -145,7 +146,7 @@
 <li><p><strong>text</strong> (<em>str</em><em>, </em><em>optional</em>) – the text shown on the button, defaults to “”</p></li>
 <li><p><strong>border</strong> (<em>bool</em><em>, </em><em>optional</em>) – the border of the button, defaults to “False”</p></li>
 <li><p><strong>checked</strong> (<em>bool</em><em>, </em><em>optional</em>) – checked status if the button is checkable, defaults to “False”</p></li>
-<li><p><strong>checkable</strong> (<em>bool</em><em>, </em><em>optional</em>) – define if the burtton is checkable, defaults to “False”</p></li>
+<li><p><strong>checkable</strong> (<em>bool</em><em>, </em><em>optional</em>) – define if the button is checkable, defaults to “False”</p></li>
 <li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the border of the button, defaults to <a class="reference internal" href="TermTk.TTkTheme.theme.html#TermTk.TTkTheme.theme.TTkTheme.buttonTextColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonTextColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonTextColor</span></code></a></p></li>
 <li><p><strong>borderColor</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the border of the button, defaults to <a class="reference internal" href="TermTk.TTkTheme.theme.html#TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor" title="TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">buttonBorderColor</span></code></a></p></li>
 </ul>
@@ -179,6 +180,29 @@
 </dd></dl>
 
 </div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.isCheckable">
+<span class="sig-name descname"><span class="pre">isCheckable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.isCheckable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.isCheckable" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds whether the button is checkable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.isChecked">
+<span class="sig-name descname"><span class="pre">isChecked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.isChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.isChecked" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds whether the button is checked</p>
+<p>Only checkable buttons can be checked. By default, the button is unchecked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.keyEvent">
 <span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.keyEvent" title="Permalink to this definition"></a></dt>
@@ -247,6 +271,50 @@
 <span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
 this need to be overridden in the widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.setCheckable">
+<span class="sig-name descname"><span class="pre">setCheckable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.setCheckable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.setCheckable" title="Permalink to this definition"></a></dt>
+<dd><p>Enable/Disable the checkable property</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ch</strong> (<em>bool</em>) – Checkable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.setChecked">
+<span class="sig-name descname"><span class="pre">setChecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.setChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.setChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Set the checked status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ch</strong> (<em>bool</em>) – Checked</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.setText">
+<span class="sig-name descname"><span class="pre">setText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.setText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.setText" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds the text shown on the button</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.text">
+<span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.text" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds the text shown on the button</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

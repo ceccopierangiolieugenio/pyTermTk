@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkWidgets.radiobutton" href="TermTk.TTkWidgets.radiobutton.html" />
+    <link rel="next" title="TermTk.TTkWidgets.progressbar" href="TermTk.TTkWidgets.progressbar.html" />
     <link rel="prev" title="TermTk.TTkWidgets.listwidget" href="TermTk.TTkWidgets.listwidget.html" /> 
 </head>
 
@@ -79,6 +79,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ttkmenulayout">TTkMenuLayout</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -129,11 +130,26 @@
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuButton">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkMenuButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuButton" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuButton.addMenu">
+<span class="sig-name descname"><span class="pre">addMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuButton.addMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuButton.addMenu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuButton.addSpacer">
+<span class="sig-name descname"><span class="pre">addSpacer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuButton.addSpacer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuButton.addSpacer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuButton.paintEvent">
 <span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuButton.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuButton.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
 this need to be overridden in the widget.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuButton.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuButton.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuButton.setColor" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -143,7 +159,12 @@ this need to be overridden in the widget.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuLayout">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkMenuLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuLayout" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuLayout.addMenu">
+<span class="sig-name descname"><span class="pre">addMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuLayout.addMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuLayout.addMenu" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+</dd></dl>
 
 </section>
 </section>
@@ -153,7 +174,7 @@ this need to be overridden in the widget.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TermTk.TTkWidgets.listwidget.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.listwidget" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="TermTk.TTkWidgets.radiobutton.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.radiobutton" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkWidgets.progressbar.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.progressbar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

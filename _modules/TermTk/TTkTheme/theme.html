@@ -139,6 +139,8 @@
     <span class="n">menuBar</span>   <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">menuBar</span>
     <span class="n">tab</span>       <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>
     <span class="n">braille</span>   <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>
+    <span class="n">unicodeWideOverflowCh</span> <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">unicodeWideOverflowCh</span>
+    <span class="n">progressbarBlocks</span> <span class="o">=</span> <span class="n">draw_utf8</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">progressbarBlocks</span>
 
     <span class="n">fileNameColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span> <span class="c1"># Simil NerdTree purple</span>
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.RST # Simil NerdTree purple**&#39;&#39;&#39;</span>
@@ -170,6 +172,8 @@
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">menuBar</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">menuBar</span>
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>       <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">tab</span>
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>   <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">braille</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">unicodeWideOverflowCh</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">unicodeWideOverflowCh</span>
+        <span class="n">TTkTheme</span><span class="o">.</span><span class="n">progressbarBlocks</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">progressbarBlocks</span>
 
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">fileIcon</span>    <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">updateAll</span><span class="p">()</span>
@@ -317,7 +321,23 @@
     <span class="n">treeSelectedColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
     <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
     <span class="n">treeLineColor</span>     <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#444444&quot;)**&#39;&#39;&#39;</span></div>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#444444&quot;)**&#39;&#39;&#39;</span>
+
+    <span class="n">textEditLineNumberColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#88aaaa&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#333333&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)+TTkColor.bg(&quot;#333333&quot;)**&#39;&#39;&#39;</span>
+    <span class="n">textEditLineNumberWrapcharColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#333333&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)+TTkColor.bg(&quot;#333333&quot;)**&#39;&#39;&#39;</span>
+    <span class="n">textEditLineNumberSeparatorColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#444444&quot;)**&#39;&#39;&#39;</span>
+
+    <span class="n">unicodeWideOverflowColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000088&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**+**TTkColor.bg(&quot;#000088&quot;)**&#39;&#39;&#39;</span>
+
+    <span class="n">progresssBarColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#0000aa&#39;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&#39;#0000aa&#39;)**+**TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
+
+    <span class="n">progressBarTextColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&#39;#ffffff&#39;)**&#39;&#39;&#39;</span></div>
 </pre></div>
 
            </div>

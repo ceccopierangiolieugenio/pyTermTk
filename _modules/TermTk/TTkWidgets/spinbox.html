@@ -120,6 +120,7 @@
 
 
 <div class="viewcode-block" id="TTkSpinBox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox">[docs]</a><span class="k">class</span> <span class="nc">TTkSpinBox</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;TTkSpinBox&#39;&#39;&#39;</span>
     <span class="vm">__slots__</span><span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_lineEdit&#39;</span><span class="p">,</span> <span class="s1">&#39;_value&#39;</span><span class="p">,</span> <span class="s1">&#39;_maximum&#39;</span><span class="p">,</span> <span class="s1">&#39;_minimum&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_mouseDelta&#39;</span><span class="p">,</span> <span class="s1">&#39;_valueDelta&#39;</span><span class="p">,</span> <span class="s1">&#39;_draggable&#39;</span><span class="p">,</span>
@@ -129,7 +130,6 @@
         <span class="c1"># Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">=</span><span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkSpinBox&#39;</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maximum&quot;</span><span class="p">,</span><span class="mi">99</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minimum&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -144,21 +144,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">textEdited</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_textEdited</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+<div class="viewcode-block" id="TTkSpinBox.value"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;value&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span></div>
 
-    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkSpinBox.setValue"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox.setValue">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">setValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setValue&#39;&#39;&#39;</span>
         <span class="n">value</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">)</span>
         <span class="n">value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span> <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_textEdited</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>
 
 <div class="viewcode-block" id="TTkSpinBox.keyEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox.keyEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
@@ -206,8 +208,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawChar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">char</span><span class="o">=</span><span class="s2">&quot;▲&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">textColor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawChar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">char</span><span class="o">=</span><span class="s2">&quot;▼&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">textColor</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">focusInEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColorFocus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">focusOutEvent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="TermTk.TTkWidgets.resizableframe" href="TermTk.TTkWidgets.resizableframe.html" />
-    <link rel="prev" title="TermTk.TTkWidgets.menubar" href="TermTk.TTkWidgets.menubar.html" /> 
+    <link rel="prev" title="TermTk.TTkWidgets.progressbar" href="TermTk.TTkWidgets.progressbar.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.radiobutton</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ttkradiobutton">TTkRadioButton</a></li>
 </ul>
@@ -163,6 +164,28 @@
 
 </div></blockquote>
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.checkState">
+<span class="sig-name descname"><span class="pre">checkState</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.checkState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.checkState" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve the state of the radiobutton</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.CheckState" title="TermTk.TTkCore.constant.TTkConstant.CheckState"><code class="xref py py-class docutils literal notranslate"><span class="pre">CheckState</span></code></a> : the checkbox status</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.isChecked">
+<span class="sig-name descname"><span class="pre">isChecked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.isChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.isChecked" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds whether the radiobutton is checked</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool - True if <code class="xref py py-class docutils literal notranslate"><span class="pre">Checked</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">PartiallyChecked</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.keyEvent">
 <span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.keyEvent" title="Permalink to this definition"></a></dt>
 <dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
@@ -211,6 +234,50 @@
 this need to be overridden in the widget.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.setCheckState">
+<span class="sig-name descname"><span class="pre">setCheckState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.setCheckState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.setCheckState" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the radiobutton’s check state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.CheckState" title="TermTk.TTkCore.constant.TTkConstant.CheckState"><code class="xref py py-class docutils literal notranslate"><span class="pre">CheckState</span></code></a>) – state of the checkbox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.setChecked">
+<span class="sig-name descname"><span class="pre">setChecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.setChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.setChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Set the check status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.setText">
+<span class="sig-name descname"><span class="pre">setText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.setText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.setText" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds the text shown on the checkhox</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.radiobutton.TTkRadioButton.text">
+<span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/radiobutton.html#TTkRadioButton.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.radiobutton.TTkRadioButton.text" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds the text shown on the checkhox</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -220,7 +287,7 @@ this need to be overridden in the widget.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="TermTk.TTkWidgets.menubar.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.menubar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkWidgets.progressbar.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.progressbar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="TermTk.TTkWidgets.resizableframe.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.resizableframe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

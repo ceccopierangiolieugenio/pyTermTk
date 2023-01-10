@@ -111,7 +111,9 @@
 <span class="c1"># SOFTWARE.</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">unicodedata</span>
 
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span><span class="p">,</span> <span class="n">_TTkColor</span>
 
@@ -144,7 +146,7 @@
 <span class="sd">        # Combination of constructors (Highly Unrecommended)</span>
 <span class="sd">        str7 = TTkString(&quot;test 7&quot;, color=TTkColor.fg(&#39;#FF0000&#39;))</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_text&#39;</span><span class="p">,</span><span class="s1">&#39;_colors&#39;</span><span class="p">,</span><span class="s1">&#39;_baseColor&#39;</span><span class="p">,</span><span class="s1">&#39;_hasTab&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_text&#39;</span><span class="p">,</span><span class="s1">&#39;_colors&#39;</span><span class="p">,</span><span class="s1">&#39;_baseColor&#39;</span><span class="p">,</span><span class="s1">&#39;_hasTab&#39;</span><span class="p">,</span><span class="s1">&#39;_hasSpecialWidth&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">TTkString</span><span class="p">):</span>
@@ -155,6 +157,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_baseColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span> <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">color</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="n">TTkString</span><span class="o">.</span><span class="n">_parseAnsi</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_baseColor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
         <span class="c1"># raise AttributeError(f&quot;{type(text)} not supported in TTkString&quot;)</span>
 
     <span class="nd">@staticmethod</span>
@@ -173,6 +176,9 @@
         <span class="n">colret</span> <span class="o">+=</span> <span class="p">[</span><span class="n">color</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">-</span><span class="n">pos</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">txtret</span><span class="p">,</span> <span class="n">colret</span>
 
+    <span class="k">def</span> <span class="nf">termWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
 
@@ -185,15 +191,20 @@
         <span class="k">if</span>   <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">TTkString</span><span class="p">):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>   <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">_text</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">_colors</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_fastCheckWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">atxt</span><span class="p">,</span> <span class="n">acol</span> <span class="o">=</span> <span class="n">TTkString</span><span class="o">.</span><span class="n">_parseAnsi</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_baseColor</span><span class="p">)</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>   <span class="o">+</span> <span class="n">atxt</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+</span> <span class="n">acol</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">_TTkColor</span><span class="p">):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_baseColor</span> <span class="o">=</span> <span class="n">other</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -202,10 +213,13 @@
         <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">TTkString</span><span class="p">):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_text</span>   <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_fastCheckWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="n">other</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_baseColor</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -222,11 +236,21 @@
     <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">&gt;</span>  <span class="n">other</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">&gt;</span>  <span class="n">other</span><span class="o">.</span><span class="n">_text</span>
     <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">&gt;=</span> <span class="n">other</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">_text</span>
 
+    <span class="k">def</span> <span class="nf">isdigit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">lstrip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">_text</span><span class="p">):]</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
     <span class="k">def</span> <span class="nf">charAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">setCharAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">char</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span><span class="o">+</span><span class="n">char</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">colorAt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
@@ -248,15 +272,16 @@
         <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">pos</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">slices</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="n">c</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
-            <span class="n">lentxt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
+            <span class="n">lentxt</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">termWidth</span><span class="p">()</span>
             <span class="n">spaces</span> <span class="o">=</span> <span class="n">tabSpaces</span> <span class="o">-</span> <span class="p">(</span><span class="n">lentxt</span><span class="o">+</span><span class="n">tabSpaces</span><span class="p">)</span><span class="o">%</span><span class="n">tabSpaces</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">+=</span> <span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">spaces</span> <span class="o">+</span> <span class="n">s</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+=</span> <span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">spaces</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_fastCheckWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">)</span>
             <span class="n">pos</span><span class="o">+=</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="TTkString.tabCharPos"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.tabCharPos">[docs]</a>    <span class="k">def</span> <span class="nf">tabCharPos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tabSpaces</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alignTabRight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Return the char position in the string from the position in its representation with the tab solved</span>
+        <span class="sd">&#39;&#39;&#39;Return the char position in the string from the position in its representation with the tab and variable char sizes are solved</span>
 
 <span class="sd">        i.e.</span>
 
@@ -264,12 +289,15 @@
 
 <span class="sd">            pos                   X = 11</span>
 <span class="sd">            tab2Spaces |----------|---------------------|</span>
-<span class="sd">            Tabs            |--|  |  |-|     |-|   |</span>
-<span class="sd">            _text      Lorem    ipsum   dolor   sit amet,</span>
-<span class="sd">            chars      .....t   .....t  .....t  ...t.....</span>
-<span class="sd">            ret                   x = 8 (tab is a char)</span>
+<span class="sd">            Tabs             |-|  |  |-|     |-|   |</span>
+<span class="sd">            _text      L😁rem   ipsum   dolor   sit amet,</span>
+<span class="sd">            chars      .. ...t  .....t  .....t  ...t.....</span>
+<span class="sd">            ret                   x = 7 (tab is a char)</span>
+
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span><span class="p">:</span> <span class="k">return</span> <span class="n">pos</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="n">pos</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tabCharPosWideChar</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">tabSpaces</span><span class="p">,</span> <span class="n">alignTabRight</span><span class="p">)</span>
         <span class="n">slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">postxt</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># position of the text</span>
         <span class="n">lentxt</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># length of the text with resolved tabs</span>
@@ -289,6 +317,37 @@
             <span class="n">lentxt</span> <span class="o">+=</span> <span class="n">spaces</span>
             <span class="n">postxt</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_tabCharPosWideChar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tabSpaces</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alignTabRight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return the char position in the string from the position in its representation with the tab and variable char sizes are solved</span>
+
+<span class="sd">        i.e.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            pos                   X = 11</span>
+<span class="sd">            tab2Spaces |----------|---------------------|</span>
+<span class="sd">            Tabs             |-|  |  |-|     |-|   |</span>
+<span class="sd">            _text      L😁rem   ipsum   dolor   sit amet,</span>
+<span class="sd">            chars      .. ...t  .....t  .....t  ...t.....</span>
+<span class="sd">            ret                   x = 7 (tab is a char)</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># get pos in the slice:</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="n">pp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ch</span><span class="o">==</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="n">pp</span> <span class="o">+=</span> <span class="n">tabSpaces</span> <span class="o">-</span> <span class="p">(</span><span class="n">pp</span><span class="o">+</span><span class="n">tabSpaces</span><span class="p">)</span><span class="o">%</span><span class="n">tabSpaces</span>
+            <span class="k">elif</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
+                <span class="n">pp</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pp</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">dx</span> <span class="o">&lt;</span> <span class="n">pp</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TTkString.toAscii"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.toAscii">[docs]</a>    <span class="k">def</span> <span class="nf">toAscii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Return the ascii representation of the string &#39;&#39;&#39;</span>
@@ -315,7 +374,7 @@
 <span class="sd">        :param alignment: the alignment of the text to the full width :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`</span>
 <span class="sd">        :type alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">lentxt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
+        <span class="n">lentxt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">termWidth</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">width</span> <span class="ow">or</span> <span class="n">width</span> <span class="o">==</span> <span class="n">lentxt</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span>
 
         <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
@@ -337,11 +396,33 @@
                 <span class="c1"># TODO: Text Justification</span>
                 <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>   <span class="o">+</span> <span class="s2">&quot; &quot;</span>    <span class="o">*</span><span class="n">pad</span>
                 <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+</span> <span class="p">[</span><span class="n">color</span><span class="p">]</span><span class="o">*</span><span class="n">pad</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Trim the string to a fixed size taking care of the variable width unicode chars</span>
+            <span class="n">rt</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">sz</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
+                <span class="n">rt</span> <span class="o">+=</span> <span class="n">ch</span>
+                <span class="k">if</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="n">sz</span> <span class="o">+=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span> <span class="k">else</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">sz</span> <span class="o">==</span> <span class="n">width</span><span class="p">:</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span>  <span class="n">rt</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">rt</span><span class="p">)]</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">sz</span> <span class="o">&gt;</span> <span class="n">width</span><span class="p">:</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span>  <span class="n">rt</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">unicodeWideOverflowCh</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">_text</span><span class="p">)]</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">unicodeWideOverflowColor</span>
+                    <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Legacy, trim the string</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[:</span><span class="n">width</span><span class="p">]</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[:</span><span class="n">width</span><span class="p">]</span>
 
         <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_fastCheckWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ret</span></div>
 
@@ -389,6 +470,7 @@
             <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">ret</span></div>
 
@@ -409,6 +491,7 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>  <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span>
         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
             <span class="n">start</span><span class="o">=</span><span class="mi">0</span>
@@ -447,22 +530,21 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>  <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span>
         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
             <span class="n">start</span><span class="o">=</span><span class="mi">0</span>
             <span class="n">lenMatch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
             <span class="k">while</span> <span class="n">pos</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span> <span class="k">if</span> <span class="n">match</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span> <span class="k">else</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">start</span> <span class="o">=</span> <span class="n">pos</span><span class="o">+</span><span class="n">lenMatch</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">pos</span><span class="o">+</span><span class="n">lenMatch</span><span class="p">):</span>
-                    <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="o">+</span><span class="n">lenMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">color</span><span class="p">]</span><span class="o">*</span><span class="n">lenMatch</span>
         <span class="k">elif</span> <span class="n">posFrom</span> <span class="o">==</span> <span class="n">posTo</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">posFrom</span> <span class="o">&lt;</span> <span class="n">posTo</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
             <span class="n">posFrom</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span><span class="n">posFrom</span><span class="p">)</span>
             <span class="n">posTo</span>   <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span><span class="n">posTo</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">posFrom</span><span class="p">,</span> <span class="n">posTo</span><span class="p">):</span>
-                <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">posFrom</span><span class="p">:</span><span class="n">posTo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">color</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">posTo</span><span class="o">-</span><span class="n">posFrom</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span>
         <span class="k">return</span> <span class="n">ret</span></div>
@@ -479,6 +561,7 @@
         <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">fr</span><span class="p">:</span><span class="n">to</span><span class="p">]</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">fr</span><span class="p">:</span><span class="n">to</span><span class="p">]</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_fastCheckWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="TTkString.split"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">separator</span> <span class="p">):</span>
@@ -503,7 +586,10 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="k">def</span> <span class="nf">getData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getDataW</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TTkString.search"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regexp</span><span class="p">,</span> <span class="n">ignoreCase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Return the **re.match** of the **regexp**</span>
@@ -514,6 +600,9 @@
 <span class="sd">        :type ignoreCase: bool</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regexp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="k">if</span> <span class="n">ignoreCase</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TTkString.findall"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.findall">[docs]</a>    <span class="k">def</span> <span class="nf">findall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regexp</span><span class="p">,</span> <span class="n">ignoreCase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; FindAll the **regexp** matches in the string</span>
@@ -539,7 +628,91 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">strings</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="n">ret</span> <span class="o">+=</span> <span class="bp">self</span> <span class="o">+</span> <span class="n">s</span>
-        <span class="k">return</span> <span class="n">ret</span></div></div>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+    <span class="c1"># Unicode Zero/Half/Normal sized chars helpers:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_isWideCharData</span><span class="p">(</span><span class="n">ch</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;W&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">==</span><span class="s1">&#39;W&#39;</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_isSpecialWidthChar</span><span class="p">(</span><span class="n">ch</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span> <span class="ow">or</span>
+                 <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_getWidthText</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span> <span class="o">+</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">txt</span><span class="p">)</span> <span class="o">-</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">txt</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_getLenTextWoZero</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span> <span class="o">-</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">txt</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nextPos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="n">pos</span><span class="p">:]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pos</span><span class="o">+</span><span class="n">i</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">prevPos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="c1"># from TermTk.TTkCore.log import TTkLog</span>
+        <span class="c1"># TTkLog.debug(f&quot;-&gt;{self._text[:pos]}&lt;- {pos=}&quot;)</span>
+        <span class="c1"># TTkLog.debug(f&quot;{str(reversed(self._text[:pos]))} {pos=}&quot;)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[:</span><span class="n">pos</span><span class="p">])):</span>
+            <span class="c1"># TTkLog.debug(f&quot;{i}---&gt; {ch}    &quot;)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pos</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_fastCheckWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="p">(</span>
+                <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_termWidthW</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_checkWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># from: tests/timeit/09.widechar.check.py</span>
+        <span class="c1"># the first not halfsize char is 0x300</span>
+        <span class="c1"># this check is ~3 times faster than the 2 combined unicode checks</span>
+        <span class="c1"># and will quickly filter out the (more common) simple ascii text</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_termWidthW</span><span class="p">()</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span><span class="o">&gt;=</span><span class="mh">0x300</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hasSpecialWidth</span> <span class="o">=</span> <span class="n">tw</span> <span class="k">if</span> <span class="n">tw</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_termWidthW</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; String displayed length</span>
+
+<span class="sd">        This value consider the displayed size (Zero, Half, Full) of each character.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="o">+</span>
+             <span class="nb">sum</span><span class="p">(</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="o">-</span>
+             <span class="nb">sum</span><span class="p">(</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getDataW</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">retTxt</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">retCol</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">east_asian_width</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
+                <span class="n">retTxt</span> <span class="o">+=</span> <span class="p">(</span><span class="n">ch</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">retCol</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">,</span><span class="s1">&#39;Mn&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">retTxt</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">retTxt</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">retTxt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">retTxt</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+=</span><span class="n">ch</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">retTxt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="n">ch</span>
+                <span class="c1">#else:</span>
+                <span class="c1">#    retTxt = [f&quot;{ch}&quot;]</span>
+                <span class="c1">#    retCol = [TTkColor.RST]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">retTxt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+                <span class="n">retCol</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">retTxt</span><span class="p">,</span> <span class="n">retCol</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

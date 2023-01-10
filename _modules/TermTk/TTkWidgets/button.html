@@ -140,7 +140,7 @@
 
 <span class="sd">    :param bool checked: checked status if the button is checkable, defaults to &quot;False&quot;</span>
 <span class="sd">    :type checked: bool, optional</span>
-<span class="sd">    :param bool checkable: define if the burtton is checkable, defaults to &quot;False&quot;</span>
+<span class="sd">    :param bool checkable: define if the button is checkable, defaults to &quot;False&quot;</span>
 <span class="sd">    :type checkable: bool, optional</span>
 
 <span class="sd">    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonTextColor`</span>
@@ -172,23 +172,24 @@
         <span class="s1">&#39;_checkable&#39;</span><span class="p">,</span> <span class="s1">&#39;_checked&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColor&#39;</span><span class="p">,</span>        <span class="s1">&#39;_textColor&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColorClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_textColorClicked&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_borderColorFocus&#39;</span><span class="p">,</span>   <span class="s1">&#39;_textColorFocus&#39;</span>
+        <span class="s1">&#39;_borderColorFocus&#39;</span><span class="p">,</span>   <span class="s1">&#39;_textColorFocus&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_borderColorDisabled&#39;</span><span class="p">,</span><span class="s1">&#39;_textColorDisabled&#39;</span><span class="p">,</span>
         <span class="c1"># Signals</span>
         <span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;toggled&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+        <span class="n">textWidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">termWidth</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;border&#39;</span><span class="p">,</span> <span class="kc">False</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setDefaultSize</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">textWidth</span><span class="p">,</span> <span class="mi">3</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="k">else</span> <span class="mi">1</span> <span class="p">)</span>
 
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkButton&#39;</span> <span class="p">)</span>
         <span class="c1"># Define Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toggled</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="kc">False</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checkable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checkable&#39;</span><span class="p">,</span> <span class="kc">False</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;border&#39;</span><span class="p">,</span> <span class="kc">False</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;borderColor&#39;</span><span class="p">,</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonBorderColor</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textColor</span>   <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span>       <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonTextColor</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_borderColorClicked</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">buttonBorderColorClicked</span>
@@ -201,26 +202,46 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pressed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keyPressed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">textWidth</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="n">textWidth</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">isCheckable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkable</span>
+<div class="viewcode-block" id="TTkButton.isCheckable"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.isCheckable">[docs]</a>    <span class="k">def</span> <span class="nf">isCheckable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds whether the button is checkable</span>
 
-    <span class="k">def</span> <span class="nf">setCheckable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+<span class="sd">        :return: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkable</span></div>
+
+<div class="viewcode-block" id="TTkButton.setCheckable"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.setCheckable">[docs]</a>    <span class="k">def</span> <span class="nf">setCheckable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Enable/Disable the checkable property</span>
+
+<span class="sd">        :param ch: Checkable</span>
+<span class="sd">        :type ch: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checkable</span> <span class="o">=</span> <span class="n">ch</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">isChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span>
+<div class="viewcode-block" id="TTkButton.isChecked"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.isChecked">[docs]</a>    <span class="k">def</span> <span class="nf">isChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds whether the button is checked</span>
 
-    <span class="k">def</span> <span class="nf">setChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+<span class="sd">        Only checkable buttons can be checked. By default, the button is unchecked.</span>
+
+<span class="sd">        :return: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span></div>
+
+<div class="viewcode-block" id="TTkButton.setChecked"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.setChecked">[docs]</a>    <span class="k">def</span> <span class="nf">setChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the checked status</span>
+
+<span class="sd">        :param ch: Checked</span>
+<span class="sd">        :type ch: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="n">ch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textColor</span>
@@ -236,15 +257,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span> <span class="o">=</span> <span class="n">color</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
+<div class="viewcode-block" id="TTkButton.text"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds the text shown on the button</span>
 
-    <span class="nd">@text</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="sd">        :return: :class:`~TermTk.TTkCore.string.TTkString`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span></div>
+
+<div class="viewcode-block" id="TTkButton.setText"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.setText">[docs]</a>    <span class="k">def</span> <span class="nf">setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds the text shown on the button</span>
+
+<span class="sd">        :param text:</span>
+<span class="sd">        :type text: :class:`~TermTk.TTkCore.string.TTkString`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">==</span> <span class="n">text</span><span class="p">:</span> <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">termWidth</span><span class="p">()</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TTkButton.mousePressEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(f&quot;{self._text} Test Mouse {evt}&quot;)</span>
@@ -304,7 +333,6 @@
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">-</span><span class="mi">2</span>
         <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span>
-        <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">CENTER_ALIGN</span><span class="p">)</span><span class="o">.</span><span class="n">addColor</span><span class="p">(</span><span class="n">textColor</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span><span class="p">:</span>
@@ -316,9 +344,23 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span><span class="n">y</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">text</span><span class="o">.</span><span class="n">termWidth</span><span class="p">(),</span><span class="n">y</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
 
+    <span class="n">_ttkProperties</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Text&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">},</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">text</span><span class="p">,</span>     <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setText</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">},</span>
+        <span class="s1">&#39;Checkable&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;checkable&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">},</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">isCheckable</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setCheckable</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">},</span>
+        <span class="s1">&#39;Checked&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">},</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">isChecked</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setChecked</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">},</span>
+    <span class="p">}</span></div>
 </pre></div>
 
            </div>

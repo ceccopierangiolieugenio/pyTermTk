@@ -111,6 +111,7 @@
 <span class="c1"># SOFTWARE.</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -156,10 +157,9 @@
         <span class="c1"># Define Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkRadioButton&#39;</span> <span class="p">)</span>
         <span class="c1"># self.checked = pyTTkSignal()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="kc">False</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
@@ -168,11 +168,62 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">TTkRadioButton</span><span class="o">.</span><span class="n">_radioLists</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">checkState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkRadioButton.text"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds the text shown on the checkhox</span>
+
+<span class="sd">        :return: :class:`~TermTk.TTkCore.string.TTkString`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span></div>
+
+<div class="viewcode-block" id="TTkRadioButton.setText"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.setText">[docs]</a>    <span class="k">def</span> <span class="nf">setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds the text shown on the checkhox</span>
+
+<span class="sd">        :param text:</span>
+<span class="sd">        :type text: :class:`~TermTk.TTkCore.string.TTkString`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">==</span> <span class="n">text</span><span class="p">:</span> <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TTkRadioButton.isChecked"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.isChecked">[docs]</a>    <span class="k">def</span> <span class="nf">isChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This property holds whether the radiobutton is checked</span>
+
+<span class="sd">        :return: bool - True if :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.Checked` or :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.PartiallyChecked`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span></div>
+
+<div class="viewcode-block" id="TTkRadioButton.setChecked"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.setChecked">[docs]</a>    <span class="k">def</span> <span class="nf">setChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the check status</span>
+
+<span class="sd">        :param state:</span>
+<span class="sd">        :type tate: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCheckState</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span> <span class="k">if</span> <span class="n">state</span> <span class="k">else</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TTkRadioButton.checkState"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.checkState">[docs]</a>    <span class="k">def</span> <span class="nf">checkState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Retrieve the state of the radiobutton</span>
+
+<span class="sd">        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>
+            <span class="k">return</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span></div>
+
+<div class="viewcode-block" id="TTkRadioButton.setCheckState"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.setCheckState">[docs]</a>    <span class="k">def</span> <span class="nf">setCheckState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Sets the radiobutton&#39;s check state.</span>
+
+<span class="sd">        :param state: state of the checkbox</span>
+<span class="sd">        :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checkEvent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TTkRadioButton.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
@@ -190,7 +241,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">xColor</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_pressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_checkEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Uncheck the radio already checked;</span>
         <span class="k">for</span> <span class="n">radio</span> <span class="ow">in</span> <span class="n">TTkRadioButton</span><span class="o">.</span><span class="n">_radioLists</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">]:</span>
             <span class="k">if</span> <span class="bp">self</span> <span class="o">!=</span> <span class="n">radio</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
@@ -198,6 +249,9 @@
                     <span class="n">radio</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="n">radio</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_pressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checkEvent</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
@@ -210,7 +264,32 @@
            <span class="p">(</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span> <span class="ow">and</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Enter</span> <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pressEvent</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span></div></div>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="n">_ttkProperties</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Text&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">text</span><span class="p">,</span>     <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setText</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">},</span>
+        <span class="s1">&#39;Checked&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">isChecked</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setChecked</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">},</span>
+        <span class="s1">&#39;Check State&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;Checked&#39;</span>          <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>    <span class="p">,</span>
+                        <span class="s1">&#39;Unchecked&#39;</span>        <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>  <span class="p">}</span> <span class="p">},</span>
+                <span class="s1">&#39;get&#39;</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">checkState</span><span class="p">,</span>      <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;Checked&#39;</span>          <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>    <span class="p">,</span>
+                        <span class="s1">&#39;Unchecked&#39;</span>        <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>  <span class="p">}</span> <span class="p">},</span>
+                <span class="s1">&#39;set&#39;</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setCheckState</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;Checked&#39;</span>          <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>    <span class="p">,</span>
+                        <span class="s1">&#39;Unchecked&#39;</span>        <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>  <span class="p">}</span> <span class="p">},</span>
+         <span class="p">},</span>
+    <span class="p">}</span></div>
 </pre></div>
 
            </div>

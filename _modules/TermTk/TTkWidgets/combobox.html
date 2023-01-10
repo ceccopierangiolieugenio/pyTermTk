@@ -115,6 +115,7 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.gridlayout</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.list_</span> <span class="kn">import</span> <span class="n">TTkList</span>
@@ -122,7 +123,31 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.resizableframe</span> <span class="kn">import</span> <span class="n">TTkResizableFrame</span>
 
 <div class="viewcode-block" id="TTkComboBox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox">[docs]</a><span class="k">class</span> <span class="nc">TTkComboBox</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_list&#39;</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="s1">&#39;_lineEdit&#39;</span><span class="p">,</span> <span class="s1">&#39;_listw&#39;</span><span class="p">,</span> <span class="s1">&#39;_editable&#39;</span><span class="p">,</span> <span class="s1">&#39;_insertPolicy&#39;</span><span class="p">,</span> <span class="s1">&#39;_textAlign&#39;</span>
+    <span class="sd">&#39;&#39;&#39; TTkComboBox:</span>
+
+<span class="sd">    Editable = False</span>
+<span class="sd">    ::</span>
+
+<span class="sd">         [ - select -  ^]</span>
+
+<span class="sd">    Editable = True</span>
+<span class="sd">    ::</span>
+
+<span class="sd">         [ Text       [^]</span>
+
+<span class="sd">    :param list: the list of the items selectable by this combobox, defaults to &quot;[]&quot;</span>
+<span class="sd">    :type list: list(str), optional</span>
+
+<span class="sd">    :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy.InsertAtBottom`</span>
+<span class="sd">    :type insertPolicy: :class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy`, optional</span>
+
+<span class="sd">    :param textAlign: This enum type is used to define the text alignment, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN`</span>
+<span class="sd">    :tye textAlign: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional</span>
+
+<span class="sd">    :param editable: This property holds whether the combo box can be edited by the user, defaults to False</span>
+<span class="sd">    :type editable: bool, optional</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_list&#39;</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="s1">&#39;_lineEdit&#39;</span><span class="p">,</span> <span class="s1">&#39;_listw&#39;</span><span class="p">,</span> <span class="s1">&#39;_editable&#39;</span><span class="p">,</span> <span class="s1">&#39;_insertPolicy&#39;</span><span class="p">,</span> <span class="s1">&#39;_textAlign&#39;</span><span class="p">,</span> <span class="s1">&#39;_popupFrame&#39;</span><span class="p">,</span>
         <span class="c1">#signals</span>
         <span class="s1">&#39;currentIndexChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;currentTextChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;editTextChanged&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -131,7 +156,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">currentTextChanged</span>  <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">editTextChanged</span>     <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkCheckbox&#39;</span> <span class="p">)</span>
         <span class="c1"># self.checked = pyTTkSignal()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span> <span class="o">=</span> <span class="n">TTkLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_list</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="p">[]</span> <span class="p">)</span>
@@ -171,19 +195,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">editTextChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">item</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<div class="viewcode-block" id="TTkComboBox.textAlign"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.textAlign">[docs]</a>    <span class="k">def</span> <span class="nf">textAlign</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;his property holds the displayed text alignment</span>
 
-    <span class="k">def</span> <span class="nf">addItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">items</span><span class="p">):</span>
+<span class="sd">        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textAlign</span></div>
+
+<div class="viewcode-block" id="TTkComboBox.setTextAlign"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.setTextAlign">[docs]</a>    <span class="k">def</span> <span class="nf">setTextAlign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This property holds the displayed text alignment</span>
+
+<span class="sd">        :param align:</span>
+<span class="sd">        :type align: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textAlign</span> <span class="o">!=</span> <span class="n">align</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_textAlign</span> <span class="o">=</span> <span class="n">align</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TTkComboBox.addItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.addItem">[docs]</a>    <span class="k">def</span> <span class="nf">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">userData</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;addItem</span>
+
+<span class="sd">        Adds an item to the combobox with the given text, and containing the specified userData (stored in the Qt::UserRole). The item is appended to the list of existing items.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TTkComboBox.addItems"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.addItems">[docs]</a>    <span class="k">def</span> <span class="nf">addItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">items</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;addItems&#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkComboBox.clear"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;clear&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">lineEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span> <span class="k">else</span> <span class="kc">None</span>
@@ -208,25 +255,28 @@
             <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_textAlign</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawTTkString</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_textAlign</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;[&quot;</span><span class="p">,</span>    <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;[^]&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;^]&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">currentText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkComboBox.currentText"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.currentText">[docs]</a>    <span class="k">def</span> <span class="nf">currentText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;currentText&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">]</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
 
-    <span class="k">def</span> <span class="nf">currentIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+<div class="viewcode-block" id="TTkComboBox.currentIndex"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.currentIndex">[docs]</a>    <span class="k">def</span> <span class="nf">currentIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;currentIndex&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span></div>
 
-    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkComboBox.setCurrentIndex"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.setCurrentIndex">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setCurrentIndex&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">index</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
@@ -234,42 +284,49 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
-    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkComboBox.setCurrentText"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.setCurrentText">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">setCurrentText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setCurrentText&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setEditText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">id</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></div>
 
-    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkComboBox.setEditText"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.setEditText">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">setEditText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setEditText&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">insertPolicy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insertPolicy</span>
+<div class="viewcode-block" id="TTkComboBox.insertPolicy"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.insertPolicy">[docs]</a>    <span class="k">def</span> <span class="nf">insertPolicy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;insertPolicy&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insertPolicy</span></div>
 
-    <span class="k">def</span> <span class="nf">setInsertPolicy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_insertPolicy</span> <span class="o">=</span> <span class="n">ip</span>
+<div class="viewcode-block" id="TTkComboBox.setInsertPolicy"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.setInsertPolicy">[docs]</a>    <span class="k">def</span> <span class="nf">setInsertPolicy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setInsertPolicy&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insertPolicy</span> <span class="o">=</span> <span class="n">ip</span></div>
 
-    <span class="k">def</span> <span class="nf">isEditable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span>
+<div class="viewcode-block" id="TTkComboBox.isEditable"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.isEditable">[docs]</a>    <span class="k">def</span> <span class="nf">isEditable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;isEditable&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span></div>
 
-    <span class="k">def</span> <span class="nf">setEditable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">editable</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkComboBox.setEditable"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.setEditable">[docs]</a>    <span class="k">def</span> <span class="nf">setEditable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">editable</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setEditable&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span> <span class="o">=</span> <span class="n">editable</span>
         <span class="k">if</span> <span class="n">editable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span></div>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayAndChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_popupFrame</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_popupFrame</span> <span class="o">=</span> <span class="kc">None</span>
@@ -308,7 +365,52 @@
 
     <span class="k">def</span> <span class="nf">focusInEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_editable</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
+
+    <span class="n">_ttkProperties</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Editable&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;editable&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">isEditable</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setEditable</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">},</span>
+        <span class="s1">&#39;Text Align.&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;textAlign&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;None&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                        <span class="s1">&#39;Left&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Right&#39;</span>  <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">RIGHT_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Center&#39;</span> <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">CENTER_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Justify&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">JUSTIFY</span> <span class="p">}</span> <span class="p">},</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">textAlign</span><span class="p">,</span>    <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;None&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                        <span class="s1">&#39;Left&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Right&#39;</span>  <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">RIGHT_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Center&#39;</span> <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">CENTER_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Justify&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">JUSTIFY</span> <span class="p">}</span> <span class="p">}</span> <span class="p">,</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setTextAlign</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;None&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                        <span class="s1">&#39;Left&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Right&#39;</span>  <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">RIGHT_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Center&#39;</span> <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">CENTER_ALIGN</span><span class="p">,</span>
+                        <span class="s1">&#39;Justify&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Alignment</span><span class="o">.</span><span class="n">JUSTIFY</span> <span class="p">}</span> <span class="p">}</span> <span class="p">},</span>
+        <span class="s1">&#39;Insert Policy&#39;</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;insertPolicy&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;No Insert&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">NoInsert</span><span class="p">,</span>
+                        <span class="s1">&#39;At Top&#39;</span>      <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtTop</span><span class="p">,</span>
+                        <span class="s1">&#39;At Bottom&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtBottom</span> <span class="p">}</span> <span class="p">},</span>
+                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">insertPolicy</span><span class="p">,</span>    <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;No Insert&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">NoInsert</span><span class="p">,</span>
+                        <span class="s1">&#39;At Top&#39;</span>      <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtTop</span><span class="p">,</span>
+                        <span class="s1">&#39;At Bottom&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtBottom</span> <span class="p">}</span> <span class="p">},</span>
+                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setInsertPolicy</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;No Insert&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">NoInsert</span><span class="p">,</span>
+                        <span class="s1">&#39;At Top&#39;</span>      <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtTop</span><span class="p">,</span>
+                        <span class="s1">&#39;At Bottom&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">InsertPolicy</span><span class="o">.</span><span class="n">InsertAtBottom</span> <span class="p">}</span> <span class="p">}</span> <span class="p">},</span>
+    <span class="p">}</span></div>
 </pre></div>
 
            </div>

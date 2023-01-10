@@ -1,0 +1,8 @@
+
+TermTk.TTkGui.clipboard
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkGui.clipboard
+
+.. currentmodule:: TermTk.TTkGui.clipboard
+

@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.TTkTerm.term\_base
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.TTkTerm.term_base
+
+.. currentmodule:: TermTk.TTkCore.TTkTerm.term_base
+

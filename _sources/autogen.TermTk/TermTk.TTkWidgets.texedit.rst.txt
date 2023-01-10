@@ -8,6 +8,13 @@ TermTk.TTkWidgets.texedit
 
 
 
+TTkTextEditView
+===============
+
+.. autoclass:: TTkTextEditView
+   :members:
+
+
 TTkTextEdit
 ===========
 

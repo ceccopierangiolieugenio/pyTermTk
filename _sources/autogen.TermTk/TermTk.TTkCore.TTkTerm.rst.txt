@@ -18,3 +18,6 @@ TermTk.TTkCore.TTkTerm
   TermTk.TTkCore.TTkTerm.readinputlinux
   TermTk.TTkCore.TTkTerm.readinputlinux_thread
   TermTk.TTkCore.TTkTerm.term
+  TermTk.TTkCore.TTkTerm.term_base
+  TermTk.TTkCore.TTkTerm.term_pyodide
+  TermTk.TTkCore.TTkTerm.term_unix

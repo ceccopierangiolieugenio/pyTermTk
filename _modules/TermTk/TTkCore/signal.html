@@ -155,6 +155,7 @@
     <span class="k">return</span> <span class="n">_pyTTkSignal_obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <span class="k">class</span> <span class="nc">_pyTTkSignal_obj</span><span class="p">():</span>
+    <span class="n">_signals</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_types&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_revision&#39;</span><span class="p">,</span> <span class="s1">&#39;_connected_slots&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal</span>
@@ -173,6 +174,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_revision</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;revision&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected_slots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_pyTTkSignal_obj</span><span class="o">.</span><span class="n">_signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">):</span>
         <span class="c1"># ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect</span>
@@ -199,7 +201,8 @@
 
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">slot</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_connected_slots</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected_slots</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_connected_slots</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_types</span><span class="p">):</span>
@@ -210,6 +213,11 @@
 
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected_slots</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">clearAll</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_pyTTkSignal_obj</span><span class="o">.</span><span class="n">_signals</span><span class="p">:</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_ret</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

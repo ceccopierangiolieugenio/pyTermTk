@@ -282,14 +282,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkCore.string.TTkString.tabCharPos">
 <span class="sig-name descname"><span class="pre">tabCharPos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabSpaces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignTabRight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.tabCharPos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.tabCharPos" title="Permalink to this definition"></a></dt>
-<dd><p>Return the char position in the string from the position in its representation with the tab solved</p>
+<dd><p>Return the char position in the string from the position in its representation with the tab and variable char sizes are solved</p>
 <p>i.e.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span>                   <span class="n">X</span> <span class="o">=</span> <span class="mi">11</span>
-<span class="n">tab2Spaces</span> <span class="o">|----------|---------------------|</span>
-<span class="n">Tabs</span>            <span class="o">|--|</span>  <span class="o">|</span>  <span class="o">|-|</span>     <span class="o">|-|</span>   <span class="o">|</span>
-<span class="n">_text</span>      <span class="n">Lorem</span>    <span class="n">ipsum</span>   <span class="n">dolor</span>   <span class="n">sit</span> <span class="n">amet</span><span class="p">,</span>
-<span class="n">chars</span>      <span class="o">.....</span><span class="n">t</span>   <span class="o">.....</span><span class="n">t</span>  <span class="o">.....</span><span class="n">t</span>  <span class="o">...</span><span class="n">t</span><span class="o">.....</span>
-<span class="n">ret</span>                   <span class="n">x</span> <span class="o">=</span> <span class="mi">8</span> <span class="p">(</span><span class="n">tab</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">char</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pos                   X = 11
+tab2Spaces |----------|---------------------|
+Tabs             |-|  |  |-|     |-|   |
+_text      L😁rem   ipsum   dolor   sit amet,
+chars      .. ...t  .....t  .....t  ...t.....
+ret                   x = 7 (tab is a char)
 </pre></div>
 </div>
 </dd></dl>

@@ -78,6 +78,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -127,7 +128,65 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkComboBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox" title="Permalink to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><p>TTkComboBox:</p>
+<p>Editable = False</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="o">-</span> <span class="n">select</span> <span class="o">-</span>  <span class="o">^</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Editable = True</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="n">Text</span>       <span class="p">[</span><span class="o">^</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em>, </em><em>optional</em>) – the list of the items selectable by this combobox, defaults to “[]”</p></li>
+<li><p><strong>insertPolicy</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.InsertPolicy" title="TermTk.TTkCore.constant.TTkConstant.InsertPolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">InsertPolicy</span></code></a>, optional) – the policy used to determine where user-inserted items should appear in the combobox, defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.InsertPolicy.InsertAtBottom" title="TermTk.TTkCore.constant.TTkConstant.InsertPolicy.InsertAtBottom"><code class="xref py py-class docutils literal notranslate"><span class="pre">InsertAtBottom</span></code></a></p></li>
+<li><p><strong>textAlign</strong> – This enum type is used to define the text alignment, defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN" title="TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN"><code class="xref py py-class docutils literal notranslate"><span class="pre">CENTER_ALIGN</span></code></a></p></li>
+<li><p><strong>editable</strong> (<em>bool</em><em>, </em><em>optional</em>) – This property holds whether the combo box can be edited by the user, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tye textAlign</dt>
+<dd class="field-even"><p><a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment" title="TermTk.TTkCore.constant.TTkConstant.Alignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Alignment</span></code></a>, optional</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.addItem">
+<span class="sig-name descname"><span class="pre">addItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.addItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.addItem" title="Permalink to this definition"></a></dt>
+<dd><p>Adds an item to the combobox with the given text, and containing the specified userData (stored in the Qt::UserRole). The item is appended to the list of existing items.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.addItems">
+<span class="sig-name descname"><span class="pre">addItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.addItems"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.addItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.clear" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.currentIndex">
+<span class="sig-name descname"><span class="pre">currentIndex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.currentIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.currentIndex" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.currentText">
+<span class="sig-name descname"><span class="pre">currentText</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.currentText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.currentText" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.insertPolicy">
+<span class="sig-name descname"><span class="pre">insertPolicy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.insertPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.insertPolicy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.isEditable">
+<span class="sig-name descname"><span class="pre">isEditable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.isEditable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.isEditable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.keyEvent">
 <span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.keyEvent" title="Permalink to this definition"></a></dt>
 <dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
@@ -180,6 +239,53 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.resizeEvent">
 <span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.resizeEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Event Callback triggered after a successful resize</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.setCurrentIndex">
+<span class="sig-name descname"><span class="pre">setCurrentIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.setCurrentIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.setCurrentIndex" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.setCurrentText">
+<span class="sig-name descname"><span class="pre">setCurrentText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.setCurrentText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.setCurrentText" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.setEditText">
+<span class="sig-name descname"><span class="pre">setEditText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.setEditText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.setEditText" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.setEditable">
+<span class="sig-name descname"><span class="pre">setEditable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">editable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.setEditable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.setEditable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.setInsertPolicy">
+<span class="sig-name descname"><span class="pre">setInsertPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.setInsertPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.setInsertPolicy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.setTextAlign">
+<span class="sig-name descname"><span class="pre">setTextAlign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">align</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.setTextAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.setTextAlign" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds the displayed text alignment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>align</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment" title="TermTk.TTkCore.constant.TTkConstant.Alignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Alignment</span></code></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.combobox.TTkComboBox.textAlign">
+<span class="sig-name descname"><span class="pre">textAlign</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/combobox.html#TTkComboBox.textAlign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.combobox.TTkComboBox.textAlign" title="Permalink to this definition"></a></dt>
+<dd><p>his property holds the displayed text alignment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment" title="TermTk.TTkCore.constant.TTkConstant.Alignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Alignment</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

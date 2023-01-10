@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -208,6 +209,21 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.addTab">
+<span class="sig-name descname"><span class="pre">addTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.addTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.addTab" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.currentIndex">
+<span class="sig-name descname"><span class="pre">currentIndex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.currentIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.currentIndex" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.insertTab">
+<span class="sig-name descname"><span class="pre">insertTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.insertTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.insertTab" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.keyEvent">
 <span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.keyEvent" title="Permalink to this definition"></a></dt>
 <dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
@@ -236,10 +252,40 @@ this need to be overridden in the widget.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.removeTab">
+<span class="sig-name descname"><span class="pre">removeTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.removeTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.removeTab" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.resizeEvent">
 <span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.resizeEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Event Callback triggered after a successful resize</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.setCurrentIndex">
+<span class="sig-name descname"><span class="pre">setCurrentIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.setCurrentIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.setCurrentIndex" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.setTabData">
+<span class="sig-name descname"><span class="pre">setTabData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.setTabData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.setTabData" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.setTabsClosable">
+<span class="sig-name descname"><span class="pre">setTabsClosable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">closable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.setTabsClosable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.setTabsClosable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.tabData">
+<span class="sig-name descname"><span class="pre">tabData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.tabData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.tabData" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.tabsClosable">
+<span class="sig-name descname"><span class="pre">tabsClosable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.tabsClosable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.tabsClosable" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.wheelEvent">
@@ -271,6 +317,21 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.addMenu">
+<span class="sig-name descname"><span class="pre">addMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.addMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.addMenu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.addTab">
+<span class="sig-name descname"><span class="pre">addTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.addTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.addTab" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.currentWidget">
+<span class="sig-name descname"><span class="pre">currentWidget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.currentWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.currentWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.dropEvent">
 <span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.dropEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.dropEvent" title="Permalink to this definition"></a></dt>
 <dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
@@ -290,6 +351,11 @@ this need to be overridden in the widget.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.insertTab">
+<span class="sig-name descname"><span class="pre">insertTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.insertTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.insertTab" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.keyEvent">
@@ -320,10 +386,25 @@ this need to be overridden in the widget.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.removeTab">
+<span class="sig-name descname"><span class="pre">removeTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.removeTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.removeTab" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.resizeEvent">
 <span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.resizeEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Event Callback triggered after a successful resize</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.setCurrentWidget">
+<span class="sig-name descname"><span class="pre">setCurrentWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.setCurrentWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.setCurrentWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.widget">
+<span class="sig-name descname"><span class="pre">widget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.widget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

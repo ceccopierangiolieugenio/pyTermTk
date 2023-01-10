@@ -25,6 +25,7 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.list_
   TermTk.TTkWidgets.listwidget
   TermTk.TTkWidgets.menubar
+  TermTk.TTkWidgets.progressbar
   TermTk.TTkWidgets.radiobutton
   TermTk.TTkWidgets.resizableframe
   TermTk.TTkWidgets.scrollarea

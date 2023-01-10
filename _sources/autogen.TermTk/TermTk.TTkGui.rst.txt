@@ -10,7 +10,8 @@ TermTk.TTkGui
 .. autosummary::
   :toctree: ./
 
+  TermTk.TTkGui.clipboard
   TermTk.TTkGui.drag
   TermTk.TTkGui.textcursor
   TermTk.TTkGui.textdocument
-  TermTk.TTkGui.textwrap
+  TermTk.TTkGui.textwrap1

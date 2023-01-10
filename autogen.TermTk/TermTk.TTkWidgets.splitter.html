@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -128,18 +129,34 @@
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkSplitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.addItem">
+<span class="sig-name descname"><span class="pre">addItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.addItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.addItem" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.addWidget">
 <span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.addWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.addWidget" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
-<p>i.e.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.indexOf">
+<span class="sig-name descname"><span class="pre">indexOf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.indexOf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.indexOf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.insertItem">
+<span class="sig-name descname"><span class="pre">insertItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.insertItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.insertItem" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.insertWidget">
+<span class="sig-name descname"><span class="pre">insertWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.insertWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.insertWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.mouseDragEvent">
@@ -184,6 +201,11 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.orientation">
+<span class="sig-name descname"><span class="pre">orientation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.orientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.orientation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.paintEvent">
 <span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
@@ -191,24 +213,40 @@ this need to be overridden in the widget.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.removeItem">
+<span class="sig-name descname"><span class="pre">removeItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.removeItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.removeItem" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.removeWidget">
 <span class="sig-name descname"><span class="pre">removeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.removeWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.removeWidget" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
-<p>i.e.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.replaceItem">
+<span class="sig-name descname"><span class="pre">replaceItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.replaceItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.replaceItem" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.replaceWidget">
+<span class="sig-name descname"><span class="pre">replaceWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.replaceWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.replaceWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.resizeEvent">
 <span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.resizeEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Event Callback triggered after a successful resize</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.setSizes">
+<span class="sig-name descname"><span class="pre">setSizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sizes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.setSizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.setSizes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.splitter.TTkSplitter.widget">
+<span class="sig-name descname"><span class="pre">widget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/splitter.html#TTkSplitter.widget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.splitter.TTkSplitter.widget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

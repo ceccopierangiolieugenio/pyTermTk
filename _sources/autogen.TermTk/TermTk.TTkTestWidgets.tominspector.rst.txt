@@ -1,0 +1,15 @@
+
+TermTk.TTkTestWidgets.tominspector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkTestWidgets.tominspector
+
+.. currentmodule:: TermTk.TTkTestWidgets.tominspector
+
+
+
+TTkTomInspector
+===============
+
+.. autoclass:: TTkTomInspector
+   :members:

@@ -308,6 +308,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span><span class="n">item</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">insertItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">widget</span> <span class="o">:=</span> <span class="n">item</span><span class="p">),</span> <span class="n">TTkLayoutItem</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
+                <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zSortItems</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -326,9 +330,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span><span class="n">widget</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">insertWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
-            <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
@@ -344,7 +346,10 @@
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> \
                <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="o">==</span> <span class="n">widget</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">findBranchWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
@@ -357,21 +362,15 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">raiseWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="n">maxz</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findBranchWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
-            <span class="n">maxz</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">maxz</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">maxz</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">z</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
             <span class="n">item</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zSortItems</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">lowerWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="n">minz</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findBranchWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
-            <span class="n">minz</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">minz</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">minz</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">z</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
             <span class="n">item</span><span class="o">.</span><span class="n">lowerWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zSortItems</span><span class="p">()</span>

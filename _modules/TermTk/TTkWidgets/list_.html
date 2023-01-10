@@ -114,6 +114,7 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkAbstract.abstractscrollarea</span> <span class="kn">import</span> <span class="n">TTkAbstractScrollArea</span>
 
 <div class="viewcode-block" id="TTkList"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.list_.html#TermTk.TTkWidgets.list_.TTkList">[docs]</a><span class="k">class</span> <span class="nc">TTkList</span><span class="p">(</span><span class="n">TTkAbstractScrollArea</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;TTkList&#39;&#39;&#39;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_listView&#39;</span><span class="p">,</span> <span class="s1">&#39;itemClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;textClicked&#39;</span><span class="p">,</span>
         <span class="c1"># Forwarded Methods</span>
@@ -124,7 +125,6 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">TTkAbstractScrollArea</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="p">,</span> <span class="s1">&#39;TTkList&#39;</span> <span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;parent&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_listView</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;listWidget&#39;</span><span class="p">,</span><span class="n">TTkListWidget</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setViewport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_listView</span><span class="p">)</span>

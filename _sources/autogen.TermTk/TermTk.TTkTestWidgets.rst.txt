@@ -13,5 +13,7 @@ TermTk.TTkTestWidgets
   TermTk.TTkTestWidgets.keypressview
   TermTk.TTkTestWidgets.keypressviewfont
   TermTk.TTkTestWidgets.logviewer
+  TermTk.TTkTestWidgets.testabstractscroll
   TermTk.TTkTestWidgets.testwidget
   TermTk.TTkTestWidgets.testwidgetsizes
+  TermTk.TTkTestWidgets.tominspector

@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -84,6 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.splitter.html">TermTk.TTkWidgets.splitter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.tabwidget.html">TermTk.TTkWidgets.tabwidget</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.texedit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttktexteditview">TTkTextEditView</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ttktextedit">TTkTextEdit</a></li>
 </ul>
 </li>
@@ -122,6 +124,153 @@
              
   <section id="module-TermTk.TTkWidgets.texedit">
 <span id="termtk-ttkwidgets-texedit"></span><h1>TermTk.TTkWidgets.texedit<a class="headerlink" href="#module-TermTk.TTkWidgets.texedit" title="Permalink to this heading"></a></h1>
+<section id="ttktexteditview">
+<h2>TTkTextEditView<a class="headerlink" href="#ttktexteditview" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTextEditView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.keyEvent">
+<span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.keyEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.mouseDoubleClickEvent">
+<span class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.mouseDoubleClickEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.mouseDoubleClickEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.mouseDragEvent">
+<span class="sig-name descname"><span class="pre">mouseDragEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.mouseDragEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.mouseDragEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.mousePressEvent">
+<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.mousePressEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.mouseReleaseEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse release events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.mouseTapEvent">
+<span class="sig-name descname"><span class="pre">mouseTapEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.mouseTapEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.mouseTapEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.paintEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Paint Event callback,
+this need to be overridden in the widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.texedit.TTkTextEditView.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/texedit.html#TTkTextEditView.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.texedit.TTkTextEditView.resizeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Event Callback triggered after a successful resize</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="ttktextedit">
 <h2>TTkTextEdit<a class="headerlink" href="#ttktextedit" title="Permalink to this heading"></a></h2>
 <dl class="py class">

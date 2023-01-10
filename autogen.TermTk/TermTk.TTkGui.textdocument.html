@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkGui.textwrap" href="TermTk.TTkGui.textwrap.html" />
+    <link rel="next" title="TermTk.TTkGui.textwrap1" href="TermTk.TTkGui.textwrap1.html" />
     <link rel="prev" title="TermTk.TTkGui.textcursor" href="TermTk.TTkGui.textcursor.html" /> 
 </head>
 
@@ -54,10 +54,14 @@
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.clipboard.html">TermTk.TTkGui.clipboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.drag.html">TermTk.TTkGui.drag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textcursor.html">TermTk.TTkGui.textcursor</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkGui.textdocument</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textwrap.html">TermTk.TTkGui.textwrap</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkGui.textdocument</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttktextdocument">TTkTextDocument</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textwrap1.html">TermTk.TTkGui.textwrap1</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
@@ -97,6 +101,62 @@
              
   <section id="module-TermTk.TTkGui.textdocument">
 <span id="termtk-ttkgui-textdocument"></span><h1>TermTk.TTkGui.textdocument<a class="headerlink" href="#module-TermTk.TTkGui.textdocument" title="Permalink to this heading"></a></h1>
+<section id="ttktextdocument">
+<h2>TTkTextDocument<a class="headerlink" href="#ttktextdocument" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkGui.textdocument.TTkTextDocument">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTextDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkGui/textdocument.html#TTkTextDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkGui.textdocument.TTkTextDocument" title="Permalink to this definition"></a></dt>
+<dd><p>Undo,Redo Logic</p>
+<dl>
+<dt>Old:</dt><dd><dl class="simple">
+<dt>_snapshotId: = last saved/undo/redo state</dt><dd><p>3 = doc4</p>
+</dd>
+<dt>_snapshots:</dt><dd><p>[doc1, doc2, doc3, doc4, doc5, doc6, …]</p>
+</dd>
+</dl>
+</dd>
+<dt>New:</dt><dd><dl>
+<dt>SnapshotId:</dt><dd><p>2</p>
+</dd>
+<dt>Snapshots:                  _lastSnap     _dataLines (unstaged)</dt><dd><p>╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕         ╒═══╕
+│ 0 │ │ 1 │ │ 2 │ │ 3 │ │ 4 │         │ 5 │
+└───┘ └───┘ └───┘ └───┘ └───┘         └───┘</p>
+</dd>
+<dt>Cursors:</dt><dd><p>c0,   c1,   c2,   c3,   c4 = _lastCursor</p>
+</dd>
+<dt>Diffs:</dt><dd><p>[   d01,  d12,  d23,  d34   ] = Forward  Diffs
+[   d10,  d21,  d32,  d43   ] = Backward Diffs</p>
+</dd>
+<dt>Slices: = common txt slices between snapshots</dt><dd><p>[   s01,  s12,  s23,  s34   ]</p>
+</dd>
+<dt>Data Structure</dt><dd><blockquote>
+<div><blockquote>
+<div><p>╔═══════════════╗                         ╔═══════════════╗
+║   Snapshot B  ║          ┌─────────────&gt;║   Snapshot C  ║
+╟───────────────╢          │              ╟───────────────╢
+║ _nextDiff     ║──────┐   │              ║ _nextDiff     ║───&gt; Next snapshot</p>
+</div></blockquote>
+<p>┌───║ _prevDiff     ║      │   │          ┌───║ _prevDiff     ║  or Null if at the end
+│   ╚═══════════════╝      │   │          │   ╚═══════════════╝
+V              A           V   │          V</p>
+</div></blockquote>
+<p>╔═══════════════╗  │  ╔═══════════════╗   ╔═══════════════╗
+║   Diff B-&gt;A   ║  │  ║   Diff B-&gt;C   ║   ║   Diff C-&gt;B   ║
+╟───────────────╢  │  ╟───────────────╢   ╟───────────────╢
+║ slice = txtBA ║  │  ║ slice = txtBC ║   ║ slice = txtBA ║
+║ snap          ║  │  ║ snap          ║   ║ snap          ║
+╚═══════════════╝  │  ╚═══════════════╝   ╚═══════════════╝</p>
+<blockquote>
+<div><p>│                             │
+└─────────────────────────────┘</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -104,7 +164,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TermTk.TTkGui.textcursor.html" class="btn btn-neutral float-left" title="TermTk.TTkGui.textcursor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="TermTk.TTkGui.textwrap.html" class="btn btn-neutral float-right" title="TermTk.TTkGui.textwrap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkGui.textwrap1.html" class="btn btn-neutral float-right" title="TermTk.TTkGui.textwrap1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
