@@ -82,7 +82,8 @@ class TermThread(threading.Thread):
                         cursor = self.textEdit.textCursor()
                         cursor.insertText(o.decode('utf-8').replace('\r','').replace('\033[?2004h','').replace('\033[?2004l',''))
                         cursor.movePosition(ttk.TTkTextCursor.End)
-                        self.textEdit.viewport().viewMoveTo(0, cursor.position().line)
+                        self.textEdit.textEditView()._updateSize()
+                        self.textEdit.textEditView().viewMoveTo(0, cursor.position().line)
 
 
 
@@ -108,21 +109,21 @@ class TerminalView(ttk.TTkTextEditView):
 ttk.TTkLog.use_default_file_logging()
 root = ttk.TTk()
 
-win1 = ttk.TTkWindow(parent=root, pos=(1,1), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout())
+win1 = ttk.TTkWindow(parent=root, pos=(1,1), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 tt1 = TermThread()
 te1 = ttk.TTkTextEdit(lineNumber=True, textEditView=TerminalView(termThread=tt1))
 win1.layout().addWidget(te1)
 tt1.setTextEdit(te1)
 tt1.start()
 
-win2 = ttk.TTkWindow(parent=root, pos=(10,5), size=(70,15), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout())
+win2 = ttk.TTkWindow(parent=root, pos=(10,5), size=(70,15), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 tt2 = TermThread()
 te2 = ttk.TTkTextEdit(lineNumber=True, textEditView=TerminalView(termThread=tt2))
 win2.layout().addWidget(te2)
 tt2.setTextEdit(te2)
 tt2.start()
 
-wlog = ttk.TTkWindow(parent=root,pos = (15,4), size=(87,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+wlog = ttk.TTkWindow(parent=root,pos = (32,12), size=(90,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
 wlog.setLayout(ttk.TTkHBoxLayout())
 ttk.TTkLogViewer(parent=wlog, follow=True )
 
