@@ -97,7 +97,6 @@ class TTk(TTkWidget):
         w,h = TTkTerm.getTerminalSize()
         self.setGeometry(0,0,w,h)
 
-        TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootWidget(self)
 
     frame = 0

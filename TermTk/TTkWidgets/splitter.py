@@ -42,7 +42,7 @@ class TTkSplitter(TTkFrame):
         self._initSizes = []
         self._separatorSelected = None
         self._orientation = TTkK.HORIZONTAL
-        TTkFrame.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._orientation = kwargs.get('orientation', TTkK.HORIZONTAL)
         self.setBorder(kwargs.get('border' , False))
         self.setFocusPolicy(TTkK.ClickFocus)

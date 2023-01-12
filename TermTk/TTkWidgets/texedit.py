@@ -585,6 +585,9 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.undoAvailable = self._textEditView.undoAvailable
         self.redoAvailable = self._textEditView.redoAvailable
 
+    def textEditView(self):
+        return self._textEditView
+
     def setLineNumber(self, ln):
         self._lineNumberView.setVisible(ln)
 
