@@ -146,14 +146,18 @@ class TTkHelper:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
-    def overlay(caller, widget, x, y, modal=False):
+    def overlay(caller, widget, x, y, modal=False, forceBoundaries=True):
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
         # Try to keep the overlay widget inside the terminal
-        wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
-        wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
+        if forceBoundaries:
+            wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
+            wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
+        else:
+            wx += x
+            wy += y
         TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
