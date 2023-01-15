@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import TermTk as ttk
+import yaml
 
 class SuperControlWidget(ttk.TTkResizableFrame):
     def __init__(self, wid, *args, **kwargs):
@@ -76,6 +77,7 @@ class SuperControlWidget(ttk.TTkResizableFrame):
     def paintEvent(self):
         w,h = self.size()
         self._wid.paintEvent()
+        self._wid.paintChildCanvas()
         self._canvas.paintCanvas(
                 self._wid.getCanvas(),
                 (    1,     1, w, h), # geometry
@@ -92,11 +94,30 @@ class SuperWidget(ttk.TTkWidget):
         self._wid = wid
         self._wid.move(*kwargs['pos'])
         self._wid._canvas.show()
+        self._superRootWidget = kwargs.get('superRootWidget',False)
         kwargs['maxSize'] = wid.maximumSize()
         kwargs['minSize'] = wid.minimumSize()
         kwargs['size']    = wid.size()
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
+
+    def dumpDict(self):
+        wid = self._wid
+        children = []
+        for w in self.layout().children():
+            children.append(w.widget().dumpDict())
+        ret = {
+            'class'  : wid.__class__.__name__,
+            'params' : {
+                'name' : wid._name,
+                'pos'  : wid.pos(),
+                'size' : wid.size(),
+                'minSize': wid.minimumSize(),
+                'maxSize': wid.maximumSize()
+            },
+            'children': children
+        }
+        return ret
 
     def updateAll(self):
         self.update()
@@ -106,6 +127,8 @@ class SuperWidget(ttk.TTkWidget):
         ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
         if issubclass(type(data),ttk.TTkWidget):
             self.layout().addWidget(sw := SuperWidget(wid=data, pos=(evt.x, evt.y)))
+            self._wid.addWidget(data)
+            data.move(evt.x, evt.y)
             sw.weModified = self.weModified
             sw.widgetSelected = self.widgetSelected
             self.update()
@@ -124,6 +147,7 @@ class SuperWidget(ttk.TTkWidget):
         return super().resizeEvent(w, h)
 
     def mousePressEvent(self, evt):
+        if self._superRootWidget: return False
         scw = SuperControlWidget(self)
         ttk.TTkHelper.removeOverlay()
         ttk.TTkHelper.overlay(self, scw, -1,-1, forceBoundaries=False)
@@ -145,19 +169,20 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self.widgetSelected = ttk.pyTTkSignal(ttk.TTkWidget, ttk.TTkWidget)
         super().__init__(*args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
+        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
+        self._ttk.weModified = self.weModified
+        self._ttk.widgetSelected = self.widgetSelected
+        self.layout().addWidget(self._ttk)
 
-    def dropEvent(self, evt) -> bool:
-        data = evt.data()
-        ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
-        if issubclass(type(data),ttk.TTkWidget):
-            self.layout().addWidget(sw := SuperWidget(wid=data, pos=(evt.x, evt.y)))
-            sw.weModified = self.weModified
-            sw.widgetSelected = self.widgetSelected
-            self.update()
-            self.weModified.emit()
-            self.viewChanged.emit()
-            return True
-        return False
+    def getTTk(self):
+        return self._ttk
+
+    def getYaml(self):
+        return yaml.dump(self._ttk.dumpDict())
+
+    def resizeEvent(self, w, h):
+        self._ttk.resize(w-8,h-4)
+        return super().resizeEvent(w, h)
 
     @ttk.pyTTkSlot()
     def _viewChangedHandler(self):
@@ -171,12 +196,13 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
     def viewDisplayedSize(self):
         return self.size()
 
-    # def paintEvent(self):
-    #     _,_,w,h = self.layout().fullWidgetAreaGeometry()
-    #     self._canvas.drawBox(pos=(0,0),size=(w,h))
+    def paintEvent(self):
+        w,h = self.size()
+        self._canvas.fill(pos=(0,0),size=(w,h), char="╳", color=ttk.TTkColor.fg("#444400")+ttk.TTkColor.bg("#000044"))
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setViewport(WindowEditorView())
-
+        self.setViewport(wev := WindowEditorView())
+        self.getTTk  = wev.getTTk
+        self.getYaml = wev.getYaml

@@ -69,7 +69,7 @@ from .propertyeditor import PropertyEditor
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_pippo')
+    __slots__ = ('_pippo', '_windowEditor')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -83,20 +83,23 @@ class TTkDesigner(TTkGridLayout):
         # mainSplit.addWidget(sa := TTkScrollArea())
         # sa.viewport().setLayout(TTkGridLayout())
         # sa.viewport().layout().addWidget(WindowEditor())
+
+        self._windowEditor = WindowEditor()
+
         mainSplit.addWidget(centralSplit := TTkSplitter(orientation=TTkK.VERTICAL))
-        centralSplit.addWidget(we := WindowEditor())
+        centralSplit.addWidget(self._windowEditor)
         centralSplit.addWidget(TTkLogViewer())
 
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
 
-        rightSplit.addItem(ti := TreeInspector(we.viewport()))
+        rightSplit.addItem(ti := TreeInspector(self._windowEditor.viewport()))
         rightSplit.addItem(pe := PropertyEditor())
-        rightSplit.addWidget(TTkButton(text='E',border=True))
+        rightSplit.addWidget(be := TTkButton(text='E', border=True, maxHeight=3))
 
         ti.widgetSelected.connect(pe.setDetail)
-        we.viewport().widgetSelected.connect(pe.setDetail)
+        self._windowEditor.viewport().widgetSelected.connect(pe.setDetail)
 
-        we.viewport().weModified.connect(ti.refresh)
+        self._windowEditor.viewport().weModified.connect(ti.refresh)
 
         fileMenu = topMenuFrame.menubarTop().addMenu("&File")
         fileMenu.addMenu("Open")
@@ -104,7 +107,8 @@ class TTkDesigner(TTkGridLayout):
         fileMenu.addMenu("Exit")
 
         fileMenu = topMenuFrame.menubarTop().addMenu("F&orm")
-        fileMenu.addMenu("Preview...")
+        fileMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
+        be.clicked.connect(self.preview)
 
         def _showAbout(btn):
             TTkHelper.overlay(None, About(), 30,10)
@@ -124,3 +128,7 @@ class TTkDesigner(TTkGridLayout):
         # # debugSplit.addWidget(TTkLabel(text='My Own Debug', maxHeight=1, minHeight=1))
         # debugSplit.addWidget(TTkTomInspector())
         # debugSplit.addWidget(TTkLogViewer())
+
+    def preview(self, btn=None):
+        for line in self._windowEditor.getYaml().split('\n'):
+            TTkLog.debug(f"{line}")

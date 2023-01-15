@@ -43,7 +43,7 @@ class TreeInspector(ttk.TTkGridLayout):
 
         self._tomTree = ttk.TTkTree()
         self._tomTree.setHeaderLabels(["Object", "Class", "Visibility", "Layout"])
-        self._tomTree.addTopLevelItem(TreeInspector._getTomTreeItem(windowEditor._widgetItem))
+        self._tomTree.addTopLevelItem(TreeInspector._getTomTreeItem(windowEditor.getTTk().widgetItem()))
 
         @ttk.pyTTkSlot(_TTkTomTreeWidgetItem, int)
         def _itemSelected(wi, _):
@@ -86,7 +86,7 @@ class TreeInspector(ttk.TTkGridLayout):
     @ttk.pyTTkSlot()
     def refresh(self, widget=None):
         self._tomTree.clear()
-        self._tomTree.addTopLevelItem(TreeInspector._getTomTreeItem(self._windowEditor._widgetItem))
+        self._tomTree.addTopLevelItem(TreeInspector._getTomTreeItem(self._windowEditor.getTTk().widgetItem()))
 
     @staticmethod
     def _getTomTreeItem(layoutItem, widSelected=None):

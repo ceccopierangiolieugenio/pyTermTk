@@ -160,6 +160,9 @@ class PropertyEditor(ttk.TTkGridLayout):
                             elif prop['get']['type'] == ttk.TTkColor and 'set' in prop:
                                 value = ttk.TTkColorButtonPicker(color=getval, height=1)
                                 value.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                            elif type(prop['get']['type']) == dict:
+                                curVal = prop['get']['cb'](domw)
+                                value = ttk.TTkLabel(text=f"{curVal}")
                             else:
                                 if type(prop['get']['type']) == str:
                                     getval = f"{prop['get']['type']} = {getval}"
