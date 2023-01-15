@@ -115,6 +115,28 @@ class TTkCanvas:
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
 
+    def fill(self, pos, size, char=' ', color=TTkColor.RST):
+        w,h = self.size()
+        fx,fy = pos
+        fw,fh = size
+        # the fill area is outside the boundaries
+        if fx >= w or fy>=h: return
+        if fx<0:
+            fw += fx
+            fx =  0
+        if fy<0:
+            fh += fy
+            fy =  0
+        if fw<=0 or fh<=0: return
+        fw = min(fw, w+fx)
+        fh = min(fh, h+fy)
+
+        fillCh    = [char]*fw
+        fillColor = [color]*fw
+        for iy in range(fy,fy+fh):
+            self._data[iy][fx:fx+fw]   = fillCh
+            self._colors[iy][fx:fx+fw] = fillColor
+
     def drawVLine(self, pos, size, color=TTkColor.RST):
         if size == 0: return
         x,y = pos
