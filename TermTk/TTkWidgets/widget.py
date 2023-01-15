@@ -664,18 +664,38 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._lookAndFeel.modified.connect(self.update)
 
     _ttkProperties = {
-        'X' : {
-                'init': {'name':'x', 'type':int } ,
-                'get':  { 'cb':x,    'type':int } },
-        'Y' : {
-                'init': {'name':'y', 'type':int } ,
-                'get':  { 'cb':y,    'type':int } },
-        'Width' : {
-                'init': {'name':'width', 'type':int } ,
-                'get':  { 'cb':width,    'type':int } },
-        'Height' : {
-                'init': {'name':'height', 'type':int } ,
-                'get':  { 'cb':height,    'type':int } },
+        # 'X' : {
+        #         'init': {'name':'x', 'type':int } ,
+        #         'get':  { 'cb':x,    'type':int } },
+        # 'Y' : {
+        #         'init': {'name':'y', 'type':int } ,
+        #         'get':  { 'cb':y,    'type':int } },
+        'Position' : {
+                'init': {'name':'pos', 'type': {
+                                'name': 'x', 'type':int,
+                                'name': 'y', 'type':int } },
+                'get':  { 'cb':pos,    'type': {
+                                'name': 'x', 'type':int,
+                                'name': 'y', 'type':int } },
+                'set':  { 'cb':move,   'type': {
+                                'name': 'x', 'type':int,
+                                'name': 'y', 'type':int } } },
+        'Size' : {
+                'init': {'name':'size', 'type': {
+                                'name': 'width', 'type':int,
+                                'name': 'height', 'type':int } },
+                'get':  { 'cb':size,    'type': {
+                                'name': 'width', 'type':int,
+                                'name': 'height', 'type':int } },
+                'set':  { 'cb':resize,   'type': {
+                                'name': 'width', 'type':int,
+                                'name': 'height', 'type':int } } },
+        # 'Width' : {
+        #         'init': {'name':'width', 'type':int } ,
+        #         'get':  { 'cb':width,    'type':int } },
+        # 'Height' : {
+        #         'init': {'name':'height', 'type':int } ,
+        #         'get':  { 'cb':height,    'type':int } },
         'Min Width' : {
                 'init': {'name':'minWidth',    'type':int } ,
                 'get':  { 'cb':minimumWidth,   'type':int } ,
