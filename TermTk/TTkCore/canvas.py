@@ -608,39 +608,40 @@ class TTkCanvas:
         # TTkLog.debug(f"PaintCanvas:{geom=} {bound=} {self._widget._name=} {self._data[0] if self._data else 1234}")
         x, y, w, h  = geom
         bx,by,bw,bh = bound
+        cw,ch = self.size()
         # out of bound
         if not self._visible: return
         if not canvas._visible: return
         if canvas._width==0 or canvas._height==0: return
-        if x+w<=bx or y+h<=by or bx+bw-1<x or by+bh-1<y:
-            return
+        if bx+bw<0 or by+bh<0 or bx>=cw or by>=ch: return
+        if x+w<=bx or y+h<=by or bx+bw<=x or by+bh<=y: return
 
-        x = min(x,self._width-1)
-        y = min(y,self._height-1)
-        w = min(w,self._width-x)
-        h = min(h,self._height-y)
+        x = min(x,cw-1)
+        y = min(y,ch-1)
+        w = min(w,cw-x)
+        h = min(h,ch-y)
 
         xoffset = min(max(0,bx-x),canvas._width-1)
         yoffset = min(max(0,by-y),canvas._height-1)
         wslice = min(w if x+w < bx+bw else bx+bw-x,canvas._width)
         hslice = min(h if y+h < by+bh else by+bh-y,canvas._height)
 
+        a, b = x+xoffset, x+wslice
         for iy in range(yoffset,hslice):
-            a, b = x+xoffset, x+wslice
             self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
             self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
 
             # Check the full wide chars on the edge of the two canvasses
-            if ((0 <= a < self._width) and self._data[y+iy][a]==''):
+            if ((0 <= a < cw) and self._data[y+iy][a]==''):
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 < b <= self._width) and TTkString._isWideCharData(self._data[y+iy][b-1])):
+            if ((0 < b <= cw) and TTkString._isWideCharData(self._data[y+iy][b-1])):
                 self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 < a <= self._width) and TTkString._isWideCharData(self._data[y+iy][a-1])):
+            if ((0 < a <= cw) and TTkString._isWideCharData(self._data[y+iy][a-1])):
                 self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 <= b < self._width) and self._data[y+iy][b]==''):
+            if ((0 <= b < cw) and self._data[y+iy][b]==''):
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
 
