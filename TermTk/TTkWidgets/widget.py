@@ -228,25 +228,26 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                         (   lx,    ly, lw, lh)) # bound
         else:
             for child in item.zSortedItems:
-                # The geometry include the padding of the layout
+                # The Parent Layout Geometry (lx,ly,lw,lh) include the padding of the layout
                 igx, igy, igw, igh = item.geometry()
                 iox, ioy = item.offset()
-                ix = igx+ox+iox
-                iy = igy+oy+ioy
-                iw = igw-iox
-                ih = igh-ioy
-                # child outside the bound
+                # Moved Layout to the new geometry (ix,iy,iw,ih)
+                ix = igx+ox # + iox
+                iy = igy+oy # + ioy
+                iw = igw # -iox
+                ih = igh # -ioy
+                # return if Child outside the bound
                 if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
-                # Reduce the bound to the minimum visible
-                bx = max(igx,ix,lx)
-                by = max(igy,iy,ly)
+                # Crop the Layout based on the Parent Layout Geometry
+                bx = max(ix,lx)
+                by = max(iy,ly)
                 bw = min(ix+iw,lx+lw)-bx
                 bh = min(iy+ih,ly+lh)-by
-                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix,iy))
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix+iox,iy+ioy))
 
     def paintChildCanvas(self):
         ''' .. caution:: Don't touch this! '''
-        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry(), self.rootLayout().pos())
+        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry(), self.rootLayout().offset())
 
     def moveEvent(self, x: int, y: int):
         ''' Event Callback triggered after a successful move'''
