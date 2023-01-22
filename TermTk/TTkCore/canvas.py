@@ -612,7 +612,7 @@ class TTkCanvas:
         # out of bound
         if not self._visible: return
         if not canvas._visible: return
-        if canvas._width==0 or canvas._height==0: return
+        if canvas._width<=0 or canvas._height<=0: return
         if bx+bw<0 or by+bh<0 or bx>=cw or by>=ch: return
         if x+w<=bx or y+h<=by or bx+bw<=x or by+bh<=y: return
 

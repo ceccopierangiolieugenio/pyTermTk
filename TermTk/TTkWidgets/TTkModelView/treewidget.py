@@ -44,6 +44,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         item: TTkTreeWidgetItem
         level: int
         data: list
+        widgets: list
 
     def __init__(self, *args, **kwargs):
         # Signals
@@ -71,7 +72,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.setFocusPolicy(TTkK.ClickFocus)
         self._rootItem = None
         self.clear()
+        self.setPadding(1,0,0,0)
+        self.viewChanged.connect(self._viewChangedHandler)
 
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        x,y = self.getViewOffsets()
+        self.layout().setOffset(-x,-y)
 
     # Overridden function
     def viewFullAreaSize(self) -> (int, int):
@@ -97,6 +104,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def addTopLevelItem(self, item):
         self._rootItem.addChild(item)
+        item.setParent(self)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
@@ -229,10 +237,20 @@ class TTkTreeWidget(TTkAbstractScrollView):
             # Align all the other Separators relative to the selection
             for i in range(ss, len(self._columnsPos)):
                 self._columnsPos[i] += diff
+            self._alignWidgets()
             self.update()
             self.viewChanged.emit()
             return True
         return False
+
+    def _alignWidgets(self):
+        for y,c in enumerate(self._cache):
+            for i,w in enumerate(c.widgets):
+                if w:
+                    _pos   = self._columnsPos[i-1] if i else 0
+                    _width = self._columnsPos[i] - _pos
+                    w.setGeometry(_pos,y+1,_width,1)
+                    w.show()
 
     @pyTTkSlot()
     def _refreshCache(self):
@@ -246,24 +264,30 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._cache = []
         def _addToCache(_child, _level):
             _data = []
+            _widgets = []
             for _il in range(len(self._header)):
                 _icon = _child.icon(_il)
+                _widget = _child.widget(_il)
                 if _icon:
                     _icon = ' '+_icon+' '
                 if _il==0:
                     _data.append(TTkString('  '*_level+_icon+_child.data(_il)))
+                    _widgets.append(_child.widget(_il))
                 else:
                     _data.append(TTkString(_icon+_child.data(_il)))
+                    _widgets.append(_child.widget(_il))
 
             self._cache.append(TTkTreeWidget._Cache(
                                 item  = _child,
                                 level = _level,
-                                data  = _data))
+                                data  = _data,
+                                widgets = _widgets))
             if _child.isExpanded():
                 for _c in _child.children():
                    _addToCache(_c, _level+1)
         for c in self._rootItem.children():
             _addToCache(c,0)
+        self._alignWidgets()
         self.update()
         self.viewChanged.emit()
 
