@@ -326,7 +326,8 @@ class TTkHelper:
         layout = widget.widgetItem()
         while layout:
             px, py = layout.pos()
-            wx, wy = wx+px, wy+py
+            ox, oy = layout.offset()
+            wx, wy = wx+px+ox, wy+py+oy
             layout = layout.parent()
         return (wx, wy)
 

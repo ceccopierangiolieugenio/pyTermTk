@@ -207,7 +207,7 @@ class TTkString():
             ret                   x = 7 (tab is a char)
 
         '''
-        if not self._hasTab and self._hasSpecialWidth is None: return pos
+        if not self._hasTab and self._hasSpecialWidth is None: return max(0,min(pos,len(self._text)))
         if self._hasSpecialWidth is not None:
             return self._tabCharPosWideChar(pos, tabSpaces, alignTabRight)
         slices = self._text.split("\t")
