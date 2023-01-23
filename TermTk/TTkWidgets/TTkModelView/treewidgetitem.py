@@ -119,7 +119,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         for c in self._children:
             c.setParent(parent)
 
-
     def hasWidgets(self):
         return self._hasWidgets
 
@@ -145,6 +144,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         child._sortColumn = self._sortColumn
         self._setDefaultIcon()
         self._sort(children=False)
+        if self._parentWidget:
+            child.setParent(self._parentWidget)
         child.dataChanged.connect(self.emitDataChanged)
         self.dataChanged.emit()
 

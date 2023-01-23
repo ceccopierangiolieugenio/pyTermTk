@@ -187,6 +187,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         if 0 <= y < len(self._cache):
             item  = self._cache[y].item
             level = self._cache[y].level
+            # check if the expand button is pressed with +-1 tollerance
             if level*2 <= x < level*2+3 and \
                ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or
                  item.childIndicatorPolicy() == TTkK.ShowIndicator ):
@@ -247,9 +248,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for y,c in enumerate(self._cache):
             for i,w in enumerate(c.widgets):
                 if w:
-                    _pos   = self._columnsPos[i-1] if i else 0
+                    _pos   = self._columnsPos[i-1]+1 if i else 3 + c.level*2
                     _width = self._columnsPos[i] - _pos
-                    w.setGeometry(_pos,y+1,_width,1)
+                    w.setGeometry(_pos,y,_width,1)
                     w.show()
 
     @pyTTkSlot()
