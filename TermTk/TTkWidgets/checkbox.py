@@ -143,7 +143,7 @@ class TTkCheckbox(TTkWidget):
         ''' Set the check status
 
         :param state:
-        :type tate: bool
+        :type state: bool
         '''
         self.setCheckState(TTkK.Checked if state else TTkK.Unchecked)
 
