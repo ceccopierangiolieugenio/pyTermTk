@@ -140,6 +140,13 @@ class TTkString():
     def __getitem__(self, index):
         raise NotImplementedError()
 
+    def __int__(self):
+        return int(self._text)
+    def __float__(self):
+        return float(self._text)
+    def __complex__(self):
+        return complex(self._text)
+
     # Operators
     def __lt__(self, other): return self._text <  other if type(other) is str else self._text <  other._text
     def __le__(self, other): return self._text <= other if type(other) is str else self._text <= other._text
