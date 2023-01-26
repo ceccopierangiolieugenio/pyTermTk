@@ -92,6 +92,19 @@ python3 -m cProfile -o profiler.bin tests/test.ui.004.py
 cprofilev -f profiler.bin
 # open http://127.0.0.1:4000
 ```
+##### py-spy
+```bash
+# install
+pip install py-spy
+
+# run the application
+python3 demo/demo.py
+
+# on another terminal run the py-spy
+sudo env "PATH=$PATH" \
+    py-spy top \
+       --pid  $(ps -A -o pid,cmd | grep demo.py | grep -v grep | sed 's,python.*,,')
+```
 ##### pyroscope
 [pyroscope](https://pyroscope.io/) can be used as well for profiling
 
