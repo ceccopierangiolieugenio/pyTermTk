@@ -148,12 +148,12 @@ class TTkString():
         return complex(self._text)
 
     # Operators
-    def __lt__(self, other): return self._text <  other if type(other) is str else self._text <  other._text
-    def __le__(self, other): return self._text <= other if type(other) is str else self._text <= other._text
-    def __eq__(self, other): return self._text == other if type(other) is str else self._text == other._text
-    def __ne__(self, other): return self._text != other if type(other) is str else self._text != other._text
-    def __gt__(self, other): return self._text >  other if type(other) is str else self._text >  other._text
-    def __ge__(self, other): return self._text >= other if type(other) is str else self._text >= other._text
+    def __lt__(self, other): return self._text <  other._text if issubclass(type(other),TTkString) else self._text <  other
+    def __le__(self, other): return self._text <= other._text if issubclass(type(other),TTkString) else self._text <= other
+    def __eq__(self, other): return self._text == other._text if issubclass(type(other),TTkString) else self._text == other
+    def __ne__(self, other): return self._text != other._text if issubclass(type(other),TTkString) else self._text != other
+    def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
+    def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
     def isdigit(self):
         return self._text.isdigit()
