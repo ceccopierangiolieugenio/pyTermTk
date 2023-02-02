@@ -382,17 +382,3 @@ class TTkSplitter(TTkFrame):
                 if ret > item.maximumWidth():
                     ret = item.maximumWidth()
         return ret
-
-    _ttkProperties = {
-        'Border' : {
-                'init': {'name':'border', 'type':bool } },
-        'Orientation' : {
-                'init': {'name':'orientation', 'type':'singleflag',
-                    'flags': {
-                        'Horizontal' : TTkK.HORIZONTAL ,
-                        'Vertical'   : TTkK.VERTICAL   } } ,
-                'get':  {'cb':orientation,     'type':'singleflag',
-                    'flags': {
-                        'Horizontal' : TTkK.HORIZONTAL ,
-                        'Vertical'   : TTkK.VERTICAL   } } }
-    }

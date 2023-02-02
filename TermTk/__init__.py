@@ -6,5 +6,6 @@ from .TTkTypes    import *
 from .TTkLayouts  import *
 from .TTkTestWidgets import *
 from .TTkAbstract import *
+from .TTkUiTools import *
 
 TTkCfg.theme = TTkTheme()

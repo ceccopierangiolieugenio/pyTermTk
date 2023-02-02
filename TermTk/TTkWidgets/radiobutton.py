@@ -178,27 +178,3 @@ class TTkRadioButton(TTkWidget):
             return True
         return False
 
-    _ttkProperties = {
-        'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':text,     'type':TTkString } ,
-                'set':  {'cb':setText,  'type':TTkString } },
-        'Checked' : {
-                'init': {'name':'checked', 'type':bool } ,
-                'get':  {'cb':isChecked,   'type':bool } ,
-                'set':  {'cb':setChecked,  'type':bool } },
-        'Check State' : {
-                'init': { 'name':'checked', 'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  } },
-                'get' : { 'cb':checkState,      'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  } },
-                'set' : { 'cb':setCheckState,   'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  } },
-         },
-    }

@@ -209,35 +209,3 @@ class TTkCheckbox(TTkWidget):
             self._pressEvent()
             return True
         return False
-
-    _ttkProperties = {
-        'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':text,     'type':TTkString } ,
-                'set':  {'cb':setText,  'type':TTkString } },
-        'Tristate' : {
-                'init': {'name':'tristate', 'type':bool } ,
-                'get':  {'cb':isTristate,   'type':bool } ,
-                'set':  {'cb':setTristate,  'type':bool } },
-        'Checked' : {
-                'init': {'name':'checked', 'type':bool } ,
-                'get':  {'cb':isChecked,   'type':bool } ,
-                'set':  {'cb':setChecked,  'type':bool } },
-        'Check State' : {
-                'init': { 'name':'checked', 'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  ,
-                        'Partially Checked': TTkK.PartiallyChecked } },
-                'get' : { 'cb':checkState,      'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  ,
-                        'Partially Checked': TTkK.PartiallyChecked } },
-                'set' : { 'cb':setCheckState,   'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  ,
-                        'Partially Checked': TTkK.PartiallyChecked } },
-         },
-    }

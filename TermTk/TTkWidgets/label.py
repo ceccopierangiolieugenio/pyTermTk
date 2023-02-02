@@ -81,14 +81,3 @@ class TTkLabel(TTkWidget):
 
     def colorUpdated(self, color):
         self.update()
-
-    _ttkProperties = {
-        'Text' : {
-                'init': {'name':'text',  'type':TTkString },
-                'get':  {'cb':text,      'type':TTkString } ,
-                'set':  {'cb':setText,   'type':TTkString } },
-        'Color' : {
-                'init': {'name':'color',  'type':TTkColor },
-                'get':  {'cb':color,      'type':TTkColor } ,
-                'set':  {'cb':setColor,   'type':TTkColor } },
-    }
