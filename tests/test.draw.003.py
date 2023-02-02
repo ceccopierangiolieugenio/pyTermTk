@@ -47,25 +47,25 @@ s4 = TTkString() + ( TTkColor.UNDERLINE     +
 
 TTkTerm.push(
         TTkTerm.Cursor.moveTo(2,4) +
-        s1.toAansi() )
+        s1.toAnsi() )
 time.sleep(1)
 TTkLog.info("next : 3")
 
 TTkTerm.push(
         TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        s2.toAansi() )
+        s2.toAnsi() )
 time.sleep(1)
 TTkLog.info("next : 2")
 
 TTkTerm.push(
         TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        s3.toAansi() )
+        s3.toAnsi() )
 time.sleep(1)
 TTkLog.info("next : 1")
 
 TTkTerm.push(
         TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(3) +
-        s4.toAansi() )
+        s4.toAnsi() )
 time.sleep(3)
 TTkLog.info("Ending")
 

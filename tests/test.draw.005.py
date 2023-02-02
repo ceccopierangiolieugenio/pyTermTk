@@ -49,13 +49,13 @@ base = TTkString() + color1 + "Tes;tXYZ" + color2 + "012345;ABCDEF;XYZ" + color3
 
 TTkTerm.push(
     TTkTerm.Cursor.moveTo(2,4) +
-    base.toAansi() )
+    base.toAnsi() )
 time.sleep(0.5)
 
 for s in base.split(';'):
     TTkTerm.push(
             TTkTerm.Cursor.moveDown(1) + TTkTerm.Cursor.moveLeft(5) +
-            s.toAansi() )
+            s.toAnsi() )
     time.sleep(0.5)
 
 time.sleep(5)
