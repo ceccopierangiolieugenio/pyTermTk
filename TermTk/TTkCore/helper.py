@@ -234,7 +234,8 @@ class TTkHelper:
         TTkHelper._mousePos = pos
         # update the position of the Drag and Drop Widget
         if TTkHelper._dnd:
-            TTkHelper._dnd['d'].pixmap().move(pos[0], pos[1])
+            hsx, hsy = TTkHelper._dnd['d'].hotSpot()
+            TTkHelper._dnd['d'].pixmap().move(pos[0]-hsx, pos[1]-hsy)
 
     @staticmethod
     def mousePos():

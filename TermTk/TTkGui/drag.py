@@ -31,32 +31,40 @@ class _TTkDragDisplayWidget(TTkWidget):
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , '_TTkDragDisplayWidget' )
-        self._x, self._y = TTkHelper.mousePos()
 
-    def setPixmap(self, pixmap):
+    def setPixmap(self, pixmap, hotSpot):
         w,h = pixmap.size()
+        hsx, hsy= hotSpot
+        x, y = TTkHelper.mousePos()
         self._pixmap = pixmap
-        self.resize(w,h)
+        self.setGeometry(x-hsx,y-hsy,w,h)
 
     def paintEvent(self):
         _,_,w,h = self.geometry()
         self._canvas.paintCanvas(self._pixmap, (0,0,w,h), (0,0,w,h), (0,0,w,h))
 
 class TTkDrag():
-    __slots__ = ('_data', '_pixmap', '_showPixmap')
+    __slots__ = ('_data', '_pixmap', '_showPixmap', '_hotSpot')
     def __init__(self):
         self._data = None
         self._showPixmap = True
+        self._hotSpot = (0,0)
         self._pixmap = _TTkDragDisplayWidget(size=(5,1))
         pixmap = TTkCanvas(width=5, height=1)
         pixmap.drawText(pos=(0,0), text='[...]')
-        self._pixmap.setPixmap(pixmap)
+        self._pixmap.setPixmap(pixmap, self._hotSpot)
 
     def setData(self, data):
         self._data = data
 
     def data(self):
         return self._data
+
+    def setHotSpot(self, x,y):
+        self._hotSpot = (x,y)
+
+    def hotSpot(self):
+        return self._hotSpot
 
     def setPixmap(self, pixmap):
         if issubclass(type(pixmap),TTkWidget):
@@ -65,7 +73,7 @@ class TTkDrag():
             pixmap = pixmap.getCanvas()
         if type(pixmap) is TTkCanvas:
             pixmap.updateSize()
-            self._pixmap.setPixmap(pixmap)
+            self._pixmap.setPixmap(pixmap, self._hotSpot)
 
     def pixmap(self):
         return self._pixmap
@@ -87,6 +95,7 @@ class TTkDrag():
         ret = TTkDropEvent()
         ret._data = drag._data
         ret._pixmap = drag._pixmap
+        ret._hotSpot = drag._hotSpot
         return ret
 
     def getDragEnterEvent(self, evt):

@@ -122,13 +122,42 @@ class SuperWidget(ttk.TTkWidget):
     def updateAll(self):
         self.update()
 
+    def mouseReleaseEvent(self, evt) -> bool:
+        if self._superRootWidget: return False
+        scw = SuperControlWidget(self)
+        ttk.TTkHelper.removeOverlay()
+        ttk.TTkHelper.overlay(self, scw, -1,-1, forceBoundaries=False)
+        self.widgetSelected.emit(self._wid,self)
+        return True
+
+    def mouseDragEvent(self, evt) -> bool:
+        if self._superRootWidget: return False
+        drag = ttk.TTkDrag()
+        data = self
+        data.paintChildCanvas()
+        drag.setHotSpot(evt.x, evt.y)
+        drag.setPixmap(data.getCanvas())
+        drag.setData(data)
+        drag.exec()
+        self.parentWidget().layout().removeWidget(self)
+        self.parentWidget().update()
+        return True
+
     def dropEvent(self, evt) -> bool:
         data = evt.data()
+        hsx,hsy = evt.hotSpot()
         ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
         if issubclass(type(data),ttk.TTkWidget):
-            self.layout().addWidget(sw := SuperWidget(wid=data, pos=(evt.x, evt.y)))
+            if issubclass(type(data), SuperWidget):
+                sw = data
+                self.layout().addWidget(sw)
+                data = data._wid
+                sw.move(evt.x-hsx, evt.y-hsy)
+                sw.show()
+            else:
+                self.layout().addWidget(sw := SuperWidget(wid=data, pos=(evt.x, evt.y)))
             self._wid.addWidget(data)
-            data.move(evt.x, evt.y)
+            data.move(evt.x-hsx, evt.y-hsy)
             sw.weModified = self.weModified
             sw.widgetSelected = self.widgetSelected
             self.update()
@@ -145,14 +174,6 @@ class SuperWidget(ttk.TTkWidget):
         self._wid.resize(w,h)
         self._wid._canvas.updateSize()
         return super().resizeEvent(w, h)
-
-    def mousePressEvent(self, evt):
-        if self._superRootWidget: return False
-        scw = SuperControlWidget(self)
-        ttk.TTkHelper.removeOverlay()
-        ttk.TTkHelper.overlay(self, scw, -1,-1, forceBoundaries=False)
-        self.widgetSelected.emit(self._wid,self)
-        return True
 
     def paintEvent(self):
         w,h = self.size()

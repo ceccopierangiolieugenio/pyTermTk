@@ -365,15 +365,15 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         ''' .. caution:: Don't touch this! '''
         if not self._enabled: return True
 
+        if self.rootLayout() is not None:
+            if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
+                return True
+
         # Mouse Drag has priority because it
         # should be handled by the focused widget
         # unless there is a Drag and Drop event ongoing
         if evt.evt == TTkK.Drag and not TTkHelper.isDnD():
             if self.mouseDragEvent(evt):
-                return True
-
-        if self.rootLayout() is not None:
-            if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
                 return True
 
         # If there is an overlay and it is modal,
