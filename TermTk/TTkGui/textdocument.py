@@ -280,4 +280,15 @@ class TTkTextDocument():
     def restoreSnapshotNext(self):
         return self._restoreSnapshotDiff(True)
 
+    # def toHtml(self, encoding): pass
+    # def toMarkdown(self, features): pass
+    def toAnsi(self):
+        return "\n".join([l.toAnsi() for l in self._dataLines])
+
+    def toPlainText(self):
+        return "\n".join([str(l) for l in self._dataLines])
+
+    def toRawText(self):
+        return TTkString("\n").join(self._dataLines)
+
 
