@@ -96,6 +96,7 @@ class TTkDesigner(TTkGridLayout):
         rightSplit.addItem(pe := PropertyEditor())
         rightSplit.addWidget(be := TTkButton(text='E', border=True, maxHeight=3))
 
+        ti.widgetSelected.connect(lambda _,s : s.pushSuperControlWidget())
         ti.widgetSelected.connect(pe.setDetail)
         self._windowEditor.viewport().widgetSelected.connect(pe.setDetail)
 

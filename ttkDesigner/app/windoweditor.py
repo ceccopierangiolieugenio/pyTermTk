@@ -100,6 +100,7 @@ class SuperWidget(ttk.TTkWidget):
         kwargs['size']    = wid.size()
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
+        self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
     def dumpDict(self):
         wid = self._wid
@@ -122,11 +123,17 @@ class SuperWidget(ttk.TTkWidget):
     def updateAll(self):
         self.update()
 
-    def mouseReleaseEvent(self, evt) -> bool:
+    def mousePressEvent(self, evt) -> bool:
+        return True
+
+    def pushSuperControlWidget(self):
         if self._superRootWidget: return False
         scw = SuperControlWidget(self)
         ttk.TTkHelper.removeOverlay()
         ttk.TTkHelper.overlay(self, scw, -1,-1, forceBoundaries=False)
+
+    def mouseReleaseEvent(self, evt) -> bool:
+        self.pushSuperControlWidget()
         self.widgetSelected.emit(self._wid,self)
         return True
 

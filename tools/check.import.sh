@@ -31,7 +31,8 @@ __check(){
             -e "filebuffer.py:import threading" \
             -e "texedit.py:from math import log10, ceil" \
             -e "string.py:import unicodedata" \
-            -e "progressbar.py:import math"
+            -e "progressbar.py:import math" \
+            -e "uiproperties.py:from .properties import *"
 } ;
 
 if __check ;  then
