@@ -25,16 +25,16 @@ from TermTk.TTkWidgets import *
 from .properties import *
 
 TTkUiProperties = {
-        TTkButton:         TTkButtonProperties,
-        TTkCheckbox:       TTkCheckboxProperties,
-        TTkComboBox:       TTkComboBoxProperties,
-        TTkFrame:          TTkFrameProperties,
-        TTkLabel:          TTkLabelProperties,
-        TTkLineEdit:       TTkLineEditProperties,
-        TTkList:           TTkListProperties,
-        TTkRadioButton:    TTkRadioButtonProperties,
-        TTkResizableFrame: TTkResizableFrameProperties,
-        TTkSplitter:       TTkSplitterProperties,
-        TTkWidget:         TTkWidgetProperties,
-        TTkWindow:         TTkWindowProperties,
+        TTkButton.__name__:         TTkButtonProperties,
+        TTkCheckbox.__name__:       TTkCheckboxProperties,
+        TTkComboBox.__name__:       TTkComboBoxProperties,
+        TTkFrame.__name__:          TTkFrameProperties,
+        TTkLabel.__name__:          TTkLabelProperties,
+        TTkLineEdit.__name__:       TTkLineEditProperties,
+        TTkList.__name__:           TTkListProperties,
+        TTkRadioButton.__name__:    TTkRadioButtonProperties,
+        TTkResizableFrame.__name__: TTkResizableFrameProperties,
+        TTkSplitter.__name__:       TTkSplitterProperties,
+        TTkWidget.__name__:         TTkWidgetProperties,
+        TTkWindow.__name__:         TTkWindowProperties,
 }

@@ -172,6 +172,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._parent.layout().removeWidget(self)
             self._parent = None
 
+    def name(self):
+        return self._name
+
     def widgetItem(self): return self._widgetItem
 
     def addWidget(self, widget):

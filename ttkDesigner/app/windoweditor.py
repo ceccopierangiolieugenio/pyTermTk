@@ -98,24 +98,46 @@ class SuperWidget(ttk.TTkWidget):
         kwargs['maxSize'] = wid.maximumSize()
         kwargs['minSize'] = wid.minimumSize()
         kwargs['size']    = wid.size()
+        padt, padb, padl, padr = wid.getPadding()
+        kwargs['paddingTop'] = padt
+        kwargs['paddingBottom'] = padb
+        kwargs['paddingLeft'] = padl
+        kwargs['paddingRight'] = padr
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
     def dumpDict(self):
         wid = self._wid
+        def _dumpPrimitive(val):
+            return val
+        def _dumpList(val, propType):
+            ret = []
+            for i,t in enumerate(propType):
+                if t['type'] in (int,str,float,bool):
+                    ret.append(_dumpPrimitive(val[i]))
+            return ret
         children = []
         for w in self.layout().children():
             children.append(w.widget().dumpDict())
+        params = {}
+        for cc in reversed(type(wid).__mro__):
+            # if hasattr(cc,'_ttkProperties'):
+            if issubclass(cc, ttk.TTkWidget):
+                ccName = cc.__name__
+                if ccName in ttk.TTkUiProperties:
+                    for p in ttk.TTkUiProperties[ccName]:
+                        prop = ttk.TTkUiProperties[ccName][p]
+                        propType = prop['get']['type']
+                        propCb = prop['get']['cb']
+                        # ttk.TTkLog.debug(ccName)
+                        if propType in (int,str,float,bool):
+                            params |= {p: _dumpPrimitive(propCb(wid))}
+                        elif type(propType) in (list,tuple):
+                            params |= {p: _dumpList(propCb(wid), propType)}
         ret = {
             'class'  : wid.__class__.__name__,
-            'params' : {
-                'name' : wid._name,
-                'pos'  : wid.pos(),
-                'size' : wid.size(),
-                'minSize': wid.minimumSize(),
-                'maxSize': wid.maximumSize()
-            },
+            'params' : params,
             'children': children
         }
         return ret
@@ -153,18 +175,19 @@ class SuperWidget(ttk.TTkWidget):
     def dropEvent(self, evt) -> bool:
         data = evt.data()
         hsx,hsy = evt.hotSpot()
+        padt, padb, padl, padr = self._wid.getPadding()
         ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
         if issubclass(type(data),ttk.TTkWidget):
             if issubclass(type(data), SuperWidget):
                 sw = data
                 self.layout().addWidget(sw)
                 data = data._wid
-                sw.move(evt.x-hsx, evt.y-hsy)
+                sw.move(evt.x-hsx-padl, evt.y-hsy-padt)
                 sw.show()
             else:
-                self.layout().addWidget(sw := SuperWidget(wid=data, pos=(evt.x, evt.y)))
+                self.layout().addWidget(sw := SuperWidget(wid=data, pos=(evt.x-hsx-padl, evt.y-hsy-padt)))
             self._wid.addWidget(data)
-            data.move(evt.x-hsx, evt.y-hsy)
+            data.move(evt.x-hsx-padl, evt.y-hsy-padt)
             sw.weModified = self.weModified
             sw.widgetSelected = self.widgetSelected
             self.update()

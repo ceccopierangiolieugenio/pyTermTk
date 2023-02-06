@@ -219,11 +219,12 @@ class PropertyEditor(ttk.TTkGridLayout):
         for cc in reversed(type(domw).__mro__):
             # if hasattr(cc,'_ttkProperties'):
             if issubclass(cc, ttk.TTkWidget):
-                classItem = ttk.TTkTreeWidgetItem([cc.__name__,''], expanded=True)
+                ccName = cc.__name__
+                classItem = ttk.TTkTreeWidgetItem([ccName,''], expanded=True)
                 self._detail.addTopLevelItem(classItem)
-                if cc in ttk.TTkUiProperties:
-                    for p in ttk.TTkUiProperties[cc]:
-                        prop = ttk.TTkUiProperties[cc][p]
+                if ccName in ttk.TTkUiProperties:
+                    for p in ttk.TTkUiProperties[ccName]:
+                        prop = ttk.TTkUiProperties[ccName][p]
                         if prop not in proplist:
                             proplist.append(prop)
                             if 'get' in prop:
