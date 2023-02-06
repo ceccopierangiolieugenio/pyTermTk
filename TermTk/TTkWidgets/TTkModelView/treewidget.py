@@ -70,7 +70,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._lineColor     = kwargs.get('lineColor',     TTkCfg.theme.treeLineColor)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
-        self._rootItem = None
+        self._rootItem = TTkTreeWidgetItem(expanded=True)
         self.clear()
         self.setPadding(1,0,0,0)
         self.viewChanged.connect(self._viewChangedHandler)
@@ -93,6 +93,9 @@ class TTkTreeWidget(TTkAbstractScrollView):
         return self.size()
 
     def clear(self):
+        # Remove all the widgets
+        for ri in self._rootItem.children():
+            ri.setParent(None)
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem = TTkTreeWidgetItem(expanded=True)

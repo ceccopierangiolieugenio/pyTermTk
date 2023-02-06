@@ -115,7 +115,10 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._parentWidget = parent
         if self._hasWidgets:
             for widget in [w for w in self._widgets if w]:
-                parent.layout().addWidget(widget)
+                if parent:
+                    parent.layout().addWidget(widget)
+                elif pw := widget.parentWidget():
+                    pw.rootLayout().removeWidget(widget)
         for c in self._children:
             c.setParent(parent)
 
