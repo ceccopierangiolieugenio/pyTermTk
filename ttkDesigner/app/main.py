@@ -27,13 +27,15 @@ import argparse
 
 import appdirs
 
-from TermTk import TTk
+from TermTk import TTk, TTkLog
 
 from .cfg  import *
 from .about import *
 from .designer import TTkDesigner
 
 def main():
+    TTkLog.use_default_file_logging()
+
     root = TTk(title="TTk Designer")
     root.setLayout(TTkDesigner())
     root.mainloop()

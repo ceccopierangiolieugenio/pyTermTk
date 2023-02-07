@@ -122,7 +122,7 @@ class TTkDesigner(TTkGridLayout):
 
         w,_ = self.size()
         mainSplit.setSizes([5,15,10])
-        centralSplit.setSizes([8,2])
+        centralSplit.setSizes([6,4])
 
         # # Internal Debug Stuff
         # mainSplit.addWidget(debugSplit := TTkSplitter(orientation=TTkK.VERTICAL))

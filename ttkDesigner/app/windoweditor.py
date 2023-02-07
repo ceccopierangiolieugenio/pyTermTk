@@ -111,11 +111,31 @@ class SuperWidget(ttk.TTkWidget):
         wid = self._wid
         def _dumpPrimitive(val):
             return val
+        def _dumpTTkString(val):
+            return val.toAnsi()
+        def _dumpTTkColor(val):
+            return str(val)
+        def _dumpTTkLayout(val):
+            return type(val).__name__
+        def _dumpFlag(val):
+            return val
         def _dumpList(val, propType):
             ret = []
             for i,t in enumerate(propType):
                 if t['type'] in (int,str,float,bool):
                     ret.append(_dumpPrimitive(val[i]))
+                elif type(t['type']) in (list,tuple):
+                    ttk.TTkLog.warn("Feature not Implemented yet")
+                elif t['type'] is ttk.TTkLayout:
+                    ret.append(_dumpTTkLayout(val[i]))
+                elif t['type'] is ttk.TTkString:
+                    ret.append(_dumpTTkString(val[i]))
+                elif t['type'] is ttk.TTkColor:
+                    ret.append(_dumpTTkColor(val[i]))
+                elif t['type'] in ('singleFlag','multiFlag'):
+                    ret.append(_dumpFlag(val[i]))
+                else:
+                    ttk.TTkLog.warn("Type not Recognised")
             return ret
         children = []
         for w in self.layout().children():
@@ -135,6 +155,17 @@ class SuperWidget(ttk.TTkWidget):
                             params |= {p: _dumpPrimitive(propCb(wid))}
                         elif type(propType) in (list,tuple):
                             params |= {p: _dumpList(propCb(wid), propType)}
+                        elif propType is ttk.TTkLayout:
+                            params |= {p: _dumpTTkLayout(propCb(wid))}
+                        elif propType is ttk.TTkString:
+                            params |= {p: _dumpTTkString(propCb(wid))}
+                        elif propType is ttk.TTkColor:
+                            params |= {p: _dumpTTkColor(propCb(wid))}
+                        elif propType in ('singleFlag','multiFlag'):
+                            params |= {p: _dumpFlag(propCb(wid))}
+                        else:
+                            ttk.TTkLog.warn("Type not Recognised")
+
         ret = {
             'class'  : wid.__class__.__name__,
             'params' : params,
