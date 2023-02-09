@@ -43,6 +43,8 @@ class TTkUiLoader():
                     name = initp['name']
                     if initp['type'] is TTkLayout:
                         value = globals()[widProp['params'][pname]]()
+                    elif initp['type'] is TTkColor:
+                        value = TTkColor.ansi(widProp['params'][pname])
                     else:
                         value = widProp['params'][pname]
                     TTkLog.debug(f"{name=} {value=}")
