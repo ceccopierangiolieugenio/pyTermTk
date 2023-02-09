@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import TermTk as ttk
 import yaml
+
+import TermTk as ttk
 
 class SuperControlWidget(ttk.TTkResizableFrame):
     def __init__(self, wid, *args, **kwargs):
@@ -161,7 +162,7 @@ class SuperWidget(ttk.TTkWidget):
                             params |= {p: _dumpTTkString(propCb(wid))}
                         elif propType is ttk.TTkColor:
                             params |= {p: _dumpTTkColor(propCb(wid))}
-                        elif propType in ('singleFlag','multiFlag'):
+                        elif propType in ('singleflag','multiflags'):
                             params |= {p: _dumpFlag(propCb(wid))}
                         else:
                             ttk.TTkLog.warn("Type not Recognised")

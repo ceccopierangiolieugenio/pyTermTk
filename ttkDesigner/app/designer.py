@@ -35,6 +35,8 @@ from TermTk import TTkGridLayout, TTkVBoxLayout
 from TermTk import TTkSplitter
 from TermTk import TTkLogViewer, TTkTomInspector
 
+from TermTk import TTkUiLoader
+
 from .cfg  import *
 from .about import *
 from .widgetbox import DragDesignItem, WidgetBox, WidgetBoxScrollArea
@@ -131,5 +133,15 @@ class TTkDesigner(TTkGridLayout):
         # debugSplit.addWidget(TTkLogViewer())
 
     def preview(self, btn=None):
-        for line in self._windowEditor.getYaml().split('\n'):
+        yaml = self._windowEditor.getYaml()
+        for line in yaml.split('\n'):
             TTkLog.debug(f"{line}")
+        widget = TTkUiLoader.loadYaml(yaml)
+        win = TTkWindow(
+                title="Mr Terminal",
+                size=(50,20),
+                layout=TTkGridLayout(),
+                flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
+        win.layout().addWidget(widget)
+        TTkHelper.overlay(None, win, 2, 2)
+

@@ -28,6 +28,9 @@ TTkButtonProperties = {
                 'init': {'name':'text', 'type':TTkString },
                 'get':  {'cb':TTkButton.text,     'type':TTkString } ,
                 'set':  {'cb':TTkButton.setText,  'type':TTkString } },
+        'Border' : {
+                'init': {'name':'border', 'type':bool },
+                'get':  {'cb':TTkButton.border,     'type':bool } },
         'Checkable' : {
                 'init': {'name':'checkable', 'type':bool },
                 'get':  {'cb':TTkButton.isCheckable,   'type':bool } ,

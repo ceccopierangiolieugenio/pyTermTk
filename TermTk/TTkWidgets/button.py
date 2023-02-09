@@ -120,6 +120,9 @@ class TTkButton(TTkWidget):
             self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
+    def border(self):
+        return self._border
+
     def isCheckable(self):
         ''' This property holds whether the button is checkable
 
@@ -258,18 +261,3 @@ class TTkButton(TTkWidget):
             self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
             self._canvas.drawText(pos=(1+text.termWidth(),y), color=borderColor ,text=']')
             self._canvas.drawText(pos=(1,y) ,text=text)
-
-    _ttkProperties = {
-        'Text' : {
-                'init': {'name':'text', 'type':TTkString },
-                'get':  {'cb':text,     'type':TTkString } ,
-                'set':  {'cb':setText,  'type':TTkString } },
-        'Checkable' : {
-                'init': {'name':'checkable', 'type':bool },
-                'get':  {'cb':isCheckable,   'type':bool } ,
-                'set':  {'cb':setCheckable,  'type':bool } },
-        'Checked' : {
-                'init': {'name':'checked', 'type':bool },
-                'get':  {'cb':isChecked,   'type':bool } ,
-                'set':  {'cb':setChecked,  'type':bool } },
-    }

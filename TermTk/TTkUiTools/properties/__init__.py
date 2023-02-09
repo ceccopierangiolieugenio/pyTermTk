@@ -14,7 +14,7 @@ from .list_ import TTkListProperties
 from .radiobutton import TTkRadioButtonProperties
 from .resizableframe import TTkResizableFrameProperties
 # from .scrollarea import
-# from .scrollbar import
+from .scrollbar import TTkScrollBarProperties
 # from .spacer import
 # from .spinbox import
 from .splitter import TTkSplitterProperties

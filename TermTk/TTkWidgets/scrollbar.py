@@ -76,6 +76,9 @@ class TTkScrollBar(TTkWidget):
         self._mouseDelta = 0
         self.setFocusPolicy(TTkK.ClickFocus)
 
+    def orientation(self):
+        return self._orientation
+
     '''
          | min        | max
         <-----XXXXX-------->   scrollbar
