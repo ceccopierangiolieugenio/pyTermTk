@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import yaml
+# Yaml is not included by default
+# import yaml
+import json
 
 import TermTk as ttk
 
@@ -260,8 +262,8 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
     def getTTk(self):
         return self._ttk
 
-    def getYaml(self):
-        return yaml.dump(self._ttk.dumpDict())
+    def getJson(self):
+        return json.dumps(self._ttk.dumpDict(), indent=1)
 
     def resizeEvent(self, w, h):
         self._ttk.resize(w-8,h-4)
@@ -288,4 +290,4 @@ class WindowEditor(ttk.TTkAbstractScrollArea):
         super().__init__(*args, **kwargs)
         self.setViewport(wev := WindowEditorView())
         self.getTTk  = wev.getTTk
-        self.getYaml = wev.getYaml
+        self.getJson = wev.getJson

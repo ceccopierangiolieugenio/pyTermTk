@@ -32,7 +32,7 @@ __check(){
             -e "texedit.py:from math import log10, ceil" \
             -e "string.py:import unicodedata" \
             -e "progressbar.py:import math" \
-            -e "uiloader.py:import yam" \
+            -e "uiloader.py:import json" \
             -e "uiproperties.py:from .properties import *"
 } ;
 

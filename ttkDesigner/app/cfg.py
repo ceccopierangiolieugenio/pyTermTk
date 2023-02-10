@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 import os
-import yaml
+# import yaml
 
 class TTKodeCfg:
     version="__VERSION__"

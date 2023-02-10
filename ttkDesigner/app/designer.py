@@ -133,10 +133,10 @@ class TTkDesigner(TTkGridLayout):
         # debugSplit.addWidget(TTkLogViewer())
 
     def preview(self, btn=None):
-        yaml = self._windowEditor.getYaml()
-        for line in yaml.split('\n'):
+        jj = self._windowEditor.getJson()
+        for line in jj.split('\n'):
             TTkLog.debug(f"{line}")
-        widget = TTkUiLoader.loadYaml(yaml)
+        widget = TTkUiLoader.loadJson(jj)
         win = TTkWindow(
                 title="Mr Terminal",
                 size=(50,20),

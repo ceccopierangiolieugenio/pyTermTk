@@ -20,16 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import yaml
+# Yaml is not included by default
+# import yaml
+import json
 
 from TermTk import TTkLog
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk.TTkWidgets import *
+from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
 class TTkUiLoader():
     @staticmethod
-    def loadYaml(text):
+    def loadJson(text):
         def _getWidget(widProp):
             properties = {}
             ttkClass = globals()[widProp['class']]
@@ -55,7 +58,7 @@ class TTkUiLoader():
                 widget.layout().addWidget(_getWidget(c))
             return widget
 
-        widgetProperty = yaml.safe_load(text)
+        widgetProperty = json.loads(text)
         TTkLog.debug(widgetProperty)
         # Yaml=
         #   params:
