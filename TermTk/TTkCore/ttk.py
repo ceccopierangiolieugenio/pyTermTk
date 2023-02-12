@@ -54,7 +54,7 @@ class TTk(TTkWidget):
             self.resize(1,1)
             input.inputEvent.connect(self._mouseInput)
         @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
-        def _mouseInput(self, kevt, mevt):
+        def _mouseInput(self, _, mevt):
             if mevt is not None:
                 self._cursor = '✠'
                 self._color = TTkColor.RST
@@ -77,7 +77,7 @@ class TTk(TTkWidget):
             #self._canvas.drawChar((0,0),'✜')
 
     __slots__ = (
-        '_input',
+        '_input', '_termMouse', '_termDirectMouse',
         '_title',
         '_showMouseCursor',
         '_sigmask',
@@ -86,6 +86,8 @@ class TTk(TTkWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._termMouse = True
+        self._termDirectMouse = kwargs.get('mouseTrack',False)
         self._input = TTkInput()
         self._input.inputEvent.connect(self._processInput)
         self._title = kwargs.get('title','TermTk')
@@ -143,7 +145,11 @@ class TTk(TTkWidget):
 
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
-            TTkTerm.init(title=self._title, sigmask=self._sigmask)
+            TTkTerm.init(
+                title=self._title,
+                sigmask=self._sigmask,
+                mouse=self._termMouse,
+                directMouse=self._termDirectMouse )
 
             if self._showMouseCursor:
                 TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
@@ -192,8 +198,9 @@ class TTk(TTkWidget):
         #  - Release
         focusWidget = TTkHelper.getFocus()
         if ( focusWidget is not None and
-             mevt.evt != TTkK.Press  and
-             mevt.key != TTkK.Wheel  and
+            mevt.evt == TTkK.Drag  and
+             # mevt.evt != TTkK.Press  and
+             # mevt.key != TTkK.Wheel  and
              not TTkHelper.isDnD()   ) :
             x,y = TTkHelper.absPos(focusWidget)
             nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))

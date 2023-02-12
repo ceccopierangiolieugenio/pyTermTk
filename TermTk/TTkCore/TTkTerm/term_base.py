@@ -82,19 +82,23 @@ class TTkTermBase():
         CTRL_Q = 0x0008
 
     title: str = "TermTk"
-    mouse: bool = True
     width: int = 0
     height: int = 0
+    mouse: bool = True
+    directMouse: bool = False
 
     _sigWinChCb = None
 
     @staticmethod
-    def init(mouse: bool = True, title: str = "TermTk", sigmask=0):
+    def init(mouse: bool = True, directMouse: bool = False, title: str = "TermTk", sigmask=0):
         TTkTermBase.title = title
-        TTkTermBase.mouse = mouse
+        TTkTermBase.mouse = mouse | directMouse
+        TTkTermBase.directMouse = directMouse
         TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
         if TTkTermBase.mouse:
             TTkTermBase.push(TTkTermBase.Mouse.ON)
+        if TTkTermBase.directMouse:
+            TTkTermBase.push(TTkTermBase.Mouse.DIRECT_ON)
         TTkTermBase.setEcho(False)
         TTkTermBase.CRNL(False)
         TTkTermBase.setSigmask(sigmask, False)
@@ -118,6 +122,8 @@ class TTkTermBase():
         TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
         if TTkTermBase.mouse:
             TTkTermBase.push(TTkTermBase.Mouse.ON)
+        if TTkTermBase.directMouse:
+            TTkTermBase.push(TTkTermBase.Mouse.DIRECT_ON)
         TTkTermBase.setEcho(False)
         TTkTermBase.CRNL(False)
 
