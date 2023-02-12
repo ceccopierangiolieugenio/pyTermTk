@@ -180,6 +180,7 @@ class TTk(TTkWidget):
         # Upload the global mouse position
         # Mainly used by the drag pixmap display
         TTkHelper.setMousePos((mevt.x,mevt.y))
+        TTkWidget._mouseOverProcessed = False
 
         # Avoid to broadcast a key release after a multitap event
         if mevt.evt == TTkK.Release and self._lastMultiTap: return

@@ -26,6 +26,7 @@ from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
+from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
@@ -80,6 +81,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param int minHeight: the minHeight of the widget, defaults to 0
     :param [int,int] minSize: the minSize [width,height] of the widget, optional
 
+    :param toolTip: This property holds the widget's tooltip
+    :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`
+
     :param lookAndFeel: the style helper to be used for any customization
     :type lookAndFeel: :class:`~TermTk.TTkTemplates.lookandfeel.TTkTTkLookAndFeel`
 
@@ -100,6 +104,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_pendingMouseRelease',
         '_enabled',
         '_lookAndFeel',
+        '_toolTip',
         #Signals
         'focusChanged')
 
@@ -137,6 +142,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._visible = kwargs.get('visible', True)
         self._enabled = kwargs.get('enabled', True)
+
+        self._toolTip = TTkString(kwargs.get('toolTip',''))
 
         self._focus = False
         self._focus_policy = TTkK.NoFocus
@@ -354,6 +361,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     _mouseOver = None
     _mouseOverTmp = None
+    _mouseOverProcessed = False
     def mouseEvent(self, evt):
         ''' .. caution:: Don't touch this! '''
         if not self._enabled: return True
@@ -402,15 +410,24 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         # handle Enter/Leave Events
         # _mouseOverTmp hold the top widget under the mouse
         # if different than self it means that it is a child
-        if ( TTkWidget._mouseOver != TTkWidget._mouseOverTmp == self ):
-            if TTkWidget._mouseOver:
-                TTkWidget._mouseOver.leaveEvent(evt)
-            TTkWidget._mouseOver = self
-            TTkWidget._mouseOver.enterEvent(evt)
-
         if evt.evt == TTkK.Move:
+            if not TTkWidget._mouseOverProcessed:
+                if TTkWidget._mouseOver != TTkWidget._mouseOverTmp == self:
+                    if TTkWidget._mouseOver:
+                        # TTkLog.debug(f"Leave: {TTkWidget._mouseOver._name}")
+                        TTkWidget._mouseOver.leaveEvent(evt)
+                    TTkWidget._mouseOver = self
+                    # TTkLog.debug(f"Enter: {TTkWidget._mouseOver._name}")
+                    TTkHelper.toolTipClose()
+                    if self._toolTip and self._toolTip != '':
+                        TTkHelper.toolTipTrigger(self._toolTip)
+                    # TTkHelper.triggerToolTip(self._name)
+                    TTkWidget._mouseOver.enterEvent(evt)
+                TTkWidget._mouseOverProcessed = True
             if self.mouseMoveEvent(evt):
                 return True
+        else:
+            TTkHelper.toolTipClose()
 
         if evt.evt == TTkK.Release:
             self._pendingMouseRelease = False
@@ -672,6 +689,12 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             laf = TTkLookAndFeel()
         self._lookAndFeel = laf
         self._lookAndFeel.modified.connect(self.update)
+
+    def toolTip(self):
+        return self._toolTip
+
+    def setToolTip(self, toolTip):
+        self._toolTip = toolTip
 
     _ttkProperties = {
         'X' : {
