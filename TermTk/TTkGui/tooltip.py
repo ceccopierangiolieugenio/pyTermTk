@@ -53,7 +53,6 @@ class _TTkToolTipDisplayWidget(TTkWidget):
         for i,s in enumerate(self._toolTip,1):
             canvas.drawTTkString(pos=(1,i), text=s)
 
-
 class TTkToolTip():
     toolTipTimer = TTkTimer()
     toolTip = TTkString()

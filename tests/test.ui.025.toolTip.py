@@ -26,9 +26,6 @@ import sys, os, argparse, math, random
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
-from math import sin, cos
-
-ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk(title="pyTermTk Demo", mouseTrack=True)
 
@@ -41,7 +38,9 @@ ttk.TTkButton(parent=root, text="Button 3", pos=(21,0), size=(20,10), border=Tru
         ttk.TTkString(color=ttk.TTkColor.fg("#ff0000") ,text="   L😎rem ipsum\n")+
         ttk.TTkString(color=ttk.TTkColor.fg("#00ff00") ,text="dolor sit amet,\n ⌚ ❤ 💙 🙋'\nYepp!!!"))
 
-rf = ttk.TTkWindow(parent=root, title="LOG", pos=(0,10), size=(90,20), layout=ttk.TTkGridLayout(), toolTip="TT Log Window\n  With\nLogDump")
-ttk.TTkLogViewer(parent=rf)
+w1 = ttk.TTkWindow(parent=root, title="LOG", pos=(0,10), size=(90,20), layout=ttk.TTkGridLayout(), toolTip="TT Log Window\n  With\nLogDump")
+ttk.TTkLogViewer(parent=w1)
+w2 = ttk.TTkWindow(parent=root, title="KeyLogger", pos=(0,30), size=(60,7), layout=ttk.TTkGridLayout())
+ttk.TTkKeyPressView(parent=w2, toolTip="This is a\nKey Logger Widget")
 
 root.mainloop()
