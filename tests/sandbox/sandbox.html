@@ -144,8 +144,12 @@
             return [term.cols, term.rows]
           },
           setTimeout: function(t, i) {
-            // console.log("TIME",i,t)
-            setTimeout(() => ttk_timer(i), t)
+            // console.log("TIME (Start)",i,t)
+            return setTimeout(() => ttk_timer(i), t)
+          },
+          stopTimeout: function(t) {
+            // console.log("TIME (Stop)",t)
+            clearTimeout(t)
           },
           clearTimeout: function(){
             let highestTimeoutId = setTimeout(";");
