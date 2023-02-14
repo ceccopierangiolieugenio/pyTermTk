@@ -195,14 +195,11 @@ class TTk(TTkWidget):
 
         # Mouse Events forwarded straight to the Focus widget:
         #  - Drag
-        #  - Move
         #  - Release
         focusWidget = TTkHelper.getFocus()
         if ( focusWidget is not None and
              ( mevt.evt == TTkK.Drag or
                mevt.evt == TTkK.Release ) and
-             # mevt.evt != TTkK.Press  and
-             # mevt.key != TTkK.Wheel  and
              not TTkHelper.isDnD()   ) :
             x,y = TTkHelper.absPos(focusWidget)
             nmevt = mevt.clone(pos=(mevt.x-x, mevt.y-y))
