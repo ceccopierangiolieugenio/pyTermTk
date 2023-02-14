@@ -95,7 +95,6 @@ else:
             self._timer = threading.Event()
             super().__init__()
             TTkTimer._timers.append(self)
-            super().start()
 
         @staticmethod
         def quitAll():
@@ -120,6 +119,8 @@ else:
             self._timer.set()
             self._timer.clear()
             self._start.set()
+            if not self.native_id:
+                super().start()
 
         @pyTTkSlot()
         def stop(self):
