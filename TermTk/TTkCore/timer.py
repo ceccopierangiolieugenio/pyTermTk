@@ -82,15 +82,20 @@ if importlib.util.find_spec('pyodideProxy'):
                 pyodideProxy.stopTimeout(self._timer)
                 self._timer = None
 else:
-    # from .log import TTkLog
-    class TTkTimer():
+    class TTkTimer(threading.Thread):
         _timers = []
-        __slots__ = ('timeout', '_timer')
+        __slots__ = (
+            'timeout', '_delay',
+            '_timer', '_quit', '_start')
         def __init__(self):
-            # Define Signals
             self.timeout = pyTTkSignal()
-            self._timer = None
+            self._delay = 0
+            self._quit  = threading.Event()
+            self._start = threading.Event()
+            self._timer = threading.Event()
+            super().__init__()
             TTkTimer._timers.append(self)
+            super().start()
 
         @staticmethod
         def quitAll():
@@ -98,17 +103,25 @@ else:
                 timer.quit()
 
         def quit(self):
-            if self._timer:
-                self._timer.cancel()
+            self._quit.set()
+            self._timer.set()
+            self._start.set()
+
+        def run(self):
+            while not self._quit.is_set():
+                self._start.wait()
+                self._start.clear()
+                if not self._timer.wait(self._delay):
+                    self.timeout.emit()
 
         @pyTTkSlot(float)
         def start(self, sec=0.0):
-            if self._timer:
-                self._timer.cancel()
-            self._timer = threading.Timer(sec, self.timeout.emit)
-            self._timer.start()
+            self._delay = sec
+            self._timer.set()
+            self._timer.clear()
+            self._start.set()
 
         @pyTTkSlot()
         def stop(self):
-            if self._timer:
-                self._timer.cancel()
+            self._timer.set()
+

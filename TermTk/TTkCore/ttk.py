@@ -199,7 +199,8 @@ class TTk(TTkWidget):
         #  - Release
         focusWidget = TTkHelper.getFocus()
         if ( focusWidget is not None and
-            mevt.evt == TTkK.Drag  and
+             ( mevt.evt == TTkK.Drag or
+               mevt.evt == TTkK.Release ) and
              # mevt.evt != TTkK.Press  and
              # mevt.key != TTkK.Wheel  and
              not TTkHelper.isDnD()   ) :
