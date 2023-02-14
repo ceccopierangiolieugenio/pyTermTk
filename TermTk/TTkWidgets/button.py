@@ -23,9 +23,10 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
-from TermTk.TTkWidgets.widget import *
+from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkButton(TTkWidget):
     ''' TTkButton:
@@ -213,6 +214,16 @@ class TTkButton(TTkWidget):
             return True
         return False
 
+    def enterEvent(self, evt) -> bool:
+        self.update()
+
+    def leaveEvent(self, evt) -> bool:
+        self.update()
+
+    def mouseMoveEvent(self, evt) -> bool:
+        self.update()
+        return super().mouseMoveEvent(evt)
+
     def paintEvent(self):
         if not self.isEnabled():
             borderColor = self._borderColorDisabled
@@ -232,15 +243,20 @@ class TTkButton(TTkWidget):
                     grid = TTkCfg.theme.buttonBoxGridUnchecked
                     borderColor = TTkCfg.theme.buttonBorderColorUnchecked
                     textColor = TTkCfg.theme.buttonTextColorUnchecked
+                if self.hasFocus():
+                    borderColor = self._borderColorFocus
             else:
                 grid = TTkCfg.theme.buttonBoxGrid
-                borderColor = self._borderColor
                 if self.hasFocus():
                     textColor   = self._textColorFocus
+                    borderColor = self._borderColorFocus
+                elif self.isEntered():
+                    textColor   = TTkCfg.theme.buttonTextColorHover
+                    borderColor = TTkCfg.theme.buttonBorderColorHover
                 else:
                     textColor   = self._textColor
-            if self.hasFocus():
-                borderColor = self._borderColorFocus
+                    borderColor = self._borderColor
+
         text = self._text
         w = self.width()-2
         h = self.height()
