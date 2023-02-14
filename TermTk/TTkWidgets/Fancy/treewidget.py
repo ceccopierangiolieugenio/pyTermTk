@@ -38,7 +38,7 @@ class _TTkDisplayedTreeItemControl(TTkCheckbox):
         self.setMinimumSize(1, 1)
 
     def paintEvent(self):
-        if self._checked:
+        if self.isChecked():
             self._canvas.drawText(pos=(0,0), text="▼")
         else:
             self._canvas.drawText(pos=(0,0), text="▶")

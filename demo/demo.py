@@ -255,12 +255,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', help='Full Screen (default)', action='store_true')
     parser.add_argument('-w', help='Windowed',    action='store_true')
+    parser.add_argument('-t', help='Track Mouse', action='store_true')
     args = parser.parse_args()
     windowed = args.w
+    mouseTrack = args.t
 
     ttk.TTkLog.use_default_file_logging()
 
-    root = ttk.TTk(title="pyTermTk Demo")
+    root = ttk.TTk(title="pyTermTk Demo", mouseTrack=mouseTrack)
     if windowed:
         winTabbed1 = ttk.TTkWindow(parent=root,pos=(0,0), size=(120,40), title="pyTermTk Showcase", border=True, layout=ttk.TTkGridLayout(), flags=ttk.TTkK.NONE)
         border = True
