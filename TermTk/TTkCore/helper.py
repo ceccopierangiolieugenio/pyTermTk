@@ -446,3 +446,30 @@ class TTkHelper:
             TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper._dnd['d'].pixmap())
         TTkHelper._dnd = None
         TTkHelper._rootWidget.update()
+
+    # ToolTip Helper Methods
+    toolTipWidget = None
+    toolTipTrigger = lambda _: True
+    toolTipReset   = lambda  : True
+
+    @staticmethod
+    def toolTipShow(tt):
+        TTkHelper.toolTipClose()
+        if not TTkHelper._rootWidget: return
+        TTkHelper.toolTipWidget = tt
+        rw,rh = TTkHelper._rootWidget.size()
+        tw,th = tt.size()
+        mx,my =  TTkHelper._mousePos
+        x = max(0, min(mx-(tw//2),rw-tw))
+        if my <= th: # Draw below the Mouse
+            y = my+1
+        else: # Draw above the Mouse
+            y = max(0,my-th)
+        tt.move(x,y)
+        TTkHelper._rootWidget.rootLayout().addWidget(tt)
+        tt.raiseWidget()
+
+    def toolTipClose():
+        TTkHelper.toolTipReset()
+        if TTkHelper.toolTipWidget:
+            TTkHelper.toolTipWidget.close()

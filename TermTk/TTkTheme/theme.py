@@ -133,6 +133,11 @@ class TTkTheme():
     buttonBorderColorFocus   = TTkColor.fg("#ffff00") + TTkColor.BOLD
     '''Default to **TTkColor.fg("#ffff00") + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
 
+    buttonTextColorHover     = TTkColor.fg("#dddd88")+TTkColor.bg("#000050")+TTkColor.BOLD
+    '''Default to **TTkColor.fg("#dddd88")+TTkColor.bg("#000066")+** :class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
+    buttonBorderColorHover   = TTkColor.fg("#ffffcc") + TTkColor.BOLD
+    '''Default to **TTkColor.fg("#ffff88") + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`'''
+
     buttonTextColorDisabled  = textColorDisabled
     '''Default to :class:`textColorDisabled`'''
     buttonBorderColorDisabled= borderColorDisabled
