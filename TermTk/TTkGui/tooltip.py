@@ -23,6 +23,7 @@
 # from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.canvas    import TTkCanvas
+from TermTk.TTkCore.cfg       import TTkCfg
 from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.timer     import TTkTimer
 from TermTk.TTkCore.helper    import TTkHelper
@@ -67,7 +68,7 @@ class TTkToolTip():
     def trigger(toolTip):
         # TTkToolTip.toolTipTimer.stop()
         TTkToolTip.toolTip = toolTip
-        TTkToolTip.toolTipTimer.start(1)
+        TTkToolTip.toolTipTimer.start(TTkCfg.toolTipTime)
 
     @staticmethod
     def reset():

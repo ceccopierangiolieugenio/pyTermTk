@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
@@ -98,4 +99,8 @@ TTkWidgetProperties = {
                 'init': {'name':'enabled', 'type':bool } ,
                 'get':  { 'cb':TTkWidget.isEnabled,   'type':bool } ,
                 'set':  { 'cb':TTkWidget.setEnabled,  'type':bool } },
+        'ToolTip' : {
+                'init': {'name':'toolTip', 'type':TTkString } ,
+                'get':  { 'cb':TTkWidget.toolTip,    'type':TTkString } ,
+                'set':  { 'cb':TTkWidget.setToolTip, 'type':TTkString } },
     }

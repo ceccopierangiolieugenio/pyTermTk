@@ -36,6 +36,6 @@ from .designer import TTkDesigner
 def main():
     TTkLog.use_default_file_logging()
 
-    root = TTk(title="TTk Designer")
+    root = TTk(title="TTk Designer", mouseTrack=True)
     root.setLayout(TTkDesigner())
     root.mainloop()

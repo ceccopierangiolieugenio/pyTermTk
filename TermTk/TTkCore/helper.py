@@ -472,4 +472,5 @@ class TTkHelper:
     def toolTipClose():
         TTkHelper.toolTipReset()
         if TTkHelper.toolTipWidget:
-            TTkHelper.toolTipWidget.close()
+            TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper.toolTipWidget)
+            TTkHelper.toolTipWidget = None
