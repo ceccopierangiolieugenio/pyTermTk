@@ -40,3 +40,13 @@ buildSandbox: www
 	find ../../tmp/TermTk/  -name "*.py" | sed 's,.*tmp/,,' | sort | xargs tar cvzf bin/TermTk.tgz -C ../../tmp
 	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
 	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz
+
+buildTestSandbox: www
+	rm -rf bin
+	mkdir -p bin
+
+	$( cd ../../ ; tools/prepareBuild.sh release ; )
+
+	find ../../TermTk/  -name "*.py" | sort | xargs tar cvzf bin/TermTk.tgz
+	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
+	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz

@@ -96,7 +96,7 @@ class TTkInput:
             y = int(m.group(3))-1
             state = m.group(4)
             key = TTkMouseEvent.NoButton
-            evt = TTkMouseEvent.NoEvent
+            evt = TTkMouseEvent.Move
             tap = 0
 
             def _checkTap(lastTime, tap):

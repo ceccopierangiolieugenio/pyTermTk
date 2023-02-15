@@ -30,7 +30,6 @@ class _TTkDragDisplayWidget(TTkWidget):
     __slots__ = ('_pixmap')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkDragDisplayWidget' )
 
     def setPixmap(self, pixmap, hotSpot):
         w,h = pixmap.size()

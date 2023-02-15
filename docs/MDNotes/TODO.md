@@ -55,6 +55,10 @@
 ## Signal/Slots
 - [x] Implement Signal/Slots
 
+## WeakRef
+- [ ] TTkTimer._timers
+- [ ] Signals/Slots
+
 ## Logs
 - [x] Log Class
 - [ ] Run Logger on a separate thread (push string to a queue)
