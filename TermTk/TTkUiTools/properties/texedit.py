@@ -22,3 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# from TermTk.TTkCore.string import TTkString
+# from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkWidgets.texedit import TTkTextEdit
+
+TTkTextEditProperties = {
+        'Read Only' : {
+                'init': {'name':'readOnly',                'type':bool } ,
+                'get':  {'cb':lambda w:   w.isReadOnly(),  'type':bool } ,
+                'set':  {'cb':lambda w,v: w.setReadOnly(v),'type':bool } },
+    }

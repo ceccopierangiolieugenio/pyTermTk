@@ -36,6 +36,7 @@ TTkUiProperties = {
         TTkResizableFrame.__name__: TTkResizableFrameProperties,
         TTkScrollBar.__name__:      TTkScrollBarProperties,
         TTkSplitter.__name__:       TTkSplitterProperties,
+        TTkTextEdit.__name__:       TTkTextEditProperties,
         TTkWidget.__name__:         TTkWidgetProperties,
         TTkWindow.__name__:         TTkWindowProperties,
 }

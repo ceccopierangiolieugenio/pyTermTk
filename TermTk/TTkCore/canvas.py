@@ -60,7 +60,7 @@ class TTkCanvas:
 
     def enableDoubleBuffer(self):
         self._doubleBuffer = True
-        self._bufferedData, self._bufferedColors = self.copy()
+        self._bufferedData, self._bufferedColors = self.copyBuffers()
 
     def updateSize(self):
         if not self._visible: return
@@ -98,6 +98,12 @@ class TTkCanvas:
         self._colors = [baseColors.copy() for _ in range(h)]
 
     def copy(self):
+        ret = TTkCanvas()
+        ret._width = self._width
+        ret._height = self._height
+        ret._data, ret._colors = self.copyBuffers()
+
+    def copyBuffers(self):
         h = self._height
         retData   = [self._data[i].copy()   for i in range(h)]
         retColors = [self._colors[i].copy() for i in range(h)]

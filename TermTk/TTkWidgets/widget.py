@@ -216,6 +216,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''
         pass
 
+    def getPixmap(self):
+        self.paintEvent()
+        self.paintChildCanvas()
+        return self.getCanvas().copy()
+
     @staticmethod
     def _paintChildCanvas(canvas, item, geometry, offset):
         ''' .. caution:: Don't touch this! '''

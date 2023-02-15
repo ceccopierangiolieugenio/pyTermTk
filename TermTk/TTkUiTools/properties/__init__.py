@@ -19,6 +19,6 @@ from .scrollbar import TTkScrollBarProperties
 # from .spinbox import
 from .splitter import TTkSplitterProperties
 # from .tabwidget import
-# from .texedit import
+from .texedit import TTkTextEditProperties
 from .widget import TTkWidgetProperties
 from .window import TTkWindowProperties
