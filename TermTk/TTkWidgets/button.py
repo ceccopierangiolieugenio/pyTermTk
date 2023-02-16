@@ -43,6 +43,13 @@ class TTkButton(TTkWidget):
 
          [  Text  ]
 
+         ╿ Text 2 ╿
+         ╽New line╽
+
+         ╿ Text 3 ╿
+         │  New   │
+         ╽  Line  ╽
+
     Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
 
     :param str text: the text shown on the button, defaults to ""
@@ -91,10 +98,13 @@ class TTkButton(TTkWidget):
         'clicked', 'toggled'
         )
     def __init__(self, *args, **kwargs):
-        self._text = TTkString(kwargs.get('text', ""))
-        textWidth = self._text.termWidth()
+        self._text = TTkString(kwargs.get('text', "")).split('\n')
+        textWidth = max(t.termWidth() for t in self._text)
         self._border = kwargs.get('border', False )
-        self.setDefaultSize(kwargs, 2 + textWidth, 3 if self._border else 1 )
+        if self._border:
+            self.setDefaultSize(kwargs, textWidth+2, len(self._text)+2)
+        else:
+            self.setDefaultSize(kwargs, textWidth+2, len(self._text))
 
         TTkWidget.__init__(self, *args, **kwargs)
         # Define Signals
@@ -115,10 +125,11 @@ class TTkButton(TTkWidget):
         self._pressed = False
         self._keyPressed = False
         if self._border:
-            self.setMinimumSize(2+textWidth, 3)
+            self.setMinimumSize(textWidth+2, len(self._text)+2)
         else:
-            self.setMinimumSize(textWidth+2, 1)
-            self.setMaximumHeight(1)
+            self.setMinimumSize(textWidth+2, len(self._text))
+            self.setMaximumHeight(len(self._text))
+
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
     def border(self):
@@ -178,7 +189,7 @@ class TTkButton(TTkWidget):
 
         :return: :class:`~TermTk.TTkCore.string.TTkString`
         '''
-        return self._text
+        return TTkString('\n').join(self._text)
 
     def setText(self, text):
         ''' This property holds the text shown on the button
@@ -186,9 +197,14 @@ class TTkButton(TTkWidget):
         :param text:
         :type text: :class:`~TermTk.TTkCore.string.TTkString`
         '''
-        if self._text == text: return
-        self._text = TTkString(text)
-        self.setMinimumSize(self._text.termWidth()+2, 1)
+        if self._text and self._text[0] == text: return
+        self._text = TTkString(text).split('\n')
+        textWidth = max(t.termWidth() for t in self._text)
+        if self._border:
+            self.setMinimumSize(textWidth+2, len(self._text)+2)
+        else:
+            self.setMinimumSize(textWidth+2, len(self._text))
+            self.setMaximumHeight(len(self._text))
         self.update()
 
     def mousePressEvent(self, evt):
@@ -260,20 +276,27 @@ class TTkButton(TTkWidget):
                     textColor   = self._textColor
                     borderColor = self._borderColor
 
-        text = self._text
-        w = self.width()-2
-        h = self.height()
-        y = (h-1)//2
-        text = text.align(width=w, alignment=TTkK.CENTER_ALIGN).addColor(textColor)
+        w,h = self.size()
+        canvas = self.getCanvas()
+
+        # Draw the border and bgcolor
         if self._border:
-            if self._border:
-                self._canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
-                for i in range(1,h-1):
-                    self._canvas.drawText(pos=(1,i) ,text=TTkString(" "*w, textColor))
-                self._canvas.drawText(pos=(1,y) ,text=text)
-            else:
-                self._canvas.drawText(pos=(1,1) ,text=text)
+            canvas.fill(pos=(1,1), size=(w-2,h-2), color=textColor)
+            canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
         else:
-            self._canvas.drawText(pos=(0,y), color=borderColor ,text='[')
-            self._canvas.drawText(pos=(1+text.termWidth(),y), color=borderColor ,text=']')
-            self._canvas.drawText(pos=(1,y) ,text=text)
+            canvas.fill(pos=(1,0), size=(w-2,h), color=textColor)
+            if h<=1:
+                canvas.drawChar(pos=(0  ,0), color=borderColor ,char='[')
+                canvas.drawChar(pos=(w-1,0), color=borderColor ,char=']')
+            else: # No border multiline button
+                canvas.drawChar(pos=(0,  0),  char='╿', color=borderColor)
+                canvas.drawChar(pos=(w-1,0),  char='╿', color=borderColor)
+                canvas.drawChar(pos=(w-1,h-1),char='╽', color=borderColor)
+                canvas.drawChar(pos=(0,  h-1),char='╽', color=borderColor)
+                for y in range(1,h-1):
+                    canvas.drawChar(pos=(0,  y),char='│', color=borderColor)
+                    canvas.drawChar(pos=(w-1,y),char='│', color=borderColor)
+        # Print the text strings
+        off = 1 if self._border else 0
+        for i,t in enumerate(self._text, (h-len(self._text))//2):
+            canvas.drawText(pos=(1,i) ,text=t.completeColor(textColor), color=textColor, width=w-2, alignment=TTkK.CENTER_ALIGN)
