@@ -68,6 +68,7 @@ dWidgets = {
 }
 
 class DragDesignItem(ttk.TTkWidget):
+    _objNames = {}
     def __init__(self, itemName, widgetClass, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setMaximumHeight(3)
@@ -78,8 +79,14 @@ class DragDesignItem(ttk.TTkWidget):
     def mouseDragEvent(self, evt) -> bool:
         ttk.TTkLog.debug(f"Start DnD -> {self._itemName}")
         wc = self._widgetClass
+        name = wc['class'].__name__
+        if not name in DragDesignItem._objNames:
+            DragDesignItem._objNames[name] = 1
+        else:
+            DragDesignItem._objNames[name] += 1
+        name = f"{name}-{DragDesignItem._objNames[name]}"
         drag = ttk.TTkDrag()
-        data = wc['class'](**wc['params'])
+        data = wc['class'](**(wc['params']|{'name':name}))
         drag.setPixmap(data)
         drag.setData(data)
         drag.exec()
