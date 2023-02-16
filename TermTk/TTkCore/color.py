@@ -135,6 +135,18 @@ class _TTkColor:
             self._bg  == other._bg and \
             self._mod == other._mod
 
+    # self | other
+    def __or__(self, other):
+        # TTkLog.debug("__add__")
+        if other._clean:
+            return other.copy()
+        clean = self._clean
+        fg:  str = self._fg or other._fg
+        bg:  str = self._bg or other._bg
+        mod: str = self._mod + other._mod
+        colorMod = self._colorMod or other._colorMod
+        return TTkColor(fg,bg,mod,colorMod,clean)
+
     # self + other
     def __add__(self, other):
         # TTkLog.debug("__add__")
