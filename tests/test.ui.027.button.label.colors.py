@@ -52,7 +52,7 @@ w = ttk.TTkWindow(parent=root, pos=(30,12), size=(20,11), layout=ttk.TTkGridLayo
 w.addWidget(ttk.TTkButton(text="Button 5\n" +
                 ttk.TTkString(color=ttk.TTkColor.fg("#ff0000") ,text="   L😎rem ipsum\n")+
                 ttk.TTkString(color=ttk.TTkColor.fg("#00ff00") ,text="dolor sit amet,\n ⌚ ❤ 💙 🙋'\nYepp!!!"),
-                                                     pos=(35,1), size=(20,10), border=True))
+                                                     pos=(35,1), size=(20,10), border=True, checkable=True ))
 
 
 root.mainloop()

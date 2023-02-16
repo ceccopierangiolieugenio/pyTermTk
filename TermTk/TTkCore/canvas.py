@@ -121,8 +121,10 @@ class TTkCanvas:
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
 
-    def fill(self, pos, size, char=' ', color=TTkColor.RST):
+    def fill(self, pos=(0,0), size=None, char=' ', color=TTkColor.RST):
         w,h = self.size()
+        if not size:
+            size=(w,h)
         fx,fy = pos
         fw,fh = size
         # the fill area is outside the boundaries

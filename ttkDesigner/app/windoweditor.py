@@ -23,6 +23,7 @@
 # Yaml is not included by default
 # import yaml
 import json
+from random import randint
 
 import TermTk as ttk
 
@@ -108,7 +109,20 @@ class SuperWidget(ttk.TTkWidget):
         kwargs['paddingRight'] = padr
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
+        r,g,b = randint(0,0xFF),randint(0,0xFF),randint(0,0xFF)
+        self._layoutColor    = ttk.TTkColor.bg(f"#{r:02X}{g:02X}{b:02X}")
+        self._layoutPadColor = ttk.TTkColor.bg(f"#{r*9//10:X}{g*9//10:X}{b*9//10:X}")
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
+        SuperWidget.toggleHighlightLayout.connect(self._toggleHighlightLayout)
+
+    _showLayout = False
+    toggleHighlightLayout = ttk.pyTTkSignal(bool)
+
+    @ttk.pyTTkSlot(bool)
+    def _toggleHighlightLayout(self, state):
+        SuperWidget._showLayout = state
+        self.update()
+
 
     def dumpDict(self):
         wid = self._wid
@@ -241,12 +255,18 @@ class SuperWidget(ttk.TTkWidget):
 
     def paintEvent(self):
         w,h = self.size()
-        self._wid.paintEvent()
-        self._canvas.paintCanvas(
-                self._wid.getCanvas(),
-                (    0,     0, w, h), # geometry
-                (    0,     0, w, h), # slice
-                (    0,     0, w, h)) # bound
+        if SuperWidget._showLayout:
+            t,b,l,r = self._wid.getPadding()
+            w,h = self.size()
+            self._canvas.fill(color=self._layoutColor)
+            self._canvas.fill(pos=(l,t), size=(w-r-l,h-b-t), color=self._layoutPadColor)
+        else:
+            self._wid.paintEvent()
+            self._canvas.paintCanvas(
+                    self._wid.getCanvas(),
+                    (    0,     0, w, h), # geometry
+                    (    0,     0, w, h), # slice
+                    (    0,     0, w, h)) # bound
 
 class WindowEditorView(ttk.TTkAbstractScrollView):
     def __init__(self, *args, **kwargs):

@@ -31,7 +31,7 @@ from TermTk import TTkAbstractScrollArea, TTkAbstractScrollView, TTkScrollArea
 from TermTk import TTkFileDialogPicker
 from TermTk import TTkFileTree, TTkTextEdit
 
-from TermTk import TTkGridLayout, TTkVBoxLayout
+from TermTk import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter
 from TermTk import TTkLogViewer, TTkTomInspector
 
@@ -40,7 +40,7 @@ from TermTk import TTkUiLoader
 from .cfg  import *
 from .about import *
 from .widgetbox import DragDesignItem, WidgetBox, WidgetBoxScrollArea
-from .windoweditor import WindowEditor
+from .windoweditor import WindowEditor, SuperWidget
 from .treeinspector import TreeInspector
 from .propertyeditor import PropertyEditor
 
@@ -48,22 +48,22 @@ from .propertyeditor import PropertyEditor
 #      Mimic the QT Designer layout
 #
 #      ┌─────────────────────╥───────────────────────────────╥───────────────────┐
-#      │                     ║                               ║                   │
-#      │                     ║                               ║  Tree Inspector   │
-#      │                     ║                               ║                   │
-#      │                     ║                               ║                   │
-#      │   Widget            ║                               ║                   │
-#      │   Box               ║                               ╠═══════════════════╡
-#      │                     ║       Main Window             ║                   │
-#      │                     ║       Editor                  ║   Property        │
-#      │                     ║                               ║   Editor          │
-#      │                     ║                               ║                   │
-#      │                     ║                               ║                   │
-#      │                     ║                               ║                   │
-#      │                     ║                               ║                   │
-#      │                     ║                               ╠═══════════════════╡
-#      │                     ║                               ║                   │
-#      │                     ║                               ║   Signal/Slot     │
+#      │                     ║┌─────────────────────────────┐║                   │
+#      │                     ║│       ToolBar               │║  Tree Inspector   │
+#      │                     ║├─────────────────────────────┤║                   │
+#      │                     ║│                             │║                   │
+#      │   Widget            ║│                             │║                   │
+#      │   Box               ║│                             │╠═══════════════════╡
+#      │                     ║│      Main Window            │║                   │
+#      │                     ║│      Editor                 │║   Property        │
+#      │                     ║│                             │║   Editor          │
+#      │                     ║│                             │║                   │
+#      │                     ║│                             │║                   │
+#      │                     ║│                             │║                   │
+#      │                     ║│                             │║                   │
+#      │                     ║│                             │╠═══════════════════╡
+#      │                     ║│                             │║                   │
+#      │                     ║└─────────────────────────────┘║   Signal/Slot     │
 #      │                     ╟───────────────────────────────╢                   │
 #      │                     ║     LOG Viewer                ║   Editor          │
 #      │                     ║                               ║                   │
@@ -71,7 +71,7 @@ from .propertyeditor import PropertyEditor
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_pippo', '_windowEditor')
+    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -86,10 +86,17 @@ class TTkDesigner(TTkGridLayout):
         # sa.viewport().setLayout(TTkGridLayout())
         # sa.viewport().layout().addWidget(WindowEditor())
 
+        self._main = TTkVBoxLayout()
+
+        self._toolBar = TTkHBoxLayout()
+
         self._windowEditor = WindowEditor()
 
+        self._main.addItem(self._toolBar)
+        self._main.addWidget(self._windowEditor)
+
         mainSplit.addWidget(centralSplit := TTkSplitter(orientation=TTkK.VERTICAL))
-        centralSplit.addWidget(self._windowEditor)
+        centralSplit.addWidget(self._main)
         centralSplit.addWidget(TTkLogViewer())
 
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
@@ -126,11 +133,28 @@ class TTkDesigner(TTkGridLayout):
         mainSplit.setSizes([5,15,10])
         centralSplit.setSizes([6,4])
 
+        self._toolBar.addWidget(btnPreview := TTkButton(maxWidth=12, text='Preview...'))
+        self._toolBar.addWidget(btnColors  := TTkButton(maxWidth=11, checkable=True, text=
+                            TTkString("▣",TTkColor.fg("#ff0000")) +
+                            TTkString("▣",TTkColor.fg("#ffff00")) +
+                            TTkString("▣",TTkColor.fg("#00ff00")) +
+                            TTkString("▣",TTkColor.fg("#00ffff")) +
+                            TTkString("▣",TTkColor.fg("#0000ff")) + "🦄"))
+
+        btnPreview.clicked.connect(self.preview)
+        btnColors.toggled.connect(self.toggleColors)
+
+        self._toolBar.addItem(TTkLayout())
+
         # # Internal Debug Stuff
         # mainSplit.addWidget(debugSplit := TTkSplitter(orientation=TTkK.VERTICAL))
         # # debugSplit.addWidget(TTkLabel(text='My Own Debug', maxHeight=1, minHeight=1))
         # debugSplit.addWidget(TTkTomInspector())
         # debugSplit.addWidget(TTkLogViewer())
+
+    pyTTkSlot(bool)
+    def toggleColors(self, state):
+        SuperWidget.toggleHighlightLayout.emit(state)
 
     def preview(self, btn=None):
         jj = self._windowEditor.getJson()
