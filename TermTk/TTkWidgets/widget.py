@@ -106,11 +106,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_lookAndFeel',
         '_toolTip',
         #Signals
-        'focusChanged')
+        'focusChanged', 'sizeChanged')
 
     def __init__(self, *args, **kwargs):
         #Signals
         self.focusChanged = pyTTkSignal(bool)
+        self.sizeChanged = pyTTkSignal(int,int)
+        # self.sizeChanged.connect(self.resizeEvent)
 
         self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
@@ -267,6 +269,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def moveEvent(self, x: int, y: int):
         ''' Event Callback triggered after a successful move'''
         pass
+    @pyTTkSlot(int,int)
     def resizeEvent(self, w: int, h: int):
         ''' Event Callback triggered after a successful resize'''
         pass
@@ -304,6 +307,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._canvas.resize(self._width, self._height)
             self.update(repaint=True, updateLayout=True)
         self.resizeEvent(w,h)
+        self.sizeChanged.emit(w,h)
 
     def setGeometry(self, x: int, y: int, w: int, h: int):
         ''' Resize and move the widget
