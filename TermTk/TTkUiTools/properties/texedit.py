@@ -27,6 +27,10 @@
 from TermTk.TTkWidgets.texedit import TTkTextEdit
 
 TTkTextEditProperties = {
+        'Line Number': {
+                'init': {'name':'lineNumber',            'type':bool } ,
+                'get':  {'cb':TTkTextEdit.getLineNumber, 'type':bool } ,
+                'set':  {'cb':TTkTextEdit.setLineNumber, 'type':bool } },
         'Read Only' : {
                 'init': {'name':'readOnly',                'type':bool } ,
                 'get':  {'cb':lambda w:   w.isReadOnly(),  'type':bool } ,

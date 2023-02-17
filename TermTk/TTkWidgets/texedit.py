@@ -629,6 +629,9 @@ class TTkTextEdit(TTkAbstractScrollArea):
     def textEditView(self):
         return self._textEditView
 
+    def getLineNumber(self):
+        return self._lineNumberView.isVisible()
+
     def setLineNumber(self, ln):
         self._lineNumberView.setVisible(ln)
 
