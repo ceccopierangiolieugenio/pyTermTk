@@ -125,10 +125,20 @@ class TTkButton(TTkWidget):
         self._pressed = False
         self._keyPressed = False
         if self._border:
-            self.setMinimumSize(textWidth+2, len(self._text)+2)
+            if 'minSize' not in kwargs:
+                if 'minWidth' not in kwargs:
+                    self.setMinimumWidth(textWidth+2)
+                if 'minHeight' not in kwargs:
+                    self.setMinimumHeight(len(self._text)+2)
         else:
-            self.setMinimumSize(textWidth+2, len(self._text))
-            self.setMaximumHeight(len(self._text))
+            if 'minSize' not in kwargs:
+                if 'minWidth' not in kwargs:
+                    self.setMinimumWidth(textWidth+2)
+                if 'minHeight' not in kwargs:
+                    self.setMinimumHeight(len(self._text))
+            if 'maxSize' not in kwargs:
+                if 'maxHeight' not in kwargs:
+                    self.setMaximumHeight(len(self._text))
 
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
@@ -280,10 +290,7 @@ class TTkButton(TTkWidget):
         canvas = self.getCanvas()
 
         # Draw the border and bgcolor
-        if self._border:
-            canvas.fill(pos=(1,1), size=(w-2,h-2), color=textColor)
-            canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
-        else:
+        if not self._border or (self._border and ( h==1 or ( h>1 and len(self._text)>h-2 and len(self._text[0])!=0 ))):
             canvas.fill(pos=(1,0), size=(w-2,h), color=textColor)
             if h<=1:
                 canvas.drawChar(pos=(0  ,0), color=borderColor ,char='[')
@@ -296,7 +303,11 @@ class TTkButton(TTkWidget):
                 for y in range(1,h-1):
                     canvas.drawChar(pos=(0,  y),char='│', color=borderColor)
                     canvas.drawChar(pos=(w-1,y),char='│', color=borderColor)
+        else:
+            canvas.fill(pos=(1,1), size=(w-2,h-2), color=textColor)
+            canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
         # Print the text strings
         off = 1 if self._border else 0
         for i,t in enumerate(self._text, (h-len(self._text))//2):
-            canvas.drawText(pos=(1,i) ,text=t.completeColor(textColor), color=textColor, width=w-2, alignment=TTkK.CENTER_ALIGN)
+            if t!='':
+                canvas.drawText(pos=(1,i) ,text=t.completeColor(textColor), color=textColor, width=w-2, alignment=TTkK.CENTER_ALIGN)
