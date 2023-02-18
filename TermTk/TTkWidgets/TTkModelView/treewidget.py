@@ -346,6 +346,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
                 text = c.data[il]
                 if item.isSelected():
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor, forceColor=True)
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=text.completeColor(self._selectedColor), width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor)
                 else:
                     self._canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il))
