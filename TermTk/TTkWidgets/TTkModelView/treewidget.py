@@ -25,6 +25,7 @@
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -45,6 +46,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         level: int
         data: list
         widgets: list
+        firstLine: bool
 
     def __init__(self, *args, **kwargs):
         # Signals
@@ -249,11 +251,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def _alignWidgets(self):
         for y,c in enumerate(self._cache):
+            if not c.firstLine:
+                continue
             for i,w in enumerate(c.widgets):
                 if w:
                     _pos   = self._columnsPos[i-1]+1 if i else 3 + c.level*2
                     _width = self._columnsPos[i] - _pos
-                    w.setGeometry(_pos,y,_width,1)
+                    _height = w.height()
+                    w.setGeometry(_pos,y,_width,_height)
                     w.show()
 
     @pyTTkSlot()
@@ -269,23 +274,40 @@ class TTkTreeWidget(TTkAbstractScrollView):
         def _addToCache(_child, _level):
             _data = []
             _widgets = []
+            _h =_child.height()
             for _il in range(len(self._header)):
-                _icon = _child.icon(_il)
-                _widget = _child.widget(_il)
-                if _icon:
-                    _icon = ' '+_icon+' '
+                _lines = _child.data(_il).split('\n')
                 if _il==0:
-                    _data.append(TTkString('  '*_level+_icon+_child.data(_il)))
+                    _data0 = []
+                    for _id in range(_h):
+                        # Trying to define an icon to obtain this results on multiline field
+                        #  ▶ Label
+                        #  ┊ NewLine 1
+                        #  │ NewLine 2
+                        #  ╽
+                        if _id == 0:
+                            _icon = " "+_child.icon(_il)+" "
+                        elif _id == _h-1:
+                            _icon = TTkString(" ╽ ", TTkColor.fg("#666666"))
+                        elif _id == 1:
+                            _icon = TTkString(" ┊ ", TTkColor.fg("#666666"))
+                        else:
+                            _icon = TTkString(" │ ", TTkColor.fg("#666666"))
+                        _text = _lines[_id] if _id<len(_lines) else ""
+                        _data0.append('  '*_level+_icon+_text)
+                    _data.append(_data0)
                     _widgets.append(_child.widget(_il))
                 else:
-                    _data.append(TTkString(_icon+_child.data(_il)))
+                    _data.append([TTkString(s) for s in _lines]+[TTkString()]*(_h-len(_lines)))
                     _widgets.append(_child.widget(_il))
 
-            self._cache.append(TTkTreeWidget._Cache(
-                                item  = _child,
-                                level = _level,
-                                data  = _data,
-                                widgets = _widgets))
+            for _id in range(_h):
+                self._cache.append(TTkTreeWidget._Cache(
+                                        item  = _child,
+                                        level = _level,
+                                        data  = [ dt[_id] for dt in _data],
+                                        widgets = _widgets,
+                                        firstLine=_id==0))
             if _child.isExpanded():
                 for _c in _child.children():
                    _addToCache(_c, _level+1)
@@ -316,12 +338,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
         # Draw cache
         for i, c in enumerate(self._cache):
-            if i-y<0 : continue
+            if i-y<0: continue
             item  = c.item
             for il in range(len(self._header)):
                 lx = 0 if il==0 else self._columnsPos[il-1]+1
                 lx1 = self._columnsPos[il]
+
+                text = c.data[il]
                 if item.isSelected():
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor, forceColor=True)
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor, forceColor=True)
                 else:
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=c.data[il], width=lx1-lx, alignment=item.textAlignment(il))
+                    self._canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il))

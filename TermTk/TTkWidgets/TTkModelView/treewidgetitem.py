@@ -25,26 +25,29 @@
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    __slots__ = ('_parent', '_data', '_widgets', '_alignment', '_children', '_expanded', '_selected', '_hidden',
+    __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
-                 '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget'
+                 '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget',
         # Signals
         # 'refreshData'
+        'heightChanged'
         )
 
     def __init__(self, *args, **kwargs):
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
+        self.heightChanged = pyTTkSignal(int)
         super().__init__(*args, **kwargs)
         self._hasWidgets = False
         self._children = []
         self._parentWidget = None
+        self._height = 1
         data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
         # self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
         self._data, self._widgets = self._processDataInput(data)
@@ -70,6 +73,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def _processDataInputWidget(self, widget, index):
         self._hasWidgets = True
         widget.hide()
+        widget.sizeChanged.connect(self._widgetSizeChanged)
+        self._height = max(self._height,widget.height())
         if self._parentWidget:
             widget.setParent(self._parentWidget)
         if hasattr(widget, 'text'):
@@ -86,19 +91,20 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def _processDataInput(self, dataInput):
         retData, retWidgets = [],[]
-        for index, i in enumerate(dataInput):
-            if issubclass(type(i), TTkString):
-                retData.append(i)
+        for index, di in enumerate(dataInput):
+            if issubclass(type(di), TTkString):
+                retData.append(di)
                 retWidgets.append(None)
-            elif isinstance(i,str):
-                retData.append(TTkString(i))
+            elif isinstance(di,str):
+                retData.append(TTkString(di))
                 retWidgets.append(None)
-            elif issubclass(type(i), TTkWidget):
-                retData.append(self._processDataInputWidget(i, index))
-                retWidgets.append(i)
+            elif issubclass(type(di), TTkWidget):
+                retData.append(self._processDataInputWidget(di, index))
+                retWidgets.append(di)
             else:
                 retData.append(TTkString())
                 retWidgets.append(None)
+            self._height = max(self._height,len(retData[-1].split('\n')))
         return retData, retWidgets
 
     def _setDefaultIcon(self):
@@ -110,6 +116,19 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
                 self._icon[0] = TTkCfg.theme.tree[2]
             else:
                 self._icon[0] = TTkCfg.theme.tree[1]
+
+    @pyTTkSlot(int, int)
+    def _widgetSizeChanged(self, _, h):
+        if h != self._height:
+            h = max(max([len(s.split("\n")) for s in self._data]), max(w.height() for w in self._widgets if w))
+        if h != self._height:
+            self._height = h
+            self.heightChanged.emit(h)
+            if self._parentWidget:
+                self._parentWidget._refreshCache()
+
+    def height(self):
+        return self._height
 
     def setParent(self, parent):
         self._parentWidget = parent
@@ -253,6 +272,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def size(self):
         if self._expanded:
-            return 1 + sum(c.size() for c in self.children())
+            return self._height + sum(c.size() for c in self.children())
         else:
-            return 1
+            return self._height
