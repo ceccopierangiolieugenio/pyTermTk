@@ -387,6 +387,7 @@ class TTkColorDialogPicker(TTkWindow):
         b.colorClicked.connect(_controlSetColor)
 
         customLayout.addWidget(b:=TTkButton(border=False, text='Add to Custom Colors'),1,0,1,8)
+        customLayout.update()
 
         @pyTTkSlot()
         def _addCustomPressed():
