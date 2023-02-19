@@ -345,7 +345,8 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             if val < 0 : val = 0
             if val > h : val = h
             for vid in varSizes:
-                item[vid] = item[vid].substring(fr=ox)
+                strPos = item[vid].tabCharPos(ox)
+                item[vid] = item[vid].substring(fr=strPos)
             if it == self._selected:
                 colors = [self._selectColor]*len(self._columnColors)
                 self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
