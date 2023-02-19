@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from math import log10, ceil
+from math import log10, floor
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
@@ -48,7 +48,7 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
 
     def _wrapChanged(self):
         dt = max(1,self._textWrap._lines[-1][0])
-        width = 1+ceil(log10(dt))
+        width = 2+floor(log10(dt))
         self.setMaximumWidth(width)
         self.update()
 
