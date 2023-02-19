@@ -257,13 +257,15 @@ class TTkTextPicker(TTkWidget):
               Do not use it unless you know what you are doing
               And I've no idea what I am doing
     '''
-    __slots__ = ('_teButton','_textEdit', 'documentViewChanged')
+    __slots__ = ('_teButton','_textEdit', 'documentViewChanged', 'textChanged')
     def __init__(self, *args, **kwargs):
         self.documentViewChanged = pyTTkSignal(int,int)
         super().__init__(*args, **kwargs|{'layout':TTkHBoxLayout()})
-        self._textEdit = TTkTextEdit(pos=(0,0), size=(self.width()-2,self.height()), lineNumber=True)
+        self._textEdit = TTkTextEdit(pos=(0,0), size=(self.width()-2,self.height()))
+        self._textEdit.setText(kwargs.get('text',''))
         self._textEdit.setReadOnly(False)
         self._textEdit.setLineWrapMode(TTkK.WidgetWidth)
+        self.textChanged = self._textEdit.textChanged
         self._teButton = TTkButton(border=True, text='^', borderColor=TTkColor.fg("#AAAAFF")+TTkColor.bg("#002244") ,
                             pos=(self.width()-2,0),
                             size=(2,self.height()), minSize=(3,1),maxWidth=3)
@@ -274,12 +276,15 @@ class TTkTextPicker(TTkWidget):
         def _showTextDialogPicker():
             w,h = self.size()
             tdp = TTkTextDialogPicker(size=(50,8+h), document=self._textEdit.document())
-            TTkHelper.overlay(self, tdp, -1, -7)
+            TTkHelper.overlay(self, tdp, -1, -7, modal=True)
             tdp.focusTextEdit()
 
         self._teButton.clicked.connect(_showTextDialogPicker)
 
         self._textEdit.viewport().viewChanged.connect(self._textPickerViewChanged)
+
+    def getTTkString(self):
+        return self._textEdit.toRawText()
 
     @pyTTkSlot()
     def _textPickerViewChanged(self):

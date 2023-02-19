@@ -111,6 +111,12 @@ class PropertyEditor(ttk.TTkGridLayout):
                 _f(_w,_val)
                 self._superWidget.updateAll()
             return _ret
+        def _boundTextEdit(_f,_w,_te):
+            def _ret():
+                _v = _te.getTTkString()
+                _f(_w,_v)
+                self._superWidget.updateAll()
+            return _ret
 
         # Multi Flag Fields
         # ▼ Input Type     │ - (0x0001)
@@ -194,8 +200,8 @@ class PropertyEditor(ttk.TTkGridLayout):
         # String Fields
         def _processTTkString(name, prop):
             getval = prop['get']['cb'](domw)
-            value = ttk.TTkLineEdit(text=getval, height=1)
-            value.textEdited.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+            value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')))
+            value.textChanged.connect(_boundTextEdit(prop['set']['cb'],domw,value))
             return ttk.TTkTreeWidgetItem([name,value])
         # Color Fields
         def _processTTkColor(name, prop):
