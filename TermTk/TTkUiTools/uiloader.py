@@ -39,7 +39,10 @@ class TTkUiLoader():
             for cc in reversed(ttkClass.__mro__):
                 if cc.__name__ in TTkUiProperties:
                     properties |= TTkUiProperties[cc.__name__]
+            # Init params used in the constructors
             kwargs = {}
+            # Init params to be configured with the setter
+            setters = []
             for pname in widProp['params']:
                 if 'init' in properties[pname]:
                     initp = properties[pname]['init']
@@ -52,7 +55,26 @@ class TTkUiLoader():
                         value = widProp['params'][pname]
                     TTkLog.debug(f"{name=} {value=}")
                     kwargs |= {name: value}
+                elif 'set' in properties[pname]:
+                    setp = properties[pname]['set']
+                    setcb = setp['cb']
+                    if setp['type'] is TTkLayout:
+                        value = globals()[widProp['params'][pname]]()
+                    elif setp['type'] is TTkColor:
+                        value = TTkColor.ansi(widProp['params'][pname])
+                    else:
+                        value = widProp['params'][pname]
+                    setters.append({
+                                'cb':setcb,
+                                'value': value,
+                                'multi':type(setp['type']) is list})
             widget = ttkClass(**kwargs)
+            # Init params that don't have a constrictor
+            for s in setters:
+                if s['multi']:
+                    s['cb'](widget, *s['value'])
+                else:
+                    s['cb'](widget, s['value'])
             TTkLog.debug(widget)
             for c in widProp['children']:
                 widget.layout().addWidget(_getWidget(c))

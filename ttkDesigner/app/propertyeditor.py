@@ -170,12 +170,29 @@ class PropertyEditor(ttk.TTkGridLayout):
         #                            { 'name': 'y', 'type':int } ] } },
         #
         def _processList(name, prop):
+            def _getter(_i, _p):
+                def _ret(_w):
+                    return _p['get']['cb'](_w)[_i]
+                return _ret
+
+            def _setter(_i, _p):
+                def _ret(_w,_v):
+                    __vals = list(_p['get']['cb'](_w))
+                    __vals[_i]=_v
+                    _p['set']['cb'](_w, *__vals)
+                return _ret
+
             curVal = prop['get']['cb'](domw)
             value = ttk.TTkLabel(text=f"{curVal}")
             ret = ttk.TTkTreeWidgetItem([name,value])
             for _i, _prop in enumerate(prop['get']['type']):
-                _curVal = curVal[_i]
-                # if
+                # Defining a proxy property to set or get a single value
+                _newProp = {
+                    'get' : { 'cb': _getter(_i, prop), 'type':_prop['type'] },
+                    'set' : { 'cb': _setter(_i, prop), 'type':_prop['type'] }
+                }
+                # ret.addChild(ttk.TTkTreeWidgetItem([_prop['name'],f"{curVal[_i]}"]))
+                ret.addChild(_processProp(_prop['name'], _newProp))
             return ret
 
         # Dict Fields
@@ -220,6 +237,29 @@ class PropertyEditor(ttk.TTkGridLayout):
             value = ttk.TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}", height=1)
             return ttk.TTkTreeWidgetItem([name,value])
 
+        def _processProp(name, prop):
+            if 'get' in prop:
+                if prop['get']['type'] == 'multiflags':
+                    return _processMultiFlag(name, prop)
+                elif prop['get']['type'] == 'singleflag':
+                    return _processSingleFlag(name, prop)
+                elif prop['get']['type'] == bool and 'set' in prop:
+                    return _processBool(name, prop)
+                elif prop['get']['type'] == int and 'set' in prop:
+                    return _processInt(name, prop)
+                elif prop['get']['type'] == ttk.TTkString and 'set' in prop:
+                    return _processTTkString(p,prop,multiLine=True)
+                elif prop['get']['type'] == 'singleLineTTkString':
+                    return _processTTkString(p,prop,multiLine=False)
+                elif prop['get']['type'] == ttk.TTkColor and 'set' in prop:
+                    return _processTTkColor(name, prop)
+                elif type(prop['get']['type']) == list:
+                    return _processList(name, prop)
+                elif type(prop['get']['type']) == dict:
+                    return _processDict(name, prop)
+                else:
+                    return _processUnknown(name, prop)
+
         proplist = []
         self._detail.clear()
         for cc in reversed(type(domw).__mro__):
@@ -233,24 +273,4 @@ class PropertyEditor(ttk.TTkGridLayout):
                         prop = ttk.TTkUiProperties[ccName][p]
                         if prop not in proplist:
                             proplist.append(prop)
-                            if 'get' in prop:
-                                if prop['get']['type'] == 'multiflags':
-                                    classItem.addChild(_processMultiFlag(p,prop))
-                                elif prop['get']['type'] == 'singleflag':
-                                    classItem.addChild(_processSingleFlag(p,prop))
-                                elif prop['get']['type'] == bool and 'set' in prop:
-                                    classItem.addChild(_processBool(p,prop))
-                                elif prop['get']['type'] == int and 'set' in prop:
-                                    classItem.addChild(_processInt(p,prop))
-                                elif prop['get']['type'] == ttk.TTkString and 'set' in prop:
-                                    classItem.addChild(_processTTkString(p,prop,multiLine=True))
-                                elif prop['get']['type'] == 'singleLineTTkString':
-                                    classItem.addChild(_processTTkString(p,prop,multiLine=False))
-                                elif prop['get']['type'] == ttk.TTkColor and 'set' in prop:
-                                    classItem.addChild(_processTTkColor(p,prop))
-                                elif type(prop['get']['type']) == list:
-                                    classItem.addChild(_processList(p,prop))
-                                elif type(prop['get']['type']) == dict:
-                                    classItem.addChild(_processDict(p,prop))
-                                else:
-                                    classItem.addChild(_processUnknown(p,prop))
+                            classItem.addChild(_processProp(p, prop))

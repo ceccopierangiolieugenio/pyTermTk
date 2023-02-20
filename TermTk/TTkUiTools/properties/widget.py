@@ -79,7 +79,7 @@ TTkWidgetProperties = {
                                 { 'name': 'bottom', 'type':int  } ,
                                 { 'name': 'left',   'type':int  } ,
                                 { 'name': 'right',  'type':int } ] },
-                'set':  { 'cb':TTkWidget.resize,   'type': [
+                'set':  { 'cb':TTkWidget.setPadding,   'type': [
                                 { 'name': 'top',    'type':int  } ,
                                 { 'name': 'bottom', 'type':int  } ,
                                 { 'name': 'left',   'type':int  } ,
