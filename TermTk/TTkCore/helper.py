@@ -191,6 +191,7 @@ class TTkHelper:
 
     @staticmethod
     def removeOverlayAndChild(widget):
+        if not TTkHelper.isOverlay(widget): return
         if len(TTkHelper._overlay) <= 1:
             return TTkHelper.removeOverlay()
         rootWidget = TTkHelper.rootOverlay(widget)
