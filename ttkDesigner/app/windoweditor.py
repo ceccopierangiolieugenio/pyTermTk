@@ -110,8 +110,8 @@ class SuperWidget(ttk.TTkWidget):
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
         r,g,b = randint(0,0xFF),randint(0,0xFF),randint(0,0xFF)
-        self._layoutColor    = ttk.TTkColor.bg(f"#{r:02X}{g:02X}{b:02X}")
-        self._layoutPadColor = ttk.TTkColor.bg(f"#{r*9//10:X}{g*9//10:X}{b*9//10:X}")
+        self._layoutColor = ttk.TTkColor.bg(f"#{r*9//10:02X}{g*9//10:02X}{b*9//10:02X}")
+        self._layoutPadColor    = ttk.TTkColor.bg(f"#{r:02X}{g:02X}{b:02X}")
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
         SuperWidget.toggleHighlightLayout.connect(self._toggleHighlightLayout)
 

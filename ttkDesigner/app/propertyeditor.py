@@ -200,7 +200,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         # String Fields
         def _processTTkString(name, prop):
             getval = prop['get']['cb'](domw)
-            value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')))
+            value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')), autoSize=True)
             value.textChanged.connect(_boundTextEdit(prop['set']['cb'],domw,value))
             return ttk.TTkTreeWidgetItem([name,value])
         # Color Fields

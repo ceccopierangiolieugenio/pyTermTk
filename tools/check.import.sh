@@ -29,7 +29,7 @@ __check(){
             -e "ttk.py:import platform" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
-            -e "texedit.py:from math import log10, ceil" \
+            -e "texedit.py:from math import log10, floor" \
             -e "string.py:import unicodedata" \
             -e "progressbar.py:import math" \
             -e "uiloader.py:import json" \
