@@ -110,7 +110,7 @@ class TTkCheckbox(TTkWidget):
         :param text:
         :type text: :class:`~TermTk.TTkCore.string.TTkString`
         '''
-        if self._text == text: return
+        if self._text.sameAs(text): return
         self._text = TTkString(text)
         self.setMinimumSize(3 + len(self._text), 1)
         self.update()

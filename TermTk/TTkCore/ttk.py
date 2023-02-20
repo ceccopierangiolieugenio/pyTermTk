@@ -218,6 +218,7 @@ class TTk(TTkWidget):
                     TTkHelper.dndEnter(None)
                 if mevt.evt == TTkK.Press and focusWidget:
                     focusWidget.clearFocus()
+                    TTkHelper.focusLastModal()
 
         # Clean the Drag and Drop in case of mouse release
         if mevt.evt == TTkK.Release:

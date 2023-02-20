@@ -198,9 +198,9 @@ class PropertyEditor(ttk.TTkGridLayout):
             value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
             return ttk.TTkTreeWidgetItem([name,value])
         # String Fields
-        def _processTTkString(name, prop):
+        def _processTTkString(name, prop, multiLine=True):
             getval = prop['get']['cb'](domw)
-            value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')), autoSize=True)
+            value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')), autoSize=True, multiLine=multiLine)
             value.textChanged.connect(_boundTextEdit(prop['set']['cb'],domw,value))
             return ttk.TTkTreeWidgetItem([name,value])
         # Color Fields
@@ -243,7 +243,9 @@ class PropertyEditor(ttk.TTkGridLayout):
                                 elif prop['get']['type'] == int and 'set' in prop:
                                     classItem.addChild(_processInt(p,prop))
                                 elif prop['get']['type'] == ttk.TTkString and 'set' in prop:
-                                    classItem.addChild(_processTTkString(p,prop))
+                                    classItem.addChild(_processTTkString(p,prop,multiLine=True))
+                                elif prop['get']['type'] == 'singleLineTTkString':
+                                    classItem.addChild(_processTTkString(p,prop,multiLine=False))
                                 elif prop['get']['type'] == ttk.TTkColor and 'set' in prop:
                                     classItem.addChild(_processTTkColor(p,prop))
                                 elif type(prop['get']['type']) == list:

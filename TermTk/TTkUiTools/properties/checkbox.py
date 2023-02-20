@@ -26,9 +26,9 @@ from TermTk.TTkWidgets.checkbox import TTkCheckbox
 
 TTkCheckboxProperties = {
         'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':TTkCheckbox.text,     'type':TTkString } ,
-                'set':  {'cb':TTkCheckbox.setText,  'type':TTkString } },
+                'init': {'name':'text', 'type':'singleLineTTkString' } ,
+                'get':  {'cb':TTkCheckbox.text,     'type':'singleLineTTkString' } ,
+                'set':  {'cb':TTkCheckbox.setText,  'type':'singleLineTTkString' } },
         'Tristate' : {
                 'init': {'name':'tristate', 'type':bool } ,
                 'get':  {'cb':TTkCheckbox.isTristate,   'type':bool } ,

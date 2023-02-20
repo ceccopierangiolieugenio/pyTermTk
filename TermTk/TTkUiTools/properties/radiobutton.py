@@ -28,9 +28,9 @@ from TermTk.TTkWidgets.radiobutton import TTkRadioButton
 
 TTkRadioButtonProperties = {
         'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':TTkRadioButton.text,     'type':TTkString } ,
-                'set':  {'cb':TTkRadioButton.setText,  'type':TTkString } },
+                'init': {'name':'text', 'type':'singleLineTTkString' } ,
+                'get':  {'cb':TTkRadioButton.text,     'type':'singleLineTTkString' } ,
+                'set':  {'cb':TTkRadioButton.setText,  'type':'singleLineTTkString' } },
         'Checked' : {
                 'init': {'name':'checked', 'type':bool } ,
                 'get':  {'cb':TTkRadioButton.isChecked,   'type':bool } ,

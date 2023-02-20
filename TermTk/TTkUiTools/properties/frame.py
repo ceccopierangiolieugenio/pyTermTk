@@ -29,7 +29,7 @@ TTkFrameProperties = {
                 'get':  {'cb':TTkFrame.border,     'type':bool } ,
                 'set':  {'cb':TTkFrame.setBorder,  'type':bool } },
         'Title' : {
-                'init': {'name':'title',  'type':TTkString },
-                'get':  {'cb':TTkFrame.title,      'type':TTkString } ,
-                'set':  {'cb':TTkFrame.setTitle,   'type':TTkString } },
+                'init': {'name':'title',  'type':'singleLineTTkString' },
+                'get':  {'cb':TTkFrame.title,      'type':'singleLineTTkString' } ,
+                'set':  {'cb':TTkFrame.setTitle,   'type':'singleLineTTkString' } },
     }

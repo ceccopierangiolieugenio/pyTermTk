@@ -96,6 +96,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             '_readOnly', '_multiCursor',
             '_clipboard',
             '_preview', '_previewWidth',
+            '_multiLine',
             # # Forwarded Methods
             # 'wrapWidth',    'setWrapWidth',
             # 'wordWrapMode', 'setWordWrapMode',
@@ -119,6 +120,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.redoAvailable = pyTTkSignal(bool)
         self.textChanged = pyTTkSignal()
         self._readOnly = kwargs.get('readOnly', True)
+        self._multiLine = kwargs.get('multiLine', True)
         self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
@@ -274,6 +276,8 @@ class TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot()
     def paste(self):
         txt = self._clipboard.text()
+        if not self._multiLine:
+            txt = TTkString().join(txt.split('\n'))
         self._textCursor.insertText(txt)
 
     @pyTTkSlot()
@@ -509,7 +513,8 @@ class TTkTextEditView(TTkAbstractScrollView):
                     self._textCursor.movePosition(TTkTextCursor.Left, TTkTextCursor.KeepAnchor)
                 self._textCursor.removeSelectedText()
             elif evt.key == TTkK.Key_Enter:
-                self._textCursor.insertText('\n')
+                if self._multiLine:
+                    self._textCursor.insertText('\n')
                 self._textCursor.movePosition(TTkTextCursor.Right)
             # Scroll to align to the cursor
             p = self._textCursor.position()

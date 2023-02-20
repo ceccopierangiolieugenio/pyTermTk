@@ -85,7 +85,8 @@ class TTkFrame(TTkWidget):
 
     def setTitle(self, title):
         '''setTitle'''
-        self._title = title
+        if self._title.sameAs(title): return
+        self._title = TTkString(title)
         self.update()
 
     def setBorder(self, border):

@@ -155,6 +155,13 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
+    def sameAs(self, other):
+        if not issubclass(type(other),TTkString): return False
+        return (
+            self==other and
+            len(self._colors) == len(other._colors) and
+            all(s==o for s,o in zip(self._colors,other._colors)) )
+
     def isdigit(self):
         return self._text.isdigit()
 

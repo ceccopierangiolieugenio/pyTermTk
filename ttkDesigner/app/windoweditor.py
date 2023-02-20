@@ -145,7 +145,7 @@ class SuperWidget(ttk.TTkWidget):
                     ttk.TTkLog.warn("Feature not Implemented yet")
                 elif t['type'] is ttk.TTkLayout:
                     ret.append(_dumpTTkLayout(val[i]))
-                elif t['type'] is ttk.TTkString:
+                elif t['type'] in (ttk.TTkString,'singleLineTTkString'):
                     ret.append(_dumpTTkString(val[i]))
                 elif t['type'] is ttk.TTkColor:
                     ret.append(_dumpTTkColor(val[i]))
@@ -174,7 +174,7 @@ class SuperWidget(ttk.TTkWidget):
                             params |= {p: _dumpList(propCb(wid), propType)}
                         elif propType is ttk.TTkLayout:
                             params |= {p: _dumpTTkLayout(propCb(wid))}
-                        elif propType is ttk.TTkString:
+                        elif propType in (ttk.TTkString,'singleLineTTkString'):
                             params |= {p: _dumpTTkString(propCb(wid))}
                         elif propType is ttk.TTkColor:
                             params |= {p: _dumpTTkColor(propCb(wid))}

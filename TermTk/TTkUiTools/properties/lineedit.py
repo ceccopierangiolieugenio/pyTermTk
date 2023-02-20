@@ -37,7 +37,7 @@ TTkLineEditProperties = {
                         'Number'  : TTkK.Input_Number   ,
                         'Password': TTkK.Input_Password } } },
         'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':TTkLineEdit.text,     'type':TTkString } ,
-                'set':  {'cb':TTkLineEdit.setText,  'type':TTkString } }
+                'init': {'name':'text', 'type':'singleLineTTkString',  } ,
+                'get':  {'cb':TTkLineEdit.text,     'type':'singleLineTTkString' } ,
+                'set':  {'cb':TTkLineEdit.setText,  'type':'singleLineTTkString' } }
     }

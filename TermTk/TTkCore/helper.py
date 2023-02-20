@@ -113,6 +113,11 @@ class TTkHelper:
         return None
 
     @staticmethod
+    def focusLastModal():
+        if modal := TTkHelper.getLastModal():
+            modal._widget.setFocus()
+
+    @staticmethod
     def getLastModal():
         modal = None
         for o in TTkHelper._overlay:

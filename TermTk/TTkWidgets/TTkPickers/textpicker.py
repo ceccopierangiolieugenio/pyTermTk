@@ -133,9 +133,10 @@ class _emojiPicker(TTkResizableFrame):
         self.emojiClicked = epa.viewport().emojiClicked
 
 class TTkTextDialogPicker(TTkWindow):
-    __slots__ = ('_textEdit', '_autoSize')
+    __slots__ = ('_textEdit', '_autoSize', '_multiLine')
     def __init__(self, *args, **kwargs):
         self._autoSize = kwargs.get('autoSize',False)
+        self._multiLine = kwargs.get('multiLine',True)
         super().__init__(*args, **kwargs)
         fontLayout = TTkGridLayout(columnMinWidth=1)
         # Char Fg/Bg buttons
@@ -155,7 +156,7 @@ class TTkTextDialogPicker(TTkWindow):
 
         fontLayout.addWidget(_superSimpleHorizontalLine(),0,10,2,1)
 
-        self._textEdit = TTkTextEdit(document=kwargs.get('document',TTkTextDocument()))
+        self._textEdit = TTkTextEdit(document=kwargs.get('document',TTkTextDocument()),multiLine=self._multiLine)
         self._textEdit.setReadOnly(False)
         self._textEdit.setLineWrapMode(TTkK.WidgetWidth)
         self._textEdit.setLineNumber('\n' in self._textEdit.toPlainText())
@@ -260,12 +261,13 @@ class TTkTextPicker(TTkWidget):
               Do not use it unless you know what you are doing
               And I've no idea what I am doing
     '''
-    __slots__ = ('_teButton','_textEdit', 'documentViewChanged', 'textChanged', '_autoSize')
+    __slots__ = ('_teButton','_textEdit', 'documentViewChanged', 'textChanged', '_autoSize', '_multiLine')
     def __init__(self, *args, **kwargs):
         self.documentViewChanged = pyTTkSignal(int,int)
         self._autoSize = kwargs.get('autoSize',False)
+        self._multiLine = kwargs.get('multiLine',True)
         super().__init__(*args, **kwargs|{'layout':TTkHBoxLayout()})
-        self._textEdit = TTkTextEdit(pos=(0,0), size=(self.width()-2,self.height()))
+        self._textEdit = TTkTextEdit(pos=(0,0), size=(self.width()-2,self.height()),multiLine=self._multiLine)
         self._textEdit.setText(kwargs.get('text',''))
         self._textEdit.setReadOnly(False)
         self._textEdit.setLineWrapMode(TTkK.WidgetWidth)
@@ -279,7 +281,7 @@ class TTkTextPicker(TTkWidget):
         @pyTTkSlot()
         def _showTextDialogPicker():
             w,h = self.size()
-            tdp = TTkTextDialogPicker(size=(50,8+h), document=self._textEdit.document(), autoSize=self._autoSize)
+            tdp = TTkTextDialogPicker(size=(50,8+h), document=self._textEdit.document(), autoSize=self._autoSize, multiLine=self._multiLine)
             TTkHelper.overlay(self, tdp, -1, -7, modal=True)
             tdp.focusTextEdit()
 

@@ -26,9 +26,9 @@ from TermTk.TTkWidgets.label import TTkLabel
 
 TTkLabelProperties = {
         'Text' : {
-                'init': {'name':'text',  'type':TTkString },
-                'get':  {'cb':TTkLabel.text,      'type':TTkString } ,
-                'set':  {'cb':TTkLabel.setText,   'type':TTkString } },
+                'init': {'name':'text',  'type':'singleLineTTkString' },
+                'get':  {'cb':TTkLabel.text,      'type':'singleLineTTkString' } ,
+                'set':  {'cb':TTkLabel.setText,   'type':'singleLineTTkString' } },
         'Color' : {
                 'init': {'name':'color',  'type':TTkColor },
                 'get':  {'cb':TTkLabel.color,      'type':TTkColor } ,

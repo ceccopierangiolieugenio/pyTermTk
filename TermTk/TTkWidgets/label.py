@@ -59,12 +59,12 @@ class TTkLabel(TTkWidget):
     @pyTTkSlot(str)
     def setText(self, text):
         '''setText'''
-        if self._text != text:
-            if issubclass(type(text), TTkString):
-                self._text  = text
-            else:
-                self._text  = TTkString(text)
-            self._textUpdated()
+        if self._text.sameAs(text): return
+        if issubclass(type(text), TTkString):
+            self._text  = text
+        else:
+            self._text  = TTkString(text)
+        self._textUpdated()
 
     def paintEvent(self):
         forceColor = self.color()!=TTkColor.RST
