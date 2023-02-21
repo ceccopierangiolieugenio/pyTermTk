@@ -242,7 +242,6 @@ class TTkTextCursor():
         return color
 
     def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
-        # TTkLog.debug(f"{line=}, {pos=}, {moveMode=}")
         self._properties[cID].position.set(line,pos)
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[cID].anchor.set(line,pos)
@@ -486,11 +485,6 @@ class TTkTextCursor():
             if p.hasSelection():
                 return True
         return False
-
-    def clearSelection(self):
-        for p in self._properties:
-            p.anchor.pos  = p.position.pos
-            p.anchor.line = p.position.line
 
     def _removeSelectedText(self):
         currPos = self.position().toNum()
