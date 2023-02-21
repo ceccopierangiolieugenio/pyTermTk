@@ -37,7 +37,7 @@ strb = 'print([m.start() for m in rm.finditer(stra)]),print([m.start() for m in 
 strc = 'Eugenio'
 strd = '\033Eugenio'
 
-rm = re.compile('(\033?[^\033]*)')
+rm = re.compile('(\033?[^\033]+)')
 
 print(stra.split('\033'))
 print(strb.split('\033'))

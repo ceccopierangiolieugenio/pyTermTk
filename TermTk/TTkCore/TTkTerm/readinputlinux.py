@@ -46,7 +46,7 @@ class ReadInput():
         tty.setcbreak(sys.stdin)
 
     def read(self):
-        rm = re.compile('(\033?[^\033]*)')
+        rm = re.compile('(\033?[^\033]+)')
         while self._readPipe[0] not in (list := select.select( [sys.stdin, self._readPipe[0]], [], [] )[0]):
             # Read all the full input
             _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
@@ -57,7 +57,6 @@ class ReadInput():
             # Split all the ansi sequences
             # or yield any separate input char
             for sr in rm.findall(stdinRead):
-                if not sr: continue
                 if '\033' == sr[0]:
                     yield sr
                 else:
