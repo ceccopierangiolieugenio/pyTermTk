@@ -46,15 +46,19 @@ class ReadInput():
         tty.setcbreak(sys.stdin)
 
     def read(self):
-        rlist, _, _ = select.select( [sys.stdin, self._readPipe[0]], [], [] )
-        if self._readPipe[0] in rlist:
-            return None
-
-        if (stdinRead := sys.stdin.read(1)) == "\033":  # Check if the stream start with an escape sequence
+        while self._readPipe[0] not in (list := select.select( [sys.stdin, self._readPipe[0]], [], [] )[0]):
+            # Read all the full input
             _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
             fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
-            stdinRead += sys.stdin.read(20)       # Check if the stream start with an escape sequence
-            if stdinRead.startswith("\033[<"):    # Clear the buffer if this is a mouse code
-                sys.stdin.read(0x40)
+            stdinRead = sys.stdin.read()
             fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl)
-        return stdinRead
+
+            # Split all the ansi sequences
+            # or yield any separate input char
+            if '\033' in stdinRead:
+                stdinSplit = stdinRead.split('\033')
+                for ansi in stdinSplit[1:]:
+                    yield '\033'+ansi
+            else:
+                for ch in stdinRead:
+                    yield ch
