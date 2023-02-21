@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, select
+import sys, os, select, re
 
 try: import fcntl, termios, tty
 except Exception as e:
@@ -46,6 +46,7 @@ class ReadInput():
         tty.setcbreak(sys.stdin)
 
     def read(self):
+        rm = re.compile('(\033?[^\033]*)')
         while self._readPipe[0] not in (list := select.select( [sys.stdin, self._readPipe[0]], [], [] )[0]):
             # Read all the full input
             _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
@@ -55,10 +56,10 @@ class ReadInput():
 
             # Split all the ansi sequences
             # or yield any separate input char
-            if '\033' in stdinRead:
-                stdinSplit = stdinRead.split('\033')
-                for ansi in stdinSplit[1:]:
-                    yield '\033'+ansi
-            else:
-                for ch in stdinRead:
-                    yield ch
+            for sr in rm.findall(stdinRead):
+                if not sr: continue
+                if '\033' == sr[0]:
+                    yield sr
+                else:
+                    for ch in sr:
+                        yield ch
