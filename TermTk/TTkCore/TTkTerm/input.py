@@ -73,7 +73,7 @@ class TTkInput:
 
     def start(self):
         self._readInput = ReadInput()
-        while stdinRead := self._readInput.read():
+        for stdinRead in self._readInput.read():
             self.key_process(stdinRead)
         TTkLog.debug("Close TTkInput")
 
