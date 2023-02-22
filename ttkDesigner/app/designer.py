@@ -101,15 +101,15 @@ class TTkDesigner(TTkGridLayout):
 
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
 
-        rightSplit.addItem(ti := TreeInspector(self._windowEditor.viewport()))
-        rightSplit.addItem(pe := PropertyEditor())
-        rightSplit.addWidget(be := TTkButton(text='E', border=True, maxHeight=3))
+        rightSplit.addItem(treeInspector := TreeInspector(self._windowEditor.viewport()))
+        rightSplit.addItem(propertyEditor := PropertyEditor())
+        rightSplit.addWidget(TTkButton(text='E', border=True, maxHeight=3))
 
-        ti.widgetSelected.connect(lambda _,s : s.pushSuperControlWidget())
-        ti.widgetSelected.connect(pe.setDetail)
-        self._windowEditor.viewport().widgetSelected.connect(pe.setDetail)
+        treeInspector.widgetSelected.connect(lambda _,s : s.pushSuperControlWidget())
+        treeInspector.widgetSelected.connect(propertyEditor.setDetail)
+        self._windowEditor.viewport().widgetSelected.connect(propertyEditor.setDetail)
 
-        self._windowEditor.viewport().weModified.connect(ti.refresh)
+        self._windowEditor.viewport().weModified.connect(treeInspector.refresh)
 
         fileMenu = topMenuFrame.menubarTop().addMenu("&File")
         fileMenu.addMenu("Open")
