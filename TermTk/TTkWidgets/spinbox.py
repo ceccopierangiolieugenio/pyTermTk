@@ -75,6 +75,13 @@ class TTkSpinBox(TTkWidget):
         self.setValue(int(str(text)))
         self._lineEdit.setText(str(self._value))
 
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Up:
+            self.setValue(self._value+1)
+        else:
+            self.setValue(self._value-1)
+        return TTkLineEdit.wheelEvent(self._lineEdit, evt)
+
     def keyEvent(self, evt):
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Up:
