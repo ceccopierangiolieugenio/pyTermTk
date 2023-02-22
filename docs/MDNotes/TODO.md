@@ -19,7 +19,7 @@
       Ref: https://github.com/ceccopierangiolieugenio/scripts/blob/master/Programming/python/pyqt5/textedit.001.py
 
 ## ttkDesigner
-- [ ] Support widgets in the TTkTree (required in the properties widget)
+- [x] Support widgets in the TTkTree (required in the properties widget)
 
 ## Terminal Helper
 - [ ] Events

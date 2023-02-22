@@ -191,6 +191,11 @@ class SuperWidget(ttk.TTkWidget):
         return ret
 
     def updateAll(self):
+        self.resize(*(self._wid.size()))
+        self.move(*(self._wid.pos()))
+        self.setPadding(*(self._wid.getPadding()))
+        self.setMaximumSize(*(self._wid.maximumSize()))
+        self.setMinimumSize(*(self._wid.minimumSize()))
         self.update()
 
     def mousePressEvent(self, evt) -> bool:

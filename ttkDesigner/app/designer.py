@@ -118,7 +118,6 @@ class TTkDesigner(TTkGridLayout):
 
         fileMenu = topMenuFrame.menubarTop().addMenu("F&orm")
         fileMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
-        be.clicked.connect(self.preview)
 
         def _showAbout(btn):
             TTkHelper.overlay(None, About(), 30,10)
