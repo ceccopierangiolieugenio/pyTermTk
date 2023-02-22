@@ -78,6 +78,24 @@ class SuperControlWidget(ttk.TTkResizableFrame):
         self._alignWidToPos(bkPos)
         return ret
 
+    def keyEvent(self, evt):
+        if evt.type == ttk.TTkK.SpecialKey:
+            if evt.key in (ttk.TTkK.Key_Delete, ttk.TTkK.Key_Backspace) :
+                self._wid.close()
+                self.close()
+                self._wid.weModified.emit()
+                return True
+            bkPos = self.pos()
+            x,y = 0,0
+            if evt.key == ttk.TTkK.Key_Up:    y=-1
+            elif evt.key == ttk.TTkK.Key_Down:  y=1
+            elif evt.key == ttk.TTkK.Key_Left:  x=-1
+            elif evt.key == ttk.TTkK.Key_Right: x=1
+            if any((x,y)):
+                self.move(bkPos[0]+x, bkPos[1]+y)
+                self._alignWidToPos(bkPos)
+        return True
+
     def paintEvent(self):
         w,h = self.size()
         self._wid.paintEvent()
