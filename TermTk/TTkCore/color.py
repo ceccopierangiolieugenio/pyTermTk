@@ -104,6 +104,62 @@ class _TTkColor:
             ( TTkK.Background if self._bg  else TTkK.NONE ) | \
             ( TTkK.Modifier   if self._mod else TTkK.NONE )
 
+    @staticmethod
+    def rgb2hsl(rgb):
+        r = rgb[0]/255
+        g = rgb[1]/255
+        b = rgb[2]/255
+        cmax = max(r,g,b)
+        cmin = min(r,g,b)
+
+        lum = (cmax-cmin)/2
+        if cmax == cmin:
+            return 0,0,lum
+
+        delta = cmax-cmin
+        if   cmax == r:
+            hue = ((g-b)/delta)%6
+        elif cmax == g:
+            hue = (b-r)/delta+2
+        else:
+            hue = (r-g)/delta+4
+
+        sat = delta / (1 - abs(delta-1))
+        hue = int(hue*60) + ( 360 if hue < 0 else 0 )
+        sat = int(sat*100)
+        lum = int(lum*100)
+
+        return hue,sat,lum
+
+    @staticmethod
+    def hsl2rgb(hsl):
+        hue = hsl[0]
+        sat = hsl[1] / 100
+        lum = hsl[2] / 100
+
+        c = (1-abs(2*lum-1))*sat
+        x = c*(1-abs((hue/60)%2-1))
+        m = lum-c/2
+
+        if     0 <= hue < 60:
+          r,g,b = c,x,0
+        elif  60 <= hue < 120:
+          r,g,b = x,c,0
+        elif 120 <= hue < 180:
+          r,g,b = 0,c,x
+        elif 180 <= hue < 240:
+          r,g,b = 0,x,c
+        elif 240 <= hue < 300:
+          r,g,b = x,0,c
+        elif 300 <= hue < 360:
+          r,g,b = c,0,x
+
+        r = int((r + m) * 255)
+        g = int((g + m) * 255)
+        b = int((b + m) * 255)
+
+        return r,g,b
+
     def getHex(self, ctype):
         if ctype == TTkK.Foreground:
             r,g,b = self.fgToRGB()
