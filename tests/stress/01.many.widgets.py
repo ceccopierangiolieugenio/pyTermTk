@@ -48,13 +48,24 @@ def _addMany():
     ttk.TTkLog.info("Start Stress!!!")
     dl = sa.viewport().layout()
     sa.viewport().setLayout(ttk.TTkVBoxLayout())
+    layouts = []
     for i in range(50):
         layout = ttk.TTkHBoxLayout()
+        btns = []
         for ii in range(50):
             buttons.append(btnx := DelButton(text=f"btn:{i:03}-{ii:03}",border=True))
             btnx.setMinimumWidth(random.randint(10,40))
-            layout.addWidget(btnx)
-        sa.viewport().layout().addItem(layout)
+            btns.append(btnx)
+            # layout.addWidget(btnx)
+        layout.addWidgets(btns)
+        layouts.append(layout)
+        # sa.viewport().layout().addItem(layout)
+        ttk.TTkLog.debug(f"{len(layouts)=}")
+    # ll = ttk.TTkGridLayout()
+    # ll.addItems(layouts)
+    # sa.viewport().setLayout(ll)
+    sa.viewport().layout().addItems(layouts)
+    ttk.TTkLog.debug(f"{len(layouts)=}")
 
     # layout = ttk.TTkLayout()
     # layout.addWidget(DelButton())
