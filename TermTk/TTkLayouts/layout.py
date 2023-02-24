@@ -227,11 +227,11 @@ class TTkLayout(TTkLayoutItem):
             item = widget.widgetItem()
         self._items.insert(index, item)
         self._zSortItems()
-        #self.update()
+        self.update()
         item.setParent(self)
         if item.layoutItemType == TTkK.WidgetItem:
             item.widget().setParent(self.parentWidget())
-        if self.parentWidget() and self.parentWidget().isVisible():
+        if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
