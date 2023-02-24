@@ -218,20 +218,29 @@ class TTkLayout(TTkLayoutItem):
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addItem(self, item):
-        self.insertItem(len(self._items),item)
+        self.insertItems(len(self._items),[item])
+
+    def addItems(self, items):
+        self.insertItems(len(self._items),items)
 
     def insertItem(self, index, item):
-        if not issubclass(type(widget := item), TTkLayoutItem):
-            if widget.parentWidget() and widget.parentWidget().layout():
-                widget.parentWidget().layout().removeWidget(self)
-            item = widget.widgetItem()
-        self._items.insert(index, item)
+        return self.insertItems(index,[item])
+
+    def insertItems(self, index, items):
+        for i,item in enumerate(items):
+            if not issubclass(type(widget := item), TTkLayoutItem):
+                if widget.parentWidget() and widget.parentWidget().layout():
+                    widget.parentWidget().layout().removeWidget(self)
+                item = widget.widgetItem()
+                items[i]=item
+        self._items[index:index] = items
         self._zSortItems()
-        self.update()
-        item.setParent(self)
-        if item.layoutItemType == TTkK.WidgetItem:
-            item.widget().setParent(self.parentWidget())
-        if self.parentWidget():
+        #self.update()
+        for item in items:
+            item.setParent(self)
+            if item.layoutItemType == TTkK.WidgetItem:
+                item.widget().setParent(self.parentWidget())
+        if self.parentWidget() and self.parentWidget().isVisible():
             self.parentWidget().update(repaint=True, updateLayout=True)
 
     def addWidget(self, widget):
@@ -240,14 +249,29 @@ class TTkLayout(TTkLayoutItem):
         :param widget: the widget to be added
         :type widget: :class:`~TermTk.TTkWidgets`
         '''
-        self.insertWidget(len(self._items),widget)
+        self.insertItems(len(self._items),[widget])
+
+    def addWidgets(self, widgets):
+        ''' Add a list of widgets to this Layout
+
+        :param widgets: the widget to be added
+        :type widgets: list of :class:`~TermTk.TTkWidgets`
+        '''
+        self.insertItems(len(self._items),widgets)
 
     def insertWidget(self, index, widget):
-        self.insertItem(index, widget)
+        self.insertItems(index, [widget])
+
+    def insertWidgets(self, index, widgets):
+        self.insertItems(index, widgets)
 
     def removeItem(self, item):
-        if item in self._items:
-            self._items.remove(item)
+        self.removeItems([item])
+
+    def removeItems(self, items):
+        for item in items:
+            if item in self._items:
+                self._items.remove(item)
         self._zSortItems()
 
     def removeWidget(self, widget):
@@ -256,13 +280,21 @@ class TTkLayout(TTkLayoutItem):
         :param widget: the widget to be removed
         :type widget: :class:`~TermTk.TTkWidgets`
         '''
+        self.removeWidgets([widget])
+
+    def removeWidgets(self, widgets):
+        ''' Remove a list of widget from this Layout
+
+        :param widgets: the widget to be removed
+        :type widgets: list of :class:`~TermTk.TTkWidgets`
+        '''
         for item in self._items:
             if item.layoutItemType == TTkK.WidgetItem and \
-               item.widget() == widget:
+               item.widget() in widgets:
                 self.removeItem(item)
                 return
             elif item.layoutItemType == TTkK.LayoutItem:
-                item.removeWidget(widget)
+                item.removeWidgets(widgets)
 
     def findBranchWidget(self, widget):
         for item in self._items:
