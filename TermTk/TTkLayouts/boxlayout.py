@@ -26,6 +26,7 @@
 **Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`_]
 '''
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkHBoxLayout(TTkGridLayout):
@@ -62,6 +63,10 @@ class TTkVBoxLayout(TTkGridLayout):
          ╚═════════════════════════════╝
     '''
     def addItem(self, item):
-        TTkGridLayout.addItem(self, item, self.count(), 0)
+        TTkGridLayout.addItems(self, [item], direction=TTkK.VERTICAL)
+    def addItems(self, items):
+        TTkGridLayout.addItems(self,  items, direction=TTkK.VERTICAL)
     def addWidget(self, widget):
-        TTkGridLayout.addWidget(self, widget, self.count(), 0)
+        TTkGridLayout.addWidgets(self, [widget], direction=TTkK.VERTICAL)
+    def addWidgets(self, widgets):
+        TTkGridLayout.addWidgets(self,  widgets, direction=TTkK.VERTICAL)

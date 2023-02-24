@@ -94,7 +94,7 @@ class TTkGridLayout(TTkLayout):
 
 
     # addWidget(self, widget, row, col)
-    def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1):
+    def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
         '''Add the widget to this :class:`TTkGridLayout`, this function uses :meth:`~addItem`
 
         :param widget: the widget to be added
@@ -103,15 +103,32 @@ class TTkGridLayout(TTkLayout):
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
+        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
         '''
-        self.removeWidget(widget)
-        item = widget.widgetItem()
-        TTkGridLayout.addItem(self, item, row, col, rowspan, colspan)
-        widget.update()
+        self.addWidgets([widget], row, col, rowspan, colspan, direction)
+
+    def addWidgets(self, widgets, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
+        '''Add the widgets to this :class:`TTkGridLayout`, this function uses :meth:`~addItem`
+
+        :param widgets: the widgets to be added
+        :type widgets: list of :class:`~TermTk.TTkWidgets.widget.TTkWidget`
+        :param int row:     the row of the grid, optional, defaults to None
+        :param int col:     the col of the grid, optional, defaults to None
+        :param int rowspan: the rows used by the widget, optional, defaults to 1
+        :param int colspan: the cols used by the widget, optional, defaults to 1
+        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        '''
+        self.removeWidgets(widgets)
+        items = [w.widgetItem() for w in widgets]
+        TTkGridLayout.addItems(self, items, row, col, rowspan, colspan, direction)
+        for w in widgets:
+            w.update()
 
     def replaceItem(self, item, index): pass
 
-    def addItem(self, item, row=None, col=None, rowspan=1, colspan=1):
+    def addItem(self, item, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
         '''Add the item to this :class:`TTkGridLayout`
 
         :param item: the item to be added
@@ -120,17 +137,37 @@ class TTkGridLayout(TTkLayout):
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
-
+        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
         '''
-        self.removeItem(item)
+        self.addItems([item],row,col,rowspan,colspan,direction)
+
+    def addItems(self, items, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
+        '''Add the items to this :class:`TTkGridLayout`
+
+        :param items: the items to be added
+        :type items: list of :class:`~TermTk.TTkLayouts.layout.TTkLayoutItem`
+        :param int row:     the row of the grid, optional, defaults to None
+        :param int col:     the col of the grid, optional, defaults to None
+        :param int rowspan: the rows used by the item, optional, defaults to 1
+        :param int colspan: the cols used by the item, optional, defaults to 1
+        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        '''
+        nitems = len(items)
+        self.removeItems(items)
         if row is None and col is None:
             # Append The widget at the end
-            row = 0
-            col = self._cols
+            if direction==TTkK.HORIZONTAL:
+                row = 0
+                col = self._cols
+            else:
+                row = self._rows
+                col = 0
 
         #retrieve the max col/rows to reshape the grid
-        maxrow = row + rowspan
-        maxcol = col + colspan
+        maxrow = row + rowspan * nitems
+        maxcol = col + colspan * nitems
         for child in self.children():
             maxrow = max(maxrow, child._row + child._rowspan)
             maxcol = max(maxcol, child._col + child._colspan)
@@ -142,29 +179,40 @@ class TTkGridLayout(TTkLayout):
             self.removeItem(self._gridItems[row][col])
         self._reshapeGrid(size=(maxrow,maxcol))
 
-        item._row = row
-        item._col = col
-        item._rowspan = rowspan
-        item._colspan = colspan
+        for item in items:
+            item._row = row
+            item._col = col
+            item._rowspan = rowspan
+            item._colspan = colspan
+            self._gridItems[row][col] = item
+            if direction==TTkK.HORIZONTAL:
+                col += colspan
+            else:
+                row += rowspan
 
-        self._gridItems[row][col] = item
-        TTkLayout.addItem(self, item)
+        TTkLayout.addItems(self, items)
 
     def removeItem(self, item):
-        TTkLayout.removeItem(self, item)
+        self.removeItems([item])
+
+    def removeItems(self, items):
+        TTkLayout.removeItems(self, items)
         for gridRow in range(self._rows):
             for gridCol in range(self._cols):
-                if self._gridItems[gridRow][gridCol] == item:
+                if self._gridItems[gridRow][gridCol] in items:
                     self._gridItems[gridRow][gridCol] = None
         self._reshapeGrid(self._gridUsedsize())
 
     def removeWidget(self, widget):
-        TTkLayout.removeWidget(self, widget)
+        self.removeWidgets([widget])
+
+    def removeWidgets(self, widgets):
+        TTkLayout.removeWidgets(self, widgets)
         for gridRow in range(self._rows):
             for gridCol in range(self._cols):
                 if self._gridItems[gridRow][gridCol] is not None and \
                    self._gridItems[gridRow][gridCol].layoutItemType == TTkK.WidgetItem and \
-                   self._gridItems[gridRow][gridCol].widget() == widget:
+                   self._gridItems[gridRow][gridCol].widget() in widgets:
                     self._gridItems[gridRow][gridCol] = None
         self._reshapeGrid(self._gridUsedsize())
 
