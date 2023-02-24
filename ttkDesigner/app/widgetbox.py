@@ -27,7 +27,7 @@ from .about import *
 
 dWidgets = {
     'Layouts':{
-        "Layout"       : { "class":ttk.TTkLayout    , "params":{}},
+        "Layout"       : { "class":ttk.TTkLayout    , "params":{'size':(30,10)}},
         "H Box Layout" : { "class":ttk.TTkHBoxLayout, "params":{}},
         "V Box Layout" : { "class":ttk.TTkVBoxLayout, "params":{}},
         "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{}},
@@ -87,7 +87,13 @@ class DragDesignItem(ttk.TTkWidget):
         name = f"{name}-{DragDesignItem._objNames[name]}"
         drag = ttk.TTkDrag()
         data = wc['class'](**(wc['params']|{'name':name}))
-        drag.setPixmap(data)
+        if issubclass(wc['class'], ttk.TTkWidget):
+            drag.setPixmap(data)
+        else:
+            w,h = wc['params']['size']
+            pm = ttk.TTkCanvas(width=w, height=h)
+            pm.drawBox(pos=(0,0),size=(w,h), color=ttk.TTkColor.fg('#888888'))
+            drag.setPixmap(pm)
         drag.setData(data)
         drag.exec()
         return True

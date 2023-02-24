@@ -106,10 +106,7 @@ class TTkImage(TTkWidget):
         for row in self._data:
             for i,pixel in enumerate(row):
                 h,s,l = TTkColor.rgb2hsl(pixel)
-                h += deg
-                #TTkLog.debug(f"{h=}")
-                if h >= 360: h-=360
-                row[i] = TTkColor.hsl2rgb((h,s,l))
+                row[i] = TTkColor.hsl2rgb(((h+deg)%360,s,l))
 
     def paintEvent(self):
         img = self._data

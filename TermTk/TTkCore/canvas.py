@@ -41,10 +41,11 @@ class TTkCanvas:
         '_theme',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
-        '_visible', '_doubleBuffer')
+        '_visible', '_transparent', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
         self._widget = kwargs.get('widget', None)
         self._visible = True
+        self._transparent = False
         self._doubleBuffer = False
         self._width = 0
         self._height = 0
@@ -55,6 +56,12 @@ class TTkCanvas:
         self.updateSize()
         # self.resize(self._width, self._height)
         # TTkLog.debug((self._width, self._height))
+
+    def transparent(self):
+        return self._transparent
+
+    def setTransparent(self, tr):
+        self._transparent = tr
 
     def getWidget(self): return self._widget
 
@@ -92,8 +99,12 @@ class TTkCanvas:
     def clean(self):
         if not self._visible: return
         w,h = self._width, self._height
-        baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        if self._transparent:
+            baseData = [None]*w
+            baseColors = baseData
+        else:
+            baseData = [' ']*w
+            baseColors = [TTkColor.RST]*w
         self._data   = [baseData.copy()   for _ in range(h)]
         self._colors = [baseColors.copy() for _ in range(h)]
 
@@ -635,18 +646,30 @@ class TTkCanvas:
         hslice = min(h if y+h < by+bh else by+bh-y,canvas._height)
 
         a, b = x+xoffset, x+wslice
-        for iy in range(yoffset,hslice):
-            self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
-            self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+        if canvas._transparent:
+            for iy in range(yoffset,hslice):
+                if None in canvas._data[iy][xoffset:wslice]:
+                    self._data[y+iy][a:b]   = [cca if cca else ccb for cca,ccb in zip(canvas._data[iy][xoffset:wslice],self._data[y+iy][a:b])]
+                else:
+                    self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
+                if None in canvas._colors[iy][xoffset:wslice]:
+                    self._colors[y+iy][a:b] = [cca if cca else ccb for cca,ccb in zip(canvas._colors[iy][xoffset:wslice],self._colors[y+iy][a:b])]
+                else:
+                    self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+        else:
+            for iy in range(yoffset,hslice):
+                self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
+                self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+
 
             # Check the full wide chars on the edge of the two canvasses
             if ((0 <= a < cw) and self._data[y+iy][a]==''):
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 < b <= cw) and TTkString._isWideCharData(self._data[y+iy][b-1])):
+            if ((0 < b <= cw) and self._data[y+iy][b-1] and TTkString._isWideCharData(self._data[y+iy][b-1])):
                 self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 < a <= cw) and TTkString._isWideCharData(self._data[y+iy][a-1])):
+            if ((0 < a <= cw) and self._data[y+iy][a-1] and TTkString._isWideCharData(self._data[y+iy][a-1])):
                 self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
             if ((0 <= b < cw) and self._data[y+iy][b]==''):

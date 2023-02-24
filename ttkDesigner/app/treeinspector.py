@@ -102,15 +102,19 @@ class TreeInspector(ttk.TTkGridLayout):
                         tomWidget=widget,
                         tomSuperWidget=superWidget,
                         expanded=expanded)
-            for c in superWidget.layout().children():
-                top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
+            if issubclass(type(superWidget), SuperWidget):
+                for c in superWidget._superLayout.layout().children():
+                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
+            else:
+                for c in superWidget.layout().children():
+                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
 
-            for c in widget.rootLayout().children():
-                if c == widget.layout(): continue
-                if c.layoutItemType == ttk.TTkK.LayoutItem:
-                    top.addChild(tc:=_TTkTomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
-                    for cc in c.children():
-                        tc.addChild(TreeInspector._getTomTreeItem(cc,widSelected))
+            # for c in widget.rootLayout().children():
+            #     if c == widget.layout(): continue
+            #     if c.layoutItemType == ttk.TTkK.LayoutItem:
+            #         top.addChild(tc:=_TTkTomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
+            #         for cc in c.children():
+            #             tc.addChild(TreeInspector._getTomTreeItem(cc,widSelected))
             return top
 
         if layoutItem.layoutItemType == ttk.TTkK.LayoutItem:

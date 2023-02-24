@@ -21,12 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .cfg import *
-from .about import About
-from .main import main
-from .designer import TTkDesigner
-from .treeinspector import TreeInspector
-from .widgetbox import DragDesignItem, WidgetBox
-from .windoweditor import WindowEditor
-from .propertyeditor import PropertyEditor
-from .superobj import *
+from .supercontrol import SuperControlWidget
+from .superwidget import SuperWidget
+from .superlayout import SuperLayout
