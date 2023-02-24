@@ -75,8 +75,15 @@ class TTkConstant:
     QUIT_EVENT   = 0x08
     TIME_EVENT   = 0x10
 
-    HORIZONTAL = 0x01
-    VERTICAL   = 0x02
+    class Direction(int):
+        '''This class type is used to describe the direction'''
+        HORIZONTAL = 0x01
+        '''Horizontal direction'''
+        VERTICAL   = 0x02
+        '''Vertical direction'''
+
+    HORIZONTAL = Direction.HORIZONTAL
+    VERTICAL   = Direction.VERTICAL
 
     class ScrollBarPolicy(int):
         ScrollBarAsNeeded  =  0x00
