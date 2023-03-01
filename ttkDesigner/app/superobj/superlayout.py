@@ -37,6 +37,7 @@ class SuperLayout(ttk.TTkWidget):
         # kwargs['pos']  = (x,y) = lay.pos()
         x,y = kwargs.get('pos',lay.pos())
         kwargs['size'] = (w,h) = lay.size()
+        kwargs['layout'] = lay.__class__()
         self._lay.setGeometry(x,y,w,h)
 
         super().__init__(*args, **kwargs)
@@ -55,7 +56,13 @@ class SuperLayout(ttk.TTkWidget):
     def dumpDict(self):
         children=[]
         for w in self.layout().children():
-            children.append(w.widget().dumpDict())
+            layoutItemParams = {
+                'row':w._row,
+                'col':w._col,
+                'rowspan':w._rowspan,
+                'colspan':w._colspan,
+            }
+            children.append(w.widget().dumpDict()|layoutItemParams)
         ret = {'class': 'TTkLayout',
                'params' : SuperObject.dumpParams(self._lay),
                'children':children}

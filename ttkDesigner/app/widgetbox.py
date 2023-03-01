@@ -28,8 +28,8 @@ from .about import *
 dWidgets = {
     'Layouts':{
         "Layout"       : { "class":ttk.TTkLayout    , "params":{'size':(30,10)}},
-        "H Box Layout" : { "class":ttk.TTkHBoxLayout, "params":{}},
-        "V Box Layout" : { "class":ttk.TTkVBoxLayout, "params":{}},
+        "H Box Layout" : { "class":ttk.TTkHBoxLayout, "params":{'size':(30,10)}},
+        "V Box Layout" : { "class":ttk.TTkVBoxLayout, "params":{'size':(30,10)}},
         "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{}},
         "Splitter"     : { "class":ttk.TTkSplitter  , "params":{'size':(40,10)}},
     },

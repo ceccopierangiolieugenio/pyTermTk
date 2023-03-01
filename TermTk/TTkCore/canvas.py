@@ -74,8 +74,12 @@ class TTkCanvas:
         w,h = self._newWidth, self._newHeight
         if w  == self._width and h == self._height:
             return
-        baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        if self._transparent:
+            baseData = [None]*w
+            baseColors = baseData
+        else:
+            baseData = [' ']*w
+            baseColors = [TTkColor.RST]*w
         self._data   = [baseData.copy()   for _ in range(h)]
         self._colors = [baseColors.copy() for _ in range(h)]
         if self._doubleBuffer:

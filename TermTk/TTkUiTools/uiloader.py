@@ -113,10 +113,24 @@ class TTkUiLoader():
                     s['cb'](layout, s['value'])
 
             for c in layprop['children']:
+                row = c.get('row', 0)
+                col = c.get('col', 0)
+                rowspan = c.get('rowspan', 1)
+                colspan = c.get('colspan', 1)
                 if issubclass(globals()[c['class']],TTkLayout):
-                    layout.addItem(_getLayout(c))
+                    l = _getLayout(c)
+                    l._row = row
+                    l._col = col
+                    l._rowspan = rowspan
+                    l._colspan = colspan
+                    layout.addItem(l)
                 else:
-                    layout.addWidget(_getWidget(c))
+                    w = _getWidget(c)
+                    w._row = row
+                    w._col = col
+                    w._rowspan = rowspan
+                    w._colspan = colspan
+                    layout.addWidget(w)
             return layout
 
         widgetProperty = json.loads(text)
