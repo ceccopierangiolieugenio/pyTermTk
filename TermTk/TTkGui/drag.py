@@ -30,6 +30,7 @@ class _TTkDragDisplayWidget(TTkWidget):
     __slots__ = ('_pixmap')
 
     def setPixmap(self, pixmap, hotSpot):
+        self.getCanvas().setTransparent(True)
         w,h = pixmap.size()
         hsx, hsy= hotSpot
         x, y = TTkHelper.mousePos()
