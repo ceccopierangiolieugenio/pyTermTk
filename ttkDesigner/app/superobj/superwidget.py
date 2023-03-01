@@ -47,7 +47,7 @@ class SuperWidget(ttk.TTkWidget):
         kwargs['paddingRight'] = padr
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
-        h,s,l = randint(0,359),100,80
+        h,s,l = randint(0,359),100,randint(60,80)
         r,g,b = ttk.TTkColor.hsl2rgb(((h+5)%360,s,l))
         self._layoutColor    = ttk.TTkColor.bg(f"#{r:02X}{g:02X}{b:02X}", modifier=ttk.TTkColorGradient(increment=+2))
         r,g,b = ttk.TTkColor.hsl2rgb(((h+5)%360,s,l))
