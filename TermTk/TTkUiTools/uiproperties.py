@@ -25,6 +25,7 @@ from TermTk.TTkWidgets import *
 from .properties import *
 
 TTkUiProperties = {
+    # Widgets
         TTkButton.__name__:         TTkButtonProperties,
         TTkCheckbox.__name__:       TTkCheckboxProperties,
         TTkComboBox.__name__:       TTkComboBoxProperties,
@@ -39,4 +40,6 @@ TTkUiProperties = {
         TTkTextEdit.__name__:       TTkTextEditProperties,
         TTkWidget.__name__:         TTkWidgetProperties,
         TTkWindow.__name__:         TTkWindowProperties,
+    # Layouts
+        TTkLayout.__name__:         TTkLayoutProperties,
 }

@@ -661,7 +661,7 @@ class TTkCanvas:
                 self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
                 self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
 
-
+        for iy in range(yoffset,hslice):
             # Check the full wide chars on the edge of the two canvasses
             if ((0 <= a < cw) and self._data[y+iy][a]==''):
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]

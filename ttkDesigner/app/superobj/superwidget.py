@@ -27,13 +27,13 @@ import TermTk as ttk
 import ttkDesigner.app.superobj as so
 
 class SuperWidget(ttk.TTkWidget):
-    def __init__(self, wid, weModified, widgetSelected, *args, **kwargs):
+    def __init__(self, wid, weModified, thingSelected, *args, **kwargs):
         self.weModified = weModified
-        self.widgetSelected = widgetSelected
+        self.thingSelected = thingSelected
         self._wid = wid
         self._wid.move(*kwargs['pos'])
         self._wid._canvas.show()
-        self._superLayout = so.SuperLayout(lay=self._wid.layout(), weModified=self.weModified, widgetSelected=self.widgetSelected,)
+        self._superLayout = so.SuperLayout(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected,)
         self._superRootWidget = kwargs.get('superRootWidget',False)
         kwargs['layout'] = ttk.TTkGridLayout()
         kwargs['layout'].addWidget(self._superLayout)
@@ -94,9 +94,7 @@ class SuperWidget(ttk.TTkWidget):
                 else:
                     ttk.TTkLog.warn("Type not Recognised")
             return ret
-        children = []
-        for w in self.layout().children():
-            children.append(w.widget().dumpDict())
+
         params = {}
         for cc in reversed(type(wid).__mro__):
             # if hasattr(cc,'_ttkProperties'):
@@ -126,7 +124,7 @@ class SuperWidget(ttk.TTkWidget):
         ret = {
             'class'  : wid.__class__.__name__,
             'params' : params,
-            'children': children
+            'layout': self._superLayout.dumpDict()
         }
         return ret
 
@@ -149,7 +147,7 @@ class SuperWidget(ttk.TTkWidget):
 
     def mouseReleaseEvent(self, evt) -> bool:
         self.pushSuperControlWidget()
-        self.widgetSelected.emit(self._wid,self)
+        self.thingSelected.emit(self._wid,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:

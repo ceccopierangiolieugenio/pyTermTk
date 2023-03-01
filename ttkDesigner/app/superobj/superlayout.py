@@ -26,9 +26,9 @@ import TermTk as ttk
 import ttkDesigner.app.superobj as so
 
 class SuperLayout(ttk.TTkWidget):
-    def __init__(self, lay, weModified, widgetSelected, *args, **kwargs):
+    def __init__(self, lay, weModified, thingSelected, *args, **kwargs):
         self.weModified = weModified
-        self.widgetSelected = widgetSelected
+        self.thingSelected = thingSelected
         self._lay = lay
         self._superRootWidget = kwargs.get('superRootWidget',False)
         self._selectable = kwargs.get('selectable', False)
@@ -52,7 +52,11 @@ class SuperLayout(ttk.TTkWidget):
         self.update()
 
     def dumpDict(self):
-        ret = {}
+        children=[]
+        for w in self.layout().children():
+            children.append(w.widget().dumpDict())
+        ret = {'class': 'TTkLayout',
+               'children':children}
         return ret
 
     def updateAll(self):
@@ -75,7 +79,7 @@ class SuperLayout(ttk.TTkWidget):
     def mouseReleaseEvent(self, evt) -> bool:
         if self._superRootWidget or not self._selectable: return False
         self.pushSuperControlWidget()
-        # self.widgetSelected.emit(self._lay,self)
+        self.thingSelected.emit(self._lay,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -99,7 +103,7 @@ class SuperLayout(ttk.TTkWidget):
         hsx,hsy = evt.hotSpot()
         ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
         if issubclass(type(data),ttk.TTkLayout):
-            self.layout().addWidget(sw := so.SuperLayout(lay=data, weModified=self.weModified, widgetSelected=self.widgetSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True))
+            self.layout().addWidget(sw := so.SuperLayout(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True))
             self._lay.addItem(data)
         elif issubclass(type(data), so.SuperLayout):
             sw = data
@@ -117,7 +121,7 @@ class SuperLayout(ttk.TTkWidget):
             self._lay.addWidget(data)
             data.move(evt.x-hsx, evt.y-hsy)
         elif issubclass(type(data),ttk.TTkWidget):
-            self.layout().addWidget(sw := so.SuperWidget(wid=data, weModified=self.weModified, widgetSelected=self.widgetSelected, pos=(evt.x-hsx, evt.y-hsy)))
+            self.layout().addWidget(sw := so.SuperWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
             self._lay.addWidget(data)
             data.move(evt.x-hsx, evt.y-hsy)
         else:

@@ -105,9 +105,9 @@ class TTkDesigner(TTkGridLayout):
         rightSplit.addItem(propertyEditor := PropertyEditor())
         rightSplit.addWidget(TTkButton(text='E', border=True, maxHeight=3))
 
-        treeInspector.widgetSelected.connect(lambda _,s : s.pushSuperControlWidget())
-        treeInspector.widgetSelected.connect(propertyEditor.setDetail)
-        self._windowEditor.viewport().widgetSelected.connect(propertyEditor.setDetail)
+        treeInspector.thingSelected.connect(lambda _,s : s.pushSuperControlWidget())
+        treeInspector.thingSelected.connect(propertyEditor.setDetail)
+        self._windowEditor.viewport().thingSelected.connect(propertyEditor.setDetail)
 
         self._windowEditor.viewport().weModified.connect(treeInspector.refresh)
 
@@ -162,7 +162,7 @@ class TTkDesigner(TTkGridLayout):
         widget = TTkUiLoader.loadJson(jj)
         win = TTkWindow(
                 title="Mr Terminal",
-                size=(50,20),
+                size=(80,30),
                 layout=TTkGridLayout(),
                 flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
         win.layout().addWidget(widget)

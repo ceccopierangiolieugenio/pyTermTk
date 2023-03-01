@@ -43,12 +43,13 @@ class TTkUiLoader():
             kwargs = {}
             # Init params to be configured with the setter
             setters = []
+            layout = _getLayout(widProp['layout'])
             for pname in widProp['params']:
                 if 'init' in properties[pname]:
                     initp = properties[pname]['init']
                     name = initp['name']
                     if initp['type'] is TTkLayout:
-                        value = globals()[widProp['params'][pname]]()
+                        value = layout
                     elif initp['type'] is TTkColor:
                         value = TTkColor.ansi(widProp['params'][pname])
                     else:
@@ -59,7 +60,7 @@ class TTkUiLoader():
                     setp = properties[pname]['set']
                     setcb = setp['cb']
                     if setp['type'] is TTkLayout:
-                        value = globals()[widProp['params'][pname]]()
+                        value = layout
                     elif setp['type'] is TTkColor:
                         value = TTkColor.ansi(widProp['params'][pname])
                     else:
@@ -76,9 +77,18 @@ class TTkUiLoader():
                 else:
                     s['cb'](widget, s['value'])
             TTkLog.debug(widget)
-            for c in widProp['children']:
-                widget.layout().addWidget(_getWidget(c))
+            # for c in widProp['children']:
+            #     widget.layout().addWidget(_getWidget(c))
             return widget
+
+        def _getLayout(layprop):
+            layout = globals()[layprop['class']]()
+            for c in layprop['children']:
+                if issubclass(globals()[c['class']],TTkLayout):
+                    layout.addItem(_getLayout(c))
+                else:
+                    layout.addWidget(_getWidget(c))
+            return layout
 
         widgetProperty = json.loads(text)
         TTkLog.debug(widgetProperty)

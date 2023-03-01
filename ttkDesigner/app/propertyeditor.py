@@ -264,7 +264,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         self._detail.clear()
         for cc in reversed(type(domw).__mro__):
             # if hasattr(cc,'_ttkProperties'):
-            if issubclass(cc, ttk.TTkWidget):
+            if issubclass(cc, ttk.TTkWidget) or issubclass(cc, ttk.TTkLayout):
                 ccName = cc.__name__
                 classItem = ttk.TTkTreeWidgetItem([ccName,''], expanded=True)
                 self._detail.addTopLevelItem(classItem)

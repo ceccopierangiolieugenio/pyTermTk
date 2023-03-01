@@ -22,3 +22,5 @@ from .splitter import TTkSplitterProperties
 from .texedit import TTkTextEditProperties
 from .widget import TTkWidgetProperties
 from .window import TTkWindowProperties
+
+from .layout import TTkLayoutProperties

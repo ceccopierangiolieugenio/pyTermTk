@@ -32,10 +32,10 @@ import TermTk as ttk
 class WindowEditorView(ttk.TTkAbstractScrollView):
     def __init__(self, *args, **kwargs):
         self.weModified = ttk.pyTTkSignal()
-        self.widgetSelected = ttk.pyTTkSignal(ttk.TTkWidget, ttk.TTkWidget)
+        self.thingSelected = ttk.pyTTkSignal(ttk.TTkWidget, ttk.TTkWidget)
         super().__init__(*args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
-        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), weModified=self.weModified, widgetSelected=self.widgetSelected, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
+        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), weModified=self.weModified, thingSelected=self.thingSelected, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
         self.layout().addWidget(self._ttk)
 
     def getTTk(self):
