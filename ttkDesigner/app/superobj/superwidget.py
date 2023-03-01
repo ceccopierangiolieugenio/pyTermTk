@@ -25,6 +25,7 @@ from random import randint
 import TermTk as ttk
 
 import ttkDesigner.app.superobj as so
+from .superobj import SuperObject
 
 class SuperWidget(ttk.TTkWidget):
     def __init__(self, wid, weModified, thingSelected, *args, **kwargs):
@@ -66,64 +67,9 @@ class SuperWidget(ttk.TTkWidget):
 
     def dumpDict(self):
         wid = self._wid
-        def _dumpPrimitive(val):
-            return val
-        def _dumpTTkString(val):
-            return val.toAnsi()
-        def _dumpTTkColor(val):
-            return str(val)
-        def _dumpTTkLayout(val):
-            return type(val).__name__
-        def _dumpFlag(val):
-            return val
-        def _dumpList(val, propType):
-            ret = []
-            for i,t in enumerate(propType):
-                if t['type'] in (int,str,float,bool):
-                    ret.append(_dumpPrimitive(val[i]))
-                elif type(t['type']) in (list,tuple):
-                    ttk.TTkLog.warn("Feature not Implemented yet")
-                elif t['type'] is ttk.TTkLayout:
-                    ret.append(_dumpTTkLayout(val[i]))
-                elif t['type'] in (ttk.TTkString,'singleLineTTkString'):
-                    ret.append(_dumpTTkString(val[i]))
-                elif t['type'] is ttk.TTkColor:
-                    ret.append(_dumpTTkColor(val[i]))
-                elif t['type'] in ('singleFlag','multiFlag'):
-                    ret.append(_dumpFlag(val[i]))
-                else:
-                    ttk.TTkLog.warn("Type not Recognised")
-            return ret
-
-        params = {}
-        for cc in reversed(type(wid).__mro__):
-            # if hasattr(cc,'_ttkProperties'):
-            if issubclass(cc, ttk.TTkWidget):
-                ccName = cc.__name__
-                if ccName in ttk.TTkUiProperties:
-                    for p in ttk.TTkUiProperties[ccName]:
-                        prop = ttk.TTkUiProperties[ccName][p]
-                        propType = prop['get']['type']
-                        propCb = prop['get']['cb']
-                        # ttk.TTkLog.debug(ccName)
-                        if propType in (int,str,float,bool):
-                            params |= {p: _dumpPrimitive(propCb(wid))}
-                        elif type(propType) in (list,tuple):
-                            params |= {p: _dumpList(propCb(wid), propType)}
-                        elif propType is ttk.TTkLayout:
-                            params |= {p: _dumpTTkLayout(propCb(wid))}
-                        elif propType in (ttk.TTkString,'singleLineTTkString'):
-                            params |= {p: _dumpTTkString(propCb(wid))}
-                        elif propType is ttk.TTkColor:
-                            params |= {p: _dumpTTkColor(propCb(wid))}
-                        elif propType in ('singleflag','multiflags'):
-                            params |= {p: _dumpFlag(propCb(wid))}
-                        else:
-                            ttk.TTkLog.warn("Type not Recognised")
-
         ret = {
             'class'  : wid.__class__.__name__,
-            'params' : params,
+            'params' : SuperObject.dumpParams(wid),
             'layout': self._superLayout.dumpDict()
         }
         return ret

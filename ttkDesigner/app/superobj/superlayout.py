@@ -24,6 +24,7 @@ from random import randint
 
 import TermTk as ttk
 import ttkDesigner.app.superobj as so
+from .superobj import SuperObject
 
 class SuperLayout(ttk.TTkWidget):
     def __init__(self, lay, weModified, thingSelected, *args, **kwargs):
@@ -56,6 +57,7 @@ class SuperLayout(ttk.TTkWidget):
         for w in self.layout().children():
             children.append(w.widget().dumpDict())
         ret = {'class': 'TTkLayout',
+               'params' : SuperObject.dumpParams(self._lay),
                'children':children}
         return ret
 

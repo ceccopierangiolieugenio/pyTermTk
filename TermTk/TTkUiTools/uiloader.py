@@ -82,7 +82,36 @@ class TTkUiLoader():
             return widget
 
         def _getLayout(layprop):
+            properties = {}
+            ttkClass = globals()[layprop['class']]
+            for cc in reversed(ttkClass.__mro__):
+                if cc.__name__ in TTkUiProperties:
+                    properties |= TTkUiProperties[cc.__name__]
+
+            setters = []
+            for pname in layprop['params']:
+                if 'set' in properties[pname]:
+                    setp = properties[pname]['set']
+                    setcb = setp['cb']
+                    if setp['type'] is TTkLayout:
+                        value = layout
+                    elif setp['type'] is TTkColor:
+                        value = TTkColor.ansi(layprop['params'][pname])
+                    else:
+                        value = layprop['params'][pname]
+                    setters.append({
+                                'cb':setcb,
+                                'value': value,
+                                'multi':type(setp['type']) is list})
+
             layout = globals()[layprop['class']]()
+            # Init params that don't have a constrictor
+            for s in setters:
+                if s['multi']:
+                    s['cb'](layout, *s['value'])
+                else:
+                    s['cb'](layout, s['value'])
+
             for c in layprop['children']:
                 if issubclass(globals()[c['class']],TTkLayout):
                     layout.addItem(_getLayout(c))
