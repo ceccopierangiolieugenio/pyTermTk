@@ -30,7 +30,7 @@ dWidgets = {
         "Layout"       : { "class":ttk.TTkLayout    , "params":{'size':(30,10)}},
         "H Box Layout" : { "class":ttk.TTkHBoxLayout, "params":{'size':(30,10)}},
         "V Box Layout" : { "class":ttk.TTkVBoxLayout, "params":{'size':(30,10)}},
-        "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{}},
+        "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{'size':(30,10)}},
         "Splitter"     : { "class":ttk.TTkSplitter  , "params":{'size':(40,10)}},
     },
     'Buttons':{

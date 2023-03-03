@@ -34,7 +34,7 @@ class SuperWidget(ttk.TTkWidget):
         self._wid = wid
         self._wid.move(*kwargs['pos'])
         self._wid._canvas.show()
-        self._superLayout = so.SuperLayout(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected,)
+        self._superLayout = so.SuperLayout(lay=ttk.TTkLayout(), weModified=self.weModified, thingSelected=self.thingSelected,)
         self._superRootWidget = kwargs.get('superRootWidget',False)
         kwargs['layout'] = ttk.TTkGridLayout()
         kwargs['layout'].addWidget(self._superLayout)
@@ -63,7 +63,6 @@ class SuperWidget(ttk.TTkWidget):
     def _toggleHighlightLayout(self, state):
         SuperWidget._showLayout = state
         self.update()
-
 
     def dumpDict(self):
         wid = self._wid
@@ -105,7 +104,9 @@ class SuperWidget(ttk.TTkWidget):
         drag.setPixmap(data.getCanvas())
         drag.setData(data)
         drag.exec()
+        self.parentWidget()._lay.removeWidget(self._wid)
         self.parentWidget().layout().removeWidget(self)
+        self.parentWidget().layout().update()
         self.parentWidget().update()
         return True
 

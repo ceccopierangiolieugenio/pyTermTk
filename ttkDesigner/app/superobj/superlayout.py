@@ -30,7 +30,8 @@ class SuperLayout(ttk.TTkWidget):
     def __init__(self, lay, weModified, thingSelected, *args, **kwargs):
         self.weModified = weModified
         self.thingSelected = thingSelected
-        self._lay = lay
+        self._lay = ttk.TTkLayout()
+        self._dropBorder = 0 # This property is used to exclude the border from the drop routine
         self._superRootWidget = kwargs.get('superRootWidget',False)
         self._selectable = kwargs.get('selectable', False)
 
@@ -52,6 +53,12 @@ class SuperLayout(ttk.TTkWidget):
     def _toggleHighlightLayout(self, state):
         so.SuperWidget._showLayout = state
         self.update()
+
+    def setDropBorder(self, db):
+        self._dropBorder = db
+
+    def dropBorder(self):
+        return self._dropBorder
 
     def dumpDict(self):
         children=[]
@@ -103,38 +110,71 @@ class SuperLayout(ttk.TTkWidget):
         drag.setPixmap(canvas)
         drag.setData(data)
         drag.exec()
+        self.parentWidget()._lay.removeItem(self._lay)
         self.parentWidget().layout().removeWidget(self)
+        self.parentWidget().layout().update()
         self.parentWidget().update()
         return True
 
+    def addSuperWidget(self, sw):
+        self.layout().addWidget(sw)
+
+    def isInDropBorder(self,x,y):
+        if db := self._dropBorder:
+            w,h = self.size()
+            if not (db < x < w-1-db and db < y < h-1-db):
+                return True
+        return False
+
     def dropEvent(self, evt) -> bool:
+        # Skip the drop event if dropborder is set and the cursor is along the edges
+        if self.isInDropBorder(evt.x, evt.y): return False
         data = evt.data()
         hsx,hsy = evt.hotSpot()
         ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
         if issubclass(type(data),ttk.TTkLayout):
-            self.layout().addWidget(sw := so.SuperLayout(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True))
+            if issubclass(type(data),ttk.TTkVBoxLayout):
+                sw = so.SuperLayoutVBox(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+            elif issubclass(type(data),ttk.TTkHBoxLayout):
+                sw = so.SuperLayoutHBox(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+            elif issubclass(type(data),ttk.TTkGridLayout):
+                sw = so.SuperLayoutGrid(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+            else:
+                sw = so.SuperLayout(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+            self.addSuperWidget(sw)
             self._lay.addItem(data)
+            sl = sw
         elif issubclass(type(data), so.SuperLayout):
             sw = data
-            self.layout().addWidget(sw)
+            self.addSuperWidget(sw)
             data = data._lay
             self._lay.addItem(data)
+            sl = sw
             sw.show()
             sw.move(evt.x-hsx, evt.y-hsy)
         elif issubclass(type(data), so.SuperWidget):
             sw = data
-            self.layout().addWidget(sw)
+            self.addSuperWidget(sw)
             data = data._wid
+            sl = sw._superLayout
             sw.move(evt.x-hsx, evt.y-hsy)
             sw.show()
             self._lay.addWidget(data)
             data.move(evt.x-hsx, evt.y-hsy)
         elif issubclass(type(data),ttk.TTkWidget):
-            self.layout().addWidget(sw := so.SuperWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
+            self.addSuperWidget(sw := so.SuperWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
+            sl = sw._superLayout
             self._lay.addWidget(data)
             data.move(evt.x-hsx, evt.y-hsy)
         else:
             return False
+
+        # set the Drop Border in case this layout auto resize
+        if issubclass(type(self.layout()),ttk.TTkGridLayout):
+            sl.setDropBorder(1)
+        else:
+            sl.setDropBorder(0)
+
         self.update()
         self.weModified.emit()
         return True
