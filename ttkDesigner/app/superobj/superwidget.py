@@ -34,7 +34,7 @@ class SuperWidget(ttk.TTkWidget):
         self._wid = wid
         self._wid.move(*kwargs['pos'])
         self._wid._canvas.show()
-        self._superLayout = so.SuperLayout(lay=ttk.TTkLayout(), weModified=self.weModified, thingSelected=self.thingSelected,)
+        self._superLayout = so.SuperLayout(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected,)
         self._superRootWidget = kwargs.get('superRootWidget',False)
         kwargs['layout'] = ttk.TTkGridLayout()
         kwargs['layout'].addWidget(self._superLayout)
@@ -72,6 +72,21 @@ class SuperWidget(ttk.TTkWidget):
             'layout': self._superLayout.dumpDict()
         }
         return ret
+
+    def changeSuperLayout(self, layout):
+        sl = self._superLayout
+        self.layout().removeWidget(sl)
+        if layout == ttk.TTkVBoxLayout:
+            sl = so.SuperLayoutVBox(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+        elif layout == ttk.TTkHBoxLayout:
+            sl = so.SuperLayoutHBox(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+        elif layout == ttk.TTkGridLayout:
+            sl = so.SuperLayoutGrid(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+        else:
+            sl = so.SuperLayout(    lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+        self._superLayout = sl
+        self._wid.setLayout(layout())
+        self.layout().addWidget(sl)
 
     def updateAll(self):
         self.resize(*(self._wid.size()))

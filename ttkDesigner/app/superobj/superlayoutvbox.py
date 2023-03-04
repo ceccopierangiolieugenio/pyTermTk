@@ -26,6 +26,7 @@ from .superlayout import SuperLayout
 
 class SuperLayoutVBox(SuperLayout):
     def __init__(self, *args, **kwargs):
+        kwargs['layout'] = ttk.TTkVBoxLayout()
         super().__init__(*args, **kwargs)
         self._dragOver = None
 

@@ -26,6 +26,7 @@ from .superlayout import SuperLayout
 
 class SuperLayoutGrid(SuperLayout):
     def __init__(self, *args, **kwargs):
+        kwargs['layout'] = ttk.TTkGridLayout()
         super().__init__(*args, **kwargs)
         self._dragOver = None
 

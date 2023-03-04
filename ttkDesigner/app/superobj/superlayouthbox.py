@@ -24,4 +24,7 @@ import TermTk as ttk
 import ttkDesigner.app.superobj as so
 from .superlayout import SuperLayout
 
-class SuperLayoutHBox(SuperLayout): pass
+class SuperLayoutHBox(SuperLayout):
+    def __init__(self, *args, **kwargs):
+        kwargs['layout'] = ttk.TTkHBoxLayout()
+        super().__init__(*args, **kwargs)

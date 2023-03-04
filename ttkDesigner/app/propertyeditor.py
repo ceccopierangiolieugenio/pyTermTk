@@ -96,9 +96,25 @@ class PropertyEditor(ttk.TTkGridLayout):
     def setDetail(self, widget, superWidget):
         self._widget = widget
         self._superWidget = superWidget
-        self._makeDetail(widget)
+        exceptions = {
+            'Layout' : {
+                'get':  { 'cb': lambda _: superWidget._superLayout.layout().__class__ , 'type':'singleflag',
+                    'flags': {
+                        'TTkLayout'     : ttk.TTkLayout     ,
+                        'TTkGridLayout' : ttk.TTkGridLayout ,
+                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
+                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
+                'set':  { 'cb': lambda _,l: superWidget.changeSuperLayout(l) , 'type':'singleflag',
+                    'flags': {
+                        'TTkLayout'     : ttk.TTkLayout     ,
+                        'TTkGridLayout' : ttk.TTkGridLayout ,
+                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
+                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
+            }
+        }
+        self._makeDetail(widget, exceptions)
 
-    def _makeDetail(self, domw):
+    def _makeDetail(self, domw, exceptions):
         def _bound(_f,_w,_l):
             def _ret(_v):
                 _f(_w,_l(_v))
@@ -129,12 +145,12 @@ class PropertyEditor(ttk.TTkGridLayout):
             # value = ttk.TTkFrame(layout=ttk.TTkVBoxLayout(), height=len(flags), border=False)
             for fl in flags:
                 if 'set' in prop:
-                    fcb = ttk.TTkCheckbox(text=f" 0x{flags[fl]:04X}", checked=bool(prop['get']['cb'](domw)&flags[fl]))
+                    fcb = ttk.TTkCheckbox(text=f" 0x{flags[fl]:04X}", checked=bool(prop['get']['cb'](domw)&flags[fl]), height=1)
                     fcb.stateChanged.connect(_boundFlags(
                                 prop['set']['cb'], prop['get']['cb'],
                                 domw, lambda v: v==ttk.TTkK.Checked, flags[fl]))
                 else:
-                    fcb = ttk.TTkCheckbox(text=f" 0x{flags[fl]:04X}", checked=bool(prop['get']['cb'](domw)&flags[fl]), enabled=False)
+                    fcb = ttk.TTkCheckbox(text=f" 0x{flags[fl]:04X}", checked=bool(prop['get']['cb'](domw)&flags[fl]), height=1, enabled=False)
                 ret.addChild(ttk.TTkTreeWidgetItem([f"{fl}", fcb]))
             return ret
 
@@ -226,6 +242,12 @@ class PropertyEditor(ttk.TTkGridLayout):
             value = ttk.TTkColorButtonPicker(color=getval, height=1)
             value.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))
             return ttk.TTkTreeWidgetItem([name,value])
+        # Layout field
+        def _processTTkLayout(name, prop):
+            value = ttk.TTkComboBox(list=['TTkLayout','TTkGridLayout','TTkHBoxLayout','TTkVBoxLayout'], height=1)
+            value.setCurrentText(prop['get']['cb'](domw).__class__.__name__)
+            value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:globals()[v]()))
+            return ttk.TTkTreeWidgetItem([name,value])
 
         # Unrecognised Field
         def _processUnknown(name, prop):
@@ -253,6 +275,8 @@ class PropertyEditor(ttk.TTkGridLayout):
                     return _processTTkString(p,prop,multiLine=False)
                 elif prop['get']['type'] == ttk.TTkColor and 'set' in prop:
                     return _processTTkColor(name, prop)
+                elif prop['get']['type'] == ttk.TTkLayout and 'set' in prop:
+                    return _processTTkLayout(name, prop)
                 elif type(prop['get']['type']) == list:
                     return _processList(name, prop)
                 elif type(prop['get']['type']) == dict:
@@ -270,7 +294,10 @@ class PropertyEditor(ttk.TTkGridLayout):
                 self._detail.addTopLevelItem(classItem)
                 if ccName in ttk.TTkUiProperties:
                     for p in ttk.TTkUiProperties[ccName]:
-                        prop = ttk.TTkUiProperties[ccName][p]
+                        if p in exceptions:
+                            prop = exceptions[p]
+                        else:
+                            prop = ttk.TTkUiProperties[ccName][p]
                         if prop not in proplist:
                             proplist.append(prop)
                             classItem.addChild(_processProp(p, prop))

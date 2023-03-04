@@ -30,16 +30,16 @@ class SuperLayout(ttk.TTkWidget):
     def __init__(self, lay, weModified, thingSelected, *args, **kwargs):
         self.weModified = weModified
         self.thingSelected = thingSelected
-        self._lay = ttk.TTkLayout()
+        self._lay = lay
         self._dropBorder = 0 # This property is used to exclude the border from the drop routine
         self._superRootWidget = kwargs.get('superRootWidget',False)
         self._selectable = kwargs.get('selectable', False)
 
         # kwargs['pos']  = (x,y) = lay.pos()
-        x,y = kwargs.get('pos',lay.pos())
-        kwargs['size'] = (w,h) = lay.size()
-        kwargs['layout'] = lay.__class__()
-        self._lay.setGeometry(x,y,w,h)
+        # x,y = kwargs.get('pos',lay.pos())
+        # kwargs['size'] = (w,h) = lay.size()
+        # kwargs['layout'] = lay # .__class__()
+        # self._lay.setGeometry(x,y,w,h)
 
         super().__init__(*args, **kwargs)
 
@@ -71,16 +71,17 @@ class SuperLayout(ttk.TTkWidget):
             }
             children.append(w.widget().dumpDict()|layoutItemParams)
         ret = {'class': 'TTkLayout',
-               'params' : SuperObject.dumpParams(self._lay),
+               # 'params' : SuperObject.dumpParams(self._lay),
+               'params' : SuperObject.dumpParams(self.layout()),
                'children':children}
         return ret
 
     def updateAll(self):
-        self.resize(*(self._lay.size()))
-        self.move(*(self._lay.pos()))
+        # self.resize(*(self._lay.size()))
+        # self.move(*(self._lay.pos()))
         # self.setPadding(*(self._lay.getPadding()))
-        self.setMaximumSize(*(self._lay.maximumSize()))
-        self.setMinimumSize(*(self._lay.minimumSize()))
+        # self.setMaximumSize(*(self._lay.maximumSize()))
+        # self.setMinimumSize(*(self._lay.minimumSize()))
         self.update()
 
     def mousePressEvent(self, evt) -> bool:
@@ -95,7 +96,7 @@ class SuperLayout(ttk.TTkWidget):
     def mouseReleaseEvent(self, evt) -> bool:
         if self._superRootWidget or not self._selectable: return False
         self.pushSuperControlWidget()
-        self.thingSelected.emit(self._lay,self)
+        # self.thingSelected.emit(self._lay,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -110,7 +111,7 @@ class SuperLayout(ttk.TTkWidget):
         drag.setPixmap(canvas)
         drag.setData(data)
         drag.exec()
-        self.parentWidget()._lay.removeItem(self._lay)
+        # self.parentWidget()._lay.removeItem(self._lay)
         self.parentWidget().layout().removeWidget(self)
         self.parentWidget().layout().update()
         self.parentWidget().update()
@@ -133,41 +134,41 @@ class SuperLayout(ttk.TTkWidget):
         hsx,hsy = evt.hotSpot()
         ttk.TTkLog.debug(f"Drop ({data.__class__.__name__}) -> pos={evt.pos()}")
         if issubclass(type(data),ttk.TTkLayout):
+            _,__,w,h = data.geometry()
+            x,y = evt.x-hsx, evt.y-hsy
+            lay = ttk.TTkLayout()
             if issubclass(type(data),ttk.TTkVBoxLayout):
-                sw = so.SuperLayoutVBox(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+                sl = so.SuperLayoutVBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
             elif issubclass(type(data),ttk.TTkHBoxLayout):
-                sw = so.SuperLayoutHBox(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+                sl = so.SuperLayoutHBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
             elif issubclass(type(data),ttk.TTkGridLayout):
-                sw = so.SuperLayoutGrid(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
+                sl = so.SuperLayoutGrid(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
             else:
-                sw = so.SuperLayout(lay=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy), selectable=True)
-            self.addSuperWidget(sw)
+                sl = so.SuperLayout(    pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+            self.addSuperWidget(sl)
             self._lay.addItem(data)
-            sl = sw
         elif issubclass(type(data), so.SuperLayout):
-            sw = data
-            self.addSuperWidget(sw)
-            data = data._lay
-            self._lay.addItem(data)
-            sl = sw
-            sw.show()
-            sw.move(evt.x-hsx, evt.y-hsy)
+            sl = data
+            self.addSuperWidget(sl)
+            self._lay.addItem(sl._lay)
+            sl.show()
+            sl.move(evt.x-hsx, evt.y-hsy)
         elif issubclass(type(data), so.SuperWidget):
             sw = data
             self.addSuperWidget(sw)
-            data = data._wid
+            self._lay.addWidget(sw._wid)
             sl = sw._superLayout
             sw.move(evt.x-hsx, evt.y-hsy)
             sw.show()
-            self._lay.addWidget(data)
-            data.move(evt.x-hsx, evt.y-hsy)
         elif issubclass(type(data),ttk.TTkWidget):
             self.addSuperWidget(sw := so.SuperWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
-            sl = sw._superLayout
             self._lay.addWidget(data)
-            data.move(evt.x-hsx, evt.y-hsy)
+            sw.move(evt.x-hsx, evt.y-hsy)
+            sl = sw._superLayout
         else:
             return False
+
+        self.layout().update()
 
         # set the Drop Border in case this layout auto resize
         if issubclass(type(self.layout()),ttk.TTkGridLayout):
@@ -182,7 +183,6 @@ class SuperLayout(ttk.TTkWidget):
     def move(self, x: int, y: int):
         w,h = self._lay.size()
         self._lay.setGeometry(x,y,w,h)
-        # self.update()
         return super().move(x, y)
 
     def resizeEvent(self, w, h):
