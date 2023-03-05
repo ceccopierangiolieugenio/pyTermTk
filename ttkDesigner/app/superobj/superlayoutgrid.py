@@ -138,19 +138,15 @@ class SuperLayoutGrid(SuperLayout):
         super().paintChildCanvas()
         if self._dragOver is not None:
             x,y,w,h = self._dragOver
-            if w==1:
-                self.getCanvas().drawBox(pos=(x,y), size=(w,h), color=ttk.TTkColor.fg("FFFF00"))
+            if h==1 and w==1:
+                self.getCanvas().drawText(text='◉', pos=(x,y), color=ttk.TTkColor.fg("FFFF00"))
+            elif w==1:
+                self.getCanvas().drawText(text='╽', pos=(x,y),     color=ttk.TTkColor.fg("FFFF00"))
+                self.getCanvas().drawText(text='╿', pos=(x,y+h-1), color=ttk.TTkColor.fg("FFFF00"))
+                for yy in range(y+1,y+h-1):
+                    self.getCanvas().drawText(text='┃', pos=(x, yy), color=ttk.TTkColor.fg("FFFF00"))
             elif h==1:
                 txt = '╼'+'━'*(w-2)+'╾'
                 self.getCanvas().drawText(text=txt, pos=(x,y), width=w, color=ttk.TTkColor.fg("FFFF00"))
             else:
                 self.getCanvas().drawBox(pos=(x,y), size=(w,h), color=ttk.TTkColor.fg("FFFF00"))
-            #if a==b:
-            #    txt = '╼'+'━'*(w-2)+'╾'
-            #    self.getCanvas().drawText(text=txt, pos=(0,a), width=w, color=ttk.TTkColor.fg("FFFF00"))
-            #else:
-            #    txt = '┍'+'━'*(w-2)+'┑'
-            #    self.getCanvas().drawText(text=txt, pos=(0,a), width=w, color=ttk.TTkColor.fg("FFFF00"))
-            #    txt = '┕'+'━'*(w-2)+'┙'
-            #    self.getCanvas().drawText(text=txt, pos=(0,b), width=w, color=ttk.TTkColor.fg("FFFF00"))
-

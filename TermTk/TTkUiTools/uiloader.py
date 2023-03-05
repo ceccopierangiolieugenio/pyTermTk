@@ -117,42 +117,28 @@ class TTkUiLoader():
                 col = c.get('col', 0)
                 rowspan = c.get('rowspan', 1)
                 colspan = c.get('colspan', 1)
-                if issubclass(globals()[c['class']],TTkLayout):
-                    l = _getLayout(c)
-                    l._row = row
-                    l._col = col
-                    l._rowspan = rowspan
-                    l._colspan = colspan
-                    layout.addItem(l)
+                if   issubclass(ttkClass,TTkGridLayout):
+                    if issubclass(globals()[c['class']],TTkLayout):
+                        l = _getLayout(c)
+                        TTkGridLayout.addItem(layout,l,row,col,rowspan,colspan)
+                    else:
+                        w = _getWidget(c)
+                        TTkGridLayout.addWidget(layout,w,row,col,rowspan,colspan)
                 else:
-                    w = _getWidget(c)
-                    w._row = row
-                    w._col = col
-                    w._rowspan = rowspan
-                    w._colspan = colspan
-                    layout.addWidget(w)
+                    if issubclass(globals()[c['class']],TTkLayout):
+                        l = _getLayout(c)
+                        l._row, l._col = row, col
+                        l._rowspan, l._colspan = rowspan, colspan
+                        layout.addItem(l)
+                    else:
+                        w = _getWidget(c)
+                        w._row, w._col = row, col
+                        w._rowspan, w._colspan = rowspan, colspan
+                        layout.addWidget(w)
             return layout
 
         widgetProperty = json.loads(text)
         TTkLog.debug(widgetProperty)
-        # Yaml=
-        #   params:
-        #     Name: TTkButton
-        #     Position:
-        #     - 16
-        #     - 5
-        #
-        # widgetProperty =
-        # { 'children': [],
-        #   'class': 'TTkWidget',
-        #   'params': {
-        #      'Enabled': True,
-        #      'Layout': 'TTkLayout',
-        #      'Name': 'TTk',
-        #      'Padding': [0, 0, 0, 0],
-        #      'Position': [4, 2],
-        #      'Size': [73, 28],
-        #      'Visible': True}}
 
         return _getWidget(widgetProperty)
 

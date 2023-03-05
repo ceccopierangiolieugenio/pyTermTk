@@ -70,7 +70,7 @@ class SuperLayout(ttk.TTkWidget):
                 'colspan':w._colspan,
             }
             children.append(w.widget().dumpDict()|layoutItemParams)
-        ret = {'class': 'TTkLayout',
+        ret = {'class': self.layout().__class__.__name__,
                # 'params' : SuperObject.dumpParams(self._lay),
                'params' : SuperObject.dumpParams(self.layout()),
                'children':children}
