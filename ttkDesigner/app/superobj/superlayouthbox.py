@@ -22,9 +22,10 @@
 
 import TermTk as ttk
 import ttkDesigner.app.superobj as so
-from .superlayout import SuperLayout
+from .superlayoutgrid import SuperLayoutGrid
 
-class SuperLayoutHBox(SuperLayout):
+class SuperLayoutHBox(SuperLayoutGrid):
     def __init__(self, *args, **kwargs):
         kwargs['layout'] = ttk.TTkHBoxLayout()
         super().__init__(*args, **kwargs)
+        self._orientation = ttk.TTkK.HORIZONTAL

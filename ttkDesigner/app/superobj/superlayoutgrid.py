@@ -29,6 +29,7 @@ class SuperLayoutGrid(SuperLayout):
         kwargs['layout'] = ttk.TTkGridLayout()
         super().__init__(*args, **kwargs)
         self._dragOver = None
+        self._orientation = ttk.TTkK.HORIZONTAL|ttk.TTkK.VERTICAL
 
     def dragEnterEvent(self, evt) -> bool:
         ttk.TTkLog.debug(f"Enter")
@@ -103,22 +104,22 @@ class SuperLayoutGrid(SuperLayout):
             ret = (ix, iy, iw, ih)
         else:
             #Top
-            if dd := y-iy <= dist:
+            if dd := y-iy <= dist and (self._orientation & ttk.TTkK.VERTICAL):
                 dist = dd
                 dir = ttk.TTkK.VERTICAL
                 ret = (ix,    iy,    iw, 1)
             #Bottom
-            if dd := iyb-y <= dist:
+            if dd := iyb-y <= dist and (self._orientation & ttk.TTkK.VERTICAL):
                 dist = dd
                 dir = ttk.TTkK.VERTICAL
                 ret = (ix,    iyb-1, iw, 1)
             #Left
-            if dd := x-ix <= dist:
+            if dd := x-ix <= dist and (self._orientation & ttk.TTkK.HORIZONTAL):
                 dist = dd
                 dir = ttk.TTkK.HORIZONTAL
                 ret = (ix,    iy,    1, ih)
             #Right
-            if dd := ixb-x <= dist:
+            if dd := ixb-x <= dist and (self._orientation & ttk.TTkK.HORIZONTAL):
                 dist = dd
                 dir = ttk.TTkK.HORIZONTAL
                 ret = (ixb-1, iy,    1, ih)
