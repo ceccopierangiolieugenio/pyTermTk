@@ -104,22 +104,22 @@ class SuperLayoutGrid(SuperLayout):
             ret = (ix, iy, iw, ih)
         else:
             #Top
-            if dd := y-iy <= dist and (self._orientation & ttk.TTkK.VERTICAL):
+            if (dd := y-iy <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
                 dist = dd
                 dir = ttk.TTkK.VERTICAL
                 ret = (ix,    iy,    iw, 1)
             #Bottom
-            if dd := iyb-y <= dist and (self._orientation & ttk.TTkK.VERTICAL):
+            if (dd := iyb-y <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
                 dist = dd
                 dir = ttk.TTkK.VERTICAL
                 ret = (ix,    iyb-1, iw, 1)
             #Left
-            if dd := x-ix <= dist and (self._orientation & ttk.TTkK.HORIZONTAL):
+            if (dd := x-ix <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
                 dist = dd
                 dir = ttk.TTkK.HORIZONTAL
                 ret = (ix,    iy,    1, ih)
             #Right
-            if dd := ixb-x <= dist and (self._orientation & ttk.TTkK.HORIZONTAL):
+            if (dd := ixb-x <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
                 dist = dd
                 dir = ttk.TTkK.HORIZONTAL
                 ret = (ixb-1, iy,    1, ih)
