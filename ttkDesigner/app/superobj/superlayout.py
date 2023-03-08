@@ -111,14 +111,25 @@ class SuperLayout(ttk.TTkWidget):
         drag.setPixmap(canvas)
         drag.setData(data)
         drag.exec()
-        # self.parentWidget()._lay.removeItem(self._lay)
-        self.parentWidget().layout().removeWidget(self)
-        self.parentWidget().layout().update()
-        self.parentWidget().update()
+        self.parentWidget().removeSuperWidget(self)
         return True
+
+    def superChild(self):
+        return self._lay
 
     def addSuperWidget(self, sw):
         self.layout().addWidget(sw)
+
+    def removeSuperWidget(self, sw):
+        self._lay.removeItem(self._lay)
+        sc = sw.superChild()
+        if issubclass(type(sc),ttk.TTkLayout):
+            self._lay.removeItem(sc)
+        else:
+            self._lay.removeWidget(sc)
+        self.layout().removeWidget(sw)
+        self.layout().update()
+        self.update()
 
     def isInDropBorder(self,x,y):
         if db := self._dropBorder:

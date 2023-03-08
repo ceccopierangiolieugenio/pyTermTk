@@ -119,11 +119,11 @@ class SuperWidget(ttk.TTkWidget):
         drag.setPixmap(data.getCanvas())
         drag.setData(data)
         drag.exec()
-        self.parentWidget()._lay.removeWidget(self._wid)
-        self.parentWidget().layout().removeWidget(self)
-        self.parentWidget().layout().update()
-        self.parentWidget().update()
+        self.parentWidget().removeSuperWidget(self)
         return True
+
+    def superChild(self):
+        return self._wid
 
     def dropEvent(self, evt) -> bool:
         padt, padb, padl, padr = self._wid.getPadding()
