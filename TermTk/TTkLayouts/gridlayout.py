@@ -111,6 +111,30 @@ class TTkGridLayout(TTkLayout):
     def gridItems(self):
         return self._gridItems
 
+    def repack(self):
+        # retrieve the empty cols and remove empty rows
+        cmap = [False]*self._cols
+        for r in self._gridItems:
+            if not(any(r)):
+                # the row is empty
+                self._gridItems.remove(r)
+            else:
+                cmap = [cc or (rr is not None) for cc,rr in zip(cmap,r)]
+        #remove empty rows
+        for c in [i for i,ii in enumerate(cmap) if not ii]:
+            for r in self._gridItems:
+                r.remove(r[c])
+        # adapt the widgets definition to the new list
+        rown=coln = -1
+        for rown,r in enumerate(self._gridItems):
+            for coln,w in enumerate(r):
+                if w:
+                    w._col = coln
+                    w._row = rown
+        self._rows = rown+1
+        self._cols = coln+1
+        self.update()
+
     def insertColumn(self, col):
         self._cols += 1
         for c in self.children():
