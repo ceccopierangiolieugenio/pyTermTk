@@ -38,6 +38,7 @@ class SuperLayoutGrid(SuperLayout):
     def dragLeaveEvent(self, evt) -> bool:
         # ttk.TTkLog.debug(f"Leave")
         self._dragOver = None
+        self.update()
         return True
     def dragMoveEvent(self, evt) -> bool:
         # ttk.TTkLog.debug(f"Move")
@@ -80,79 +81,60 @@ class SuperLayoutGrid(SuperLayout):
         vSizes = []
         cmw = self.layout().columnMinWidth()
         rmh = self.layout().rowMinHeight()
-        gridItems = self.layout().gridItems()
-        if not gridItems or not gridItems[0]: return col,row,dir,ret
-        for r,rows in enumerate(gridItems):
-            hh = rmh
-            hSizes += [cmw]*(len(rows)-len(hSizes))
-            for c,item in enumerate(rows):
-                if not item: continue
-                ix,iy,iw,ih = item.geometry()
-                hh = max(hh,ih)
-                hSizes[c] = max(hSizes[c],iw)
-            vSizes.append(hh)
+        rows,cols = self.layout().gridSize()
+        if not rows or not cols: return col,row,dir,ret
 
-        # Get the position of any split col
-        hPos = [(sum(hSizes[:i]),sum(hSizes[:i+1])) for i in range(len(hSizes))]
-        vPos = [(sum(vSizes[:i]),sum(vSizes[:i+1])) for i in range(len(vSizes))]
+        horSizes, verSizes = self.layout().getSizes()
 
         # Find the row/col where the pointer is in
-        # ttk.TTkLog.debug(hPos)
-        # ttk.TTkLog.debug(vPos)
-        for col,(a,b) in enumerate(hPos):
-            if a <= x < b:
-                ttk.TTkLog.debug(f"{col=} {x=} in {(a,b)=}")
-                break
-        for row,(a,b) in enumerate(vPos):
-            if a <= y < b:
-                ttk.TTkLog.debug(f"{row=} {y=} in {(a,b)=}")
-                break
+        for col,(a,b) in enumerate(horSizes):
+            if a <= x < a+b: break
+        for row,(a,b) in enumerate(verSizes):
+            if a <= y < a+b: break
 
-        ix,ixb = hPos[col]
-        iy,iyb = vPos[row]
-        iw = hSizes[col]
-        ih = vSizes[row]
+        ix, iw = horSizes[col]
+        iy, ih = verSizes[row]
 
-        if gridItems[row][col] == None:
+        if self.layout().itemAtPosition(row,col) == None:
             ret = (ix, iy, iw, ih)
         else:
             #Top
             if (dd := y-iy <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
                 dist = dd
                 dir = ttk.TTkK.VERTICAL
-                if row>0 and gridItems[row-1][col]:
+                if row>0 and self.layout().itemAtPosition(row-1,col):
                     ret = (ix,    iy-1,    iw, 2)
                 else:
                     ret = (ix,    iy,    iw, 1)
             #Bottom
-            if (dd := iyb-y <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
+            if (dd := iy+ih-y <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
                 dist = dd
                 dir = ttk.TTkK.VERTICAL
-                if row<len(vPos)-1 and gridItems[row+1][col]:
-                    ret = (ix,    iyb-1, iw, 2)
+                if row<rows-1 and self.layout().itemAtPosition(row+1,col):
+                    ret = (ix,    iy+ih-1, iw, 2)
                 else:
-                    ret = (ix,    iyb-1, iw, 1)
+                    ret = (ix,    iy+ih-1, iw, 1)
             #Left
             if (dd := x-ix <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
                 dist = dd
                 dir = ttk.TTkK.HORIZONTAL
-                if col>0 and gridItems[row][col-1]:
+                if col>0 and self.layout().itemAtPosition(row,col-1):
                     ret = (ix-1,  iy,    2, ih)
                 else:
                     ret = (ix,    iy,    1, ih)
             #Right
-            if (dd := ixb-x <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
+            if (dd := ix+iw-x <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
                 dist = dd
                 dir = ttk.TTkK.HORIZONTAL
-                if col<len(hPos)-1 and gridItems[row][col+1]:
-                    ret = (ixb-1, iy,    2, ih)
+                if col<cols-1 and self.layout().itemAtPosition(row,col+1):
+                    ret = (ix+iw-1, iy,    2, ih)
                 else:
-                    ret = (ixb-1, iy,    1, ih)
+                    ret = (ix+iw-1, iy,    1, ih)
 
             # If we are on the edge of the item push to the next spot
-            if dir == ttk.TTkK.HORIZONTAL and ixb-x == dist:
+            if dir == ttk.TTkK.HORIZONTAL and ix+iw-x == dist:
                 col+=1
-            if dir == ttk.TTkK.VERTICAL   and iyb-y == dist:
+            if dir == ttk.TTkK.VERTICAL   and iy+ih-y == dist:
                 row+=1
 
         ttk.TTkLog.debug(f"{row=} {self._dragOver=}")

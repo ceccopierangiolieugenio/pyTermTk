@@ -53,12 +53,14 @@ class TTkGridLayout(TTkLayout):
     :param int rowMinHeight: the minimum height of the column, optional, defaults to 0
     '''
 
-    __slots__ = ('_gridItems','_columnMinWidth','_rowMinHeight', '_rows', '_cols')
+    __slots__ = ('_gridItems','_columnMinWidth','_rowMinHeight', '_rows', '_cols', '_horSizes', '_verSizes')
     def __init__(self, *args, **kwargs):
         self._rows = 0
         self._cols = 0
         TTkLayout.__init__(self, *args, **kwargs)
         self._gridItems = [[]]
+        self._horSizes = []
+        self._verSizes = []
         self._columnMinWidth = kwargs.get('columnMinWidth',0)
         self._rowMinHeight = kwargs.get('rowMinHeight',0)
 
@@ -76,6 +78,9 @@ class TTkGridLayout(TTkLayout):
         rows, cols = size
         self._rows, self._cols = size
 
+        self._horSizes = [(0,0)]*self._cols
+        self._verSizes = [(0,0)]*self._rows
+
         # remove extra rows
         if   rows < len(self._gridItems):
             self._gridItems = self._gridItems[:rows]
@@ -91,6 +96,12 @@ class TTkGridLayout(TTkLayout):
                 self._gridItems[gridRow] = self._gridItems[gridRow][:cols]
             elif cols > sizeRow:
                 self._gridItems[gridRow] += [None]*(cols-sizeRow)
+
+    def gridSize(self):
+        return self._rows, self._cols
+
+    def getSizes(self):
+        return self._horSizes, self._verSizes
 
     def columnMinWidth(self):
         return self._columnMinWidth
@@ -462,4 +473,6 @@ class TTkGridLayout(TTkLayout):
                 item.widget().update(*args, **kwargs)
             elif item.layoutItemType == TTkK.LayoutItem:
                 item.update(*args, **kwargs)
+        self._horSizes = horSizes
+        self._verSizes = vertSizes
         return True
