@@ -64,9 +64,9 @@ class SuperLayoutGrid(SuperLayout):
 
     def addSuperWidget(self, sw):
         self._dragOver = None
-        if self._direction == ttk.TTkK.HORIZONTAL:
+        if self._direction == ttk.TTkK.HORIZONTAL or self._orientation == ttk.TTkK.HORIZONTAL:
             self.layout().insertColumn(self._pushCol)
-        elif self._direction == ttk.TTkK.VERTICAL:
+        elif self._direction == ttk.TTkK.VERTICAL or self._orientation == ttk.TTkK.VERTICAL:
             self.layout().insertRow(self._pushRow)
         self.layout().addWidget(sw, self._pushRow, self._pushCol,1,1)
 
