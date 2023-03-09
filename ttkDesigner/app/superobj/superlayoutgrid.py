@@ -68,19 +68,14 @@ class SuperLayoutGrid(SuperLayout):
             self.layout().insertColumn(self._pushCol)
         elif self._direction == ttk.TTkK.VERTICAL:
             self.layout().insertRow(self._pushRow)
-        self.layout().addWidget(sw, self._pushRow, self._pushCol)
+        self.layout().addWidget(sw, self._pushRow, self._pushCol,1,1)
 
     def _processDragOver(self, x, y):
         # cehck the closest edge
         col, row, dir = 0,0,None
         ret = None
-        w,h = self.size()
-        dist = w+h
+
         # Retrieve a list of widths,heights
-        hSizes = []
-        vSizes = []
-        cmw = self.layout().columnMinWidth()
-        rmh = self.layout().rowMinHeight()
         rows,cols = self.layout().gridSize()
         if not rows or not cols: return col,row,dir,ret
 
@@ -99,32 +94,34 @@ class SuperLayoutGrid(SuperLayout):
             ret = (ix, iy, iw, ih)
         else:
             #Top
-            if (dd := y-iy <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
-                dist = dd
+            if ((y==iy) and (self._orientation & ttk.TTkK.VERTICAL) and
+                (  row==0 or
+                 ( row>0 and self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row-1,col)))):
                 dir = ttk.TTkK.VERTICAL
                 if row>0 and self.layout().itemAtPosition(row-1,col):
                     ret = (ix,    iy-1,    iw, 2)
                 else:
                     ret = (ix,    iy,    iw, 1)
             #Bottom
-            if (dd := iy+ih-y <= dist) and (self._orientation & ttk.TTkK.VERTICAL):
-                dist = dd
+            if ((iy+ih==y+1) and (self._orientation & ttk.TTkK.VERTICAL) and
+                self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row+1,col)):
                 dir = ttk.TTkK.VERTICAL
                 if row<rows-1 and self.layout().itemAtPosition(row+1,col):
                     ret = (ix,    iy+ih-1, iw, 2)
                 else:
                     ret = (ix,    iy+ih-1, iw, 1)
             #Left
-            if (dd := x-ix <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
-                dist = dd
+            if ((x==ix) and (self._orientation & ttk.TTkK.HORIZONTAL) and
+                (  col==0 or
+                 ( col>0 and self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row,col-1)))):
                 dir = ttk.TTkK.HORIZONTAL
                 if col>0 and self.layout().itemAtPosition(row,col-1):
                     ret = (ix-1,  iy,    2, ih)
                 else:
                     ret = (ix,    iy,    1, ih)
             #Right
-            if (dd := ix+iw-x <= dist) and (self._orientation & ttk.TTkK.HORIZONTAL):
-                dist = dd
+            if ((ix+iw==x+1) and (self._orientation & ttk.TTkK.HORIZONTAL) and
+                self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row,col+1)):
                 dir = ttk.TTkK.HORIZONTAL
                 if col<cols-1 and self.layout().itemAtPosition(row,col+1):
                     ret = (ix+iw-1, iy,    2, ih)
@@ -132,12 +129,14 @@ class SuperLayoutGrid(SuperLayout):
                     ret = (ix+iw-1, iy,    1, ih)
 
             # If we are on the edge of the item push to the next spot
-            if dir == ttk.TTkK.HORIZONTAL and ix+iw-x == dist:
+            if dir == ttk.TTkK.HORIZONTAL and ix+iw==x+1:
                 col+=1
-            if dir == ttk.TTkK.VERTICAL   and iy+ih-y == dist:
+            if dir == ttk.TTkK.VERTICAL   and iy+ih==y+1:
                 row+=1
 
-        ttk.TTkLog.debug(f"{row=} {self._dragOver=}")
+        # ttk.TTkLog.debug(f"{horSizes=}")
+        # ttk.TTkLog.debug(f"{verSizes=}")
+        # ttk.TTkLog.debug(f"{row=} {col=} {dir=} {self._dragOver=}")
         self.update()
         return row, col, dir, ret
 

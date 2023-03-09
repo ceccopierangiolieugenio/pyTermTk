@@ -78,15 +78,20 @@ class TTkGridLayout(TTkLayout):
         rows, cols = size
         self._rows, self._cols = size
 
-        self._horSizes = [(0,0)]*self._cols
-        self._verSizes = [(0,0)]*self._rows
-
         # remove extra rows
         if   rows < len(self._gridItems):
             self._gridItems = self._gridItems[:rows]
+            self._verSizes  = self._verSizes[:rows]
         elif rows > len(self._gridItems):
             self._gridItems += [None]*(rows-len(self._gridItems))
+            self._verSizes += [(0,0)]*(rows-len(self._verSizes))
+
         # remove extra cols
+        if   cols < len(self._gridItems):
+            self._horSizes  = self._verSizes[:cols]
+        elif cols > len(self._gridItems):
+            self._horSizes += [(0,0)]*(cols-len(self._horSizes))
+
         for gridRow in range(len(self._gridItems)):
             if self._gridItems[gridRow] is None:
                 self._gridItems[gridRow] = [None]*(cols)
@@ -123,27 +128,30 @@ class TTkGridLayout(TTkLayout):
         return self._gridItems
 
     def repack(self):
-        # retrieve the empty cols and remove empty rows
-        cmap = [False]*self._cols
-        for r in self._gridItems:
-            if not(any(r)):
+        rown=coln= -1
+        # remove empty rows
+        for r in reversed(range(self._rows)):
+            if not(any([self.itemAtPosition(r,c) for c in range(self._cols)])):
                 # the row is empty
-                self._gridItems.remove(r)
-            else:
-                cmap = [cc or (rr is not None) for cc,rr in zip(cmap,r)]
-        #remove empty rows
-        for c in [i for i,ii in enumerate(cmap) if not ii]:
-            for r in self._gridItems:
-                r.remove(r[c])
-        # adapt the widgets definition to the new list
-        rown=coln = -1
+                self._gridItems.pop(r)
+        # Realign the rows
         for rown,r in enumerate(self._gridItems):
             for coln,w in enumerate(r):
-                if w:
-                    w._col = coln
-                    w._row = rown
-        self._rows = rown+1
-        self._cols = coln+1
+                if w: w._row = rown
+        self._reshapeGrid((rown+1,self._cols))
+        #remove empty cols
+        unusedCols = []
+        for c in range(self._cols):
+            if not(any([self.itemAtPosition(r,c) for r in range(self._rows)])):
+                unusedCols.append(c)
+        for c in reversed(unusedCols):
+            for r in self._gridItems:
+                r.pop(c)
+        # Realign the cols
+        for rown,r in enumerate(self._gridItems):
+            for coln,w in enumerate(r):
+                if w: w._col = coln
+        self._reshapeGrid((rown+1,coln+1))
         self.update()
 
     def insertColumn(self, col):
