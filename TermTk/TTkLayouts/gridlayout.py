@@ -295,8 +295,8 @@ class TTkGridLayout(TTkLayout):
         self._reshapeGrid(self._gridUsedsize())
 
     def itemAtPosition(self, row: int, col: int):
-        if row >= self._rows or \
-           col >= self._cols:
+        if ( row<0 or row >= self._rows or
+             col<0 or col >= self._cols ):
             return None
         if item := self._gridItems[row][col]:
             return item

@@ -166,5 +166,5 @@ class TTkDesigner(TTkGridLayout):
                 layout=TTkGridLayout(),
                 flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
         win.layout().addWidget(widget)
-        TTkHelper.overlay(None, win, 2, 2)
+        TTkHelper.overlay(None, win, 2, 2, modal=True)
 

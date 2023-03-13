@@ -47,6 +47,9 @@ class SuperControlWidget(ttk.TTkResizableFrame):
         self._wid.resize(w-2,h-2)
         self._wid._canvas.updateSize()
 
+    def mouseMoveEvent(self, evt) -> bool:
+        return True
+
     def mouseReleaseEvent(self, evt) -> bool:
         self._draggable = False
         return super().mouseReleaseEvent(evt)
