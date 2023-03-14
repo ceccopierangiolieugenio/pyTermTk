@@ -32,9 +32,24 @@ class _superExpandButton(ttk.TTkButton):
     def setDirection(self, d):
         self._direction = d
 
-    def leaveEvent(self, evt) -> bool:
-        self.hide()
-        return super().leaveEvent(evt)
+    def _processInput(self, kevt, mevt):
+        if not mevt:
+            self.hide()
+            return
+        ax,ay = ttk.TTkHelper.absPos(self)
+        w,h = self.size()
+        mx,my = mevt.x, mevt.y
+        if ( not (0 <= (mx-ax) < w) or
+             not (0 <= (my-ay) < h) ) :
+             self.hide()
+
+    def show(self):
+        ttk.TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
+        return super().show()
+
+    def hide(self):
+        ttk.TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
+        return super().hide()
 
     def paintEvent(self):
         canvas = self.getCanvas()
@@ -188,26 +203,30 @@ class SuperLayoutGrid(SuperLayout):
         if wid == None:
             return dir,wid
 
+        col = wid._col
+        row = wid._row
         rowspan = wid._rowspan
         colspan = wid._colspan
 
         maxw,maxh = wid.maximumSize()
 
+        #
+
         #Top
         if (( y==iy ) and maxh>1 and
-            ( not self.layout().itemAtPosition(row-1,col) ) ):
+              not any([self.layout().itemAtPosition(row-1,col+cs) for cs in range(colspan)])):
             dir = ttk.TTkK.TOP
         #Bottom
         elif ((iy+ih==y+1) and maxh>1 and
-              not self.layout().itemAtPosition(row+rowspan,col)):
+              not any([self.layout().itemAtPosition(row+rowspan,col+cs) for cs in range(colspan)])):
             dir = ttk.TTkK.BOTTOM
         #Left
         elif ((x==ix) and maxw>1 and
-             ( not self.layout().itemAtPosition(row,col-1) ) ):
+              not any([self.layout().itemAtPosition(row+rs,col-1) for rs in range(rowspan)])):
             dir = ttk.TTkK.LEFT
         #Right
         elif ((ix+iw==x+1) and maxw>1 and
-              not self.layout().itemAtPosition(row,col+colspan)):
+              not any([self.layout().itemAtPosition(row+rs,col+colspan) for rs in range(rowspan)])):
             dir = ttk.TTkK.RIGHT
 
         # ttk.TTkLog.debug(f"Move {dir} {wid}")
