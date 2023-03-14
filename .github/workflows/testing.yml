@@ -46,13 +46,13 @@ jobs:
 
     - name: Test with pytest
       run: |
+        # To fix a folder permissin issue let's try to run the test from /tmp
+        DDDD=$(pwd)
+        cd /tmp
         # Download the input test
         mkdir -p tmp
         wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
         wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
-        # To fix a folder permissin issue let's try to run the test from /tmp
-        DDDD=$(pwd)
-        cd /tmp
         pytest ${DDDD}/tests/pytest/test_003_string.py
         pytest ${DDDD}/tests/pytest/test_002_textedit.py
         pytest ${DDDD}/tests/pytest/test_001_demo.py
