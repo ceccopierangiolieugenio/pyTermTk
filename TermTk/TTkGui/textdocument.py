@@ -88,13 +88,16 @@ class TTkTextDocument():
             self._snap = snap
 
     class _snapshot():
+        _lastId = 0
         __slots__ = (
-                '_cursor',
+                '_cursor', '_id',
                 '_nextDiff', '_prevDiff')
         def __init__(self, cursor, nextDiff, prevDiff):
             self._cursor = cursor
             self._nextDiff = nextDiff
             self._prevDiff = prevDiff
+            self._id = TTkTextDocument._snapshot._lastId = self._lastId+1
+            # TTkLog.debug(f"{self._id=}")
 
         def getNextSnap(self, lines):
             return self._getSnap(lines, self._nextDiff)
@@ -107,13 +110,14 @@ class TTkTextDocument():
 
 
     __slots__ = (
-        '_dataLines', '_changed',
+        '_dataLines', '_modified',
         '_snap', '_snapChanged',
         '_lastSnap', '_lastCursor',
         # Signals
         'contentsChange', 'contentsChanged',
         'cursorPositionChanged',
-        'undoAvailable', 'redoAvailable'
+        'undoAvailable', 'redoAvailable', 'undoCommandAdded',
+        'modificationChanged'
         )
     def __init__(self, *args, **kwargs):
         from TermTk.TTkGui.textcursor import TTkTextCursor
@@ -122,9 +126,11 @@ class TTkTextDocument():
         self.contentsChanged = pyTTkSignal()
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
+        self.undoCommandAdded = pyTTkSignal()
+        self.modificationChanged = pyTTkSignal(bool)
         text =  kwargs.get('text'," ")
         self._dataLines = [TTkString(t) for t in text.split('\n')]
-        self._changed = False
+        self._modified = False
         # Cumulative changes since the lasrt snapshot
         self._snapChanged = None
         self.contentsChange.connect(self._saveSnapChanged)
@@ -177,11 +183,22 @@ class TTkTextDocument():
         else:
             self._snapChanged = (a,b,c)
 
+    def redo(self): pass
+
+    def setModified(self, m=True):
+        if m and self._snap:
+            self._snap._nextDiff = None
+        if self._modified == m: return
+        self._modified = m
+        self.modificationChanged.emit(m)
+
+    def undo(self): pass
+
     def changed(self):
-        return self._changed
+        return self._modified
 
     def setChanged(self, c):
-        self._changed = c
+        self._modified = c
         if c and self._snap:
             self._snap._nextDiff = None
 
@@ -194,7 +211,7 @@ class TTkTextDocument():
     def setText(self, text):
         remLines = len(self._dataLines)
         self._dataLines = [TTkString(t) for t in text.split('\n')]
-        self._changed = False
+        self._modified = False
         self._lastSnap = self._dataLines.copy()
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
@@ -206,7 +223,7 @@ class TTkTextDocument():
             text = TTkString() + text
         oldLines = len(self._dataLines)
         self._dataLines += text.split('\n')
-        self._changed = False
+        self._modified = False
         self._lastSnap = self._dataLines.copy()
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
         self.contentsChanged.emit()
@@ -221,6 +238,9 @@ class TTkTextDocument():
 
     def hasSnapshots(self):
         return self._snap is not None
+
+    def snapshootId(self):
+        return self._snap._id
 
     def saveSnapshot(self, cursor):
         docA = self._lastSnap
@@ -249,7 +269,7 @@ class TTkTextDocument():
         else:
             self._snap._cursor = cursor
 
-        self._changed = False
+        self._modified = False
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = cursor
         self.undoAvailable.emit(self.isUndoAvailable())
