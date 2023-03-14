@@ -48,7 +48,8 @@ jobs:
       run: |
         # To fix a folder permissin issue let's try to run the test from /tmp
         DDDD=$(pwd)
-        cd /tmp
+        mkdir -p /tmp/Eugenio
+        cd /tmp/Eugenio
         # Download the input test
         mkdir -p tmp
         wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
