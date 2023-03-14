@@ -377,7 +377,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     _mouseOverProcessed = False
     def mouseEvent(self, evt):
         ''' .. caution:: Don't touch this! '''
-        if not self._enabled: return True
+        if not self._enabled: return False
 
         # Saving self in this global variable
         # So that after the "_mouseEventLayoutHandle"

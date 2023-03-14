@@ -157,8 +157,8 @@ class TTkDesigner(TTkGridLayout):
 
     def preview(self, btn=None):
         jj = self._windowEditor.getJson()
-        for line in jj.split('\n'):
-            TTkLog.debug(f"{line}")
+        # for line in jj.split('\n'):
+        #     TTkLog.debug(f"{line}")
         widget = TTkUiLoader.loadJson(jj)
         win = TTkWindow(
                 title="Mr Terminal",

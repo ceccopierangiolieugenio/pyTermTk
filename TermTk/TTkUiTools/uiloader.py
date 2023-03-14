@@ -54,7 +54,7 @@ class TTkUiLoader():
                         value = TTkColor.ansi(widProp['params'][pname])
                     else:
                         value = widProp['params'][pname]
-                    TTkLog.debug(f"{name=} {value=}")
+                    # TTkLog.debug(f"{name=} {value=}")
                     kwargs |= {name: value}
                 elif 'set' in properties[pname]:
                     setp = properties[pname]['set']

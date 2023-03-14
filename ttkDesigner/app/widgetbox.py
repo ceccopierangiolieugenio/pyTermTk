@@ -31,7 +31,7 @@ dWidgets = {
         "H Box Layout" : { "class":ttk.TTkHBoxLayout, "params":{'size':(30,10)}},
         "V Box Layout" : { "class":ttk.TTkVBoxLayout, "params":{'size':(30,10)}},
         "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{'size':(30,10)}},
-        "Splitter"     : { "class":ttk.TTkSplitter  , "params":{'size':(40,10)}},
+        "Splitter"     : { "class":ttk.TTkSplitter  , "params":{'size':(40,10)}, "disabled": True},
     },
     'Buttons':{
         "Button"       : { "class":ttk.TTkButton,      "params":{'size':(20,3), 'text':'Button', 'border':True, }},
@@ -49,10 +49,10 @@ dWidgets = {
     },
     'Widgets':{
         "Label"           : { "class":ttk.TTkLabel,          "params":{'size':(20,1), 'text':'Label'}},
-        "List"            : { "class":ttk.TTkListWidget,     "params":{'size':(20,1)}},
-        "Scroll Area"     : { "class":ttk.TTkScrollArea,     "params":{'size':(20,5)}},
+        "List"            : { "class":ttk.TTkListWidget,     "params":{'size':(20,1)}, "disabled": True},
+        "Scroll Area"     : { "class":ttk.TTkScrollArea,     "params":{'size':(20,5)}, "disabled": True},
         "Spacer"          : { "class":ttk.TTkSpacer,         "params":{'size':(10,5)}},
-        "Tab Widget"      : { "class":ttk.TTkTabWidget,      "params":{'size':(20,3)}},
+        "Tab Widget"      : { "class":ttk.TTkTabWidget,      "params":{'size':(20,3)}, "disabled": True},
         "Window"          : { "class":ttk.TTkWindow,         "params":{'size':(20,10)}},
         "Widget"          : { "class":ttk.TTkWidget,         "params":{'size':(20,5)}},
         "Frame"           : { "class":ttk.TTkFrame,          "params":{'size':(20,5), 'border':True}},
@@ -61,8 +61,8 @@ dWidgets = {
     'Debug':{
         "Log Viewer"       : { "class":ttk.TTkLogViewer,       "params":{'size':(60,10)}},
         "Input View"       : { "class":ttk.TTkKeyPressView,    "params":{'size':(60,3)}},
-        "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}},
-        # "Test Widget"      : { "class":ttk.TTkTestWidgets,     "params":{'size':(40,10)}},
+        "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
+        "Test Widget"      : { "class":ttk.TTkTestWidgets,     "params":{'size':(40,10)}, "disabled": True},
         "Test Widget info" : { "class":ttk.TTkTestWidgetSizes, "params":{'size':(40,10)}},
     }
 }
@@ -75,6 +75,7 @@ class DragDesignItem(ttk.TTkWidget):
         self.setMinimumSize(max(15,len(itemName)+2),3)
         self._itemName = itemName
         self._widgetClass = widgetClass
+        self.setEnabled('disabled' not in widgetClass)
 
     def mouseDragEvent(self, evt) -> bool:
         ttk.TTkLog.debug(f"Start DnD -> {self._itemName}")
@@ -99,8 +100,12 @@ class DragDesignItem(ttk.TTkWidget):
         return True
 
     def paintEvent(self):
-        self._canvas.drawText(text=self._itemName, pos=(1,1))
-        self._canvas.drawBox(pos=(0,0),size=self.size())
+        if self.isEnabled():
+            color=ttk.TTkColor.RST
+        else:
+            color=ttk.TTkColor.fg('#AAAAAA')
+        self._canvas.drawText(text=self._itemName, pos=(1,1), color=color)
+        self._canvas.drawBox(pos=(0,0),size=self.size(), color=color)
 
 class WidgetBox(ttk.TTkVBoxLayout):
     def __init__(self, *args, **kwargs):
