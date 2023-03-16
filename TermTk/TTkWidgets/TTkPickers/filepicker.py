@@ -149,7 +149,7 @@ class TTkFileDialogPicker(TTkWindow):
         #   os.path.expanduser("~")
 
         self._fileTree = TTkFileTree(parent=splitter)
-        splitter.setSizes([10,self.width()-13])
+        splitter.setSizes([10,None])
 
         self._fileTree.itemClicked.connect(self._selectedItem)
         self._fileTree.itemActivated.connect(self._activatedItem)

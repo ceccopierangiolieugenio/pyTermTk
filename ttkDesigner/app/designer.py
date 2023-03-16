@@ -129,8 +129,8 @@ class TTkDesigner(TTkGridLayout):
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
         w,_ = self.size()
-        mainSplit.setSizes([5,15,10])
-        centralSplit.setSizes([6,4])
+        mainSplit.setSizes([25,None,40])
+        centralSplit.setSizes([None,6])
 
         self._toolBar.addWidget(btnPreview := TTkButton(maxWidth=12, text='Preview...'))
         self._toolBar.addWidget(btnColors  := TTkButton(maxWidth=11, checkable=True, text=
