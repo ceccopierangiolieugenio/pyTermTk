@@ -74,7 +74,7 @@ class TTkComboBox(TTkWidget):
         self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._textAlign = kwargs.get('textAlign', TTkK.CENTER_ALIGN)
-        self._id = -1
+        self._id = kwargs.get('index', -1 )
         self._popupFrame = None
         self.setEditable(kwargs.get('editable', False ))
         self.setMinimumSize(5, 1)
