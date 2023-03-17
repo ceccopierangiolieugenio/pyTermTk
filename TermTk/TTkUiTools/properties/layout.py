@@ -45,16 +45,17 @@
 from TermTk.TTkLayouts.layout import TTkLayout
 
 TTkLayoutProperties = {
+    'properties' : {
         'Geometry' : {
                 'get':  { 'cb':TTkLayout.geometry,    'type': [
                                 { 'name': 'x',     'type':int } ,
                                 { 'name': 'y',     'type':int } ,
-                                { 'name': 'width', 'type':int  } ,
+                                { 'name': 'width', 'type':int } ,
                                 { 'name': 'height','type':int } ] },
                 'set':  { 'cb':TTkLayout.setGeometry, 'type': [
                                 { 'name': 'x',     'type':int } ,
                                 { 'name': 'y',     'type':int } ,
-                                { 'name': 'width', 'type':int  } ,
-                                { 'name': 'height','type':int } ] },
+                                { 'name': 'width', 'type':int } ,
+                                { 'name': 'height','type':int } ] } },
     }
 }

@@ -25,6 +25,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.combobox import TTkComboBox
 
 TTkComboBoxProperties = {
+    'properties' : {
         'Editable' : {
                 'init': {'name':'editable', 'type':bool } ,
                 'get':  {'cb':TTkComboBox.isEditable,   'type':bool } ,
@@ -68,3 +69,4 @@ TTkComboBoxProperties = {
                         'At Top'      : TTkK.InsertPolicy.InsertAtTop,
                         'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } } },
     }
+}

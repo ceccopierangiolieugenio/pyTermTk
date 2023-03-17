@@ -24,6 +24,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.button import TTkButton
 
 TTkButtonProperties = {
+    'properties' : {
         'Text' : {
                 'init': {'name':'text', 'type':TTkString },
                 'get':  {'cb':TTkButton.text,     'type':TTkString } ,
@@ -39,4 +40,12 @@ TTkButtonProperties = {
                 'init': {'name':'checked', 'type':bool },
                 'get':  {'cb':TTkButton.isChecked,   'type':bool } ,
                 'set':  {'cb':TTkButton.setChecked,  'type':bool } },
+    },
+    'signals' : {
+        'clicked' : {'type' : None},
+        'toggled' : {'type' : bool},
+    },
+    'slots' : {
+
     }
+}

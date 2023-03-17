@@ -24,7 +24,7 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import *
 
 class TTkCheckbox(TTkWidget):
@@ -104,6 +104,7 @@ class TTkCheckbox(TTkWidget):
         '''
         return self._text
 
+    pyTTkSlot(str)
     def setText(self, text):
         ''' This property holds the text shown on the checkhox
 
@@ -139,6 +140,7 @@ class TTkCheckbox(TTkWidget):
         '''
         return self._checkStatus != TTkK.Unchecked
 
+    @pyTTkSlot(bool)
     def setChecked(self, state):
         ''' Set the check status
 
@@ -154,6 +156,7 @@ class TTkCheckbox(TTkWidget):
         '''
         return self._checkStatus
 
+    @pyTTkSlot(TTkK.CheckState)
     def setCheckState(self, state):
         ''' Sets the checkbox's check state.
 

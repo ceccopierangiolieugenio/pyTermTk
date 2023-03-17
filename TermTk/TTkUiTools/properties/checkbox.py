@@ -25,7 +25,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 
 TTkCheckboxProperties = {
-        'Text' : {
+    'properties' : {
+       'Text' : {
                 'init': {'name':'text', 'type':'singleLineTTkString' } ,
                 'get':  {'cb':TTkCheckbox.text,     'type':'singleLineTTkString' } ,
                 'set':  {'cb':TTkCheckbox.setText,  'type':'singleLineTTkString' } },
@@ -54,4 +55,14 @@ TTkCheckboxProperties = {
                         'Unchecked'        : TTkK.Unchecked  ,
                         'Partially Checked': TTkK.PartiallyChecked } },
          },
+    },
+    'signals' : {
+        'clicked' :      {'type' : bool},
+        'stateChanged' : {'type' : TTkK.CheckState},
+    },
+    'slots' : {
+        'setChecked' :    {'type' : bool},
+        'setCheckState' : {'type' : TTkK.CheckState},
+        'setText' :       {'type' : str}
     }
+}

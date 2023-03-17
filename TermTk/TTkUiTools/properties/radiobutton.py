@@ -27,6 +27,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.radiobutton import TTkRadioButton
 
 TTkRadioButtonProperties = {
+    'properties' : {
         'Text' : {
                 'init': {'name':'text', 'type':'singleLineTTkString' } ,
                 'get':  {'cb':TTkRadioButton.text,     'type':'singleLineTTkString' } ,
@@ -50,3 +51,4 @@ TTkRadioButtonProperties = {
                         'Unchecked'        : TTkK.Unchecked  } },
          },
     }
+}

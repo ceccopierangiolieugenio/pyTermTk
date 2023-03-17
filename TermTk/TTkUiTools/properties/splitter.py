@@ -26,6 +26,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.splitter import TTkSplitter
 
 TTkSplitterProperties = {
+    'properties' : {
         'Border' : {
                 'init': {'name':'border', 'type':bool } },
         'Orientation' : {
@@ -38,3 +39,4 @@ TTkSplitterProperties = {
                         'Horizontal' : TTkK.HORIZONTAL ,
                         'Vertical'   : TTkK.VERTICAL   } } }
     }
+}

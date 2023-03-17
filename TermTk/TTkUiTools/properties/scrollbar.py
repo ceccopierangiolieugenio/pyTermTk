@@ -27,6 +27,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
 TTkScrollBarProperties = {
+    'properties' : {
         'Orientation' : {
                 'init': {'name':'orientation', 'type':'singleflag',
                     'flags': {
@@ -37,3 +38,4 @@ TTkScrollBarProperties = {
                         'Horizontal' : TTkK.HORIZONTAL ,
                         'Vertical'   : TTkK.VERTICAL   } } },
     }
+}

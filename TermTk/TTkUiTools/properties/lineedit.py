@@ -25,6 +25,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
 TTkLineEditProperties = {
+    'properties' : {
         'Input Type' : {
                 'init': {'name':'inputType', 'type':'multiflags',
                     'flags': {
@@ -41,3 +42,4 @@ TTkLineEditProperties = {
                 'get':  {'cb':TTkLineEdit.text,     'type':'singleLineTTkString' } ,
                 'set':  {'cb':TTkLineEdit.setText,  'type':'singleLineTTkString' } }
     }
+}

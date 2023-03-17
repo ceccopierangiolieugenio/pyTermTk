@@ -38,7 +38,7 @@ class TTkUiLoader():
             ttkClass = globals()[widProp['class']]
             for cc in reversed(ttkClass.__mro__):
                 if cc.__name__ in TTkUiProperties:
-                    properties |= TTkUiProperties[cc.__name__]
+                    properties |= TTkUiProperties[cc.__name__]['properties']
             # Init params used in the constructors
             kwargs = {}
             # Init params to be configured with the setter
@@ -86,7 +86,7 @@ class TTkUiLoader():
             ttkClass = globals()[layprop['class']]
             for cc in reversed(ttkClass.__mro__):
                 if cc.__name__ in TTkUiProperties:
-                    properties |= TTkUiProperties[cc.__name__]
+                    properties |= TTkUiProperties[cc.__name__]['properties']
 
             setters = []
             for pname in layprop['params']:

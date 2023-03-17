@@ -22,67 +22,6 @@
 
 import TermTk as ttk
 
-class _DetailLazyFormView(ttk.TTkAbstractScrollView):
-    __slots__ = ('_gridLayout', '_lazyRows', '_lastRow')
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setPadding(1,0,0,0)
-        self._lastRow = 0
-        self._lazyRows = []
-        self.viewChanged.connect(self._viewChangedHandler)
-
-    def resizeEvent(self, w, h):
-        for row in self._lazyRows:
-            if len(row) == 1:
-                _w = [w]
-                _x = [0]
-            else:
-                _w = [w//2,w//2]
-                _x = [0,w//2]
-            for i,wid in enumerate(row):
-                wx, wy, ww, wh = wid.geometry()
-                wid.setGeometry(_x[i],wy,_w[i],wh)
-        return super().resizeEvent(w, h)
-
-    def addFormRow(self, *args):
-        w = self.width()
-        x = 0
-        h = 0
-        row = []
-        for wid in args:
-            ww,wh = wid.size()
-            row.append(wid)
-            self.layout().addWidget(wid)
-            wid.setGeometry(x,self._lastRow,w//len(args),wh)
-            x+=w//len(args)
-            h = max(h,wh)
-        self._lazyRows.append(row)
-        self._lastRow+=h
-
-    @ttk.pyTTkSlot()
-    def _viewChangedHandler(self):
-        x,y = self.getViewOffsets()
-        self.layout().setOffset(-x,-y)
-
-    def viewFullAreaSize(self) -> (int, int):
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        return w , h+1
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
-    def paintEvent(self):
-        x,y = self.getViewOffsets()
-        w,h = self.size()
-        tt = ttk.TTkCfg.theme.tree
-        header=["Property","Value"]
-        columnsPos = [self.width()//2,self.width()]
-
-        for i,l in enumerate(header):
-            hx  = 0 if i==0 else columnsPos[i-1]+1
-            hx1 = columnsPos[i]
-            self._canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=ttk.TTkCfg.theme.treeHeaderColor)
-
 class PropertyEditor(ttk.TTkGridLayout):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -293,11 +232,11 @@ class PropertyEditor(ttk.TTkGridLayout):
                 classItem = ttk.TTkTreeWidgetItem([ccName,''], expanded=True)
                 self._detail.addTopLevelItem(classItem)
                 if ccName in ttk.TTkUiProperties:
-                    for p in ttk.TTkUiProperties[ccName]:
+                    for p in ttk.TTkUiProperties[ccName]['properties']:
                         if p in exceptions:
                             prop = exceptions[p]
                         else:
-                            prop = ttk.TTkUiProperties[ccName][p]
+                            prop = ttk.TTkUiProperties[ccName]['properties'][p]
                         if prop not in proplist:
                             proplist.append(prop)
                             classItem.addChild(_processProp(p, prop))

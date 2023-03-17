@@ -24,6 +24,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.frame import TTkFrame
 
 TTkFrameProperties = {
+    'properties' : {
         'Border' : {
                 'init': {'name':'border', 'type':bool },
                 'get':  {'cb':TTkFrame.border,     'type':bool } ,
@@ -33,3 +34,4 @@ TTkFrameProperties = {
                 'get':  {'cb':TTkFrame.title,      'type':'singleLineTTkString' } ,
                 'set':  {'cb':TTkFrame.setTitle,   'type':'singleLineTTkString' } },
     }
+}

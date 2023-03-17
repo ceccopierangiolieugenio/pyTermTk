@@ -60,8 +60,8 @@ class SuperObject():
             if issubclass(cc, ttk.TTkWidget) or issubclass(cc, ttk.TTkLayout):
                 ccName = cc.__name__
                 if ccName in ttk.TTkUiProperties:
-                    for p in ttk.TTkUiProperties[ccName]:
-                        prop = ttk.TTkUiProperties[ccName][p]
+                    for p in ttk.TTkUiProperties[ccName]['properties']:
+                        prop = ttk.TTkUiProperties[ccName]['properties'][p]
                         propType = prop['get']['type']
                         propCb = prop['get']['cb']
                         # ttk.TTkLog.debug(ccName)

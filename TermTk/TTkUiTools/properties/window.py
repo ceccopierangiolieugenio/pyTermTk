@@ -26,6 +26,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.window import TTkWindow
 
 TTkWindowProperties = {
+    'properties' : {
         'Window Flags' : {
                 'init': { 'name':'flags', 'type':'multiflags',
                     'flags': {
@@ -47,3 +48,4 @@ TTkWindowProperties = {
                         'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
          },
     }
+}

@@ -25,6 +25,7 @@ from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
 TTkWidgetProperties = {
+    'properties' : {
         # 'X' : {
         #         'init': {'name':'x', 'type':int } ,
         #         'get':  { 'cb':x,    'type':int } },
@@ -104,3 +105,4 @@ TTkWidgetProperties = {
                 'get':  { 'cb':TTkWidget.toolTip,    'type':TTkString } ,
                 'set':  { 'cb':TTkWidget.setToolTip, 'type':TTkString } },
     }
+}

@@ -25,6 +25,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.label import TTkLabel
 
 TTkLabelProperties = {
+    'properties' : {
         'Text' : {
                 'init': {'name':'text',  'type':'singleLineTTkString' },
                 'get':  {'cb':TTkLabel.text,      'type':'singleLineTTkString' } ,
@@ -34,3 +35,4 @@ TTkLabelProperties = {
                 'get':  {'cb':TTkLabel.color,      'type':TTkColor } ,
                 'set':  {'cb':TTkLabel.setColor,   'type':TTkColor } },
     }
+}
