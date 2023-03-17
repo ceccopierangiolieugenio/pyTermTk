@@ -91,15 +91,15 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton   3'),row,2)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name One) 1'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton A', name="Name One"),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton A', radiogroup="Name One"),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name One) 1'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton B', name="Name One"),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton B', radiogroup="Name One"),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name Two)   2'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton  x',name="Name Two"),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton  x',radiogroup="Name Two"),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name One) 1'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton C', name="Name One"),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton C', radiogroup="Name One"),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name Two)   2'),row,0)
-    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton  y',name="Name Two"),row,2)
+    win_form1_grid_layout.addWidget(ttk.TTkRadioButton(text='RadioButton  y',radiogroup="Name Two"),row,2)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkSpacer(),row,0)
     return frame
 

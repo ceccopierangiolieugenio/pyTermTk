@@ -89,15 +89,15 @@ row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Defau
 win_form1_grid_layout.addWidget(ttk.TTkRadioButton(),row,2)
 
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name One)'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkRadioButton(name="Name One"),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkRadioButton(radiogroup="Name One"),row,2)
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name One)'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkRadioButton(name="Name One"),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkRadioButton(radiogroup="Name One"),row,2)
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name Two)'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkRadioButton(name="Name Two"),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkRadioButton(radiogroup="Name Two"),row,2)
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name One)'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkRadioButton(name="Name One"),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkRadioButton(radiogroup="Name One"),row,2)
 row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Radio Button (Name Two)'),row,0)
-win_form1_grid_layout.addWidget(ttk.TTkRadioButton(name="Name Two"),row,2)
+win_form1_grid_layout.addWidget(ttk.TTkRadioButton(radiogroup="Name Two"),row,2)
 
 # ttk.TTkResizableFrame(parent=root, pos=(20,3),size=(30,30))
 
