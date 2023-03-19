@@ -33,5 +33,5 @@ TTkFrameProperties = {
                 'init': {'name':'title',  'type':'singleLineTTkString' },
                 'get':  {'cb':TTkFrame.title,      'type':'singleLineTTkString' } ,
                 'set':  {'cb':TTkFrame.setTitle,   'type':'singleLineTTkString' } },
-    }
+    },'signals' : {},'slots' : {}
 }

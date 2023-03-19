@@ -37,5 +37,5 @@ TTkScrollBarProperties = {
                     'flags': {
                         'Horizontal' : TTkK.HORIZONTAL ,
                         'Vertical'   : TTkK.VERTICAL   } } },
-    }
+    },'signals' : {},'slots' : {}
 }

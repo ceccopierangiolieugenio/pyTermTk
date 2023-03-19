@@ -32,6 +32,9 @@ TTkRadioButtonProperties = {
                 'init': {'name':'text', 'type':'singleLineTTkString' } ,
                 'get':  {'cb':TTkRadioButton.text,     'type':'singleLineTTkString' } ,
                 'set':  {'cb':TTkRadioButton.setText,  'type':'singleLineTTkString' } },
+        'RadioGroup' : {
+                'init': {'name':'radiogroup',            'type':str } ,
+                'get':  {'cb':TTkRadioButton.radioGroup, 'type':str } },
         'Checked' : {
                 'init': {'name':'checked', 'type':bool } ,
                 'get':  {'cb':TTkRadioButton.isChecked,   'type':bool } ,
@@ -50,5 +53,5 @@ TTkRadioButtonProperties = {
                         'Checked'          : TTkK.Checked    ,
                         'Unchecked'        : TTkK.Unchecked  } },
          },
-    }
+    },'signals' : {},'slots' : {}
 }

@@ -35,6 +35,9 @@ class PropertyEditor(ttk.TTkGridLayout):
     def setDetail(self, widget, superWidget):
         self._widget = widget
         self._superWidget = superWidget
+        # TBD
+        # Override: 'name', 'radiogroup',
+        # ro geometry if grid layout
         exceptions = {
             'Layout' : {
                 'get':  { 'cb': lambda _: superWidget._superLayout.layout().__class__ , 'type':'singleflag',
@@ -49,7 +52,11 @@ class PropertyEditor(ttk.TTkGridLayout):
                         'TTkGridLayout' : ttk.TTkGridLayout ,
                         'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
                         'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
-            }
+            },
+            'RadioGroup' : {
+                'init': {'name':'radiogroup',            'type':str } ,
+                'get':  {'cb':ttk.TTkRadioButton.radioGroup, 'type':str } ,
+                'set':  {'cb':lambda w,l: setattr(w,'_radiogroup',l), 'type':str } },
         }
         self._makeDetail(widget, exceptions)
 
@@ -69,6 +76,12 @@ class PropertyEditor(ttk.TTkGridLayout):
         def _boundTextEdit(_f,_w,_te):
             def _ret():
                 _v = _te.getTTkString()
+                _f(_w,_v)
+                self._superWidget.updateAll()
+            return _ret
+        def _boundLineEdit(_f,_w,_te):
+            def _ret(t):
+                _v = str(t)
                 _f(_w,_v)
                 self._superWidget.updateAll()
             return _ret
@@ -170,6 +183,12 @@ class PropertyEditor(ttk.TTkGridLayout):
             value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
             return ttk.TTkTreeWidgetItem([name,value])
         # String Fields
+        def _processStr(name, prop):
+            getval = prop['get']['cb'](domw)
+            value = ttk.TTkLineEdit(text=getval, height=len(getval.split('\n')))
+            value.textChanged.connect(_boundLineEdit(prop['set']['cb'],domw,value))
+            return ttk.TTkTreeWidgetItem([name,value])
+        # String Fields
         def _processTTkString(name, prop, multiLine=True):
             getval = prop['get']['cb'](domw)
             value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')), autoSize=True, multiLine=multiLine)
@@ -208,6 +227,8 @@ class PropertyEditor(ttk.TTkGridLayout):
                     return _processBool(name, prop)
                 elif prop['get']['type'] == int and 'set' in prop:
                     return _processInt(name, prop)
+                elif prop['get']['type'] == str and 'set' in prop:
+                    return _processStr(name, prop)
                 elif prop['get']['type'] == ttk.TTkString and 'set' in prop:
                     return _processTTkString(p,prop,multiLine=True)
                 elif prop['get']['type'] == 'singleLineTTkString':

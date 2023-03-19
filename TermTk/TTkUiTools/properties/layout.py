@@ -57,5 +57,5 @@ TTkLayoutProperties = {
                                 { 'name': 'y',     'type':int } ,
                                 { 'name': 'width', 'type':int } ,
                                 { 'name': 'height','type':int } ] } },
-    }
+    },'signals' : {},'slots' : {}
 }

@@ -34,5 +34,5 @@ TTkLabelProperties = {
                 'init': {'name':'color',  'type':TTkColor },
                 'get':  {'cb':TTkLabel.color,      'type':TTkColor } ,
                 'set':  {'cb':TTkLabel.setColor,   'type':TTkColor } },
-    }
+    },'signals' : {},'slots' : {}
 }

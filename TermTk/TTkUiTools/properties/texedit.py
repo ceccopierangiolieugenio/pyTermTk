@@ -36,5 +36,5 @@ TTkTextEditProperties = {
                 'init': {'name':'readOnly',                'type':bool } ,
                 'get':  {'cb':lambda w:   w.isReadOnly(),  'type':bool } ,
                 'set':  {'cb':lambda w,v: w.setReadOnly(v),'type':bool } },
-    }
+    },'signals' : {},'slots' : {}
 }

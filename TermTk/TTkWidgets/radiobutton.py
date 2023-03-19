@@ -68,11 +68,13 @@ class TTkRadioButton(TTkWidget):
     def __init__(self, *args, **kwargs):
         # Define Signals
         self.clicked = pyTTkSignal()
+        # use name if radiogroup is not available for retrocompatibility
+        self._radiogroup = kwargs.get('name', 'DefaultGroup' )
+        self._radiogroup = kwargs.get('radiogroup', self._radiogroup )
         TTkWidget.__init__(self, *args, **kwargs)
         # self.checked = pyTTkSignal()
         self._checked = kwargs.get('checked', False )
         self._text = TTkString(kwargs.get('text', '' ))
-        self._radiogroup = kwargs.get('radiogroup', 'DefaultGroup' )
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -80,6 +82,9 @@ class TTkRadioButton(TTkWidget):
             TTkRadioButton._radioLists[self._radiogroup] = [self]
         else:
             TTkRadioButton._radioLists[self._radiogroup].append(self)
+
+    def radioGroup(self):
+        return self._radiogroup
 
     def text(self):
         ''' This property holds the text shown on the checkhox

@@ -37,7 +37,7 @@ dWidgets = {
         "Button"       : { "class":ttk.TTkButton,      "params":{'size':(20,3), 'text':'Button', 'border':True, }},
         "Button Slim"  : { "class":ttk.TTkButton,      "params":{'size':(20,1), 'text':'Button', 'border':False, }},
         "Checkbox"     : { "class":ttk.TTkCheckbox,    "params":{'size':(20,1), 'text':'Checkbox' }},
-        "Radio Button" : { "class":ttk.TTkRadioButton, "params":{'size':(20,1), 'text':'Radio b.' }},
+        "Radio Button" : { "class":ttk.TTkRadioButton, "params":{'size':(20,1), 'text':'Radio b.', 'radiogroup':'DefaultGroup' }},
     },
     'Input Widgets':{
         "ComboBox"    : { "class":ttk.TTkComboBox,  "params":{'size':(20,1)} },

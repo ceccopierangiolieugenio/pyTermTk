@@ -47,5 +47,5 @@ TTkWindowProperties = {
                         'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
                         'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
          },
-    }
+    },'signals' : {},'slots' : {}
 }

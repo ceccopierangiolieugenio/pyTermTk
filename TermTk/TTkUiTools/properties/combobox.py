@@ -68,5 +68,5 @@ TTkComboBoxProperties = {
                         'No Insert'   : TTkK.InsertPolicy.NoInsert,
                         'At Top'      : TTkK.InsertPolicy.InsertAtTop,
                         'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } } },
-    }
+    },'signals' : {},'slots' : {}
 }

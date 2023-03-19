@@ -104,5 +104,5 @@ TTkWidgetProperties = {
                 'init': {'name':'toolTip', 'type':TTkString } ,
                 'get':  { 'cb':TTkWidget.toolTip,    'type':TTkString } ,
                 'set':  { 'cb':TTkWidget.setToolTip, 'type':TTkString } },
-    }
+    },'signals' : {},'slots' : {}
 }
