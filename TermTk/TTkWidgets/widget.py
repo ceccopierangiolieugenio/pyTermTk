@@ -584,12 +584,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._canvas.hide()
         self.update(repaint=False, updateParent=True)
 
+    @pyTTkSlot()
     def raiseWidget(self):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             self._parent.raiseWidget()
             self._parent.rootLayout().raiseWidget(self)
 
+    @pyTTkSlot()
     def lowerWidget(self):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:

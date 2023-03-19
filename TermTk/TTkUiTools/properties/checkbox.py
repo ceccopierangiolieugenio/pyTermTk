@@ -57,12 +57,12 @@ TTkCheckboxProperties = {
          },
     },
     'signals' : {
-        'clicked' :      {'name' : 'clicked',      'type' : bool},
-        'stateChanged' : {'name' : 'stateChanged', 'type' : TTkK.CheckState},
+        'clicked(bool)' :            {'name' : 'clicked',      'type' : bool},
+        'stateChanged(CheckState)' : {'name' : 'stateChanged', 'type' : TTkK.CheckState},
     },
     'slots' : {
-        'setChecked' :    {'cb' : TTkCheckbox.setChecked    , 'type' : bool},
-        'setCheckState' : {'cb' : TTkCheckbox.setCheckState , 'type' : TTkK.CheckState},
-        'setText' :       {'cb' : TTkCheckbox.setText       , 'type' : str}
+        'setChecked(bool)' :          {'cb' : TTkCheckbox.setChecked    , 'type' : bool},
+        'setCheckState(CheckState)' : {'cb' : TTkCheckbox.setCheckState , 'type' : TTkK.CheckState},
+        'setText(str)' :              {'cb' : TTkCheckbox.setText       , 'type' : str}
     }
 }

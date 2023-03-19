@@ -190,6 +190,7 @@ class TTkComboBox(TTkWidget):
     def setCurrentIndex(self, index):
         '''setCurrentIndex'''
         if index > len(self._list)-1: return
+        if self._id == index: return
         self._id = index
         if self._editable:
             self._lineEdit.setText(self._list[self._id])
@@ -204,8 +205,11 @@ class TTkComboBox(TTkWidget):
         if self._editable:
             self.setEditText(text)
         else:
-            if id := self._list.index(text):
-                self.setCurrentIndex(id)
+            if text not in self._list:
+                id = 0
+            else:
+                id = self._list.index(text)
+            self.setCurrentIndex(id)
 
     @pyTTkSlot(str)
     def setEditText(self, text):

@@ -104,5 +104,18 @@ TTkWidgetProperties = {
                 'init': {'name':'toolTip', 'type':TTkString } ,
                 'get':  { 'cb':TTkWidget.toolTip,    'type':TTkString } ,
                 'set':  { 'cb':TTkWidget.setToolTip, 'type':TTkString } },
-    },'signals' : {},'slots' : {}
+    },'signals' : {
+        'focusChanged(bool)'   : {'name' : 'focusChanged', 'type':bool},
+        'sizeChanged(int,int)' : {'name' : 'sizeChanged',  'type':(int, int)}
+    },'slots' : {
+        'show()' :           {'cb': TTkWidget.show,       'type':None},
+        'hide()' :           {'cb': TTkWidget.hide,       'type':None},
+        'close()' :          {'cb': TTkWidget.close,      'type':None},
+        'setFocus()' :       {'cb': TTkWidget.setFocus,   'type':None},
+        'setVisible(bool)' : {'cb': TTkWidget.setVisible, 'type':bool},
+        'setEnabled(bool)':  {'cb': TTkWidget.setEnabled, 'type':bool},
+        'setDisabled(bool)': {'cb': TTkWidget.setDisabled,'type':bool},
+        'raiseWidget()' :    {'cb': TTkWidget.raiseWidget,'type':None},
+        'lowerWidget()' :    {'cb': TTkWidget.lowerWidget,'type':None},
+    }
 }

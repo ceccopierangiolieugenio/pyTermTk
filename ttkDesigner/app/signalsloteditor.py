@@ -26,18 +26,130 @@ from .superobj.superwidget import SuperWidget
 from .superobj.superlayout import SuperLayout
 
 class _SignalSlotItem(ttk.TTkTreeWidgetItem):
-    __slots__ = ('_sender', '_signal', '_receiver', '_slot')
-    def __init__(self, *args, **kwargs):
+    __slots__ = ('_sender', '_signal', '_receiver', '_slot', '_windowEditor', '_signalData', '_slotData', '_avoidRecursion')
+    def __init__(self, windowEditor, *args, **kwargs):
+        self._windowEditor = windowEditor
         self._sender   = ttk.TTkComboBox(height=1, list=['<sender>'  ], index=0)
         self._signal   = ttk.TTkComboBox(height=1, list=['<signal>'  ], index=0)
         self._receiver = ttk.TTkComboBox(height=1, list=['<receiver>'], index=0)
         self._slot     = ttk.TTkComboBox(height=1, list=['<slot>'    ], index=0)
+        self._signalData = {}
+        self._slotData = {}
+        self._avoidRecursion = False
+        self._sender.currentTextChanged.connect(  self._senderChanged)
+        self._signal.currentTextChanged.connect(  self._signalChanged)
+        self._receiver.currentTextChanged.connect(self._receiverChanged)
+        self._slot.currentTextChanged.connect(    self._slotChanged)
+        self.updateWidgets()
         super().__init__([self._sender,self._signal,self._receiver,self._slot], *args, **kwargs)
 
-    def updateWidgets(self, widgets):
-        names = [w.name() for w in widgets]
+    def updateWidgets(self):
+        names = [w.name() for w in self._getWidgets()]
         self._sender.addItems(names)
         self._receiver.addItems(names)
+
+    @staticmethod
+    def typeToString(t):
+        if type(t) in (list,tuple):
+            return ",".join([_SignalSlotItem.typeToString(x) for x in t])
+        return {bool    : 'bool',
+                int     : 'int',
+                float   : 'float',
+                complex : 'complex',
+                str     : 'str',
+                None    : ''}.get(t,f"UNDEFINED {t}")
+
+    def _getWidgets(self):
+        widgets = []
+        def _getItems(layoutItem):
+            if layoutItem.layoutItemType == ttk.TTkK.WidgetItem:
+                superThing = layoutItem.widget()
+                if issubclass(type(superThing), SuperWidget):
+                    widgets.append(superThing._wid)
+                for c in superThing.layout().children():
+                    _getItems(c)
+        _getItems(self._windowEditor.getTTk().widgetItem())
+        return widgets
+
+    @ttk.pyTTkSlot(str)
+    def _senderChanged(self, text):
+        self._signalData, _ = self.getSignalSlot(text)
+        self._refreshSignals()
+
+    def _refreshSignals(self):
+        curSignal = str(self._signal.currentText())
+        curSlot = str(self._slot.currentText())
+        filter = None
+        for c in self._slotData:
+            if not curSlot in self._slotData[c]: continue
+            filter = self._slotData[c][curSlot]['type']
+            break
+
+        signals = ['<signal>']
+        for ccName in self._signalData:
+            signals.append(ttk.TTkString(f"{ccName}:",ttk.TTkColor.fg("#FFFF88")+ttk.TTkColor.UNDERLINE))
+            for s in self._signalData[ccName]:
+                if filter in (None,self._signalData[ccName][s]['type']):
+                    signals.append(s)
+        self._signal.clear()
+        self._signal.addItems(signals)
+        self._signal.setCurrentText(curSignal)
+
+    @ttk.pyTTkSlot(str)
+    def _signalChanged(self, text):
+        if self._avoidRecursion: return
+        self._avoidRecursion = True
+        self._refreshSlots()
+        self._avoidRecursion = False
+
+
+    @ttk.pyTTkSlot(str)
+    def _receiverChanged(self, text):
+        _, self._slotData = self.getSignalSlot(text)
+        self._refreshSlots()
+
+    def _refreshSlots(self):
+        curSignal = self._signal.currentText()
+        curSlot = self._slot.currentText()
+        filter = 'ALL'
+        for c in self._signalData:
+            if not curSignal in self._signalData[c]: continue
+            filter = self._signalData[c][curSignal]['type']
+            break
+
+        slots = ['<slot>']
+        for ccName in self._slotData:
+            slots.append(ttk.TTkString(f"{ccName}:",ttk.TTkColor.fg("#FFFF88")+ttk.TTkColor.UNDERLINE))
+            for s in self._slotData[ccName]:
+                if filter in ('ALL',self._slotData[ccName][s]['type']) or not self._slotData[ccName][s]['type']:
+                    slots.append(s)
+
+        self._slot.clear()
+        self._slot.addItems(slots)
+        self._slot.setCurrentText(curSlot)
+
+    @ttk.pyTTkSlot(str)
+    def _slotChanged(self, text):
+        if self._avoidRecursion: return
+        self._avoidRecursion = True
+        self._refreshSignals()
+        self._avoidRecursion = False
+
+    def getSignalSlot(self, name):
+        if not (widget := {w.name():w for w in self._getWidgets()}.get(name,None)):
+            return {},{}
+        ttk.TTkLog.debug(f"Selected {widget=}")
+        slots = {}
+        signals = {}
+        for cc in reversed(type(widget).__mro__):
+            if issubclass(cc, ttk.TTkWidget) or issubclass(cc, ttk.TTkLayout):
+                ccName = cc.__name__
+                if ccName in ttk.TTkUiProperties:
+                    if ttk.TTkUiProperties[ccName]['slots']:
+                        slots[ccName] = ttk.TTkUiProperties[ccName]['slots']
+                    if ttk.TTkUiProperties[ccName]['signals']:
+                        signals[ccName] = ttk.TTkUiProperties[ccName]['signals']
+        return signals,slots
 
 class SignalSlotEditor(ttk.TTkWidget):
     __slots__ = ('_items', '_windowEditor')
@@ -57,21 +169,7 @@ class SignalSlotEditor(ttk.TTkWidget):
         addb.clicked.connect(self._addStuff)
 
     def _addStuff(self):
-        item = _SignalSlotItem()
-        item.updateWidgets(self._getWidgets())
+        item = _SignalSlotItem(self._windowEditor)
         self._items.append(item)
         self._detail.addTopLevelItem(item)
-
-    def _getWidgets(self):
-        widgets = []
-        def _getItems(layoutItem):
-            if layoutItem.layoutItemType == ttk.TTkK.WidgetItem:
-                superThing = layoutItem.widget()
-                if issubclass(type(superThing), SuperWidget):
-                    widgets.append(superThing._wid)
-
-                for c in superThing.layout().children():
-                    _getItems(c)
-        _getItems(self._windowEditor.getTTk().widgetItem())
-        return widgets
 

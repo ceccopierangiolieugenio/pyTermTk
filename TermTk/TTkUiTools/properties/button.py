@@ -42,8 +42,8 @@ TTkButtonProperties = {
                 'set':  {'cb':TTkButton.setChecked,  'type':bool } },
     },
     'signals' : {
-        'clicked' : {'name': 'clicked', 'type' : None},
-        'toggled' : {'name': 'toggled', 'type' : bool},
+        'clicked()'     : {'name': 'clicked', 'type' : None},
+        'toggled(bool)' : {'name': 'toggled', 'type' : bool},
     },
     'slots' : {}
 }
