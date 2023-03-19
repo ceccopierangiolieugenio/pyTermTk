@@ -43,6 +43,7 @@ from .widgetbox import DragDesignItem, WidgetBox, WidgetBoxScrollArea
 from .windoweditor import WindowEditor, SuperWidget
 from .treeinspector import TreeInspector
 from .propertyeditor import PropertyEditor
+from .signalsloteditor import SignalSlotEditor
 
 #
 #      Mimic the QT Designer layout
@@ -97,13 +98,16 @@ class TTkDesigner(TTkGridLayout):
 
         mainSplit.addWidget(centralSplit := TTkSplitter(orientation=TTkK.VERTICAL))
         centralSplit.addWidget(self._main)
-        centralSplit.addWidget(TTkLogViewer())
+        centralSplit.addWidget(bottonTabWidget := TTkTabWidget(border=False))
+        # centralSplit.addWidget(TTkLogViewer())
+        bottonTabWidget.addTab(sigslotEditor := SignalSlotEditor(self._windowEditor.viewport()),'Signal/Slot Editor')
+        bottonTabWidget.addTab(TTkLogViewer(),'Logs')
 
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
 
         rightSplit.addItem(treeInspector := TreeInspector(self._windowEditor.viewport()))
         rightSplit.addItem(propertyEditor := PropertyEditor())
-        rightSplit.addWidget(TTkButton(text='E', border=True, maxHeight=3))
+        # rightSplit.addItem(sigslotEditor := SignalSlotEditor(self._windowEditor.viewport()))
 
         treeInspector.thingSelected.connect(lambda _,s : s.pushSuperControlWidget())
         treeInspector.thingSelected.connect(propertyEditor.setDetail)
@@ -130,7 +134,7 @@ class TTkDesigner(TTkGridLayout):
 
         w,_ = self.size()
         mainSplit.setSizes([25,None,40])
-        centralSplit.setSizes([None,6])
+        centralSplit.setSizes([None,8])
 
         self._toolBar.addWidget(btnPreview := TTkButton(maxWidth=12, text='Preview...'))
         self._toolBar.addWidget(btnColors  := TTkButton(maxWidth=11, checkable=True, text=

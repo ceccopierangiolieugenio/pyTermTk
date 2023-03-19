@@ -29,4 +29,5 @@ from .treeinspector import TreeInspector
 from .widgetbox import DragDesignItem, WidgetBox
 from .windoweditor import WindowEditor
 from .propertyeditor import PropertyEditor
+from .signalsloteditor import SignalSlotEditor
 from .superobj import *
