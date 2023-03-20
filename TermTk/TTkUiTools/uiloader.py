@@ -33,6 +33,10 @@ from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 class TTkUiLoader():
     @staticmethod
     def loadJson(text):
+        return TTkUiLoader.loadDict(json.loads(text))
+
+    @staticmethod
+    def loadDict(ui):
         def _getWidget(widProp):
             properties = {}
             ttkClass = globals()[widProp['class']]
@@ -137,10 +141,39 @@ class TTkUiLoader():
                         layout.addWidget(w)
             return layout
 
-        widgetProperty = json.loads(text)
-        TTkLog.debug(widgetProperty)
+        TTkLog.debug(ui)
 
-        return _getWidget(widgetProperty)
+        widget =  _getWidget(ui['tui'])
+
+        def _getSignal(sender, name):
+            for cc in reversed(type(sender).__mro__):
+                if cc.__name__ in TTkUiProperties:
+                    if not name in TTkUiProperties[cc.__name__]['signals']:
+                        continue
+                    signame = TTkUiProperties[cc.__name__]['signals'][name]['name']
+                    return getattr(sender,signame)
+            return None
+
+        def _getSlot(receiver, name):
+            for cc in reversed(type(receiver).__mro__):
+                if cc.__name__ in TTkUiProperties:
+                    if not name in TTkUiProperties[cc.__name__]['slots']:
+                        continue
+                    slotname = TTkUiProperties[cc.__name__]['slots'][name]['name']
+                    return getattr(receiver,slotname)
+            return None
+
+
+        for conn in ui['connections']:
+            sender   = widget.getWidgetByName(conn['sender'])
+            receiver = widget.getWidgetByName(conn['receiver'])
+            signal = conn['signal']
+            slot = conn['slot']
+            if None in (sender,receiver): continue
+            _getSignal(sender,signal).connect(_getSlot(receiver,slot))
+
+        return widget
+
 
 
 

@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
+
 from TermTk import TTk, TTkK, TTkLog, TTkCfg, TTkColor, TTkTheme, TTkTerm, TTkHelper
 from TermTk import TTkString
 from TermTk import TTkColorGradient
@@ -72,7 +74,7 @@ from .signalsloteditor import SignalSlotEditor
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar')
+    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_sigslotEditor')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -88,10 +90,9 @@ class TTkDesigner(TTkGridLayout):
         # sa.viewport().layout().addWidget(WindowEditor())
 
         self._main = TTkVBoxLayout()
-
         self._toolBar = TTkHBoxLayout()
-
         self._windowEditor = WindowEditor()
+        self._sigslotEditor = SignalSlotEditor(self._windowEditor.viewport())
 
         self._main.addItem(self._toolBar)
         self._main.addWidget(self._windowEditor)
@@ -100,14 +101,14 @@ class TTkDesigner(TTkGridLayout):
         centralSplit.addWidget(self._main)
         centralSplit.addWidget(bottonTabWidget := TTkTabWidget(border=False))
         # centralSplit.addWidget(TTkLogViewer())
-        bottonTabWidget.addTab(sigslotEditor := SignalSlotEditor(self._windowEditor.viewport()),'Signal/Slot Editor')
+        bottonTabWidget.addTab(self._sigslotEditor,'Signal/Slot Editor')
         bottonTabWidget.addTab(TTkLogViewer(),'Logs')
 
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
 
         rightSplit.addItem(treeInspector := TreeInspector(self._windowEditor.viewport()))
         rightSplit.addItem(propertyEditor := PropertyEditor())
-        # rightSplit.addItem(sigslotEditor := SignalSlotEditor(self._windowEditor.viewport()))
+        # rightSplit.addItem(self._sigslotEditor)
 
         treeInspector.thingSelected.connect(lambda _,s : s.pushSuperControlWidget())
         treeInspector.thingSelected.connect(propertyEditor.setDetail)
@@ -160,9 +161,13 @@ class TTkDesigner(TTkGridLayout):
         SuperWidget.toggleHighlightLayout.emit(state)
 
     def preview(self, btn=None):
-        jj = self._windowEditor.getJson()
+        tui = self._windowEditor.dumpDict()
+        connections = self._sigslotEditor.dumpDict()
         # for line in jj.split('\n'):
         #     TTkLog.debug(f"{line}")
+        newUI = {'tui':tui,'connections':connections}
+        jj =  json.dumps(newUI, indent=1)
+
         widget = TTkUiLoader.loadJson(jj)
         win = TTkWindow(
                 title="Mr Terminal",

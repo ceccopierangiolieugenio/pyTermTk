@@ -43,6 +43,35 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
         self.updateWidgets()
         super().__init__([self._sender,self._signal,self._receiver,self._slot], *args, **kwargs)
 
+    def isValid(self):
+        curSender   = str(self._sender.currentText())
+        curReceiver = str(self._receiver.currentText())
+        curSignal   = str(self._signal.currentText())
+        curSlot     = str(self._slot.currentText())
+        if curSender=='<sender>' or curReceiver == '<receiver>':
+            return False
+        ret = False
+        for ccName in self._signalData:
+            if curSignal in self._signalData[ccName]:
+                ret = True
+                break
+        for ccName in self._slotData:
+            if curSlot in self._slotData[ccName]:
+                ret &= True
+                break
+        return ret
+
+    def dumpDict(self):
+        curSender   = str(self._sender.currentText())
+        curReceiver = str(self._receiver.currentText())
+        curSignal   = str(self._signal.currentText())
+        curSlot     = str(self._slot.currentText())
+        return {
+            'sender':   curSender,
+            'receiver': curReceiver,
+            'signal':   curSignal,
+            'slot':     curSlot }
+
     def updateWidgets(self):
         names = [w.name() for w in self._getWidgets()]
         self._sender.addItems(names)
@@ -173,3 +202,9 @@ class SignalSlotEditor(ttk.TTkWidget):
         self._items.append(item)
         self._detail.addTopLevelItem(item)
 
+    def dumpDict(self):
+        ret = []
+        for i in self._items:
+            if i.isValid():
+                ret.append(i.dumpDict())
+        return ret

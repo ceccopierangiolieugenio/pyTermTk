@@ -61,8 +61,8 @@ TTkCheckboxProperties = {
         'stateChanged(CheckState)' : {'name' : 'stateChanged', 'type' : TTkK.CheckState},
     },
     'slots' : {
-        'setChecked(bool)' :          {'cb' : TTkCheckbox.setChecked    , 'type' : bool},
-        'setCheckState(CheckState)' : {'cb' : TTkCheckbox.setCheckState , 'type' : TTkK.CheckState},
-        'setText(str)' :              {'cb' : TTkCheckbox.setText       , 'type' : str}
+        'setChecked(bool)' :          {'name' : 'setChecked'    , 'type' : bool},
+        'setCheckState(CheckState)' : {'name' : 'setCheckState' , 'type' : TTkK.CheckState},
+        'setText(str)' :              {'name' : 'setText'       , 'type' : str}
     }
 }
