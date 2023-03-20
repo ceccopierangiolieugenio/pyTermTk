@@ -130,8 +130,7 @@ class _pyTTkSignal_obj():
         if len(args) != len(self._types):
             error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
             raise TypeError(error)
-        for slot in self._connected_slots:
-            nargs = self._connected_slots[slot]
+        for slot,nargs in self._connected_slots.copy().items():
             slot(*args[:nargs], **kwargs)
 
     def clear(self):
