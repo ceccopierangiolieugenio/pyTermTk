@@ -56,6 +56,9 @@ Methods
 .. autofunction:: TermTk.pyTTkSignal
 .. autodecorator:: TermTk.pyTTkSlot
 '''
+
+from inspect import getfullargspec
+
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function
@@ -85,7 +88,7 @@ class _pyTTkSignal_obj():
         self._types = args
         self._name = kwargs.get('name', None)
         self._revision = kwargs.get('revision', 0)
-        self._connected_slots = []
+        self._connected_slots = {}
         _pyTTkSignal_obj._signals.append(self)
 
     def connect(self, slot):
@@ -100,31 +103,39 @@ class _pyTTkSignal_obj():
         #    no_receiver_check - suppress the check that the underlying C++ receiver instance still exists and deliver the signal anyway.
         #    Returns:
         #        a Connection object which can be passed to disconnect(). This is the only way to disconnect a connection to a lambda function.
+        spec = getfullargspec(slot)
+        nargs = len(spec.args) - (1 if (hasattr(slot, '__self__')) else 0)
+        ndef = 0 if not spec.defaults else len(spec.defaults)
+        if nargs-ndef > len(self._types):
+                error = f"Decorated slot has no signature compatible: {slot.__name__} {spec} != signal{self._types}"
+                raise TypeError(error)
         if hasattr(slot, '_TTkslot_attr'):
-            if len(slot._TTkslot_attr) != len(self._types):
+            if len(slot._TTkslot_attr) > len(self._types):
                 error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                 raise TypeError(error)
-            for a,b in zip(slot._TTkslot_attr, self._types):
+            else:
+              for a,b in zip(slot._TTkslot_attr, self._types):
                 if not issubclass(a,b):
                     error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                     raise TypeError(error)
         if slot not in self._connected_slots:
-            self._connected_slots.append(slot)
+            self._connected_slots[slot]=nargs
 
     def disconnect(self, *args, **kwargs):
         for slot in args:
             if slot in self._connected_slots:
-                self._connected_slots.remove(slot)
+                del self._connected_slots[slot]
 
     def emit(self, *args, **kwargs):
         if len(args) != len(self._types):
             error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
             raise TypeError(error)
         for slot in self._connected_slots:
-            slot(*args, **kwargs)
+            nargs = self._connected_slots[slot]
+            slot(*args[:nargs], **kwargs)
 
     def clear(self):
-        self._connected_slots = []
+        self._connected_slots = {}
 
     @staticmethod
     def clearAll():

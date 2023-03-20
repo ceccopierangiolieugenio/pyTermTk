@@ -7,6 +7,7 @@ __check(){
         grep -v -e "import re" -e "import os" -e "import datetime" |
         grep -v \
             -e "from dataclasses" \
+            -e "signal.py:from inspect import getfullargspec" \
             -e "colors.py:from .colors_ansi_map" \
             -e "timer.py:import threading, time" \
             -e "log.py:import inspect" \
