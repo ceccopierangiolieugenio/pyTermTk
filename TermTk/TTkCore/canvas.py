@@ -627,7 +627,7 @@ class TTkCanvas:
                           0                      self._width
     self._canvas:         |----|xxxxxx|----------|
     '''
-    def paintCanvas(self, canvas, geom, slice, bound):
+    def paintCanvas(self, canvas, geom, _slice, bound):
         # TTkLog.debug(f"PaintCanvas:{geom=} {bound=} {self._widget._name=} {self._data[0] if self._data else 1234}")
         x, y, w, h  = geom
         bx,by,bw,bh = bound
@@ -650,20 +650,22 @@ class TTkCanvas:
         hslice = min(h if y+h < by+bh else by+bh-y,canvas._height)
 
         a, b = x+xoffset, x+wslice
+        slice_ab  = slice(a,b)
+        slice_off = slice(xoffset,wslice)
         if canvas._transparent:
             for iy in range(yoffset,hslice):
-                if None in canvas._data[iy][xoffset:wslice]:
-                    self._data[y+iy][a:b]   = [cca if cca else ccb for cca,ccb in zip(canvas._data[iy][xoffset:wslice],self._data[y+iy][a:b])]
+                if None in canvas._data[iy][slice_off]:
+                    self._data[y+iy][slice_ab]   = [cca if cca else ccb for cca,ccb in zip(canvas._data[iy][slice_off],self._data[y+iy][slice_ab])]
                 else:
-                    self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
-                if None in canvas._colors[iy][xoffset:wslice]:
-                    self._colors[y+iy][a:b] = [cca if cca else ccb for cca,ccb in zip(canvas._colors[iy][xoffset:wslice],self._colors[y+iy][a:b])]
+                    self._data[y+iy][slice_ab]   = canvas._data[iy][slice_off]
+                if None in canvas._colors[iy][slice_off]:
+                    self._colors[y+iy][slice_ab] = [cca if cca else ccb for cca,ccb in zip(canvas._colors[iy][slice_off],self._colors[y+iy][slice_ab])]
                 else:
-                    self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+                    self._colors[y+iy][slice_ab] = canvas._colors[iy][slice_off]
         else:
             for iy in range(yoffset,hslice):
-                self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
-                self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+                self._data[y+iy][slice_ab]   = canvas._data[iy][slice_off]
+                self._colors[y+iy][slice_ab] = canvas._colors[iy][slice_off]
 
         for iy in range(yoffset,hslice):
             # Check the full wide chars on the edge of the two canvasses
