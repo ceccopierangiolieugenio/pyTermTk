@@ -114,6 +114,23 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
+    def takeTopLevelItem(self, index):
+        self._rootItem.takeChild(index)
+        self._refreshCache()
+        self.viewChanged.emit()
+        self.update()
+
+    def topLevelItem(self, index):
+        return self._rootItem.child(index)
+
+    def indexOfTopLevelItem(self, item):
+        return self._rootItem.indexOfChild(item)
+
+    def selectedItems(self):
+        if self._selected:
+            return [self._selected]
+        return None
+
     def setHeaderLabels(self, labels):
         self._header = labels
         # Set 20 as default column size

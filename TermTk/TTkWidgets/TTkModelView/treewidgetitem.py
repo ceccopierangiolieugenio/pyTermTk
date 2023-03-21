@@ -159,7 +159,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._childIndicatorPolicy = policy
         self._setDefaultIcon()
 
-    def addChild(self, child):
+    def _addChild(self, child):
         self._children.append(child)
         child._parent = self
         child._sortOrder = self._sortOrder
@@ -169,11 +169,38 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         if self._parentWidget:
             child.setParent(self._parentWidget)
         child.dataChanged.connect(self.emitDataChanged)
+
+    def addChild(self, child):
+        self._addChild(child)
         self.dataChanged.emit()
 
     def addChildren(self, children):
         for child in children:
-            self.addChild(child)
+            self._addChild(child)
+        self.dataChanged.emit()
+
+    def removeChild(self, child):
+        if child in self._children:
+            self.takeChild(self._children.index(child))
+
+    def takeChild(self, index):
+        if not (self._children and 0<= index < len(self._children)):
+            return None
+        child = self._children.pop(index)
+        child.dataChanged.disconnect(self.emitDataChanged)
+        child.setParent(None)
+        self.dataChanged.emit()
+        return child
+
+    def takeChildren(self):
+        children = self._children
+        for child in children:
+            child.dataChanged.disconnect(self.emitDataChanged)
+            child.setParent(None)
+        self._children = []
+        self.dataChanged.emit()
+        return children
+
 
     def child(self, index):
         if 0 <= index < len(self._children):
@@ -182,6 +209,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def children(self):
         return [x for x in self._children if not x.isHidden()]
+
+    def indexOfChild(self, child):
+        if child in self._children:
+            return self._children.index(child)
+        return None
 
     def icon(self, col):
         if col >= len(self._icon):
