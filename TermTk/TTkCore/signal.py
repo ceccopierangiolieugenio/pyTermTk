@@ -119,7 +119,7 @@ class _pyTTkSignal_obj():
                     error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                     raise TypeError(error)
         if slot not in self._connected_slots:
-            self._connected_slots[slot]=nargs
+            self._connected_slots[slot]=slice(nargs)
 
     def disconnect(self, *args, **kwargs):
         for slot in args:
@@ -130,8 +130,8 @@ class _pyTTkSignal_obj():
         if len(args) != len(self._types):
             error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
             raise TypeError(error)
-        for slot,nargs in self._connected_slots.copy().items():
-            slot(*args[:nargs], **kwargs)
+        for slot,sl in self._connected_slots.copy().items():
+            slot(*args[sl], **kwargs)
 
     def clear(self):
         self._connected_slots = {}
