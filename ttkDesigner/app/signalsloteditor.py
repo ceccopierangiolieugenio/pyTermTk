@@ -196,11 +196,19 @@ class SignalSlotEditor(ttk.TTkWidget):
         self.layout().addWidget(self._detail,2,1,1,3)
 
         addb.clicked.connect(self._addStuff)
+        delb.clicked.connect(self._delStuff)
 
     def _addStuff(self):
         item = _SignalSlotItem(self._windowEditor)
         self._items.append(item)
         self._detail.addTopLevelItem(item)
+
+    def _delStuff(self):
+        if not (items := self._detail.selectedItems()):
+            return
+        for item in items:
+            if (index := self._detail.indexOfTopLevelItem(item)) is not None:
+                self._detail.takeTopLevelItem(index)
 
     def dumpDict(self):
         ret = []
