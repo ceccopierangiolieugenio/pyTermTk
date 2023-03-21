@@ -25,6 +25,7 @@
 import json
 
 from TermTk import TTkLog
+from TermTk import TTkCfg
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
@@ -36,7 +37,7 @@ class TTkUiLoader():
         return TTkUiLoader.loadDict(json.loads(text))
 
     @staticmethod
-    def loadDict(ui):
+    def _loadDict_1_0_0(ui):
         def _getWidget(widProp):
             properties = {}
             ttkClass = globals()[widProp['class']]
@@ -174,6 +175,12 @@ class TTkUiLoader():
 
         return widget
 
-
-
+    @staticmethod
+    def loadDict(ui):
+        cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0
+              }.get(ui['version'], None)
+        if cb:
+            return cb(ui)
+        msg = (f"The used pyTermTk ({TTkCfg.version}) is not able to load this tui version ({ui['version']})")
+        raise NotImplementedError(msg)
 

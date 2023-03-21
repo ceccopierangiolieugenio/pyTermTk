@@ -165,7 +165,10 @@ class TTkDesigner(TTkGridLayout):
         connections = self._sigslotEditor.dumpDict()
         # for line in jj.split('\n'):
         #     TTkLog.debug(f"{line}")
-        newUI = {'tui':tui,'connections':connections}
+        newUI = {
+            'version':'1.0.0',
+            'tui':tui,
+            'connections':connections}
         jj =  json.dumps(newUI, indent=1)
 
         widget = TTkUiLoader.loadJson(jj)
