@@ -58,6 +58,7 @@ Methods
 '''
 
 from inspect import getfullargspec
+from types import LambdaType
 
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
@@ -104,7 +105,12 @@ class _pyTTkSignal_obj():
         #    Returns:
         #        a Connection object which can be passed to disconnect(). This is the only way to disconnect a connection to a lambda function.
         spec = getfullargspec(slot)
-        nargs = len(spec.args) - (1 if (hasattr(slot, '__self__')) else 0)
+        if isinstance(slot, LambdaType) and slot.__name__ == "<lambda>":
+            nargs = len(spec.args)
+        elif spec.varargs:
+            nargs = len(self._types)
+        else:
+            nargs = len(spec.args) - (1 if (hasattr(slot, '__self__')) else 0)
         ndef = 0 if not spec.defaults else len(spec.defaults)
         if nargs-ndef > len(self._types):
                 error = f"Decorated slot has no signature compatible: {slot.__name__} {spec} != signal{self._types}"
