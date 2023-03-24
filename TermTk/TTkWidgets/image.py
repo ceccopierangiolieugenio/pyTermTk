@@ -27,17 +27,38 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkImage(TTkWidget):
-    __slots__ = ('_data')
+    FULLBLOCK = 0x00
+    HALFBLOCK = 0x01
+    QUADBLOCK = 0x02
+    # SEXBLOCK   = 0x03
+
+    __slots__ = ('_data', '_rasterType')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkImage' )
+        self._rasterType = kwargs.get('rasteriser' , TTkImage.QUADBLOCK )
         self._data = kwargs.get('data' , [] )
         if self._data:
-            w = min(len(i) for i in self._data)
-            h = len(self._data)
-            self.resize(w//2,h//2)
+            self.setData(self._data)
 
-    def _reduce(self, a,b,c,d):
+    def setData(self, data):
+        self._data = data
+        w = min(len(i) for i in self._data)
+        h = len(self._data)
+        if self._rasterType == TTkImage.FULLBLOCK:
+            self.resize(w,h)
+        elif self._rasterType == TTkImage.HALFBLOCK:
+            self.resize(w,h//2)
+        elif self._rasterType == TTkImage.QUADBLOCK:
+            self.resize(w//2,h//2)
+        self.update()
+
+    def setRasteriser(self, rasteriser):
+        if self._rasterType == rasteriser: return
+        self._rasterType = rasteriser
+        if self._data:
+            self.setData(self._data)
+
+    def _reduceQuad(self, a,b,c,d):
         # quadblitter notcurses like
         l = (a,b,c,d)
         def delta(i):
@@ -110,10 +131,24 @@ class TTkImage(TTkWidget):
 
     def paintEvent(self):
         img = self._data
-        for y in range(0, len(img)&(~1), 2):
-            for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                self._canvas.drawText(
-                        pos=(x//2,y//2),
-                        text=self._reduce(
-                                    img[y][x]   , img[y][x+1]   ,
-                                    img[y+1][x] , img[y+1][x+1] ))
+        if self._rasterType == TTkImage.FULLBLOCK:
+            for y in range(0, len(img)):
+                for x in range(0, len(img[y])):
+                    c1 = img[y][x]
+                    color = TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}')
+                    self._canvas.drawChar(pos=(x,y), char='█', color=color)
+        elif self._rasterType == TTkImage.HALFBLOCK:
+            for y in range(0, len(img)&(~1), 2):
+                for x in range(0, len(img[y])):
+                    c1, c2 = img[y][x] ,img[y+1][x]
+                    color = ( TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') +
+                             TTkColor.bg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}') )
+                    self._canvas.drawChar(pos=(x,y//2), char='▀', color=color)
+        elif self._rasterType == TTkImage.QUADBLOCK:
+            for y in range(0, len(img)&(~1), 2):
+                for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
+                    self._canvas.drawText(
+                            pos=(x//2,y//2),
+                            text=self._reduceQuad(
+                                        img[y][x]   , img[y][x+1]   ,
+                                        img[y+1][x] , img[y+1][x+1] ))
