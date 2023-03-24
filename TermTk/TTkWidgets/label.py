@@ -34,10 +34,9 @@ class TTkLabel(TTkWidget):
         self._color = kwargs.get('color', TTkColor.RST )
         text = kwargs.get('text', TTkString() )
         if issubclass(type(text), TTkString):
-            self._text = text
+            self._text = text.split('\n')
         else:
-            self._text = TTkString(text)
-        self._text = self._text.split('\n')
+            self._text = TTkString(text).split('\n')
 
         self.setDefaultSize(kwargs, max(t.termWidth() for t in  self._text), len(self._text))
         super().__init__(*args, **kwargs)
@@ -62,10 +61,9 @@ class TTkLabel(TTkWidget):
         '''setText'''
         if self.text().sameAs(text): return
         if issubclass(type(text), TTkString):
-            self._text  = text
+            self._text  = text.split('\n')
         else:
-            self._text  = TTkString(text)
-        self._text = self._text.split('\n')
+            self._text  = TTkString(text).split('\n')
         self._textUpdated()
 
     def paintEvent(self):
@@ -77,8 +75,8 @@ class TTkLabel(TTkWidget):
     def _textUpdated(self):
         w, h = self.size()
         textWidth = max(t.termWidth() for t in  self._text)
-        if w<textWidth or h<1:
-            self.resize(textWidth,1)
+        if w<textWidth or h<len(self._text):
+            self.resize(textWidth,len(self._text))
         self.setMinimumSize(textWidth, 1)
         self.update()
 
