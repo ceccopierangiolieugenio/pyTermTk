@@ -62,7 +62,6 @@ class TTkAbout(TTkWindow):
     __slots__=('_image')
     def __init__(self, *args, **kwargs):
         TTkWindow.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkAbout' )
         self._image = TTkImage(parent=self, pos=(0,0), data=TTkAbout.peppered)
         if not self.title():
             self.setTitle('About...')
