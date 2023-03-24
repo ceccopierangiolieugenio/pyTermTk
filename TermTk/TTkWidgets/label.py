@@ -37,8 +37,9 @@ class TTkLabel(TTkWidget):
             self._text = text
         else:
             self._text = TTkString(text)
+        self._text = self._text.split('\n')
 
-        self.setDefaultSize(kwargs, self._text.termWidth(), 1)
+        self.setDefaultSize(kwargs, max(t.termWidth() for t in  self._text), len(self._text))
         super().__init__(*args, **kwargs)
         self._textUpdated()
 
@@ -54,26 +55,28 @@ class TTkLabel(TTkWidget):
 
     def text(self):
         '''text'''
-        return self._text
+        return TTkString('\n').join(self._text)
 
     @pyTTkSlot(str)
     def setText(self, text):
         '''setText'''
-        if self._text.sameAs(text): return
+        if self.text().sameAs(text): return
         if issubclass(type(text), TTkString):
             self._text  = text
         else:
             self._text  = TTkString(text)
+        self._text = self._text.split('\n')
         self._textUpdated()
 
     def paintEvent(self):
         forceColor = self.color()!=TTkColor.RST
-        self._canvas.drawText(pos=(0,0), text=' '*self.width(), color=self.color(), forceColor=forceColor)
-        self._canvas.drawText(pos=(0,0), text=self._text, color=self.color(), forceColor=forceColor)
+        for y,text in enumerate(self._text):
+            self._canvas.drawText(pos=(0,y), text=' '*self.width(), color=self.color(), forceColor=forceColor)
+            self._canvas.drawText(pos=(0,y), text=text, color=self.color(), forceColor=forceColor)
 
     def _textUpdated(self):
         w, h = self.size()
-        textWidth = self._text.termWidth()
+        textWidth = max(t.termWidth() for t in  self._text)
         if w<textWidth or h<1:
             self.resize(textWidth,1)
         self.setMinimumSize(textWidth, 1)
