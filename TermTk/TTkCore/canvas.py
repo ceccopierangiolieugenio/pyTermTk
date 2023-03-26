@@ -706,20 +706,26 @@ class TTkCanvas:
 
     def pushToTerminalBuffered(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
+        data, colors = self._data, self._colors
         oldData, oldColors = self._bufferedData, self._bufferedColors
         lastcolor = TTkColor.RST
         empty = True
         ansi = ""
-        for y in range(0, self._height):
-            for x in range(0, self._width):
-                if self._data[y][x] == oldData[y][x] and \
-                   self._colors[y][x] == oldColors[y][x]:
+        #for y in range(0, self._height):
+        #    for x in range(0, self._width):
+        #        if self._data[y][x] == oldData[y][x] and \
+        #           self._colors[y][x] == oldColors[y][x]:
+        for y,(lda,ldb,lca,lcb) in enumerate(zip(data,oldData,colors,oldColors)):
+            for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
+                if da==db and ca==cb:
                     if not empty:
                         TTkTerm.push(ansi)
                         empty=True
                     continue
-                ch = self._data[y][x]
-                color = self._colors[y][x]
+                # ch = self._data[y][x]
+                # color = self._colors[y][x]
+                ch = da
+                color = ca
                 if empty:
                     ansi = TTkTerm.Cursor.moveTo(y+1,x+1)
                     empty = False
@@ -733,5 +739,5 @@ class TTkCanvas:
         # Reset the color at the end
         TTkTerm.push(TTkColor.RST)
         # Switch the buffer
-        self._bufferedData, self._bufferedColors = self._data, self._colors
-        self._data, self._colors = oldData, oldColors
+        self._bufferedData, self._bufferedColors = data, colors
+        self._data,         self._colors         = oldData, oldColors
