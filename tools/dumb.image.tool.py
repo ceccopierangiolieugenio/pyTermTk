@@ -85,13 +85,13 @@ def _export():
     te.append("=============[Raw Data START]============")
     te.append(str(ttkImage._data).replace('],','],\n'))
     te.append("=============[Raw Data STOP]=============")
-    b64str = base64.b64encode(zlib.compress(bytearray(pickle.dumps(data)))).decode("ascii")
-    te.append('import zlib, pickle, base64')
+    # b64str = base64.b64encode(zlib.compress(bytearray(pickle.dumps(data)))).decode("ascii")
+    b64str = ttk.TTkUtil.obj_inflate_2_base64(data)
+    te.append('from TermTk import TTkUtil')
     te.append(f'# Data generated using {os.path.basename(__file__)}')
-    te.append('data = pickle.loads(zlib.decompress(base64.b64decode((')
-    b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '"'
+    te.append('data = TTkUtil.base64_deflate_2_obj(')
+    b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '")'
     te.append(b64list)
-    te.append('        ).encode("ascii"))))')
 
 
 b_export.clicked.connect(_export)

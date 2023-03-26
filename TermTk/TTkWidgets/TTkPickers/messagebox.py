@@ -20,11 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import zlib, pickle, base64
-
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSignal,pyTTkSlot
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.util import TTkUtil
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
@@ -150,7 +149,7 @@ class TTkMessageBox(TTkWindow):
         self._widImage = TTkImage(rasteriser=TTkImage.HALFBLOCK)
         self.layout().addWidget(self._widImage,0,0,4,1)
         if compressedData:
-            data = pickle.loads(zlib.decompress(base64.b64decode(compressedData.encode("ascii"))))
+            data = TTkUtil.base64_deflate_2_obj(compressedData)
             self._widImage.setData(data)
             self._widImage.setMinimumSize(16,8)
 

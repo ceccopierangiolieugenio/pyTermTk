@@ -8,6 +8,7 @@ __check(){
         grep -v \
             -e "from dataclasses" \
             -e "signal.py:from inspect import getfullargspec" \
+            -e "signal.py:from types import LambdaType" \
             -e "colors.py:from .colors_ansi_map" \
             -e "timer.py:import threading, time" \
             -e "log.py:import inspect" \
@@ -34,7 +35,8 @@ __check(){
             -e "string.py:import unicodedata" \
             -e "progressbar.py:import math" \
             -e "uiloader.py:import json" \
-            -e "uiproperties.py:from .properties import *"
+            -e "uiproperties.py:from .properties import *" \
+            -e "util.py:import zlib, pickle, base64"
 } ;
 
 if __check ;  then
