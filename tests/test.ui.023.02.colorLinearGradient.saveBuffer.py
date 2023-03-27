@@ -87,12 +87,6 @@ class BBB(TermTk.TTkButton):
             for y in range(1,h-1):
                 canvas.drawText(pos=(1,y), text="1234567890AbcdefghiABCDEFG"*(w//10), color=textColor)
             canvas.drawButtonBox(pos=(0,0),size=(self._width,self._height),color=borderColor, grid=grid)
-        # Print the text strings
-        off = 1 if self._border else 0
-        for i,t in enumerate(self._text, (h-len(self._text))//2):
-            if t!='':
-                canvas.drawText(pos=(1,i) ,text=t.completeColor(textColor), color=textColor, width=w-2, alignment=TTkK.CENTER_ALIGN)
-
 
 root = TermTk.TTk()
 
