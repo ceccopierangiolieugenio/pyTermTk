@@ -51,8 +51,9 @@ def demoTextEditRO(root=None):
     anim = ttk.TTkPropertyAnimation(te.viewport(),'viewMoveTo')
     anim.setDuration(1)
     anim.setStartValue((0, 0))
-    anim.setEndValue((  50, 120))
-    # anim.setEasingCurve(QEasingCurve.OutBounce)
+    anim.setEndValue((  00, 70))
+    # anim.setEasingCurve(ttk.TTkEasingCurve.OutQuad)
+    anim.setEasingCurve(ttk.TTkEasingCurve.OutBounce)
 
     animBtn.clicked.connect(anim.start)
 

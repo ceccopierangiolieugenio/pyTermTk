@@ -71,6 +71,61 @@ class TTkEasingCurve():
     # TCBSpline    = 46
     # Custom       = 47
 
+    __slots__ = ('_easingFunc')
+    def __init__(self, easingCurve=Linear):
+        self._easingFunc = {self.Linear    : TTkEasingCurve._ecLinear,
+         self.InQuad    : TTkEasingCurve._ecInQuad,
+         self.OutQuad   : TTkEasingCurve._ecOutQuad,
+         self.InOutQuad : TTkEasingCurve._ecInOutQuad,
+         self.OutInQuad : TTkEasingCurve._ecOutInQuad,
+         self.InCubic   : TTkEasingCurve._ecInCubic,
+         self.OutCubic  : TTkEasingCurve._ecOutCubic,
+
+         self.OutBounce : TTkEasingCurve._ecOutBounce,
+         }.get(easingCurve,TTkEasingCurve._ecLinear)
+
+    def process(self,a,b,v):
+        v = self._easingFunc(v)
+        return float(b)*v+float(a)*(1-v)
+
+    # Formulas from https://easings.net
+    @staticmethod
+    def _ecLinear(v):
+        return v
+    @staticmethod
+    def _ecInQuad(v):
+        return v*v
+    @staticmethod
+    def _ecOutQuad(v):
+        return 1-(1-v)*(1-v)
+    @staticmethod
+    def _ecInOutQuad(v):
+        return v
+    @staticmethod
+    def _ecOutInQuad(v):
+        return v
+    @staticmethod
+    def _ecInCubic(v):
+        return v*v*v
+    @staticmethod
+    def _ecOutCubic(v):
+        return 1-(1-v)*(1-v)*(1-v)
+    @staticmethod
+    def _ecOutBounce(x):
+        n1 = 7.5625
+        d1 = 2.75
+
+        if x < 1 / d1: return n1 * x * x
+        elif x < 2 / d1:
+            x -= 1.5 / d1
+            return n1 * x * x + 0.75
+        elif x < 2.5 / d1:
+            x -= 2.25 / d1
+            return n1 * x * x + 0.9375
+        else:
+            x -= 2.625 / d1
+            return n1 * x * x + 0.984375
+
 class TTkPropertyAnimation():
     __slots__ = ('_target', '_propertyName', '_parent',
                  '_duration', '_startValue', '_endValue',
@@ -83,6 +138,7 @@ class TTkPropertyAnimation():
         self._baseTime = 0
         self._startValue = None
         self._endValue = None
+        self._easingCurve = TTkEasingCurve(TTkEasingCurve.Linear)
 
     def setDuration(self, duration):
         self._duration = duration
@@ -94,7 +150,7 @@ class TTkPropertyAnimation():
         self._endValue = endValue
 
     def setEasingCurve(self, easingCurve):
-        self._easingCurve = easingCurve
+        self._easingCurve = TTkEasingCurve(easingCurve)
 
     @pyTTkSlot()
     def _refreshAnimation(self):
@@ -106,19 +162,12 @@ class TTkPropertyAnimation():
             else:
                 getattr(self._target,self._propertyName)(self._endValue)
         else:
-            def _processLinear(_s,_e,_v):
-                return int(_e*_v+_s*(1-_v))
-            def _processQuad(_s,_e,_v):
-                return _processLinear(_s,_e,_v*_v)
-            def _processInQuad(_s,_e,_v):
-                return _processLinear(_s,_e,math.sqrt(math.sqrt(_v)))
-            _process = _processInQuad
             v = diff/self._duration
             if type(self._startValue) in (list,tuple):
-                newVal = [_process(s,e,v) for (s,e) in zip(self._startValue,self._endValue)]
+                newVal = [int(self._easingCurve.process(s,e,v)) for (s,e) in zip(self._startValue,self._endValue)]
                 getattr(self._target,self._propertyName)(*newVal)
             else:
-                newVal = _process(self._startValue,self._endValue,v)
+                newVal = int(self._easingCurve.process(self._startValue,self._endValue,v))
                 getattr(self._target,self._propertyName)(newVal)
 
     @pyTTkSlot()
