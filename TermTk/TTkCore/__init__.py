@@ -1,8 +1,9 @@
+from .signal import pyTTkSlot, pyTTkSignal
 from .log import TTkLog
 from .cfg import TTkCfg,TTkGlbl
 from .util import TTkUtil
 from .helper import TTkHelper
-from .signal import pyTTkSlot, pyTTkSignal
+from .propertyanimation import TTkPropertyAnimation
 from .ttk import TTk
 from .canvas import TTkCanvas
 from .color import TTkColor, TTkColorGradient, TTkLinearGradient

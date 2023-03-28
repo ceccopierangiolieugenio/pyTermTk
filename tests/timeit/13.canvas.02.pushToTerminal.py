@@ -298,7 +298,7 @@ c6 = {
 # dataA,colorsA = c1['data'], c1['colors']
 # dataB,colorsB = c2['data'], c2['colors']
 
-dataA,colorsA = c3['data'], c3['colors']
+dataA,colorsA = c5['data'], c5['colors']
 dataB,colorsB = c6['data'], c6['colors']
 
 w=len(dataA[0])
@@ -348,8 +348,7 @@ def ptt2():
                 if not empty:
                     empty=True
                 continue
-            ch = da
-            color = ca
+            ch, color = da, ca
             if empty:
                 ansi = ttk.TTkTerm.Cursor.moveTo(y+1,x+1)
                 empty = False
@@ -360,11 +359,31 @@ def ptt2():
         if not empty:
             empty=True
 
-
+def ptt3():
+    oldData, oldColors = dataB, colorsB
+    lastcolor = ttk.TTkColor.RST
+    empty = True
+    ansi = ""
+    for y,(lda,ldb,lca,lcb) in enumerate(zip(dataA,dataB,colorsA,colorsB)):
+        for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
+            if da==db and ca==cb:
+                if not empty:
+                    empty=True
+                continue
+            ch, color = da, ca
+            if empty:
+                ansi = ttk.TTkTerm.Cursor.moveTo(y+1,x+1)
+                empty = False
+            if color != lastcolor:
+                ansi += color.canvasDiff2Str(lastcolor)
+                lastcolor = color
+            ansi+=ch
+        if not empty:
+            empty=True
 
 def test1(): return ptt1()
 def test2(): return ptt2()
-def test3(): return ptt1()
+def test3(): return ptt2()
 def test4(): return ptt1()
 def test5(): return ptt1()
 def test6(): return ptt1()

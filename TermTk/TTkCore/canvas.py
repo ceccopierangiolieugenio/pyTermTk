@@ -711,10 +711,6 @@ class TTkCanvas:
         lastcolor = TTkColor.RST
         empty = True
         ansi = ""
-        #for y in range(0, self._height):
-        #    for x in range(0, self._width):
-        #        if self._data[y][x] == oldData[y][x] and \
-        #           self._colors[y][x] == oldColors[y][x]:
         for y,(lda,ldb,lca,lcb) in enumerate(zip(data,oldData,colors,oldColors)):
             for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
                 if da==db and ca==cb:
@@ -722,8 +718,6 @@ class TTkCanvas:
                         TTkTerm.push(ansi)
                         empty=True
                     continue
-                # ch = self._data[y][x]
-                # color = self._colors[y][x]
                 ch = da
                 color = ca
                 if empty:

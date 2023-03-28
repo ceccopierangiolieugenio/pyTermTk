@@ -82,9 +82,11 @@ class TTk(TTkWidget):
         '_showMouseCursor',
         '_sigmask',
         '_drawMutex',
-        '_lastMultiTap')
+        '_lastMultiTap',
+        'paintExecuted')
 
     def __init__(self, *args, **kwargs):
+        self.paintExecuted = pyTTkSignal()
         super().__init__(*args, **kwargs)
         self._termMouse = True
         self._termDirectMouse = kwargs.get('mouseTrack',False)
@@ -251,6 +253,7 @@ class TTk(TTkWidget):
         self.setGeometry(0,0,w,h)
         self._fps()
         TTkHelper.paintAll()
+        self.paintExecuted.emit()
         self._drawMutex.release()
         self._timer.start(1/TTkCfg.maxFps)
 
