@@ -36,7 +36,8 @@ __check(){
             -e "progressbar.py:import math" \
             -e "uiloader.py:import json" \
             -e "uiproperties.py:from .properties import *" \
-            -e "util.py:import zlib, pickle, base64"
+            -e "util.py:import zlib, pickle, base64" \
+            -e "propertyanimation.py:import time, math"
 } ;
 
 if __check ;  then
