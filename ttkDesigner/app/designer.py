@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
 import json
 
 from TermTk import TTk, TTkK, TTkLog, TTkCfg, TTkColor, TTkTheme, TTkTerm, TTkHelper
@@ -30,7 +31,7 @@ from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkFrame, TTkButton, TTkLabel
 from TermTk import TTkTabWidget
 from TermTk import TTkAbstractScrollArea, TTkAbstractScrollView, TTkScrollArea
-from TermTk import TTkFileDialogPicker
+from TermTk import TTkFileDialogPicker, TTkMessageBox
 from TermTk import TTkFileTree, TTkTextEdit
 
 from TermTk import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
@@ -117,9 +118,10 @@ class TTkDesigner(TTkGridLayout):
         self._windowEditor.viewport().weModified.connect(treeInspector.refresh)
 
         fileMenu = topMenuFrame.menubarTop().addMenu("&File")
-        fileMenu.addMenu("Open")
-        fileMenu.addMenu("Close")
-        fileMenu.addMenu("Exit")
+        fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
+        fileMenu.addMenu("Save").menuButtonClicked.connect(self.save)
+        fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
+        fileMenu.addMenu("Exit").menuButtonClicked.connect(TTkHelper.quit)
 
         fileMenu = topMenuFrame.menubarTop().addMenu("F&orm")
         fileMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
@@ -180,3 +182,43 @@ class TTkDesigner(TTkGridLayout):
         win.layout().addWidget(widget)
         TTkHelper.overlay(None, win, 2, 2, modal=True)
 
+    @pyTTkSlot()
+    def open(self):
+        pass
+
+    @pyTTkSlot()
+    def save(self):
+        pass
+
+    def _saveToFile(self, fileName):
+        TTkLog.info(f"Saving to: {fileName}")
+
+        tui = self._windowEditor.dumpDict()
+        connections = self._sigslotEditor.dumpDict()
+        newUI = {
+            'version':'1.0.0',
+            'tui':tui,
+            'connections':connections}
+        jj =  json.dumps(newUI, indent=1)
+
+        with open(fileName,'w') as fp:
+            fp.write(jj)
+
+    @pyTTkSlot()
+    def saveAs(self):
+        def _approveFile(fileName):
+            if os.path.exists(fileName):
+                messageBox = TTkMessageBox(
+                    title='Title',
+                    text= (
+                        TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', TTkColor.BOLD) +
+                        TTkString( f'\n\nReplacing it will overwrite its contents.') ),
+                    icon=TTkMessageBox.Icon.Warning,
+                    standardButtons=TTkMessageBox.StandardButton.Discard|TTkMessageBox.StandardButton.Save|TTkMessageBox.StandardButton.Cancel)
+                messageBox.buttonSelected.connect(lambda btn : self._saveToFile(fileName) if btn == TTkMessageBox.StandardButton.Save else None)
+                TTkHelper.overlay(None, messageBox, 5, 5, True)
+            else:
+                self._saveToFile(fileName)
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
+        filePicker.pathPicked.connect(_approveFile)
+        TTkHelper.overlay(None, filePicker, 5, 5, True)

@@ -27,7 +27,7 @@ import argparse
 
 import appdirs
 
-from TermTk import TTk, TTkLog
+from TermTk import TTk, TTkLog, TTkTheme
 
 from .cfg  import *
 from .about import *
@@ -35,6 +35,7 @@ from .designer import TTkDesigner
 
 def main():
     TTkLog.use_default_file_logging()
+    TTkTheme.loadTheme(TTkTheme.NERD )
 
     root = TTk(title="TTk Designer", mouseTrack=True)
     root.setLayout(TTkDesigner())
