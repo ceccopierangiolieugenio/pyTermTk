@@ -21,7 +21,10 @@
 # SOFTWARE.
 
 import time, math
+from inspect import getfullargspec
+from types import LambdaType
 
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
 
@@ -127,7 +130,7 @@ class TTkEasingCurve():
             return n1 * x * x + 0.984375
 
 class TTkPropertyAnimation():
-    __slots__ = ('_target', '_propertyName', '_parent',
+    __slots__ = ('_target', '_propertyName', '_parent', '_cb', '_cast',
                  '_duration', '_startValue', '_endValue',
                  '_easingCurve', '_baseTime')
     def __init__(self, target, propertyName, parent=None):
@@ -139,6 +142,25 @@ class TTkPropertyAnimation():
         self._startValue = None
         self._endValue = None
         self._easingCurve = TTkEasingCurve(TTkEasingCurve.Linear)
+
+        if type(propertyName) == str:
+            self._cb = getattr(self._target,self._propertyName)
+        else:
+            self._cb = propertyName
+
+        def _cast():
+            _spec = getfullargspec(self._cb)
+            if isinstance(self._cb, LambdaType) and self._cb.__name__ == "<lambda>":
+                _args = _spec.args
+            else:
+                _args = _spec.args[1:] if hasattr(self._cb, '__self__') else _spec.args
+            _castList = [
+                (lambda x:_spec.annotations[a](x)) if a in _spec.annotations else (lambda x:x) for a in _args]
+            def _ret(*args):
+                return [c(x) for (c,x) in zip(_castList, args)]
+            return _ret
+
+        self._cast = _cast()
 
     def setDuration(self, duration):
         self._duration = duration
@@ -155,20 +177,21 @@ class TTkPropertyAnimation():
     @pyTTkSlot()
     def _refreshAnimation(self):
         diff = time.time() - self._baseTime
+        # TTkLog.info(f"diff: {diff}")
         if diff >= self._duration:
             TTkHelper._rootWidget.paintExecuted.disconnect(self._refreshAnimation)
             if type(self._endValue) in (list,tuple):
-                getattr(self._target,self._propertyName)(*self._endValue)
+                self._cb(*self._cast(*self._endValue))
             else:
-                getattr(self._target,self._propertyName)(self._endValue)
+                self._cb(*self._cast(self._endValue))
         else:
             v = diff/self._duration
             if type(self._startValue) in (list,tuple):
-                newVal = [int(self._easingCurve.process(s,e,v)) for (s,e) in zip(self._startValue,self._endValue)]
-                getattr(self._target,self._propertyName)(*newVal)
+                newVal = [self._easingCurve.process(s,e,v) for (s,e) in zip(self._startValue,self._endValue)]
+                self._cb(*self._cast(*newVal))
             else:
-                newVal = int(self._easingCurve.process(self._startValue,self._endValue,v))
-                getattr(self._target,self._propertyName)(newVal)
+                newVal = self._easingCurve.process(self._startValue,self._endValue,v)
+                self._cb(*self._cast(newVal))
 
     @pyTTkSlot()
     def start(self):

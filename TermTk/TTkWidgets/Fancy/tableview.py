@@ -221,7 +221,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-    def insertItem(self, index, item, id=None):
+    def insertItem(self, index: int, item, id=None):
         if len(item) != len(self._columns):
             return#
         textItem = [TTkString(i) if isinstance(i,str) else i if issubclass(type(i), TTkString) else TTkString() for i in item]
@@ -243,7 +243,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-    def removeItemAt(self, index):
+    def removeItemAt(self, index: int):
         if self._selected == index:
             self._selected = -1
         del self._tableDataId[index]
@@ -253,7 +253,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-    def removeItemsFrom(self, index):
+    def removeItemsFrom(self, index: int):
         if self._selected >= index:
             self._selected = -1
         self._tableDataId = self._tableDataId[:index]
@@ -263,7 +263,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-    def itemAt(self, index):
+    def itemAt(self, index: int):
         if 0 <= index < len(self._tableDataId):
             if item:=self._tableDataWidget[index]:
                 return item
@@ -271,7 +271,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 return self._tableDataText[index]
         return None
 
-    def dataAt(self, index):
+    def dataAt(self, index: int):
         if 0 <= index < len(self._tableDataId):
             return self._tableDataId[index]
         return None
@@ -392,7 +392,7 @@ class TTkFancyTableView(TTkAbstractScrollView):
         self.removeItemsFrom = self._tableView.removeItemsFrom
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         self._tableView.viewMoveTo(x, y)
 
     def getViewOffsets(self):

@@ -40,22 +40,97 @@ class superSimpleHorizontalLine(ttk.TTkWidget):
 
 
 def demoTextEditRO(root=None):
+    easingList = (
+        (ttk.TTkEasingCurve.Linear , 'Linear'),
+        (ttk.TTkEasingCurve.InQuad , 'InQuad'),
+        (ttk.TTkEasingCurve.OutQuad , 'OutQuad'),
+        (ttk.TTkEasingCurve.InOutQuad , 'InOutQuad'),
+        (ttk.TTkEasingCurve.OutInQuad , 'OutInQuad'),
+        (ttk.TTkEasingCurve.InCubic , 'InCubic'),
+        (ttk.TTkEasingCurve.OutCubic , 'OutCubic'),
+        (ttk.TTkEasingCurve.InOutCubic , 'InOutCubic'),
+        (ttk.TTkEasingCurve.OutInCubic , 'OutInCubic'),
+        (ttk.TTkEasingCurve.InQuart , 'InQuart'),
+        (ttk.TTkEasingCurve.OutQuart , 'OutQuart'),
+        (ttk.TTkEasingCurve.InOutQuart , 'InOutQuart'),
+        (ttk.TTkEasingCurve.OutInQuart , 'OutInQuart'),
+        (ttk.TTkEasingCurve.InQuint , 'InQuint'),
+        (ttk.TTkEasingCurve.OutQuint , 'OutQuint'),
+        (ttk.TTkEasingCurve.InOutQuint , 'InOutQuint'),
+        (ttk.TTkEasingCurve.OutInQuint , 'OutInQuint'),
+        (ttk.TTkEasingCurve.InSine , 'InSine'),
+        (ttk.TTkEasingCurve.OutSine , 'OutSine'),
+        (ttk.TTkEasingCurve.InOutSine , 'InOutSine'),
+        (ttk.TTkEasingCurve.OutInSine , 'OutInSine'),
+        (ttk.TTkEasingCurve.InExpo , 'InExpo'),
+        (ttk.TTkEasingCurve.OutExpo , 'OutExpo'),
+        (ttk.TTkEasingCurve.InOutExpo , 'InOutExpo'),
+        (ttk.TTkEasingCurve.OutInExpo , 'OutInExpo'),
+        (ttk.TTkEasingCurve.InCirc , 'InCirc'),
+        (ttk.TTkEasingCurve.OutCirc , 'OutCirc'),
+        (ttk.TTkEasingCurve.InOutCirc , 'InOutCirc'),
+        (ttk.TTkEasingCurve.OutInCirc , 'OutInCirc'),
+        (ttk.TTkEasingCurve.InElastic , 'InElastic'),
+        (ttk.TTkEasingCurve.OutElastic , 'OutElastic'),
+        (ttk.TTkEasingCurve.InOutElastic , 'InOutElastic'),
+        (ttk.TTkEasingCurve.OutInElastic , 'OutInElastic'),
+        (ttk.TTkEasingCurve.InBack , 'InBack'),
+        (ttk.TTkEasingCurve.OutBack , 'OutBack'),
+        (ttk.TTkEasingCurve.InOutBack , 'InOutBack'),
+        (ttk.TTkEasingCurve.OutInBack , 'OutInBack'),
+        (ttk.TTkEasingCurve.InBounce , 'InBounce'),
+        (ttk.TTkEasingCurve.OutBounce , 'OutBounce'),
+        (ttk.TTkEasingCurve.InOutBounce , 'InOutBounce'),
+        (ttk.TTkEasingCurve.OutInBounce , 'OutInBounce'))
+
     frame = ttk.TTkFrame(parent=root, border=False)
 
     winTe = ttk.TTkWindow(parent=frame, title="Text Edit", pos=(20,3), size=(50,30), layout=ttk.TTkGridLayout())
     te = ttk.TTkTextEdit(parent=winTe, lineNumber=True)
 
     winAc = ttk.TTkWindow(parent=frame, title="Animation Controls", pos=(0,0), size=(50,30))
-    animBtn = ttk.TTkButton(parent=winAc, text="Animate",border=True,pos=(0,0))
+    animBtnScroll = ttk.TTkButton(parent=winAc, text="Anim Scroll",border=True,pos=(0,0))
+    animBtnWinPos = ttk.TTkButton(parent=winAc, text="Anim Pos",border=True,pos=(15,0))
+    animBoth = ttk.TTkButton(parent=winAc, text="Anim Both",border=True,pos=(25,0))
 
-    anim = ttk.TTkPropertyAnimation(te.viewport(),'viewMoveTo')
-    anim.setDuration(1)
-    anim.setStartValue((0, 0))
-    anim.setEndValue((  00, 70))
-    # anim.setEasingCurve(ttk.TTkEasingCurve.OutQuad)
-    anim.setEasingCurve(ttk.TTkEasingCurve.OutBounce)
+    class PosControls(ttk.TTkFrame):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs|{'border':True})
+            ttk.TTkLabel(          parent=self,pos=(0,0),text='Starting Position (x,y)')
+            self.axspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(0,1),size=(9,1),value=0)
+            self.ayspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(8,1),size=(9,1),value=100)
+            ttk.TTkLabel(          parent=self,pos=(0,2),text='Ending Position (x,y)')
+            self.bxspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(0,3),size=(9,1),value=0)
+            self.byspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(8,3),size=(9,1),value=0)
+            ttk.TTkLabel(          parent=self,pos=(0,4),text='Duration (sec.)')
+            self.dursb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=0, pos=(0,5),size=(12,1),value=2)
+            ttk.TTkLabel(          parent=self,pos=(0,6),text='Easing Curve')
+            self.ecb = ttk.TTkComboBox(parent=self,pos=(0,7),size=(20,1),list=[v for (_,v) in easingList],index=0)
 
-    animBtn.clicked.connect(anim.start)
+    pcScroll = PosControls(parent=winAc, pos=(0,3), size=(25,10), title="Text Scroll")
+    pcWinPos = PosControls(parent=winAc, pos=(0,13), size=(25,10), title="Window Position")
+
+
+    animScroll = ttk.TTkPropertyAnimation(te.viewport(),'viewMoveTo')
+    animWinPos = ttk.TTkPropertyAnimation(None, winTe.move)
+
+    def _startAnimScroll():
+        animScroll.setDuration(pcScroll.dursb.value())
+        animScroll.setStartValue((pcScroll.axspb.value(), pcScroll.ayspb.value()))
+        animScroll.setEndValue(  (pcScroll.bxspb.value(), pcScroll.byspb.value()))
+        animScroll.setEasingCurve({t:v for (v,t) in easingList}.get(pcScroll.ecb.currentText(),easingList[0][0]))
+        animScroll.start()
+    def _startAnimWinPos():
+        animWinPos.setDuration(pcWinPos.dursb.value())
+        animWinPos.setStartValue((pcWinPos.axspb.value(), pcWinPos.ayspb.value()))
+        animWinPos.setEndValue(  (pcWinPos.bxspb.value(), pcWinPos.byspb.value()))
+        animWinPos.setEasingCurve({t:v for (v,t) in easingList}.get(pcWinPos.ecb.currentText(),easingList[0][0]))
+        animWinPos.start()
+
+    animBtnScroll.clicked.connect(_startAnimScroll)
+    animBtnWinPos.clicked.connect(_startAnimWinPos)
+    animBoth.clicked.connect(_startAnimScroll)
+    animBoth.clicked.connect(_startAnimWinPos)
 
     # Initialize the textedit with come text
 
@@ -102,7 +177,7 @@ def demoTextEditRO(root=None):
     te.append("-------tab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\ttab\n")
 
     te.append(ttk.TTkString("Random TTkString Input Test\n",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
-    te.append(ttk.TTkString('\n').join([ getUtfColoredSentence(3,10) for _ in range(100)]))
+    te.append(ttk.TTkString('\n').join([ getUtfColoredSentence(10,15) for _ in range(100)]))
 
     te.append(ttk.TTkString("-- The Very END --",ttk.TTkColor.UNDERLINE+ttk.TTkColor.BOLD))
 

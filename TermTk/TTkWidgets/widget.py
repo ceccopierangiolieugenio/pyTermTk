@@ -274,7 +274,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         ''' Event Callback triggered after a successful resize'''
         pass
 
-    def setDefaultSize(self, arg, width, height):
+    def setDefaultSize(self, arg, width: int, height: int):
         if ( 'size' in arg or
              'width' in arg or
              'height' in arg ):
@@ -327,7 +327,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''
         return self._padt, self._padb, self._padl, self._padr
 
-    def setPadding(self, top, bottom, left, right):
+    def setPadding(self, top: int, bottom: int, left: int, right: int):
         ''' Set the padding of the widget
 
         :param int top: top padding
@@ -544,26 +544,26 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 return lMinW
         return wMinW
 
-    def setMaximumSize(self, maxw, maxh):
+    def setMaximumSize(self, maxw: int, maxh: int):
         self.setMaximumWidth(maxw)
         self.setMaximumHeight(maxh)
-    def setMaximumHeight(self, maxh):
+    def setMaximumHeight(self, maxh: int):
         if self._maxh == maxh: return
         self._maxh = maxh
         self.update(updateLayout=True, updateParent=True)
-    def setMaximumWidth(self, maxw):
+    def setMaximumWidth(self, maxw: int):
         if self._maxw == maxw: return
         self._maxw = maxw
         self.update(updateLayout=True, updateParent=True)
 
-    def setMinimumSize(self, minw, minh):
+    def setMinimumSize(self, minw: int, minh: int):
         self.setMinimumWidth(minw)
         self.setMinimumHeight(minh)
-    def setMinimumHeight(self, minh):
+    def setMinimumHeight(self, minh: int):
         if self._minh == minh: return
         self._minh = minh
         self.update(updateLayout=True, updateParent=True)
-    def setMinimumWidth(self, minw):
+    def setMinimumWidth(self, minw: int):
         if self._minw == minw: return
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
@@ -609,7 +609,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.hide()
 
     @pyTTkSlot(bool)
-    def setVisible(self, visible):
+    def setVisible(self, visible: bool):
         if visible: self.show()
         else: self.hide()
 
@@ -625,7 +625,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     # TODO: Remove This
     def layoutUpdated(self): pass
 
-    def update(self, repaint=True, updateLayout=False, updateParent=False):
+    def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
         if repaint:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
@@ -686,7 +686,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         return self._enabled
 
     @pyTTkSlot(bool)
-    def setEnabled(self, enabled=True):
+    def setEnabled(self, enabled: bool=True):
         if self._enabled == enabled: return
         self._enabled = enabled
         self.update()
@@ -709,10 +709,10 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def toolTip(self):
         return self._toolTip
 
-    def setToolTip(self, toolTip):
+    def setToolTip(self, toolTip: TTkString):
         self._toolTip = toolTip
 
-    def getWidgetByName(self, name):
+    def getWidgetByName(self, name: str):
         for w in self.rootLayout().iterWidgets(onlyVisible=False, recurse=True):
             if w._name == name:
                 return w

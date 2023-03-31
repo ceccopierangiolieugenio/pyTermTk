@@ -38,7 +38,7 @@ class TTkAbstractScrollViewInterface():
         raise NotImplementedError()
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         raise NotImplementedError()
 
     def getViewOffsets(self):
@@ -60,7 +60,7 @@ class TTkAbstractScrollView(TTkWidget, TTkAbstractScrollViewInterface):
         self._viewOffsetY = 0
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()
         dw, dh = self.viewDisplayedSize()
         rangex = fw - dw
@@ -113,7 +113,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         self._excludeEvent = False
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()
         dw, dh = self.viewDisplayedSize()
         rangex = fw - dw

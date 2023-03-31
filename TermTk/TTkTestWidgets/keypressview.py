@@ -27,24 +27,21 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.timer import TTkTimer
+from TermTk.TTkCore.propertyanimation import TTkPropertyAnimation, TTkEasingCurve
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
 from TermTk.TTkTestWidgets.keypressviewfont import TTkKeyPressViewFont
 
 class TTkKeyPressView(TTkWidget):
-    __slots__ = ('_timer','_keys','_fade','_period')
+    __slots__ = ('_fadeDuration','_keys','_anim')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
         self._keys = []
-        self._period = 0.1
-        self._fade = 10
-        self._timer = TTkTimer()
-        self._timer.timeout.connect(self._timerEvent)
-        self._timer.start(self._period)
+        self._fadeDuration = 2.5
+        self._anim = TTkPropertyAnimation(self, '_pushFade')
 
     @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
     def _processInput(self, kevt, mevt):
@@ -62,10 +59,10 @@ class TTkKeyPressView(TTkWidget):
                 text = f"{m} {text}"
         if self._keys and evt.type == self._keys[-1][2] == TTkK.Character:
              self._keys[-1][1]+=evt.key
-             self._keys[-1][0]=0
+             self._keys[-1][0]=1
         else:
-            self._keys.append([0,text,evt.type])
-        self.update()
+            self._keys.append([1,text,evt.type])
+        self._startFade()
 
     @pyTTkSlot(TTkMouseEvent)
     def _addMouse(self, evt):
@@ -77,17 +74,22 @@ class TTkKeyPressView(TTkWidget):
         if evt.tap>3:  tap=f" {evt.tap} Clicks "
 
         text = f"M:{(evt.x,evt.y)} {evt.key2str().replace('Button','')}{tap}{evt.mod2str().replace('NoModifier','')}"
-        self._keys.append([0,text,0x100])
-        self.update()
+        self._keys.append([1,text,0x100])
+        self._startFade()
 
-    def _timerEvent(self):
+    def _startFade(self):
+        self._anim.setDuration(self._fadeDuration)
+        self._anim.setStartValue(0)
+        self._anim.setEndValue(1)
+        self._anim.setEasingCurve(TTkEasingCurve.OutExpo)
+        self._anim.start()
+
+    def _pushFade(self, fade: float):
         for i,k in enumerate(self._keys):
-            if k[0] > self._fade:
+            k[0] -= fade
+            if k[0] <= 0:
                 self._keys.pop(i)
-            else:
-                k[0] += 1
-            self.update()
-        self._timer.start(self._period)
+        self.update()
 
     def txt2map(self, txt):
         ret = ["","",""]
@@ -99,12 +101,10 @@ class TTkKeyPressView(TTkWidget):
         return ret
 
     def paintEvent(self):
-        for k in self._keys:
-            text = k[1]
-            gr = 0x1000 - 0x1000 * k[0] // self._fade
-            r = 0xbb*gr//0x1000
-            g = 0xff*gr//0x1000
-            b = 0xff*gr//0x1000
+        for alpha,text,_ in self._keys:
+            r = int(0xbb*alpha)
+            g = int(0xff*alpha)
+            b = int(0xff*alpha)
             color = TTkColor.fg(f"#{r<<16|g<<8|b:06x}")
             #self._canvas.drawText(pos=((self.width()-len(text))//2,0),text=text,color=color)
             m = self.txt2map(text)
