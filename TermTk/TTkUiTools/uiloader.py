@@ -144,7 +144,10 @@ class TTkUiLoader():
 
         TTkLog.debug(ui)
 
-        widget =  _getWidget(ui['tui'])
+        if issubclass(globals()[ui['tui']['class']],TTkLayout):
+            widget =  _getLayout(ui['tui'])
+        else:
+            widget =  _getWidget(ui['tui'])
 
         def _getSignal(sender, name):
             for cc in reversed(type(sender).__mro__):

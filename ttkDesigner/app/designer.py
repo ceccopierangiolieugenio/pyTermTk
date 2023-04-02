@@ -182,13 +182,28 @@ class TTkDesigner(TTkGridLayout):
         win.layout().addWidget(widget)
         TTkHelper.overlay(None, win, 2, 2, modal=True)
 
+    def _openFile(self, fileName):
+        TTkLog.info(f"Open: {fileName}")
+        with open(fileName) as fp:
+            # jj = fp.read()
+            # # ttk = SuperWidget.loadDict(self._windowEditor.viewport(), jj['tui'])
+            # wid = TTkUiLoader.loadJson(jj)
+            # self._windowEditor.importWidget(wid)
+            dd = json.load(fp)
+            sw = SuperWidget.loadDict(self._windowEditor.viewport(), dd['tui'])
+            self._windowEditor.importSuperWidget(sw)
+
     @pyTTkSlot()
     def open(self):
-        pass
+        # self._openFile('tmp/pippo.003.json')
+        # return
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Open", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="Json Files (*.json);;All Files (*)")
+        filePicker.pathPicked.connect(self._openFile)
+        TTkHelper.overlay(None, filePicker, 5, 5, True)
 
     @pyTTkSlot()
     def save(self):
-        pass
+        return self.saveAs()
 
     def _saveToFile(self, fileName):
         TTkLog.info(f"Saving to: {fileName}")
@@ -219,6 +234,6 @@ class TTkDesigner(TTkGridLayout):
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
                 self._saveToFile(fileName)
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Save As...", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.json)")
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)

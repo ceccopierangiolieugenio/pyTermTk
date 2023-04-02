@@ -34,6 +34,20 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), weModified=self.weModified, thingSelected=self.thingSelected, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
         self.layout().addWidget(self._ttk)
 
+    def importWidget(self, wid):
+        if self._ttk:
+            self.layout().removeWidget(self._ttk)
+        self._ttk = SuperWidget.swFromWidget(wid=wid, weModified=self.weModified, thingSelected=self.thingSelected, pos=(4,2), size=(self.width()-8,self.height()-4))
+        self._ttk.makeRootWidget()
+        self.layout().addWidget(self._ttk)
+
+    def importSuperWidget(self, sw):
+        if self._ttk:
+            self.layout().removeWidget(self._ttk)
+        self._ttk = sw
+        self._ttk.makeRootWidget()
+        self.layout().addWidget(self._ttk)
+
     def getTTk(self):
         return self._ttk
 
@@ -61,8 +75,13 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self._canvas.fill(pos=(0,0),size=(w,h), char="╳", color=ttk.TTkColor.fg("#444400")+ttk.TTkColor.bg("#000044"))
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
+    __slots__ = ('getTTk', 'dumpDict', 'importWidget', 'importSuperWidget')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setViewport(wev := WindowEditorView())
-        self.getTTk   = wev.getTTk
-        self.dumpDict = wev.dumpDict
+        wev.importWidget(ttk.TTkWidget(name = 'TTk'))
+        # Forward Methods
+        self.getTTk            = wev.getTTk
+        self.dumpDict          = wev.dumpDict
+        self.importWidget      = wev.importWidget
+        self.importSuperWidget = wev.importSuperWidget

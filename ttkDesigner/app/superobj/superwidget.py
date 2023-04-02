@@ -73,6 +73,85 @@ class SuperWidget(ttk.TTkWidget):
         }
         return ret
 
+    @staticmethod
+    def swFromWidget(wid, *args, **kwargs):
+        # layout = wid.layout()
+        #newLayout = ttk.TTkLayout()
+        ## copy layout compatible properties
+        #for att in newLayout.__slots__:
+        #    if hasattr(layout,att):
+        #        setattr(newLayout,att,getattr(layout,att))
+        #wid.setLayout(newLayout)
+
+        #if issubclass(type(data),ttk.TTkVBoxLayout):
+        #    sl = so.SuperLayoutVBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+        #elif issubclass(type(data),ttk.TTkHBoxLayout):
+        #    sl = so.SuperLayoutHBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+        #elif issubclass(type(data),ttk.TTkGridLayout):
+        #    sl = so.SuperLayoutGrid(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+        #else:
+        #    sl = so.SuperLayout(    pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+
+        layout = wid.layout()
+        sw = so.SuperWidget(wid=wid, *args, **kwargs)
+        sw.changeSuperLayout(type(layout))
+        for ch in layout.children():
+            x,y,w,h = ch.geometry()
+            if ch.layoutItemType == ttk.TTkK.WidgetItem:
+                sch = so.SuperWidget.swFromWidget(ch.widget(), *args, **(kwargs|{'pos':(x,y),'size':(w,h)}))
+            else:
+                sch = so.SuperLayout.slFromLayout(ch, *args, **(kwargs|{'pos':(x,y),'size':(w,h),'selectable':True}))
+            if issubclass(type(layout),ttk.TTkGridLayout):
+                sw._superLayout.layout().addWidget(sch,ch._row,ch._col,ch._rowspan,ch._colspan)
+            else:
+                sw._superLayout.layout().addWidget(sch)
+        return sw
+
+    @staticmethod
+    def loadDict(parent, widProp):
+        ttkClass = getattr(ttk,widProp['class'])
+        if issubclass(ttkClass,ttk.TTkLayout):
+            demiProp = {
+                'version':'1.0.0',
+                'tui':{
+                    'class'  : widProp['class'],
+                    'params' : widProp['params'],
+                    'children' : []
+                },
+                'connections':[]
+            }
+            layout = ttk.TTkUiLoader.loadDict(demiProp)
+            x,y,w,h = layout.geometry()
+            sl = sup = so.SuperLayout.slFromLayout(layout=layout, lay=ttk.TTkLayout(), pos=(x,y), size=(w,h), weModified=parent.weModified, thingSelected=parent.thingSelected, selectable=True)
+            children = widProp['children']
+        else:
+            demiProp = {
+                'version':'1.0.0',
+                'tui':{
+                    'class'  : widProp['class'],
+                    'params' : widProp['params']|{'Layout':'TTkLayout'},
+                    'layout': {
+                        'class'  : 'TTkLayout',
+                        'params' : widProp['layout']['params'],
+                        'children' : []
+                    }
+                },
+                'connections':[]
+            }
+            wid = ttk.TTkUiLoader.loadDict(demiProp)
+            sup = so.SuperWidget(wid=wid, pos=wid.pos(), weModified=parent.weModified, thingSelected=parent.thingSelected)
+            sup.changeSuperLayout(getattr(ttk,widProp['layout']['class']))
+            sl = sup._superLayout
+            children = widProp['layout']['children']
+
+        for ch in children:
+            sch = SuperWidget.loadDict(parent, ch)
+            if issubclass(type(sl),so.SuperLayoutGrid):
+                sl.layout().addWidget(sch,ch['row'],ch['col'],ch['rowspan'],ch['colspan'])
+            else:
+                sl.layout().addWidget(sch)
+        return sup
+
     def changeSuperLayout(self, layout):
         sl = self._superLayout
         self.layout().removeWidget(sl)
@@ -98,6 +177,9 @@ class SuperWidget(ttk.TTkWidget):
 
     def mousePressEvent(self, evt) -> bool:
         return True
+
+    def makeRootWidget(self):
+        self._superRootWidget = True
 
     def pushSuperControlWidget(self):
         if self._superRootWidget: return False

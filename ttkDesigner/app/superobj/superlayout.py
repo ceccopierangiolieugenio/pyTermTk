@@ -72,7 +72,7 @@ class SuperLayout(ttk.TTkWidget):
             children.append(w.widget().dumpDict()|layoutItemParams)
         ret = {'class': self.layout().__class__.__name__,
                # 'params' : SuperObject.dumpParams(self._lay),
-               'params' : SuperObject.dumpParams(self.layout()),
+               'params' : SuperObject.dumpParams(self.layout())|{'Geometry':self.geometry()},
                'children':children}
         return ret
 
@@ -96,7 +96,7 @@ class SuperLayout(ttk.TTkWidget):
     def mouseReleaseEvent(self, evt) -> bool:
         if self._superRootWidget or not self._selectable: return False
         self.pushSuperControlWidget()
-        # self.thingSelected.emit(self._lay,self)
+        self.thingSelected.emit(self._lay,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -116,6 +116,20 @@ class SuperLayout(ttk.TTkWidget):
 
     def superChild(self):
         return self._lay
+
+    @staticmethod
+    def slFromLayout(layout: ttk.TTkLayout, *args, **kwargs):
+        if 'lay' not in kwargs:
+            kwargs |= {'lay':layout}
+        if issubclass(type(layout),ttk.TTkVBoxLayout):
+            sl = so.SuperLayoutVBox(*args, **kwargs)
+        elif issubclass(type(layout),ttk.TTkHBoxLayout):
+            sl = so.SuperLayoutHBox(*args, **kwargs)
+        elif issubclass(type(layout),ttk.TTkGridLayout):
+            sl = so.SuperLayoutGrid(*args, **kwargs)
+        else:
+            sl = so.SuperLayout(    *args, **kwargs)
+        return sl
 
     def addSuperWidget(self, sw):
         self.layout().addWidget(sw)
@@ -147,17 +161,10 @@ class SuperLayout(ttk.TTkWidget):
         if issubclass(type(data),ttk.TTkLayout):
             _,__,w,h = data.geometry()
             x,y = evt.x-hsx, evt.y-hsy
-            lay = ttk.TTkLayout()
-            if issubclass(type(data),ttk.TTkVBoxLayout):
-                sl = so.SuperLayoutVBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-            elif issubclass(type(data),ttk.TTkHBoxLayout):
-                sl = so.SuperLayoutHBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-            elif issubclass(type(data),ttk.TTkGridLayout):
-                sl = so.SuperLayoutGrid(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-            else:
-                sl = so.SuperLayout(    pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+            lay = ttk.TTkLayout(pos=(x,y), size=(w,h))
+            sl = SuperLayout.slFromLayout(layout=data, lay=lay, pos=(x,y), size=(w,h), weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
             self.addSuperWidget(sl)
-            self._lay.addItem(data)
+            self._lay.addItem(lay)
         elif issubclass(type(data), so.SuperLayout):
             sl = data
             self.addSuperWidget(sl)

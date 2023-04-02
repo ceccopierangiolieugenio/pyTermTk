@@ -97,7 +97,7 @@ class TreeInspector(ttk.TTkGridLayout):
             if issubclass(type(superThing), SuperWidget):
                 thing = thing._wid
             elif issubclass(type(superThing), SuperLayout):
-                thing = thing.layout()
+                thing = thing._lay
             expanded = True # ttk.TTkHelper.isParent(widSelected,thing) if widSelected else False
             if issubclass(type(superThing), SuperWidget):
                 top = _TTkTomTreeWidgetItem([
