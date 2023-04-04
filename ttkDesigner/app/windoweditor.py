@@ -79,7 +79,7 @@ class WindowEditor(ttk.TTkAbstractScrollArea):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setViewport(wev := WindowEditorView())
-        wev.importWidget(ttk.TTkWidget(name = 'TTk'))
+        # wev.importWidget(ttk.TTkWidget(name = 'TTk'))
         # Forward Methods
         self.getTTk            = wev.getTTk
         self.dumpDict          = wev.dumpDict

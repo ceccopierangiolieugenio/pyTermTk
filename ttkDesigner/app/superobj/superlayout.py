@@ -179,7 +179,7 @@ class SuperLayout(ttk.TTkWidget):
             sw.move(evt.x-hsx, evt.y-hsy)
             sw.show()
         elif issubclass(type(data),ttk.TTkWidget):
-            self.addSuperWidget(sw := so.SuperWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
+            self.addSuperWidget(sw := so.SuperWidget.swFromWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
             self._lay.addWidget(data)
             sw.move(evt.x-hsx, evt.y-hsy)
             sl = sw._superLayout

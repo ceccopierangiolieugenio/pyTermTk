@@ -24,7 +24,7 @@ import TermTk as ttk
 
 class SuperObject():
     @staticmethod
-    def dumpParams(obj):
+    def dumpParams(obj,exclude=[]):
         def _dumpPrimitive(val):
             return val
         def _dumpTTkString(val):
@@ -61,6 +61,7 @@ class SuperObject():
                 ccName = cc.__name__
                 if ccName in ttk.TTkUiProperties:
                     for p in ttk.TTkUiProperties[ccName]['properties']:
+                        if p in exclude: continue
                         prop = ttk.TTkUiProperties[ccName]['properties'][p]
                         propType = prop['get']['type']
                         propCb = prop['get']['cb']

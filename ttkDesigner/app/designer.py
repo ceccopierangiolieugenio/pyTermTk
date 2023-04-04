@@ -195,9 +195,9 @@ class TTkDesigner(TTkGridLayout):
 
     @pyTTkSlot()
     def open(self):
-        # self._openFile('tmp/pippo.003.json')
+        # self._openFile('tmp/pippo.008.json')
         # return
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Open", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="Json Files (*.json);;All Files (*)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Open", path="tmp", fileMode=TTkK.FileMode.AnyFile ,filter="Json Files (*.json);;All Files (*)")
         filePicker.pathPicked.connect(self._openFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 

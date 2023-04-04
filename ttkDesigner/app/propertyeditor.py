@@ -38,29 +38,10 @@ class PropertyEditor(ttk.TTkGridLayout):
         # TBD
         # Override: 'name', 'radiogroup',
         # ro geometry if grid layout
-        exceptions = {
-            'Layout' : {
-                'get':  { 'cb': lambda _: superWidget._superLayout.layout().__class__ , 'type':'singleflag',
-                    'flags': {
-                        'TTkLayout'     : ttk.TTkLayout     ,
-                        'TTkGridLayout' : ttk.TTkGridLayout ,
-                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
-                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
-                'set':  { 'cb': lambda _,l: superWidget.changeSuperLayout(l) , 'type':'singleflag',
-                    'flags': {
-                        'TTkLayout'     : ttk.TTkLayout     ,
-                        'TTkGridLayout' : ttk.TTkGridLayout ,
-                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
-                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
-            },
-            'RadioGroup' : {
-                'init': {'name':'radiogroup',            'type':str } ,
-                'get':  {'cb':ttk.TTkRadioButton.radioGroup, 'type':str } ,
-                'set':  {'cb':lambda w,l: setattr(w,'_radiogroup',l), 'type':str } },
-        }
-        self._makeDetail(widget, exceptions)
 
-    def _makeDetail(self, domw, exceptions):
+        self._makeDetail(widget, *superWidget.getSuperProperties())
+
+    def _makeDetail(self, domw, exceptions, exclude):
         def _bound(_f,_w,_l):
             def _ret(_v):
                 _f(_w,_l(_v))
@@ -244,7 +225,7 @@ class PropertyEditor(ttk.TTkGridLayout):
                 else:
                     return _processUnknown(name, prop)
 
-        proplist = []
+        proplist = exclude
         self._detail.clear()
         for cc in reversed(type(domw).__mro__):
             # if hasattr(cc,'_ttkProperties'):
@@ -258,6 +239,6 @@ class PropertyEditor(ttk.TTkGridLayout):
                             prop = exceptions[p]
                         else:
                             prop = ttk.TTkUiProperties[ccName]['properties'][p]
-                        if prop not in proplist:
-                            proplist.append(prop)
+                        if p not in proplist:
+                            proplist.append(p)
                             classItem.addChild(_processProp(p, prop))

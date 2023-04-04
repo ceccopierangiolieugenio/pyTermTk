@@ -48,7 +48,7 @@ class TTkUiLoader():
             kwargs = {}
             # Init params to be configured with the setter
             setters = []
-            layout = _getLayout(widProp['layout'])
+            layout = _getLayout(widProp['layout']) if 'layout' in widProp else TTkLayout()
             for pname in widProp['params']:
                 if 'init' in properties[pname]:
                     initp = properties[pname]['init']

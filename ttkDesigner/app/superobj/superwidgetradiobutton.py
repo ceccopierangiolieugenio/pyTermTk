@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,13 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .supercontrol import SuperControlWidget
+import TermTk as ttk
+import ttkDesigner.app.superobj as so
 
-from .superwidget            import SuperWidget
-from .superwidgettextedit    import SuperWidgetTextEdit
-from .superwidgetradiobutton import SuperWidgetRadioButton
-
-from .superlayout     import SuperLayout
-from .superlayoutgrid import SuperLayoutGrid
-from .superlayoutvbox import SuperLayoutVBox
-from .superlayouthbox import SuperLayoutHBox
+class SuperWidgetRadioButton(so.SuperWidget):
+    def getSuperProperties(self):
+        exceptions, exclude = super().getSuperProperties()
+        exceptions |= {
+            'RadioGroup' : {
+                'init': {'name':'radiogroup',            'type':str } ,
+                'get':  {'cb':ttk.TTkRadioButton.radioGroup, 'type':str } ,
+                'set':  {'cb':lambda w,l: setattr(w,'_radiogroup',l), 'type':str } } }
+        return exceptions, exclude

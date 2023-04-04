@@ -59,6 +59,26 @@ class SuperWidget(ttk.TTkWidget):
     _showLayout = False
     toggleHighlightLayout = ttk.pyTTkSignal(bool)
 
+    def getSuperProperties(self):
+        exceptions = {
+            'Layout' : {
+                'get':  { 'cb': lambda _: self._superLayout.layout().__class__ , 'type':'singleflag',
+                    'flags': {
+                        'TTkLayout'     : ttk.TTkLayout     ,
+                        'TTkGridLayout' : ttk.TTkGridLayout ,
+                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
+                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
+                'set':  { 'cb': lambda _,l: self.changeSuperLayout(l) , 'type':'singleflag',
+                    'flags': {
+                        'TTkLayout'     : ttk.TTkLayout     ,
+                        'TTkGridLayout' : ttk.TTkGridLayout ,
+                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
+                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
+            }
+        }
+        exclude = []
+        return exceptions, exclude
+
     @ttk.pyTTkSlot(bool)
     def _toggleHighlightLayout(self, state):
         SuperWidget._showLayout = state
@@ -74,38 +94,18 @@ class SuperWidget(ttk.TTkWidget):
         return ret
 
     @staticmethod
-    def swFromWidget(wid, *args, **kwargs):
-        # layout = wid.layout()
-        #newLayout = ttk.TTkLayout()
-        ## copy layout compatible properties
-        #for att in newLayout.__slots__:
-        #    if hasattr(layout,att):
-        #        setattr(newLayout,att,getattr(layout,att))
-        #wid.setLayout(newLayout)
-
-        #if issubclass(type(data),ttk.TTkVBoxLayout):
-        #    sl = so.SuperLayoutVBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-        #elif issubclass(type(data),ttk.TTkHBoxLayout):
-        #    sl = so.SuperLayoutHBox(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-        #elif issubclass(type(data),ttk.TTkGridLayout):
-        #    sl = so.SuperLayoutGrid(pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-        #else:
-        #    sl = so.SuperLayout(    pos=(x,y), size=(w,h), lay=lay, weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
-
-        layout = wid.layout()
+    def _swFromWidget(wid, *args, **kwargs):
         sw = so.SuperWidget(wid=wid, *args, **kwargs)
-        sw.changeSuperLayout(type(layout))
-        for ch in layout.children():
-            x,y,w,h = ch.geometry()
-            if ch.layoutItemType == ttk.TTkK.WidgetItem:
-                sch = so.SuperWidget.swFromWidget(ch.widget(), *args, **(kwargs|{'pos':(x,y),'size':(w,h)}))
-            else:
-                sch = so.SuperLayout.slFromLayout(ch, *args, **(kwargs|{'pos':(x,y),'size':(w,h),'selectable':True}))
-            if issubclass(type(layout),ttk.TTkGridLayout):
-                sw._superLayout.layout().addWidget(sch,ch._row,ch._col,ch._rowspan,ch._colspan)
-            else:
-                sw._superLayout.layout().addWidget(sch)
+        sw.changeSuperLayout(type(wid.layout()))
         return sw
+
+    @staticmethod
+    def swFromWidget(wid, *args, **kwargs):
+        swClass = {
+            ttk.TTkTextEdit: so.SuperWidgetTextEdit,
+            ttk.TTkRadioButton: so.SuperWidgetRadioButton,
+                }.get(type(wid),so.SuperWidget)
+        return swClass._swFromWidget(wid=wid, *args, **kwargs)
 
     @staticmethod
     def loadDict(parent, widProp):
@@ -125,24 +125,25 @@ class SuperWidget(ttk.TTkWidget):
             sl = sup = so.SuperLayout.slFromLayout(layout=layout, lay=ttk.TTkLayout(), pos=(x,y), size=(w,h), weModified=parent.weModified, thingSelected=parent.thingSelected, selectable=True)
             children = widProp['children']
         else:
+            setLayout = 'layout' in widProp
+            tui = {
+                'class'  : widProp['class'],
+                'params' : widProp['params'] }
+            tui |= {
+                'layout': {
+                    'class'  : widProp['layout']['class'],
+                    'params' : widProp['layout']['params'],
+                    'children' : []
+                    } } if setLayout else {}
             demiProp = {
                 'version':'1.0.0',
-                'tui':{
-                    'class'  : widProp['class'],
-                    'params' : widProp['params']|{'Layout':'TTkLayout'},
-                    'layout': {
-                        'class'  : 'TTkLayout',
-                        'params' : widProp['layout']['params'],
-                        'children' : []
-                    }
-                },
+                'tui': tui,
                 'connections':[]
             }
             wid = ttk.TTkUiLoader.loadDict(demiProp)
-            sup = so.SuperWidget(wid=wid, pos=wid.pos(), weModified=parent.weModified, thingSelected=parent.thingSelected)
-            sup.changeSuperLayout(getattr(ttk,widProp['layout']['class']))
+            sup = so.SuperWidget.swFromWidget(wid=wid, pos=wid.pos(), weModified=parent.weModified, thingSelected=parent.thingSelected)
             sl = sup._superLayout
-            children = widProp['layout']['children']
+            children = widProp['layout']['children'] if setLayout else []
 
         for ch in children:
             sch = SuperWidget.loadDict(parent, ch)
