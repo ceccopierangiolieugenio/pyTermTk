@@ -49,6 +49,11 @@ class SuperLayout(ttk.TTkWidget):
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
         so.SuperWidget.toggleHighlightLayout.connect(self._toggleHighlightLayout)
 
+    def getSuperProperties(self):
+        exceptions = {}
+        exclude = []
+        return exceptions, exclude
+
     @ttk.pyTTkSlot(bool)
     def _toggleHighlightLayout(self, state):
         so.SuperWidget._showLayout = state

@@ -40,7 +40,7 @@ TTkRadioButtonProperties = {
                 'get':  {'cb':TTkRadioButton.isChecked,   'type':bool } ,
                 'set':  {'cb':TTkRadioButton.setChecked,  'type':bool } },
         'Check State' : {
-                'init': { 'name':'checked', 'type':'singleflag',
+                'init': { 'name':'checkStatus', 'type':'singleflag',
                     'flags': {
                         'Checked'          : TTkK.Checked    ,
                         'Unchecked'        : TTkK.Unchecked  } },
