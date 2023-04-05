@@ -655,7 +655,7 @@ class TTkCanvas:
         if canvas._transparent:
             for iy in range(yoffset,hslice):
                 if None in canvas._data[iy][slice_off]:
-                    self._data[y+iy][slice_ab]   = [cca if cca else ccb for cca,ccb in zip(canvas._data[iy][slice_off],self._data[y+iy][slice_ab])]
+                    self._data[y+iy][slice_ab]   = [cca if cca is not None else ccb for cca,ccb in zip(canvas._data[iy][slice_off],self._data[y+iy][slice_ab])]
                 else:
                     self._data[y+iy][slice_ab]   = canvas._data[iy][slice_off]
                 if None in canvas._colors[iy][slice_off]:
