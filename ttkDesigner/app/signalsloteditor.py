@@ -61,6 +61,12 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
                 break
         return ret
 
+    def importConnection(self, connection):
+        self._sender.setCurrentText(connection['sender'])
+        self._receiver.setCurrentText(connection['receiver'])
+        self._signal.setCurrentText(connection['signal'])
+        self._slot.setCurrentText(connection['slot'])
+
     def dumpDict(self):
         curSender   = str(self._sender.currentText())
         curReceiver = str(self._receiver.currentText())
@@ -209,6 +215,13 @@ class SignalSlotEditor(ttk.TTkWidget):
         for item in items:
             if (index := self._detail.indexOfTopLevelItem(item)) is not None:
                 self._detail.takeTopLevelItem(index)
+
+    def importConnections(self, connections):
+        for c in connections:
+            item = _SignalSlotItem(self._windowEditor)
+            item.importConnection(c)
+            self._items.append(item)
+            self._detail.addTopLevelItem(item)
 
     def dumpDict(self):
         ret = []
