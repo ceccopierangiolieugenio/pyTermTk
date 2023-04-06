@@ -68,24 +68,29 @@ dWidgets = {
 }
 
 class DragDesignItem(ttk.TTkWidget):
-    _objNames = {}
-    def __init__(self, itemName, widgetClass, *args, **kwargs):
+    __slots__ = ('_itemName', '_widgetClass', '_designer')
+    def __init__(self, itemName, widgetClass, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setMaximumHeight(3)
         self.setMinimumSize(max(15,len(itemName)+2),3)
         self._itemName = itemName
         self._widgetClass = widgetClass
+        self._designer = designer
         self.setEnabled('disabled' not in widgetClass)
 
     def mouseDragEvent(self, evt) -> bool:
         ttk.TTkLog.debug(f"Start DnD -> {self._itemName}")
         wc = self._widgetClass
-        name = wc['class'].__name__
-        if not name in DragDesignItem._objNames:
-            DragDesignItem._objNames[name] = 1
-        else:
-            DragDesignItem._objNames[name] += 1
-        name = f"{name}-{DragDesignItem._objNames[name]}"
+
+        # Gen unique name for the new widget
+        basename = wc['class'].__name__
+        name = basename
+        index = 1
+        names = {w.name() for w in self._designer.getWidgets()}
+        while name in names:
+            name = f"{basename}-{index}"
+            index += 1
+
         drag = ttk.TTkDrag()
         data = wc['class'](**(wc['params']|{'name':name}))
         if issubclass(wc['class'], ttk.TTkWidget):
@@ -108,15 +113,15 @@ class DragDesignItem(ttk.TTkWidget):
         self._canvas.drawBox(pos=(0,0),size=self.size(), color=color)
 
 class WidgetBox(ttk.TTkVBoxLayout):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for tw in dWidgets:
             self.addWidget(ttk.TTkLabel(text=tw, color=ttk.TTkColor.fg('#FFFF88')+ttk.TTkColor.bg('#0000FF')))
             for ww in dWidgets[tw]:
-                self.addWidget(DragDesignItem(ww, dWidgets[tw][ww]))
+                self.addWidget(DragDesignItem(ww, dWidgets[tw][ww], designer))
         # self.setGeometry(0,0,self.minimumWidth(), self.minimumHeight())
 
 class WidgetBoxScrollArea(ttk.TTkScrollArea):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, designer,*args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.viewport().setLayout(WidgetBox())
+        self.viewport().setLayout(WidgetBox(designer))

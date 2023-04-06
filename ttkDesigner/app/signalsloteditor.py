@@ -26,9 +26,9 @@ from .superobj.superwidget import SuperWidget
 from .superobj.superlayout import SuperLayout
 
 class _SignalSlotItem(ttk.TTkTreeWidgetItem):
-    __slots__ = ('_sender', '_signal', '_receiver', '_slot', '_windowEditor', '_signalData', '_slotData', '_avoidRecursion')
-    def __init__(self, windowEditor, *args, **kwargs):
-        self._windowEditor = windowEditor
+    __slots__ = ('_sender', '_signal', '_receiver', '_slot', '_designer', '_signalData', '_slotData', '_avoidRecursion')
+    def __init__(self, designer, *args, **kwargs):
+        self._designer = designer
         self._sender   = ttk.TTkComboBox(height=1, list=['<sender>'  ], index=0)
         self._signal   = ttk.TTkComboBox(height=1, list=['<signal>'  ], index=0)
         self._receiver = ttk.TTkComboBox(height=1, list=['<receiver>'], index=0)
@@ -79,7 +79,7 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
             'slot':     curSlot }
 
     def updateWidgets(self):
-        names = [w.name() for w in self._getWidgets()]
+        names = [w.name() for w in self._designer.getWidgets()]
         self._sender.addItems(names)
         self._receiver.addItems(names)
 
@@ -93,18 +93,6 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
                 complex : 'complex',
                 str     : 'str',
                 None    : ''}.get(t,f"UNDEFINED {t}")
-
-    def _getWidgets(self):
-        widgets = []
-        def _getItems(layoutItem):
-            if layoutItem.layoutItemType == ttk.TTkK.WidgetItem:
-                superThing = layoutItem.widget()
-                if issubclass(type(superThing), SuperWidget):
-                    widgets.append(superThing._wid)
-                for c in superThing.layout().children():
-                    _getItems(c)
-        _getItems(self._windowEditor.getTTk().widgetItem())
-        return widgets
 
     @ttk.pyTTkSlot(str)
     def _senderChanged(self, text):
@@ -171,7 +159,7 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
         self._avoidRecursion = False
 
     def getSignalSlot(self, name):
-        if not (widget := {w.name():w for w in self._getWidgets()}.get(name,None)):
+        if not (widget := {w.name():w for w in self._designer.getWidgets()}.get(name,None)):
             return {},{}
         ttk.TTkLog.debug(f"Selected {widget=}")
         slots = {}
@@ -187,12 +175,12 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
         return signals,slots
 
 class SignalSlotEditor(ttk.TTkWidget):
-    __slots__ = ('_items', '_windowEditor')
-    def __init__(self, windowEditor, *args, **kwargs):
+    __slots__ = ('_items', '_designer')
+    def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setLayout(ttk.TTkGridLayout())
         self._items = []
-        self._windowEditor = windowEditor
+        self._designer = designer
 
         self._detail = ttk.TTkTree()
         self._detail.setHeaderLabels(["Sender","Signal","Receiver","Slot"])
@@ -205,7 +193,7 @@ class SignalSlotEditor(ttk.TTkWidget):
         delb.clicked.connect(self._delStuff)
 
     def _addStuff(self):
-        item = _SignalSlotItem(self._windowEditor)
+        item = _SignalSlotItem(self._designer)
         self._items.append(item)
         self._detail.addTopLevelItem(item)
 
@@ -218,7 +206,7 @@ class SignalSlotEditor(ttk.TTkWidget):
 
     def importConnections(self, connections):
         for c in connections:
-            item = _SignalSlotItem(self._windowEditor)
+            item = _SignalSlotItem(self._designer)
             item.importConnection(c)
             self._items.append(item)
             self._detail.addTopLevelItem(item)

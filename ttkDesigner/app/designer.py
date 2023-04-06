@@ -83,8 +83,7 @@ class TTkDesigner(TTkGridLayout):
         mainSplit.addItem(widgetBoxLayout := TTkVBoxLayout())
         #mainSplit.addWidget(TTkButton(text='A',border=True))
 
-        widgetBoxLayout.addWidget(topMenuFrame := TTkFrame(minHeight=1,maxHeight=1,border=False))
-        widgetBoxLayout.addWidget(WidgetBoxScrollArea())
+
 
         # mainSplit.addWidget(sa := TTkScrollArea())
         # sa.viewport().setLayout(TTkGridLayout())
@@ -93,7 +92,10 @@ class TTkDesigner(TTkGridLayout):
         self._main = TTkVBoxLayout()
         self._toolBar = TTkHBoxLayout()
         self._windowEditor = WindowEditor()
-        self._sigslotEditor = SignalSlotEditor(self._windowEditor.viewport())
+        self._sigslotEditor = SignalSlotEditor(self)
+
+        widgetBoxLayout.addWidget(topMenuFrame := TTkFrame(minHeight=1,maxHeight=1,border=False))
+        widgetBoxLayout.addWidget(WidgetBoxScrollArea(self))
 
         self._main.addItem(self._toolBar)
         self._main.addWidget(self._windowEditor)
@@ -157,6 +159,18 @@ class TTkDesigner(TTkGridLayout):
         # # debugSplit.addWidget(TTkLabel(text='My Own Debug', maxHeight=1, minHeight=1))
         # debugSplit.addWidget(TTkTomInspector())
         # debugSplit.addWidget(TTkLogViewer())
+
+    def getWidgets(self):
+        widgets = []
+        def _getItems(layoutItem):
+            if layoutItem.layoutItemType == TTkK.WidgetItem:
+                superThing = layoutItem.widget()
+                if issubclass(type(superThing), SuperWidget):
+                    widgets.append(superThing._wid)
+                for c in superThing.layout().children():
+                    _getItems(c)
+        _getItems(self._windowEditor.getTTk().widgetItem())
+        return widgets
 
     pyTTkSlot(bool)
     def toggleColors(self, state):
