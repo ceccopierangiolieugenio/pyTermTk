@@ -139,7 +139,7 @@ class SuperLayoutGrid(SuperLayout):
         else:
             self._expandButton.setGeometry(*ebs)
             self._expandButton.setDirection(dir)
-            self._expandButton.raiseWidget()
+            self._expandButton.raiseWidget(raiseParent=False)
             self._expandButton.show()
         self._expandStuff = (dir,wid)
         return True

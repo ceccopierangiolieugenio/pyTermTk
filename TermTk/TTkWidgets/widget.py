@@ -585,10 +585,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.update(repaint=False, updateParent=True)
 
     @pyTTkSlot()
-    def raiseWidget(self):
+    def raiseWidget(self, raiseParent=True):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
-            self._parent.raiseWidget()
+            if raiseParent:
+                self._parent.raiseWidget(raiseParent)
             self._parent.rootLayout().raiseWidget(self)
 
     @pyTTkSlot()
