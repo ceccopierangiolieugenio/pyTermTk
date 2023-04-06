@@ -27,9 +27,9 @@ import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
 class SuperLayout(ttk.TTkWidget):
-    def __init__(self, lay, weModified, thingSelected, *args, **kwargs):
-        self.weModified = weModified
-        self.thingSelected = thingSelected
+    __slots__ = ('_lay', '_dropBorder', '_superRootWidget', '_selectable', '_designer')
+    def __init__(self, lay, designer, *args, **kwargs):
+        self._designer = designer
         self._lay = lay
         self._dropBorder = 0 # This property is used to exclude the border from the drop routine
         self._superRootWidget = kwargs.get('superRootWidget',False)
@@ -101,7 +101,7 @@ class SuperLayout(ttk.TTkWidget):
     def mouseReleaseEvent(self, evt) -> bool:
         if self._superRootWidget or not self._selectable: return False
         self.pushSuperControlWidget()
-        self.thingSelected.emit(self._lay,self)
+        self._designer.thingSelected.emit(self._lay,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -167,7 +167,7 @@ class SuperLayout(ttk.TTkWidget):
             _,__,w,h = data.geometry()
             x,y = evt.x-hsx, evt.y-hsy
             lay = ttk.TTkLayout(pos=(x,y), size=(w,h))
-            sl = SuperLayout.slFromLayout(layout=data, lay=lay, pos=(x,y), size=(w,h), weModified=self.weModified, thingSelected=self.thingSelected, selectable=True)
+            sl = SuperLayout.slFromLayout(layout=data, designer=self._designer, lay=lay, pos=(x,y), size=(w,h), selectable=True)
             self.addSuperWidget(sl)
             self._lay.addItem(lay)
         elif issubclass(type(data), so.SuperLayout):
@@ -184,7 +184,7 @@ class SuperLayout(ttk.TTkWidget):
             sw.move(evt.x-hsx, evt.y-hsy)
             sw.show()
         elif issubclass(type(data),ttk.TTkWidget):
-            self.addSuperWidget(sw := so.SuperWidget.swFromWidget(wid=data, weModified=self.weModified, thingSelected=self.thingSelected, pos=(evt.x-hsx, evt.y-hsy)))
+            self.addSuperWidget(sw := so.SuperWidget.swFromWidget(designer=self._designer, wid=data, pos=(evt.x-hsx, evt.y-hsy)))
             self._lay.addWidget(data)
             sw.move(evt.x-hsx, evt.y-hsy)
             sl = sw._superLayout
@@ -200,7 +200,7 @@ class SuperLayout(ttk.TTkWidget):
             sl.setDropBorder(0)
 
         self.update()
-        self.weModified.emit()
+        self._designer.weModified.emit()
         return True
 
     def move(self, x: int, y: int):

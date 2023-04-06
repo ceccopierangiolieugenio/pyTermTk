@@ -37,10 +37,10 @@ class _TTkTomTreeWidgetItem(ttk.TTkTreeWidgetItem):
         return self._tomSuperWidget
 
 class TreeInspector(ttk.TTkGridLayout):
-    __slots__ = ('_windowEditor','_tomTree', 'thingSelected')
-    def __init__(self, windowEditor, *args, **kwargs):
+    __slots__ = ('_windowEditor','_tomTree', '_designer')
+    def __init__(self, designer, windowEditor, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.thingSelected = ttk.pyTTkSignal(ttk.TTkWidget, ttk.TTkWidget)
+        self._designer = designer
         self._windowEditor = windowEditor
 
         self._tomTree = ttk.TTkTree()
@@ -50,7 +50,7 @@ class TreeInspector(ttk.TTkGridLayout):
         @ttk.pyTTkSlot(_TTkTomTreeWidgetItem, int)
         def _itemSelected(wi, _):
             if tomw :=  wi.tomWidget():
-                self.thingSelected.emit(tomw, wi.tomSuperWidget())
+                self._designer.thingSelected.emit(tomw, wi.tomSuperWidget())
 
         self._tomTree.itemClicked.connect(_itemSelected)
 

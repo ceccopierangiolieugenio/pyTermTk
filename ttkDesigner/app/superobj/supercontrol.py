@@ -83,7 +83,7 @@ class SuperControlWidget(ttk.TTkResizableFrame):
                 self._wid.parentWidget().removeSuperWidget(self._wid)
                 self._wid.close()
                 self.close()
-                self._wid.weModified.emit()
+                self._wid._designer.weModified.emit()
                 return True
             bkPos = self.pos()
             x,y = 0,0

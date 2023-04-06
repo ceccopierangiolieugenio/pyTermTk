@@ -28,13 +28,13 @@ import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
 class SuperWidget(ttk.TTkWidget):
-    def __init__(self, wid, weModified, thingSelected, *args, **kwargs):
-        self.weModified = weModified
-        self.thingSelected = thingSelected
+    __slots__ = ('_wid', '_superLayout', '_superRootWidget', '_designer')
+    def __init__(self, designer, wid, *args, **kwargs):
+        self._designer = designer
         self._wid = wid
         self._wid.move(*kwargs['pos'])
         self._wid._canvas.show()
-        self._superLayout = so.SuperLayout(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected,)
+        self._superLayout = so.SuperLayout(designer=designer, lay=self._wid.layout(),)
         self._superRootWidget = kwargs.get('superRootWidget',False)
         kwargs['layout'] = ttk.TTkGridLayout()
         kwargs['layout'].addWidget(self._superLayout)
@@ -59,8 +59,15 @@ class SuperWidget(ttk.TTkWidget):
     _showLayout = False
     toggleHighlightLayout = ttk.pyTTkSignal(bool)
 
+    @ttk.pyTTkSlot(str)
+    def setSuperName(self, name):
+        pass
+
     def getSuperProperties(self):
         exceptions = {
+            'Name': {
+                'get':  { 'cb':ttk.TTkWidget.name,               'type':str} ,
+                'set':  { 'cb':lambda _,n: self.setSuperName(n), 'type':str} },
             'Layout' : {
                 'get':  { 'cb': lambda _: self._superLayout.layout().__class__ , 'type':'singleflag',
                     'flags': {
@@ -108,7 +115,7 @@ class SuperWidget(ttk.TTkWidget):
         return swClass._swFromWidget(wid=wid, *args, **kwargs)
 
     @staticmethod
-    def loadDict(parent, widProp):
+    def loadDict(designer, parent, widProp):
         ttkClass = getattr(ttk,widProp['class'])
         if issubclass(ttkClass,ttk.TTkLayout):
             demiProp = {
@@ -122,7 +129,7 @@ class SuperWidget(ttk.TTkWidget):
             }
             layout = ttk.TTkUiLoader.loadDict(demiProp)
             x,y,w,h = layout.geometry()
-            sl = sup = so.SuperLayout.slFromLayout(layout=layout, lay=ttk.TTkLayout(), pos=(x,y), size=(w,h), weModified=parent.weModified, thingSelected=parent.thingSelected, selectable=True)
+            sl = sup = so.SuperLayout.slFromLayout(designer=designer, layout=layout, lay=ttk.TTkLayout(), pos=(x,y), size=(w,h), selectable=True)
             children = widProp['children']
         else:
             setLayout = 'layout' in widProp
@@ -141,12 +148,12 @@ class SuperWidget(ttk.TTkWidget):
                 'connections':[]
             }
             wid = ttk.TTkUiLoader.loadDict(demiProp)
-            sup = so.SuperWidget.swFromWidget(wid=wid, pos=wid.pos(), weModified=parent.weModified, thingSelected=parent.thingSelected)
+            sup = so.SuperWidget.swFromWidget(designer=designer, wid=wid, pos=wid.pos())
             sl = sup._superLayout
             children = widProp['layout']['children'] if setLayout else []
 
         for ch in children:
-            sch = SuperWidget.loadDict(parent, ch)
+            sch = SuperWidget.loadDict(designer, parent, ch)
             if issubclass(type(sl),so.SuperLayoutGrid):
                 sl.layout().addWidget(sch,ch['row'],ch['col'],ch['rowspan'],ch['colspan'])
             else:
@@ -157,13 +164,13 @@ class SuperWidget(ttk.TTkWidget):
         sl = self._superLayout
         self.layout().removeWidget(sl)
         if layout == ttk.TTkVBoxLayout:
-            sl = so.SuperLayoutVBox(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+            sl = so.SuperLayoutVBox(designer=self._designer, lay=self._wid.layout(), selectable=False)
         elif layout == ttk.TTkHBoxLayout:
-            sl = so.SuperLayoutHBox(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+            sl = so.SuperLayoutHBox(designer=self._designer, lay=self._wid.layout(), selectable=False)
         elif layout == ttk.TTkGridLayout:
-            sl = so.SuperLayoutGrid(lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+            sl = so.SuperLayoutGrid(designer=self._designer, lay=self._wid.layout(), selectable=False)
         else:
-            sl = so.SuperLayout(    lay=self._wid.layout(), weModified=self.weModified, thingSelected=self.thingSelected, selectable=False)
+            sl = so.SuperLayout(    designer=self._designer, lay=self._wid.layout(), selectable=False)
         self._superLayout = sl
         self._wid.setLayout(layout())
         self.layout().addWidget(sl)
@@ -190,7 +197,7 @@ class SuperWidget(ttk.TTkWidget):
 
     def mouseReleaseEvent(self, evt) -> bool:
         self.pushSuperControlWidget()
-        self.thingSelected.emit(self._wid,self)
+        self._designer.thingSelected.emit(self._wid,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:

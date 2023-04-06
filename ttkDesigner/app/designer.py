@@ -28,7 +28,7 @@ from TermTk import TTkString
 from TermTk import TTkColorGradient
 from TermTk import pyTTkSlot, pyTTkSignal
 
-from TermTk import TTkFrame, TTkButton, TTkLabel
+from TermTk import TTkWidget, TTkFrame, TTkButton, TTkLabel
 from TermTk import TTkTabWidget
 from TermTk import TTkAbstractScrollArea, TTkAbstractScrollView, TTkScrollArea
 from TermTk import TTkFileDialogPicker, TTkMessageBox
@@ -75,15 +75,19 @@ from .signalsloteditor import SignalSlotEditor
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_sigslotEditor')
+    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_sigslotEditor', '_treeInspector',
+                 # Signals
+                 'weModified', 'thingSelected'
+                 )
     def __init__(self, *args, **kwargs):
+        self.weModified = pyTTkSignal()
+        self.thingSelected = pyTTkSignal(TTkWidget, TTkWidget)
+
         super().__init__(*args, **kwargs)
 
         self.addWidget(mainSplit := TTkSplitter())
         mainSplit.addItem(widgetBoxLayout := TTkVBoxLayout())
         #mainSplit.addWidget(TTkButton(text='A',border=True))
-
-
 
         # mainSplit.addWidget(sa := TTkScrollArea())
         # sa.viewport().setLayout(TTkGridLayout())
@@ -91,8 +95,9 @@ class TTkDesigner(TTkGridLayout):
 
         self._main = TTkVBoxLayout()
         self._toolBar = TTkHBoxLayout()
-        self._windowEditor = WindowEditor()
+        self._windowEditor = WindowEditor(self)
         self._sigslotEditor = SignalSlotEditor(self)
+        self._treeInspector = TreeInspector(self, self._windowEditor.viewport())
 
         widgetBoxLayout.addWidget(topMenuFrame := TTkFrame(minHeight=1,maxHeight=1,border=False))
         widgetBoxLayout.addWidget(WidgetBoxScrollArea(self))
@@ -109,15 +114,14 @@ class TTkDesigner(TTkGridLayout):
 
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
 
-        rightSplit.addItem(treeInspector := TreeInspector(self._windowEditor.viewport()))
+        rightSplit.addItem(self._treeInspector)
         rightSplit.addItem(propertyEditor := PropertyEditor())
         # rightSplit.addItem(self._sigslotEditor)
 
-        treeInspector.thingSelected.connect(lambda _,s : s.pushSuperControlWidget())
-        treeInspector.thingSelected.connect(propertyEditor.setDetail)
-        self._windowEditor.viewport().thingSelected.connect(propertyEditor.setDetail)
+        self.thingSelected.connect(lambda _,s : s.pushSuperControlWidget())
+        self.thingSelected.connect(propertyEditor.setDetail)
 
-        self._windowEditor.viewport().weModified.connect(treeInspector.refresh)
+        self.weModified.connect(self._treeInspector.refresh)
 
         fileMenu = topMenuFrame.menubarTop().addMenu("&File")
         fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
@@ -204,9 +208,10 @@ class TTkDesigner(TTkGridLayout):
             # wid = TTkUiLoader.loadJson(jj)
             # self._windowEditor.importWidget(wid)
             dd = json.load(fp)
-            sw = SuperWidget.loadDict(self._windowEditor.viewport(), dd['tui'])
+            sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), dd['tui'])
             self._windowEditor.importSuperWidget(sw)
             self._sigslotEditor.importConnections(dd['connections'])
+            self._treeInspector.refresh()
 
     @pyTTkSlot()
     def open(self):

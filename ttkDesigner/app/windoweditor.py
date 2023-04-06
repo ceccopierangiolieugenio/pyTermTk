@@ -26,18 +26,18 @@ import TermTk as ttk
 
 
 class WindowEditorView(ttk.TTkAbstractScrollView):
-    def __init__(self, *args, **kwargs):
-        self.weModified = ttk.pyTTkSignal()
-        self.thingSelected = ttk.pyTTkSignal(ttk.TTkWidget, ttk.TTkWidget)
+    __slots__ = ('_designer')
+    def __init__(self, designer, *args, **kwargs):
+        self._designer = designer
         super().__init__(*args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
-        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), weModified=self.weModified, thingSelected=self.thingSelected, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
+        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
         self.layout().addWidget(self._ttk)
 
     def importWidget(self, wid):
         if self._ttk:
             self.layout().removeWidget(self._ttk)
-        self._ttk = SuperWidget.swFromWidget(wid=wid, weModified=self.weModified, thingSelected=self.thingSelected, pos=(4,2), size=(self.width()-8,self.height()-4))
+        self._ttk = SuperWidget.swFromWidget(wid=wid, designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4))
         self._ttk.makeRootWidget()
         self.layout().addWidget(self._ttk)
 
@@ -76,9 +76,9 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
     __slots__ = ('getTTk', 'dumpDict', 'importWidget', 'importSuperWidget')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setViewport(wev := WindowEditorView())
+        self.setViewport(wev := WindowEditorView(designer))
         # wev.importWidget(ttk.TTkWidget(name = 'TTk'))
         # Forward Methods
         self.getTTk            = wev.getTTk

@@ -26,6 +26,9 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 TTkWidgetProperties = {
     'properties' : {
+        'Name' : {
+                'init': {'name':'name',        'type':str } ,
+                'get':  { 'cb':TTkWidget.name, 'type':str} },
         # 'X' : {
         #         'init': {'name':'x', 'type':int } ,
         #         'get':  { 'cb':x,    'type':int } },
@@ -89,9 +92,6 @@ TTkWidgetProperties = {
                 'init': {'name':'layout', 'type':TTkLayout} ,
                 'get':  { 'cb':TTkWidget.layout,    'type':TTkLayout} ,
                 'set':  { 'cb':TTkWidget.setLayout, 'type':TTkLayout} },
-        'Name' : {
-                'init': {'name':'name', 'type':str } ,
-                'get':  { 'cb':TTkWidget.name,       'type':str} },
         'Visible' : {
                 'init': {'name':'visible', 'type':bool } ,
                 'get':  { 'cb':TTkWidget.isVisible,   'type':bool } ,
