@@ -137,6 +137,7 @@ class TTkComboBox(TTkWidget):
         for item in items:
             self.addItem(item)
 
+    pyTTkSlot()
     def clear(self):
         '''clear'''
         self._lineEdit.setText("")

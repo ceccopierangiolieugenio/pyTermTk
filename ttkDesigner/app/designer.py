@@ -77,11 +77,12 @@ from .signalsloteditor import SignalSlotEditor
 class TTkDesigner(TTkGridLayout):
     __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_sigslotEditor', '_treeInspector',
                  # Signals
-                 'weModified', 'thingSelected'
+                 'weModified', 'thingSelected', 'widgetNameChanged'
                  )
     def __init__(self, *args, **kwargs):
         self.weModified = pyTTkSignal()
         self.thingSelected = pyTTkSignal(TTkWidget, TTkWidget)
+        self.widgetNameChanged = pyTTkSignal(str, str)
 
         super().__init__(*args, **kwargs)
 

@@ -40,6 +40,8 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
         self._signal.currentTextChanged.connect(  self._signalChanged)
         self._receiver.currentTextChanged.connect(self._receiverChanged)
         self._slot.currentTextChanged.connect(    self._slotChanged)
+        self._designer.widgetNameChanged.connect( self._widgetNameChanged)
+        self._designer.weModified.connect(self.updateWidgets)
         self.updateWidgets()
         super().__init__([self._sender,self._signal,self._receiver,self._slot], *args, **kwargs)
 
@@ -78,10 +80,9 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
             'signal':   curSignal,
             'slot':     curSlot }
 
+    @ttk.pyTTkSlot()
     def updateWidgets(self):
-        names = [w.name() for w in self._designer.getWidgets()]
-        self._sender.addItems(names)
-        self._receiver.addItems(names)
+        self._widgetNameChanged()
 
     @staticmethod
     def typeToString(t):
@@ -93,6 +94,20 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
                 complex : 'complex',
                 str     : 'str',
                 None    : ''}.get(t,f"UNDEFINED {t}")
+
+    @ttk.pyTTkSlot(str, str)
+    def _widgetNameChanged(self, oldName='', newName=''):
+        names = [w.name() for w in self._designer.getWidgets()]
+
+        def _setCB(cb:ttk.TTkComboBox, base):
+            text = cb.currentText()
+            text = text if text!=oldName else newName
+            cb.clear()
+            cb.addItems([base]+names)
+            cb.setCurrentText(text)
+
+        _setCB(self._sender,   '<sender>')
+        _setCB(self._receiver, '<receiver>')
 
     @ttk.pyTTkSlot(str)
     def _senderChanged(self, text):
