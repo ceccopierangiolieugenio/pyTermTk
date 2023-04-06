@@ -622,10 +622,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def isVisible(self):
         return self._visible
 
-    # Event to be sent
-    # TODO: Remove This
-    def layoutUpdated(self): pass
-
     def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
         if repaint:
             TTkHelper.addUpdateBuffer(self)
@@ -639,8 +635,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
         if updateLayout and self.rootLayout() is not None:
-            if self.rootLayout().update():
-                self.layoutUpdated()
+            self.rootLayout().update()
 
     @pyTTkSlot()
     def setFocus(self):
