@@ -205,6 +205,8 @@ class SignalSlotEditor(ttk.TTkWidget):
                 self._detail.takeTopLevelItem(index)
 
     def importConnections(self, connections):
+        self._items = []
+        self._detail.clear()
         for c in connections:
             item = _SignalSlotItem(self._designer)
             item.importConnection(c)

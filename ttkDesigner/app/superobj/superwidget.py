@@ -61,7 +61,9 @@ class SuperWidget(ttk.TTkWidget):
 
     @ttk.pyTTkSlot(str)
     def setSuperName(self, name):
-        pass
+        if name and name not in [w.name() for w in self._designer.getWidgets()]:
+            self._wid._name = name
+            self._designer.weModified.emit()
 
     def getSuperProperties(self):
         exceptions = {
