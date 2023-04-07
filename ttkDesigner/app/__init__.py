@@ -30,4 +30,5 @@ from .widgetbox import DragDesignItem, WidgetBox
 from .windoweditor import WindowEditor
 from .propertyeditor import PropertyEditor
 from .signalsloteditor import SignalSlotEditor
+from .quickexport import QuickExport
 from .superobj import *

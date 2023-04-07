@@ -47,6 +47,7 @@ from .windoweditor import WindowEditor, SuperWidget
 from .treeinspector import TreeInspector
 from .propertyeditor import PropertyEditor
 from .signalsloteditor import SignalSlotEditor
+from .quickexport import QuickExport
 
 #
 #      Mimic the QT Designer layout
@@ -147,6 +148,7 @@ class TTkDesigner(TTkGridLayout):
         centralSplit.setSizes([None,8])
 
         self._toolBar.addWidget(btnPreview := TTkButton(maxWidth=12, text='Preview...'))
+        self._toolBar.addWidget(btnExport := TTkButton(maxWidth=17, text='Quick Export 📦'))
         self._toolBar.addWidget(btnColors  := TTkButton(maxWidth=11, checkable=True, text=
                             TTkString("▣",TTkColor.fg("#ff0000")) +
                             TTkString("▣",TTkColor.fg("#ffff00")) +
@@ -155,15 +157,10 @@ class TTkDesigner(TTkGridLayout):
                             TTkString("▣",TTkColor.fg("#0000ff")) + "🦄"))
 
         btnPreview.clicked.connect(self.preview)
+        btnExport.clicked.connect(self.quickExport)
         btnColors.toggled.connect(self.toggleColors)
 
         self._toolBar.addItem(TTkLayout())
-
-        # # Internal Debug Stuff
-        # mainSplit.addWidget(debugSplit := TTkSplitter(orientation=TTkK.VERTICAL))
-        # # debugSplit.addWidget(TTkLabel(text='My Own Debug', maxHeight=1, minHeight=1))
-        # debugSplit.addWidget(TTkTomInspector())
-        # debugSplit.addWidget(TTkLogViewer())
 
     def getWidgets(self):
         widgets = []
@@ -177,11 +174,27 @@ class TTkDesigner(TTkGridLayout):
         _getItems(self._windowEditor.getTTk().widgetItem())
         return widgets
 
-    pyTTkSlot(bool)
+    @pyTTkSlot(bool)
     def toggleColors(self, state):
         SuperWidget.toggleHighlightLayout.emit(state)
 
-    def preview(self, btn=None):
+    @pyTTkSlot()
+    def quickExport(self):
+        tui = self._windowEditor.dumpDict()
+        connections = self._sigslotEditor.dumpDict()
+        data = {
+            'version':'1.0.0',
+            'tui':tui,
+            'connections':connections}
+
+        win = QuickExport(
+                data=data,
+                title="Mr Export", size=(80,30),
+                flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
+        TTkHelper.overlay(None, win, 2, 2, modal=True)
+
+    @pyTTkSlot()
+    def preview(self):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         # for line in jj.split('\n'):
@@ -204,10 +217,6 @@ class TTkDesigner(TTkGridLayout):
     def _openFile(self, fileName):
         TTkLog.info(f"Open: {fileName}")
         with open(fileName) as fp:
-            # jj = fp.read()
-            # # ttk = SuperWidget.loadDict(self._windowEditor.viewport(), jj['tui'])
-            # wid = TTkUiLoader.loadJson(jj)
-            # self._windowEditor.importWidget(wid)
             dd = json.load(fp)
             sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), dd['tui'])
             self._windowEditor.importSuperWidget(sw)

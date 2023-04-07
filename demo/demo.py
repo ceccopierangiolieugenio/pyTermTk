@@ -274,6 +274,9 @@ def main():
     demoShowcase(winTabbed1, border)
 
     root.mainloop()
+    # for i,(a,b) in enumerate(ttk.TTkHelper.paintDbg):
+    #     print(f"{i=} a={[w.name() for w in a]}")
+    #     print(f"{i=} b={[w.name() for w in b]}")
 
 if __name__ == "__main__":
     main()

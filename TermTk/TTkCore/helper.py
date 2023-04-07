@@ -76,7 +76,7 @@ class TTkHelper:
 
     @staticmethod
     def addUpdateWidget(widget):
-        if not widget.isVisibleAndParent(): return
+        # if not widget.isVisibleAndParent(): return
         if widget not in TTkHelper._updateWidget:
             TTkHelper._updateWidget.append(widget)
 
@@ -247,6 +247,7 @@ class TTkHelper:
     def mousePos():
         return TTkHelper._mousePos
 
+    # paintDbg = []
     @staticmethod
     def paintAll():
         '''
@@ -273,6 +274,8 @@ class TTkHelper:
 
         TTkHelper._updateBuffer = []
         TTkHelper._updateWidget = []
+
+        # TTkHelper.paintDbg.append((updateBuffers,updateWidgets))
 
         # Paint all the canvas
         for widget in updateBuffers:
