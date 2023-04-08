@@ -254,21 +254,24 @@ class TTkHelper:
             return
 
         # Build a list of buffers to be repainted
+        updateWidgetsBk = TTkHelper._updateWidget.copy()
         updateBuffers = TTkHelper._updateBuffer.copy()
-        updateWidgets = TTkHelper._updateWidget.copy()
+        TTkHelper._updateWidget = set()
+        TTkHelper._updateBuffer = set()
+        updateWidgets = set()
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
-        for widget in TTkHelper._updateWidget:
+        for widget in updateWidgetsBk:
             if not widget.isVisibleAndParent(): continue
+            updateBuffers.add(widget)
+            updateWidgets.add(widget)
             parent = widget.parentWidget()
             while parent is not None:
                 updateBuffers.add(parent)
                 updateWidgets.add(parent)
                 parent = parent.parentWidget()
 
-        TTkHelper._updateBuffer = set()
-        TTkHelper._updateWidget = set()
-
+        # TTkHelper.paintDbg = []
         # TTkHelper.paintDbg.append((updateBuffers,updateWidgets))
 
         # Paint all the canvas
