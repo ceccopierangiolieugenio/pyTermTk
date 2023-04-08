@@ -32,8 +32,8 @@ class TTkHelper:
     _focusWidget = None
     _rootCanvas = None
     _rootWidget = None
-    _updateWidget = []
-    _updateBuffer  = []
+    _updateWidget = set()
+    _updateBuffer  = set()
     _mousePos = (0,0)
     _cursorPos = [0,0]
     _cursor = False
@@ -89,8 +89,6 @@ class TTkHelper:
         TTkHelper._rootCanvas = widget.getCanvas()
         TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
-        TTkHelper._updateBuffer = set()
-        TTkHelper._updateWidget = set()
 
     @staticmethod
     def quit():
@@ -285,9 +283,8 @@ class TTkHelper:
         # Compose all the canvas to the parents
         # From the deepest children to the bottom
         pushToTerminal = False
-        sortedUpdateWidget = sorted(updateWidgets, key=lambda w: -w[1])
-        for w in sortedUpdateWidget:
-            widget = w[0]
+        sortedUpdateWidget = sorted(updateWidgets, key=lambda w: -TTkHelper.widgetDepth(w))
+        for widget in sortedUpdateWidget:
             if not widget.isVisibleAndParent(): continue
             pushToTerminal = True
             widget.paintChildCanvas()
