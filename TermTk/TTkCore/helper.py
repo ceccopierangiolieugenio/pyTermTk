@@ -77,22 +77,20 @@ class TTkHelper:
     @staticmethod
     def addUpdateWidget(widget):
         # if not widget.isVisibleAndParent(): return
-        if widget not in TTkHelper._updateWidget:
-            TTkHelper._updateWidget.append(widget)
+        TTkHelper._updateWidget.add(widget)
 
     @staticmethod
     def addUpdateBuffer(canvas):
         if canvas is not TTkHelper._rootCanvas:
-            if canvas not in TTkHelper._updateBuffer:
-                TTkHelper._updateBuffer.append(canvas)
+            TTkHelper._updateBuffer.add(canvas)
 
     @staticmethod
     def registerRootWidget(widget):
         TTkHelper._rootCanvas = widget.getCanvas()
         TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
-        TTkHelper._updateBuffer = []
-        TTkHelper._updateWidget = []
+        TTkHelper._updateBuffer = set()
+        TTkHelper._updateWidget = set()
 
     @staticmethod
     def quit():
@@ -266,14 +264,12 @@ class TTkHelper:
             if not widget.isVisibleAndParent(): continue
             parent = widget.parentWidget()
             while parent is not None:
-                if parent not in updateBuffers:
-                    updateBuffers.append(parent)
-                if parent not in updateWidgets:
-                    updateWidgets.append(parent)
+                updateBuffers.add(parent)
+                updateWidgets.add(parent)
                 parent = parent.parentWidget()
 
-        TTkHelper._updateBuffer = []
-        TTkHelper._updateWidget = []
+        TTkHelper._updateBuffer = set()
+        TTkHelper._updateWidget = set()
 
         # TTkHelper.paintDbg.append((updateBuffers,updateWidgets))
 
@@ -289,8 +285,7 @@ class TTkHelper:
         # Compose all the canvas to the parents
         # From the deepest children to the bottom
         pushToTerminal = False
-        sortedUpdateWidget = [ (w, TTkHelper.widgetDepth(w)) for w in updateWidgets]
-        sortedUpdateWidget = sorted(sortedUpdateWidget, key=lambda w: -w[1])
+        sortedUpdateWidget = sorted(updateWidgets, key=lambda w: -w[1])
         for w in sortedUpdateWidget:
             widget = w[0]
             if not widget.isVisibleAndParent(): continue
