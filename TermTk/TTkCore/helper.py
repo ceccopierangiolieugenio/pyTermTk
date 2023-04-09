@@ -243,7 +243,6 @@ class TTkHelper:
     def mousePos():
         return TTkHelper._mousePos
 
-    # paintDbg = []
     @staticmethod
     def paintAll():
         '''
@@ -270,9 +269,6 @@ class TTkHelper:
                 updateBuffers.add(parent)
                 updateWidgets.add(parent)
                 parent = parent.parentWidget()
-
-        # TTkHelper.paintDbg = []
-        # TTkHelper.paintDbg.append((updateBuffers,updateWidgets))
 
         # Paint all the canvas
         for widget in updateBuffers:
