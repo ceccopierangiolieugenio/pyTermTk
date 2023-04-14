@@ -192,6 +192,7 @@ class TTkPropertyAnimation():
             else:
                 newVal = self._easingCurve.process(self._startValue,self._endValue,v)
                 self._cb(*self._cast(newVal))
+        TTkHelper.unlockPaint()
 
     @pyTTkSlot()
     def start(self):

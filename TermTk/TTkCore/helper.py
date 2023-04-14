@@ -75,9 +75,15 @@ class TTkHelper:
                 w.update(repaint=True, updateLayout=True)
 
     @staticmethod
+    def unlockPaint():
+        if rw := TTkHelper._rootWidget:
+            rw._paintEvent.set()
+
+    @staticmethod
     def addUpdateWidget(widget):
         # if not widget.isVisibleAndParent(): return
         TTkHelper._updateWidget.add(widget)
+        TTkHelper.unlockPaint()
 
     @staticmethod
     def addUpdateBuffer(canvas):
