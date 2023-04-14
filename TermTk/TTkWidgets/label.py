@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
@@ -29,7 +30,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkLabel(TTkWidget):
     '''TTkLabel'''
-    __slots__ = ('_text','_color')
+    __slots__ = ('_text','_color','_alignment')
     def __init__(self, *args, **kwargs):
         self._color = kwargs.get('color', TTkColor.RST )
         text = kwargs.get('text', TTkString() )
@@ -37,10 +38,21 @@ class TTkLabel(TTkWidget):
             self._text = text.split('\n')
         else:
             self._text = TTkString(text).split('\n')
+        self._alignment = kwargs.get('alignment', TTkK.Alignment.NONE)
 
         self.setDefaultSize(kwargs, max(t.termWidth() for t in  self._text), len(self._text))
         super().__init__(*args, **kwargs)
         self._textUpdated()
+
+    def alignment(self):
+        return self._alignment
+
+    @pyTTkSlot(TTkK.Alignment)
+    def setAlignment(self, alignment: TTkK.Alignment):
+        if self._alignment == alignment:
+            return
+        self._alignment = alignment
+        self.update()
 
     def color(self):
         '''color'''
@@ -68,9 +80,10 @@ class TTkLabel(TTkWidget):
 
     def paintEvent(self):
         forceColor = self.color()!=TTkColor.RST
+        w = self.width()
         for y,text in enumerate(self._text):
-            self._canvas.drawText(pos=(0,y), text=' '*self.width(), color=self.color(), forceColor=forceColor)
-            self._canvas.drawText(pos=(0,y), text=text, color=self.color(), forceColor=forceColor)
+            self._canvas.drawText(pos=(0,y), text=' '*w, color=self.color(), forceColor=forceColor)
+            self._canvas.drawText(pos=(0,y), text=text, width=w, alignment=self._alignment, color=self.color(), forceColor=forceColor)
 
     def _textUpdated(self):
         w, h = self.size()

@@ -42,6 +42,11 @@ class PropertyEditor(ttk.TTkGridLayout):
         self._makeDetail(widget, *superWidget.getSuperProperties())
 
     def _makeDetail(self, domw, exceptions, exclude):
+        def _boundValue(_f,_w,_v):
+            def _ret():
+                _f(_w,_v)
+                self._superWidget.updateAll()
+            return _ret
         def _bound(_f,_w,_l):
             def _ret(_v):
                 _f(_w,_l(_v))
@@ -178,8 +183,12 @@ class PropertyEditor(ttk.TTkGridLayout):
         # Color Fields
         def _processTTkColor(name, prop):
             getval = prop['get']['cb'](domw)
-            value = ttk.TTkColorButtonPicker(color=getval, height=1)
-            value.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+            value = ttk.TTkWidget(layout=ttk.TTkHBoxLayout(), height=1)
+            value.layout().addWidget(_cb := ttk.TTkColorButtonPicker(color=getval, height=1))
+            value.layout().addWidget(_rc := ttk.TTkButton(text=ttk.TTkString('x',ttk.TTkColor.fg('#FFAA00')),maxWidth=3))
+            _cb.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+            _rc.clicked.connect(_boundValue(prop['set']['cb'],domw,ttk.TTkColor.RST))
+            _rc.clicked.connect(lambda :_cb.setColor(ttk.TTkColor.RST))
             return ttk.TTkTreeWidgetItem([name,value])
         # Layout field
         def _processTTkLayout(name, prop):

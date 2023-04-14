@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.label import TTkLabel
@@ -27,12 +28,37 @@ from TermTk.TTkWidgets.label import TTkLabel
 TTkLabelProperties = {
     'properties' : {
         'Text' : {
-                'init': {'name':'text',  'type':'singleLineTTkString' },
-                'get':  {'cb':TTkLabel.text,      'type':'singleLineTTkString' } ,
-                'set':  {'cb':TTkLabel.setText,   'type':'singleLineTTkString' } },
+                'init': {'name':'text',         'type':TTkString },
+                'get':  {'cb':TTkLabel.text,    'type':TTkString } ,
+                'set':  {'cb':TTkLabel.setText, 'type':TTkString } },
         'Color' : {
-                'init': {'name':'color',  'type':TTkColor },
-                'get':  {'cb':TTkLabel.color,      'type':TTkColor } ,
-                'set':  {'cb':TTkLabel.setColor,   'type':TTkColor } },
-    },'signals' : {},'slots' : {}
-}
+                'init': {'name':'color',         'type':TTkColor },
+                'get':  {'cb':TTkLabel.color,    'type':TTkColor } ,
+                'set':  {'cb':TTkLabel.setColor, 'type':TTkColor } },
+        'Alignment': {
+                'init': {'name':'alignment',        'type':'singleflag',
+                    'flags': {
+                        'None'    : TTkK.NONE         ,
+                        'Left'    : TTkK.LEFT_ALIGN   ,
+                        'Right'   : TTkK.RIGHT_ALIGN  ,
+                        'Center'  : TTkK.CENTER_ALIGN ,
+                        'Justify' : TTkK.JUSTIFY      } } ,
+                'get':  {'cb':TTkLabel.alignment,   'type':'singleflag',
+                    'flags': {
+                        'None'    : TTkK.NONE         ,
+                        'Left'    : TTkK.LEFT_ALIGN   ,
+                        'Right'   : TTkK.RIGHT_ALIGN  ,
+                        'Center'  : TTkK.CENTER_ALIGN ,
+                        'Justify' : TTkK.JUSTIFY      } },
+                'set':  {'cb':TTkLabel.setAlignment,'type':'singleflag',
+                    'flags': {
+                        'None'    : TTkK.NONE         ,
+                        'Left'    : TTkK.LEFT_ALIGN   ,
+                        'Right'   : TTkK.RIGHT_ALIGN  ,
+                        'Center'  : TTkK.CENTER_ALIGN ,
+                        'Justify' : TTkK.JUSTIFY      } } },
+    },'signals' : {
+    },'slots' : {
+        'setText()' :        {'name': 'setText',      'type':str},
+        'setAlignment()' :   {'name': 'setAlignment', 'type':int},
+    }}
