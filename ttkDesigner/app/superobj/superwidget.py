@@ -28,8 +28,11 @@ import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
 class SuperWidget(ttk.TTkWidget):
-    __slots__ = ('_wid', '_superLayout', '_superRootWidget', '_designer')
+    __slots__ = ('_wid', '_superLayout', '_superRootWidget', '_designer',
+                 'superMoved', 'superResized')
     def __init__(self, designer, wid, *args, **kwargs):
+        self.superMoved   = ttk.pyTTkSignal(int,int)
+        self.superResized = ttk.pyTTkSignal(int,int)
         self._designer = designer
         self._wid = wid
         self._wid.move(*kwargs['pos'])
@@ -194,7 +197,7 @@ class SuperWidget(ttk.TTkWidget):
         self._superRootWidget = True
 
     def pushSuperControlWidget(self):
-        if self._superRootWidget: return False
+        # if self._superRootWidget: return False
         scw = so.SuperControlWidget(self)
         ttk.TTkHelper.removeOverlay()
         ttk.TTkHelper.overlay(self, scw, -1,-1, forceBoundaries=False)
@@ -229,11 +232,13 @@ class SuperWidget(ttk.TTkWidget):
     def move(self, x: int, y: int):
         self._wid.move(x,y)
         self.update()
+        self.superMoved.emit(x,y)
         return super().move(x, y)
 
     def resizeEvent(self, w, h):
         self._wid.resize(w,h)
         self._wid._canvas.updateSize()
+        self.superResized.emit(w,h)
         return super().resizeEvent(w, h)
 
     def paintEvent(self):

@@ -26,17 +26,21 @@ import TermTk as ttk
 
 
 class WindowEditorView(ttk.TTkAbstractScrollView):
-    __slots__ = ('_designer')
+    __slots__ = ('_designer', '_snapRootWidget')
     def __init__(self, designer, *args, **kwargs):
         self._designer = designer
         super().__init__(*args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
-        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'TTk'), designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
+        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'MainWidget'), designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
+        self._ttk.superResized.connect(self._superChanged)
+        self._ttk.superMoved.connect(self._superChanged)
         self.layout().addWidget(self._ttk)
+        self._snapRootWidget = True
 
     def importWidget(self, wid):
         if self._ttk:
             self.layout().removeWidget(self._ttk)
+        self._snapRootWidget = False
         self._ttk = SuperWidget.swFromWidget(wid=wid, designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4))
         self._ttk.makeRootWidget()
         self.layout().addWidget(self._ttk)
@@ -54,8 +58,15 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
     def dumpDict(self):
         return self._ttk.dumpDict()
 
+    @ttk.pyTTkSlot()
+    def _superChanged(self):
+        self._snapRootWidget = False
+        self.viewChanged.emit()
+
     def resizeEvent(self, w, h):
-        self._ttk.resize(w-8,h-4)
+        if self._snapRootWidget:
+            self._ttk.resize(w-8,h-4)
+            self._snapRootWidget = True
         return super().resizeEvent(w, h)
 
     @ttk.pyTTkSlot()
@@ -64,15 +75,16 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self.layout().setOffset(-x,-y)
 
     def viewFullAreaSize(self):
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        return w+1, h+1
+        x,y,w,h = self.layout().fullWidgetAreaGeometry()
+        return x+w, y+h
 
     def viewDisplayedSize(self):
         return self.size()
 
     def paintEvent(self):
         w,h = self.size()
-        self._canvas.fill(pos=(0,0),size=(w,h), char="╳", color=ttk.TTkColor.fg("#444400")+ttk.TTkColor.bg("#000044"))
+        # self._canvas.fill(pos=(0,0),size=(w,h), char="╳", color=ttk.TTkColor.fg("#444400")+ttk.TTkColor.bg("#000044"))
+        self._canvas.fill(pos=(0,0),size=(w,h), char="#", color=ttk.TTkColor.fg("#220044")+ttk.TTkColor.bg("#000022"))
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
     __slots__ = ('getTTk', 'dumpDict', 'importWidget', 'importSuperWidget')
