@@ -82,6 +82,7 @@ class TTkRecord(demo.ttk.TTk):
             if evt == self.KEY_EVENT:
                 kevt = self._key_events.get()
             if evt == self.TIME_EVENT:
+                self._paintEvent.set()
                 super()._time_event()
                 continue
             #if evt == self.SCREEN_EVENT:
