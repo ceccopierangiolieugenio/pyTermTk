@@ -76,11 +76,14 @@ from .quickexport import QuickExport
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_sigslotEditor', '_treeInspector',
+    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_fileNameLabel', '_sigslotEditor', '_treeInspector', '_fileName', '_currentPath',
                  # Signals
                  'weModified', 'thingSelected', 'widgetNameChanged'
                  )
     def __init__(self, *args, **kwargs):
+        self._fileName = "untitled.tui.json"
+        self._currentPath = self._currentPath =  os.path.abspath('.')
+
         self.weModified = pyTTkSignal()
         self.thingSelected = pyTTkSignal(TTkWidget, TTkWidget)
         self.widgetNameChanged = pyTTkSignal(str, str)
@@ -100,6 +103,7 @@ class TTkDesigner(TTkGridLayout):
         self._windowEditor = WindowEditor(self)
         self._sigslotEditor = SignalSlotEditor(self)
         self._treeInspector = TreeInspector(self, self._windowEditor.viewport())
+        self._fileNameLabel = TTkLabel(text=f"( {self._fileName} )", alignment=TTkK.CENTER_ALIGN)
 
         widgetBoxLayout.addWidget(topMenuFrame := TTkFrame(minHeight=1,maxHeight=1,border=False))
         widgetBoxLayout.addWidget(WidgetBoxScrollArea(self))
@@ -161,7 +165,8 @@ class TTkDesigner(TTkGridLayout):
         btnExport.clicked.connect(self.quickExport)
         btnColors.toggled.connect(self.toggleColors)
 
-        self._toolBar.addItem(TTkLayout())
+        self._toolBar.addWidget(self._fileNameLabel)
+
 
     def getWidgets(self):
         widgets = []
@@ -222,11 +227,14 @@ class TTkDesigner(TTkGridLayout):
         newWindow.getWidgetByName("BtnWidget").clicked.connect(self._windowEditor.newWidget)
         newWindow.getWidgetByName("BtnWindow").clicked.connect(self.weModified.emit)
         newWindow.getWidgetByName("BtnWidget").clicked.connect(self.weModified.emit)
-
         TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
 
     def _openFile(self, fileName):
         TTkLog.info(f"Open: {fileName}")
+        self._currentPath =  os.path.dirname(os.path.abspath(fileName))
+        self._fileName =  os.path.basename(os.path.abspath(fileName))
+        self._fileNameLabel.setText(f"( {self._fileName} )")
+
         with open(fileName) as fp:
             dd = json.load(fp)
             sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), dd['tui'])
@@ -236,9 +244,7 @@ class TTkDesigner(TTkGridLayout):
 
     @pyTTkSlot()
     def open(self):
-        # self._openFile('tmp/pippo.008.json')
-        # return
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Open", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="Json Files (*.json);;All Files (*)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(80,30), caption="Open", path=self._currentPath, fileMode=TTkK.FileMode.ExistingFile ,filter="TTk Tui Files (*.tui.json);;Json Files (*.json);;All Files (*)")
         filePicker.pathPicked.connect(self._openFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 
@@ -275,6 +281,6 @@ class TTkDesigner(TTkGridLayout):
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
                 self._saveToFile(fileName)
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Save As...", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.json)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(80,30), caption="Save As...", path=os.path.join(self._currentPath,self._fileName), fileMode=TTkK.FileMode.AnyFile ,filter="TTk Tui Files (*.tui.json);;Json Files (*.json);;All Files (*)")
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)

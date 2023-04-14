@@ -157,9 +157,12 @@ class TTkFileDialogPicker(TTkWindow):
         self._fileTree.itemActivated.connect(self._activatedItem)
 
         self._lookPath.currentTextChanged.connect(self._openNewPath)
-        self._openNewPath(self._path, True)
-
         self._fileName.setText(self._path)
+        if os.path.isdir(self._path):
+            self._openNewPath(self._path, True)
+        else:
+            self._openNewPath(os.path.dirname(self._path), True)
+        self._fileTypeChanged(self._fileType.currentText())
 
     @pyTTkSlot(str)
     def _fileTypeChanged(self, type):

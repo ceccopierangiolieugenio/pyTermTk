@@ -28,7 +28,7 @@
    "ToolTip": "\u001b[0m",
    "Border": true,
    "Title": "\u001b[0m\u001b[0mNew Form - TTk Designer \ud83d\ude0e\u001b[0m",
-   "Window Flags": 32768
+   "Window Flags": 134250496
   },
   "layout": {
    "class": "TTkGridLayout",
