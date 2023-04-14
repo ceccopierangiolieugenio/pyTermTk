@@ -238,7 +238,7 @@ class TTkDesigner(TTkGridLayout):
     def open(self):
         # self._openFile('tmp/pippo.008.json')
         # return
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Open", path="experiments", fileMode=TTkK.FileMode.AnyFile ,filter="Json Files (*.json);;All Files (*)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Open", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="Json Files (*.json);;All Files (*)")
         filePicker.pathPicked.connect(self._openFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 
@@ -275,6 +275,6 @@ class TTkDesigner(TTkGridLayout):
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
                 self._saveToFile(fileName)
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Save As...", path="experiments", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.json)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Save As...", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.json)")
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
