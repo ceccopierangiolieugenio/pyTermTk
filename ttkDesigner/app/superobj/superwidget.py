@@ -181,6 +181,7 @@ class SuperWidget(ttk.TTkWidget):
         self._superLayout = sl
         self._wid.setLayout(layout())
         self.layout().addWidget(sl)
+        self._designer.weModified.emit()
 
     def updateAll(self):
         self.resize(*(self._wid.size()))
