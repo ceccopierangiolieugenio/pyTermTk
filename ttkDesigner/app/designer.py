@@ -217,19 +217,7 @@ class TTkDesigner(TTkGridLayout):
 
     @pyTTkSlot()
     def new(self):
-        newWindow = TTkUiLoader.loadDict(TTkUtil.base64_deflate_2_obj(
-            "eJytlm1L21AUxxOTmtau0zmmm75YGIP1xSzVzU3pq1WnskwRVnQgfRGbS28wTSQPs24IslctXMaEWzYGQ9hH6yfYR9i5eahpS2tx5oHc03Pvye9/z7m5PRdbX1Ocf5zR" +
-            "LJE+IdvRLZOSxGIun8tTIrieTpkrUTFUx6EkVSod7eumZp1QMn6s2mrN8f3ijlpD4N5BJ5E7uWs5usvClWlWEZUxRMQP+mfkm+vKNCKpbd2U93XNxVQZIxPM2kJ6FbtU" +
-            "EcGp1kPnNjcFXjBDL7OlXVXTdLPqRxMUnp2IjL9XTy3PpSQDnJu2rkW2tKc7+qGBaINIb00VWhprlizLKOnHlIjzB/kaSCpatoZscCVKugvdSZY52A3K5A3LrskLMsSW" +
-            "15GjV01ky38vf34LBt8JlMsbhlp1APLcI+NG8H6YIpzAM1g6g3nZRFYNufYpgHNwFpW7LnVIsoJ1Q7ORP11+f3+yi57rwhSykVmcIqmia4aacJpJnwHZOBO0RIQnlSSe" +
-            "UgR87x3H8RyeDh73y+G74ET4gR84ijLbwA+b+BGeI2IJ1WGqpiPFQQ9fG55vkNQaRpUjNnW0SSTfgElsevhxoG6BMeInwYsABkThp2XqEcGGcoAECxXLYE8JbOdYNanC" +
-            "Ewl+C9teEOZZXGpYS4HU5zGpGSZ1EqRKw6UCFRPYYAJx7uMcz3GRvHaLtlvfr7t+TLRbF3KY2XBo4cVKYamwtLzs3/nCS2bm4QSzdtDXabWvT32UQOUr0AuAuGzT82uu" +
-            "1h8f9uoIRv4aQebvKM0438SLA5OaiZKKXylj+DUU2ooi4tVBydOqKKpTrjd5I9Rpd/KuCjMIfDNifhBxBohjX4xodSU61AKjzoxM3QypZyNqFlzuXlPD0YUYugDoY4DO" +
-            "D0LfK1r1HvTkraGz4DdGF69D3+pHT98a+tb/oCf60UnS/3YeIqPzTU77Zk+1cx0FPFMwAQr4jgJoDi/1mfiuEyt3klizDMvu7FepNwbsQjVksi1zkCI+pogPl0A8GXa3" +
-            "kJ5UDBUyyrLt0hLPxGmoAn8Znb23kOzeJHTtF7fLHgS/ObvQYUeeR9IVyzRRhf1BcmDL93L/AD7YB1I="))
-
-        newWindow.getWidgetByName("BtnWindow").clicked.connect(newWindow.close)
-        newWindow.getWidgetByName("BtnWidget").clicked.connect(newWindow.close)
+        newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/newWindow.tui.json"))
         newWindow.getWidgetByName("BtnWindow").clicked.connect(self._windowEditor.newWindow)
         newWindow.getWidgetByName("BtnWidget").clicked.connect(self._windowEditor.newWidget)
         newWindow.getWidgetByName("BtnWindow").clicked.connect(self.weModified.emit)

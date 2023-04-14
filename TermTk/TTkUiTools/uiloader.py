@@ -22,7 +22,7 @@
 
 # Yaml is not included by default
 # import yaml
-import json
+import os, json
 
 from TermTk import TTkLog
 from TermTk import TTkCfg
@@ -32,6 +32,12 @@ from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
 class TTkUiLoader():
+    @staticmethod
+    def loadFile(filePath):
+        with open(filePath) as f:
+            return TTkUiLoader.loadJson(f.read())
+        return None
+
     @staticmethod
     def loadJson(text):
         return TTkUiLoader.loadDict(json.loads(text))

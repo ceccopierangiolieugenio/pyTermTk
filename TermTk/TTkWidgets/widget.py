@@ -709,6 +709,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._toolTip = toolTip
 
     def getWidgetByName(self, name: str):
+        if name == self._name:
+            return self
         for w in self.rootLayout().iterWidgets(onlyVisible=False, recurse=True):
             if w._name == name:
                 return w
