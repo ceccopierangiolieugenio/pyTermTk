@@ -74,7 +74,7 @@ class TTkComboBox(TTkWidget):
         self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._textAlign = kwargs.get('textAlign', TTkK.CENTER_ALIGN)
-        self._id = -1
+        self._id = kwargs.get('index', -1 )
         self._popupFrame = None
         self.setEditable(kwargs.get('editable', False ))
         self.setMinimumSize(5, 1)
@@ -137,6 +137,7 @@ class TTkComboBox(TTkWidget):
         for item in items:
             self.addItem(item)
 
+    pyTTkSlot()
     def clear(self):
         '''clear'''
         self._lineEdit.setText("")
@@ -190,6 +191,7 @@ class TTkComboBox(TTkWidget):
     def setCurrentIndex(self, index):
         '''setCurrentIndex'''
         if index > len(self._list)-1: return
+        if self._id == index: return
         self._id = index
         if self._editable:
             self._lineEdit.setText(self._list[self._id])
@@ -204,8 +206,11 @@ class TTkComboBox(TTkWidget):
         if self._editable:
             self.setEditText(text)
         else:
-            if id := self._list.index(text):
-                self.setCurrentIndex(id)
+            if text not in self._list:
+                id = 0
+            else:
+                id = self._list.index(text)
+            self.setCurrentIndex(id)
 
     @pyTTkSlot(str)
     def setEditText(self, text):
@@ -278,48 +283,3 @@ class TTkComboBox(TTkWidget):
     def focusInEvent(self):
         if self._editable:
             self._lineEdit.setFocus()
-
-    _ttkProperties = {
-        'Editable' : {
-                'init': {'name':'editable', 'type':bool } ,
-                'get':  {'cb':isEditable,   'type':bool } ,
-                'set':  {'cb':setEditable,  'type':bool } },
-        'Text Align.' : {
-                'init': {'name':'textAlign', 'type':'singleflag',
-                    'flags': {
-                        'None'   : TTkK.Alignment.NONE,
-                        'Left'   : TTkK.Alignment.LEFT_ALIGN,
-                        'Right'  : TTkK.Alignment.RIGHT_ALIGN,
-                        'Center' : TTkK.Alignment.CENTER_ALIGN,
-                        'Justify': TTkK.Alignment.JUSTIFY } },
-                'get':  {'cb':textAlign,    'type':'singleflag',
-                    'flags': {
-                        'None'   : TTkK.Alignment.NONE,
-                        'Left'   : TTkK.Alignment.LEFT_ALIGN,
-                        'Right'  : TTkK.Alignment.RIGHT_ALIGN,
-                        'Center' : TTkK.Alignment.CENTER_ALIGN,
-                        'Justify': TTkK.Alignment.JUSTIFY } } ,
-                'set':  {'cb':setTextAlign, 'type':'singleflag',
-                    'flags': {
-                        'None'   : TTkK.Alignment.NONE,
-                        'Left'   : TTkK.Alignment.LEFT_ALIGN,
-                        'Right'  : TTkK.Alignment.RIGHT_ALIGN,
-                        'Center' : TTkK.Alignment.CENTER_ALIGN,
-                        'Justify': TTkK.Alignment.JUSTIFY } } },
-        'Insert Policy' : {
-                'init': {'name':'insertPolicy', 'type':'singleflag',
-                    'flags': {
-                        'No Insert'   : TTkK.InsertPolicy.NoInsert,
-                        'At Top'      : TTkK.InsertPolicy.InsertAtTop,
-                        'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } },
-                'get':  {'cb':insertPolicy,    'type':'singleflag',
-                    'flags': {
-                        'No Insert'   : TTkK.InsertPolicy.NoInsert,
-                        'At Top'      : TTkK.InsertPolicy.InsertAtTop,
-                        'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } },
-                'set':  {'cb':setInsertPolicy, 'type':'singleflag',
-                    'flags': {
-                        'No Insert'   : TTkK.InsertPolicy.NoInsert,
-                        'At Top'      : TTkK.InsertPolicy.InsertAtTop,
-                        'At Bottom'   : TTkK.InsertPolicy.InsertAtBottom } } },
-    }

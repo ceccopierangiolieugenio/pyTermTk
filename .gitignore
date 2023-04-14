@@ -9,6 +9,7 @@ tests/test.dummy.py
 tmp
 profiler.*
 .vscode
+.idea
 docs/html
 experiments
 sandbox

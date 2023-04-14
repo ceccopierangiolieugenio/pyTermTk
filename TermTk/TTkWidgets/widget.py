@@ -106,11 +106,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_lookAndFeel',
         '_toolTip',
         #Signals
-        'focusChanged')
+        'focusChanged', 'sizeChanged')
 
     def __init__(self, *args, **kwargs):
         #Signals
         self.focusChanged = pyTTkSignal(bool)
+        self.sizeChanged = pyTTkSignal(int,int)
+        # self.sizeChanged.connect(self.resizeEvent)
 
         self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
@@ -179,6 +181,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._parent.layout().removeWidget(self)
             self._parent = None
 
+    def name(self):
+        return self._name
+
     def widgetItem(self): return self._widgetItem
 
     def addWidget(self, widget):
@@ -220,6 +225,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''
         pass
 
+    def getPixmap(self):
+        self.paintEvent()
+        self.paintChildCanvas()
+        return self.getCanvas().copy()
+
     @staticmethod
     def _paintChildCanvas(canvas, item, geometry, offset):
         ''' .. caution:: Don't touch this! '''
@@ -235,34 +245,36 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                         (   lx,    ly, lw, lh)) # bound
         else:
             for child in item.zSortedItems:
-                # The geometry include the padding of the layout
+                # The Parent Layout Geometry (lx,ly,lw,lh) include the padding of the layout
                 igx, igy, igw, igh = item.geometry()
                 iox, ioy = item.offset()
-                ix = igx+ox+iox
-                iy = igy+oy+ioy
-                iw = igw-iox
-                ih = igh-ioy
-                # child outside the bound
+                # Moved Layout to the new geometry (ix,iy,iw,ih)
+                ix = igx+ox # + iox
+                iy = igy+oy # + ioy
+                iw = igw # -iox
+                ih = igh # -ioy
+                # return if Child outside the bound
                 if ix+iw < lx and ix > lx+lw and iy+ih < ly and iy > ly+lh: continue
-                # Reduce the bound to the minimum visible
-                bx = max(igx,ix,lx)
-                by = max(igy,iy,ly)
+                # Crop the Layout based on the Parent Layout Geometry
+                bx = max(ix,lx)
+                by = max(iy,ly)
                 bw = min(ix+iw,lx+lw)-bx
                 bh = min(iy+ih,ly+lh)-by
-                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix,iy))
+                TTkWidget._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix+iox,iy+ioy))
 
     def paintChildCanvas(self):
         ''' .. caution:: Don't touch this! '''
-        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry(), self.rootLayout().pos())
+        TTkWidget._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry(), self.rootLayout().offset())
 
     def moveEvent(self, x: int, y: int):
         ''' Event Callback triggered after a successful move'''
         pass
+    @pyTTkSlot(int,int)
     def resizeEvent(self, w: int, h: int):
         ''' Event Callback triggered after a successful resize'''
         pass
 
-    def setDefaultSize(self, arg, width, height):
+    def setDefaultSize(self, arg, width: int, height: int):
         if ( 'size' in arg or
              'width' in arg or
              'height' in arg ):
@@ -295,6 +307,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._canvas.resize(self._width, self._height)
             self.update(repaint=True, updateLayout=True)
         self.resizeEvent(w,h)
+        self.sizeChanged.emit(w,h)
 
     def setGeometry(self, x: int, y: int, w: int, h: int):
         ''' Resize and move the widget
@@ -314,7 +327,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''
         return self._padt, self._padb, self._padl, self._padr
 
-    def setPadding(self, top, bottom, left, right):
+    def setPadding(self, top: int, bottom: int, left: int, right: int):
         ''' Set the padding of the widget
 
         :param int top: top padding
@@ -364,7 +377,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     _mouseOverProcessed = False
     def mouseEvent(self, evt):
         ''' .. caution:: Don't touch this! '''
-        if not self._enabled: return True
+        if not self._enabled: return False
 
         # Saving self in this global variable
         # So that after the "_mouseEventLayoutHandle"
@@ -372,7 +385,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         TTkWidget._mouseOverTmp = self
 
         # Mouse Drag has priority because it
-        # should be handled by the focused widget
+        # should be handled by the focused widget and
+        # not pushed to the unfocused childs
         # unless there is a Drag and Drop event ongoing
         if evt.evt == TTkK.Drag and not TTkHelper.isDnD():
             if self.mouseDragEvent(evt):
@@ -530,26 +544,26 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 return lMinW
         return wMinW
 
-    def setMaximumSize(self, maxw, maxh):
+    def setMaximumSize(self, maxw: int, maxh: int):
         self.setMaximumWidth(maxw)
         self.setMaximumHeight(maxh)
-    def setMaximumHeight(self, maxh):
+    def setMaximumHeight(self, maxh: int):
         if self._maxh == maxh: return
         self._maxh = maxh
         self.update(updateLayout=True, updateParent=True)
-    def setMaximumWidth(self, maxw):
+    def setMaximumWidth(self, maxw: int):
         if self._maxw == maxw: return
         self._maxw = maxw
         self.update(updateLayout=True, updateParent=True)
 
-    def setMinimumSize(self, minw, minh):
+    def setMinimumSize(self, minw: int, minh: int):
         self.setMinimumWidth(minw)
         self.setMinimumHeight(minh)
-    def setMinimumHeight(self, minh):
+    def setMinimumHeight(self, minh: int):
         if self._minh == minh: return
         self._minh = minh
         self.update(updateLayout=True, updateParent=True)
-    def setMinimumWidth(self, minw):
+    def setMinimumWidth(self, minw: int):
         if self._minw == minw: return
         self._minw = minw
         self.update(updateLayout=True, updateParent=True)
@@ -570,12 +584,15 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._canvas.hide()
         self.update(repaint=False, updateParent=True)
 
-    def raiseWidget(self):
+    @pyTTkSlot()
+    def raiseWidget(self, raiseParent=True):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
-            self._parent.raiseWidget()
+            if raiseParent:
+                self._parent.raiseWidget(raiseParent)
             self._parent.rootLayout().raiseWidget(self)
 
+    @pyTTkSlot()
     def lowerWidget(self):
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
@@ -593,7 +610,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.hide()
 
     @pyTTkSlot(bool)
-    def setVisible(self, visible):
+    def setVisible(self, visible: bool):
         if visible: self.show()
         else: self.hide()
 
@@ -605,11 +622,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def isVisible(self):
         return self._visible
 
-    # Event to be sent
-    # TODO: Remove This
-    def layoutUpdated(self): pass
-
-    def update(self, repaint=True, updateLayout=False, updateParent=False):
+    def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
         if repaint:
             TTkHelper.addUpdateBuffer(self)
         TTkHelper.addUpdateWidget(self)
@@ -622,8 +635,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if updateParent and self._parent is not None:
             self._parent.update(updateLayout=True)
         if updateLayout and self.rootLayout() is not None:
-            if self.rootLayout().update():
-                self.layoutUpdated()
+            self.rootLayout().update()
 
     @pyTTkSlot()
     def setFocus(self):
@@ -670,7 +682,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         return self._enabled
 
     @pyTTkSlot(bool)
-    def setEnabled(self, enabled=True):
+    def setEnabled(self, enabled: bool=True):
         if self._enabled == enabled: return
         self._enabled = enabled
         self.update()
@@ -693,50 +705,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def toolTip(self):
         return self._toolTip
 
-    def setToolTip(self, toolTip):
+    def setToolTip(self, toolTip: TTkString):
         self._toolTip = toolTip
 
-    _ttkProperties = {
-        'X' : {
-                'init': {'name':'x', 'type':int } ,
-                'get':  { 'cb':x,    'type':int } },
-        'Y' : {
-                'init': {'name':'y', 'type':int } ,
-                'get':  { 'cb':y,    'type':int } },
-        'Width' : {
-                'init': {'name':'width', 'type':int } ,
-                'get':  { 'cb':width,    'type':int } },
-        'Height' : {
-                'init': {'name':'height', 'type':int } ,
-                'get':  { 'cb':height,    'type':int } },
-        'Min Width' : {
-                'init': {'name':'minWidth',    'type':int } ,
-                'get':  { 'cb':minimumWidth,   'type':int } ,
-                'set':  { 'cb':setMinimumWidth,'type':int } },
-        'Min Height' : {
-                'init': {'name':'minHeight',    'type':int } ,
-                'get':  { 'cb':minimumHeight,   'type':int } ,
-                'set':  { 'cb':setMinimumHeight,'type':int } },
-        'Max Width' : {
-                'init': {'name':'maxWidth',    'type':int } ,
-                'get':  { 'cb':maximumWidth,   'type':int } ,
-                'set':  { 'cb':setMaximumWidth,'type':int } },
-        'Max Height' : {
-                'init': {'name':'maxHeight',    'type':int } ,
-                'get':  { 'cb':maximumHeight,   'type':int } ,
-                'set':  { 'cb':setMaximumHeight,'type':int } },
-        'Layout' : {
-                'init': {'name':'layout', 'type':TTkLayout} ,
-                'get':  { 'cb':layout,    'type':TTkLayout} ,
-                'set':  { 'cb':setLayout, 'type':TTkLayout} },
-        'Name' : {
-                'init': {'name':'name', 'type':str } },
-        'Visible' : {
-                'init': {'name':'visible', 'type':bool } ,
-                'get':  {'cb':isVisible,   'type':bool } ,
-                'set':  {'cb':setVisible,  'type':bool } },
-        'Enabled' : {
-                'init': {'name':'enabled', 'type':bool } ,
-                'get':  {'cb':isEnabled,   'type':bool } ,
-                'set':  {'cb':setEnabled,  'type':bool } },
-    }
+    def getWidgetByName(self, name: str):
+        if name == self._name:
+            return self
+        for w in self.rootLayout().iterWidgets(onlyVisible=False, recurse=True):
+            if w._name == name:
+                return w
+        return None

@@ -18,6 +18,9 @@
       https://doc.qt.io/qt-5/focus.html
       Ref: https://github.com/ceccopierangiolieugenio/scripts/blob/master/Programming/python/pyqt5/textedit.001.py
 
+## ttkDesigner
+- [x] Support widgets in the TTkTree (required in the properties widget)
+
 ## Terminal Helper
 - [ ] Events
   - [x] Window : SIGWINCH triggered when the terminal is resized

@@ -299,19 +299,23 @@ class TTkTextCursor():
                 line, pos = textWrap.screenToDataPosition(x,y)
                 self.setPosition(line, pos, moveMode, cID=cID)
             return _moveUpDown
-        def moveEnd(cID,p,_):
+        def moveEndOfLine(cID,p,_):
             l = self._document._dataLines[p.line]
             self.setPosition(p.line, len(l), moveMode, cID=cID)
         def moveHome(cID,p,_):
             self.setPosition(p.line, 0, moveMode, cID=cID)
+        def moveEnd(cID,p,_):
+            l = self._document._dataLines[-1]
+            self.setPosition(len(self._document._dataLines)-1, len(l), moveMode, cID=cID)
 
         operations = {
                 TTkTextCursor.Right : moveRight,
                 TTkTextCursor.Left  : moveLeft,
                 TTkTextCursor.Up    : moveUpDown(-1),
                 TTkTextCursor.Down  : moveUpDown(+1),
-                TTkTextCursor.EndOfLine  : moveEnd,
-                TTkTextCursor.StartOfLine: moveHome
+                TTkTextCursor.EndOfLine  : moveEndOfLine,
+                TTkTextCursor.StartOfLine: moveHome,
+                TTkTextCursor.End: moveEnd,
             }
 
         for cID, prop in enumerate(self._properties):

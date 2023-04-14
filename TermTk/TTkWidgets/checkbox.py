@@ -24,7 +24,7 @@
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import *
 
 class TTkCheckbox(TTkWidget):
@@ -104,13 +104,14 @@ class TTkCheckbox(TTkWidget):
         '''
         return self._text
 
+    pyTTkSlot(str)
     def setText(self, text):
         ''' This property holds the text shown on the checkhox
 
         :param text:
         :type text: :class:`~TermTk.TTkCore.string.TTkString`
         '''
-        if self._text == text: return
+        if self._text.sameAs(text): return
         self._text = TTkString(text)
         self.setMinimumSize(3 + len(self._text), 1)
         self.update()
@@ -139,6 +140,7 @@ class TTkCheckbox(TTkWidget):
         '''
         return self._checkStatus != TTkK.Unchecked
 
+    @pyTTkSlot(bool)
     def setChecked(self, state):
         ''' Set the check status
 
@@ -154,6 +156,7 @@ class TTkCheckbox(TTkWidget):
         '''
         return self._checkStatus
 
+    @pyTTkSlot(TTkK.CheckState)
     def setCheckState(self, state):
         ''' Sets the checkbox's check state.
 
@@ -209,35 +212,3 @@ class TTkCheckbox(TTkWidget):
             self._pressEvent()
             return True
         return False
-
-    _ttkProperties = {
-        'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':text,     'type':TTkString } ,
-                'set':  {'cb':setText,  'type':TTkString } },
-        'Tristate' : {
-                'init': {'name':'tristate', 'type':bool } ,
-                'get':  {'cb':isTristate,   'type':bool } ,
-                'set':  {'cb':setTristate,  'type':bool } },
-        'Checked' : {
-                'init': {'name':'checked', 'type':bool } ,
-                'get':  {'cb':isChecked,   'type':bool } ,
-                'set':  {'cb':setChecked,  'type':bool } },
-        'Check State' : {
-                'init': { 'name':'checked', 'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  ,
-                        'Partially Checked': TTkK.PartiallyChecked } },
-                'get' : { 'cb':checkState,      'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  ,
-                        'Partially Checked': TTkK.PartiallyChecked } },
-                'set' : { 'cb':setCheckState,   'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  ,
-                        'Partially Checked': TTkK.PartiallyChecked } },
-         },
-    }

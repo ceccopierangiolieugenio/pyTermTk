@@ -27,17 +27,38 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkImage(TTkWidget):
-    __slots__ = ('_data')
+    FULLBLOCK = 0x00
+    HALFBLOCK = 0x01
+    QUADBLOCK = 0x02
+    # SEXBLOCK   = 0x03
+
+    __slots__ = ('_data', '_rasterType')
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkImage' )
+        self._rasterType = kwargs.get('rasteriser' , TTkImage.QUADBLOCK )
         self._data = kwargs.get('data' , [] )
         if self._data:
-            w = min(len(i) for i in self._data)
-            h = len(self._data)
-            self.resize(w//2,h//2)
+            self.setData(self._data)
 
-    def _reduce(self, a,b,c,d):
+    def setData(self, data):
+        self._data = data
+        w = min(len(i) for i in self._data)
+        h = len(self._data)
+        if self._rasterType == TTkImage.FULLBLOCK:
+            self.resize(w,h)
+        elif self._rasterType == TTkImage.HALFBLOCK:
+            self.resize(w,h//2)
+        elif self._rasterType == TTkImage.QUADBLOCK:
+            self.resize(w//2,h//2)
+        self.update()
+
+    def setRasteriser(self, rasteriser):
+        if self._rasterType == rasteriser: return
+        self._rasterType = rasteriser
+        if self._data:
+            self.setData(self._data)
+
+    def _reduceQuad(self, a,b,c,d):
         # quadblitter notcurses like
         l = (a,b,c,d)
         def delta(i):
@@ -100,79 +121,34 @@ class TTkImage(TTkWidget):
             # Use Blue as splitter
             return splitReduce(2)
 
-    @staticmethod
-    def _rgb2hsl(rgb):
-        r = rgb[0]/255
-        g = rgb[1]/255
-        b = rgb[2]/255
-        cmax = max(r,g,b)
-        cmin = min(r,g,b)
-
-        lum = (cmax-cmin)/2
-        if cmax == cmin:
-            return 0,0,lum
-
-        delta = cmax-cmin
-        if   cmax == r:
-            hue = ((g-b)/delta)%6
-        elif cmax == g:
-            hue = (b-r)/delta+2
-        else:
-            hue = (r-g)/delta+4
-
-        sat = delta / (1 - abs(delta-1))
-        hue = int(hue*60) + ( 360 if hue < 0 else 0 )
-        sat = int(sat*100)
-        lum = int(lum*100)
-
-        return hue,sat,lum
-
-    @staticmethod
-    def _hsl2rgb(hsl):
-        hue = hsl[0]
-        sat = hsl[1] / 100
-        lum = hsl[2] / 100
-
-        c = (1-abs(2*lum-1))*sat
-        x = c*(1-abs((hue/60)%2-1))
-        m = lum-c/2
-
-        if     0 <= hue < 60:
-          r,g,b = c,x,0
-        elif  60 <= hue < 120:
-          r,g,b = x,c,0
-        elif 120 <= hue < 180:
-          r,g,b = 0,c,x
-        elif 180 <= hue < 240:
-          r,g,b = 0,x,c
-        elif 240 <= hue < 300:
-          r,g,b = x,0,c
-        elif 300 <= hue < 360:
-          r,g,b = c,0,x
-
-        r = int((r + m) * 255)
-        g = int((g + m) * 255)
-        b = int((b + m) * 255)
-
-        return r,g,b
-
     def rotHue(self, deg):
         old = self._data
         self._data = [[p for p in l ] for l in old]
         for row in self._data:
             for i,pixel in enumerate(row):
-                h,s,l = self._rgb2hsl(pixel)
-                h += deg
-                #TTkLog.debug(f"{h=}")
-                if h >= 360: h-=360
-                row[i] = self._hsl2rgb((h,s,l))
+                h,s,l = TTkColor.rgb2hsl(pixel)
+                row[i] = TTkColor.hsl2rgb(((h+deg)%360,s,l))
 
     def paintEvent(self):
         img = self._data
-        for y in range(0, len(img)&(~1), 2):
-            for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                self._canvas.drawText(
-                        pos=(x//2,y//2),
-                        text=self._reduce(
-                                    img[y][x]   , img[y][x+1]   ,
-                                    img[y+1][x] , img[y+1][x+1] ))
+        if self._rasterType == TTkImage.FULLBLOCK:
+            for y in range(0, len(img)):
+                for x in range(0, len(img[y])):
+                    c1 = img[y][x]
+                    color = TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}')
+                    self._canvas.drawChar(pos=(x,y), char='█', color=color)
+        elif self._rasterType == TTkImage.HALFBLOCK:
+            for y in range(0, len(img)&(~1), 2):
+                for x in range(0, len(img[y])):
+                    c1, c2 = img[y][x] ,img[y+1][x]
+                    color = ( TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') +
+                             TTkColor.bg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}') )
+                    self._canvas.drawChar(pos=(x,y//2), char='▀', color=color)
+        elif self._rasterType == TTkImage.QUADBLOCK:
+            for y in range(0, len(img)&(~1), 2):
+                for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
+                    self._canvas.drawText(
+                            pos=(x//2,y//2),
+                            text=self._reduceQuad(
+                                        img[y][x]   , img[y][x+1]   ,
+                                        img[y+1][x] , img[y+1][x+1] ))

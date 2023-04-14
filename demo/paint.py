@@ -177,8 +177,8 @@ else:
     paint = TTkWindow(parent=root,pos = (1,1), size=(90,45), title="Paint...", border=True, layout=TTkGridLayout())
 
 pc = PaintCanvas()
-r1 = TTkRadioButton(text="Single ┼ ", name="line", maxWidth=12, checked=True)
-r2 = TTkRadioButton(text="Double ╬ ", name="line", maxWidth=12)
+r1 = TTkRadioButton(text="Single ┼ ", radiogroup="line", maxWidth=12, checked=True)
+r2 = TTkRadioButton(text="Double ╬ ", radiogroup="line", maxWidth=12)
 
 r1.clicked.connect( lambda : pc.setLine(0))
 r2.clicked.connect( lambda : pc.setLine(1))

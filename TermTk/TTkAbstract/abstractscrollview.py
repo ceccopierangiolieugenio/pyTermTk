@@ -38,7 +38,7 @@ class TTkAbstractScrollViewInterface():
         raise NotImplementedError()
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         raise NotImplementedError()
 
     def getViewOffsets(self):
@@ -60,7 +60,7 @@ class TTkAbstractScrollView(TTkWidget, TTkAbstractScrollViewInterface):
         self._viewOffsetY = 0
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()
         dw, dh = self.viewDisplayedSize()
         rangex = fw - dw
@@ -113,7 +113,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         self._excludeEvent = False
 
     @pyTTkSlot(int, int)
-    def viewMoveTo(self, x, y):
+    def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()
         dw, dh = self.viewDisplayedSize()
         rangex = fw - dw
@@ -126,7 +126,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
            self._viewOffsetY == y: # Nothong to do
             return
         self._excludeEvent = True
-        for widget in self.iterWidgets():
+        for widget in self.iterWidgets(recurse=False):
             widget.viewMoveTo(x,y)
         self._excludeEvent = False
         self._viewOffsetX = x
@@ -162,7 +162,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
     # Override this function
     def viewFullAreaSize(self) -> (int, int):
         w,h=0,0
-        for widget in self.iterWidgets():
+        for widget in self.iterWidgets(recurse=False):
             ww,wh = widget.viewFullAreaSize()
             w = max(w,ww)
             h = max(h,wh)
@@ -171,7 +171,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
     # Override this function
     def viewDisplayedSize(self) -> (int, int):
         w,h=0,0
-        for widget in self.iterWidgets():
+        for widget in self.iterWidgets(recurse=False):
             ww,wh = widget.viewDisplayedSize()
             w = max(w,ww)
             h = max(h,wh)

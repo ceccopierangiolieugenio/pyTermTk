@@ -50,8 +50,8 @@ def cb(_):
     frame.layout().setOffset(ox,oy)
     frame.update(updateLayout=True)
 
-sbx = ttk.TTkSpinBox(parent=root, pos=(10,11), size=(10,1), maximum=50, minimum=-50)
-sby = ttk.TTkSpinBox(parent=root, pos=(10,12), size=(10,1), maximum=50, minimum=-50)
+sbx = ttk.TTkSpinBox(parent=root, pos=(20,11), size=(10,1), maximum=50, minimum=-50)
+sby = ttk.TTkSpinBox(parent=root, pos=(20,12), size=(10,1), maximum=50, minimum=-50)
 
 sbx.valueChanged.connect(cb)
 sby.valueChanged.connect(cb)

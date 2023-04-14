@@ -296,6 +296,9 @@ class TTkTomInspector(TTkWidget):
                             elif prop['get']['type'] == TTkColor and 'set' in prop:
                                 value = TTkColorButtonPicker(color=getval, height=1)
                                 value.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))
+                            elif type(prop['get']['type']) == dict:
+                                curVal = prop['get']['cb'](domw)
+                                value = TTkLabel(text=f"{curVal}")
                             else:
                                 if type(prop['get']['type']) == str:
                                     getval = f"{prop['get']['type']} = {getval}"

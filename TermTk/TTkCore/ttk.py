@@ -82,9 +82,12 @@ class TTk(TTkWidget):
         '_showMouseCursor',
         '_sigmask',
         '_drawMutex',
-        '_lastMultiTap')
+        '_paintEvent',
+        '_lastMultiTap',
+        'paintExecuted')
 
     def __init__(self, *args, **kwargs):
+        self.paintExecuted = pyTTkSignal()
         super().__init__(*args, **kwargs)
         self._termMouse = True
         self._termDirectMouse = kwargs.get('mouseTrack',False)
@@ -94,12 +97,13 @@ class TTk(TTkWidget):
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
         self._drawMutex = threading.Lock()
+        self._paintEvent = threading.Event()
+        self._paintEvent.set()
         self.setFocusPolicy(TTkK.ClickFocus)
         self.hide()
         w,h = TTkTerm.getTerminalSize()
         self.setGeometry(0,0,w,h)
 
-        TTkCfg.theme = TTkTheme()
         TTkHelper.registerRootWidget(self)
 
     frame = 0
@@ -219,6 +223,7 @@ class TTk(TTkWidget):
                     TTkHelper.dndEnter(None)
                 if mevt.evt == TTkK.Press and focusWidget:
                     focusWidget.clearFocus()
+                    TTkHelper.focusLastModal()
 
         # Clean the Drag and Drop in case of mouse release
         if mevt.evt == TTkK.Release:
@@ -246,11 +251,25 @@ class TTk(TTkWidget):
                 TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     def _time_event(self):
+        # Event.{wait and clear} should be atomic,
+        # BUTt: ( y )
+        #   if an update event (set) happen in between the wait and clear
+        #      the widget is still processed in the current paint routine
+        #   if an update event (set) happen after the wait and clear
+        #      the widget is processed in the current paint routine
+        #      an extra paint routine is triggered which return immediately due to
+        #      the empty list of widgets to be processed - Not a big deal
+        #   if an update event (set) happen after the wait and clear and the paintAll Routine
+        #      well, it works as it is supposed to be
+        self._paintEvent.wait()
+        self._paintEvent.clear()
+
         w,h = TTkTerm.getTerminalSize()
         self._drawMutex.acquire()
         self.setGeometry(0,0,w,h)
         self._fps()
         TTkHelper.paintAll()
+        self.paintExecuted.emit()
         self._drawMutex.release()
         self._timer.start(1/TTkCfg.maxFps)
 
@@ -268,6 +287,7 @@ class TTk(TTkWidget):
         '''Tells the application to exit with a return code.'''
         self._input.inputEvent.clear()
         TTkTimer.quitAll()
+        self._paintEvent.set()
         self._input.close()
 
     def _SIGSTOP(self, signum, frame):

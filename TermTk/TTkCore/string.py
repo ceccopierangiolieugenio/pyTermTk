@@ -155,6 +155,13 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
+    def sameAs(self, other):
+        if not issubclass(type(other),TTkString): return False
+        return (
+            self==other and
+            len(self._colors) == len(other._colors) and
+            all(s==o for s,o in zip(self._colors,other._colors)) )
+
     def isdigit(self):
         return self._text.isdigit()
 
@@ -214,7 +221,7 @@ class TTkString():
             ret                   x = 7 (tab is a char)
 
         '''
-        if not self._hasTab and self._hasSpecialWidth is None: return pos
+        if not self._hasTab and self._hasSpecialWidth is None: return max(0,min(pos,len(self._text)))
         if self._hasSpecialWidth is not None:
             return self._tabCharPosWideChar(pos, tabSpaces, alignTabRight)
         slices = self._text.split("\t")
@@ -393,8 +400,10 @@ class TTkString():
 
         return ret
 
-    def addColor(self, color, match=None, posFrom=None, posTo=None):
-        ''' Add the color of the entire string or a slice of it
+    def completeColor(self, color, match=None, posFrom=None, posTo=None):
+        ''' Complete the color of the entire string or a slice of it
+
+        The Fg and/or Bg of the string is replaced with the selected Fg/Bg color only if missing
 
         If only the color is specified, the entire string is colorized
 
@@ -412,23 +421,23 @@ class TTkString():
         ret._hasTab = self._hasTab
         ret._hasSpecialWidth = self._hasSpecialWidth
         if match:
-            ret._colors += self._colors
+            ret._colors = self._colors.copy()
             start=0
             lenMatch = len(match)
             while pos := self._text.index(match, start) if match in self._text[start:] else None:
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
-                    ret._colors[i] += color
+                    ret._colors[i] |= color
         elif posFrom == posTo == None:
-            ret._colors = [c+color for c in self._colors]
+            ret._colors = [c|color for c in self._colors]
         elif posFrom < posTo:
-            ret._colors += self._colors
+            ret._colors = self._colors.copy()
             posFrom = min(len(self._text),posFrom)
             posTo   = min(len(self._text),posTo)
             for i in range(posFrom, posTo):
-                ret._colors[i] += color
+                ret._colors[i] |= color
         else:
-            ret._colors += self._colors
+            ret._colors = [c|color for c in self._colors]
         return ret
 
 

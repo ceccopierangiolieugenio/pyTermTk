@@ -191,13 +191,14 @@ class TTkLayout(TTkLayoutItem):
         else:
             return self._parent.parentWidget()
 
-    def iterWidgets(self, onlyVisible=True):
+    def iterWidgets(self, onlyVisible=True, recurse=True):
         for child in self._items:
             if child.layoutItemType == TTkK.WidgetItem:
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
-                yield from child.widget().rootLayout().iterWidgets()
-            if child.layoutItemType == TTkK.LayoutItem:
+                if recurse:
+                    yield from child.widget().rootLayout().iterWidgets()
+            if child.layoutItemType == TTkK.LayoutItem and recurse:
                 yield from child.iterWidgets()
 
     def _zSortItems(self):

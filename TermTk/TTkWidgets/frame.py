@@ -85,7 +85,8 @@ class TTkFrame(TTkWidget):
 
     def setTitle(self, title):
         '''setTitle'''
-        self._title = title
+        if self._title.sameAs(title): return
+        self._title = TTkString(title)
         self.update()
 
     def setBorder(self, border):
@@ -119,14 +120,3 @@ class TTkFrame(TTkWidget):
                                 colorText=self._titleColor)
         elif self._menubarTop:
             self._canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
-
-    _ttkProperties = {
-        'Border' : {
-                'init': {'name':'border', 'type':bool },
-                'get':  {'cb':border,     'type':bool } ,
-                'set':  {'cb':setBorder,  'type':bool } },
-        'Title' : {
-                'init': {'name':'title',  'type':TTkString },
-                'get':  {'cb':title,      'type':TTkString } ,
-                'set':  {'cb':setTitle,   'type':TTkString } },
-    }

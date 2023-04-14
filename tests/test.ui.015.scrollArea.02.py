@@ -44,14 +44,14 @@ def demoScrollArea(root):
     ttk.TTkTestWidgetSizes(pos=(10,15) , size=(40,10), parent=sa3.viewport(), border=True)
 
     ttk.TTkLabel(             parent=root, pos=(55,0), size=(15,1), text="sa1 - Vertical Scrollbar:" )
-    vsb1 = ttk.TTkRadioButton(parent=root, pos=(55,1), size=(15,1), text="As Needed" , name="VSB", checked=True)
-    vsb2 = ttk.TTkRadioButton(parent=root, pos=(55,2), size=(15,1), text="Always On" , name="VSB")
-    vsb3 = ttk.TTkRadioButton(parent=root, pos=(55,3), size=(15,1), text="Always Off", name="VSB")
+    vsb1 = ttk.TTkRadioButton(parent=root, pos=(55,1), size=(15,1), text="As Needed" , radiogroup="VSB", checked=True)
+    vsb2 = ttk.TTkRadioButton(parent=root, pos=(55,2), size=(15,1), text="Always On" , radiogroup="VSB")
+    vsb3 = ttk.TTkRadioButton(parent=root, pos=(55,3), size=(15,1), text="Always Off", radiogroup="VSB")
 
     ttk.TTkLabel(             parent=root, pos=(55,5), size=(15,1), text="sa1 - Horizontal Scrollbar:" )
-    hsb1 = ttk.TTkRadioButton(parent=root, pos=(55,6), size=(15,1), text="As Needed" , name="HSB", checked=True)
-    hsb2 = ttk.TTkRadioButton(parent=root, pos=(55,7), size=(15,1), text="Always On" , name="HSB")
-    hsb3 = ttk.TTkRadioButton(parent=root, pos=(55,8), size=(15,1), text="Always Off", name="HSB")
+    hsb1 = ttk.TTkRadioButton(parent=root, pos=(55,6), size=(15,1), text="As Needed" , radiogroup="HSB", checked=True)
+    hsb2 = ttk.TTkRadioButton(parent=root, pos=(55,7), size=(15,1), text="Always On" , radiogroup="HSB")
+    hsb3 = ttk.TTkRadioButton(parent=root, pos=(55,8), size=(15,1), text="Always Off", radiogroup="HSB")
 
     vsb1.clicked.connect(lambda : sa1.setVerticalScrollBarPolicy(ttk.TTkK.ScrollBarAsNeeded))
     vsb2.clicked.connect(lambda : sa1.setVerticalScrollBarPolicy(ttk.TTkK.ScrollBarAlwaysOn))

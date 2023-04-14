@@ -161,8 +161,8 @@ class TTkFileTreeWidget(TTkTreeWidget):
     @pyTTkSlot(TTkFileTreeWidgetItem)
     def _updateChildren(self, item):
         if item.children(): return
-        for i in TTkFileTreeWidget._getFileItems(item.path()):
-            item.addChild(i)
+        item.addChildren(children := TTkFileTreeWidget._getFileItems(item.path()))
+        for i in children:
             # TODO: Find a better way than calling an internal function
             i._processFilter(self._filter)
 

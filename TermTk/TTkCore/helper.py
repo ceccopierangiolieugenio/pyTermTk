@@ -32,8 +32,8 @@ class TTkHelper:
     _focusWidget = None
     _rootCanvas = None
     _rootWidget = None
-    _updateWidget = []
-    _updateBuffer  = []
+    _updateWidget = set()
+    _updateBuffer  = set()
     _mousePos = (0,0)
     _cursorPos = [0,0]
     _cursor = False
@@ -75,24 +75,26 @@ class TTkHelper:
                 w.update(repaint=True, updateLayout=True)
 
     @staticmethod
+    def unlockPaint():
+        if rw := TTkHelper._rootWidget:
+            rw._paintEvent.set()
+
+    @staticmethod
     def addUpdateWidget(widget):
-        if not widget.isVisibleAndParent(): return
-        if widget not in TTkHelper._updateWidget:
-            TTkHelper._updateWidget.append(widget)
+        # if not widget.isVisibleAndParent(): return
+        TTkHelper._updateWidget.add(widget)
+        TTkHelper.unlockPaint()
 
     @staticmethod
     def addUpdateBuffer(canvas):
         if canvas is not TTkHelper._rootCanvas:
-            if canvas not in TTkHelper._updateBuffer:
-                TTkHelper._updateBuffer.append(canvas)
+            TTkHelper._updateBuffer.add(canvas)
 
     @staticmethod
     def registerRootWidget(widget):
         TTkHelper._rootCanvas = widget.getCanvas()
         TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
-        TTkHelper._updateBuffer = []
-        TTkHelper._updateWidget = []
 
     @staticmethod
     def quit():
@@ -111,6 +113,11 @@ class TTkHelper:
                 return widget
             widget = widget.parentWidget()
         return None
+
+    @staticmethod
+    def focusLastModal():
+        if modal := TTkHelper.getLastModal():
+            modal._widget.setFocus()
 
     @staticmethod
     def getLastModal():
@@ -146,14 +153,18 @@ class TTkHelper:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
-    def overlay(caller, widget, x, y, modal=False):
+    def overlay(caller, widget, x, y, modal=False, forceBoundaries=True):
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
         # Try to keep the overlay widget inside the terminal
-        wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
-        wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
+        if forceBoundaries:
+            wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
+            wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
+        else:
+            wx += x
+            wy += y
         TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
@@ -187,6 +198,7 @@ class TTkHelper:
 
     @staticmethod
     def removeOverlayAndChild(widget):
+        if not TTkHelper.isOverlay(widget): return
         if len(TTkHelper._overlay) <= 1:
             return TTkHelper.removeOverlay()
         rootWidget = TTkHelper.rootOverlay(widget)
@@ -230,7 +242,8 @@ class TTkHelper:
         TTkHelper._mousePos = pos
         # update the position of the Drag and Drop Widget
         if TTkHelper._dnd:
-            TTkHelper._dnd['d'].pixmap().move(pos[0], pos[1])
+            hsx, hsy = TTkHelper._dnd['d'].hotSpot()
+            TTkHelper._dnd['d'].pixmap().move(pos[0]-hsx, pos[1]-hsy)
 
     @staticmethod
     def mousePos():
@@ -246,22 +259,22 @@ class TTkHelper:
             return
 
         # Build a list of buffers to be repainted
+        updateWidgetsBk = TTkHelper._updateWidget.copy()
         updateBuffers = TTkHelper._updateBuffer.copy()
-        updateWidgets = TTkHelper._updateWidget.copy()
+        TTkHelper._updateWidget = set()
+        TTkHelper._updateBuffer = set()
+        updateWidgets = set()
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
-        for widget in TTkHelper._updateWidget:
+        for widget in updateWidgetsBk:
             if not widget.isVisibleAndParent(): continue
+            updateBuffers.add(widget)
+            updateWidgets.add(widget)
             parent = widget.parentWidget()
             while parent is not None:
-                if parent not in updateBuffers:
-                    updateBuffers.append(parent)
-                if parent not in updateWidgets:
-                    updateWidgets.append(parent)
+                updateBuffers.add(parent)
+                updateWidgets.add(parent)
                 parent = parent.parentWidget()
-
-        TTkHelper._updateBuffer = []
-        TTkHelper._updateWidget = []
 
         # Paint all the canvas
         for widget in updateBuffers:
@@ -275,10 +288,8 @@ class TTkHelper:
         # Compose all the canvas to the parents
         # From the deepest children to the bottom
         pushToTerminal = False
-        sortedUpdateWidget = [ (w, TTkHelper.widgetDepth(w)) for w in updateWidgets]
-        sortedUpdateWidget = sorted(sortedUpdateWidget, key=lambda w: -w[1])
-        for w in sortedUpdateWidget:
-            widget = w[0]
+        sortedUpdateWidget = sorted(updateWidgets, key=lambda w: -TTkHelper.widgetDepth(w))
+        for widget in sortedUpdateWidget:
             if not widget.isVisibleAndParent(): continue
             pushToTerminal = True
             widget.paintChildCanvas()
@@ -322,7 +333,8 @@ class TTkHelper:
         layout = widget.widgetItem()
         while layout:
             px, py = layout.pos()
-            wx, wy = wx+px, wy+py
+            ox, oy = layout.offset()
+            wx, wy = wx+px+ox, wy+py+oy
             layout = layout.parent()
         return (wx, wy)
 
@@ -466,4 +478,5 @@ class TTkHelper:
     def toolTipClose():
         TTkHelper.toolTipReset()
         if TTkHelper.toolTipWidget:
-            TTkHelper.toolTipWidget.close()
+            TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper.toolTipWidget)
+            TTkHelper.toolTipWidget = None

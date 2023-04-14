@@ -25,25 +25,32 @@
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    __slots__ = ('_parent', '_data', '_alignment', '_children', '_expanded', '_selected', '_hidden',
+    __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
-                 '_sortColumn', '_sortOrder'
+                 '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget',
         # Signals
         # 'refreshData'
+        'heightChanged'
         )
 
     def __init__(self, *args, **kwargs):
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
+        self.heightChanged = pyTTkSignal(int)
         super().__init__(*args, **kwargs)
+        self._hasWidgets = False
         self._children = []
+        self._parentWidget = None
+        self._height = 1
         data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
-        self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
+        # self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
+        self._data, self._widgets = self._processDataInput(data)
         self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
         self._parent = kwargs.get('parent', None)
         self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
@@ -63,6 +70,43 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             self._icon[0] = kwargs['icon']
             self._defaultIcon = False
 
+    def _processDataInputWidget(self, widget, index):
+        self._hasWidgets = True
+        widget.hide()
+        widget.sizeChanged.connect(self._widgetSizeChanged)
+        self._height = max(self._height,widget.height())
+        if self._parentWidget:
+            widget.setParent(self._parentWidget)
+        if hasattr(widget, 'text'):
+            ret = widget.text()
+            if hasattr(widget,'textChanged'):
+                def _updateField(index):
+                    def __updateFieldRet(text):
+                        self._data[index] = text
+                    return __updateFieldRet
+                widget.textChanged.connect(_updateField(index))
+        else:
+            ret = TTkString()
+        return ret
+
+    def _processDataInput(self, dataInput):
+        retData, retWidgets = [],[]
+        for index, di in enumerate(dataInput):
+            if issubclass(type(di), TTkString):
+                retData.append(di)
+                retWidgets.append(None)
+            elif isinstance(di,str):
+                retData.append(TTkString(di))
+                retWidgets.append(None)
+            elif issubclass(type(di), TTkWidget):
+                retData.append(self._processDataInputWidget(di, index))
+                retWidgets.append(di)
+            else:
+                retData.append(TTkString())
+                retWidgets.append(None)
+            self._height = max(self._height,len(retData[-1].split('\n')))
+        return retData, retWidgets
+
     def _setDefaultIcon(self):
         if not self._defaultIcon: return
         self._icon[0] = TTkCfg.theme.tree[0]
@@ -72,6 +116,33 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
                 self._icon[0] = TTkCfg.theme.tree[2]
             else:
                 self._icon[0] = TTkCfg.theme.tree[1]
+
+    @pyTTkSlot(int, int)
+    def _widgetSizeChanged(self, _, h):
+        if h != self._height:
+            h = max(max([len(s.split("\n")) for s in self._data]), max(w.height() for w in self._widgets if w))
+        if h != self._height:
+            self._height = h
+            self.heightChanged.emit(h)
+            if self._parentWidget:
+                self._parentWidget._refreshCache()
+
+    def height(self):
+        return self._height
+
+    def setParent(self, parent):
+        self._parentWidget = parent
+        if self._hasWidgets:
+            for widget in [w for w in self._widgets if w]:
+                if parent:
+                    parent.layout().addWidget(widget)
+                elif pw := widget.parentWidget():
+                    pw.rootLayout().removeWidget(widget)
+        for c in self._children:
+            c.setParent(parent)
+
+    def hasWidgets(self):
+        return self._hasWidgets
 
     def isHidden(self):
         return self._hidden
@@ -88,19 +159,48 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._childIndicatorPolicy = policy
         self._setDefaultIcon()
 
-    def addChild(self, child):
+    def _addChild(self, child):
         self._children.append(child)
         child._parent = self
         child._sortOrder = self._sortOrder
         child._sortColumn = self._sortColumn
         self._setDefaultIcon()
         self._sort(children=False)
+        if self._parentWidget:
+            child.setParent(self._parentWidget)
         child.dataChanged.connect(self.emitDataChanged)
+
+    def addChild(self, child):
+        self._addChild(child)
         self.dataChanged.emit()
 
     def addChildren(self, children):
         for child in children:
-            self.addChild(child)
+            self._addChild(child)
+        self.dataChanged.emit()
+
+    def removeChild(self, child):
+        if child in self._children:
+            self.takeChild(self._children.index(child))
+
+    def takeChild(self, index):
+        if not (self._children and 0<= index < len(self._children)):
+            return None
+        child = self._children.pop(index)
+        child.dataChanged.disconnect(self.emitDataChanged)
+        child.setParent(None)
+        self.dataChanged.emit()
+        return child
+
+    def takeChildren(self):
+        children = self._children
+        for child in children:
+            child.dataChanged.disconnect(self.emitDataChanged)
+            child.setParent(None)
+        self._children = []
+        self.dataChanged.emit()
+        return children
+
 
     def child(self, index):
         if 0 <= index < len(self._children):
@@ -109,6 +209,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def children(self):
         return [x for x in self._children if not x.isHidden()]
+
+    def indexOfChild(self, child):
+        if child in self._children:
+            return self._children.index(child)
+        return None
 
     def icon(self, col):
         if col >= len(self._icon):
@@ -134,6 +239,11 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         if col >= len(self._data):
             return ''
         return self._data[col]
+
+    def widget(self, col, role=None):
+        if col >= len(self._data):
+            return None
+        return self._widgets[col]
 
     def sortData(self, col):
         return self.data(col)
@@ -166,6 +276,16 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     #    pass
 
     def setExpanded(self, expand):
+        # hide all the widgets if this item is not expanded
+        if not expand:
+            def _recurseHide(item):
+                for c in item._children:
+                    if c._hasWidgets:
+                        for widget in [w for w in c._widgets if w]:
+                            widget.hide()
+                    if c._expanded:
+                        _recurseHide(c)
+            _recurseHide(self)
         self._expanded = expand
         self._setDefaultIcon()
         self.emitDataChanged()
@@ -184,6 +304,6 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
 
     def size(self):
         if self._expanded:
-            return 1 + sum(c.size() for c in self.children())
+            return self._height + sum(c.size() for c in self.children())
         else:
-            return 1
+            return self._height

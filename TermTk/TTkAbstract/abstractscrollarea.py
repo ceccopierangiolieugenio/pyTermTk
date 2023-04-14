@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import *
+# from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
@@ -48,6 +48,7 @@ class TTkAbstractScrollArea(TTkWidget):
     @pyTTkSlot()
     def _viewportChanged(self):
         if not self.isVisible(): return
+        w,h = self.size()
         fw, fh = self._viewport.viewFullAreaSize()
         dw, dh = self._viewport.viewDisplayedSize()
         ox, oy = self._viewport.getViewOffsets()
@@ -57,7 +58,7 @@ class TTkAbstractScrollArea(TTkWidget):
         vpage = dh
         hrange = fw - dw
         vrange = fh - dh
-        # TTkLog.debug(f"f:{fw,fh}, d:{dw,dh}, o:{ox,oy}")
+        # TTkLog.debug(f"f:{fw,fh=}, d:{dw,dh=}, o:{ox,oy=}")
         self._verticalScrollBar.setPageStep(vpage)
         self._verticalScrollBar.setRange(0, vrange)
         self._verticalScrollBar.setValue(oy)
@@ -66,7 +67,7 @@ class TTkAbstractScrollArea(TTkWidget):
         self._horizontalScrollBar.setValue(ox)
 
         if self._verticalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
-            if vrange<=0:
+            if h<=4 or w<=1 or vrange<=0:
                 self._verticalScrollBar.hide()
             elif dh>self._verticalScrollBar.minimumHeight()+1:
                 # we need enough space to display the bar to avoid endless loop
@@ -77,7 +78,7 @@ class TTkAbstractScrollArea(TTkWidget):
             self._verticalScrollBar.hide()
 
         if self._horizontalScrollBarPolicy == TTkK.ScrollBarAsNeeded:
-            if hrange<=0:
+            if w<=4 or h<=1 or hrange<=0:
                 self._horizontalScrollBar.hide()
             elif dw>self._horizontalScrollBar.minimumWidth()+1:
                 # we need enough space to display the bar to avoid endless loop

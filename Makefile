@@ -41,6 +41,10 @@ runDemo: .venv
 	. .venv/bin/activate ; \
 	demo/demo.py -f
 
+runDumbImageTool: .venv
+	. .venv/bin/activate ; \
+	tools/dumb.image.tool.py
+
 build: .venv
 	. .venv/bin/activate ; \
 	tools/prepareBuild.sh release ; \

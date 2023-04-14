@@ -58,33 +58,34 @@ class _TestContent(TTkWidget):
 
 class TTkTestWidget(TTkFrame):
     ID = 1
-    __slots__ = ('_name', '_l')
+    __slots__ = ('_l')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTestWidget' )
-        #self.setLayout(TTkHBoxLayout())
-        self._name = f"TestWidget-{TTkTestWidget.ID}"
-        t,_,l,_ = self.getPadding()
-        TTkButton(parent=self, x=l, y=t, width=15, height=3, border=True, text=' Test Button')
-        label = TTkLabel(parent=self,pos=(l+20, t+1), size=(50,1))
+        self._name = kwargs.get('name' , f"TestWidget-{TTkTestWidget.ID}" )
+        TTkButton(parent=self, width=15, height=3, border=True, text=' Test Button')
+        label = TTkLabel(parent=self,pos=(20, 1), size=(50,1))
         label.setText(TTkString("test \033[42;1;30mANSI\033[44;1;33m TTkString",TTkColor.bg('#440099')+TTkColor.UNDERLINE))
         self._l = [
-                TTkLabel(parent=self,pos=(l, t+3), size=(50,1), color=TTkColor.bg('#440099')+TTkColor.fg('#00ffff'), text="pippo"),
-                TTkLabel(parent=self,pos=(l, t+4), size=(50,1), color=TTkColor.bg('#440077')+TTkColor.fg('#00ccff')),
-                TTkLabel(parent=self,pos=(l, t+5), size=(50,1), color=TTkColor.bg('#440066')+TTkColor.fg('#0088ff')),
-                TTkLabel(parent=self,pos=(l, t+6), size=(50,1), color=TTkColor.bg('#440055')+TTkColor.fg('#0055ff')),
-                TTkLabel(parent=self,pos=(l, t+7), size=(50,1), color=TTkColor.bg('#440033')+TTkColor.fg('#0033ff')),
+                TTkColor.bg('#440099')+TTkColor.fg('#00ffff'),
+                TTkColor.bg('#440077')+TTkColor.fg('#00ccff'),
+                TTkColor.bg('#440066')+TTkColor.fg('#0088ff'),
+                TTkColor.bg('#440055')+TTkColor.fg('#0055ff'),
+                TTkColor.bg('#440033')+TTkColor.fg('#0033ff'),
             ]
-        _TestContent(parent=self, x=l, y=t+8, width=50, height=50, name=f"content-{self._name}")
+        _TestContent(parent=self, pos=(0,8), width=50, height=50, name=f"content-{self._name}")
         TTkTestWidget.ID+=1
 
     def paintEvent(self):
+        x = 1 if self.border() else 0
+        y = 1 if self.border() else 0
+        w = 50
+        canvas = self.getCanvas()
+        canvas.drawText(pos=(x,y+3), width=w, color=self._l[0], text=f"Test Widget [{self._name}]")
+        canvas.drawText(pos=(x,y+4), width=w, color=self._l[1], text=f"x,y ({self._x},{self._y})")
+        canvas.drawText(pos=(x,y+5), width=w, color=self._l[2], text=f"w,h ({self._width},{self._height})")
+        canvas.drawText(pos=(x,y+6), width=w, color=self._l[3], text=f"max w,h ({self._maxw},{self._maxh})")
+        canvas.drawText(pos=(x,y+7), width=w, color=self._l[4], text=f"min w,h ({self._minw},{self._minh})")
         TTkFrame.paintEvent(self)
-        self._l[0].setText(f"Test Widget [{self._name}]")
-        self._l[1].setText(f"x,y ({self._x},{self._y})")
-        self._l[2].setText(f"w,h ({self._width},{self._height})")
-        self._l[3].setText(f"max w,h ({self._maxw},{self._maxh})")
-        self._l[4].setText(f"min w,h ({self._minw},{self._minh})")
 
     def mousePressEvent(self, evt):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")

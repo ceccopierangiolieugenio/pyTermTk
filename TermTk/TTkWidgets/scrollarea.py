@@ -45,6 +45,11 @@ class _TTkAreaWidget(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
+    def maximumWidth(self):   return 0x10000
+    def maximumHeight(self):  return 0x10000
+    def minimumWidth(self):   return 0
+    def minimumHeight(self):  return 0
+
 class TTkScrollArea(TTkAbstractScrollArea):
     '''TTkScrollArea'''
     __slots__ = ('_areaView')

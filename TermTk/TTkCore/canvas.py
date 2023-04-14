@@ -41,10 +41,11 @@ class TTkCanvas:
         '_theme',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
-        '_visible', '_doubleBuffer')
+        '_visible', '_transparent', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
         self._widget = kwargs.get('widget', None)
         self._visible = True
+        self._transparent = False
         self._doubleBuffer = False
         self._width = 0
         self._height = 0
@@ -56,19 +57,29 @@ class TTkCanvas:
         # self.resize(self._width, self._height)
         # TTkLog.debug((self._width, self._height))
 
+    def transparent(self):
+        return self._transparent
+
+    def setTransparent(self, tr):
+        self._transparent = tr
+
     def getWidget(self): return self._widget
 
     def enableDoubleBuffer(self):
         self._doubleBuffer = True
-        self._bufferedData, self._bufferedColors = self.copy()
+        self._bufferedData, self._bufferedColors = self.copyBuffers()
 
     def updateSize(self):
         if not self._visible: return
         w,h = self._newWidth, self._newHeight
         if w  == self._width and h == self._height:
             return
-        baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        if self._transparent:
+            baseData = [None]*w
+            baseColors = baseData
+        else:
+            baseData = [' ']*w
+            baseColors = [TTkColor.RST]*w
         self._data   = [baseData.copy()   for _ in range(h)]
         self._colors = [baseColors.copy() for _ in range(h)]
         if self._doubleBuffer:
@@ -92,12 +103,22 @@ class TTkCanvas:
     def clean(self):
         if not self._visible: return
         w,h = self._width, self._height
-        baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        if self._transparent:
+            baseData = [None]*w
+            baseColors = baseData
+        else:
+            baseData = [' ']*w
+            baseColors = [TTkColor.RST]*w
         self._data   = [baseData.copy()   for _ in range(h)]
         self._colors = [baseColors.copy() for _ in range(h)]
 
     def copy(self):
+        ret = TTkCanvas()
+        ret._width = self._width
+        ret._height = self._height
+        ret._data, ret._colors = self.copyBuffers()
+
+    def copyBuffers(self):
         h = self._height
         retData   = [self._data[i].copy()   for i in range(h)]
         retColors = [self._colors[i].copy() for i in range(h)]
@@ -114,6 +135,30 @@ class TTkCanvas:
            0 <= _x < self._width  :
             self._data[_y][_x] = _ch
             self._colors[_y][_x] = _col.mod(_x,_y)
+
+    def fill(self, pos=(0,0), size=None, char=' ', color=TTkColor.RST):
+        w,h = self.size()
+        if not size:
+            size=(w,h)
+        fx,fy = pos
+        fw,fh = size
+        # the fill area is outside the boundaries
+        if fx >= w or fy>=h: return
+        if fx<0:
+            fw += fx
+            fx =  0
+        if fy<0:
+            fh += fy
+            fy =  0
+        if fw<=0 or fh<=0: return
+        fw = min(fw, w+fx)
+        fh = min(fh, h+fy)
+
+        fillCh    = [char]*fw
+        fillColor = [color]*fw
+        for iy in range(fy,fy+fh):
+            self._data[iy][fx:fx+fw]   = fillCh
+            self._colors[iy][fx:fx+fw] = fillColor
 
     def drawVLine(self, pos, size, color=TTkColor.RST):
         if size == 0: return
@@ -582,43 +627,58 @@ class TTkCanvas:
                           0                      self._width
     self._canvas:         |----|xxxxxx|----------|
     '''
-    def paintCanvas(self, canvas, geom, slice, bound):
+    def paintCanvas(self, canvas, geom, _slice, bound):
         # TTkLog.debug(f"PaintCanvas:{geom=} {bound=} {self._widget._name=} {self._data[0] if self._data else 1234}")
         x, y, w, h  = geom
         bx,by,bw,bh = bound
+        cw,ch = self.size()
         # out of bound
         if not self._visible: return
         if not canvas._visible: return
-        if canvas._width==0 or canvas._height==0: return
-        if x+w<=bx or y+h<=by or bx+bw-1<x or by+bh-1<y:
-            return
+        if canvas._width<=0 or canvas._height<=0: return
+        if bx+bw<0 or by+bh<0 or bx>=cw or by>=ch: return
+        if x+w<=bx or y+h<=by or bx+bw<=x or by+bh<=y: return
 
-        x = min(x,self._width-1)
-        y = min(y,self._height-1)
-        w = min(w,self._width-x)
-        h = min(h,self._height-y)
+        x = min(x,cw-1)
+        y = min(y,ch-1)
+        w = min(w,cw-x)
+        h = min(h,ch-y)
 
         xoffset = min(max(0,bx-x),canvas._width-1)
         yoffset = min(max(0,by-y),canvas._height-1)
         wslice = min(w if x+w < bx+bw else bx+bw-x,canvas._width)
         hslice = min(h if y+h < by+bh else by+bh-y,canvas._height)
 
-        for iy in range(yoffset,hslice):
-            a, b = x+xoffset, x+wslice
-            self._data[y+iy][a:b]   = canvas._data[iy][xoffset:wslice]
-            self._colors[y+iy][a:b] = canvas._colors[iy][xoffset:wslice]
+        a, b = x+xoffset, x+wslice
+        slice_ab  = slice(a,b)
+        slice_off = slice(xoffset,wslice)
+        if canvas._transparent:
+            for iy in range(yoffset,hslice):
+                if None in canvas._data[iy][slice_off]:
+                    self._data[y+iy][slice_ab]   = [cca if cca is not None else ccb for cca,ccb in zip(canvas._data[iy][slice_off],self._data[y+iy][slice_ab])]
+                else:
+                    self._data[y+iy][slice_ab]   = canvas._data[iy][slice_off]
+                if None in canvas._colors[iy][slice_off]:
+                    self._colors[y+iy][slice_ab] = [cca if cca else ccb for cca,ccb in zip(canvas._colors[iy][slice_off],self._colors[y+iy][slice_ab])]
+                else:
+                    self._colors[y+iy][slice_ab] = canvas._colors[iy][slice_off]
+        else:
+            for iy in range(yoffset,hslice):
+                self._data[y+iy][slice_ab]   = canvas._data[iy][slice_off]
+                self._colors[y+iy][slice_ab] = canvas._colors[iy][slice_off]
 
+        for iy in range(yoffset,hslice):
             # Check the full wide chars on the edge of the two canvasses
-            if ((0 <= a < self._width) and self._data[y+iy][a]==''):
+            if ((0 <= a < cw) and self._data[y+iy][a]==''):
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 < b <= self._width) and TTkString._isWideCharData(self._data[y+iy][b-1])):
+            if ((0 < b <= cw) and self._data[y+iy][b-1] and TTkString._isWideCharData(self._data[y+iy][b-1])):
                 self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 < a <= self._width) and TTkString._isWideCharData(self._data[y+iy][a-1])):
+            if ((0 < a <= cw) and self._data[y+iy][a-1] and TTkString._isWideCharData(self._data[y+iy][a-1])):
                 self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
                 self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
-            if ((0 <= b < self._width) and self._data[y+iy][b]==''):
+            if ((0 <= b < cw) and self._data[y+iy][b]==''):
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
 
@@ -646,20 +706,20 @@ class TTkCanvas:
 
     def pushToTerminalBuffered(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
+        data, colors = self._data, self._colors
         oldData, oldColors = self._bufferedData, self._bufferedColors
         lastcolor = TTkColor.RST
         empty = True
         ansi = ""
-        for y in range(0, self._height):
-            for x in range(0, self._width):
-                if self._data[y][x] == oldData[y][x] and \
-                   self._colors[y][x] == oldColors[y][x]:
+        for y,(lda,ldb,lca,lcb) in enumerate(zip(data,oldData,colors,oldColors)):
+            for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
+                if da==db and ca==cb:
                     if not empty:
                         TTkTerm.push(ansi)
                         empty=True
                     continue
-                ch = self._data[y][x]
-                color = self._colors[y][x]
+                ch = da
+                color = ca
                 if empty:
                     ansi = TTkTerm.Cursor.moveTo(y+1,x+1)
                     empty = False
@@ -673,5 +733,5 @@ class TTkCanvas:
         # Reset the color at the end
         TTkTerm.push(TTkColor.RST)
         # Switch the buffer
-        self._bufferedData, self._bufferedColors = self._data, self._colors
-        self._data, self._colors = oldData, oldColors
+        self._bufferedData, self._bufferedColors = data, colors
+        self._data,         self._colors         = oldData, oldColors

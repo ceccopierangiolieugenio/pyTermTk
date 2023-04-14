@@ -43,8 +43,8 @@ class TTkRadioButton(TTkWidget):
 
     :param str text: the text shown on the radio button, defaults to ""
     :type text: str, optional
-    :param str name: the text used to group the RadioButtons, only one checked status is allowed in between all the radio buttons with the same name, defaults to "TTkRadioButton"
-    :type name: str, optional
+    :param str radiogroup: the text used to group the RadioButtons, only one checked status is allowed in between all the radio buttons with the same radiogroup, defaults to "DefaultGroup"
+    :type radiogroup: str, optional
     :param bool checked: Checked status, defaults to "False"
     :type checked: bool, optional
 
@@ -61,13 +61,16 @@ class TTkRadioButton(TTkWidget):
 
     _radioLists = {}
     __slots__ = (
-        '_checked', '_text',
+        '_checked', '_text', '_radiogroup'
         # Signals
         'clicked'
         )
     def __init__(self, *args, **kwargs):
         # Define Signals
         self.clicked = pyTTkSignal()
+        # use name if radiogroup is not available for retrocompatibility
+        self._radiogroup = kwargs.get('name', 'DefaultGroup' )
+        self._radiogroup = kwargs.get('radiogroup', self._radiogroup )
         TTkWidget.__init__(self, *args, **kwargs)
         # self.checked = pyTTkSignal()
         self._checked = kwargs.get('checked', False )
@@ -75,10 +78,13 @@ class TTkRadioButton(TTkWidget):
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
-        if self._name not in TTkRadioButton._radioLists:
-            TTkRadioButton._radioLists[self._name] = [self]
+        if self._radiogroup not in TTkRadioButton._radioLists:
+            TTkRadioButton._radioLists[self._radiogroup] = [self]
         else:
-            TTkRadioButton._radioLists[self._name].append(self)
+            TTkRadioButton._radioLists[self._radiogroup].append(self)
+
+    def radioGroup(self):
+        return self._radiogroup
 
     def text(self):
         ''' This property holds the text shown on the checkhox
@@ -93,7 +99,7 @@ class TTkRadioButton(TTkWidget):
         :param text:
         :type text: :class:`~TermTk.TTkCore.string.TTkString`
         '''
-        if self._text == text: return
+        if self._text.sameAs(text): return
         self._text = TTkString(text)
         self.setMinimumSize(3 + len(self._text), 1)
         self.update()
@@ -155,7 +161,7 @@ class TTkRadioButton(TTkWidget):
 
     def _checkEvent(self):
         # Uncheck the radio already checked;
-        for radio in TTkRadioButton._radioLists[self._name]:
+        for radio in TTkRadioButton._radioLists[self._radiogroup]:
             if self != radio != None:
                 if radio._checked:
                     radio._checked = False
@@ -178,27 +184,3 @@ class TTkRadioButton(TTkWidget):
             return True
         return False
 
-    _ttkProperties = {
-        'Text' : {
-                'init': {'name':'text', 'type':TTkString } ,
-                'get':  {'cb':text,     'type':TTkString } ,
-                'set':  {'cb':setText,  'type':TTkString } },
-        'Checked' : {
-                'init': {'name':'checked', 'type':bool } ,
-                'get':  {'cb':isChecked,   'type':bool } ,
-                'set':  {'cb':setChecked,  'type':bool } },
-        'Check State' : {
-                'init': { 'name':'checked', 'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  } },
-                'get' : { 'cb':checkState,      'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  } },
-                'set' : { 'cb':setCheckState,   'type':'singleflag',
-                    'flags': {
-                        'Checked'          : TTkK.Checked    ,
-                        'Unchecked'        : TTkK.Unchecked  } },
-         },
-    }

@@ -33,8 +33,8 @@ def demoFilePicker(root=None):
 
     # winFP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(20,10), title="Test File Pickers", border=True)
     btn1 = ttk.TTkButton( parent=frame, pos=(0,0),  border=True, text='File' )
-    btn3 = ttk.TTkButton( parent=frame, pos=(8,0),  border=True, text='Directory' )
-    btn2 = ttk.TTkButton( parent=frame, pos=(21,0), border=True, text='Existing File', enabled=False )
+    btn2 = ttk.TTkButton( parent=frame, pos=(8,0),  border=True, text='Directory' )
+    btn3 = ttk.TTkButton( parent=frame, pos=(21,0), border=True, text='Existing File')
     btn4 = ttk.TTkButton( parent=frame, pos=(38,0), border=True, text='Existing Files', enabled=False )
     label = ttk.TTkLabel(parent=frame,  pos=(1,5),  text="...")
 
@@ -45,7 +45,8 @@ def demoFilePicker(root=None):
         ttk.TTkHelper.overlay(frame, filePicker, 2, 1, True)
 
     btn1.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.AnyFile))
-    btn3.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.Directory))
+    btn2.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.Directory))
+    btn3.clicked.connect(lambda : _showDialog(ttk.TTkK.FileMode.ExistingFile))
 
     return frame
 

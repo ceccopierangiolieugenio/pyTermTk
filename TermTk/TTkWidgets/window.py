@@ -182,26 +182,3 @@ class TTkWindow(TTkResizableFrame):
         if self._menubarTop:
             self._menubarTop.setBorderColor(TTkColor.RST)
         self.update()
-
-    _ttkProperties = {
-        'Window Flags' : {
-                'init': { 'name':'flags', 'type':'multiflags',
-                    'flags': {
-                        'Close Button'   : TTkK.WindowFlag.WindowCloseButtonHint    ,
-                        'Maximize Button': TTkK.WindowFlag.WindowMaximizeButtonHint ,
-                        'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
-                        'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
-                'get' : { 'cb':windowFlag,      'type':'multiflags',
-                     'flags': {
-                        'Close Button'   : TTkK.WindowFlag.WindowCloseButtonHint    ,
-                        'Maximize Button': TTkK.WindowFlag.WindowMaximizeButtonHint ,
-                        'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
-                        'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
-                'set' : { 'cb':setWindowFlag,   'type':'multiflags',
-                    'flags': {
-                        'Close Button'   : TTkK.WindowFlag.WindowCloseButtonHint    ,
-                        'Maximize Button': TTkK.WindowFlag.WindowMaximizeButtonHint ,
-                        'Minimize Button': TTkK.WindowFlag.WindowMinimizeButtonHint ,
-                        'Reduce Button'  : TTkK.WindowFlag.WindowReduceButtonHint   } },
-         },
-    }

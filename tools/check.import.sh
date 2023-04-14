@@ -7,6 +7,8 @@ __check(){
         grep -v -e "import re" -e "import os" -e "import datetime" |
         grep -v \
             -e "from dataclasses" \
+            -e "signal.py:from inspect import getfullargspec" \
+            -e "signal.py:from types import LambdaType" \
             -e "colors.py:from .colors_ansi_map" \
             -e "timer.py:import threading, time" \
             -e "log.py:import inspect" \
@@ -29,9 +31,15 @@ __check(){
             -e "ttk.py:import platform" \
             -e "clipboard.py:import importlib.util" \
             -e "filebuffer.py:import threading" \
-            -e "texedit.py:from math import log10, ceil" \
+            -e "texedit.py:from math import log10, floor" \
             -e "string.py:import unicodedata" \
-            -e "progressbar.py:import math"
+            -e "progressbar.py:import math" \
+            -e "uiloader.py:import json" \
+            -e "uiproperties.py:from .properties import *" \
+            -e "util.py:import zlib, pickle, base64" \
+            -e "propertyanimation.py:from inspect import getfullargspec" \
+            -e "propertyanimation.py:from types import LambdaType" \
+            -e "propertyanimation.py:import time, math"
 } ;
 
 if __check ;  then

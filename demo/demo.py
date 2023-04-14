@@ -115,7 +115,7 @@ def demoShowcase(root=None, border=True):
     listMenu = ttk.TTkList(maxWidth=30, minWidth=10)
     logInputToggler = ttk.TTkCheckbox(text='ShowInput')
     logInputToggler.stateChanged.connect(lambda x: logInput.setVisible(x==ttk.TTkK.Checked))
-    tomTreeToggler = ttk.TTkCheckbox(text='Tom View')
+    tomTreeToggler = ttk.TTkCheckbox(text='Tom View', enabled=False)
     tomTreeToggler.stateChanged.connect(lambda x: domTree.setVisible(x==ttk.TTkK.Checked))
     mouseToggler = ttk.TTkCheckbox(text='Mouse 🐀', checked=True)
     mouseToggler.stateChanged.connect(lambda x: ttk.TTkTerm.push(ttk.TTkTerm.Mouse.ON if x==ttk.TTkK.Checked else ttk.TTkTerm.Mouse.OFF))
@@ -135,9 +135,9 @@ def demoShowcase(root=None, border=True):
     splitter.setSizes([15,root.width()-11])
 
     # Themes
-    themesFrame.layout().addWidget(r1 := ttk.TTkRadioButton(text="ASCII", name="theme"))
-    themesFrame.layout().addWidget(r2 := ttk.TTkRadioButton(text="UTF-8",name="theme", checked=True))
-    themesFrame.layout().addWidget(r3 := ttk.TTkRadioButton(text="Nerd",name="theme"))
+    themesFrame.layout().addWidget(r1 := ttk.TTkRadioButton(text="ASCII", radiogroup="theme"))
+    themesFrame.layout().addWidget(r2 := ttk.TTkRadioButton(text="UTF-8", radiogroup="theme", checked=True))
+    themesFrame.layout().addWidget(r3 := ttk.TTkRadioButton(text="Nerd",  radiogroup="theme"))
 
     r1.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.ASCII))
     r2.clicked.connect( lambda : ttk.TTkTheme.loadTheme(ttk.TTkTheme.UTF8 ))
