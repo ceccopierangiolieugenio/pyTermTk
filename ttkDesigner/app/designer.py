@@ -38,7 +38,7 @@ from TermTk import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter
 from TermTk import TTkLogViewer, TTkTomInspector
 
-from TermTk import TTkUiLoader
+from TermTk import TTkUiLoader, TTkUtil
 
 from .cfg  import *
 from .about import *
@@ -126,6 +126,7 @@ class TTkDesigner(TTkGridLayout):
         self.weModified.connect(self._treeInspector.refresh)
 
         fileMenu = topMenuFrame.menubarTop().addMenu("&File")
+        fileMenu.addMenu("New").menuButtonClicked.connect(self.new)
         fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
         fileMenu.addMenu("Save").menuButtonClicked.connect(self.save)
         fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
@@ -213,6 +214,25 @@ class TTkDesigner(TTkGridLayout):
                 flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
         win.layout().addWidget(widget)
         TTkHelper.overlay(None, win, 2, 2, modal=True)
+
+    @pyTTkSlot()
+    def new(self):
+        newWindow = TTkUiLoader.loadDict(TTkUtil.base64_deflate_2_obj(
+            "eJytlt9L21AUx5MmbVq10zmmmz4sjMH6MEt1c1P6tOpUlinCig6kD7G59AbTpOTHrBuCjy1cxoRbNgZD2J/Wv2B/ws7Nj7baVVsxacg9OTcnn+85J7k9E1u1FOdvpzRD" +
+            "pM/IdnTLpCS+mM1lc5QIrqdT5oqXDdVxKEkVi0f7uqlZx5QkaqqtVh3fL+6oVQTuHXQcuZO7lqO7LFyJZhRRiSEiftS/IN9cV6YRSW3rpryvay6mSoyMMWsL6RXsUkUE" +
+            "p1oPndvcFHjBDL3MlnZVTdPNih9NUHi2I5L4oJ5YnktJGjg3bV2LbGlPd/RDA9EGkd6ZKow0NixallHUa5SI8we5KkgqWLaGbHDFi7oL00mGOdgByuQNy67KCzLElteR" +
+            "o1dMZMt/L35+C26eCJTLG4ZacQDyzCMJI3g+pAjH8QyWTiEvm8iqItc+AXAO9oJyz6UOSZaxbmg28tPlz/eTXfBcF1LI7szgFEkVXDPUhMeZ9BmQjdPBSER4UkniKUXA" +
+            "999zHM/h6eD0oBQ+C3aEH/qBoyizDfyoiR/jOSIWUR1SNR0pDmb42vB8g6TWMCofsdTRJpF8A5LY9PCTQN0CY8RPgwcBDIjCz0rUI4IN7QAFFsqWwc4S2E5NNanCEwmu" +
+            "hWMvCPO8V2rYS4HUFz1S00zqJEiVrpcKVExggwnE2U9zPMdF8tot2m59v+n3Y6zdOpfDyoa35l+u5JfyS8vL/pHLv2JmDnYwqwd9k1b75tSHCVTqgp4DxEWbnt3wa/3x" +
+            "YbtbcOevIWT+jsqMc028OLCo6aio+LUSw2+g0VYUEa8OKp5WQVGfcleLN0SfXi5etzGDwLcj5gcRp4G454sRvV3xDrXAqNNDUzdD6tmImgWXL79T16MLPegCoMcAnR+E" +
+            "vlew6lfQk3eGzoLfGl28CX2rH338MvrEyOgzEXo3+Ojk8X5ykvQ/nYfI6HySe66Enc516HlGnwB6vkMPw9HbnMTXLMOyO+tU6q0Bq08VmWypHCSF75HCh63fWwQ7UjAW" +
+            "KVhY7FTgWg0jva292T8JBeCvw2Nf7Z3/YC91Voi7ww4++bfHFjrYyPPIeNkyTVRmf4ccWOC97D+eTf+w"))
+
+        newWindow.getWidgetByName("BtnWindow").clicked.connect(newWindow.close)
+        newWindow.getWidgetByName("BtnWidget").clicked.connect(newWindow.close)
+        newWindow.getWidgetByName("BtnWindow").clicked.connect(self._windowEditor.newWindow)
+        newWindow.getWidgetByName("BtnWidget").clicked.connect(self._windowEditor.newWidget)
+        TTkHelper.overlay(None, newWindow, 2, 2, modal=True)
 
     def _openFile(self, fileName):
         TTkLog.info(f"Open: {fileName}")

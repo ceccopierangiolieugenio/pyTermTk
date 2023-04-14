@@ -26,20 +26,44 @@ import TermTk as ttk
 
 
 class WindowEditorView(ttk.TTkAbstractScrollView):
-    __slots__ = ('_designer', '_snapRootWidget')
+    __slots__ = ('_designer', '_snapRootWidget', '_ttk')
     def __init__(self, designer, *args, **kwargs):
         self._designer = designer
         super().__init__(*args, **kwargs)
+        self._ttk = None
         self.viewChanged.connect(self._viewChangedHandler)
-        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'MainWidget'), designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4), superRootWidget=True)
+        self.newWidget()
+
+    @ttk.pyTTkSlot()
+    def newWindow(self):
+        if self._ttk:
+            self._ttk.superResized.disconnect(self._superChanged)
+            self._ttk.superMoved.disconnect(self._superChanged)
+            self.layout().removeWidget(self._ttk)
+        self._ttk = SuperWidget(wid=ttk.TTkWindow(name = 'MainWindow'), designer=self._designer, pos=(4,2), superRootWidget=True)
+        self._ttk.resize(self.width()-8,self.height()-4)
+        self._snapRootWidget = True
+        self.layout().addWidget(self._ttk)
         self._ttk.superResized.connect(self._superChanged)
         self._ttk.superMoved.connect(self._superChanged)
-        self.layout().addWidget(self._ttk)
+
+    @ttk.pyTTkSlot()
+    def newWidget(self):
+        if self._ttk:
+            self._ttk.superResized.disconnect(self._superChanged)
+            self._ttk.superMoved.disconnect(self._superChanged)
+            self.layout().removeWidget(self._ttk)
+        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'MainWidget'), designer=self._designer, pos=(4,2), superRootWidget=True)
+        self._ttk.resize(self.width()-8,self.height()-4)
         self._snapRootWidget = True
+        self.layout().addWidget(self._ttk)
+        self._ttk.superResized.connect(self._superChanged)
+        self._ttk.superMoved.connect(self._superChanged)
 
     def importWidget(self, wid):
         if self._ttk:
-            self.layout().removeWidget(self._ttk)
+            self._ttk.superResized.disconnect(self._superChanged)
+            self._ttk.superMoved.disconnect(self._superChanged)
         self._snapRootWidget = False
         self._ttk = SuperWidget.swFromWidget(wid=wid, designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4))
         self._ttk.makeRootWidget()
@@ -87,7 +111,9 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self._canvas.fill(pos=(0,0),size=(w,h), char="#", color=ttk.TTkColor.fg("#220044")+ttk.TTkColor.bg("#000022"))
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
-    __slots__ = ('getTTk', 'dumpDict', 'importWidget', 'importSuperWidget')
+    __slots__ = ('getTTk', 'dumpDict', 'importWidget', 'importSuperWidget',
+                 # Forwarded slots
+                 'newWindow', 'newWidget')
     def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setViewport(wev := WindowEditorView(designer))
@@ -97,3 +123,5 @@ class WindowEditor(ttk.TTkAbstractScrollArea):
         self.dumpDict          = wev.dumpDict
         self.importWidget      = wev.importWidget
         self.importSuperWidget = wev.importSuperWidget
+        self.newWindow         = wev.newWindow
+        self.newWidget         = wev.newWidget
