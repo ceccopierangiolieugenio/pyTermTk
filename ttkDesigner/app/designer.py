@@ -218,21 +218,24 @@ class TTkDesigner(TTkGridLayout):
     @pyTTkSlot()
     def new(self):
         newWindow = TTkUiLoader.loadDict(TTkUtil.base64_deflate_2_obj(
-            "eJytlt9L21AUx5MmbVq10zmmmz4sjMH6MEt1c1P6tOpUlinCig6kD7G59AbTpOTHrBuCjy1cxoRbNgZD2J/Wv2B/ws7Nj7baVVsxacg9OTcnn+85J7k9E1u1FOdvpzRD" +
-            "pM/IdnTLpCS+mM1lc5QIrqdT5oqXDdVxKEkVi0f7uqlZx5QkaqqtVh3fL+6oVQTuHXQcuZO7lqO7LFyJZhRRiSEiftS/IN9cV6YRSW3rpryvay6mSoyMMWsL6RXsUkUE" +
-            "p1oPndvcFHjBDL3MlnZVTdPNih9NUHi2I5L4oJ5YnktJGjg3bV2LbGlPd/RDA9EGkd6ZKow0NixallHUa5SI8we5KkgqWLaGbHDFi7oL00mGOdgByuQNy67KCzLElteR" +
-            "o1dMZMt/L35+C26eCJTLG4ZacQDyzCMJI3g+pAjH8QyWTiEvm8iqItc+AXAO9oJyz6UOSZaxbmg28tPlz/eTXfBcF1LI7szgFEkVXDPUhMeZ9BmQjdPBSER4UkniKUXA" +
-            "999zHM/h6eD0oBQ+C3aEH/qBoyizDfyoiR/jOSIWUR1SNR0pDmb42vB8g6TWMCofsdTRJpF8A5LY9PCTQN0CY8RPgwcBDIjCz0rUI4IN7QAFFsqWwc4S2E5NNanCEwmu" +
-            "hWMvCPO8V2rYS4HUFz1S00zqJEiVrpcKVExggwnE2U9zPMdF8tot2m59v+n3Y6zdOpfDyoa35l+u5JfyS8vL/pHLv2JmDnYwqwd9k1b75tSHCVTqgp4DxEWbnt3wa/3x" +
-            "YbtbcOevIWT+jsqMc028OLCo6aio+LUSw2+g0VYUEa8OKp5WQVGfcleLN0SfXi5etzGDwLcj5gcRp4G454sRvV3xDrXAqNNDUzdD6tmImgWXL79T16MLPegCoMcAnR+E" +
-            "vlew6lfQk3eGzoLfGl28CX2rH338MvrEyOgzEXo3+Ojk8X5ykvQ/nYfI6HySe66Enc516HlGnwB6vkMPw9HbnMTXLMOyO+tU6q0Bq08VmWypHCSF75HCh63fWwQ7UjAW" +
-            "KVhY7FTgWg0jva292T8JBeCvw2Nf7Z3/YC91Voi7ww4++bfHFjrYyPPIeNkyTVRmf4ccWOC97D+eTf+w"))
+            "eJytlm1L21AUxxOTmtau0zmmm75YGIP1xSzVzU3pq1WnskwRVnQgfRGbS28wTSQPs24IslctXMaEWzYGQ9hH6yfYR9i5eahpS2tx5oHc03Pvye9/z7m5PRdbX1Ocf5zR" +
+            "LJE+IdvRLZOSxGIun8tTIrieTpkrUTFUx6EkVSod7eumZp1QMn6s2mrN8f3ijlpD4N5BJ5E7uWs5usvClWlWEZUxRMQP+mfkm+vKNCKpbd2U93XNxVQZIxPM2kJ6FbtU" +
+            "EcGp1kPnNjcFXjBDL7OlXVXTdLPqRxMUnp2IjL9XTy3PpSQDnJu2rkW2tKc7+qGBaINIb00VWhprlizLKOnHlIjzB/kaSCpatoZscCVKugvdSZY52A3K5A3LrskLMsSW" +
+            "15GjV01ky38vf34LBt8JlMsbhlp1APLcI+NG8H6YIpzAM1g6g3nZRFYNufYpgHNwFpW7LnVIsoJ1Q7ORP11+f3+yi57rwhSykVmcIqmia4aacJpJnwHZOBO0RIQnlSSe" +
+            "UgR87x3H8RyeDh73y+G74ET4gR84ijLbwA+b+BGeI2IJ1WGqpiPFQQ9fG55vkNQaRpUjNnW0SSTfgElsevhxoG6BMeInwYsABkThp2XqEcGGcoAECxXLYE8JbOdYNanC" +
+            "Ewl+C9teEOZZXGpYS4HU5zGpGSZ1EqRKw6UCFRPYYAJx7uMcz3GRvHaLtlvfr7t+TLRbF3KY2XBo4cVKYamwtLzs3/nCS2bm4QSzdtDXabWvT32UQOUr0AuAuGzT82uu" +
+            "1h8f9uoIRv4aQebvKM0438SLA5OaiZKKXylj+DUU2ooi4tVBydOqKKpTrjd5I9Rpd/KuCjMIfDNifhBxBohjX4xodSU61AKjzoxM3QypZyNqFlzuXlPD0YUYugDoY4DO" +
+            "D0LfK1r1HvTkraGz4DdGF69D3+pHT98a+tb/oCf60UnS/3YeIqPzTU77Zk+1cx0FPFMwAQr4jgJoDi/1mfiuEyt3klizDMvu7FepNwbsQjVksi1zkCI+pogPl0A8GXa3" +
+            "kJ5UDBUyyrLt0hLPxGmoAn8Znb23kOzeJHTtF7fLHgS/ObvQYUeeR9IVyzRRhf1BcmDL93L/AD7YB1I="))
 
         newWindow.getWidgetByName("BtnWindow").clicked.connect(newWindow.close)
         newWindow.getWidgetByName("BtnWidget").clicked.connect(newWindow.close)
         newWindow.getWidgetByName("BtnWindow").clicked.connect(self._windowEditor.newWindow)
         newWindow.getWidgetByName("BtnWidget").clicked.connect(self._windowEditor.newWidget)
-        TTkHelper.overlay(None, newWindow, 2, 2, modal=True)
+        newWindow.getWidgetByName("BtnWindow").clicked.connect(self.weModified.emit)
+        newWindow.getWidgetByName("BtnWidget").clicked.connect(self.weModified.emit)
+
+        TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
 
     def _openFile(self, fileName):
         TTkLog.info(f"Open: {fileName}")

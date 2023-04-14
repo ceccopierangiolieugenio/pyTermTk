@@ -293,7 +293,7 @@
        22,
        3
       ],
-      "Min Width": 12,
+      "Min Width": 13,
       "Min Height": 3,
       "Max Width": 65536,
       "Max Height": 65536,
@@ -307,7 +307,7 @@
       "Visible": true,
       "Enabled": false,
       "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mHBoxLayout\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mHBox Layout\u001b[0m",
       "Border": true,
       "Checkable": false,
       "Checked": false
@@ -332,7 +332,7 @@
     {
      "class": "TTkLabel",
      "params": {
-      "Name": "TTkLabel",
+      "Name": "LabelWidget",
       "Position": [
        0,
        0
@@ -341,7 +341,7 @@
        22,
        1
       ],
-      "Min Width": 6,
+      "Min Width": 10,
       "Min Height": 1,
       "Max Width": 65536,
       "Max Height": 1,
@@ -355,7 +355,7 @@
       "Visible": true,
       "Enabled": true,
       "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mWidget\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mNew Widget\u001b[0m",
       "Color": "\u001b[0m",
       "Alignment": 4
      },
@@ -379,7 +379,7 @@
     {
      "class": "TTkLabel",
      "params": {
-      "Name": "TTkLabel-1",
+      "Name": "LabelLayout",
       "Position": [
        22,
        0
@@ -388,7 +388,7 @@
        22,
        1
       ],
-      "Min Width": 6,
+      "Min Width": 10,
       "Min Height": 1,
       "Max Width": 65536,
       "Max Height": 65536,
@@ -402,7 +402,7 @@
       "Visible": true,
       "Enabled": true,
       "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mLayout\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mNew Layout\u001b[0m",
       "Color": "\u001b[0m",
       "Alignment": 4
      },
@@ -426,7 +426,7 @@
     {
      "class": "TTkLabel",
      "params": {
-      "Name": "TTkLabel-2",
+      "Name": "LabelWindow",
       "Position": [
        44,
        0
@@ -435,7 +435,7 @@
        22,
        1
       ],
-      "Min Width": 6,
+      "Min Width": 10,
       "Min Height": 1,
       "Max Width": 65536,
       "Max Height": 65536,
@@ -449,7 +449,7 @@
       "Visible": true,
       "Enabled": true,
       "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mWindow\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mNew Window\u001b[0m",
       "Color": "\u001b[0m",
       "Alignment": 4
      },
