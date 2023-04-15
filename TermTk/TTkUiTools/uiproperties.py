@@ -36,6 +36,7 @@ TTkUiProperties = {
         TTkRadioButton.__name__:    TTkRadioButtonProperties,
         TTkResizableFrame.__name__: TTkResizableFrameProperties,
         TTkScrollBar.__name__:      TTkScrollBarProperties,
+        TTkSpinBox.__name__:        TTkSpinBoxProperties,
         TTkSplitter.__name__:       TTkSplitterProperties,
         TTkTextEdit.__name__:       TTkTextEditProperties,
         TTkWidget.__name__:         TTkWidgetProperties,

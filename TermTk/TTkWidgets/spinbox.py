@@ -70,6 +70,30 @@ class TTkSpinBox(TTkWidget):
         self._lineEdit.setText(str(self._value))
         self.valueChanged.emit(value)
 
+    def minimum(self):
+        '''minimum'''
+        return self._minimum
+
+    @pyTTkSlot(int)
+    def setMinimum(self, minimum):
+        '''setMinimum'''
+        if self._minimum == minimum:
+            return
+        self._minimum = minimum
+        self.setValue(self._value)
+
+    def maximum(self):
+        '''maximum'''
+        return self._maximum
+
+    @pyTTkSlot(int)
+    def setMaximum(self, maximum):
+        '''setMaximum'''
+        if self._maximum == maximum:
+            return
+        self._maximum = maximum
+        self.setValue(self._value)
+
     @pyTTkSlot(str)
     def _textEdited(self, text):
         self.setValue(int(str(text)))

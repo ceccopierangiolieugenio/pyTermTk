@@ -165,7 +165,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         # Integer Fields
         def _processInt(name, prop):
             getval = prop['get']['cb'](domw)
-            value = ttk.TTkSpinBox(value=getval, height=1)
+            value = ttk.TTkSpinBox(value=getval, height=1, maximum=0x10000, minimum=-0x10000)
             value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
             return ttk.TTkTreeWidgetItem([name,value])
         # String Fields

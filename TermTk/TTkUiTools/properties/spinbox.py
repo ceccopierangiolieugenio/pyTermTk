@@ -22,3 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkWidgets.spinbox import TTkSpinBox
+
+TTkSpinBoxProperties = {
+    'properties' : {
+        'Value' : {
+                'init': {'name':'value',            'type':int } ,
+                'get':  { 'cb':TTkSpinBox.value,    'type':int } ,
+                'set':  { 'cb':TTkSpinBox.setValue, 'type':int } },
+        'Minimum' : {
+                'init': {'name':'minimum',            'type':int } ,
+                'get':  { 'cb':TTkSpinBox.minimum,    'type':int } ,
+                'set':  { 'cb':TTkSpinBox.setMinimum, 'type':int } },
+        'Maximum' : {
+                'init': {'name':'maximum',            'type':int } ,
+                'get':  { 'cb':TTkSpinBox.maximum,    'type':int } ,
+                'set':  { 'cb':TTkSpinBox.setMaximum, 'type':int } },
+    },'signals' : {
+        'valueChanged(int)' : {'name' : 'valueChanged', 'type': int },
+    },'slots' : {
+        'setValue(int)'   : {'name' : 'setValue'   , 'type': int },
+        'setMinimum(int)' : {'name' : 'setMinimum' , 'type': int },
+        'setMaximum(int)' : {'name' : 'setMaximum' , 'type': int },
+    }
+}

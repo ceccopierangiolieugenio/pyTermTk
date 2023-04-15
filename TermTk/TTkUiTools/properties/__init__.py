@@ -16,7 +16,7 @@ from .resizableframe import TTkResizableFrameProperties
 # from .scrollarea import
 from .scrollbar import TTkScrollBarProperties
 # from .spacer import
-# from .spinbox import
+from .spinbox import TTkSpinBoxProperties
 from .splitter import TTkSplitterProperties
 # from .tabwidget import
 from .texedit import TTkTextEditProperties

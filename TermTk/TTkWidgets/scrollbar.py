@@ -35,7 +35,7 @@ class TTkScrollBar(TTkWidget):
     __slots__ = (
         '_orientation',
         '_minimum', '_maximum',
-        '_singlestep', '_pagestep',
+        '_singleStep', '_pageStep',
         '_value', '_color', '_focusColor',
         '_draggable', '_mouseDelta',
         # Those Vars are required to handle the mouseclick
@@ -64,8 +64,8 @@ class TTkScrollBar(TTkWidget):
             self.setMinimumSize(3,1)
         self._minimum = kwargs.get('minimum' , 0 )
         self._maximum = kwargs.get('maximum' , 99 )
-        self._singlestep = kwargs.get('singlestep' , 1 )
-        self._pagestep = kwargs.get('pagestep' , 10 )
+        self._singleStep = kwargs.get('singleStep' , 1 )
+        self._pageStep = kwargs.get('pageStep' , 10 )
         self._value = kwargs.get('value' , 0 )
         self._color = kwargs.get('color', TTkColor.RST )
         self._focusColor = kwargs.get('focusColor', TTkColor.fg('#cccc00') )
@@ -85,9 +85,9 @@ class TTkScrollBar(TTkWidget):
         |------------------|   size = widt or height
          |----------------|   size2 = widt or height - 2 (removed the ending arrows)
          |------------|     workingSize = max - min
-         |----------------| drawingSize = max - min + pagestep
-              a---b            slider = [a=value-min, b=a+pagestep]
-              |---|            pagestep, asciiStep (step size in ascii)
+         |----------------| drawingSize = max - min + pageStep
+              a---b            slider = [a=value-min, b=a+pageStep]
+              |---|            pageStep, asciiStep (step size in ascii)
 
     '''
     def paintEvent(self):
@@ -97,16 +97,16 @@ class TTkScrollBar(TTkWidget):
             size=self._width
 
         if self.hasFocus():
-            color = self.focusColor
+            color = self._focusColor
         else:
-            color = self.color
+            color = self._color
         if self._maximum == self._minimum:
             # Special case where no scroll is needed
             aa=0
             bb=size-2
         else:
             size2 = size-2
-            asciiStep = size2 * self._pagestep // (self._maximum - self._minimum + self._pagestep)
+            asciiStep = size2 * self._pageStep // (self._maximum - self._minimum + self._pageStep)
             if asciiStep==0: asciiStep=1 # Force the slider to be at least one char wide
             asciiDrawingSize = size2 - asciiStep
             a = self._value - self._minimum
@@ -122,10 +122,12 @@ class TTkScrollBar(TTkWidget):
 
     def wheelEvent(self, evt):
         if evt.evt == TTkK.WHEEL_Up:
-            self.value = self.value - self.pagestep
+            self._value -= self._pageStep
         else:
-            self.value = self.value + self.pagestep
-        self.sliderMoved.emit(self.value)
+            self._value += self._pageStep
+        self._value = max(self._minimum,min(self._maximum,self._value))
+        self.sliderMoved.emit(self._value)
+        self.update()
         return True
 
     def mousePressEvent(self, evt):
@@ -137,24 +139,21 @@ class TTkScrollBar(TTkWidget):
             mouse = evt.x
 
         if mouse == 0: # left/up arrow pressed
-            self.value = self.value - self.singlestep
-            self.update()
+            self._value = self._value - self._singleStep
         elif mouse == size-1: # right/down arrow pressed
-            self.value = self.value + self.singlestep
-            self.update()
+            self._value = self._value + self._singleStep
         elif self._screenPgDown[0] <= mouse < self._screenPgDown[1]:
-            self.value = self.value - self.pagestep
-            self.update()
+            self._value = self._value - self._pageStep
         elif self._screenPgUp[0] <= mouse < self._screenPgUp[1]:
-            self.value = self.value + self.pagestep
-            self.update()
+            self._value = self._value + self._pageStep
         elif self._screenScroller[0] <= mouse < self._screenScroller[1]:
             self._mouseDelta = mouse-self._screenScroller[0]
             self._draggable = True
-            self.update()
         else:
             return False
-        self.sliderMoved.emit(self.value)
+        self._value = max(self._minimum,min(self._maximum,self._value))
+        self.sliderMoved.emit(self._value)
+        self.update()
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}")
         return True
 
@@ -173,9 +172,11 @@ class TTkScrollBar(TTkWidget):
         asciiDrawingSize = size2 - asciiStep
 
         a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
-        self.value = a + self._minimum
-        self.sliderMoved.emit(self.value)
+        self._value = a + self._minimum
 
+        self._value = max(self._minimum,min(self._maximum,self._value))
+        self.sliderMoved.emit(self._value)
+        self.update()
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, aa:{aa}")
         return True
 
@@ -186,10 +187,25 @@ class TTkScrollBar(TTkWidget):
     def focusOutEvent(self):
         self.update()
 
+    def singleStep(self):
+        '''singleStep'''
+        return self._singleStep
+
+    @pyTTkSlot(int)
+    def setSingleStep(self, v):
+        '''setSingleStep'''
+        self._singleStep = v
+        self.update()
+
+    def pageStep(self):
+        '''pageStep'''
+        return self._pageStep
+
     @pyTTkSlot(int)
     def setPageStep(self, pageStep):
         '''setPageStep'''
-        self._pagestep = pageStep
+        self._pageStep = pageStep
+        self.update()
 
     @pyTTkSlot(int)
     def setRangeTo(self, max):
@@ -202,19 +218,14 @@ class TTkScrollBar(TTkWidget):
         if self._minimum == min and \
            self._maximum == max :
             return
-        self.minimum = min
-        self.maximum = max
+        self._minimum = min
+        self._maximum = max
         self.rangeChanged.emit(min, max)
 
-    @pyTTkSlot(int)
-    def setValue(self, v):
-        '''setValue'''
-        self.value = v
+    def minimum(self):
+        return self._minimum
 
-    @property
-    def minimum(self): return self._minimum
-    @minimum.setter
-    def minimum(self, v):
+    def setMinimum(self, v):
         if v == self._minimum:
             return
         if v > self._maximum:
@@ -222,10 +233,10 @@ class TTkScrollBar(TTkWidget):
         self._minimum = v
         self.update()
 
-    @property
-    def maximum(self): return self._maximum
-    @maximum.setter
-    def maximum(self, v):
+    def maximum(self):
+        return self._maximum
+
+    def setMaximum(self, v):
         if v == self._maximum:
             return
         if v < self._minimum:
@@ -233,43 +244,29 @@ class TTkScrollBar(TTkWidget):
         self._maximum = v
         self.update()
 
-    @property
-    def singlestep(self): return self._singlestep
-    @singlestep.setter
-    def singlestep(self, v): self._singlestep = v; self.update()
+    def value(self):
+        return self._value
 
-    @property
-    def pagestep(self): return self._pagestep
-    @pagestep.setter
-    def pagestep(self, v): self._pagestep = v; self.update()
-
-    @property
-    def value(self): return self._value
-    @value.setter
-    def value(self, v):
-        if self._value == v:
-            return
-        if v > self._maximum: v = self._maximum
-        if v < self._minimum: v = self._minimum
+    @pyTTkSlot(int)
+    def setValue(self, v):
+        v = max(self._minimum,min(self._maximum,v))
         if self._value == v: return
         self._value = v
         self.valueChanged.emit(v)
         self.update()
 
-    @property
     def color(self):
         return self._color
-    @color.setter
-    def color(self, color):
-        if self.color != color:
+
+    def setColor(self, color):
+        if self._color != color:
             self._color = color
             self.update()
 
-    @property
     def focusColor(self):
         return self._focusColor
-    @focusColor.setter
-    def focusColor(self, color):
-        if self.focusColor != color:
+
+    def setFocusColor(self, color):
+        if self._focusColor != color:
             self._focusColor = color
             self.update()

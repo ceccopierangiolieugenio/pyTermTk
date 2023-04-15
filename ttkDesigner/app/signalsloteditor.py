@@ -119,7 +119,7 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
         curSlot = str(self._slot.currentText())
         filter = None
         for c in self._slotData:
-            if not curSlot in self._slotData[c]: continue
+            if not str(curSlot) in self._slotData[c]: continue
             filter = self._slotData[c][curSlot]['type']
             break
 
@@ -151,7 +151,7 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
         curSlot = self._slot.currentText()
         filter = 'ALL'
         for c in self._signalData:
-            if not curSignal in self._signalData[c]: continue
+            if not str(curSignal) in self._signalData[c]: continue
             filter = self._signalData[c][curSignal]['type']
             break
 

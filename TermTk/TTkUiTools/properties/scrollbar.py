@@ -37,5 +37,35 @@ TTkScrollBarProperties = {
                     'flags': {
                         'Horizontal' : TTkK.HORIZONTAL ,
                         'Vertical'   : TTkK.VERTICAL   } } },
-    },'signals' : {},'slots' : {}
+        'Value' : {
+                'init': {'name':'value',              'type':int } ,
+                'get':  { 'cb':TTkScrollBar.value,    'type':int } ,
+                'set':  { 'cb':TTkScrollBar.setValue, 'type':int } },
+        'Minimum' : {
+                'init': {'name':'minimum',              'type':int } ,
+                'get':  { 'cb':TTkScrollBar.minimum,    'type':int } ,
+                'set':  { 'cb':TTkScrollBar.setMinimum, 'type':int } },
+        'Maximum' : {
+                'init': {'name':'maximum',              'type':int } ,
+                'get':  { 'cb':TTkScrollBar.maximum,    'type':int } ,
+                'set':  { 'cb':TTkScrollBar.setMaximum, 'type':int } },
+        'Single Step' : {
+                'init': {'name':'singleStep',              'type':int } ,
+                'get':  { 'cb':TTkScrollBar.singleStep,    'type':int } ,
+                'set':  { 'cb':TTkScrollBar.setSingleStep, 'type':int } },
+        'Page Step' : {
+                'init': {'name':'pageStep',              'type':int } ,
+                'get':  { 'cb':TTkScrollBar.pageStep,    'type':int } ,
+                'set':  { 'cb':TTkScrollBar.setPageStep, 'type':int } },
+    },'signals' : {
+        'valueChanged(int)'     : {'name' : 'valueChanged', 'type': int },
+        'rangeChanged(int,int)' : {'name' : 'rangeChanged', 'type':(int,int)},
+        'sliderMoved(int)'      : {'name' : 'sliderMoved' , 'type': int },
+    },'slots' : {
+        'setValue(int)'      : {'name' : 'setValue'      , 'type': int },
+        'setSingleStep(int)' : {'name' : 'setSingleStep' , 'type': int },
+        'setPageStep(int)'   : {'name' : 'setPageStep'   , 'type': int },
+        'setRangeTo(int)'    : {'name' : 'setRangeTo'    , 'type': int },
+        'setRange(int,int)'  : {'name' : 'setRange'      , 'type':(int,int)},
+    }
 }
