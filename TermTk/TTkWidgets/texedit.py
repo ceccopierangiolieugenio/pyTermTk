@@ -135,6 +135,9 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.setDocument(kwargs.get('document', TTkTextDocument()))
         self._updateSize()
 
+    def multiLine(self) -> bool :
+        return self._multiLine
+
     @pyTTkSlot(bool)
     def _undoAvailable(self, available):
         self.undoAvailable.emit(available)
@@ -573,6 +576,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             # Forwarded Methods
             'clear', 'setText', 'append', 'isReadOnly', 'setReadOnly', 'document',
             'wrapWidth', 'setWrapWidth',
+            'multiLine',
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
             'textCursor', 'setFocus',
@@ -607,6 +611,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.setReadOnly = self._textEditView.setReadOnly
         self.textCursor = self._textEditView.textCursor
         self.setFocus = self._textEditView.setFocus
+        self.multiLine = self._textEditView.multiLine
         self.undo = self._textEditView.undo
         self.redo = self._textEditView.redo
         self.isUndoAvailable = self._textEditView.isUndoAvailable

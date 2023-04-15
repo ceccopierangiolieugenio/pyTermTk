@@ -24,6 +24,7 @@
 
 # from TermTk.TTkCore.string import TTkString
 # from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.texedit import TTkTextEdit
 
 TTkTextEditProperties = {
@@ -36,5 +37,21 @@ TTkTextEditProperties = {
                 'init': {'name':'readOnly',                'type':bool } ,
                 'get':  {'cb':lambda w:   w.isReadOnly(),  'type':bool } ,
                 'set':  {'cb':lambda w,v: w.setReadOnly(v),'type':bool } },
-    },'signals' : {},'slots' : {}
+        'Multi Line' : {
+                'init': {'name':'multiLine',           'type':bool } ,
+                'get':  {'cb':lambda w: w.multiLine(), 'type':bool } },
+    },'signals' : {
+        'currentColorChanged(TTkColor)' : {'name': 'currentColorChanged', 'type':TTkColor},
+        'undoAvailable(bool)' : {'name': 'undoAvailable', 'type': bool},
+        'redoAvailable(bool)' : {'name': 'redoAvailable', 'type': bool},
+        'textChanged()' :       {'name': 'textChanged',   'type': None},
+    },'slots' : {
+        'setText(str)' : {'name':'setText', 'type':None},
+        'append(str)' :  {'name':'append',  'type':None},
+        'undo()' :       {'name':'undo',    'type':None},
+        'clear()' :      {'name':'clear',   'type':None},
+        'copy()' :       {'name':'copy',    'type':None},
+        'cut()' :        {'name':'cut',     'type':None},
+        'paste()' :      {'name':'paste',   'type':None},
+    }
 }
