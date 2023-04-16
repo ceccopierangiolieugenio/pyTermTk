@@ -41,5 +41,11 @@ TTkLineEditProperties = {
                 'init': {'name':'text', 'type':'singleLineTTkString',  } ,
                 'get':  {'cb':TTkLineEdit.text,     'type':'singleLineTTkString' } ,
                 'set':  {'cb':TTkLineEdit.setText,  'type':'singleLineTTkString' } }
-    },'signals' : {},'slots' : {}
+    },'signals' : {
+        'textChanged(str)' : {'name': 'textChanged',   'type': str},
+        'textEdited(str)'  : {'name': 'textEdited',    'type': str},
+        'returnPressed()'  : {'name': 'returnPressed', 'type': None},
+    },'slots' : {
+        'setText(str)' : {'name':'setText', 'type':None},
+    }
 }

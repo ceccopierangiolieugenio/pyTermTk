@@ -42,7 +42,8 @@ dWidgets = {
     'Input Widgets':{
         "ComboBox"    : { "class":ttk.TTkComboBox,  "params":{'size':(20,1)} },
         "LineEdit"    : { "class":ttk.TTkLineEdit,  "params":{'size':(20,1)} },
-        "TextEdit"    : { "class":ttk.TTkTextEdit,  "params":{'size':(20,5)} },
+        "TextEdit"    : { "class":ttk.TTkTextEdit,  "params":{'size':(20,5), 'readOnly':False, 'multiline':True } },
+        "TextEditLine": { "class":ttk.TTkTextEdit,  "params":{'size':(20,1), 'readOnly':False, 'multiLine':False, 'maxHeight':1 } },
         "SpinBox"     : { "class":ttk.TTkSpinBox,   "params":{'size':(20,1)} },
         "H ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(10,1), "orientation":ttk.TTkK.HORIZONTAL} },
         "V ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(1,5),  "orientation":ttk.TTkK.VERTICAL} },
