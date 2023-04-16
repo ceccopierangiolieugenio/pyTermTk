@@ -49,6 +49,7 @@ TTkTextEditProperties = {
         'setText(str)' : {'name':'setText', 'type':None},
         'append(str)' :  {'name':'append',  'type':None},
         'undo()' :       {'name':'undo',    'type':None},
+        'redo()' :       {'name':'redo',    'type':None},
         'clear()' :      {'name':'clear',   'type':None},
         'copy()' :       {'name':'copy',    'type':None},
         'cut()' :        {'name':'cut',     'type':None},

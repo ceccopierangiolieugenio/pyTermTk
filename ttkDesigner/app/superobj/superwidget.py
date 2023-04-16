@@ -67,8 +67,8 @@ class SuperWidget(ttk.TTkWidget):
         if name and name not in [w.name() for w in self._designer.getWidgets()]:
             oldName = self._wid._name
             self._wid._name = name
-            self._designer.weModified.emit()
             self._designer.widgetNameChanged.emit(oldName, name)
+            self._designer.weModified.emit()
 
     def getSuperProperties(self):
         exceptions = {
