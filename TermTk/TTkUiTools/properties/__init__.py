@@ -1,7 +1,6 @@
 # from .about import
 from .button import TTkButtonProperties
 from .checkbox import TTkCheckboxProperties
-from .colorpicker import TTkColorButtonPickerProperties
 from .combobox import TTkComboBoxProperties
 from .frame import TTkFrameProperties
 # from .graph import
@@ -24,4 +23,9 @@ from .texedit import TTkTextEditProperties
 from .widget import TTkWidgetProperties
 from .window import TTkWindowProperties
 
+# Pickers
+from .colorpicker import TTkColorButtonPickerProperties
+from .filepicker import TTkFileButtonPickerProperties
+
+# Layouts
 from .layout import TTkLayoutProperties

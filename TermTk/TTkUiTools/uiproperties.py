@@ -28,7 +28,6 @@ TTkUiProperties = {
     # Widgets
         TTkButton.__name__:         TTkButtonProperties,
         TTkCheckbox.__name__:       TTkCheckboxProperties,
-        TTkColorButtonPicker.__name__ : TTkColorButtonPickerProperties,
         TTkComboBox.__name__:       TTkComboBoxProperties,
         TTkFrame.__name__:          TTkFrameProperties,
         TTkLabel.__name__:          TTkLabelProperties,
@@ -42,6 +41,9 @@ TTkUiProperties = {
         TTkTextEdit.__name__:       TTkTextEditProperties,
         TTkWidget.__name__:         TTkWidgetProperties,
         TTkWindow.__name__:         TTkWindowProperties,
+        # Pickers
+        TTkColorButtonPicker.__name__ : TTkColorButtonPickerProperties,
+        TTkFileButtonPicker.__name__  : TTkFileButtonPickerProperties,
     # Layouts
         TTkLayout.__name__:         TTkLayoutProperties,
 }

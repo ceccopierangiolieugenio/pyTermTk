@@ -250,7 +250,7 @@ class TTkDesigner(TTkGridLayout):
 
     @pyTTkSlot()
     def save(self):
-        return self.saveAs()
+        return self._saveToFile(os.path.join(self._currentPath,self._fileName))
 
     def _saveToFile(self, fileName):
         TTkLog.info(f"Saving to: {fileName}")

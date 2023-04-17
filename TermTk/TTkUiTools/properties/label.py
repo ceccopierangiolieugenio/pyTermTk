@@ -59,6 +59,7 @@ TTkLabelProperties = {
                         'Justify' : TTkK.JUSTIFY      } } },
     },'signals' : {
     },'slots' : {
-        'setText()' :        {'name': 'setText',      'type':str},
-        'setAlignment()' :   {'name': 'setAlignment', 'type':int},
-    }}
+        'setText(str)'            : {'name': 'setText',      'type':str},
+        'setAlignment(Alignment)' : {'name': 'setAlignment', 'type':TTkK.Alignment},
+    }
+}

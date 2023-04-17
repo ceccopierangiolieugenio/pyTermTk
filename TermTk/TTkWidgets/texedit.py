@@ -293,6 +293,10 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
+    @pyTTkSlot(TTkColor)
+    def setColor(self, color):
+        self.textCursor().setColor(color)
+
     @pyTTkSlot(TTkTextCursor)
     def _cursorPositionChanged(self, cursor):
         if cursor == self._textCursor:
@@ -579,8 +583,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'multiLine',
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
-            'textCursor', 'setFocus',
-            'copy', 'paste',
+            'textCursor', 'setFocus', 'setColor',
+            'cut', 'copy', 'paste',
             'undo', 'redo', 'isUndoAvailable', 'isRedoAvailable',
             # Export Methods,
             'toAnsi', 'toRawText', 'toPlainText', # 'toHtml', 'toMarkdown',
@@ -613,6 +617,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.textCursor = self._textEditView.textCursor
         self.setFocus = self._textEditView.setFocus
         self.multiLine = self._textEditView.multiLine
+        self.setColor = self._textEditView.setColor
+        self.cut = self._textEditView.cut
         self.copy = self._textEditView.copy
         self.paste = self._textEditView.paste
         self.undo = self._textEditView.undo

@@ -47,6 +47,7 @@ TTkTextEditProperties = {
         'textChanged()' :       {'name': 'textChanged',   'type': None},
     },'slots' : {
         'setText(str)' : {'name':'setText', 'type':None},
+        'setColor(TTkColor)' : {'name':'setColor', 'type':TTkColor},
         'append(str)' :  {'name':'append',  'type':None},
         'undo()' :       {'name':'undo',    'type':None},
         'redo()' :       {'name':'redo',    'type':None},

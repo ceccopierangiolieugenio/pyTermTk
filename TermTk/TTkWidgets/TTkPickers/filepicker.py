@@ -29,6 +29,7 @@ from TermTk.TTkCore.color import TTkColor
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
@@ -276,3 +277,45 @@ class TTkFileDialog:
     @staticmethod
     def getOpenFileName(caption, dir=".", filter="All Files (*)", options=None):
         pass
+
+class TTkFileButtonPicker(TTkButton):
+    __slots__ = ('_filter', '_caption', '_fileMode', '_path'
+                 # Signals
+                 'pathPicked', 'filePicked', 'filesPicked', 'folderPicked')
+    def __init__(self, *args, **kwargs):
+        # Signals
+        self.pathPicked = pyTTkSignal(str)
+        self.filePicked = pyTTkSignal(str)
+        self.filesPicked = pyTTkSignal(list)
+        self.folderPicked = pyTTkSignal(str)
+        super().__init__(*args, **kwargs)
+        self._path  = kwargs.get('path','.')
+        self._filter   = kwargs.get('filter','All Files (*)')
+        self._caption  = kwargs.get('caption','File Dialog')
+        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.ExistingFile)
+        self.clicked.connect(self._fileButtonClicked)
+
+    def filter(self): return self._filter
+    def setFilter(self, filter): self._filter = filter
+
+    def caption(self): return self._caption
+    def setCaption(self, caption): self._caption = caption
+
+    def fileMode(self): return self._fileMode
+    def setFileMode(self, fm): self._fileMode = fm
+
+    def path(self): return self._path
+    def setPath(self, path): self._path = path
+
+    @pyTTkSlot()
+    def _fileButtonClicked(self):
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(80,30),
+                                         caption=self._caption,
+                                         path=self._path,
+                                         filter=self._filter,
+                                         fileMode=self._fileMode)
+        filePicker.pathPicked.connect(self.pathPicked.emit)
+        filePicker.filePicked.connect(self.filePicked.emit)
+        filePicker.filesPicked.connect(self.filesPicked.emit)
+        filePicker.folderPicked.connect(self.folderPicked.emit)
+        TTkHelper.overlay(None, filePicker, 5, 5, True)
