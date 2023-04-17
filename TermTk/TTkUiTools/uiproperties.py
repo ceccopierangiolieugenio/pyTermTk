@@ -28,6 +28,7 @@ TTkUiProperties = {
     # Widgets
         TTkButton.__name__:         TTkButtonProperties,
         TTkCheckbox.__name__:       TTkCheckboxProperties,
+        TTkColorButtonPicker.__name__ : TTkColorButtonPickerProperties,
         TTkComboBox.__name__:       TTkComboBoxProperties,
         TTkFrame.__name__:          TTkFrameProperties,
         TTkLabel.__name__:          TTkLabelProperties,

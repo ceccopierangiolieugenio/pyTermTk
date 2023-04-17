@@ -580,6 +580,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
             'textCursor', 'setFocus',
+            'copy', 'paste',
             'undo', 'redo', 'isUndoAvailable', 'isRedoAvailable',
             # Export Methods,
             'toAnsi', 'toRawText', 'toPlainText', # 'toHtml', 'toMarkdown',
@@ -612,6 +613,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         self.textCursor = self._textEditView.textCursor
         self.setFocus = self._textEditView.setFocus
         self.multiLine = self._textEditView.multiLine
+        self.copy = self._textEditView.copy
+        self.paste = self._textEditView.paste
         self.undo = self._textEditView.undo
         self.redo = self._textEditView.redo
         self.isUndoAvailable = self._textEditView.isUndoAvailable

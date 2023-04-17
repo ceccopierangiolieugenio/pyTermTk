@@ -1,6 +1,7 @@
 # from .about import
 from .button import TTkButtonProperties
 from .checkbox import TTkCheckboxProperties
+from .colorpicker import TTkColorButtonPickerProperties
 from .combobox import TTkComboBoxProperties
 from .frame import TTkFrameProperties
 # from .graph import

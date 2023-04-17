@@ -59,6 +59,12 @@ dWidgets = {
         "Frame"           : { "class":ttk.TTkFrame,          "params":{'size':(20,5), 'border':True}},
         "Resizable Frame" : { "class":ttk.TTkResizableFrame, "params":{'size':(20,5)}},
     },
+    'Pickers':{
+        "Color Picker"     : { "class":ttk.TTkColorButtonPicker, "params":{'size':(6,3), 'border':True}},
+        "File Picker"      : { "class":ttk.TTkButton, "params":{'size':(20,3)}, "disabled": True},
+        "Date Picker"      : { "class":ttk.TTkButton, "params":{'size':(20,3)}, "disabled": True},
+        "TtkString Picker" : { "class":ttk.TTkButton, "params":{'size':(20,3)}, "disabled": True},
+    },
     'Debug':{
         "Log Viewer"       : { "class":ttk.TTkLogViewer,       "params":{'size':(60,10)}},
         "Input View"       : { "class":ttk.TTkKeyPressView,    "params":{'size':(60,3)}},
