@@ -49,7 +49,7 @@ build: .venv
 	. .venv/bin/activate ; \
 	tools/prepareBuild.sh release ; \
 	cd tmp ; \
-	python3 -m build \
+	python3 -m build
 
 deploy: .venv
 	. .venv/bin/activate ; \
@@ -58,7 +58,18 @@ deploy: .venv
 buildTest: .venv
 	. .venv/bin/activate ; \
 	tools/prepareBuild.sh test ; \
-	python3 -m build ; \
+	cd tmp ; \
+	python3 -m build
+
+buildTTkDesigner: .venv
+	. .venv/bin/activate ; \
+	tools/prepareBuild.sh ttkDesigner ; \
+	cd tmp ; \
+	python3 -m build
+
+deployTTkDesigner: .venv
+	. .venv/bin/activate ; \
+	python3 -m twine upload tmp/dist/*
 
 deployDoc:
 	git checkout gh-pages

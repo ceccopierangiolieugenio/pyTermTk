@@ -58,9 +58,24 @@ case $1 in
                 ;;
         test)
                 _NAME='example-pkg-ceccopierangiolieugenio'
+                _BUILD_LIB='TermTk'
+                _SETUP='setup.py'
+                _README='README.md'
+                _CFG='TermTk/TTkCore/cfg.py'
                 ;;
         release)
                 _NAME='pyTermTk'
+                _BUILD_LIB='TermTk'
+                _SETUP='setup.py'
+                _README='README.md'
+                _CFG='TermTk/TTkCore/cfg.py'
+                ;;
+        ttkDesigner)
+                _NAME='ttkDesigner'
+                _BUILD_LIB='ttkDesigner'
+                _SETUP='setup.ttkDesigner.py'
+                _README='ttkDesigner/README.md'
+                _CFG='ttkDesigner/app/cfg.py'
                 ;;
         *)
                 echo "Option \"$2\" not recognized"
@@ -76,8 +91,9 @@ echo Name: ${_NAME}
 mkdir -p ${_TMP_PATH}
 rm -rf ${_TMP_PATH}/*
 
-cp setup.py README.md LICENSE ${_TMP_PATH}
+cp ${_SETUP} ${_TMP_PATH}/setup.py
+cp ${_README} LICENSE ${_TMP_PATH}
 
-cp -a ${_BASE_PATH}/TermTk ${_TMP_PATH}
-sed "s,__VERSION__,${_VERSION}," -i ${_TMP_PATH}/TermTk/TTkCore/cfg.py
-sed "s,__NAME__,${_NAME}," -i ${_TMP_PATH}/TermTk/TTkCore/cfg.py
+cp -a  ${_BASE_PATH}/${_BUILD_LIB}  ${_TMP_PATH}
+sed "s,__VERSION__,${_VERSION}," -i ${_TMP_PATH}/${_CFG} ${_TMP_PATH}/setup.py
+sed "s,__NAME__,${_NAME},"       -i ${_TMP_PATH}/${_CFG} ${_TMP_PATH}/setup.py

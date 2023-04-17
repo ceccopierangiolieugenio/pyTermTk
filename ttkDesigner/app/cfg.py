@@ -25,7 +25,7 @@
 import os
 # import yaml
 
-class TTKodeCfg:
+class TTkDesignerCfg:
     version="__VERSION__"
     name="__NAME__"
     cfgVersion = '1.0'

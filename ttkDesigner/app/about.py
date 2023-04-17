@@ -24,7 +24,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk import TTkAbout, TTkWindow
-from .cfg import TTKodeCfg
+from .cfg import TTkDesignerCfg
 
 class About(TTkAbout):
     # designerTxt = [
@@ -51,7 +51,7 @@ class About(TTkAbout):
         c = [0xFF,0xFF,0xFF]
         for y, line in enumerate(About.designerTxt):
             self._canvas.drawText(pos=(13,3+y),text=line)
-        self._canvas.drawText(pos=(26, 9),text=f"  Version: {TTKodeCfg.version}", color=TTkColor.fg('#AAAAFF'))
+        self._canvas.drawText(pos=(26, 9),text=f"  Version: {TTkDesignerCfg.version}", color=TTkColor.fg('#AAAAFF'))
         self._canvas.drawText(pos=(14,11),text=f"Powered By, pyTermTk")
         self._canvas.drawText(pos=( 2,14),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
 
