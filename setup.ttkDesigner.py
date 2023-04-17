@@ -30,6 +30,7 @@ setup(
         "Topic :: Software Development :: User Interfaces"],
     include_package_data=False,
     packages=['ttkDesigner','ttkDesigner.app', 'ttkDesigner.app.superobj'],
+    package_data={'ttkDesigner': ['tui/*']},
     python_requires=">=3.8",
     install_requires=[
         'pyTermTk>=0.30.0a5',
