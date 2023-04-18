@@ -10,7 +10,6 @@ __check(){
             -e "signal.py:from inspect import getfullargspec" \
             -e "signal.py:from types import LambdaType" \
             -e "colors.py:from .colors_ansi_map" \
-            -e "timer.py:import threading, time" \
             -e "log.py:import inspect" \
             -e "log.py:import logging" \
             -e "log.py:from collections.abc import Callable, Set" \
@@ -24,6 +23,8 @@ __check(){
             -e "term.*.py:from .term_base import TTkTermBase" \
             -e "term_pyodide.py:import pyodideProxy" \
             -e "timer.py:import importlib" \
+            -e "timer_unix.py:import threading" \
+            -e "timer_pyodide.py:import pyodideProxy" \
             -e "ttk.py:import signal" \
             -e "ttk.py:import time" \
             -e "ttk.py:import queue" \
