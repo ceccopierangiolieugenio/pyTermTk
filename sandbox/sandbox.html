@@ -161,6 +161,9 @@
             setTinterval(() => console.log('WIP -> Interval' + i), t)
           }
         };
+
+        term.write('Pyodide ('+pyodide.version+') - Loaded\n\r')
+
         pyodide.registerJsModule("pyodideProxy", pyodideProxy);
 
         term.write('Pyodide Proxy - Loaded\n\r')
@@ -270,13 +273,14 @@
                 ttk.TTkHelper._focusWidget = None
                 ttk.TTkHelper._rootCanvas = None
                 ttk.TTkHelper._rootWidget = None
-                ttk.TTkHelper._updateBuffer = []
-                ttk.TTkHelper._updateWidget = []
+                ttk.TTkHelper._updateBuffer = set()
+                ttk.TTkHelper._updateWidget = set()
                 ttk.TTkHelper._overlay = []
                 ttk.TTkHelper._shortcut = []
                 ttk.TTkLog._messageHandler = [message_handler]
 
             def ttk_init():
+              ttk.TTkCfg.maxFps = 30
               ttk.TTkToolTip.toolTipTimer = ttk.TTkTimer()
               ttk.TTkToolTip.toolTipTimer.timeout.connect(ttk.TTkToolTip._toolTipShow)
 
