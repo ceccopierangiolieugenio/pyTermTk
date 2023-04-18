@@ -45,14 +45,14 @@ class About(TTkAbout):
         TTkAbout.__init__(self, *args, **kwargs)
 
         self.setTitle('[PierCecco Cecco] Eugenio Parodi proudly presents...')
-        self.resize(56,16)
+        self.resize(56,15)
 
     def paintEvent(self):
         c = [0xFF,0xFF,0xFF]
         for y, line in enumerate(About.designerTxt):
             self._canvas.drawText(pos=(13,3+y),text=line)
-        self._canvas.drawText(pos=(26, 9),text=f"  Version: {TTkDesignerCfg.version}", color=TTkColor.fg('#AAAAFF'))
+        self._canvas.drawText(pos=(20, 9),text=f"  Version: {TTkDesignerCfg.version}", color=TTkColor.fg('#AAAAFF'))
         self._canvas.drawText(pos=(14,11),text=f"Powered By, pyTermTk")
-        self._canvas.drawText(pos=( 2,14),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
+        self._canvas.drawText(pos=( 2,13),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
 
         TTkWindow.paintEvent(self)
