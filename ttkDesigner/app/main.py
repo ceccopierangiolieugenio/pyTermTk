@@ -20,21 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import re
-import sys
-import argparse
-
-import appdirs
-
 from TermTk import TTk, TTkLog, TTkTheme
 
-from .cfg  import *
-from .about import *
 from .designer import TTkDesigner
 
 def main():
-    TTkLog.use_default_file_logging()
+    # TTkLog.use_default_file_logging()
     TTkTheme.loadTheme(TTkTheme.NERD )
 
     root = TTk(title="TTk Designer", mouseTrack=True)

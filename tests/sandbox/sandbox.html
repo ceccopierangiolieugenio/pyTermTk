@@ -161,6 +161,9 @@
             setTinterval(() => console.log('WIP -> Interval' + i), t)
           }
         };
+
+        term.write('Pyodide ('+pyodide.version+') - Loaded\n\r')
+
         pyodide.registerJsModule("pyodideProxy", pyodideProxy);
 
         term.write('Pyodide Proxy - Loaded\n\r')
