@@ -1,46 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Mr. pyTermTk Sandbox</title>
+    <link rel="icon" type="image/x-icon" href="www/favicon.ico">
+
     <script src="www/pyodide/pyodide.js"></script>
-    <!--
-      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js"></script>
-    -->
 
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
     <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
     <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
-    <!--
-      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
-      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
-      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-fit/xterm-addon-fit.js"></script>
-    -->
 
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link href="www/fontawesome/fontawesome.min.css" rel="stylesheet">
+    <link href="www/fontawesome/regular.min.css" rel="stylesheet">
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://rawgit.com/vitmalina/w2ui/master/dist/w2ui.min.css" />
-    <!--
-      <script src="jquery/jquery-3.5.0.min.js"></script>
-      <script type="text/javascript" src="w2ui/w2ui.min.js"></script>
-      <link rel="stylesheet" type="text/css" href="w2ui/w2ui.min.css" />
-    -->
+    <script type="text/javascript" src="www/w2ui/w2ui-2.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="www/w2ui/w2ui-2.0.min.css" />
 
     <link  href="www/codemirror/theme/mbo.css" rel="stylesheet" >
     <link  href="www/codemirror/codemirror.css" rel="stylesheet" />
     <script src="www/codemirror/codemirror.js"></script>
     <script src="www/codemirror/modes/python.js"></script>
-    <!--
-      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.css" rel="stylesheet" />
-      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/theme/mbo.css" rel="stylesheet" >
-      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.js"></script>
-      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/modes/python.js"></script>
-    -->
+
     <style>
       .CodeMirror { height: 100%; }
-      </style>
+    </style>
   </head>
   <body>
 
@@ -60,12 +44,13 @@
                   { type: 'main', style: pstyle,
                     toolbar: {
                       items: [
-                        { type: 'button', id: 'run_button', text: 'Run', icon: 'icon-play-circle' },
+                        { type: 'button', id: 'run_button', text: 'Run', icon: 'far fa-play-circle' },
                         { type: 'html',  id: 'uri',
                             html(item) {
                               let html =
-                                '<div style="padding: 0px 10px; margin-top: -2px;">'+
-                                ' URI: <input id="codeUri" size="50"/>'+
+                                '<div style="padding: 0px 10px; margin-top: -2px;" >'+
+                                '  URI: <input id="codeUri" size="50"/>'+
+                                '  FPS Cap: <input id="fpsCap" value="30" size="1">'+
                                 '</div>';
                               return html;
                               },
@@ -85,6 +70,7 @@
                     html: '<div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
               ]
           });
+          new w2field({ el: query('#fpsCap')[0], type: 'int', autoFormat: false })
     </script>
 
     <script type="text/javascript">
@@ -280,7 +266,6 @@
                 ttk.TTkLog._messageHandler = [message_handler]
 
             def ttk_init():
-              ttk.TTkCfg.maxFps = 30
               ttk.TTkToolTip.toolTipTimer = ttk.TTkTimer()
               ttk.TTkToolTip.toolTipTimer.timeout.connect(ttk.TTkToolTip._toolTipShow)
 
@@ -311,9 +296,9 @@
         term.onData((d, evt) => { ttk_input(d) })
 
         pyodide.runPython(`
-        import sys,os
-        sys.path.append(os.path.join(sys.path[0],'demo'))
-        __name__ = "__main__"
+          import sys,os
+          sys.path.append(os.path.join(sys.path[0],'demo'))
+          __name__ = "__main__"
         `,{ globals: namespace }
         );
 
@@ -322,11 +307,13 @@
           console.log("Run App")
 
           let filename = document.getElementById("codeUri").value
+          let fps = document.getElementById("fpsCap").value
           let pwd = pyodide.PATH.dirname(filename)
 
           pyodide.runPython(`
             __file__='`+filename+`'
-            os.chdir('`+pwd+`')`,{ globals: namespace })
+            os.chdir('`+pwd+`')
+            ttk.TTkCfg.maxFps = `+fps,{ globals: namespace })
 
           ttk_init()
 
