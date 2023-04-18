@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 import pyodideProxy
@@ -47,6 +48,9 @@ class TTkTimer():
     @staticmethod
     def triggerTimerId(tid):
         if tid in TTkTimer._timers:
+            # Little hack to avoid deadloop in pyodide
+            if rw := TTkHelper._rootWidget:
+                rw._paintEvent.set()
             TTkTimer._timers[tid].timeout.emit()
 
     @staticmethod
