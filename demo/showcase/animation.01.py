@@ -33,11 +33,47 @@ import TermTk as ttk
 sys.path.append(os.path.join(sys.path[0],'..'))
 from showcase._showcasehelper import getUtfColoredSentence
 
-class superSimpleHorizontalLine(ttk.TTkWidget):
+class EasingShow(ttk.TTkWidget):
+    __slots__ = ('_easingCb')
+    def __init__(self, easingCb, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._easingCb = ttk.TTkEasingCurve(easingCb)
     def paintEvent(self):
+        # gen w*2,h*4 pixmap
         w,h = self.size()
-        self._canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=ttk.TTkColor.fg("#888888"))
+        pm = [[0]*h*4 for _ in range(w*2)]
+        vs = []
+        # populate the pixmap
+        for x in range(w*2):
+            v = float(x)/(w*2-1) # v goes from 0 -> 1
+            vs.append(self._easingCb.process(0,1,v))
 
+        maxv = max(vs)
+        minv = min(vs)
+        for x,v in enumerate(vs):
+            y = int((h*4-1)*(v-minv)/(maxv-minv))
+            pm[x][h*4-y-1] = 1
+
+        '''
+            Braille bits:
+            o2  o1 = 4 bits each
+
+            1   5   Braille dots
+            2   6
+            3   7
+            4   8
+
+            TTkTheme.braille[( o1<<4 | o2 )] = Braille UTF-8 char
+        '''
+        canvas = self.getCanvas()
+        gb=ttk.TTkCfg.theme.braille
+        color=ttk.TTkColor.fg("#FFFF00")+ttk.TTkColor.bg("#004400", modifier=ttk.TTkColorGradient(increment=-5))
+        for x in range(w):
+            for y in range(h):
+                o1 = pm[2*x  ][4*y] | pm[2*x  ][4*y+1]<<1 | pm[2*x  ][4*y+2]<<2 | pm[2*x  ][4*y+3]<<3
+                o2 = pm[2*x+1][4*y] | pm[2*x+1][4*y+1]<<1 | pm[2*x+1][4*y+2]<<2 | pm[2*x+1][4*y+3]<<3
+                ch = gb[( o1<<4 | o2 )]
+                canvas.drawChar(pos=(x,y),char=ch, color=color)
 
 def demoTextEditRO(root=None):
     easingList = (
@@ -92,27 +128,36 @@ def demoTextEditRO(root=None):
     animBtnScroll = ttk.TTkButton(parent=winAc, text="Anim Scroll",border=True,pos=(0,0))
     animBtnWinPos = ttk.TTkButton(parent=winAc, text="Anim Pos",border=True,pos=(15,0))
     animBoth = ttk.TTkButton(parent=winAc, text="Anim Both",border=True,pos=(25,0))
+    animHelper = ttk.TTkButton(parent=winAc, text="Anim Easing Charts",border=True,pos=(0,23))
+
+    winHelper = ttk.TTkWindow(parent=frame, title="Easing Charts", pos=(80,0), size=(50,30), layout=ttk.TTkGridLayout())
+    scrollArea = ttk.TTkScrollArea(parent=winHelper)
+    saWp = scrollArea.viewport()
+    for i,(easing,name) in enumerate(easingList):
+        ttk.TTkLabel(parent=saWp, pos=(0,i*9),     size=(40,1), text=name)
+        EasingShow(  parent=saWp, pos=( 0, 1+i*9), size=(40,8), easingCb=easing)
 
     class PosControls(ttk.TTkFrame):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs|{'border':True})
             ttk.TTkLabel(          parent=self,pos=(0,0),text='Starting Position (x,y)')
-            self.axspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(0,1),size=(8,1),value=0)
-            self.ayspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(8,1),size=(8,1),value=100)
+            self.axspb = ttk.TTkSpinBox(parent=self,maximum=500, minimum=-100, pos=(0,1),size=(8,1),value=0)
+            self.ayspb = ttk.TTkSpinBox(parent=self,maximum=500, minimum=-100, pos=(8,1),size=(8,1),value=100)
             ttk.TTkLabel(          parent=self,pos=(0,2),text='Ending Position (x,y)')
-            self.bxspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(0,3),size=(8,1),value=0)
-            self.byspb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=-100, pos=(8,3),size=(8,1),value=0)
+            self.bxspb = ttk.TTkSpinBox(parent=self,maximum=500, minimum=-100, pos=(0,3),size=(8,1),value=0)
+            self.byspb = ttk.TTkSpinBox(parent=self,maximum=500, minimum=-100, pos=(8,3),size=(8,1),value=0)
             ttk.TTkLabel(          parent=self,pos=(0,4),text='Duration (sec.)')
-            self.dursb = ttk.TTkSpinBox(parent=self,maximum=200, minimum=0, pos=(0,5),size=(12,1),value=2)
+            self.dursb = ttk.TTkSpinBox(parent=self,maximum=500, minimum=0, pos=(0,5),size=(12,1),value=2)
             ttk.TTkLabel(          parent=self,pos=(0,6),text='Easing Curve')
             self.ecb = ttk.TTkComboBox(parent=self,pos=(0,7),size=(20,1),list=[v for (_,v) in easingList],index=0)
 
     pcScroll = PosControls(parent=winAc, pos=(0,3), size=(25,10), title="Text Scroll")
     pcWinPos = PosControls(parent=winAc, pos=(0,13), size=(25,10), title="Window Position")
-
+    pcHelpSc = PosControls(parent=winAc, pos=(0,26), size=(25,10), title="Helper scroll")
 
     animScroll = ttk.TTkPropertyAnimation(te.viewport(),'viewMoveTo')
     animWinPos = ttk.TTkPropertyAnimation(None, winTe.move)
+    animHelpSc = ttk.TTkPropertyAnimation(saWp, 'viewMoveTo')
 
     def _startAnimScroll():
         animScroll.setDuration(pcScroll.dursb.value())
@@ -126,11 +171,18 @@ def demoTextEditRO(root=None):
         animWinPos.setEndValue(  (pcWinPos.bxspb.value(), pcWinPos.byspb.value()))
         animWinPos.setEasingCurve({t:v for (v,t) in easingList}.get(pcWinPos.ecb.currentText(),easingList[0][0]))
         animWinPos.start()
+    def _startAnimHelpSc():
+        animHelpSc.setDuration(pcHelpSc.dursb.value())
+        animHelpSc.setStartValue((pcHelpSc.axspb.value(), pcHelpSc.ayspb.value()))
+        animHelpSc.setEndValue(  (pcHelpSc.bxspb.value(), pcHelpSc.byspb.value()))
+        animHelpSc.setEasingCurve({t:v for (v,t) in easingList}.get(pcHelpSc.ecb.currentText(),easingList[0][0]))
+        animHelpSc.start()
 
     animBtnScroll.clicked.connect(_startAnimScroll)
     animBtnWinPos.clicked.connect(_startAnimWinPos)
     animBoth.clicked.connect(_startAnimScroll)
     animBoth.clicked.connect(_startAnimWinPos)
+    animHelper.clicked.connect(_startAnimHelpSc)
 
     # Initialize the textedit with come text
 

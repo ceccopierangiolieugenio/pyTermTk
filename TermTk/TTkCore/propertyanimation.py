@@ -77,42 +77,200 @@ class TTkEasingCurve():
     __slots__ = ('_easingFunc')
     def __init__(self, easingCurve=Linear):
         self._easingFunc = {self.Linear    : TTkEasingCurve._ecLinear,
-         self.InQuad    : TTkEasingCurve._ecInQuad,
-         self.OutQuad   : TTkEasingCurve._ecOutQuad,
-         self.InOutQuad : TTkEasingCurve._ecInOutQuad,
-         self.OutInQuad : TTkEasingCurve._ecOutInQuad,
-         self.InCubic   : TTkEasingCurve._ecInCubic,
-         self.OutCubic  : TTkEasingCurve._ecOutCubic,
-
-         self.OutBounce : TTkEasingCurve._ecOutBounce,
+         self.InQuad       : TTkEasingCurve._ecInQuad,
+         self.OutQuad      : TTkEasingCurve._ecOutQuad,
+         self.InOutQuad    : TTkEasingCurve._ecInOutQuad,
+         self.OutInQuad    : TTkEasingCurve._ecOutInQuad,
+         self.InCubic      : TTkEasingCurve._ecInCubic,
+         self.OutCubic     : TTkEasingCurve._ecOutCubic,
+         self.InOutCubic   : TTkEasingCurve._ecInOutCubic,
+         self.OutInCubic   : TTkEasingCurve._ecOutInCubic,
+         self.InQuart      : TTkEasingCurve._ecInQuart,
+         self.OutQuart     : TTkEasingCurve._ecOutQuart,
+         self.InOutQuart   : TTkEasingCurve._ecInOutQuart,
+         self.OutInQuart   : TTkEasingCurve._ecOutInQuart,
+         self.InQuint      : TTkEasingCurve._ecInQuint,
+         self.OutQuint     : TTkEasingCurve._ecOutQuint,
+         self.InOutQuint   : TTkEasingCurve._ecInOutQuint,
+         self.OutInQuint   : TTkEasingCurve._ecOutInQuint,
+         self.InSine       : TTkEasingCurve._ecInSine,
+         self.OutSine      : TTkEasingCurve._ecOutSine,
+         self.InOutSine    : TTkEasingCurve._ecInOutSine,
+         self.OutInSine    : TTkEasingCurve._ecOutInSine,
+         self.InExpo       : TTkEasingCurve._ecInExpo,
+         self.OutExpo      : TTkEasingCurve._ecOutExpo,
+         self.InOutExpo    : TTkEasingCurve._ecInOutExpo,
+         self.OutInExpo    : TTkEasingCurve._ecOutInExpo,
+         self.InCirc       : TTkEasingCurve._ecInCirc,
+         self.OutCirc      : TTkEasingCurve._ecOutCirc,
+         self.InOutCirc    : TTkEasingCurve._ecInOutCirc,
+         self.OutInCirc    : TTkEasingCurve._ecOutInCirc,
+         self.InElastic    : TTkEasingCurve._ecInElastic,
+         self.OutElastic   : TTkEasingCurve._ecOutElastic,
+         self.InOutElastic : TTkEasingCurve._ecInOutElastic,
+         self.OutInElastic : TTkEasingCurve._ecOutInElastic,
+         self.InBack       : TTkEasingCurve._ecInBack,
+         self.OutBack      : TTkEasingCurve._ecOutBack,
+         self.InOutBack    : TTkEasingCurve._ecInOutBack,
+         self.OutInBack    : TTkEasingCurve._ecOutInBack,
+         self.InBounce     : TTkEasingCurve._ecInBounce,
+         self.OutBounce    : TTkEasingCurve._ecOutBounce,
+         self.InOutBounce  : TTkEasingCurve._ecInOutBounce,
+         self.OutInBounce  : TTkEasingCurve._ecOutInBounce,
+         self.OutBounce    : TTkEasingCurve._ecOutBounce,
          }.get(easingCurve,TTkEasingCurve._ecLinear)
 
     def process(self,a,b,v):
         v = self._easingFunc(v)
         return float(b)*v+float(a)*(1-v)
 
-    # Formulas from https://easings.net
     @staticmethod
-    def _ecLinear(v):
-        return v
+    def _ecMixCbHelper(incb,outcb,v):
+        if v < 0.5: return incb(2*v)/2
+        return 0.5+outcb(2*v-1)/2
     @staticmethod
-    def _ecInQuad(v):
-        return v*v
+    def _ecInOutHelper(incb,outcb,v):
+        if v < 0.5: return incb(2*v)/2
+        return 0.5+outcb(2*v-1)/2
     @staticmethod
-    def _ecOutQuad(v):
-        return 1-(1-v)*(1-v)
+    def _ecOutInHelper(incb,outcb,v):
+        if v < 0.5: return outcb(2*v)/2
+        return 0.5+incb(2*v-1)/2
+
+    # Equations adapted from
+    #  - https://easings.net
+    #  - https://github.com/qt/qtbase/blob/dev/src/3rdparty/easing/easing.cpp
+
     @staticmethod
-    def _ecInOutQuad(v):
-        return v
+    def _ecLinear(v): return v
     @staticmethod
-    def _ecOutInQuad(v):
-        return v
+    def _ecInQuad(v): return v*v
     @staticmethod
-    def _ecInCubic(v):
-        return v*v*v
+    def _ecOutQuad(v): return -v*(v-2)
     @staticmethod
-    def _ecOutCubic(v):
-        return 1-(1-v)*(1-v)*(1-v)
+    def _ecInOutQuad(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInQuad,
+                                        TTkEasingCurve._ecOutQuad,
+                                        v)
+    @staticmethod
+    def _ecOutInQuad(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutQuad,
+                                        TTkEasingCurve._ecInQuad,
+                                        v)
+    @staticmethod
+    def _ecInCubic(v): return v*v*v
+    @staticmethod
+    def _ecOutCubic(v): v-=1 ; return 1+v*v*v
+    @staticmethod
+    def _ecInOutCubic(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInCubic,
+                                        TTkEasingCurve._ecOutCubic,
+                                        v)
+    @staticmethod
+    def _ecOutInCubic(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutCubic,
+                                        TTkEasingCurve._ecInCubic,
+                                        v)
+    @staticmethod
+    def _ecInQuart(v): return v*v*v*v
+    @staticmethod
+    def _ecOutQuart(v): v-=1 ; return 1-v*v*v*v
+    @staticmethod
+    def _ecInOutQuart(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInQuart,
+                                        TTkEasingCurve._ecOutQuart,
+                                        v)
+    @staticmethod
+    def _ecOutInQuart(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutQuart,
+                                        TTkEasingCurve._ecInQuart,
+                                        v)
+    @staticmethod
+    def _ecInQuint(v): return v*v*v*v*v
+    @staticmethod
+    def _ecOutQuint(v): v-=1 ; return 1+v*v*v*v*v
+    @staticmethod
+    def _ecInOutQuint(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInQuint,
+                                        TTkEasingCurve._ecOutQuint,
+                                        v)
+    @staticmethod
+    def _ecOutInQuint(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutQuint,
+                                        TTkEasingCurve._ecInQuint,
+                                        v)
+    @staticmethod
+    def _ecInSine(v): return 1-math.sin(math.pi*(1-v)/2)
+    @staticmethod
+    def _ecOutSine(v): return math.sin(math.pi*v/2)
+    @staticmethod
+    def _ecInOutSine(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInSine,
+                                        TTkEasingCurve._ecOutSine,
+                                        v)
+    @staticmethod
+    def _ecOutInSine(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutSine,
+                                        TTkEasingCurve._ecInSine,
+                                        v)
+    @staticmethod
+    def _ecInExpo(v): return v if v==1 or v==0 else math.pow(2,10*(v-1))-0.001
+    @staticmethod
+    def _ecOutExpo(v): return 1 if v==1 else 1.001*(1-math.pow(2,-10*v))
+    @staticmethod
+    def _ecInOutExpo(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInExpo,
+                                        TTkEasingCurve._ecOutExpo,
+                                        v)
+    @staticmethod
+    def _ecOutInExpo(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutExpo,
+                                        TTkEasingCurve._ecInExpo,
+                                        v)
+    @staticmethod
+    def _ecInCirc(v): return 1-math.sqrt(1-v*v)
+    @staticmethod
+    def _ecOutCirc(v): v-=1 ; return math.sqrt(1-v*v)
+    @staticmethod
+    def _ecInOutCirc(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInCirc,
+                                        TTkEasingCurve._ecOutCirc,
+                                        v)
+    @staticmethod
+    def _ecOutInCirc(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutCirc,
+                                        TTkEasingCurve._ecInCirc,
+                                        v)
+    @staticmethod
+    def _ecInElastic(v): return v if v in [0,1] else -math.pow(2, 10 *v-10)*math.sin((v*10-10.75)*(2*math.pi)/3)
+    @staticmethod
+    def _ecOutElastic(v): return 1-TTkEasingCurve._ecInElastic(1-v)
+    @staticmethod
+    def _ecInOutElastic(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInElastic,
+                                        TTkEasingCurve._ecOutElastic,
+                                        v)
+    @staticmethod
+    def _ecOutInElastic(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutElastic,
+                                        TTkEasingCurve._ecInElastic,
+                                        v)
+    @staticmethod
+    def _ecInBack(v,s=1.7): return v*v*((s+1)*v-s)
+    @staticmethod
+    def _ecOutBack(v,s=1.7): v-=1 ; return v*v*((s+1)*v+s)+1
+    @staticmethod
+    def _ecInOutBack(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInBack,
+                                        TTkEasingCurve._ecOutBack,
+                                        v)
+    @staticmethod
+    def _ecOutInBack(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutBack,
+                                        TTkEasingCurve._ecInBack,
+                                        v)
+    @staticmethod
+    def _ecInBounce(v): return 1-TTkEasingCurve._ecOutBounce(1-v)
     @staticmethod
     def _ecOutBounce(x):
         n1 = 7.5625
@@ -128,6 +286,17 @@ class TTkEasingCurve():
         else:
             x -= 2.625 / d1
             return n1 * x * x + 0.984375
+    @staticmethod
+    def _ecInOutBounce(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecInBounce,
+                                        TTkEasingCurve._ecOutBounce,
+                                        v)
+    @staticmethod
+    def _ecOutInBounce(v): return TTkEasingCurve._ecMixCbHelper(
+                                        TTkEasingCurve._ecOutBounce,
+                                        TTkEasingCurve._ecInBounce,
+                                        v)
+
 
 class TTkPropertyAnimation():
     __slots__ = ('_target', '_propertyName', '_parent', '_cb', '_cast',
