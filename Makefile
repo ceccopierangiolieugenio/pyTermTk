@@ -16,6 +16,10 @@
 	#  Regen requirements;
 	#    pip freeze > docs/requirements.txt
 
+.venv.ttkDesigner:
+	python3 -m venv .venv.ttkDesigner
+	. .venv.ttkDesigner/bin/activate ; \
+	pip install pyperclip Pillow
 
 doc: .venv
 	# old doc gen, using pdoc3 ; \
@@ -32,6 +36,10 @@ doc: .venv
 
 testDoc:
 	python3 -m http.server --directory docs/build/html/
+
+runTtkDesigner: .venv.ttkDesigner
+	. .venv.ttkDesigner/bin/activate ; \
+	python -m ttkDesigner
 
 runGittk: .venv
 	. .venv/bin/activate ; \
