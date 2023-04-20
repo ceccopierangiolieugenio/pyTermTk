@@ -6,7 +6,7 @@
 [![pypi_version](https://img.shields.io/pypi/v/ttkDesigner?label=pypi)](https://pypi.org/project/ttkDesigner)
 [![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 
-[![screenshot](https://user-images.githubusercontent.com/8876552/232550100-89e80528-85b1-40d8-b752-6dc5feedf3ae.png)](https://pypi.org/project/ttkDesigner)
+[![screenshot](https://user-images.githubusercontent.com/8876552/233351913-b5736b34-6167-44c1-a9b2-ab47d13096c7.png)](https://pypi.org/project/ttkDesigner)
 
 ## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner)
 
