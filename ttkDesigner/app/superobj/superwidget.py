@@ -163,8 +163,10 @@ class SuperWidget(ttk.TTkWidget):
             sch = SuperWidget.loadDict(designer, parent, ch)
             if issubclass(type(sl),so.SuperLayoutGrid):
                 sl.layout().addWidget(sch,ch['row'],ch['col'],ch['rowspan'],ch['colspan'])
+                sch._superLayout.setDropBorder(1)
             else:
                 sl.layout().addWidget(sch)
+                sch._superLayout.setDropBorder(0)
         return sup
 
     def changeSuperLayout(self, layout):

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk import TTk, TTkLog, TTkTheme
+from TermTk import TTk, TTkLog, TTkTheme, TTkTerm
 
 from .designer import TTkDesigner
 
@@ -28,6 +28,13 @@ def main():
     # TTkLog.use_default_file_logging()
     TTkTheme.loadTheme(TTkTheme.NERD )
 
-    root = TTk(title="TTk Designer", mouseTrack=True)
+    root = TTk(
+            title="TTk Designer",
+            mouseTrack=True,
+            sigmask=(
+                TTkTerm.Sigmask.CTRL_Q |
+                TTkTerm.Sigmask.CTRL_S |
+                TTkTerm.Sigmask.CTRL_Z |
+                TTkTerm.Sigmask.CTRL_C ))
     root.setLayout(TTkDesigner())
     root.mainloop()
