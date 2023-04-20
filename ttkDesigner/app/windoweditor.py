@@ -60,21 +60,17 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self._ttk.superResized.connect(self._superChanged)
         self._ttk.superMoved.connect(self._superChanged)
 
-    def importWidget(self, wid):
+    def importSuperWidget(self, sw):
         if self._ttk:
             self._ttk.superResized.disconnect(self._superChanged)
             self._ttk.superMoved.disconnect(self._superChanged)
-        self._snapRootWidget = False
-        self._ttk = SuperWidget.swFromWidget(wid=wid, designer=self._designer, pos=(4,2), size=(self.width()-8,self.height()-4))
-        self._ttk.makeRootWidget()
-        self.layout().addWidget(self._ttk)
-
-    def importSuperWidget(self, sw):
-        if self._ttk:
             self.layout().removeWidget(self._ttk)
+        self._snapRootWidget = False
         self._ttk = sw
         self._ttk.makeRootWidget()
         self.layout().addWidget(self._ttk)
+        self._ttk.superResized.connect(self._superChanged)
+        self._ttk.superMoved.connect(self._superChanged)
 
     def getTTk(self):
         return self._ttk
@@ -111,17 +107,15 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self._canvas.fill(pos=(0,0),size=(w,h), char="#", color=ttk.TTkColor.fg("#220044")+ttk.TTkColor.bg("#000022"))
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
-    __slots__ = ('getTTk', 'dumpDict', 'importWidget', 'importSuperWidget',
+    __slots__ = ('getTTk', 'dumpDict', 'importSuperWidget',
                  # Forwarded slots
                  'newWindow', 'newWidget')
     def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setViewport(wev := WindowEditorView(designer))
-        # wev.importWidget(ttk.TTkWidget(name = 'TTk'))
         # Forward Methods
         self.getTTk            = wev.getTTk
         self.dumpDict          = wev.dumpDict
-        self.importWidget      = wev.importWidget
         self.importSuperWidget = wev.importSuperWidget
         self.newWindow         = wev.newWindow
         self.newWidget         = wev.newWidget
