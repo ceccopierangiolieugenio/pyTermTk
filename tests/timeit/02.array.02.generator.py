@@ -31,54 +31,37 @@ import random
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-lll = [(ttk.TTkButton(), random.randint(0,10000)) for _ in range(100)]
-lll += lll
+a1 = (x for x in range(1000))
+a2 = [x for x in range(1000)]
 
-def sort1():
-    l = []
-    for b in lll:
-        if b not in l:
-            l.append(b)
-    return len(l)
+def test1(): return sum(a1)
+def test2(): return sum(a2)
+def test3():
+    r = 0
+    for i in a1:
+        r+=i
+    return r
 
-def sort2():
-    l = set()
-    for b in lll:
-        l.add(b)
-    return len(l)
+def test4():
+    r = 0
+    for i in a2:
+        r+=i
+    return r
 
-def sort3():
-    l = []
-    for b in lll:
-        if b not in l:
-            l.append(b)
-    sl = sorted(l, key=lambda w: -w[1])
-    return len(sl)
+def test5(): return sum([x for x in range(300)])
+def test6(): return sum((x for x in range(300)))
+def test7(): return sum(x for x in range(300))
 
-def sort4():
-    l = set()
-    for b in lll:
-        l.add(b)
-    sl = sorted(l, key=lambda w: -w[1])
-    return len(sl)
+def test8():  return ".".join([f"{x:x}" for x in range(30)])
+def test9():  return ".".join((f"{x:x}" for x in range(30)))
+def test10(): return ".".join( f"{x:x}" for x in range(30) )
 
-def test1(): return sort1()
-def test2(): return sort2()
-def test3(): return sort3()
-def test4(): return sort4()
-def test5(): return sort1()
-def test6(): return sort1()
-def test7(): return sort1()
-def test8(): return sort1()
-def test9(): return sort1()
-
-loop = 1000
+loop = 100000
 
 a={}
 
 iii = 1
 while (testName := f'test{iii}') and (testName in globals()):
     result = timeit.timeit(f'{testName}(*a)', globals=globals(), number=loop)
-    # print(f"test{iii}) fps {loop / result :.3f} - s {result / loop:.10f} - {result / loop} {globals()[testName](*a)}")
-    print(f"test{iii:02}) | {result / loop:.10f} sec. | {loop / result : 15.3f} Fps ╞╡-> {globals()[testName](*a)}")
+    print(f"test{iii:02}) sec. {result / loop:.10f} - fps {loop / result : 15.3f} - {globals()[testName](*a)}")
     iii+=1
