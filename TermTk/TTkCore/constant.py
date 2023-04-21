@@ -77,9 +77,9 @@ class TTkConstant:
 
     class Direction(int):
         '''This class type is used to describe the direction'''
-        HORIZONTAL = 0x01
+        HORIZONTAL = 0x01 + 0x02
         '''Horizontal direction'''
-        VERTICAL   = 0x02
+        VERTICAL   = 0x04 + 0x08
         '''Vertical direction'''
 
     HORIZONTAL = Direction.HORIZONTAL

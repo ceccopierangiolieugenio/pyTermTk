@@ -80,7 +80,7 @@ class TTkDesigner(TTkGridLayout):
                  # Signals
                  'weModified', 'thingSelected', 'widgetNameChanged'
                  )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fileName=None, *args, **kwargs):
         self._fileName = "untitled.tui.json"
         self._currentPath = self._currentPath =  os.path.abspath('.')
 
@@ -167,6 +167,8 @@ class TTkDesigner(TTkGridLayout):
 
         self._toolBar.addWidget(self._fileNameLabel)
 
+        if fileName:
+            self._openFile(fileName)
 
     def getWidgets(self):
         widgets = []

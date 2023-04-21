@@ -20,21 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import argparse
+
 from TermTk import TTk, TTkLog, TTkTheme, TTkTerm
 
 from .designer import TTkDesigner
 
 def main():
+    parser = argparse.ArgumentParser()
+    # parser.add_argument('-c', help=f'config folder (default: "{TTKodeCfg.pathCfg}")', default=TTKodeCfg.pathCfg)
+    parser.add_argument('filename', type=str, nargs='?', help='the file to open')
+    args = parser.parse_args()
+
     # TTkLog.use_default_file_logging()
-    TTkTheme.loadTheme(TTkTheme.NERD )
+    TTkTheme.loadTheme( TTkTheme.NERD )
 
     root = TTk(
             title="TTk Designer",
             mouseTrack=True,
             sigmask=(
+                # TTkTerm.Sigmask.CTRL_C |
                 TTkTerm.Sigmask.CTRL_Q |
                 TTkTerm.Sigmask.CTRL_S |
-                TTkTerm.Sigmask.CTRL_Z |
-                TTkTerm.Sigmask.CTRL_C ))
-    root.setLayout(TTkDesigner())
+                TTkTerm.Sigmask.CTRL_Z ))
+    root.setLayout(TTkDesigner(fileName=args.filename))
     root.mainloop()
