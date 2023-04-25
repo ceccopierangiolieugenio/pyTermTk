@@ -386,7 +386,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restoreSnapshotDiff</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">restoreSnapshotNext</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restoreSnapshotDiff</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restoreSnapshotDiff</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># def toHtml(self, encoding): pass</span>
+    <span class="c1"># def toMarkdown(self, features): pass</span>
+    <span class="k">def</span> <span class="nf">toAnsi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">l</span><span class="o">.</span><span class="n">toAnsi</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataLines</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">toPlainText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataLines</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">toRawText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">TTkString</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataLines</span><span class="p">)</span></div>
 
 
 </pre></div>

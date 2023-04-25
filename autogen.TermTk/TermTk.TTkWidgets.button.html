@@ -136,7 +136,14 @@
 </pre></div>
 </div>
 <p>Border = False</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>  <span class="n">Text</span>  <span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[  Text  ]
+
+╿ Text 2 ╿
+╽New line╽
+
+╿ Text 3 ╿
+│  New   │
+╽  Line  ╽
 </pre></div>
 </div>
 <p>Demo: <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py">formwidgets.py</a></p>
@@ -181,6 +188,27 @@
 
 </div></blockquote>
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.enterEvent">
+<span class="sig-name descname"><span class="pre">enterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.enterEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.enterEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse enter events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.isCheckable">
 <span class="sig-name descname"><span class="pre">isCheckable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.isCheckable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.isCheckable" title="Permalink to this definition"></a></dt>
 <dd><p>This property holds whether the button is checkable</p>
@@ -214,6 +242,48 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.leaveEvent">
+<span class="sig-name descname"><span class="pre">leaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.leaveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.leaveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse leave events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.button.TTkButton.mouseMoveEvent">
+<span class="sig-name descname"><span class="pre">mouseMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/button.html#TTkButton.mouseMoveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.button.TTkButton.mouseMoveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse move events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>True</strong> if the event has been handled</p>

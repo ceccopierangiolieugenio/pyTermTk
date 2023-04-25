@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkCore.ttk" href="TermTk.TTkCore.ttk.html" />
+    <link rel="next" title="TermTk.TTkCore.timer_pyodide" href="TermTk.TTkCore.timer_pyodide.html" />
     <link rel="prev" title="TermTk.TTkCore.string" href="TermTk.TTkCore.string.html" /> 
 </head>
 
@@ -60,13 +60,14 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.filebuffer.html">TermTk.TTkCore.filebuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.helper.html">TermTk.TTkCore.helper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.log.html">TermTk.TTkCore.log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.propertyanimation.html">TermTk.TTkCore.propertyanimation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.signal.html">TermTk.TTkCore.signal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.string.html">TermTk.TTkCore.string</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.timer</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ttktimer">TTkTimer</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer_pyodide.html">TermTk.TTkCore.timer_pyodide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer_unix.html">TermTk.TTkCore.timer_unix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.ttk.html">TermTk.TTkCore.ttk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.util.html">TermTk.TTkCore.util</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
@@ -108,34 +109,6 @@
              
   <section id="module-TermTk.TTkCore.timer">
 <span id="termtk-ttkcore-timer"></span><h1>TermTk.TTkCore.timer<a class="headerlink" href="#module-TermTk.TTkCore.timer" title="Permalink to this heading"></a></h1>
-<section id="ttktimer">
-<h2>TTkTimer<a class="headerlink" href="#ttktimer" title="Permalink to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="TermTk.TTkCore.timer.TTkTimer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTimer</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/timer.html#TTkTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.timer.TTkTimer" title="Permalink to this definition"></a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkCore.timer.TTkTimer.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/timer.html#TTkTimer.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.timer.TTkTimer.run" title="Permalink to this definition"></a></dt>
-<dd><p>Method representing the thread’s activity.</p>
-<p>You may override this method in a subclass. The standard run() method
-invokes the callable object passed to the object’s constructor as the
-target argument, if any, with sequential and keyword arguments taken
-from the args and kwargs arguments, respectively.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkCore.timer.TTkTimer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/timer.html#TTkTimer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.timer.TTkTimer.start" title="Permalink to this definition"></a></dt>
-<dd><p>Start the thread’s activity.</p>
-<p>It must be called at most once per thread object. It arranges for the
-object’s run() method to be invoked in a separate thread of control.</p>
-<p>This method will raise a RuntimeError if called more than once on the
-same thread object.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 </section>
 
 
@@ -143,7 +116,7 @@ same thread object.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TermTk.TTkCore.string.html" class="btn btn-neutral float-left" title="TermTk.TTkCore.string" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="TermTk.TTkCore.ttk.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.ttk" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkCore.timer_pyodide.html" class="btn btn-neutral float-right" title="TermTk.TTkCore.timer_pyodide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

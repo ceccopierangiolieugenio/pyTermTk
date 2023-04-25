@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.filepicker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.filepicker
+
+.. currentmodule:: TermTk.TTkUiTools.properties.filepicker
+

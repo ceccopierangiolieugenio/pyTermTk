@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.listwidget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.listwidget
+
+.. currentmodule:: TermTk.TTkUiTools.properties.listwidget
+

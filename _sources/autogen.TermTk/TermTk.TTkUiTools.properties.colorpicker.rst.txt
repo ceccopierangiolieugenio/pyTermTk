@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.colorpicker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.colorpicker
+
+.. currentmodule:: TermTk.TTkUiTools.properties.colorpicker
+

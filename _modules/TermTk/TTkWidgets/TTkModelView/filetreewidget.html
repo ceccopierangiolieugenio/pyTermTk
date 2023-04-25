@@ -249,8 +249,8 @@
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkFileTreeWidgetItem</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_updateChildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">children</span><span class="p">():</span> <span class="k">return</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">TTkFileTreeWidget</span><span class="o">.</span><span class="n">_getFileItems</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">()):</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">addChildren</span><span class="p">(</span><span class="n">children</span> <span class="o">:=</span> <span class="n">TTkFileTreeWidget</span><span class="o">.</span><span class="n">_getFileItems</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">path</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
             <span class="c1"># TODO: Find a better way than calling an internal function</span>
             <span class="n">i</span><span class="o">.</span><span class="n">_processFilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span>
 

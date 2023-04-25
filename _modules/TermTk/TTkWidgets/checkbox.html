@@ -112,7 +112,7 @@
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSignal</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSignal</span><span class="p">,</span> <span class="n">pyTTkSlot</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="o">*</span>
 
 <div class="viewcode-block" id="TTkCheckbox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox">[docs]</a><span class="k">class</span> <span class="nc">TTkCheckbox</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
@@ -192,13 +192,14 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span></div>
 
+    <span class="n">pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 <div class="viewcode-block" id="TTkCheckbox.setText"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.setText">[docs]</a>    <span class="k">def</span> <span class="nf">setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; This property holds the text shown on the checkhox</span>
 
 <span class="sd">        :param text:</span>
 <span class="sd">        :type text: :class:`~TermTk.TTkCore.string.TTkString`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">==</span> <span class="n">text</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">sameAs</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
@@ -227,11 +228,12 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkStatus</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span></div>
 
-<div class="viewcode-block" id="TTkCheckbox.setChecked"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.setChecked">[docs]</a>    <span class="k">def</span> <span class="nf">setChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkCheckbox.setChecked"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.setChecked">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Set the check status</span>
 
 <span class="sd">        :param state:</span>
-<span class="sd">        :type tate: bool</span>
+<span class="sd">        :type state: bool</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCheckState</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span> <span class="k">if</span> <span class="n">state</span> <span class="k">else</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span><span class="p">)</span></div>
 
@@ -242,7 +244,8 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkStatus</span></div>
 
-<div class="viewcode-block" id="TTkCheckbox.setCheckState"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.setCheckState">[docs]</a>    <span class="k">def</span> <span class="nf">setCheckState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkCheckbox.setCheckState"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.checkbox.html#TermTk.TTkWidgets.checkbox.TTkCheckbox.setCheckState">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">CheckState</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setCheckState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Sets the checkbox&#39;s check state.</span>
 
 <span class="sd">        :param state: state of the checkbox</span>
@@ -296,39 +299,7 @@
            <span class="p">(</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span> <span class="ow">and</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Enter</span> <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pressEvent</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
-
-    <span class="n">_ttkProperties</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Text&#39;</span> <span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">,</span>
-                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">text</span><span class="p">,</span>     <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">,</span>
-                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setText</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="n">TTkString</span> <span class="p">}</span> <span class="p">},</span>
-        <span class="s1">&#39;Tristate&#39;</span> <span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;tristate&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
-                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">isTristate</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
-                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setTristate</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">},</span>
-        <span class="s1">&#39;Checked&#39;</span> <span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
-                <span class="s1">&#39;get&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">isChecked</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">,</span>
-                <span class="s1">&#39;set&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setChecked</span><span class="p">,</span>  <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">bool</span> <span class="p">}</span> <span class="p">},</span>
-        <span class="s1">&#39;Check State&#39;</span> <span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;checked&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;Checked&#39;</span>          <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>    <span class="p">,</span>
-                        <span class="s1">&#39;Unchecked&#39;</span>        <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>  <span class="p">,</span>
-                        <span class="s1">&#39;Partially Checked&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">PartiallyChecked</span> <span class="p">}</span> <span class="p">},</span>
-                <span class="s1">&#39;get&#39;</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">checkState</span><span class="p">,</span>      <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;Checked&#39;</span>          <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>    <span class="p">,</span>
-                        <span class="s1">&#39;Unchecked&#39;</span>        <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>  <span class="p">,</span>
-                        <span class="s1">&#39;Partially Checked&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">PartiallyChecked</span> <span class="p">}</span> <span class="p">},</span>
-                <span class="s1">&#39;set&#39;</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setCheckState</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;singleflag&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;Checked&#39;</span>          <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span>    <span class="p">,</span>
-                        <span class="s1">&#39;Unchecked&#39;</span>        <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span>  <span class="p">,</span>
-                        <span class="s1">&#39;Partially Checked&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">PartiallyChecked</span> <span class="p">}</span> <span class="p">},</span>
-         <span class="p">},</span>
-    <span class="p">}</span></div>
+        <span class="k">return</span> <span class="kc">False</span></div></div>
 </pre></div>
 
            </div>

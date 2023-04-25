@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.about
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.about
+
+.. currentmodule:: TermTk.TTkUiTools.properties.about
+

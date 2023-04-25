@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.scrollbar
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.scrollbar
+
+.. currentmodule:: TermTk.TTkUiTools.properties.scrollbar
+

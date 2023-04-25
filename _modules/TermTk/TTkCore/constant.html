@@ -163,8 +163,15 @@
     <span class="n">QUIT_EVENT</span>   <span class="o">=</span> <span class="mh">0x08</span>
     <span class="n">TIME_EVENT</span>   <span class="o">=</span> <span class="mh">0x10</span>
 
-    <span class="n">HORIZONTAL</span> <span class="o">=</span> <span class="mh">0x01</span>
-    <span class="n">VERTICAL</span>   <span class="o">=</span> <span class="mh">0x02</span>
+<div class="viewcode-block" id="TTkConstant.Direction"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction">[docs]</a>    <span class="k">class</span> <span class="nc">Direction</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This class type is used to describe the direction&#39;&#39;&#39;</span>
+        <span class="n">HORIZONTAL</span> <span class="o">=</span> <span class="mh">0x01</span> <span class="o">+</span> <span class="mh">0x02</span>
+        <span class="sd">&#39;&#39;&#39;Horizontal direction&#39;&#39;&#39;</span>
+        <span class="n">VERTICAL</span>   <span class="o">=</span> <span class="mh">0x04</span> <span class="o">+</span> <span class="mh">0x08</span>
+        <span class="sd">&#39;&#39;&#39;Vertical direction&#39;&#39;&#39;</span></div>
+
+    <span class="n">HORIZONTAL</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="n">HORIZONTAL</span>
+    <span class="n">VERTICAL</span>   <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="n">VERTICAL</span>
 
 <div class="viewcode-block" id="TTkConstant.ScrollBarPolicy"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.ScrollBarPolicy">[docs]</a>    <span class="k">class</span> <span class="nc">ScrollBarPolicy</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
         <span class="n">ScrollBarAsNeeded</span>  <span class="o">=</span>  <span class="mh">0x00</span>
@@ -356,7 +363,7 @@
 
 <div class="viewcode-block" id="TTkConstant.FileMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.FileMode">[docs]</a>    <span class="k">class</span> <span class="nc">FileMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
         <span class="n">AnyFile</span>        <span class="o">=</span> <span class="mi">0</span> <span class="c1">#The name of a file, whether it exists or not.</span>
-        <span class="c1"># ExistingFile   = 1 #The name of a single existing file.</span>
+        <span class="n">ExistingFile</span>   <span class="o">=</span> <span class="mi">1</span> <span class="c1">#The name of a single existing file.</span>
         <span class="n">Directory</span>      <span class="o">=</span> <span class="mi">2</span> <span class="c1">#The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.</span></div>
         <span class="c1"># ExistingFiles  = 3 #The names of zero or more existing files.</span>
 

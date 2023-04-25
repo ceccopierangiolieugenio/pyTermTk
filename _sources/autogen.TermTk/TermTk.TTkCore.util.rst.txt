@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.util
+~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.util
+
+.. currentmodule:: TermTk.TTkCore.util
+

@@ -13,3 +13,10 @@ TTkFileDialogPicker
 
 .. autoclass:: TTkFileDialogPicker
    :members:
+
+
+TTkFileButtonPicker
+===================
+
+.. autoclass:: TTkFileButtonPicker
+   :members:

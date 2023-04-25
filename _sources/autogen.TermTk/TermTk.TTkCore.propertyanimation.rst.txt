@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.propertyanimation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.propertyanimation
+
+.. currentmodule:: TermTk.TTkCore.propertyanimation
+

@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.uiproperties
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.uiproperties
+
+.. currentmodule:: TermTk.TTkUiTools.uiproperties
+

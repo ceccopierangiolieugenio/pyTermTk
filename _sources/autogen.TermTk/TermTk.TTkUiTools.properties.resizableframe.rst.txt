@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.resizableframe
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.resizableframe
+
+.. currentmodule:: TermTk.TTkUiTools.properties.resizableframe
+

@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.scrollarea
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.scrollarea
+
+.. currentmodule:: TermTk.TTkUiTools.properties.scrollarea
+

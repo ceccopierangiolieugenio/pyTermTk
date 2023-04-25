@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.splitter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.splitter
+
+.. currentmodule:: TermTk.TTkUiTools.properties.splitter
+

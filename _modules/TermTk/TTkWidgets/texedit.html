@@ -110,7 +110,7 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log10</span><span class="p">,</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log10</span><span class="p">,</span> <span class="n">floor</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
@@ -136,7 +136,7 @@
 
     <span class="k">def</span> <span class="nf">_wrapChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_textWrap</span><span class="o">.</span><span class="n">_lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">width</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">ceil</span><span class="p">(</span><span class="n">log10</span><span class="p">(</span><span class="n">dt</span><span class="p">))</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span><span class="o">+</span><span class="n">floor</span><span class="p">(</span><span class="n">log10</span><span class="p">(</span><span class="n">dt</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
@@ -184,12 +184,14 @@
             <span class="s1">&#39;_readOnly&#39;</span><span class="p">,</span> <span class="s1">&#39;_multiCursor&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_clipboard&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_preview&#39;</span><span class="p">,</span> <span class="s1">&#39;_previewWidth&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_multiLine&#39;</span><span class="p">,</span>
             <span class="c1"># # Forwarded Methods</span>
             <span class="c1"># &#39;wrapWidth&#39;,    &#39;setWrapWidth&#39;,</span>
             <span class="c1"># &#39;wordWrapMode&#39;, &#39;setWordWrapMode&#39;,</span>
             <span class="c1"># Signals</span>
             <span class="s1">&#39;currentColorChanged&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;undoAvailable&#39;</span><span class="p">,</span> <span class="s1">&#39;redoAvailable&#39;</span>
+            <span class="s1">&#39;undoAvailable&#39;</span><span class="p">,</span> <span class="s1">&#39;redoAvailable&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;textChanged&#39;</span>
         <span class="p">)</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        in order to support the line wrap, I need to divide the full data text in;</span>
@@ -204,7 +206,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">currentColorChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="n">TTkColor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">undoAvailable</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redoAvailable</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_readOnly</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;readOnly&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multiLine</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multiLine&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_multiCursor</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hsize</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lastWrapUsed</span>  <span class="o">=</span> <span class="mi">0</span>
@@ -219,6 +223,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setDocument</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;document&#39;</span><span class="p">,</span> <span class="n">TTkTextDocument</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateSize</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">multiLine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiLine</span>
+
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_undoAvailable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">available</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">undoAvailable</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">available</span><span class="p">)</span>
@@ -226,6 +233,31 @@
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_redoAvailable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">available</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redoAvailable</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">available</span><span class="p">)</span>
+
+    <span class="c1"># def toHtml(self, encoding): pass</span>
+    <span class="c1">#    if self._textDocument:</span>
+    <span class="c1">#        return self._textDocument.toHtml()</span>
+    <span class="c1">#    return &quot;&quot;</span>
+
+    <span class="c1"># def toMarkdown(self, features): pass</span>
+    <span class="c1">#    if self._textDocument:</span>
+    <span class="c1">#        return self._textDocument.toMarkdown()</span>
+    <span class="c1">#    return &quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">toAnsi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">toAnsi</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">toPlainText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">toRawText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">toRawText</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">TTkString</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">isUndoAvailable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">:</span>
@@ -242,7 +274,7 @@
 
     <span class="k">def</span> <span class="nf">setDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">contentsChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rewrap</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">contentsChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_documentChanged</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">cursorPositionChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPositionChanged</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">undoAvailable</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_undoAvailable</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">redoAvailable</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_redoAvailable</span><span class="p">)</span>
@@ -252,7 +284,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span> <span class="o">=</span> <span class="n">document</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span> <span class="o">=</span> <span class="n">TTkTextCursor</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textWrap</span> <span class="o">=</span> <span class="n">TTkTextWrap</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">contentsChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rewrap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">contentsChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_documentChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">cursorPositionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPositionChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">undoAvailable</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_undoAvailable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textDocument</span><span class="o">.</span><span class="n">redoAvailable</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_redoAvailable</span><span class="p">)</span>
@@ -335,13 +367,23 @@
     <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">txt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipboard</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiLine</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">insertText</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_documentChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rewrap</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_rewrap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textWrap</span><span class="o">.</span><span class="n">rewrap</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkColor</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">setColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textCursor</span><span class="p">()</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkTextCursor</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_cursorPositionChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cursor</span><span class="p">):</span>
@@ -566,7 +608,8 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">movePosition</span><span class="p">(</span><span class="n">TTkTextCursor</span><span class="o">.</span><span class="n">Left</span><span class="p">,</span> <span class="n">TTkTextCursor</span><span class="o">.</span><span class="n">KeepAnchor</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">removeSelectedText</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Enter</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">insertText</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiLine</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">insertText</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">movePosition</span><span class="p">(</span><span class="n">TTkTextCursor</span><span class="o">.</span><span class="n">Right</span><span class="p">)</span>
             <span class="c1"># Scroll to align to the cursor</span>
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textCursor</span><span class="o">.</span><span class="n">position</span><span class="p">()</span>
@@ -625,13 +668,18 @@
             <span class="c1"># Forwarded Methods</span>
             <span class="s1">&#39;clear&#39;</span><span class="p">,</span> <span class="s1">&#39;setText&#39;</span><span class="p">,</span> <span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="s1">&#39;isReadOnly&#39;</span><span class="p">,</span> <span class="s1">&#39;setReadOnly&#39;</span><span class="p">,</span> <span class="s1">&#39;document&#39;</span><span class="p">,</span>
             <span class="s1">&#39;wrapWidth&#39;</span><span class="p">,</span> <span class="s1">&#39;setWrapWidth&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;multiLine&#39;</span><span class="p">,</span>
             <span class="s1">&#39;lineWrapMode&#39;</span><span class="p">,</span> <span class="s1">&#39;setLineWrapMode&#39;</span><span class="p">,</span>
             <span class="s1">&#39;wordWrapMode&#39;</span><span class="p">,</span> <span class="s1">&#39;setWordWrapMode&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;textCursor&#39;</span><span class="p">,</span> <span class="s1">&#39;setFocus&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;textCursor&#39;</span><span class="p">,</span> <span class="s1">&#39;setFocus&#39;</span><span class="p">,</span> <span class="s1">&#39;setColor&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cut&#39;</span><span class="p">,</span> <span class="s1">&#39;copy&#39;</span><span class="p">,</span> <span class="s1">&#39;paste&#39;</span><span class="p">,</span>
             <span class="s1">&#39;undo&#39;</span><span class="p">,</span> <span class="s1">&#39;redo&#39;</span><span class="p">,</span> <span class="s1">&#39;isUndoAvailable&#39;</span><span class="p">,</span> <span class="s1">&#39;isRedoAvailable&#39;</span><span class="p">,</span>
+            <span class="c1"># Export Methods,</span>
+            <span class="s1">&#39;toAnsi&#39;</span><span class="p">,</span> <span class="s1">&#39;toRawText&#39;</span><span class="p">,</span> <span class="s1">&#39;toPlainText&#39;</span><span class="p">,</span> <span class="c1"># &#39;toHtml&#39;, &#39;toMarkdown&#39;,</span>
             <span class="c1"># Signals</span>
             <span class="s1">&#39;focusChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;currentColorChanged&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;undoAvilable&#39;</span><span class="p">,</span> <span class="s1">&#39;redoAvailable&#39;</span>
+            <span class="s1">&#39;undoAvilable&#39;</span><span class="p">,</span> <span class="s1">&#39;redoAvailable&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;textChanged&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -656,10 +704,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setReadOnly</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setReadOnly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textCursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">textCursor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setFocus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">multiLine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">multiLine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setColor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">cut</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">copy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paste</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">paste</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">undo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">undo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">redo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isUndoAvailable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">isUndoAvailable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isRedoAvailable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">isRedoAvailable</span>
+        <span class="c1"># Forward export methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toAnsi</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">toAnsi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toRawText</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">toRawText</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toPlainText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">toPlainText</span>
+        <span class="c1"># self.toHtml      = self._textEditView.toHtml</span>
+        <span class="c1"># self.toMarkdown  = self._textEditView.toMarkdown</span>
         <span class="c1"># Forward Wrap Methods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrapWidth</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">wrapWidth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWrapWidth</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setWrapWidth</span>
@@ -672,6 +731,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">currentColorChanged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">currentColorChanged</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">undoAvailable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">undoAvailable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redoAvailable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">redoAvailable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textChanged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">textChanged</span>
+
+    <span class="k">def</span> <span class="nf">textEditView</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span>
+
+    <span class="k">def</span> <span class="nf">getLineNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">setLineNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ln</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>

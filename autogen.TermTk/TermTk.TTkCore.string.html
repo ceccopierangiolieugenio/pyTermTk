@@ -60,13 +60,17 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.filebuffer.html">TermTk.TTkCore.filebuffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.helper.html">TermTk.TTkCore.helper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.log.html">TermTk.TTkCore.log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.propertyanimation.html">TermTk.TTkCore.propertyanimation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.signal.html">TermTk.TTkCore.signal</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkCore.string</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ttkstring">TTkString</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer.html">TermTk.TTkCore.timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer_pyodide.html">TermTk.TTkCore.timer_pyodide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer_unix.html">TermTk.TTkCore.timer_unix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.ttk.html">TermTk.TTkCore.ttk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.util.html">TermTk.TTkCore.util</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
@@ -141,23 +145,6 @@
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkCore.string.TTkString.addColor">
-<span class="sig-name descname"><span class="pre">addColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posFrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posTo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.addColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.addColor" title="Permalink to this definition"></a></dt>
-<dd><p>Add the color of the entire string or a slice of it</p>
-<p>If only the color is specified, the entire string is colorized</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>) – the color to be used, defaults to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p></li>
-<li><p><strong>match</strong> (<em>str</em><em>, </em><em>optional</em>) – the match to colorize</p></li>
-<li><p><strong>posFrom</strong> (<em>int</em><em>, </em><em>optional</em>) – the initial position of the color</p></li>
-<li><p><strong>posTo</strong> (<em>int</em><em>, </em><em>optional</em>) – the final position of the color</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkCore.string.TTkString.align">
 <span class="sig-name descname"><span class="pre">align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color=&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment=0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.align" title="Permalink to this definition"></a></dt>
 <dd><p>Align the string</p>
@@ -167,6 +154,24 @@
 <li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – the new width</p></li>
 <li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>, optional) – the color of the padding, defaults to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p></li>
 <li><p><strong>alignment</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment" title="TermTk.TTkCore.constant.TTkConstant.Alignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Alignment</span></code></a>, optional) – the alignment of the text to the full width <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Alignment.NONE" title="TermTk.TTkCore.constant.TTkConstant.Alignment.NONE"><code class="xref py py-class docutils literal notranslate"><span class="pre">NONE</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.string.TTkString.completeColor">
+<span class="sig-name descname"><span class="pre">completeColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posFrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posTo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.completeColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.completeColor" title="Permalink to this definition"></a></dt>
+<dd><p>Complete the color of the entire string or a slice of it</p>
+<p>The Fg and/or Bg of the string is replaced with the selected Fg/Bg color only if missing</p>
+<p>If only the color is specified, the entire string is colorized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color</strong> (<a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a>) – the color to be used, defaults to <a class="reference internal" href="TermTk.TTkCore.color.html#TermTk.TTkCore.color.TTkColor.RST" title="TermTk.TTkCore.color.TTkColor.RST"><code class="xref py py-class docutils literal notranslate"><span class="pre">RST</span></code></a></p></li>
+<li><p><strong>match</strong> (<em>str</em><em>, </em><em>optional</em>) – the match to colorize</p></li>
+<li><p><strong>posFrom</strong> (<em>int</em><em>, </em><em>optional</em>) – the initial position of the color</p></li>
+<li><p><strong>posTo</strong> (<em>int</em><em>, </em><em>optional</em>) – the final position of the color</p></li>
 </ul>
 </dd>
 </dl>
@@ -295,8 +300,8 @@ ret                   x = 7 (tab is a char)
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkCore.string.TTkString.toAansi">
-<span class="sig-name descname"><span class="pre">toAansi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.toAansi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.toAansi" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkCore.string.TTkString.toAnsi">
+<span class="sig-name descname"><span class="pre">toAnsi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/string.html#TTkString.toAnsi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.string.TTkString.toAnsi" title="Permalink to this definition"></a></dt>
 <dd><p>Return the ansii (terminal colors/events) representation of the string</p>
 </dd></dl>
 

@@ -142,7 +142,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="nb">input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseInput</span><span class="p">)</span>
         <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkKeyEvent</span><span class="p">,</span> <span class="n">TTkMouseEvent</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">_mouseInput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kevt</span><span class="p">,</span> <span class="n">mevt</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_mouseInput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mevt</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">mevt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span> <span class="o">=</span> <span class="s1">&#39;✠&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
@@ -165,27 +165,33 @@
             <span class="c1">#self._canvas.drawChar((0,0),&#39;✜&#39;)</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;_input&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_input&#39;</span><span class="p">,</span> <span class="s1">&#39;_termMouse&#39;</span><span class="p">,</span> <span class="s1">&#39;_termDirectMouse&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_title&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_showMouseCursor&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_sigmask&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_drawMutex&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_lastMultiTap&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;_paintEvent&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_lastMultiTap&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;paintExecuted&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paintExecuted</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_termMouse</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_termDirectMouse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mouseTrack&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span> <span class="o">=</span> <span class="n">TTkInput</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span><span class="s1">&#39;TermTk&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sigmask</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sigmask&#39;</span><span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">NONE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_showMouseCursor</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;TTK_MOUSE&quot;</span><span class="p">,</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mouseCursor&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_drawMutex</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paintEvent</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paintEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
         <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">TTkTerm</span><span class="o">.</span><span class="n">getTerminalSize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
 
-        <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">TTkTheme</span><span class="p">()</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">registerRootWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
@@ -231,7 +237,11 @@
 
             <span class="c1"># Keep track of the multiTap to avoid the extra key release</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lastMultiTap</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">TTkTerm</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">,</span> <span class="n">sigmask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigmask</span><span class="p">)</span>
+            <span class="n">TTkTerm</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+                <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">,</span>
+                <span class="n">sigmask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sigmask</span><span class="p">,</span>
+                <span class="n">mouse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_termMouse</span><span class="p">,</span>
+                <span class="n">directMouse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_termDirectMouse</span> <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_showMouseCursor</span><span class="p">:</span>
                 <span class="n">TTkTerm</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">TTkTerm</span><span class="o">.</span><span class="n">Mouse</span><span class="o">.</span><span class="n">DIRECT_ON</span><span class="p">)</span>
@@ -262,6 +272,7 @@
         <span class="c1"># Upload the global mouse position</span>
         <span class="c1"># Mainly used by the drag pixmap display</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">setMousePos</span><span class="p">((</span><span class="n">mevt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="n">mevt</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_mouseOverProcessed</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Avoid to broadcast a key release after a multitap event</span>
         <span class="k">if</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastMultiTap</span><span class="p">:</span> <span class="k">return</span>
@@ -276,12 +287,11 @@
 
         <span class="c1"># Mouse Events forwarded straight to the Focus widget:</span>
         <span class="c1">#  - Drag</span>
-        <span class="c1">#  - Move</span>
         <span class="c1">#  - Release</span>
         <span class="n">focusWidget</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">()</span>
         <span class="k">if</span> <span class="p">(</span> <span class="n">focusWidget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-             <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span>  <span class="ow">and</span>
-             <span class="n">mevt</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Wheel</span>  <span class="ow">and</span>
+             <span class="p">(</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Drag</span> <span class="ow">or</span>
+               <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span> <span class="p">)</span> <span class="ow">and</span>
              <span class="ow">not</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">isDnD</span><span class="p">()</span>   <span class="p">)</span> <span class="p">:</span>
             <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">absPos</span><span class="p">(</span><span class="n">focusWidget</span><span class="p">)</span>
             <span class="n">nmevt</span> <span class="o">=</span> <span class="n">mevt</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">mevt</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">mevt</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">y</span><span class="p">))</span>
@@ -301,6 +311,7 @@
                     <span class="n">TTkHelper</span><span class="o">.</span><span class="n">dndEnter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span> <span class="ow">and</span> <span class="n">focusWidget</span><span class="p">:</span>
                     <span class="n">focusWidget</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
+                    <span class="n">TTkHelper</span><span class="o">.</span><span class="n">focusLastModal</span><span class="p">()</span>
 
         <span class="c1"># Clean the Drag and Drop in case of mouse release</span>
         <span class="k">if</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span><span class="p">:</span>
@@ -328,11 +339,25 @@
                 <span class="n">TTkHelper</span><span class="o">.</span><span class="n">prevFocus</span><span class="p">(</span><span class="n">focusWidget</span> <span class="k">if</span> <span class="n">focusWidget</span> <span class="k">else</span> <span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_time_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Event.{wait and clear} should be atomic,</span>
+        <span class="c1"># BUTt: ( y )</span>
+        <span class="c1">#   if an update event (set) happen in between the wait and clear</span>
+        <span class="c1">#      the widget is still processed in the current paint routine</span>
+        <span class="c1">#   if an update event (set) happen after the wait and clear</span>
+        <span class="c1">#      the widget is processed in the current paint routine</span>
+        <span class="c1">#      an extra paint routine is triggered which return immediately due to</span>
+        <span class="c1">#      the empty list of widgets to be processed - Not a big deal</span>
+        <span class="c1">#   if an update event (set) happen after the wait and clear and the paintAll Routine</span>
+        <span class="c1">#      well, it works as it is supposed to be</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paintEvent</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paintEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
         <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">TTkTerm</span><span class="o">.</span><span class="n">getTerminalSize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_drawMutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span><span class="p">()</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">paintAll</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paintExecuted</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_drawMutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">maxFps</span><span class="p">)</span>
 
@@ -350,6 +375,7 @@
         <span class="sd">&#39;&#39;&#39;Tells the application to exit with a return code.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">TTkTimer</span><span class="o">.</span><span class="n">quitAll</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paintEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_SIGSTOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>

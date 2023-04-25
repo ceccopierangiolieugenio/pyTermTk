@@ -279,13 +279,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">iterWidgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">onlyVisible</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">iterWidgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">onlyVisible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">onlyVisible</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span> <span class="k">continue</span>
                 <span class="k">yield</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
-                <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+                    <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span> <span class="ow">and</span> <span class="n">recurse</span><span class="p">:</span>
                 <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_zSortItems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -305,20 +306,29 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span><span class="n">item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),[</span><span class="n">item</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">addItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span><span class="n">items</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">insertItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">widget</span> <span class="o">:=</span> <span class="n">item</span><span class="p">),</span> <span class="n">TTkLayoutItem</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
-                <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="n">item</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="n">index</span><span class="p">,[</span><span class="n">item</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">insertItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">widget</span> <span class="o">:=</span> <span class="n">item</span><span class="p">),</span> <span class="n">TTkLayoutItem</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
+                <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">item</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">index</span><span class="p">:</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zSortItems</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">())</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">():</span>
+        <span class="c1">#self.update()</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span><span class="p">:</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TTkLayout.addWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget">[docs]</a>    <span class="k">def</span> <span class="nf">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
@@ -327,14 +337,29 @@
 <span class="sd">        :param widget: the widget to be added</span>
 <span class="sd">        :type widget: :class:`~TermTk.TTkWidgets`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span><span class="n">widget</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),[</span><span class="n">widget</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TTkLayout.addWidgets"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidgets">[docs]</a>    <span class="k">def</span> <span class="nf">addWidgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widgets</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Add a list of widgets to this Layout</span>
+
+<span class="sd">        :param widgets: the widget to be added</span>
+<span class="sd">        :type widgets: list of :class:`~TermTk.TTkWidgets`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">),</span><span class="n">widgets</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">insertWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">[</span><span class="n">widget</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">insertWidgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">widgets</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">widgets</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeItems</span><span class="p">([</span><span class="n">item</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">removeItems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zSortItems</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TTkLayout.removeWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget">[docs]</a>    <span class="k">def</span> <span class="nf">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
@@ -343,13 +368,21 @@
 <span class="sd">        :param widget: the widget to be removed</span>
 <span class="sd">        :type widget: :class:`~TermTk.TTkWidgets`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeWidgets</span><span class="p">([</span><span class="n">widget</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TTkLayout.removeWidgets"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidgets">[docs]</a>    <span class="k">def</span> <span class="nf">removeWidgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widgets</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Remove a list of widget from this Layout</span>
+
+<span class="sd">        :param widgets: the widget to be removed</span>
+<span class="sd">        :type widgets: list of :class:`~TermTk.TTkWidgets`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> \
-               <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="o">==</span> <span class="n">widget</span><span class="p">:</span>
+               <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
-                <span class="n">item</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span></div>
+                <span class="n">item</span><span class="o">.</span><span class="n">removeWidgets</span><span class="p">(</span><span class="n">widgets</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">findBranchWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>

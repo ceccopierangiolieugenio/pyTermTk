@@ -15,3 +15,4 @@ TermTk.TTkGui
   TermTk.TTkGui.textcursor
   TermTk.TTkGui.textdocument
   TermTk.TTkGui.textwrap1
+  TermTk.TTkGui.tooltip

@@ -1,0 +1,22 @@
+
+TermTk.TTkWidgets.TTkPickers.textpicker
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkPickers.textpicker
+
+.. currentmodule:: TermTk.TTkWidgets.TTkPickers.textpicker
+
+
+
+TTkTextDialogPicker
+===================
+
+.. autoclass:: TTkTextDialogPicker
+   :members:
+
+
+TTkTextPicker
+=============
+
+.. autoclass:: TTkTextPicker
+   :members:

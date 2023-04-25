@@ -6,10 +6,3 @@ TermTk.TTkCore.timer
 
 .. currentmodule:: TermTk.TTkCore.timer
 
-
-
-TTkTimer
-========
-
-.. autoclass:: TTkTimer
-   :members:

@@ -18,7 +18,11 @@ TermTk.TTkCore
   TermTk.TTkCore.filebuffer
   TermTk.TTkCore.helper
   TermTk.TTkCore.log
+  TermTk.TTkCore.propertyanimation
   TermTk.TTkCore.signal
   TermTk.TTkCore.string
   TermTk.TTkCore.timer
+  TermTk.TTkCore.timer_pyodide
+  TermTk.TTkCore.timer_unix
   TermTk.TTkCore.ttk
+  TermTk.TTkCore.util

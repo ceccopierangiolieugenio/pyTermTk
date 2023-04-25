@@ -475,6 +475,7 @@
         <span class="n">b</span><span class="o">.</span><span class="n">colorClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">_controlSetColor</span><span class="p">)</span>
 
         <span class="n">customLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">b</span><span class="o">:=</span><span class="n">TTkButton</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Add to Custom Colors&#39;</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">customLayout</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
         <span class="nd">@pyTTkSlot</span><span class="p">()</span>
         <span class="k">def</span> <span class="nf">_addCustomPressed</span><span class="p">():</span>

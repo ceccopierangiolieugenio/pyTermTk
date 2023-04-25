@@ -18,4 +18,5 @@ TermTk
   TermTk.TTkTestWidgets
   TermTk.TTkTheme
   TermTk.TTkTypes
+  TermTk.TTkUiTools
   TermTk.TTkWidgets

@@ -269,30 +269,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="o">.</span><span class="n">setBorderColor</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-
-    <span class="n">_ttkProperties</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Window Flags&#39;</span> <span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;multiflags&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;Close Button&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowCloseButtonHint</span>    <span class="p">,</span>
-                        <span class="s1">&#39;Maximize Button&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowMaximizeButtonHint</span> <span class="p">,</span>
-                        <span class="s1">&#39;Minimize Button&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowMinimizeButtonHint</span> <span class="p">,</span>
-                        <span class="s1">&#39;Reduce Button&#39;</span>  <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowReduceButtonHint</span>   <span class="p">}</span> <span class="p">},</span>
-                <span class="s1">&#39;get&#39;</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">windowFlag</span><span class="p">,</span>      <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;multiflags&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;Close Button&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowCloseButtonHint</span>    <span class="p">,</span>
-                        <span class="s1">&#39;Maximize Button&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowMaximizeButtonHint</span> <span class="p">,</span>
-                        <span class="s1">&#39;Minimize Button&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowMinimizeButtonHint</span> <span class="p">,</span>
-                        <span class="s1">&#39;Reduce Button&#39;</span>  <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowReduceButtonHint</span>   <span class="p">}</span> <span class="p">},</span>
-                <span class="s1">&#39;set&#39;</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;cb&#39;</span><span class="p">:</span><span class="n">setWindowFlag</span><span class="p">,</span>   <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;multiflags&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;flags&#39;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">&#39;Close Button&#39;</span>   <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowCloseButtonHint</span>    <span class="p">,</span>
-                        <span class="s1">&#39;Maximize Button&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowMaximizeButtonHint</span> <span class="p">,</span>
-                        <span class="s1">&#39;Minimize Button&#39;</span><span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowMinimizeButtonHint</span> <span class="p">,</span>
-                        <span class="s1">&#39;Reduce Button&#39;</span>  <span class="p">:</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowReduceButtonHint</span>   <span class="p">}</span> <span class="p">},</span>
-         <span class="p">},</span>
-    <span class="p">}</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

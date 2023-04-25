@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.spacer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.spacer
+
+.. currentmodule:: TermTk.TTkUiTools.properties.spacer
+
