@@ -1,0 +1,230 @@
+{
+ "version": "1.0.0",
+ "tui": {
+  "class": "TTkWindow",
+  "params": {
+   "Name": "MainWindow",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    80,
+    30
+   ],
+   "Min Width": 2,
+   "Min Height": 4,
+   "Max Width": 4098,
+   "Max Height": 4100,
+   "Padding": [
+    3,
+    1,
+    1,
+    1
+   ],
+   "Layout": "TTkGridLayout",
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "\u001b[0m",
+   "Border": true,
+   "Title": "\u001b[0m\u001b[0mMr Export \ud83c\udf81\u001b[0m",
+   "Window Flags": 134250496
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     78,
+     26
+    ]
+   },
+   "children": [
+    {
+     "class": "TTkFileButtonPicker",
+     "params": {
+      "Name": "BtnSave",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       6,
+       3
+      ],
+      "Min Width": 4,
+      "Min Height": 3,
+      "Max Width": 6,
+      "Max Height": 3,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0m\ud83d\udcbe\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false,
+      "Path": ".",
+      "Caption": "File Dialog",
+      "Filters": "Python Files (*.py);;All Files (*)",
+      "File Mode": 0
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        6,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnNormal",
+      "Position": [
+       6,
+       0
+      ],
+      "Size": [
+       36,
+       3
+      ],
+      "Min Width": 8,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mNormal\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        36,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnCompressed",
+      "Position": [
+       42,
+       0
+      ],
+      "Size": [
+       36,
+       3
+      ],
+      "Min Width": 12,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mCompressed\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        36,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 3,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkTextEdit",
+     "params": {
+      "Name": "TextEdit",
+      "Position": [
+       0,
+       3
+      ],
+      "Size": [
+       78,
+       23
+      ],
+      "Min Width": 0,
+      "Min Height": 0,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Line Number": true,
+      "Read Only": false,
+      "Multi Line": true
+     },
+     "row": 1,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 3
+    }
+   ]
+  }
+ },
+ "connections": []
+}

@@ -20,41 +20,58 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
 import TermTk as ttk
 
-class QuickExport(ttk.TTkWindow):
-    __slots__ = ('_data', '_te')
-    def __init__(self, data, *args, **kwargs):
-        self._data = data
-        super().__init__(*args, **kwargs|{'layout':ttk.TTkGridLayout()})
-        self.layout().addWidget(btnCompressed := ttk.TTkButton(text='Compressed', border=True, maxHeight=3), 0,1)
-        self.layout().addWidget(btnNormal     := ttk.TTkButton(text='Normal', border=True, maxHeight=3), 0,0)
-        self._te = ttk.TTkTextEdit(lineNumber=True, readOnly=False)
-        self.layout().addWidget(self._te, 1,0,1,2)
-
-        btnNormal.clicked.connect(self.useNormmal)
-        btnCompressed.clicked.connect(self.useCompressed)
-
-        self.useCompressed()
+def QuickExport(data):
+    newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/quickExport.tui.json"))
+    te = newWindow.getWidgetByName("TextEdit")
 
     ttk.pyTTkSlot()
-    def useNormmal(self):
-        self._te.setLineWrapMode(ttk.TTkK.WidgetWidth)
-        self._te.setWordWrapMode(ttk.TTkK.WordWrap)
-        self._te.setText('from TermTk import TTkUtil, TTkUiLoader, TTk\n')
-        self._te.append(f'# Data generated using ttkDesigner')
-        self._te.append('widget = TTkUiLoader.loadDict(')
-        self._te.append(str(self._data)+ '")')
-        self._te.append('\nroot=TTk()\nroot.layout().addWidget(widget)\nroot.mainloop()\n')
+    def _useNormmal():
+        te.setLineWrapMode(ttk.TTkK.WidgetWidth)
+        te.setWordWrapMode(ttk.TTkK.WordWrap)
+        te.setText('from TermTk import TTkUtil, TTkUiLoader, TTk\n')
+        te.append(f'# Data generated using ttkDesigner')
+        te.append('widget = TTkUiLoader.loadDict(')
+        te.append(str(data)+ '")')
+        te.append('\nroot=TTk()\nroot.layout().addWidget(widget)\nroot.mainloop()\n')
 
     ttk.pyTTkSlot()
-    def useCompressed(self):
-        self._te.setLineWrapMode(ttk.TTkK.NoWrap)
-        b64str = ttk.TTkUtil.obj_inflate_2_base64(self._data)
-        self._te.setText('from TermTk import TTkUtil, TTkUiLoader, TTk\n')
-        self._te.append(f'# Data generated using ttkDesigner')
-        self._te.append('widget = TTkUiLoader.loadDict(TTkUtil.base64_deflate_2_obj(')
+    def _useCompressed():
+        te.setLineWrapMode(ttk.TTkK.NoWrap)
+        b64str = ttk.TTkUtil.obj_inflate_2_base64(data)
+        te.setText('from TermTk import TTkUtil, TTkUiLoader, TTk\n')
+        te.append(f'# Data generated using ttkDesigner')
+        te.append('widget = TTkUiLoader.loadDict(TTkUtil.base64_deflate_2_obj(')
         b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '"))'
-        self._te.append(b64list)
-        self._te.append('\nroot=TTk()\nroot.layout().addWidget(widget)\nroot.mainloop()\n')
+        te.append(b64list)
+        te.append('\nroot=TTk()\nroot.layout().addWidget(widget)\nroot.mainloop()\n')
 
+    def _saveToFile(fileName):
+        ttk.TTkLog.info(f"Saving to: {fileName}")
+        with open(fileName,'w') as fp:
+             fp.write(te.toPlainText())
+        newWindow.close()
+
+    ttk.pyTTkSlot(str)
+    def _checkSaveFile(fileName):
+        if os.path.exists(fileName):
+            messageBox = ttk.TTkMessageBox(
+                title='Title',
+                text= (
+                    ttk.TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', ttk.TTkColor.BOLD) +
+                    ttk.TTkString( f'\n\nReplacing it will overwrite its contents.') ),
+                icon=ttk.TTkMessageBox.Icon.Warning,
+                standardButtons=ttk.TTkMessageBox.StandardButton.Discard|ttk.TTkMessageBox.StandardButton.Save|ttk.TTkMessageBox.StandardButton.Cancel)
+            messageBox.buttonSelected.connect(lambda btn : _saveToFile(fileName) if btn == ttk.TTkMessageBox.StandardButton.Save else None)
+            ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
+        else:
+            _saveToFile(fileName)
+
+    newWindow.getWidgetByName("BtnNormal").clicked.connect(_useNormmal)
+    newWindow.getWidgetByName("BtnCompressed").clicked.connect(_useCompressed)
+    newWindow.getWidgetByName("BtnSave").filePicked.connect(_checkSaveFile)
+    _useCompressed()
+
+    return newWindow

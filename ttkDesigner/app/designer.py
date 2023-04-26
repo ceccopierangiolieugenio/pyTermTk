@@ -48,6 +48,7 @@ from .treeinspector import TreeInspector
 from .propertyeditor import PropertyEditor
 from .signalsloteditor import SignalSlotEditor
 from .quickexport import QuickExport
+from .notepad import NotePad
 
 #
 #      Mimic the QT Designer layout
@@ -76,7 +77,7 @@ from .quickexport import QuickExport
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_fileNameLabel', '_sigslotEditor', '_treeInspector', '_fileName', '_currentPath',
+    __slots__ = ('_pippo', '_main', '_windowEditor', '_toolBar', '_fileNameLabel', '_sigslotEditor', '_treeInspector', '_fileName', '_currentPath', '_notepad',
                  # Signals
                  'weModified', 'thingSelected', 'widgetNameChanged'
                  )
@@ -98,6 +99,7 @@ class TTkDesigner(TTkGridLayout):
         # sa.viewport().setLayout(TTkGridLayout())
         # sa.viewport().layout().addWidget(WindowEditor())
 
+        self._notepad = NotePad()
         self._main = TTkVBoxLayout()
         self._toolBar = TTkHBoxLayout()
         self._windowEditor = WindowEditor(self)
@@ -136,8 +138,10 @@ class TTkDesigner(TTkGridLayout):
         fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
         fileMenu.addMenu("Exit").menuButtonClicked.connect(TTkHelper.quit)
 
-        fileMenu = topMenuFrame.menubarTop().addMenu("F&orm")
-        fileMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
+        extraMenu = topMenuFrame.menubarTop().addMenu("E&xtra")
+        extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
+        extraMenu.addSpacer()
+        extraMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
 
         def _showAbout(btn):
             TTkHelper.overlay(None, About(), 30,10)
@@ -195,9 +199,15 @@ class TTkDesigner(TTkGridLayout):
             'tui':tui,
             'connections':connections}
 
-        win = QuickExport(
-                data=data,
-                title="Mr Export", size=(80,30),
+        win = QuickExport(data)
+        TTkHelper.overlay(None, win, 2, 2, modal=True)
+
+    @pyTTkSlot()
+    def scratchpad(self):
+        win = TTkWindow(
+                title="Mr Scratchpad",
+                size=(80,30),
+                layout=self._notepad,
                 flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
         TTkHelper.overlay(None, win, 2, 2, modal=True)
 
