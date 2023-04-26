@@ -293,6 +293,6 @@ class TTkDesigner(TTkGridLayout):
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
                 self._saveToFile(fileName)
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(80,30), caption="Save As...", path=os.path.join(self._currentPath,self._fileName), fileMode=TTkK.FileMode.AnyFile ,filter="TTk Tui Files (*.tui.json);;Json Files (*.json);;All Files (*)")
+        filePicker = TTkFileDialogPicker(pos = (3,3), size=(80,30), acceptMode=TTkK.AcceptMode.AcceptSave, caption="Save As...", path=os.path.join(self._currentPath,self._fileName), fileMode=TTkK.FileMode.AnyFile ,filter="TTk Tui Files (*.tui.json);;Json Files (*.json);;All Files (*)")
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)

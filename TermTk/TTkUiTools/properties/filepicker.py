@@ -38,8 +38,21 @@ TTkFileButtonPickerProperties = {
                 'init': {'name':'filter',                    'type':str },
                 'get':  {'cb':TTkFileButtonPicker.filter,    'type':str } ,
                 'set':  {'cb':TTkFileButtonPicker.setFilter, 'type':str } },
+        'Accept Mode': {
+                'init': {'name':'acceptMode', 'type':'singleflag',
+                    'flags': {
+                        'Open'      : TTkK.AcceptMode.AcceptOpen ,
+                        'Save'      : TTkK.AcceptMode.AcceptSave } },
+                'get':  {'cb':TTkFileButtonPicker.acceptMode,    'type':'singleflag',
+                    'flags': {
+                        'Open'      : TTkK.AcceptMode.AcceptOpen ,
+                        'Save'      : TTkK.AcceptMode.AcceptSave } },
+                'set':  {'cb':TTkFileButtonPicker.setAcceptMode, 'type':'singleflag',
+                    'flags': {
+                        'Open'      : TTkK.AcceptMode.AcceptOpen ,
+                        'Save'      : TTkK.AcceptMode.AcceptSave } }, },
         'File Mode' : {
-                'init': {'name':'fileMode',                    'type':'singleflag',
+                'init': {'name':'fileMode', 'type':'singleflag',
                     'flags': {
                         'Any File'      : TTkK.FileMode.AnyFile    ,
                         'Existing File' : TTkK.FileMode.ExistingFile  ,

@@ -284,6 +284,10 @@ class TTkConstant:
     # Directory     = FileMode.Directory
     # ExistingFiles = FileMode.ExistingFiles
 
+    class AcceptMode(int):
+        AcceptOpen	= 0
+        AcceptSave	= 1
+
     # LayoutItem Types
     class LayoutItemTypes(int):
         '''Types used internally in :mod:`~TermTk.TTkLayouts`'''

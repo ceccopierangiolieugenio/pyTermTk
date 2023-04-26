@@ -59,7 +59,7 @@ from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetI
 '''
 
 class TTkFileDialogPicker(TTkWindow):
-    __slots__ = ('_path', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption', '_fileMode',
+    __slots__ = ('_path', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption', '_fileMode', '_acceptMode',
                  # Widgets
                  '_fileTree', '_lookPath', '_btnPrev', '_btnNext', '_btnUp',
                  '_fileName', '_fileType', '_btnOpen', '_btnCancel',
@@ -86,6 +86,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._filters  = kwargs.get('filter','All Files (*)')
         self._caption  = kwargs.get('caption','File Dialog')
         self._fileMode = kwargs.get('fileMode',TTkK.FileMode.ExistingFile)
+        self._acceptMode = kwargs.get('acceptMode',TTkK.AcceptMode.AcceptOpen)
 
         self.setTitle(self._caption)
         self.setLayout(TTkGridLayout())
@@ -111,7 +112,7 @@ class TTkFileDialogPicker(TTkWindow):
         # Bottom (File Name, Controls)
         self._fileName  = TTkLineEdit()
         self._fileType  = TTkComboBox(textAlign=TTkK.LEFT_ALIGN)
-        self._btnOpen   = TTkButton(text="Open",  maxWidth=8, enabled=False)
+        self._btnOpen   = TTkButton(text="Open" if self._acceptMode == TTkK.AcceptMode.AcceptOpen else "Save",  maxWidth=8, enabled=False)
         self._btnCancel = TTkButton(text="Cancel",maxWidth=8)
 
         for f in self._filters.split(';;'):
@@ -164,6 +165,13 @@ class TTkFileDialogPicker(TTkWindow):
         else:
             self._openNewPath(os.path.dirname(self._path), True)
         self._fileTypeChanged(self._fileType.currentText())
+
+    def acceptMode(self) -> TTkK.AcceptMode:
+        return self._acceptMode
+
+    def setAcceptMode(self, mode:TTkK.AcceptMode):
+        self._acceptMode = mode
+        self._btnOpen.setText("Open" if mode == TTkK.AcceptMode.AcceptOpen else "Save")
 
     @pyTTkSlot(str)
     def _fileTypeChanged(self, type):
@@ -279,7 +287,7 @@ class TTkFileDialog:
         pass
 
 class TTkFileButtonPicker(TTkButton):
-    __slots__ = ('_filter', '_caption', '_fileMode', '_path'
+    __slots__ = ('_filter', '_caption', '_fileMode', '_acceptMode', '_path'
                  # Signals
                  'pathPicked', 'filePicked', 'filesPicked', 'folderPicked')
     def __init__(self, *args, **kwargs):
@@ -293,6 +301,7 @@ class TTkFileButtonPicker(TTkButton):
         self._filter   = kwargs.get('filter','All Files (*)')
         self._caption  = kwargs.get('caption','File Dialog')
         self._fileMode = kwargs.get('fileMode',TTkK.FileMode.ExistingFile)
+        self._acceptMode = kwargs.get('acceptMode',TTkK.AcceptMode.AcceptOpen)
         self.clicked.connect(self._fileButtonClicked)
 
     def filter(self): return self._filter
@@ -301,8 +310,11 @@ class TTkFileButtonPicker(TTkButton):
     def caption(self): return self._caption
     def setCaption(self, caption): self._caption = caption
 
-    def fileMode(self): return self._fileMode
-    def setFileMode(self, fm): self._fileMode = fm
+    def acceptMode(self) -> TTkK.AcceptMode: return self._acceptMode
+    def setAcceptMode(self, mode:TTkK.AcceptMode): self._acceptMode = mode
+
+    def fileMode(self) -> TTkK.FileMode: return self._fileMode
+    def setFileMode(self, fm:TTkK.FileMode): self._fileMode = fm
 
     def path(self): return self._path
     def setPath(self, path): self._path = path
@@ -313,6 +325,7 @@ class TTkFileButtonPicker(TTkButton):
                                          caption=self._caption,
                                          path=self._path,
                                          filter=self._filter,
+                                         acceptMode=self._acceptMode,
                                          fileMode=self._fileMode)
         filePicker.pathPicked.connect(self.pathPicked.emit)
         filePicker.filePicked.connect(self.filePicked.emit)

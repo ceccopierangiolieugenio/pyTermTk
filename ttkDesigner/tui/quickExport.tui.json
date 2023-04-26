@@ -74,6 +74,7 @@
       "Path": ".",
       "Caption": "File Dialog",
       "Filters": "Python Files (*.py);;All Files (*)",
+      "Accept Mode": 1,
       "File Mode": 0
      },
      "layout": {
