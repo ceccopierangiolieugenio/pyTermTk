@@ -1,9 +1,9 @@
 .. _pyTermTk:  https://github.com/ceccopierangiolieugenio/pyTermTk
 .. _TermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
 
-========================
-pyTermTk_ - < **Examples** >
-========================
+================================
+pyTermTk_ - < **the Examples** >
+================================
 
 TTkLineEdit
 ===========

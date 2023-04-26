@@ -29,17 +29,26 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 - The native **Windows** porting is not ready yet but it works with [Cygwin](https://www.cygwin.com) or **WSL**.
 - Only the key combinations forwarded by the terminal emulator used are detected (ALT,CTRL may not be handled)
 
+---
+
 ## Try the [Sandbox](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html) straight from your browser
 
 [![SandBox](https://user-images.githubusercontent.com/8876552/206438915-fdc868b1-32e0-46e8-9e2c-e29f4a7a0e75.png)](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html)
 
 Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) and [CodeMirror5](https://codemirror.net/5/) and [w2ui](https://w2ui.com/)
 
-## [Tutorial](tutorial)
-Be inspired by the [tutorial examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial)
+---
+
+## [the Tutorials](tutorial) and [the Examples](tutorial/000-examples.rst)
+Be inspired by [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 
 ## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk/)
 Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk/)
+
+## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/ttkDesigner)
+Smell deliciousness with the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
+
+---
 
 ## Install/Upgrade
 [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) is available on [PyPI](https://pypi.org/project/pyTermTk/)
@@ -108,7 +117,10 @@ sudo env "PATH=$PATH" \
 ##### pyroscope
 [pyroscope](https://pyroscope.io/) can be used as well for profiling
 
+---
+
 ## Projects using [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
+- [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/ttkDesigner) - the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
 - [tlogg](https://github.com/ceccopierangiolieugenio/tlogg) - A fast, advanced log explorer.
 - [ttkode](https://github.com/ceccopierangiolieugenio/ttkode) - TerminalToolKit (Studio) Code (editor)
 - [pytest-fold](https://github.com/jeffwright13/pytest-fold) - A Pytest plugin to make console output more manageable when there are multiple failed tests
