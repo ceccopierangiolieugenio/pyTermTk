@@ -11,7 +11,7 @@ TTkLineEdit
 Init
 ----
 
-`TTkLineEdit/Init.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/TTkLineEdit/Init.01.py>`_ - (`try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/examples/TTkLineEdit/Init.01.py>`_)
+`TTkLineEdit/Init.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/TTkLineEdit/Init.01.py>`_ - (`try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/examples/TTkLineEdit/Init.01.py>`__)
 
 .. code:: bash
 
@@ -23,7 +23,7 @@ Init
 Set/Get Text
 ------------
 
-`TTkLineEdit/SetGet.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/TTkLineEdit/SetGet.01.py>`_ - (`try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/examples/TTkLineEdit/SetGet.01.py>`_)
+`TTkLineEdit/SetGet.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/TTkLineEdit/SetGet.01.py>`_ - (`try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/examples/TTkLineEdit/SetGet.01.py>`__)
 
 .. code:: bash
 
