@@ -26,6 +26,8 @@ Intro
    :maxdepth: 1
    :caption: Tutorials
 
+   tutorial/000-examples.rst
+
    tutorial/001-helloworld.rst
    tutorial/002-layout.rst
    tutorial/003-signalslots.rst
