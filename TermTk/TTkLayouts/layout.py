@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 '''
-**Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`_]
+**Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`__]
 '''
 
 from TermTk.TTkCore.constant import TTkK

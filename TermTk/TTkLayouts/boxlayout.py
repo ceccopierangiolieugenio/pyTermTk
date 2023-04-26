@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 '''
-**Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`_]
+**Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`__]
 '''
 
 from TermTk.TTkCore.constant import TTkK

@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 '''
-**Grid Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkgridlayout>`_]
+**Grid Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkgridlayout>`__]
 '''
 
 from TermTk.TTkCore.constant import TTkK
