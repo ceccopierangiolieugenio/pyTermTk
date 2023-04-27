@@ -34,6 +34,8 @@ Intro
    tutorial/004-logging.rst
    tutorial/005-calculator.rst
 
+   tutorial/ttkDesigner/textEdit/textEdit.rst
+
 .. toctree::
    :maxdepth: 1
    :caption: API Reference

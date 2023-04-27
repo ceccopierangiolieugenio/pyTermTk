@@ -48,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/ttkDesigner/textEdit/textEdit.html">ttkDesigner - Your first TextEditor</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -120,6 +121,23 @@
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkConstant</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant" title="Permalink to this definition"></a></dt>
 <dd><p>Class container of all the constants used in <a class="reference internal" href="TermTk.html#module-TermTk" title="TermTk"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TermTk</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.AcceptMode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AcceptMode</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.AcceptMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.AcceptMode" title="Permalink to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen">
+<span class="sig-name descname"><span class="pre">AcceptOpen</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen" title="Permalink to this definition"></a></dt>
+<dd><p>Open</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptSave">
+<span class="sig-name descname"><span class="pre">AcceptSave</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptSave" title="Permalink to this definition"></a></dt>
+<dd><p>Save</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.Alignment">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alignment</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.Alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.Alignment" title="Permalink to this definition"></a></dt>
@@ -233,7 +251,25 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.FileMode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FileMode</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.FileMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.FileMode" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.FileMode.AnyFile">
+<span class="sig-name descname"><span class="pre">AnyFile</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.FileMode.AnyFile" title="Permalink to this definition"></a></dt>
+<dd><p>The name of a file, whether it exists or not.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.FileMode.Directory">
+<span class="sig-name descname"><span class="pre">Directory</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.FileMode.Directory" title="Permalink to this definition"></a></dt>
+<dd><p>The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.FileMode.ExistingFile">
+<span class="sig-name descname"><span class="pre">ExistingFile</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.FileMode.ExistingFile" title="Permalink to this definition"></a></dt>
+<dd><p>The name of a single existing file.</p>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.InsertPolicy">

@@ -48,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/ttkDesigner/textEdit/textEdit.html">ttkDesigner - Your first TextEditor</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -109,7 +110,97 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkFileDialogPicker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkPickers/filepicker.html#TTkFileDialogPicker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>TTkFileDialogPicker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>╔═════════════════════════════════════════════════════════════════════════╗
+║ Pick Something                                                    [^][x]║
+╟─────────────────────────────────────────────────────────────────────────╢
+║Look in:      [/home/one/github/Varie/pyTermTk                ^][&lt;][&gt;][^]║
+║┌──────────╥────────────────────────────────────────────────────────────┐║
+║│∙ Computer║Name               ▼╿Size     ╿Type   ╿Date Modified      ╿▲│║
+║│∙ Home    ║   - TTkUiTools/    │         │Folder │2023-04-18 16:38:03│┊│║
+║│          ║     ∙ __init__.py  │ 75 bytes│File   │2023-04-18 16:38:03│┊│║
+║│          ║     + __pycache__/ │         │Folder │2023-04-18 23:54:33│┊│║
+║│          ║     + properties/  │         │Folder │2023-04-18 16:38:03│┊│║
+║│          ║     ∙ uiloader.py  │  7.96 KB│File   │2023-04-18 16:38:03│┊│║
+║│          ║     ∙ uiproperties.│  2.39 KB│File   │2023-04-18 16:38:03│▓│║
+║│          ║   + TTkWidgets/    │         │Folder │2023-04-18 16:38:03│▓│║
+║│          ║   ∙ __init__.py    │272 bytes│File   │2023-04-18 16:38:03│▓│║
+║│          ║   + __pycache__/   │         │Folder │2023-04-18 23:54:33│▓│║
+║│          ║ + demo/            │         │Folder │2023-04-18 16:38:03│┊│║
+║│          ║ + docs/            │         │Folder │2023-04-27 22:16:30│┊│║
+║│          ║ + experiments/     │         │Folder │2023-04-27 13:10:29│┊│║
+║│          ║ ∙ pippo.py         │  1.72 KB│File   │2023-04-26 21:01:53│┊│║
+║│          ║ ∙ profiler.bin     │256.71 KB│File   │2023-04-10 06:01:03│▼│║
+║└──────────╨────────────────────────────────────────────────────────────┘║
+║File name:    /home/one/github/Varie/pyTermTk/TermTk/TTkUiTools/ [ Open ]║
+║Files of type:[All Files (*)                                   ^][Cancel]║
+╚═════════════════════════════════════════════════════════════════════════╝
+</pre></div>
+</div>
+<p>Demo: <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py">formwidgets.py</a>
+(<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py">Try Online</a>)</p>
+<p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst">ttkdesigner Tutorial</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – the current path used in the file dialog, defaults to “.”</p></li>
+<li><p><strong>caption</strong> (<em>str</em><em>, </em><em>optional</em>) – the title of the dialog, defaults to “<strong>File Dialog</strong>”</p></li>
+<li><p><strong>filter</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>List of filters separated with “<strong>;;</strong>”, defaults to “<strong>All Files (*)</strong>”.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>fileMode</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.FileMode" title="TermTk.TTkCore.constant.TTkConstant.FileMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileMode</span></code></a>, optional) – The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to <code class="xref py py-class docutils literal notranslate"><span class="pre">Anyfile</span></code></p></li>
+<li><p><strong>acceptMode</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.AcceptMode" title="TermTk.TTkCore.constant.TTkConstant.AcceptMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcceptMode</span></code></a>, optional) – TThe action mode defines whether the dialog is for opening or saving files, defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen" title="TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcceptOpen</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html">Signals</a></p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker.pathPicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pathPicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pathName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker.pathPicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever any path is picked (Files/Dir)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pathName</strong> (<em>str</em>) – the name of the path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker.filePicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filePicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker.filePicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever any file is picked</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fileName</strong> (<em>str</em>) – the name of the file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker.folderPicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">folderPicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker.folderPicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever any folder is picked</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dirName</strong> (<em>str</em>) – the name of the folder</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</dd></dl>
 
 </section>
 <section id="ttkfilebuttonpicker">
@@ -117,7 +208,101 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkFileButtonPicker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkPickers/filepicker.html#TTkFileButtonPicker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>TTkFileButtonPicker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌────┐
+│File│
+╘════╛
+
+╔═════════════════════════════════════════════════════════════════════════╗
+║ Pick Something                                                    [^][x]║
+╟─────────────────────────────────────────────────────────────────────────╢
+║Look in:      [/home/one/github/Varie/pyTermTk                ^][&lt;][&gt;][^]║
+║┌──────────╥────────────────────────────────────────────────────────────┐║
+║│∙ Computer║Name               ▼╿Size     ╿Type   ╿Date Modified      ╿▲│║
+║│∙ Home    ║   - TTkUiTools/    │         │Folder │2023-04-18 16:38:03│┊│║
+║│          ║     ∙ __init__.py  │ 75 bytes│File   │2023-04-18 16:38:03│┊│║
+║│          ║     + __pycache__/ │         │Folder │2023-04-18 23:54:33│┊│║
+║│          ║     + properties/  │         │Folder │2023-04-18 16:38:03│┊│║
+║│          ║     ∙ uiloader.py  │  7.96 KB│File   │2023-04-18 16:38:03│┊│║
+║│          ║     ∙ uiproperties.│  2.39 KB│File   │2023-04-18 16:38:03│▓│║
+║│          ║   + TTkWidgets/    │         │Folder │2023-04-18 16:38:03│▓│║
+║│          ║   ∙ __init__.py    │272 bytes│File   │2023-04-18 16:38:03│▓│║
+║│          ║   + __pycache__/   │         │Folder │2023-04-18 23:54:33│▓│║
+║│          ║ + demo/            │         │Folder │2023-04-18 16:38:03│┊│║
+║│          ║ + docs/            │         │Folder │2023-04-27 22:16:30│┊│║
+║│          ║ + experiments/     │         │Folder │2023-04-27 13:10:29│┊│║
+║│          ║ ∙ pippo.py         │  1.72 KB│File   │2023-04-26 21:01:53│┊│║
+║│          ║ ∙ profiler.bin     │256.71 KB│File   │2023-04-10 06:01:03│▼│║
+║└──────────╨────────────────────────────────────────────────────────────┘║
+║File name:    /home/one/github/Varie/pyTermTk/TermTk/TTkUiTools/ [ Open ]║
+║Files of type:[All Files (*)                                   ^][Cancel]║
+╚═════════════════════════════════════════════════════════════════════════╝
+</pre></div>
+</div>
+<p>Demo: <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py">formwidgets.py</a>
+(<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py">Try Online</a>)</p>
+<p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst">ttkdesigner Tutorial</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – the current path used in the file dialog, defaults to “.”</p></li>
+<li><p><strong>caption</strong> (<em>str</em><em>, </em><em>optional</em>) – the title of the dialog, defaults to “<strong>File Dialog</strong>”</p></li>
+<li><p><strong>filter</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>List of filters separated with “<strong>;;</strong>”, defaults to “<strong>All Files (*)</strong>”.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>fileMode</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.FileMode" title="TermTk.TTkCore.constant.TTkConstant.FileMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileMode</span></code></a>, optional) – The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to <code class="xref py py-class docutils literal notranslate"><span class="pre">Anyfile</span></code></p></li>
+<li><p><strong>acceptMode</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.AcceptMode" title="TermTk.TTkCore.constant.TTkConstant.AcceptMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcceptMode</span></code></a>, optional) – TThe action mode defines whether the dialog is for opening or saving files, defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen" title="TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcceptOpen</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html">Signals</a></p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.pathPicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pathPicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pathName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.pathPicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever any path is picked (Files/Dir)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pathName</strong> (<em>str</em>) – the name of the path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.filePicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filePicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.filePicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever any file is picked</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fileName</strong> (<em>str</em>) – the name of the file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.folderPicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">folderPicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.folderPicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever any folder is picked</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dirName</strong> (<em>str</em>) – the name of the folder</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</dd></dl>
 
 </section>
 </section>

@@ -45,6 +45,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial/ttkDesigner/textEdit/textEdit.html">ttkDesigner - Your first TextEditor</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -148,7 +149,92 @@
 <span class="sd">&#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="TTkFileDialogPicker"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileDialogPicker">[docs]</a><span class="k">class</span> <span class="nc">TTkFileDialogPicker</span><span class="p">(</span><span class="n">TTkWindow</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_recentPath&#39;</span><span class="p">,</span> <span class="s1">&#39;_recentPathId&#39;</span><span class="p">,</span> <span class="s1">&#39;_filters&#39;</span><span class="p">,</span> <span class="s1">&#39;_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;_caption&#39;</span><span class="p">,</span> <span class="s1">&#39;_fileMode&#39;</span><span class="p">,</span>
+    <span class="sd">&#39;&#39;&#39; TTkFileDialogPicker:</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        ╔═════════════════════════════════════════════════════════════════════════╗</span>
+<span class="sd">        ║ Pick Something                                                    [^][x]║</span>
+<span class="sd">        ╟─────────────────────────────────────────────────────────────────────────╢</span>
+<span class="sd">        ║Look in:      [/home/one/github/Varie/pyTermTk                ^][&lt;][&gt;][^]║</span>
+<span class="sd">        ║┌──────────╥────────────────────────────────────────────────────────────┐║</span>
+<span class="sd">        ║│∙ Computer║Name               ▼╿Size     ╿Type   ╿Date Modified      ╿▲│║</span>
+<span class="sd">        ║│∙ Home    ║   - TTkUiTools/    │         │Folder │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     ∙ __init__.py  │ 75 bytes│File   │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     + __pycache__/ │         │Folder │2023-04-18 23:54:33│┊│║</span>
+<span class="sd">        ║│          ║     + properties/  │         │Folder │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     ∙ uiloader.py  │  7.96 KB│File   │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     ∙ uiproperties.│  2.39 KB│File   │2023-04-18 16:38:03│▓│║</span>
+<span class="sd">        ║│          ║   + TTkWidgets/    │         │Folder │2023-04-18 16:38:03│▓│║</span>
+<span class="sd">        ║│          ║   ∙ __init__.py    │272 bytes│File   │2023-04-18 16:38:03│▓│║</span>
+<span class="sd">        ║│          ║   + __pycache__/   │         │Folder │2023-04-18 23:54:33│▓│║</span>
+<span class="sd">        ║│          ║ + demo/            │         │Folder │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║ + docs/            │         │Folder │2023-04-27 22:16:30│┊│║</span>
+<span class="sd">        ║│          ║ + experiments/     │         │Folder │2023-04-27 13:10:29│┊│║</span>
+<span class="sd">        ║│          ║ ∙ pippo.py         │  1.72 KB│File   │2023-04-26 21:01:53│┊│║</span>
+<span class="sd">        ║│          ║ ∙ profiler.bin     │256.71 KB│File   │2023-04-10 06:01:03│▼│║</span>
+<span class="sd">        ║└──────────╨────────────────────────────────────────────────────────────┘║</span>
+<span class="sd">        ║File name:    /home/one/github/Varie/pyTermTk/TermTk/TTkUiTools/ [ Open ]║</span>
+<span class="sd">        ║Files of type:[All Files (*)                                   ^][Cancel]║</span>
+<span class="sd">        ╚═════════════════════════════════════════════════════════════════════════╝</span>
+
+<span class="sd">    Demo: `formwidgets.py &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py&gt;`_</span>
+<span class="sd">    (`Try Online &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py&gt;`__)</span>
+
+<span class="sd">    `ttkdesigner Tutorial &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst&gt;`_</span>
+
+<span class="sd">    :param path: the current path used in the file dialog, defaults to &quot;.&quot;</span>
+<span class="sd">    :type path: str, optional</span>
+
+<span class="sd">    :param caption: the title of the dialog, defaults to &quot;**File Dialog**&quot;</span>
+<span class="sd">    :type caption: str, optional</span>
+
+<span class="sd">    :param filter: List of filters separated with &quot;**;;**&quot;, defaults to &quot;**All Files (*)**&quot;.</span>
+
+<span class="sd">            Example:</span>
+
+<span class="sd">            ::</span>
+
+<span class="sd">                filter=&quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</span>
+
+<span class="sd">    :type filter: str, optional</span>
+
+
+<span class="sd">    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`</span>
+<span class="sd">    :type fileMode: :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional</span>
+
+<span class="sd">    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`</span>
+<span class="sd">    :type acceptMode: :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional</span>
+
+<span class="sd">    +-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | `Signals &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html&gt;`_ |</span>
+<span class="sd">    +-----------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        .. py:method:: pathPicked(pathName)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever any path is picked (Files/Dir)</span>
+
+<span class="sd">            :param pathName: the name of the path</span>
+<span class="sd">            :type pathName: str</span>
+
+<span class="sd">        .. py:method:: filePicked(fileName)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever any file is picked</span>
+
+<span class="sd">            :param fileName: the name of the file</span>
+<span class="sd">            :type fileName: str</span>
+
+<span class="sd">        .. py:method:: folderPicked(dirName)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever any folder is picked</span>
+
+<span class="sd">            :param dirName: the name of the folder</span>
+<span class="sd">            :type dirName: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_recentPath&#39;</span><span class="p">,</span> <span class="s1">&#39;_recentPathId&#39;</span><span class="p">,</span> <span class="s1">&#39;_filters&#39;</span><span class="p">,</span> <span class="s1">&#39;_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;_caption&#39;</span><span class="p">,</span> <span class="s1">&#39;_fileMode&#39;</span><span class="p">,</span> <span class="s1">&#39;_acceptMode&#39;</span><span class="p">,</span>
                  <span class="c1"># Widgets</span>
                  <span class="s1">&#39;_fileTree&#39;</span><span class="p">,</span> <span class="s1">&#39;_lookPath&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnPrev&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnNext&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnUp&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;_fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;_fileType&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnOpen&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnCancel&#39;</span><span class="p">,</span>
@@ -174,7 +260,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span>   <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span><span class="s1">&#39;All Files (*)&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caption</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;caption&#39;</span><span class="p">,</span><span class="s1">&#39;File Dialog&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileMode&#39;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">ExistingFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileMode&#39;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">AnyFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acceptMode&#39;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="o">.</span><span class="n">AcceptOpen</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_caption</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">TTkGridLayout</span><span class="p">())</span>
@@ -200,7 +287,7 @@
         <span class="c1"># Bottom (File Name, Controls)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileName</span>  <span class="o">=</span> <span class="n">TTkLineEdit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileType</span>  <span class="o">=</span> <span class="n">TTkComboBox</span><span class="p">(</span><span class="n">textAlign</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_btnOpen</span>   <span class="o">=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Open&quot;</span><span class="p">,</span>  <span class="n">maxWidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnOpen</span>   <span class="o">=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Open&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="o">.</span><span class="n">AcceptOpen</span> <span class="k">else</span> <span class="s2">&quot;Save&quot;</span><span class="p">,</span>  <span class="n">maxWidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_btnCancel</span> <span class="o">=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span><span class="n">maxWidth</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;;&#39;</span><span class="p">):</span>
@@ -254,6 +341,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_openNewPath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileTypeChanged</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileType</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
 
+    <span class="k">def</span> <span class="nf">acceptMode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span>
+
+    <span class="k">def</span> <span class="nf">setAcceptMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span><span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_btnOpen</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Open&quot;</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="o">.</span><span class="n">AcceptOpen</span> <span class="k">else</span> <span class="s2">&quot;Save&quot;</span><span class="p">)</span>
+
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_fileTypeChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*\((.*)\)&quot;</span><span class="p">,</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -283,7 +377,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">ExistingFile</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span> <span class="k">return</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">Directory</span>    <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>  <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">AnyFile</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">AnyFile</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">ExistingFile</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filePicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">Directory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">folderPicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
@@ -368,7 +462,96 @@
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="TTkFileButtonPicker"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker">[docs]</a><span class="k">class</span> <span class="nc">TTkFileButtonPicker</span><span class="p">(</span><span class="n">TTkButton</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;_caption&#39;</span><span class="p">,</span> <span class="s1">&#39;_fileMode&#39;</span><span class="p">,</span> <span class="s1">&#39;_path&#39;</span>
+    <span class="sd">&#39;&#39;&#39; TTkFileButtonPicker:</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        ┌────┐</span>
+<span class="sd">        │File│</span>
+<span class="sd">        ╘════╛</span>
+
+<span class="sd">        ╔═════════════════════════════════════════════════════════════════════════╗</span>
+<span class="sd">        ║ Pick Something                                                    [^][x]║</span>
+<span class="sd">        ╟─────────────────────────────────────────────────────────────────────────╢</span>
+<span class="sd">        ║Look in:      [/home/one/github/Varie/pyTermTk                ^][&lt;][&gt;][^]║</span>
+<span class="sd">        ║┌──────────╥────────────────────────────────────────────────────────────┐║</span>
+<span class="sd">        ║│∙ Computer║Name               ▼╿Size     ╿Type   ╿Date Modified      ╿▲│║</span>
+<span class="sd">        ║│∙ Home    ║   - TTkUiTools/    │         │Folder │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     ∙ __init__.py  │ 75 bytes│File   │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     + __pycache__/ │         │Folder │2023-04-18 23:54:33│┊│║</span>
+<span class="sd">        ║│          ║     + properties/  │         │Folder │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     ∙ uiloader.py  │  7.96 KB│File   │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║     ∙ uiproperties.│  2.39 KB│File   │2023-04-18 16:38:03│▓│║</span>
+<span class="sd">        ║│          ║   + TTkWidgets/    │         │Folder │2023-04-18 16:38:03│▓│║</span>
+<span class="sd">        ║│          ║   ∙ __init__.py    │272 bytes│File   │2023-04-18 16:38:03│▓│║</span>
+<span class="sd">        ║│          ║   + __pycache__/   │         │Folder │2023-04-18 23:54:33│▓│║</span>
+<span class="sd">        ║│          ║ + demo/            │         │Folder │2023-04-18 16:38:03│┊│║</span>
+<span class="sd">        ║│          ║ + docs/            │         │Folder │2023-04-27 22:16:30│┊│║</span>
+<span class="sd">        ║│          ║ + experiments/     │         │Folder │2023-04-27 13:10:29│┊│║</span>
+<span class="sd">        ║│          ║ ∙ pippo.py         │  1.72 KB│File   │2023-04-26 21:01:53│┊│║</span>
+<span class="sd">        ║│          ║ ∙ profiler.bin     │256.71 KB│File   │2023-04-10 06:01:03│▼│║</span>
+<span class="sd">        ║└──────────╨────────────────────────────────────────────────────────────┘║</span>
+<span class="sd">        ║File name:    /home/one/github/Varie/pyTermTk/TermTk/TTkUiTools/ [ Open ]║</span>
+<span class="sd">        ║Files of type:[All Files (*)                                   ^][Cancel]║</span>
+<span class="sd">        ╚═════════════════════════════════════════════════════════════════════════╝</span>
+
+<span class="sd">    Demo: `formwidgets.py &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py&gt;`_</span>
+<span class="sd">    (`Try Online &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py&gt;`__)</span>
+
+<span class="sd">    `ttkdesigner Tutorial &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst&gt;`_</span>
+
+<span class="sd">    :param path: the current path used in the file dialog, defaults to &quot;.&quot;</span>
+<span class="sd">    :type path: str, optional</span>
+
+<span class="sd">    :param caption: the title of the dialog, defaults to &quot;**File Dialog**&quot;</span>
+<span class="sd">    :type caption: str, optional</span>
+
+<span class="sd">    :param filter: List of filters separated with &quot;**;;**&quot;, defaults to &quot;**All Files (*)**&quot;.</span>
+
+<span class="sd">            Example:</span>
+
+<span class="sd">            ::</span>
+
+<span class="sd">                filter=&quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</span>
+
+<span class="sd">    :type filter: str, optional</span>
+
+
+<span class="sd">    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`</span>
+<span class="sd">    :type fileMode: :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional</span>
+
+<span class="sd">    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`</span>
+<span class="sd">    :type acceptMode: :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional</span>
+
+<span class="sd">    +-----------------------------------------------------------------------------------------------+</span>
+<span class="sd">    | `Signals &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html&gt;`_ |</span>
+<span class="sd">    +-----------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        .. py:method:: pathPicked(pathName)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever any path is picked (Files/Dir)</span>
+
+<span class="sd">            :param pathName: the name of the path</span>
+<span class="sd">            :type pathName: str</span>
+
+<span class="sd">        .. py:method:: filePicked(fileName)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever any file is picked</span>
+
+<span class="sd">            :param fileName: the name of the file</span>
+<span class="sd">            :type fileName: str</span>
+
+<span class="sd">        .. py:method:: folderPicked(dirName)</span>
+<span class="sd">            :signal:</span>
+
+<span class="sd">            This signal is emitted whenever any folder is picked</span>
+
+<span class="sd">            :param dirName: the name of the folder</span>
+<span class="sd">            :type dirName: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_filter&#39;</span><span class="p">,</span> <span class="s1">&#39;_caption&#39;</span><span class="p">,</span> <span class="s1">&#39;_fileMode&#39;</span><span class="p">,</span> <span class="s1">&#39;_acceptMode&#39;</span><span class="p">,</span> <span class="s1">&#39;_path&#39;</span>
                  <span class="c1"># Signals</span>
                  <span class="s1">&#39;pathPicked&#39;</span><span class="p">,</span> <span class="s1">&#39;filePicked&#39;</span><span class="p">,</span> <span class="s1">&#39;filesPicked&#39;</span><span class="p">,</span> <span class="s1">&#39;folderPicked&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -381,7 +564,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span>   <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span><span class="s1">&#39;All Files (*)&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caption</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;caption&#39;</span><span class="p">,</span><span class="s1">&#39;File Dialog&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileMode&#39;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">ExistingFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileMode&#39;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="o">.</span><span class="n">AnyFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acceptMode&#39;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="o">.</span><span class="n">AcceptOpen</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileButtonClicked</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span>
@@ -390,8 +574,11 @@
     <span class="k">def</span> <span class="nf">caption</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caption</span>
     <span class="k">def</span> <span class="nf">setCaption</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caption</span> <span class="o">=</span> <span class="n">caption</span>
 
-    <span class="k">def</span> <span class="nf">fileMode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span>
-    <span class="k">def</span> <span class="nf">setFileMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fm</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">=</span> <span class="n">fm</span>
+    <span class="k">def</span> <span class="nf">acceptMode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span>
+    <span class="k">def</span> <span class="nf">setAcceptMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span><span class="n">TTkK</span><span class="o">.</span><span class="n">AcceptMode</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span> <span class="o">=</span> <span class="n">mode</span>
+
+    <span class="k">def</span> <span class="nf">fileMode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span>
+    <span class="k">def</span> <span class="nf">setFileMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fm</span><span class="p">:</span><span class="n">TTkK</span><span class="o">.</span><span class="n">FileMode</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span> <span class="o">=</span> <span class="n">fm</span>
 
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
     <span class="k">def</span> <span class="nf">setPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
@@ -402,6 +589,7 @@
                                          <span class="n">caption</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_caption</span><span class="p">,</span>
                                          <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span>
                                          <span class="nb">filter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">,</span>
+                                         <span class="n">acceptMode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_acceptMode</span><span class="p">,</span>
                                          <span class="n">fileMode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileMode</span><span class="p">)</span>
         <span class="n">filePicker</span><span class="o">.</span><span class="n">pathPicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pathPicked</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
         <span class="n">filePicker</span><span class="o">.</span><span class="n">filePicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filePicked</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>

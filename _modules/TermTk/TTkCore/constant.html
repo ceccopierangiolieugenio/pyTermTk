@@ -45,6 +45,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/ttkDesigner/textEdit/textEdit.html">ttkDesigner - Your first TextEditor</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -363,15 +364,26 @@
     <span class="n">JUSTIFY</span>      <span class="o">=</span> <span class="n">Alignment</span><span class="o">.</span><span class="n">JUSTIFY</span>
 
 <div class="viewcode-block" id="TTkConstant.FileMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.FileMode">[docs]</a>    <span class="k">class</span> <span class="nc">FileMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="n">AnyFile</span>        <span class="o">=</span> <span class="mi">0</span> <span class="c1">#The name of a file, whether it exists or not.</span>
-        <span class="n">ExistingFile</span>   <span class="o">=</span> <span class="mi">1</span> <span class="c1">#The name of a single existing file.</span>
-        <span class="n">Directory</span>      <span class="o">=</span> <span class="mi">2</span> <span class="c1">#The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.</span></div>
+        <span class="sd">&#39;&#39;&#39;FileMode&#39;&#39;&#39;</span>
+        <span class="n">AnyFile</span>        <span class="o">=</span> <span class="mi">0</span>
+        <span class="sd">&#39;&#39;&#39;The name of a file, whether it exists or not.&#39;&#39;&#39;</span>
+        <span class="n">ExistingFile</span>   <span class="o">=</span> <span class="mi">1</span>
+        <span class="sd">&#39;&#39;&#39;The name of a single existing file.&#39;&#39;&#39;</span>
+        <span class="n">Directory</span>      <span class="o">=</span> <span class="mi">2</span>
+        <span class="sd">&#39;&#39;&#39;The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.&#39;&#39;&#39;</span></div>
         <span class="c1"># ExistingFiles  = 3 #The names of zero or more existing files.</span>
 
     <span class="c1"># AnyFile       = FileMode.AnyFile</span>
     <span class="c1"># ExistingFile  = FileMode.ExistingFile</span>
     <span class="c1"># Directory     = FileMode.Directory</span>
     <span class="c1"># ExistingFiles = FileMode.ExistingFiles</span>
+
+<div class="viewcode-block" id="TTkConstant.AcceptMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.AcceptMode">[docs]</a>    <span class="k">class</span> <span class="nc">AcceptMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;AcceptMode&#39;&#39;&#39;</span>
+        <span class="n">AcceptOpen</span>	<span class="o">=</span> <span class="mi">0</span>
+        <span class="sd">&#39;&#39;&#39;Open&#39;&#39;&#39;</span>
+        <span class="n">AcceptSave</span>	<span class="o">=</span> <span class="mi">1</span>
+        <span class="sd">&#39;&#39;&#39;Save&#39;&#39;&#39;</span></div>
 
     <span class="c1"># LayoutItem Types</span>
 <div class="viewcode-block" id="TTkConstant.LayoutItemTypes"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes">[docs]</a>    <span class="k">class</span> <span class="nc">LayoutItemTypes</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; pyTermTk 0.2.0a documentation</title>
+  <title>ttkDesigner - Your first TextEditor &mdash; pyTermTk 0.2.0a documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
@@ -20,7 +20,9 @@
         <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="TermTk.TTkAbstract" href="../../../autogen.TermTk/TermTk.TTkAbstract.html" />
+    <link rel="prev" title="pyTermTk - Your first Calculator" href="../../005-calculator.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,13 +41,26 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../000-examples.html">pyTermTk - &lt; <strong>the Examples</strong> &gt;</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../001-helloworld.html">pyTermTk - Hello World</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../002-layout.html">pyTermTk - Layouts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ttkDesigner - Your first TextEditor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#start-a-new-project">Start a new project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-the-first-buttons-undo-redo-cut-copy-paste">Add The first buttons (Undo,redo - Cut,Copy,Paste)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-the-textedit-widget">Add the TextEdit widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#link-the-events-slots-for-the-basic-functionalities">Link the Events/Slots for the basic functionalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-few-extra-controls-open-save-color">Add few extra controls (Open/Save/Color)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#link-the-events-slots-for-the-color-feature">Link the Events/Slots for the color feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preview-and-quick-export">Preview and Quick Export</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#imclude-the-open-save-routine">Imclude the Open/Save routine</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -77,7 +92,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>&lt;no title&gt;</li>
+      <li>ttkDesigner - Your first TextEditor</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/tutorial/ttkDesigner/textEdit/textEdit.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,11 +102,114 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
+  <section id="ttkdesigner-your-first-texteditor">
+<h1><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner">ttkDesigner</a> - Your first TextEditor<a class="headerlink" href="#ttkdesigner-your-first-texteditor" title="Permalink to this heading"></a></h1>
+<section id="start-a-new-project">
+<h2>Start a new project<a class="headerlink" href="#start-a-new-project" title="Permalink to this heading"></a></h2>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842682-1ecd40dd-6829-47ff-bfb7-eae397553879.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842682-1ecd40dd-6829-47ff-bfb7-eae397553879.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.01.tui.json">textEdit.01.tui.json</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># You can quickly open this file using:</span>
+ttkDesigner tutorial/ttkDesigner/textEdit/textEdit.01.tui.json
+</pre></div>
+</div>
+</section>
+<section id="add-the-first-buttons-undo-redo-cut-copy-paste">
+<h2>Add The first buttons (Undo,redo - Cut,Copy,Paste)<a class="headerlink" href="#add-the-first-buttons-undo-redo-cut-copy-paste" title="Permalink to this heading"></a></h2>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842705-0252d988-047f-46a1-8241-7a4e710c3791.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842705-0252d988-047f-46a1-8241-7a4e710c3791.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.02.tui.json">textEdit.02.tui.json</a></p>
+</section>
+<section id="add-the-textedit-widget">
+<h2>Add the TextEdit widget<a class="headerlink" href="#add-the-textedit-widget" title="Permalink to this heading"></a></h2>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842721-f9ae924e-0047-4ce3-b1e6-3e0c7d27cb38.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842721-f9ae924e-0047-4ce3-b1e6-3e0c7d27cb38.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.03.tui.json">textEdit.03.tui.json</a></p>
+</section>
+<section id="link-the-events-slots-for-the-basic-functionalities">
+<h2>Link the Events/Slots for the basic functionalities<a class="headerlink" href="#link-the-events-slots-for-the-basic-functionalities" title="Permalink to this heading"></a></h2>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842736-fdf73508-2ef1-419e-9b30-6d262a0ff514.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842736-fdf73508-2ef1-419e-9b30-6d262a0ff514.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.04.tui.json">textEdit.04.tui.json</a></p>
+</section>
+<section id="add-few-extra-controls-open-save-color">
+<h2>Add few extra controls (Open/Save/Color)<a class="headerlink" href="#add-few-extra-controls-open-save-color" title="Permalink to this heading"></a></h2>
+<p>I used those emoji as file open/save text 📂 💾</p>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842758-dbd647ba-2596-4ec8-9a76-135435504505.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842758-dbd647ba-2596-4ec8-9a76-135435504505.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.05.tui.json">textEdit.05.tui.json</a></p>
+</section>
+<section id="link-the-events-slots-for-the-color-feature">
+<h2>Link the Events/Slots for the color feature<a class="headerlink" href="#link-the-events-slots-for-the-color-feature" title="Permalink to this heading"></a></h2>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842774-cf8c3fc3-4bb7-45ff-8e04-30a93aa343c6.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842774-cf8c3fc3-4bb7-45ff-8e04-30a93aa343c6.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.06.tui.json">textEdit.06.tui.json</a></p>
+</section>
+<section id="preview-and-quick-export">
+<h2>Preview and Quick Export<a class="headerlink" href="#preview-and-quick-export" title="Permalink to this heading"></a></h2>
+<video width="800"
+    src="https://user-images.githubusercontent.com/8876552/234842788-208e271a-e0b1-44f6-94b4-a62db00fd45a.webm"
+    data-canonical-src="https://user-images.githubusercontent.com/8876552/234842788-208e271a-e0b1-44f6-94b4-a62db00fd45a.webm"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p>Exported: <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.01.py">texteditor.01.py</a>
+(<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/ttkDesigner/textEdit/texteditor.01.py">Try Online</a>)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>  python3  tutorial/ttkDesigner/textEdit/texteditor.01.py
+</pre></div>
+</div>
+<section id="imclude-the-open-save-routine">
+<h3>Imclude the Open/Save routine<a class="headerlink" href="#imclude-the-open-save-routine" title="Permalink to this heading"></a></h3>
+<p>Once (quick)exported the code, we need to define the appropriate routines and link them to the file(open/save) pickers <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.filePicked">signals</a></p>
+<p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.02.py">texteditor.02.py</a>
+(<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/ttkDesigner/textEdit/texteditor.02.py">Try Online</a>)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to try without installation, run from the pyTermTk root folder</span>
+<span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>  python3  tutorial/ttkDesigner/textEdit/texteditor.02.py
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the widgets we need to use</span>
+<span class="n">btnOpen</span>  <span class="o">=</span> <span class="n">textEditWindow</span><span class="o">.</span><span class="n">getWidgetByName</span><span class="p">(</span><span class="s2">&quot;BtnOpen&quot;</span><span class="p">)</span>
+<span class="n">btnSave</span>  <span class="o">=</span> <span class="n">textEditWindow</span><span class="o">.</span><span class="n">getWidgetByName</span><span class="p">(</span><span class="s2">&quot;BtnSave&quot;</span><span class="p">)</span>
+<span class="n">textEdit</span> <span class="o">=</span> <span class="n">textEditWindow</span><span class="o">.</span><span class="n">getWidgetByName</span><span class="p">(</span><span class="s2">&quot;TextEdit&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># This is a generic routine to open/read a file</span>
+<span class="c1"># and push the content to the &quot;TextEdit&quot; widget</span>
+<span class="n">pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">openRoutine</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">textEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="c1"># Connect the open routine to the (open)&quot;filePicked&quot; event</span>
+<span class="n">btnOpen</span><span class="o">.</span><span class="n">filePicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">openRoutine</span><span class="p">)</span>
+
+
+<span class="c1"># This is a generic routine to save the content of</span>
+<span class="c1"># the &quot;TextEdit&quot; widget to the chosen file</span>
+<span class="n">pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">saveRoutine</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textEdit</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">())</span>
+
+<span class="c1"># Connect the save routine to the (save)&quot;filePicked&quot; event</span>
+<span class="n">btnSave</span><span class="o">.</span><span class="n">filePicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">saveRoutine</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../005-calculator.html" class="btn btn-neutral float-left" title="pyTermTk - Your first Calculator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../autogen.TermTk/TermTk.TTkAbstract.html" class="btn btn-neutral float-right" title="TermTk.TTkAbstract" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
