@@ -274,9 +274,13 @@ class TTkConstant:
     JUSTIFY      = Alignment.JUSTIFY
 
     class FileMode(int):
-        AnyFile        = 0 #The name of a file, whether it exists or not.
-        ExistingFile   = 1 #The name of a single existing file.
-        Directory      = 2 #The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.
+        '''FileMode'''
+        AnyFile        = 0
+        '''The name of a file, whether it exists or not.'''
+        ExistingFile   = 1
+        '''The name of a single existing file.'''
+        Directory      = 2
+        '''The name of a directory. Both files and directories are displayed. However, the native Windows file dialog does not support displaying files in the directory chooser.'''
         # ExistingFiles  = 3 #The names of zero or more existing files.
 
     # AnyFile       = FileMode.AnyFile
@@ -285,8 +289,11 @@ class TTkConstant:
     # ExistingFiles = FileMode.ExistingFiles
 
     class AcceptMode(int):
+        '''AcceptMode'''
         AcceptOpen	= 0
+        '''Open'''
         AcceptSave	= 1
+        '''Save'''
 
     # LayoutItem Types
     class LayoutItemTypes(int):

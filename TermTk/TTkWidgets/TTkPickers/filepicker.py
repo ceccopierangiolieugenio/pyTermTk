@@ -59,6 +59,91 @@ from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetI
 '''
 
 class TTkFileDialogPicker(TTkWindow):
+    ''' TTkFileDialogPicker:
+
+    ::
+
+        ╔═════════════════════════════════════════════════════════════════════════╗
+        ║ Pick Something                                                    [^][x]║
+        ╟─────────────────────────────────────────────────────────────────────────╢
+        ║Look in:      [/home/one/github/Varie/pyTermTk                ^][<][>][^]║
+        ║┌──────────╥────────────────────────────────────────────────────────────┐║
+        ║│∙ Computer║Name               ▼╿Size     ╿Type   ╿Date Modified      ╿▲│║
+        ║│∙ Home    ║   - TTkUiTools/    │         │Folder │2023-04-18 16:38:03│┊│║
+        ║│          ║     ∙ __init__.py  │ 75 bytes│File   │2023-04-18 16:38:03│┊│║
+        ║│          ║     + __pycache__/ │         │Folder │2023-04-18 23:54:33│┊│║
+        ║│          ║     + properties/  │         │Folder │2023-04-18 16:38:03│┊│║
+        ║│          ║     ∙ uiloader.py  │  7.96 KB│File   │2023-04-18 16:38:03│┊│║
+        ║│          ║     ∙ uiproperties.│  2.39 KB│File   │2023-04-18 16:38:03│▓│║
+        ║│          ║   + TTkWidgets/    │         │Folder │2023-04-18 16:38:03│▓│║
+        ║│          ║   ∙ __init__.py    │272 bytes│File   │2023-04-18 16:38:03│▓│║
+        ║│          ║   + __pycache__/   │         │Folder │2023-04-18 23:54:33│▓│║
+        ║│          ║ + demo/            │         │Folder │2023-04-18 16:38:03│┊│║
+        ║│          ║ + docs/            │         │Folder │2023-04-27 22:16:30│┊│║
+        ║│          ║ + experiments/     │         │Folder │2023-04-27 13:10:29│┊│║
+        ║│          ║ ∙ pippo.py         │  1.72 KB│File   │2023-04-26 21:01:53│┊│║
+        ║│          ║ ∙ profiler.bin     │256.71 KB│File   │2023-04-10 06:01:03│▼│║
+        ║└──────────╨────────────────────────────────────────────────────────────┘║
+        ║File name:    /home/one/github/Varie/pyTermTk/TermTk/TTkUiTools/ [ Open ]║
+        ║Files of type:[All Files (*)                                   ^][Cancel]║
+        ╚═════════════════════════════════════════════════════════════════════════╝
+
+    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py>`_
+    (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py>`__)
+
+    `ttkdesigner Tutorial <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst>`_
+
+    :param path: the current path used in the file dialog, defaults to "."
+    :type path: str, optional
+
+    :param caption: the title of the dialog, defaults to "**File Dialog**"
+    :type caption: str, optional
+
+    :param filter: List of filters separated with "**;;**", defaults to "**All Files (*)**".
+
+            Example:
+
+            ::
+
+                filter="Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
+
+    :type filter: str, optional
+
+
+    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
+    :type fileMode: :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
+
+    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
+    :type acceptMode: :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
+
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: pathPicked(pathName)
+            :signal:
+
+            This signal is emitted whenever any path is picked (Files/Dir)
+
+            :param pathName: the name of the path
+            :type pathName: str
+
+        .. py:method:: filePicked(fileName)
+            :signal:
+
+            This signal is emitted whenever any file is picked
+
+            :param fileName: the name of the file
+            :type fileName: str
+
+        .. py:method:: folderPicked(dirName)
+            :signal:
+
+            This signal is emitted whenever any folder is picked
+
+            :param dirName: the name of the folder
+            :type dirName: str
+    '''
     __slots__ = ('_path', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption', '_fileMode', '_acceptMode',
                  # Widgets
                  '_fileTree', '_lookPath', '_btnPrev', '_btnNext', '_btnUp',
@@ -85,7 +170,7 @@ class TTkFileDialogPicker(TTkWindow):
         self._filter   = '*'
         self._filters  = kwargs.get('filter','All Files (*)')
         self._caption  = kwargs.get('caption','File Dialog')
-        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.ExistingFile)
+        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.AnyFile)
         self._acceptMode = kwargs.get('acceptMode',TTkK.AcceptMode.AcceptOpen)
 
         self.setTitle(self._caption)
@@ -202,7 +287,7 @@ class TTkFileDialogPicker(TTkWindow):
         if self._fileMode == TTkK.FileMode.ExistingFile and not os.path.isfile(fileName): return
         if self._fileMode == TTkK.FileMode.Directory    and not os.path.isdir(fileName):  return
         self.close()
-        if self._fileMode == TTkK.FileMode.AnyFile:
+        if self._fileMode in (TTkK.FileMode.AnyFile,TTkK.FileMode.ExistingFile):
             self.filePicked.emit(fileName)
         if self._fileMode == TTkK.FileMode.Directory:
             self.folderPicked.emit(fileName)
@@ -287,6 +372,95 @@ class TTkFileDialog:
         pass
 
 class TTkFileButtonPicker(TTkButton):
+    ''' TTkFileButtonPicker:
+
+    ::
+
+        ┌────┐
+        │File│
+        ╘════╛
+
+        ╔═════════════════════════════════════════════════════════════════════════╗
+        ║ Pick Something                                                    [^][x]║
+        ╟─────────────────────────────────────────────────────────────────────────╢
+        ║Look in:      [/home/one/github/Varie/pyTermTk                ^][<][>][^]║
+        ║┌──────────╥────────────────────────────────────────────────────────────┐║
+        ║│∙ Computer║Name               ▼╿Size     ╿Type   ╿Date Modified      ╿▲│║
+        ║│∙ Home    ║   - TTkUiTools/    │         │Folder │2023-04-18 16:38:03│┊│║
+        ║│          ║     ∙ __init__.py  │ 75 bytes│File   │2023-04-18 16:38:03│┊│║
+        ║│          ║     + __pycache__/ │         │Folder │2023-04-18 23:54:33│┊│║
+        ║│          ║     + properties/  │         │Folder │2023-04-18 16:38:03│┊│║
+        ║│          ║     ∙ uiloader.py  │  7.96 KB│File   │2023-04-18 16:38:03│┊│║
+        ║│          ║     ∙ uiproperties.│  2.39 KB│File   │2023-04-18 16:38:03│▓│║
+        ║│          ║   + TTkWidgets/    │         │Folder │2023-04-18 16:38:03│▓│║
+        ║│          ║   ∙ __init__.py    │272 bytes│File   │2023-04-18 16:38:03│▓│║
+        ║│          ║   + __pycache__/   │         │Folder │2023-04-18 23:54:33│▓│║
+        ║│          ║ + demo/            │         │Folder │2023-04-18 16:38:03│┊│║
+        ║│          ║ + docs/            │         │Folder │2023-04-27 22:16:30│┊│║
+        ║│          ║ + experiments/     │         │Folder │2023-04-27 13:10:29│┊│║
+        ║│          ║ ∙ pippo.py         │  1.72 KB│File   │2023-04-26 21:01:53│┊│║
+        ║│          ║ ∙ profiler.bin     │256.71 KB│File   │2023-04-10 06:01:03│▼│║
+        ║└──────────╨────────────────────────────────────────────────────────────┘║
+        ║File name:    /home/one/github/Varie/pyTermTk/TermTk/TTkUiTools/ [ Open ]║
+        ║Files of type:[All Files (*)                                   ^][Cancel]║
+        ╚═════════════════════════════════════════════════════════════════════════╝
+
+    Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py>`_
+    (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py>`__)
+
+    `ttkdesigner Tutorial <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst>`_
+
+    :param path: the current path used in the file dialog, defaults to "."
+    :type path: str, optional
+
+    :param caption: the title of the dialog, defaults to "**File Dialog**"
+    :type caption: str, optional
+
+    :param filter: List of filters separated with "**;;**", defaults to "**All Files (*)**".
+
+            Example:
+
+            ::
+
+                filter="Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
+
+    :type filter: str, optional
+
+
+    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
+    :type fileMode: :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
+
+    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
+    :type acceptMode: :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
+
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: pathPicked(pathName)
+            :signal:
+
+            This signal is emitted whenever any path is picked (Files/Dir)
+
+            :param pathName: the name of the path
+            :type pathName: str
+
+        .. py:method:: filePicked(fileName)
+            :signal:
+
+            This signal is emitted whenever any file is picked
+
+            :param fileName: the name of the file
+            :type fileName: str
+
+        .. py:method:: folderPicked(dirName)
+            :signal:
+
+            This signal is emitted whenever any folder is picked
+
+            :param dirName: the name of the folder
+            :type dirName: str
+    '''
     __slots__ = ('_filter', '_caption', '_fileMode', '_acceptMode', '_path'
                  # Signals
                  'pathPicked', 'filePicked', 'filesPicked', 'folderPicked')
@@ -300,7 +474,7 @@ class TTkFileButtonPicker(TTkButton):
         self._path  = kwargs.get('path','.')
         self._filter   = kwargs.get('filter','All Files (*)')
         self._caption  = kwargs.get('caption','File Dialog')
-        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.ExistingFile)
+        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.AnyFile)
         self._acceptMode = kwargs.get('acceptMode',TTkK.AcceptMode.AcceptOpen)
         self.clicked.connect(self._fileButtonClicked)
 
