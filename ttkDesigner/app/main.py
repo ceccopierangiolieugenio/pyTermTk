@@ -39,7 +39,7 @@ def main():
             title="TTk Designer",
             mouseTrack=True,
             sigmask=(
-                # TTkTerm.Sigmask.CTRL_C |
+                TTkTerm.Sigmask.CTRL_C |
                 TTkTerm.Sigmask.CTRL_Q |
                 TTkTerm.Sigmask.CTRL_S |
                 TTkTerm.Sigmask.CTRL_Z ))

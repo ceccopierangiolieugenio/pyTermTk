@@ -58,7 +58,6 @@ def QuickExport(data):
     def _checkSaveFile(fileName):
         if os.path.exists(fileName):
             messageBox = ttk.TTkMessageBox(
-                title='Title',
                 text= (
                     ttk.TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', ttk.TTkColor.BOLD) +
                     ttk.TTkString( f'\n\nReplacing it will overwrite its contents.') ),

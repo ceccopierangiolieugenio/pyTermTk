@@ -283,7 +283,6 @@ class TTkDesigner(TTkGridLayout):
         def _approveFile(fileName):
             if os.path.exists(fileName):
                 messageBox = TTkMessageBox(
-                    title='Title',
                     text= (
                         TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', TTkColor.BOLD) +
                         TTkString( f'\n\nReplacing it will overwrite its contents.') ),
