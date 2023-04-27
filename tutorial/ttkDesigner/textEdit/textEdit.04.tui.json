@@ -1,0 +1,365 @@
+{
+ "version": "1.0.0",
+ "tui": {
+  "class": "TTkWindow",
+  "params": {
+   "Name": "WinTextEditor",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    73,
+    21
+   ],
+   "Min Width": 2,
+   "Min Height": 4,
+   "Max Width": 4098,
+   "Max Height": 4100,
+   "Padding": [
+    3,
+    1,
+    1,
+    1
+   ],
+   "Layout": "TTkGridLayout",
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "\u001b[0m",
+   "Border": true,
+   "Title": "\u001b[0m\u001b[0mMr Text editor  \ud83d\ude0e\u001b[0m",
+   "Window Flags": 134217728
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     71,
+     17
+    ]
+   },
+   "children": [
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnUndo",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       14,
+       3
+      ],
+      "Min Width": 6,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mUndo\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        14,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnRedo",
+      "Position": [
+       14,
+       0
+      ],
+      "Size": [
+       14,
+       3
+      ],
+      "Min Width": 6,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mRedo\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        14,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnCut",
+      "Position": [
+       28,
+       0
+      ],
+      "Size": [
+       14,
+       3
+      ],
+      "Min Width": 5,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mCut\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        14,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 3,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnCopy",
+      "Position": [
+       42,
+       0
+      ],
+      "Size": [
+       14,
+       3
+      ],
+      "Min Width": 6,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mCopy\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        14,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 4,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnPaste",
+      "Position": [
+       56,
+       0
+      ],
+      "Size": [
+       15,
+       3
+      ],
+      "Min Width": 7,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mPaste\u001b[0m",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        15,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 5,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkTextEdit",
+     "params": {
+      "Name": "TextEdit",
+      "Position": [
+       0,
+       3
+      ],
+      "Size": [
+       71,
+       14
+      ],
+      "Min Width": 0,
+      "Min Height": 0,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Line Number": true,
+      "Read Only": false,
+      "Multi Line": true
+     },
+     "row": 1,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 5
+    }
+   ]
+  }
+ },
+ "connections": [
+  {
+   "sender": "TextEdit",
+   "receiver": "BtnUndo",
+   "signal": "undoAvailable(bool)",
+   "slot": "setEnabled(bool)"
+  },
+  {
+   "sender": "TextEdit",
+   "receiver": "BtnRedo",
+   "signal": "redoAvailable(bool)",
+   "slot": "setEnabled(bool)"
+  },
+  {
+   "sender": "BtnUndo",
+   "receiver": "TextEdit",
+   "signal": "clicked()",
+   "slot": "undo()"
+  },
+  {
+   "sender": "BtnRedo",
+   "receiver": "TextEdit",
+   "signal": "clicked()",
+   "slot": "redo()"
+  },
+  {
+   "sender": "BtnCut",
+   "receiver": "TextEdit",
+   "signal": "clicked()",
+   "slot": "cut()"
+  },
+  {
+   "sender": "BtnCopy",
+   "receiver": "TextEdit",
+   "signal": "clicked()",
+   "slot": "copy()"
+  },
+  {
+   "sender": "BtnPaste",
+   "receiver": "TextEdit",
+   "signal": "clicked()",
+   "slot": "paste()"
+  }
+ ]
+}

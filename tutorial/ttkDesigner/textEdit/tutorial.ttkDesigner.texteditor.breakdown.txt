@@ -1,0 +1,27 @@
+
+ - 01 - New Window , Rename (Mr. Text Editor), Set name (WinTextEditor),  Set GridLayout
+
+ - 02 - Add Buttons , (Undo,Redo - Cut,Copy,Paste), Set Name (BtnUndo, . . .)
+
+ - 03 - Add TextEdit,  set Max height of Undo
+
+ - 04 - Add events and Test
+            • [ TTkTextEdit  ^]│[undoAvailable(bo^]│[    BtnUndo     ^]│[setEnabled(bool)^]│
+            • [ TTkTextEdit  ^]│[redoAvailable(bo^]│[    BtnRedo     ^]│[setEnabled(bool)^]│
+            • [   BtnUndo    ^]│[   clicked()    ^]│[  TTkTextEdit   ^]│[     undo()     ^]│
+            • [   BtnRedo    ^]│[   clicked()    ^]│[  TTkTextEdit   ^]│[     redo()     ^]│
+
+            • [    BtnCut    ^]│[   clicked()    ^]│[  TTkTextEdit   ^]│[     cut()      ^]│
+            • [   BtnCopy    ^]│[   clicked()    ^]│[  TTkTextEdit   ^]│[     copy()     ^]│
+            • [   BtnPaste   ^]│[   clicked()    ^]│[  TTkTextEdit   ^]│[    paste()     ^]│
+
+ - 05 - Add Buttons , (Load Save Color) and reshape layout
+
+ - 06 - Add events and test
+            • [ TTkTextEdit  ^]│[currentColorChan^]│[    BtnColor    ^]│[setColor(TTkColo^]│
+            • [   BtnColor   ^]│[colorSelected(TT^]│[  TTkTextEdit   ^]│[setColor(TTkColo^]│
+            • [   BtnColor   ^]│[colorSelected(TT^]│[  TTkTextEdit   ^]│[   setFocus()   ^]│
+
+ - 07 - Quick Export
+
+

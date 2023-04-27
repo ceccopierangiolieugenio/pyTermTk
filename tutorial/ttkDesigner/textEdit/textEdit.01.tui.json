@@ -1,0 +1,47 @@
+{
+ "version": "1.0.0",
+ "tui": {
+  "class": "TTkWindow",
+  "params": {
+   "Name": "WinTextEditor",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    73,
+    21
+   ],
+   "Min Width": 2,
+   "Min Height": 4,
+   "Max Width": 4098,
+   "Max Height": 4100,
+   "Padding": [
+    3,
+    1,
+    1,
+    1
+   ],
+   "Layout": "TTkGridLayout",
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "\u001b[0m",
+   "Border": true,
+   "Title": "\u001b[0m\u001b[0mMr Text editor  \ud83d\ude0e\u001b[0m",
+   "Window Flags": 134217728
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     71,
+     17
+    ]
+   },
+   "children": []
+  }
+ },
+ "connections": []
+}
