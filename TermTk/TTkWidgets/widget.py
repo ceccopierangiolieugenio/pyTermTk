@@ -570,6 +570,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot()
     def show(self):
+        '''show'''
         if self._visible: return
         self._visible = True
         self._canvas.show()
@@ -579,6 +580,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot()
     def hide(self):
+        '''hide'''
         if not self._visible: return
         self._visible = False
         self._canvas.hide()
@@ -586,6 +588,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot()
     def raiseWidget(self, raiseParent=True):
+        '''raiseWidget'''
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             if raiseParent:
@@ -594,6 +597,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot()
     def lowerWidget(self):
+        '''lowerWidget'''
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             self._parent.lowerWidget()
@@ -601,6 +605,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot()
     def close(self):
+        '''close'''
         if self._parent is not None and \
            self._parent.rootLayout() is not None:
             self._parent.rootLayout().removeWidget(self)
@@ -611,6 +616,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot(bool)
     def setVisible(self, visible: bool):
+        '''setVisible'''
         if visible: self.show()
         else: self.hide()
 
@@ -639,6 +645,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot()
     def setFocus(self):
+        '''setFocus'''
         # TTkLog.debug(f"setFocus: {self._name} - {self._focus}")
         if self._focus and self == TTkHelper.getFocus(): return
         tmp = TTkHelper.getFocus()
@@ -683,12 +690,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     @pyTTkSlot(bool)
     def setEnabled(self, enabled: bool=True):
+        '''setEnabled'''
         if self._enabled == enabled: return
         self._enabled = enabled
         self.update()
 
     @pyTTkSlot(bool)
     def setDisabled(self, disabled=True):
+        '''setDisabled'''
         self.setEnabled(not disabled)
 
     def lookAndFeel(self):

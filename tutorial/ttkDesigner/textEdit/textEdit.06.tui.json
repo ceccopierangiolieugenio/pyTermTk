@@ -28,7 +28,7 @@
    "ToolTip": "\u001b[0m",
    "Border": true,
    "Title": "\u001b[0m\u001b[0mMr Text editor  \ud83d\ude0e\u001b[0m",
-   "Window Flags": 134217728
+   "Window Flags": 134250496
   },
   "layout": {
    "class": "TTkGridLayout",
@@ -65,7 +65,7 @@
       ],
       "Layout": "TTkLayout",
       "Visible": true,
-      "Enabled": true,
+      "Enabled": false,
       "ToolTip": "\u001b[0m",
       "Text": "\u001b[0m\u001b[0mUndo\u001b[0m",
       "Border": true,
@@ -113,7 +113,7 @@
       ],
       "Layout": "TTkLayout",
       "Visible": true,
-      "Enabled": true,
+      "Enabled": false,
       "ToolTip": "\u001b[0m",
       "Text": "\u001b[0m\u001b[0mRedo\u001b[0m",
       "Border": true,

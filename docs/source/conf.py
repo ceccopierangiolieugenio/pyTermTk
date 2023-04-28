@@ -126,13 +126,14 @@ autodocgen_config = {
         'write_documented_items_output_file': 'autodocgen_documented_items.txt',
 
         # customize autodoc on a per-module basis
-        'autodoc_options_decider': {
-                'TermTk.TTkWidgets':    { 'inherited-members':True },
-        },
+        'autodoc_options_decider': {},
 
         # choose a different title for specific modules, e.g. the toplevel one
         #'module_title_decider': lambda modulename: 'API Reference' if modulename=='TermTk' else modulename,
 }
+
+# autodoc_default_options = { 'inherited-members':True }
+autodoc_default_options = {}
 
 # Mock pyodide to avoid autogen failure
 class pyodideProxy(): pass

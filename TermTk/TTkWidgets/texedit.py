@@ -136,6 +136,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._updateSize()
 
     def multiLine(self) -> bool :
+        '''multiline'''
         return self._multiLine
 
     @pyTTkSlot(bool)
@@ -157,34 +158,41 @@ class TTkTextEditView(TTkAbstractScrollView):
     #    return ""
 
     def toAnsi(self):
+        '''toAnsi'''
         if self._textDocument:
             return self._textDocument.toAnsi()
         return ""
 
     def toPlainText(self):
+        '''toPlainText'''
         if self._textDocument:
             return self._textDocument.toPlainText()
         return ""
 
     def toRawText(self):
+        '''toRawText'''
         if self._textDocument:
             return self._textDocument.toRawText()
         return TTkString()
 
     def isUndoAvailable(self):
+        '''isUndoAvailable'''
         if self._textDocument:
             return self._textDocument.isUndoAvailable()
         return False
 
     def isRedoAvailable(self):
+        '''isRedoAvailable'''
         if self._textDocument:
             return self._textDocument.isRedoAvailable()
         return False
 
     def document(self):
+        '''document'''
         return self._textDocument
 
     def setDocument(self, document):
+        '''setDocument'''
         if self._textDocument:
             self._textDocument.contentsChanged.disconnect(self._documentChanged)
             self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
@@ -573,7 +581,76 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._pushCursor()
 
 class TTkTextEdit(TTkAbstractScrollArea):
-    '''TTkTextEdit'''
+    '''TTkTextEdit
+
+    ::
+
+        ╔═══════════════════════════════════════════════════════════════════════════════════════╗
+        ║ 0▌"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ╥   ║
+        ║ <▌incididunt ut labore et dolore magna aliqua.                                    ║   ║
+        ║ 1▌                                                                                ║   ║
+        ║ 2▌Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu║   ║
+        ║ <▌ip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate ║   ║
+        ║ <▌velit esse cillum dolore eu fugiat nulla pariatur.                              ║   ║
+        ║ 3▌                                                                                ║   ║
+        ║ 4▌Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru║   ║
+        ║ <▌nt mollit anim id est laborum."                                                 ╨   ║
+        ╚═══════════════════════════════════════════════════════════════════════════════════════╝
+
+    Demo: `textedit.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py>`_
+    (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py>`__)
+
+    `ttkdesigner Tutorial <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst>`_
+
+
+    :param lineNumber: Show the line number on the left, defaults to **False**
+    :type lineNumber: bool, optional
+
+    :param readOnly: In a read-only text edit the user can only navigate through the text and select text; modifying the text is not possible, defaults to **True**
+    :type readOnly: bool, optional
+
+    :param multiLine: In a multiline text edit the user can split the text in multiple lines, defaults to **True**
+    :type multiLine: bool, optional
+
+    :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py>`__, defaults to a new Document
+    :type document: :class:`~TermTk.TermTk.TTkGui.textdocument.TTkTextDocument`, optional
+
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: currentColorChanged(color)
+            :signal:
+
+            This signal is emitted if the current character color has changed, for example caused by a change of the cursor position.
+
+            :param color: the new color
+            :type color: :class:`~TermTk.TermTk.TTkCore.color.TTkColor`
+
+        .. py:method:: undoAvailable(available)
+            :signal:
+
+            This signal is emitted whenever undo operations become available (available is true) or unavailable (available is false).
+
+            :param available: the availability of undo
+            :type available: bool
+
+        .. py:method:: redoAvailable(available)
+            :signal:
+
+            This signal is emitted whenever redo operations become available (available is true) or unavailable (available is false).
+
+            :param available: the availability of redo
+            :type available: bool
+
+        .. py:method:: textChanged()
+            :signal:
+
+            This signal is emitted whenever the document's content changes; for example, when text is inserted or deleted, or when formatting is applied.
+
+        .. py:method:: toAnsi()
+
+    '''
     __slots__ = (
             '_textEditView',
             '_lineNumberView', '_lineNumber',
