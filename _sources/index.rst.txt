@@ -49,6 +49,7 @@ Intro
    autogen.TermTk/TermTk.TTkTestWidgets.rst
    autogen.TermTk/TermTk.TTkTheme.rst
    autogen.TermTk/TermTk.TTkTypes.rst
+   autogen.TermTk/TermTk.TTkUiTools.rst
    autogen.TermTk/TermTk.TTkWidgets.rst
    autogen.TermTk/TermTk.TTkWidgets.TTkModelView.rst
    autogen.TermTk/TermTk.TTkWidgets.TTkPickers.rst

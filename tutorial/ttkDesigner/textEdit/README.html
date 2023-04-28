@@ -73,6 +73,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTheme.html">TermTk.TTkTheme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkUiTools.html">TermTk.TTkUiTools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
@@ -106,6 +107,19 @@
 <h1><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner">ttkDesigner</a> - Your first TextEditor<a class="headerlink" href="#ttkdesigner-your-first-texteditor" title="Permalink to this heading"></a></h1>
 <section id="start-a-new-project">
 <h2>Start a new project<a class="headerlink" href="#start-a-new-project" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Create a new Window (<strong>File</strong> -&gt; <strong>New</strong> -&gt; <strong>New Window</strong>)</p></li>
+<li><p>Set the window params required:</p>
+<ul>
+<li><p>Resize</p></li>
+<li><p>title</p></li>
+<li><p>Name - (This is the unique name that will be used to identify this <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html">Widget</a>)</p></li>
+<li><p>Window flags (i.e. Maximize)</p></li>
+<li><p>Layout to <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.gridlayout.html#ttkgridlayout">TTkGridLayout</a> (This will allow all the components to be placed in a grid aligned to the content of the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.window.html">window</a>)</p></li>
+<li><p>Add the “Maximize Button” through the Window Flags (I forgot to add this step in the video)</p></li>
+</ul>
+</li>
+</ul>
 <video width="800"
     src="https://user-images.githubusercontent.com/8876552/234842682-1ecd40dd-6829-47ff-bfb7-eae397553879.webm"
     data-canonical-src="https://user-images.githubusercontent.com/8876552/234842682-1ecd40dd-6829-47ff-bfb7-eae397553879.webm"
@@ -117,6 +131,24 @@ ttkDesigner tutorial/ttkDesigner/textEdit/textEdit.01.tui.json
 </section>
 <section id="add-the-first-buttons-undo-redo-cut-copy-paste">
 <h2>Add The first buttons (Undo,redo - Cut,Copy,Paste)<a class="headerlink" href="#add-the-first-buttons-undo-redo-cut-copy-paste" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Define the <strong>Undo</strong>, <strong>Redo</strong> commands</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Drag 2 <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html">buttons</a> inside the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.window.html">window</a> aligning them in the preferred <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.gridlayout.html#ttkgridlayout">grid</a> position</p></li>
+<li><p>Define the proper button Text (”<strong>Undo</strong>”,”<strong>Redo</strong>”)</p></li>
+<li><p>Choose a proper unique name (This step is not mandatory but useful to identify this <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html">Widget</a>)</p></li>
+<li><p>Disable those buttons by default because at the beginning the Text Editor is not going to have any Undo/Redo Buffers (I forgot to add this step in the video)</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>Define the <strong>Cut</strong>, <strong>Copy</strong>, <strong>Paste</strong> commands</p>
+<ul>
+<li><p>Well, try to guess…</p></li>
+</ul>
+</li>
+</ul>
 <video width="800"
     src="https://user-images.githubusercontent.com/8876552/234842705-0252d988-047f-46a1-8241-7a4e710c3791.webm"
     data-canonical-src="https://user-images.githubusercontent.com/8876552/234842705-0252d988-047f-46a1-8241-7a4e710c3791.webm"
@@ -124,6 +156,21 @@ ttkDesigner tutorial/ttkDesigner/textEdit/textEdit.01.tui.json
 </section>
 <section id="add-the-textedit-widget">
 <h2>Add the TextEdit widget<a class="headerlink" href="#add-the-textedit-widget" title="Permalink to this heading"></a></h2>
+<ul>
+<li><p>Drag the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html">TextEdit</a> aligning it in the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkLayouts.gridlayout.html#ttkgridlayout">grid</a> below any of the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html">buttons</a> previously placed</p></li>
+<li><div class="line-block">
+<div class="line">Expand the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html">TextEdit</a> widget in order to fill the entire area below the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html">buttons</a></div>
+<div class="line">Use the rainbow [🟥🟨🟩🩵🟦🦄] button to help identify the different widgets in the main window</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">Force the top grid to a fixed size (3 Chars)</div>
+<div class="line">In order to achieve this it is enough to force the MaxSize of any of the buttons in the top row to 3 Chars</div>
+</div>
+</li>
+<li><p>Check the line number, this will show the line number in the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html">TextEdit</a> when used</p></li>
+<li><p>Choose a proper unique name (This step is not mandatory but useful to identify this <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html">Widget</a>)</p></li>
+</ul>
 <video width="800"
     src="https://user-images.githubusercontent.com/8876552/234842721-f9ae924e-0047-4ce3-b1e6-3e0c7d27cb38.webm"
     data-canonical-src="https://user-images.githubusercontent.com/8876552/234842721-f9ae924e-0047-4ce3-b1e6-3e0c7d27cb38.webm"
@@ -131,6 +178,15 @@ ttkDesigner tutorial/ttkDesigner/textEdit/textEdit.01.tui.json
 </section>
 <section id="link-the-events-slots-for-the-basic-functionalities">
 <h2>Link the Events/Slots for the basic functionalities<a class="headerlink" href="#link-the-events-slots-for-the-basic-functionalities" title="Permalink to this heading"></a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Connect the TextEdit <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.undoAvailable">undo</a> / <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.redoAvailable">redo</a> availability signals with the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.setEnable">setEnable</a> slots of the undo/redo buttons</div>
+<div class="line">This allow the TextEdit to control directly the availability status of the Buttons</div>
+</div>
+</li>
+<li><p>Connect the undo/redo buttons <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.clicked">clicked</a> event to the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.undo">undo</a> / <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.redo">redo</a> slots of the TextEditor</p></li>
+<li><p>Same for the <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.cut">Cut</a>, <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.copy">Copy</a>, <a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.paste">Paste</a></p></li>
+</ul>
 <video width="800"
     src="https://user-images.githubusercontent.com/8876552/234842736-fdf73508-2ef1-419e-9b30-6d262a0ff514.webm"
     data-canonical-src="https://user-images.githubusercontent.com/8876552/234842736-fdf73508-2ef1-419e-9b30-6d262a0ff514.webm"
