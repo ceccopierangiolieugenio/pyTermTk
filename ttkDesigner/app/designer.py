@@ -209,7 +209,7 @@ class TTkDesigner(TTkGridLayout):
                 size=(80,30),
                 layout=self._notepad,
                 flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
-        TTkHelper.overlay(None, win, 2, 2, modal=True)
+        TTkHelper.overlay(None, win, 2, 2, toolWindow=True)
 
     @pyTTkSlot()
     def preview(self):

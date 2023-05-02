@@ -40,8 +40,16 @@ class TTkLayoutItem:
     :param alignment: The alignment of this item in the layout (not yet used)
     :type  alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
     '''
+
+    LAYER0    =  0x00000000
+    LAYER1    =  0x40000000
+    LAYER2    =  0x80000000
+    LAYER3    =  0xC0000000
+    LAYERMASK = ~0xC0000000
+
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',
+        '_layer',
         '_xOffset', '_yOffset',
         '_maxw', '_maxh', '_minw', '_minh',
         '_row','_col',
@@ -51,6 +59,7 @@ class TTkLayoutItem:
         '_parent',
         '_alignment',
         '_layoutItemType')
+
     def __init__(self, *args, **kwargs):
         self._x = kwargs.get('x', 0 )
         self._y = kwargs.get('y', 0 )
@@ -59,6 +68,7 @@ class TTkLayoutItem:
         self._h = kwargs.get('height', 0 )
         self._w, self._h = kwargs.get('size', (self._w, self._h))
         self._z = kwargs.get('z',0)
+        self._layer = TTkLayoutItem.LAYER0
         self._xOffset = 0
         self._yOffset = 0
         self._row = kwargs.get('row', 0)
@@ -112,30 +122,38 @@ class TTkLayoutItem:
     def geometry(self): return self._x, self._y, self._w, self._h
 
     def setOffset(self, x, y):
+        '''setOffset'''
         self._xOffset = x
         self._yOffset = y
 
     def setGeometry(self, x, y, w, h):
+        '''setGeometry'''
         self._x = x
         self._y = y
         self._w = w
         self._h = h
 
-    def parent(self): return self._parent
+    def parent(self):
+        '''parent'''
+        return self._parent
 
     def setParent(self, parent):
+        '''setParent'''
         self._parent = parent
 
-    @property
-    def z(self): return self._z
-    @z.setter
-    def z(self, z): self._z = z
+    def layer(self):
+        '''layer'''
+        return self._layer
+
+    def setLayer(self, layer):
+        '''setLayer'''
+        self._layer = layer
+        self._z = (self._z & TTkLayoutItem.LAYERMASK) | layer
 
     @property
     def layoutItemType(self): return self._layoutItemType
     @layoutItemType.setter
     def layoutItemType(self, t): self._layoutItemType = t
-
 
 class TTkLayout(TTkLayoutItem):
     '''
@@ -161,7 +179,7 @@ class TTkLayout(TTkLayoutItem):
         TTkLayoutItem.__init__(self, *args, **kwargs)
         self._items = []
         self._zSortedItems = []
-        self.layoutItemType = TTkK.LayoutItem
+        self._layoutItemType = TTkK.LayoutItem
 
     def children(self):
         return self._items
@@ -181,28 +199,28 @@ class TTkLayout(TTkLayoutItem):
             self._parent = parent.widgetItem()
         for item in self._items:
             item.setParent(self)
-            if item.layoutItemType == TTkK.WidgetItem:
+            if item._layoutItemType == TTkK.WidgetItem:
                 item.widget().setParent(self.parentWidget())
 
     def parentWidget(self):
         if self._parent is None: return None
-        if self._parent.layoutItemType == TTkK.WidgetItem:
+        if self._parent._layoutItemType == TTkK.WidgetItem:
             return self._parent.widget()
         else:
             return self._parent.parentWidget()
 
     def iterWidgets(self, onlyVisible=True, recurse=True):
         for child in self._items:
-            if child.layoutItemType == TTkK.WidgetItem:
+            if child._layoutItemType == TTkK.WidgetItem:
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
                 if recurse:
                     yield from child.widget().rootLayout().iterWidgets()
-            if child.layoutItemType == TTkK.LayoutItem and recurse:
+            if child._layoutItemType == TTkK.LayoutItem and recurse:
                 yield from child.iterWidgets()
 
     def _zSortItems(self):
-        self._zSortedItems = sorted(self._items, key=lambda item: item.z)
+        self._zSortedItems = sorted(self._items, key=lambda item: item._z)
 
     @property
     def zSortedItems(self): return self._zSortedItems
@@ -212,7 +230,7 @@ class TTkLayout(TTkLayoutItem):
         self._zSortItems()
         self.update()
         item.setParent(self)
-        if item.layoutItemType == TTkK.WidgetItem:
+        if item._layoutItemType == TTkK.WidgetItem:
             item.widget().setParent(self.parentWidget())
         if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
@@ -238,7 +256,7 @@ class TTkLayout(TTkLayoutItem):
         #self.update()
         for item in items:
             item.setParent(self)
-            if item.layoutItemType == TTkK.WidgetItem:
+            if item._layoutItemType == TTkK.WidgetItem:
                 item.widget().setParent(self.parentWidget())
         if self.parentWidget() and self.parentWidget().isVisible():
             self.parentWidget().update(repaint=True, updateLayout=True)
@@ -260,15 +278,19 @@ class TTkLayout(TTkLayoutItem):
         self.insertItems(len(self._items),widgets)
 
     def insertWidget(self, index, widget):
+        '''insertWidget'''
         self.insertItems(index, [widget])
 
     def insertWidgets(self, index, widgets):
+        '''insertWidgets'''
         self.insertItems(index, widgets)
 
     def removeItem(self, item):
+        '''removeItem'''
         self.removeItems([item])
 
     def removeItems(self, items):
+        '''removeItems'''
         for item in items:
             if item in self._items:
                 self._items.remove(item)
@@ -289,17 +311,17 @@ class TTkLayout(TTkLayoutItem):
         :type widgets: list of :class:`~TermTk.TTkWidgets`
         '''
         for item in self._items:
-            if item.layoutItemType == TTkK.WidgetItem and \
+            if item._layoutItemType == TTkK.WidgetItem and \
                item.widget() in widgets:
                 self.removeItem(item)
                 return
-            elif item.layoutItemType == TTkK.LayoutItem:
+            elif item._layoutItemType == TTkK.LayoutItem:
                 item.removeWidgets(widgets)
 
-    def findBranchWidget(self, widget):
+    def _findBranchWidget(self, widget):
         for item in self._items:
-            if item.layoutItemType == TTkK.LayoutItem:
-                if item.findBranchWidget(widget) is not None:
+            if item._layoutItemType == TTkK.LayoutItem:
+                if item._findBranchWidget(widget) is not None:
                     return item
             else:
                 if item.widget() == widget:
@@ -307,20 +329,24 @@ class TTkLayout(TTkLayoutItem):
         return None
 
     def raiseWidget(self, widget):
-        item = self.findBranchWidget(widget)
-        item.z = max([i.z for i in self._items])+1
-        if item.layoutItemType == TTkK.LayoutItem:
+        '''raiseWidget'''
+        item = self._findBranchWidget(widget)
+        item._z = item._z if (maxz:=max(TTkLayoutItem.LAYERMASK & i._z for i in self._items))==(TTkLayoutItem.LAYERMASK & item._z)!=0 else item._layer|maxz+1
+        if item._layoutItemType == TTkK.LayoutItem:
             item.raiseWidget(widget)
         self._zSortItems()
 
     def lowerWidget(self, widget):
-        item = self.findBranchWidget(widget)
-        item.z = min([i.z for i in self._items])-1
-        if item.layoutItemType == TTkK.LayoutItem:
+        '''lowerWidget'''
+        item = self._findBranchWidget(widget)
+        for item in self._items: item.z+=1
+        item._z = item._layer
+        if item._layoutItemType == TTkK.LayoutItem:
             item.lowerWidget(widget)
         self._zSortItems()
 
     def setGeometry(self, x, y, w, h):
+        '''setGeometry'''
         ax, ay, aw, ah = self.geometry()
         if ax==x and ay==y and aw==w and ah==h: return
         TTkLayoutItem.setGeometry(self, x, y, w, h)
@@ -340,11 +366,11 @@ class TTkLayout(TTkLayoutItem):
     def update(self, *args, **kwargs):
         ret = False
         for i in self.children():
-            if i.layoutItemType == TTkK.WidgetItem and not i.isEmpty():
+            if i._layoutItemType == TTkK.WidgetItem and not i.isEmpty():
                 ret = ret or i.widget().update(*args, **kwargs)
                 # TODO: Have a look at this:
                 # i.getCanvas().top()
-            elif i.layoutItemType == TTkK.LayoutItem:
+            elif i._layoutItemType == TTkK.LayoutItem:
                 ret= ret or i.update(*args, **kwargs)
         return ret
 
@@ -353,7 +379,7 @@ class TTkWidgetItem(TTkLayoutItem):
     def __init__(self, *args, **kwargs):
         TTkLayoutItem.__init__(self, *args, **kwargs)
         self._widget = kwargs.get('widget', None)
-        self.layoutItemType = TTkK.WidgetItem
+        self._layoutItemType = TTkK.WidgetItem
 
     def widget(self): return self._widget
 

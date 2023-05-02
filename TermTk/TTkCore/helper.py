@@ -153,11 +153,12 @@ class TTkHelper:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
-    def overlay(caller, widget, x, y, modal=False, forceBoundaries=True):
+    def overlay(caller, widget, x, y, modal=False, forceBoundaries=True, toolWindow=False):
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
         w,h = widget.size()
+
         # Try to keep the overlay widget inside the terminal
         if forceBoundaries:
             wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
@@ -165,7 +166,14 @@ class TTkHelper:
         else:
             wx += x
             wy += y
-        TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
+
+        if  toolWindow:
+            # Forcing the layer to:
+            # TTkLayoutItem.LAYER1    =  0x40000000
+            wi = widget.widgetItem()
+            wi.setLayer(wi.LAYER1)
+        else:
+            TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
