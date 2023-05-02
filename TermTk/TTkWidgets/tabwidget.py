@@ -25,7 +25,8 @@
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import *
+from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.drag import TTkDrag
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -111,7 +112,11 @@ class TTkTabButton(TTkButton):
                         data = _TTkTabWidgetDragData(self,tw)
                     else:
                         data = _TTkTabBarDragData(self,tb)
-                    drag.setPixmap(self)
+                    pm = TTkCanvas(width=self.width(),height=3)
+                    pm.drawBox(pos=(0,0),size=(self.width(),3))
+                    pm.drawText(pos=(1,1), text=self.text(), color=self.color())
+                    drag.setPixmap(pm)
+                    # drag.setPixmap(self)
                     drag.setData(data)
                     drag.exec()
                     return True
