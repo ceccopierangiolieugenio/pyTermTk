@@ -25,13 +25,12 @@ Start a new project
 ===================
 
 - Create a new Window (**File** -> **New** -> **New Window**)
-- Set the window params required:
+- Set your favourite window params:
 
-  - Resize
-  - title
-  - Name - (This is the unique name that will be used to identify this Widget_)
-  - Window flags (i.e. Maximize)
-  - Layout to TTkGridLayout_ (This will allow all the components to be placed in a grid aligned to the content of the window_)
+  - Your preferred size
+  - Some catcy Title
+  - An Amazing Name - (This is the unique name that will be used to identify this Widget_)
+  - Change the Layout to TTkGridLayout_ (This will allow all the components to be placed in a grid aligned to the content of the window_)
   - Add the "Maximize Button" through the Window Flags (I forgot to add this step in the video)
 
 .. raw:: html

@@ -126,7 +126,12 @@ autodocgen_config = {
         'write_documented_items_output_file': 'autodocgen_documented_items.txt',
 
         # customize autodoc on a per-module basis
-        'autodoc_options_decider': {},
+        # 'autodoc_options_decider': {},
+        # 'autodoc_options_decider': {'members':True, 'inherited-members':True},
+        # Can you believe I had to debug autodoc to figure out this FUCKING thing?
+        # People are complainig to the lack of documentation of pyTermTk
+        # but aat least i hacve examples that cover most use cases
+        'autodoc_options_decider': lambda app, what, fullname, obj, docstring, defaultOptions, extra: {'members': True, 'inherited-members':True},
 
         # choose a different title for specific modules, e.g. the toplevel one
         #'module_title_decider': lambda modulename: 'API Reference' if modulename=='TermTk' else modulename,

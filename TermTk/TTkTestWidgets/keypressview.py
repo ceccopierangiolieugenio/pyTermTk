@@ -85,8 +85,12 @@ class TTkKeyPressView(TTkWidget):
         self._anim.start()
 
     def _pushFade(self, fade: float):
-        for i,k in enumerate(self._keys):
+        for k in self._keys:
             k[0] -= fade
+        # Apply the main fade to the current key
+        if self._keys:
+            self._keys[-1][0] = 1-fade
+        for i,k in enumerate(self._keys):
             if k[0] <= 0:
                 self._keys.pop(i)
         self.update()
