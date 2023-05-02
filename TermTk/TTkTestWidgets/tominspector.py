@@ -185,7 +185,7 @@ class TTkTomInspector(TTkWidget):
         y-=ly
         for item in reversed(layout.zSortedItems):
         # for item in layout.zSortedItems:
-            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            if item.layoutItemType() == TTkK.WidgetItem and not item.isEmpty():
                 widget = item.widget()
                 if not widget._visible: continue
                 if isinstance(evt, TTkMouseEvent):
@@ -196,7 +196,7 @@ class TTkTomInspector(TTkWidget):
                         return TTkTomInspector._findWidget(wevt,widget.rootLayout())
                     continue
 
-            elif item.layoutItemType == TTkK.LayoutItem:
+            elif item.layoutItemType() == TTkK.LayoutItem:
                 levt = evt.clone(pos=(x, y))
                 if (wid:=TTkTomInspector._findWidget(levt, item)):
                     return wid
@@ -315,7 +315,7 @@ class TTkTomInspector(TTkWidget):
 
     @staticmethod
     def _getTomTreeItem(layoutItem, widSelected=None):
-        if layoutItem.layoutItemType == TTkK.WidgetItem:
+        if layoutItem.layoutItemType() == TTkK.WidgetItem:
             widget = layoutItem.widget()
             expanded = TTkHelper.isParent(widSelected,widget) if widSelected else False
             top = _TTkDomTreeWidgetItem([
@@ -329,13 +329,13 @@ class TTkTomInspector(TTkWidget):
 
             for c in widget.rootLayout().children():
                 if c == widget.layout(): continue
-                if c.layoutItemType == TTkK.LayoutItem:
+                if c.layoutItemType() == TTkK.LayoutItem:
                     top.addChild(tc:=_TTkDomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
                     for cc in c.children():
                         tc.addChild(TTkTomInspector._getTomTreeItem(cc,widSelected))
             return top
 
-        if layoutItem.layoutItemType == TTkK.LayoutItem:
+        if layoutItem.layoutItemType() == TTkK.LayoutItem:
             top = _TTkDomTreeWidgetItem(["layout", layoutItem.__class__.__name__,"",layoutItem.__class__.__name__])
             for c in layoutItem.children():
                 top.addChild(TTkTomInspector._getTomTreeItem(c,widSelected))

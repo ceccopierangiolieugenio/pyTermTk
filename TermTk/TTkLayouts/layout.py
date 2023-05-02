@@ -150,10 +150,7 @@ class TTkLayoutItem:
         self._layer = layer
         self._z = (self._z & TTkLayoutItem.LAYERMASK) | layer
 
-    @property
     def layoutItemType(self): return self._layoutItemType
-    @layoutItemType.setter
-    def layoutItemType(self, t): self._layoutItemType = t
 
 class TTkLayout(TTkLayoutItem):
     '''

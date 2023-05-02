@@ -92,7 +92,7 @@ class TreeInspector(ttk.TTkGridLayout):
 
     @staticmethod
     def _getTomTreeItem(layoutItem, widSelected=None):
-        if layoutItem.layoutItemType == ttk.TTkK.WidgetItem:
+        if layoutItem.layoutItemType() == ttk.TTkK.WidgetItem:
             superThing = thing = layoutItem.widget()
             if issubclass(type(superThing), SuperWidget):
                 thing = thing._wid
@@ -133,7 +133,7 @@ class TreeInspector(ttk.TTkGridLayout):
             #             tc.addChild(TreeInspector._getTomTreeItem(cc,widSelected))
             return top
 
-        if layoutItem.layoutItemType == ttk.TTkK.LayoutItem:
+        if layoutItem.layoutItemType() == ttk.TTkK.LayoutItem:
             top = _TTkTomTreeWidgetItem(["layout", layoutItem.__class__.__name__,"",layoutItem.__class__.__name__])
             for c in layoutItem.children():
                 top.addChild(TreeInspector._getTomTreeItem(c,widSelected))

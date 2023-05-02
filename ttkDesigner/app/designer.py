@@ -177,7 +177,7 @@ class TTkDesigner(TTkGridLayout):
     def getWidgets(self):
         widgets = []
         def _getItems(layoutItem):
-            if layoutItem.layoutItemType == TTkK.WidgetItem:
+            if layoutItem.layoutItemType() == TTkK.WidgetItem:
                 superThing = layoutItem.widget()
                 if issubclass(type(superThing), SuperWidget):
                     widgets.append(superThing._wid)

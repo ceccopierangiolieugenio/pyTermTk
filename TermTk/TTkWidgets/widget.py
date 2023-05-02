@@ -235,7 +235,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         ''' .. caution:: Don't touch this! '''
         lx,ly,lw,lh = geometry
         ox, oy = offset
-        if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+        if item.layoutItemType() == TTkK.WidgetItem and not item.isEmpty():
             child = item.widget()
             cx,cy,cw,ch = child.geometry()
             canvas.paintCanvas(
@@ -357,7 +357,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         y-=ly
         for item in reversed(layout.zSortedItems):
         # for item in layout.zSortedItems:
-            if item.layoutItemType == TTkK.WidgetItem and not item.isEmpty():
+            if item.layoutItemType() == TTkK.WidgetItem and not item.isEmpty():
                 widget = item.widget()
                 if not widget._visible: continue
                 wx,wy,ww,wh = widget.geometry()
@@ -366,7 +366,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 wevt = evt.clone(pos=(x-wx, y-wy))
                 if widget.mouseEvent(wevt):
                     return True
-            elif item.layoutItemType == TTkK.LayoutItem:
+            elif item.layoutItemType() == TTkK.LayoutItem:
                 levt = evt.clone(pos=(x, y))
                 if TTkWidget._mouseEventLayoutHandle(levt, item):
                     return True

@@ -108,7 +108,7 @@ class TTkWindow(TTkResizableFrame):
         if not (pw := self.parentWidget()): return
         stack = []
         for li in pw.rootLayout().children():
-            if li.layoutItemType == TTkK.WidgetItem and issubclass(type(w:=li.widget()),_MinimizedButton):
+            if li.layoutItemType() == TTkK.WidgetItem and issubclass(type(w:=li.widget()),_MinimizedButton):
                 stack.append(w.y())
         stack = sorted(stack)
         lx,ly = pw.layout().pos()
