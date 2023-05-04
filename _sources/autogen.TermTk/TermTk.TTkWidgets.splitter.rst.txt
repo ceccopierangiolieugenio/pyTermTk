@@ -13,3 +13,4 @@ TTkSplitter
 
 .. autoclass:: TTkSplitter
    :members:
+   :inherited-members:

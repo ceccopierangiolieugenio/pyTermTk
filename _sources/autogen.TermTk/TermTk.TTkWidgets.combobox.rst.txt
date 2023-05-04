@@ -13,3 +13,4 @@ TTkComboBox
 
 .. autoclass:: TTkComboBox
    :members:
+   :inherited-members:

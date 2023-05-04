@@ -13,3 +13,4 @@ TTkFancyTable
 
 .. autoclass:: TTkFancyTable
    :members:
+   :inherited-members:

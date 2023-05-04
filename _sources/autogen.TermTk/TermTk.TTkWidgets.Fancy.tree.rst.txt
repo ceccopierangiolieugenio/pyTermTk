@@ -13,3 +13,4 @@ TTkFancyTree
 
 .. autoclass:: TTkFancyTree
    :members:
+   :inherited-members:

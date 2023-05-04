@@ -13,3 +13,4 @@ TTkKeyEvent
 
 .. autoclass:: TTkKeyEvent
    :members:
+   :inherited-members:

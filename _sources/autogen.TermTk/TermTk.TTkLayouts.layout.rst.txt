@@ -13,6 +13,7 @@ TTkLayoutItem
 
 .. autoclass:: TTkLayoutItem
    :members:
+   :inherited-members:
 
 
 TTkLayout
@@ -20,6 +21,7 @@ TTkLayout
 
 .. autoclass:: TTkLayout
    :members:
+   :inherited-members:
 
 
 TTkWidgetItem
@@ -27,3 +29,4 @@ TTkWidgetItem
 
 .. autoclass:: TTkWidgetItem
    :members:
+   :inherited-members:

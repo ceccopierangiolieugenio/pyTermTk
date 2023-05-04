@@ -691,8 +691,7 @@
 <span class="sd">    Demo: `textedit.py &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py&gt;`_</span>
 <span class="sd">    (`Try Online &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py&gt;`__)</span>
 
-<span class="sd">    `ttkdesigner Tutorial &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.rst&gt;`_</span>
-
+<span class="sd">    `ttkdesigner Tutorial &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit&gt;`_</span>
 
 <span class="sd">    :param lineNumber: Show the line number on the left, defaults to **False**</span>
 <span class="sd">    :type lineNumber: bool, optional</span>
@@ -704,7 +703,7 @@
 <span class="sd">    :type multiLine: bool, optional</span>
 
 <span class="sd">    :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py&gt;`__, defaults to a new Document</span>
-<span class="sd">    :type document: :class:`~TermTk.TermTk.TTkGui.textdocument.TTkTextDocument`, optional</span>
+<span class="sd">    :type document: :class:`~TermTk.TTkGui.textdocument.TTkTextDocument`, optional</span>
 
 <span class="sd">    +-----------------------------------------------------------------------------------------------+</span>
 <span class="sd">    | `Signals &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html&gt;`_ |</span>
@@ -716,7 +715,7 @@
 <span class="sd">            This signal is emitted if the current character color has changed, for example caused by a change of the cursor position.</span>
 
 <span class="sd">            :param color: the new color</span>
-<span class="sd">            :type color: :class:`~TermTk.TermTk.TTkCore.color.TTkColor`</span>
+<span class="sd">            :type color: :class:`~TermTk.TTkCore.color.TTkColor`</span>
 
 <span class="sd">        .. py:method:: undoAvailable(available)</span>
 <span class="sd">            :signal:</span>
@@ -740,6 +739,107 @@
 <span class="sd">            This signal is emitted whenever the document&#39;s content changes; for example, when text is inserted or deleted, or when formatting is applied.</span>
 
 <span class="sd">        .. py:method:: toAnsi()</span>
+
+
+<span class="sd">    .. py:method:: clear()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.clear`</span>
+
+<span class="sd">    .. py:method:: setText(text)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setText`</span>
+
+<span class="sd">    .. py:method:: append(text)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.append`</span>
+
+<span class="sd">    .. py:method:: isReadOnly()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isReadOnly`</span>
+
+<span class="sd">    .. py:method:: setReadOnly(ro)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setReadOnly`</span>
+
+<span class="sd">    .. py:method:: document()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.document`</span>
+
+<span class="sd">    .. py:method:: wrapWidth()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wrapWidth`</span>
+
+<span class="sd">    .. py:method:: setWrapWidth(width)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWrapWidth`</span>
+
+<span class="sd">    .. py:method:: multiLine()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.multiLine`</span>
+
+<span class="sd">    .. py:method:: lineWrapMode()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.lineWrapMode`</span>
+
+<span class="sd">    .. py:method:: setLineWrapMode(mode)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setLineWrapMode`</span>
+
+<span class="sd">    .. py:method:: wordWrapMode()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wordWrapMode`</span>
+
+<span class="sd">    .. py:method:: setWordWrapMode(mode)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWordWrapMode`</span>
+
+<span class="sd">    .. py:method:: textCursor()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.textCursor`</span>
+
+<span class="sd">    .. py:method:: setColor(color)</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setColor`</span>
+
+<span class="sd">    .. py:method:: cut()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.cut`</span>
+
+<span class="sd">    .. py:method:: copy()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.copy`</span>
+
+<span class="sd">    .. py:method:: paste()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.paste`</span>
+
+<span class="sd">    .. py:method:: undo()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.undo`</span>
+
+<span class="sd">    .. py:method:: redo()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.redo`</span>
+
+<span class="sd">    .. py:method:: isUndoAvailable()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isUndoAvailable`</span>
+
+<span class="sd">    .. py:method:: isRedoAvailable()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isRedoAvailable`</span>
+
+<span class="sd">    .. py:method:: toAnsi()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toAnsi`</span>
+
+<span class="sd">    .. py:method:: toRawText()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toRawText`</span>
+
+<span class="sd">    .. py:method:: toPlainText()</span>
+
+<span class="sd">        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toPlainText`</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
@@ -816,15 +916,18 @@
     <span class="k">def</span> <span class="nf">textEditView</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span>
 
-    <span class="k">def</span> <span class="nf">getLineNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span>
+<div class="viewcode-block" id="TTkTextEdit.getLineNumber"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.getLineNumber">[docs]</a>    <span class="k">def</span> <span class="nf">getLineNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;getLineNumber&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">setLineNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ln</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>
+<div class="viewcode-block" id="TTkTextEdit.setLineNumber"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.setLineNumber">[docs]</a>    <span class="k">def</span> <span class="nf">setLineNumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ln</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setLineNumber&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">setDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkTextEdit.setDocument"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.texedit.html#TermTk.TTkWidgets.texedit.TTkTextEdit.setDocument">[docs]</a>    <span class="k">def</span> <span class="nf">setDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setDocument&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">setDocument</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">setTextWrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">_textWrap</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lineNumberView</span><span class="o">.</span><span class="n">setTextWrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_textEditView</span><span class="o">.</span><span class="n">_textWrap</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

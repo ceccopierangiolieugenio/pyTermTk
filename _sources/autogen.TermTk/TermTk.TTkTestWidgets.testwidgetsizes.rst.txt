@@ -13,3 +13,4 @@ TTkTestWidgetSizes
 
 .. autoclass:: TTkTestWidgetSizes
    :members:
+   :inherited-members:

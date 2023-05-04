@@ -13,3 +13,4 @@ TTkFrame
 
 .. autoclass:: TTkFrame
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkTestWidget
 
 .. autoclass:: TTkTestWidget
    :members:
+   :inherited-members:

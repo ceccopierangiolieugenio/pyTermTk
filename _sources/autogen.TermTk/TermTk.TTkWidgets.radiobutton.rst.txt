@@ -13,3 +13,4 @@ TTkRadioButton
 
 .. autoclass:: TTkRadioButton
    :members:
+   :inherited-members:

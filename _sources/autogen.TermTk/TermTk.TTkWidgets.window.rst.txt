@@ -13,3 +13,4 @@ TTkWindow
 
 .. autoclass:: TTkWindow
    :members:
+   :inherited-members:

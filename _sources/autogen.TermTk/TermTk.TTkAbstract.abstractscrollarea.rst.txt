@@ -13,3 +13,4 @@ TTkAbstractScrollArea
 
 .. autoclass:: TTkAbstractScrollArea
    :members:
+   :inherited-members:

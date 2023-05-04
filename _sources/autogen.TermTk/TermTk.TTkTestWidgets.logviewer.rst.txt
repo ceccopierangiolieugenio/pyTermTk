@@ -13,3 +13,4 @@ TTkLogViewer
 
 .. autoclass:: TTkLogViewer
    :members:
+   :inherited-members:

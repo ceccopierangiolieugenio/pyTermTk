@@ -13,3 +13,4 @@ TTkFileTree
 
 .. autoclass:: TTkFileTree
    :members:
+   :inherited-members:

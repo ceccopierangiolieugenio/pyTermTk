@@ -13,3 +13,4 @@ TTkAbout
 
 .. autoclass:: TTkAbout
    :members:
+   :inherited-members:

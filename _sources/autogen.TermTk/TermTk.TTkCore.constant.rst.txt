@@ -13,6 +13,7 @@ TTkConstant
 
 .. autoclass:: TTkConstant
    :members:
+   :inherited-members:
 
 
 TTkK
@@ -20,3 +21,4 @@ TTkK
 
 .. autoclass:: TTkK
    :members:
+   :inherited-members:

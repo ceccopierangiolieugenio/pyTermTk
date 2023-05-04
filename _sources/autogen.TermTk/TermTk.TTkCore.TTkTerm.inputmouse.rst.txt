@@ -13,3 +13,4 @@ TTkMouseEvent
 
 .. autoclass:: TTkMouseEvent
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkLineEdit
 
 .. autoclass:: TTkLineEdit
    :members:
+   :inherited-members:

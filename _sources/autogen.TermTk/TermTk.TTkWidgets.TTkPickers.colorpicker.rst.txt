@@ -13,6 +13,7 @@ TTkColorDialogPicker
 
 .. autoclass:: TTkColorDialogPicker
    :members:
+   :inherited-members:
 
 
 TTkColorButtonPicker
@@ -20,3 +21,4 @@ TTkColorButtonPicker
 
 .. autoclass:: TTkColorButtonPicker
    :members:
+   :inherited-members:

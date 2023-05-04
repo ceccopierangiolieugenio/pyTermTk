@@ -13,3 +13,4 @@ TTkLabel
 
 .. autoclass:: TTkLabel
    :members:
+   :inherited-members:

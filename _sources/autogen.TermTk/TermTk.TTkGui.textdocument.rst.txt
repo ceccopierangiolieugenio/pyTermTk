@@ -13,3 +13,4 @@ TTkTextDocument
 
 .. autoclass:: TTkTextDocument
    :members:
+   :inherited-members:

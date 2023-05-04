@@ -13,3 +13,4 @@ TTkMessageBox
 
 .. autoclass:: TTkMessageBox
    :members:
+   :inherited-members:

@@ -116,7 +116,8 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span>  <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.canvas</span> <span class="kn">import</span> <span class="n">TTkCanvas</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkGui.drag</span> <span class="kn">import</span> <span class="n">TTkDrag</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
@@ -202,7 +203,11 @@
                         <span class="n">data</span> <span class="o">=</span> <span class="n">_TTkTabWidgetDragData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tw</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="n">_TTkTabBarDragData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tb</span><span class="p">)</span>
-                    <span class="n">drag</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="n">pm</span> <span class="o">=</span> <span class="n">TTkCanvas</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="mi">3</span><span class="p">))</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">())</span>
+                    <span class="n">drag</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pm</span><span class="p">)</span>
+                    <span class="c1"># drag.setPixmap(self)</span>
                     <span class="n">drag</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                     <span class="n">drag</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
                     <span class="k">return</span> <span class="kc">True</span>

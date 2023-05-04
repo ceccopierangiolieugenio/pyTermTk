@@ -13,6 +13,7 @@ TTkTextDialogPicker
 
 .. autoclass:: TTkTextDialogPicker
    :members:
+   :inherited-members:
 
 
 TTkTextPicker
@@ -20,3 +21,4 @@ TTkTextPicker
 
 .. autoclass:: TTkTextPicker
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkTreeWidget
 
 .. autoclass:: TTkTreeWidget
    :members:
+   :inherited-members:

@@ -13,6 +13,7 @@ TTkMenuButton
 
 .. autoclass:: TTkMenuButton
    :members:
+   :inherited-members:
 
 
 TTkMenuLayout
@@ -20,3 +21,4 @@ TTkMenuLayout
 
 .. autoclass:: TTkMenuLayout
    :members:
+   :inherited-members:

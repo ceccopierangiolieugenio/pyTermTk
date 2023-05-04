@@ -13,3 +13,4 @@ TTkCheckbox
 
 .. autoclass:: TTkCheckbox
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkTimer
 
 .. autoclass:: TTkTimer
    :members:
+   :inherited-members:

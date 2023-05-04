@@ -13,3 +13,4 @@ TTkTree
 
 .. autoclass:: TTkTree
    :members:
+   :inherited-members:

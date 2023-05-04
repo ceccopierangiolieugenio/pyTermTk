@@ -13,3 +13,4 @@ TTkCanvas
 
 .. autoclass:: TTkCanvas
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkGridLayout
 
 .. autoclass:: TTkGridLayout
    :members:
+   :inherited-members:

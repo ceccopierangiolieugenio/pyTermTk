@@ -13,6 +13,7 @@ TTkAbstractScrollView
 
 .. autoclass:: TTkAbstractScrollView
    :members:
+   :inherited-members:
 
 
 TTkAbstractScrollViewGridLayout
@@ -20,3 +21,4 @@ TTkAbstractScrollViewGridLayout
 
 .. autoclass:: TTkAbstractScrollViewGridLayout
    :members:
+   :inherited-members:

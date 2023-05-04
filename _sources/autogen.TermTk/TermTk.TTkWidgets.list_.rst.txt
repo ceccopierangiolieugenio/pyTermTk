@@ -13,3 +13,4 @@ TTkList
 
 .. autoclass:: TTkList
    :members:
+   :inherited-members:

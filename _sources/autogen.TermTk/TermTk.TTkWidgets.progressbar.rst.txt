@@ -13,3 +13,4 @@ TTkProgressBar
 
 .. autoclass:: TTkProgressBar
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkSpinBox
 
 .. autoclass:: TTkSpinBox
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkResizableFrame
 
 .. autoclass:: TTkResizableFrame
    :members:
+   :inherited-members:

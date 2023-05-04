@@ -13,3 +13,4 @@ TTkScrollBar
 
 .. autoclass:: TTkScrollBar
    :members:
+   :inherited-members:

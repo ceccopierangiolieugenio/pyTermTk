@@ -13,3 +13,4 @@ TTkTheme
 
 .. autoclass:: TTkTheme
    :members:
+   :inherited-members:

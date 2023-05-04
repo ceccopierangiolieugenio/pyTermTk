@@ -6,3 +6,11 @@ TermTk.TTkUiTools.uiloader
 
 .. currentmodule:: TermTk.TTkUiTools.uiloader
 
+
+
+TTkUiLoader
+===========
+
+.. autoclass:: TTkUiLoader
+   :members:
+   :inherited-members:

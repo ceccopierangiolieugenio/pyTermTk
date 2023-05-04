@@ -13,3 +13,4 @@ TTkFileTreeWidget
 
 .. autoclass:: TTkFileTreeWidget
    :members:
+   :inherited-members:

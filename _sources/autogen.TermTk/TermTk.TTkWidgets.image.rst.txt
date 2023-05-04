@@ -13,3 +13,4 @@ TTkImage
 
 .. autoclass:: TTkImage
    :members:
+   :inherited-members:

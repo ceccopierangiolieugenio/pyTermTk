@@ -13,6 +13,7 @@ TTkHBoxLayout
 
 .. autoclass:: TTkHBoxLayout
    :members:
+   :inherited-members:
 
 
 TTkVBoxLayout
@@ -20,3 +21,4 @@ TTkVBoxLayout
 
 .. autoclass:: TTkVBoxLayout
    :members:
+   :inherited-members:

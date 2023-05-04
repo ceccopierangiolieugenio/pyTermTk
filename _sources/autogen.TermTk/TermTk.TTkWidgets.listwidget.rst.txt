@@ -13,6 +13,7 @@ TTkAbstractListItem
 
 .. autoclass:: TTkAbstractListItem
    :members:
+   :inherited-members:
 
 
 TTkListWidget
@@ -20,3 +21,4 @@ TTkListWidget
 
 .. autoclass:: TTkListWidget
    :members:
+   :inherited-members:

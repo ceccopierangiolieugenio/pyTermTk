@@ -13,3 +13,4 @@ TTkTestAbstractScrollWidget
 
 .. autoclass:: TTkTestAbstractScrollWidget
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkButton
 
 .. autoclass:: TTkButton
    :members:
+   :inherited-members:

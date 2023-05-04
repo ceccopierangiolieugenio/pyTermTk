@@ -13,6 +13,7 @@ TTkFileDialogPicker
 
 .. autoclass:: TTkFileDialogPicker
    :members:
+   :inherited-members:
 
 
 TTkFileButtonPicker
@@ -20,3 +21,4 @@ TTkFileButtonPicker
 
 .. autoclass:: TTkFileButtonPicker
    :members:
+   :inherited-members:

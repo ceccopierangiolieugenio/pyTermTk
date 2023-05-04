@@ -13,3 +13,4 @@ TTkWidget
 
 .. autoclass:: TTkWidget
    :members:
+   :inherited-members:

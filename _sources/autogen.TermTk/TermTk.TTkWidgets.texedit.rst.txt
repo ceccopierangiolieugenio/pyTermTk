@@ -13,6 +13,7 @@ TTkTextEditView
 
 .. autoclass:: TTkTextEditView
    :members:
+   :inherited-members:
 
 
 TTkTextEdit
@@ -20,3 +21,4 @@ TTkTextEdit
 
 .. autoclass:: TTkTextEdit
    :members:
+   :inherited-members:

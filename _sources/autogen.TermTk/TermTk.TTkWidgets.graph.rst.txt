@@ -13,3 +13,4 @@ TTkGraph
 
 .. autoclass:: TTkGraph
    :members:
+   :inherited-members:

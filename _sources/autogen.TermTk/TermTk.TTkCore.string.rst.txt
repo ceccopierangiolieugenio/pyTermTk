@@ -13,3 +13,4 @@ TTkString
 
 .. autoclass:: TTkString
    :members:
+   :inherited-members:

@@ -13,3 +13,4 @@ TTkTomInspector
 
 .. autoclass:: TTkTomInspector
    :members:
+   :inherited-members:

@@ -120,7 +120,87 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTimer</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/timer_unix.html#TTkTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer" title="Permalink to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.daemon">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">daemon</span></span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.daemon" title="Permalink to this definition"></a></dt>
+<dd><p>A boolean value indicating whether this thread is a daemon thread.</p>
+<p>This must be set before start() is called, otherwise RuntimeError is
+raised. Its initial value is inherited from the creating thread; the
+main thread is not a daemon thread and therefore all threads created in
+the main thread default to daemon = False.</p>
+<p>The entire Python program exits when only daemon threads are left.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.getName">
+<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.getName" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string used for identification purposes only.</p>
+<p>This method is deprecated, use the name attribute instead.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.ident">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ident</span></span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.ident" title="Permalink to this definition"></a></dt>
+<dd><p>Thread identifier of this thread or None if it has not been started.</p>
+<p>This is a nonzero integer. See the get_ident() function. Thread
+identifiers may be recycled when a thread exits and another thread is
+created. The identifier is available even after the thread has exited.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.isDaemon">
+<span class="sig-name descname"><span class="pre">isDaemon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.isDaemon" title="Permalink to this definition"></a></dt>
+<dd><p>Return whether this thread is a daemon.</p>
+<p>This method is deprecated, use the daemon attribute instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.is_alive">
+<span class="sig-name descname"><span class="pre">is_alive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.is_alive" title="Permalink to this definition"></a></dt>
+<dd><p>Return whether the thread is alive.</p>
+<p>This method returns True just before the run() method starts until just
+after the run() method terminates. See also the module function
+enumerate().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.join">
+<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.join" title="Permalink to this definition"></a></dt>
+<dd><p>Wait until the thread terminates.</p>
+<p>This blocks the calling thread until the thread whose join() method is
+called terminates – either normally or through an unhandled exception
+or until the optional timeout occurs.</p>
+<p>When the timeout argument is present and not None, it should be a
+floating point number specifying a timeout for the operation in seconds
+(or fractions thereof). As join() always returns None, you must call
+is_alive() after join() to decide whether a timeout happened – if the
+thread is still alive, the join() call timed out.</p>
+<p>When the timeout argument is not present or None, the operation will
+block until the thread terminates.</p>
+<p>A thread can be join()ed many times.</p>
+<p>join() raises a RuntimeError if an attempt is made to join the current
+thread as that would cause a deadlock. It is also an error to join() a
+thread before it has been started and attempts to do so raises the same
+exception.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.name" title="Permalink to this definition"></a></dt>
+<dd><p>A string used for identification purposes only.</p>
+<p>It has no semantics. Multiple threads may be given the same name. The
+initial name is set by the constructor.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.native_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">native_id</span></span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.native_id" title="Permalink to this definition"></a></dt>
+<dd><p>Native integral thread ID of this thread, or None if it has not been started.</p>
+<p>This is a non-negative integer. See the get_native_id() function.
+This represents the Thread ID as reported by the kernel.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/timer_unix.html#TTkTimer.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.run" title="Permalink to this definition"></a></dt>
 <dd><p>Method representing the thread’s activity.</p>
@@ -128,6 +208,20 @@
 invokes the callable object passed to the object’s constructor as the
 target argument, if any, with sequential and keyword arguments taken
 from the args and kwargs arguments, respectively.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.setDaemon">
+<span class="sig-name descname"><span class="pre">setDaemon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">daemonic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.setDaemon" title="Permalink to this definition"></a></dt>
+<dd><p>Set whether this thread is a daemon.</p>
+<p>This method is deprecated, use the .daemon property instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.timer_unix.TTkTimer.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.timer_unix.TTkTimer.setName" title="Permalink to this definition"></a></dt>
+<dd><p>Set the name string for this thread.</p>
+<p>This method is deprecated, use the name attribute instead.</p>
 </dd></dl>
 
 <dl class="py method">

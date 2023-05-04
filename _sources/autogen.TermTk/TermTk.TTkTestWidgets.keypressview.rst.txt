@@ -13,3 +13,4 @@ TTkKeyPressView
 
 .. autoclass:: TTkKeyPressView
    :members:
+   :inherited-members:

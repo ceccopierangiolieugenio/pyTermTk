@@ -13,3 +13,4 @@ TTkColor
 
 .. autoclass:: TTkColor
    :members:
+   :inherited-members:

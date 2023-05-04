@@ -13,3 +13,4 @@ TTkSpacer
 
 .. autoclass:: TTkSpacer
    :members:
+   :inherited-members:
