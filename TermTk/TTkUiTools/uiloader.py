@@ -33,20 +33,20 @@ from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
 class TTkUiLoader():
     @staticmethod
-    def loadFile(filePath):
+    def loadFile(filePath, baseWidget:TTkWidget=None):
         with open(filePath) as f:
-            return TTkUiLoader.loadJson(f.read())
+            return TTkUiLoader.loadJson(f.read(), TTkWidget)
         return None
 
     @staticmethod
-    def loadJson(text):
-        return TTkUiLoader.loadDict(json.loads(text))
+    def loadJson(text, baseWidget:TTkWidget=None):
+        return TTkUiLoader.loadDict(json.loads(text), TTkWidget)
 
     @staticmethod
-    def _loadDict_1_0_0(ui):
-        def _getWidget(widProp):
+    def _loadDict_1_0_0(ui, baseWidget:TTkWidget=None):
+        def _getWidget(_widProp, _baseWidget:TTkWidget=None):
             properties = {}
-            ttkClass = globals()[widProp['class']]
+            ttkClass = globals()[_widProp['class']]
             for cc in reversed(ttkClass.__mro__):
                 if cc.__name__ in TTkUiProperties:
                     properties |= TTkUiProperties[cc.__name__]['properties']
@@ -54,17 +54,17 @@ class TTkUiLoader():
             kwargs = {}
             # Init params to be configured with the setter
             setters = []
-            layout = _getLayout(widProp['layout']) if 'layout' in widProp else TTkLayout()
-            for pname in widProp['params']:
+            layout = _getLayout(_widProp['layout']) if 'layout' in _widProp else TTkLayout()
+            for pname in _widProp['params']:
                 if 'init' in properties[pname]:
                     initp = properties[pname]['init']
                     name = initp['name']
                     if initp['type'] is TTkLayout:
                         value = layout
                     elif initp['type'] is TTkColor:
-                        value = TTkColor.ansi(widProp['params'][pname])
+                        value = TTkColor.ansi(_widProp['params'][pname])
                     else:
-                        value = widProp['params'][pname]
+                        value = _widProp['params'][pname]
                     # TTkLog.debug(f"{name=} {value=}")
                     kwargs |= {name: value}
                 elif 'set' in properties[pname]:
@@ -73,14 +73,22 @@ class TTkUiLoader():
                     if setp['type'] is TTkLayout:
                         value = layout
                     elif setp['type'] is TTkColor:
-                        value = TTkColor.ansi(widProp['params'][pname])
+                        value = TTkColor.ansi(_widProp['params'][pname])
                     else:
-                        value = widProp['params'][pname]
+                        value = _widProp['params'][pname]
                     setters.append({
                                 'cb':setcb,
                                 'value': value,
                                 'multi':type(setp['type']) is list})
-            widget = ttkClass(**kwargs)
+            if _baseWidget is None:
+                widget = ttkClass(**kwargs)
+            else:
+                widget = _baseWidget
+                if issubclass(type(_baseWidget), ttkClass):
+                    ttkClass.__init__(widget,**kwargs)
+                else:
+                    error = f"Base Widget '{_baseWidget.__class__.__name__}' is not a subclass of '{ttkClass.__name__}'"
+                    raise TypeError(error)
             # Init params that don't have a constrictor
             for s in setters:
                 if s['multi']:
@@ -88,34 +96,34 @@ class TTkUiLoader():
                 else:
                     s['cb'](widget, s['value'])
             TTkLog.debug(widget)
-            # for c in widProp['children']:
+            # for c in _widProp['children']:
             #     widget.layout().addWidget(_getWidget(c))
             return widget
 
-        def _getLayout(layprop):
+        def _getLayout(_layprop, _baseWidget:TTkWidget=None):
             properties = {}
-            ttkClass = globals()[layprop['class']]
+            ttkClass = globals()[_layprop['class']]
             for cc in reversed(ttkClass.__mro__):
                 if cc.__name__ in TTkUiProperties:
                     properties |= TTkUiProperties[cc.__name__]['properties']
 
             setters = []
-            for pname in layprop['params']:
+            for pname in _layprop['params']:
                 if 'set' in properties[pname]:
                     setp = properties[pname]['set']
                     setcb = setp['cb']
                     if setp['type'] is TTkLayout:
                         value = layout
                     elif setp['type'] is TTkColor:
-                        value = TTkColor.ansi(layprop['params'][pname])
+                        value = TTkColor.ansi(_layprop['params'][pname])
                     else:
-                        value = layprop['params'][pname]
+                        value = _layprop['params'][pname]
                     setters.append({
                                 'cb':setcb,
                                 'value': value,
                                 'multi':type(setp['type']) is list})
 
-            layout = globals()[layprop['class']]()
+            layout = globals()[_layprop['class']]()
             # Init params that don't have a constrictor
             for s in setters:
                 if s['multi']:
@@ -123,7 +131,7 @@ class TTkUiLoader():
                 else:
                     s['cb'](layout, s['value'])
 
-            for c in layprop['children']:
+            for c in _layprop['children']:
                 row = c.get('row', 0)
                 col = c.get('col', 0)
                 rowspan = c.get('rowspan', 1)
@@ -151,9 +159,9 @@ class TTkUiLoader():
         TTkLog.debug(ui)
 
         if issubclass(globals()[ui['tui']['class']],TTkLayout):
-            widget =  _getLayout(ui['tui'])
+            widget =  _getLayout(ui['tui'], baseWidget)
         else:
-            widget =  _getWidget(ui['tui'])
+            widget =  _getWidget(ui['tui'], baseWidget)
 
         def _getSignal(sender, name):
             for cc in reversed(type(sender).__mro__):
@@ -185,11 +193,11 @@ class TTkUiLoader():
         return widget
 
     @staticmethod
-    def loadDict(ui):
+    def loadDict(ui, baseWidget:TTkWidget=None):
         cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0
               }.get(ui['version'], None)
         if cb:
-            return cb(ui)
+            return cb(ui, baseWidget)
         msg = (f"The used pyTermTk ({TTkCfg.version}) is not able to load this tui version ({ui['version']})")
         raise NotImplementedError(msg)
 
