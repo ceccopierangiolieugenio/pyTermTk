@@ -196,6 +196,9 @@ class SuperWidget(ttk.TTkWidget):
     def mousePressEvent(self, evt) -> bool:
         return True
 
+    def isRootWidget(self):
+        return self._superRootWidget
+
     def makeRootWidget(self):
         self._superRootWidget = True
 
