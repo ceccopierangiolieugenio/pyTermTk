@@ -41,8 +41,8 @@ Start a new project
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842682-1ecd40dd-6829-47ff-bfb7-eae397553879.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842682-1ecd40dd-6829-47ff-bfb7-eae397553879.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455166-7c4905b9-572e-49e6-9f71-12fa5545fd90.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455166-7c4905b9-572e-49e6-9f71-12fa5545fd90.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 `textEdit.01.tui.json <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.01.tui.json>`_
@@ -71,8 +71,8 @@ Add The first buttons (Undo,redo - Cut,Copy,Paste)
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842705-0252d988-047f-46a1-8241-7a4e710c3791.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842705-0252d988-047f-46a1-8241-7a4e710c3791.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455152-4f7440c3-868c-47ce-9c6c-56047b9348ea.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455152-4f7440c3-868c-47ce-9c6c-56047b9348ea.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 `textEdit.02.tui.json <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.02.tui.json>`_
@@ -96,8 +96,8 @@ Add the TextEdit widget
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842721-f9ae924e-0047-4ce3-b1e6-3e0c7d27cb38.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842721-f9ae924e-0047-4ce3-b1e6-3e0c7d27cb38.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455144-dae0cae7-42f0-4db9-983d-cedc980a8dad.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455144-dae0cae7-42f0-4db9-983d-cedc980a8dad.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 `textEdit.03.tui.json <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.03.tui.json>`_
@@ -117,8 +117,8 @@ Link the Events/Slots for the basic functionalities
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842736-fdf73508-2ef1-419e-9b30-6d262a0ff514.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842736-fdf73508-2ef1-419e-9b30-6d262a0ff514.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455133-2f13549a-5096-4ae0-87f7-55d419b220dd.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455133-2f13549a-5096-4ae0-87f7-55d419b220dd.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 `textEdit.04.tui.json <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.04.tui.json>`_
@@ -133,8 +133,8 @@ I used those emoji as file open/save text 📂 💾
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842758-dbd647ba-2596-4ec8-9a76-135435504505.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842758-dbd647ba-2596-4ec8-9a76-135435504505.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455116-57cfe842-e581-4dc7-ac74-dead0e440793.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455116-57cfe842-e581-4dc7-ac74-dead0e440793.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 `textEdit.05.tui.json <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.05.tui.json>`_
@@ -147,8 +147,8 @@ Link the Events/Slots for the color feature
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842774-cf8c3fc3-4bb7-45ff-8e04-30a93aa343c6.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842774-cf8c3fc3-4bb7-45ff-8e04-30a93aa343c6.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455110-faac9646-e025-43bd-8833-624b9339db1b.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455110-faac9646-e025-43bd-8833-624b9339db1b.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 `textEdit.06.tui.json <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/textEdit.06.tui.json>`_
@@ -161,8 +161,8 @@ Preview and Quick Export
 .. raw:: html
 
     <video width="800"
-        src="https://user-images.githubusercontent.com/8876552/234842788-208e271a-e0b1-44f6-94b4-a62db00fd45a.webm"
-        data-canonical-src="https://user-images.githubusercontent.com/8876552/234842788-208e271a-e0b1-44f6-94b4-a62db00fd45a.webm"
+        src="https://user-images.githubusercontent.com/8876552/236455105-25cd73a3-901f-4b96-a729-0723d9f80a93.mp4"
+        data-canonical-src="https://user-images.githubusercontent.com/8876552/236455105-25cd73a3-901f-4b96-a729-0723d9f80a93.mp4"
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 Exported: `texteditor.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.01.py>`_
