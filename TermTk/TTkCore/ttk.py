@@ -163,6 +163,7 @@ class TTk(TTkWidget):
             self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
+                signal.signal(signal.SIGINT,  signal.SIG_DFL)
                 self.quit()
                 TTkTerm.exit()
 
