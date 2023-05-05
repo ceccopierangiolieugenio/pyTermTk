@@ -79,7 +79,9 @@ class SuperControlWidget(ttk.TTkResizableFrame):
 
     def keyEvent(self, evt):
         if evt.type == ttk.TTkK.SpecialKey:
-            if evt.key in (ttk.TTkK.Key_Delete, ttk.TTkK.Key_Backspace) :
+
+            if ( evt.key in (ttk.TTkK.Key_Delete, ttk.TTkK.Key_Backspace) and
+                 not self._wid.isRootWidget() ):
                 self._wid.parentWidget().removeSuperWidget(self._wid)
                 self._wid.close()
                 self.close()
