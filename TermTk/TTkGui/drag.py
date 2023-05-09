@@ -37,9 +37,9 @@ class _TTkDragDisplayWidget(TTkWidget):
         self._pixmap = pixmap
         self.setGeometry(x-hsx,y-hsy,w,h)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         _,_,w,h = self.geometry()
-        self._canvas.paintCanvas(self._pixmap, (0,0,w,h), (0,0,w,h), (0,0,w,h))
+        canvas.paintCanvas(self._pixmap, (0,0,w,h), (0,0,w,h), (0,0,w,h))
 
 class TTkDrag():
     __slots__ = ('_data', '_pixmap', '_showPixmap', '_hotSpot')
@@ -66,9 +66,10 @@ class TTkDrag():
 
     def setPixmap(self, pixmap):
         if issubclass(type(pixmap),TTkWidget):
-            pixmap.getCanvas().updateSize()
-            pixmap.paintEvent()
-            pixmap = pixmap.getCanvas()
+            canvas = pixmap.getCanvas()
+            canvas.updateSize()
+            pixmap.paintEvent(canvas)
+            pixmap = canvas
         if type(pixmap) is TTkCanvas:
             pixmap.updateSize()
             self._pixmap.setPixmap(pixmap, self._hotSpot)

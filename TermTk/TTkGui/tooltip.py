@@ -42,10 +42,9 @@ class _TTkToolTipDisplayWidget(TTkWidget):
 
     def mouseEvent(self, evt): return False
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         borderColor = TTkColor.fg("#888888")
-        canvas = self.getCanvas()
         canvas.drawBox(pos=(0,0),size=(w,h), color=borderColor)
         canvas.drawChar(pos=(0,  0),  char='╭', color=borderColor)
         canvas.drawChar(pos=(w-1,0),  char='╮', color=borderColor)

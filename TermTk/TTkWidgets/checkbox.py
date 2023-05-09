@@ -168,7 +168,7 @@ class TTkCheckbox(TTkWidget):
         self._checkStatus = state
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self.isEnabled():
             textColor   = TTkCfg.theme.checkboxTextColor
             borderColor = TTkCfg.theme.textColorDisabled
@@ -181,13 +181,13 @@ class TTkCheckbox(TTkWidget):
             borderColor = TTkCfg.theme.checkboxBorderColor
             textColor   = TTkCfg.theme.checkboxTextColor
             xColor      = TTkCfg.theme.checkboxContentColor
-        self._canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
-        self._canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
+        canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
+        canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         text = {
             TTkK.Checked :   "X",
             TTkK.Unchecked : " ",
             TTkK.PartiallyChecked: "/"}.get(self._checkStatus, " ")
-        self._canvas.drawText(pos=(1,0), color=xColor ,text=text)
+        canvas.drawText(pos=(1,0), color=xColor ,text=text)
 
     def _pressEvent(self):
         self._checkStatus = {

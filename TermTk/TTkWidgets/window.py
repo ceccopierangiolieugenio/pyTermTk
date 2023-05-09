@@ -141,13 +141,13 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.setGeometry(1,1,w-2,1)
         super().resizeEvent(w,h)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self.hasFocus():
             color = TTkCfg.theme.windowBorderColorFocus
         else:
             color = TTkCfg.theme.windowBorderColor
-        self._canvas.drawText(pos=(2,1),text=self._title)
-        self._canvas.drawGrid(
+        canvas.drawText(pos=(2,1),text=self._title)
+        canvas.drawGrid(
                     color=color,
                     pos=(0,0), size=self.size(),
                     hlines=[2], grid=2)

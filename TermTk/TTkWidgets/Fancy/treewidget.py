@@ -37,11 +37,11 @@ class _TTkDisplayedTreeItemControl(TTkCheckbox):
         self._name = kwargs.get('name' , '_TTkDisplayedTreeItemControl' )
         self.setMinimumSize(1, 1)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self.isChecked():
-            self._canvas.drawText(pos=(0,0), text="▼")
+            canvas.drawText(pos=(0,0), text="▼")
         else:
-            self._canvas.drawText(pos=(0,0), text="▶")
+            canvas.drawText(pos=(0,0), text="▶")
 
 
 class _TTkDisplayedTreeItem(TTkWidget):
@@ -69,10 +69,10 @@ class _TTkDisplayedTreeItem(TTkWidget):
     def _controlClicked(self, status):
         self._clicked.emit(status, self, self._treeWidgetItem)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self._isLeaf:
-            self._canvas.drawText(pos=(self._depth, 0), text="•")
-        self._canvas.drawText(pos=(self._depth+2, 0), text=self._text)
+            canvas.drawText(pos=(self._depth, 0), text="•")
+        canvas.drawText(pos=(self._depth+2, 0), text=self._text)
 
 
 class TTkFancyTreeWidget(TTkFancyTableView):

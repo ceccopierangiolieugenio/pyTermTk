@@ -97,17 +97,17 @@ class SuperControlWidget(ttk.TTkResizableFrame):
                 self._alignWidToPos(bkPos)
         return True
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
-        self._wid.paintEvent()
+        self._wid.paintEvent(canvas)
         self._wid.paintChildCanvas()
-        self._canvas.paintCanvas(
+        canvas.paintCanvas(
                 self._wid.getCanvas(),
                 (    1,     1, w, h), # geometry
                 (    0,     0, w, h), # slice
                 (    0,     0, w, h)) # bound
-        self._canvas.drawBox(pos=(0,0),size=self.size())
-        self._canvas.drawChar(pos=(  0,   0), char='▛')
-        self._canvas.drawChar(pos=(w-1,   0), char='▜')
-        self._canvas.drawChar(pos=(  0, h-1), char='▙')
-        self._canvas.drawChar(pos=(w-1, h-1), char='▟')
+        canvas.drawBox(pos=(0,0),size=self.size())
+        canvas.drawChar(pos=(  0,   0), char='▛')
+        canvas.drawChar(pos=(w-1,   0), char='▜')
+        canvas.drawChar(pos=(  0, h-1), char='▙')
+        canvas.drawChar(pos=(w-1, h-1), char='▟')

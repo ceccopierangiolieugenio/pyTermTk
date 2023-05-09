@@ -253,7 +253,7 @@ class TTkButton(TTkWidget):
         self.update()
         return super().mouseMoveEvent(evt)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self.isEnabled():
             borderColor = self._borderColorDisabled
             textColor   = self._textColorDisabled
@@ -287,7 +287,6 @@ class TTkButton(TTkWidget):
                     borderColor = self._borderColor
 
         w,h = self.size()
-        canvas = self.getCanvas()
 
         # Draw the border and bgcolor
         if not self._border or (self._border and ( h==1 or ( h>1 and len(self._text)>h-2 and len(self._text[0])!=0 ))):

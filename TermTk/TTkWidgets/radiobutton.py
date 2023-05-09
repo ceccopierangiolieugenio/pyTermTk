@@ -143,7 +143,7 @@ class TTkRadioButton(TTkWidget):
             self._checkEvent()
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self.hasFocus():
             borderColor = TTkCfg.theme.radioButtonBorderColorFocus
             textColor   = TTkCfg.theme.radioButtonTextColorFocus
@@ -152,12 +152,12 @@ class TTkRadioButton(TTkWidget):
             borderColor = TTkCfg.theme.radioButtonBorderColor
             textColor   = TTkCfg.theme.radioButtonTextColor
             xColor      = TTkCfg.theme.radioButtonContentColor
-        self._canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
-        self._canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
+        canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
+        canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         if self._checked:
-            self._canvas.drawText(pos=(1,0), color=xColor ,text="X")
+            canvas.drawText(pos=(1,0), color=xColor ,text="X")
         else:
-            self._canvas.drawText(pos=(1,0), color=xColor ,text=" ")
+            canvas.drawText(pos=(1,0), color=xColor ,text=" ")
 
     def _checkEvent(self):
         # Uncheck the radio already checked;

@@ -102,7 +102,7 @@ class TTkLineEdit(TTkWidget):
             TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self.isEnabled():
             color = TTkCfg.theme.textColorDisabled
             selectColor = TTkCfg.theme.textColorDisabled
@@ -121,7 +121,7 @@ class TTkLineEdit(TTkWidget):
         if self._selectionFrom < self._selectionTo:
             text = text.setColor(color=selectColor, posFrom=self._selectionFrom, posTo=self._selectionTo)
         text = text.substring(self._offset)
-        self._canvas.drawText(pos=(0,0), text=text, color=color, width=w)
+        canvas.drawText(pos=(0,0), text=text, color=color, width=w)
 
     def mousePressEvent(self, evt):
         txtPos = self._text.tabCharPos(evt.x+self._offset)

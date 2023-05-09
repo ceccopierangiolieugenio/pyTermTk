@@ -42,17 +42,17 @@ class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
         self._areaPos = self.getViewOffsets()
         self.update()
 
-    def paintEvent(self):
-        self._canvas.drawBox(pos=(0,0),size=(self._width,self._height))
+    def paintEvent(self, canvas):
+        canvas.drawBox(pos=(0,0),size=(self._width,self._height))
         t,_,l,_ = self.getPadding()
-        self._canvas.drawText(pos=(l+1,t+1+0), text=f"Test Widget [{self._name}]")
-        self._canvas.drawText(pos=(l+1,t+1+1), text=f"x,y ({self._x},{self._y})")
-        self._canvas.drawText(pos=(l+1,t+1+2), text=f"w,h ({self._width},{self._height})")
-        self._canvas.drawText(pos=(l+1,t+1+3), text=f"max w,h ({self._maxw},{self._maxh})")
-        self._canvas.drawText(pos=(l+1,t+1+4), text=f"min w,h ({self._minw},{self._minh})")
-        self._canvas.drawText(pos=(l+1,t+1+5), text=f"areaSize {self._areaSize}")
-        self._canvas.drawText(pos=(l+1,t+1+6), text=f"areaPos1  {self._areaPos}")
-        self._canvas.drawText(pos=(l+1,t+1+7), text=f"areaPos2  ({self._areaPos[0]+self._width},{self._areaPos[1]+self._height})")
+        canvas.drawText(pos=(l+1,t+1+0), text=f"Test Widget [{self._name}]")
+        canvas.drawText(pos=(l+1,t+1+1), text=f"x,y ({self._x},{self._y})")
+        canvas.drawText(pos=(l+1,t+1+2), text=f"w,h ({self._width},{self._height})")
+        canvas.drawText(pos=(l+1,t+1+3), text=f"max w,h ({self._maxw},{self._maxh})")
+        canvas.drawText(pos=(l+1,t+1+4), text=f"min w,h ({self._minw},{self._minh})")
+        canvas.drawText(pos=(l+1,t+1+5), text=f"areaSize {self._areaSize}")
+        canvas.drawText(pos=(l+1,t+1+6), text=f"areaPos1  {self._areaPos}")
+        canvas.drawText(pos=(l+1,t+1+7), text=f"areaPos2  ({self._areaPos[0]+self._width},{self._areaPos[1]+self._height})")
 
     def mousePressEvent(self, evt): return True
     def mouseReleaseEvent(self, evt): return True

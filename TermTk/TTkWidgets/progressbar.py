@@ -152,13 +152,12 @@ class TTkProgressBar(TTkWidget):
         '''setTextWidth'''
         self._textWidth = max(0, new_width)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         width, height = self.size()
         laf = self.lookAndFeel()
         text = laf.text(self._value, self._value_min, self._value_max)
         color_bar = laf.color(self._value, self._value_min, self._value_max)
         blocks = TTkCfg.theme.progressbarBlocks
-        canvas = self._canvas
         show_text = laf.showText()
 
         if show_text:

@@ -218,17 +218,17 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         TTkLog.error("<TTkWidget>.removeWidget(...) is deprecated, use <TTkWidget>.layout().removeWidget(...)")
         if self.layout(): self.layout().removeWidget(widget)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas:TTkCanvas):
         '''
         Paint Event callback,
         this need to be overridden in the widget.
         '''
         pass
 
-    def getPixmap(self):
-        self.paintEvent()
+    def getPixmap(self) -> TTkCanvas:
+        self.paintEvent(self._canvas)
         self.paintChildCanvas()
-        return self.getCanvas().copy()
+        return self._canvas.copy()
 
     @staticmethod
     def _paintChildCanvas(canvas, item, geometry, offset):

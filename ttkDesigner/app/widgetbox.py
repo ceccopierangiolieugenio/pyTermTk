@@ -111,13 +111,13 @@ class DragDesignItem(ttk.TTkWidget):
         drag.exec()
         return True
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self.isEnabled():
             color=ttk.TTkColor.RST
         else:
             color=ttk.TTkColor.fg('#AAAAAA')
-        self._canvas.drawText(text=self._itemName, pos=(1,1), color=color)
-        self._canvas.drawBox(pos=(0,0),size=self.size(), color=color)
+        canvas.drawText(text=self._itemName, pos=(1,1), color=color)
+        canvas.drawBox(pos=(0,0),size=self.size(), color=color)
 
 class WidgetBox(ttk.TTkVBoxLayout):
     def __init__(self, designer, *args, **kwargs):

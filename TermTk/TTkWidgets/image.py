@@ -129,25 +129,25 @@ class TTkImage(TTkWidget):
                 h,s,l = TTkColor.rgb2hsl(pixel)
                 row[i] = TTkColor.hsl2rgb(((h+deg)%360,s,l))
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         img = self._data
         if self._rasterType == TTkImage.FULLBLOCK:
             for y in range(0, len(img)):
                 for x in range(0, len(img[y])):
                     c1 = img[y][x]
                     color = TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}')
-                    self._canvas.drawChar(pos=(x,y), char='█', color=color)
+                    canvas.drawChar(pos=(x,y), char='█', color=color)
         elif self._rasterType == TTkImage.HALFBLOCK:
             for y in range(0, len(img)&(~1), 2):
                 for x in range(0, len(img[y])):
                     c1, c2 = img[y][x] ,img[y+1][x]
                     color = ( TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') +
                              TTkColor.bg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}') )
-                    self._canvas.drawChar(pos=(x,y//2), char='▀', color=color)
+                    canvas.drawChar(pos=(x,y//2), char='▀', color=color)
         elif self._rasterType == TTkImage.QUADBLOCK:
             for y in range(0, len(img)&(~1), 2):
                 for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                    self._canvas.drawText(
+                    canvas.drawText(
                             pos=(x//2,y//2),
                             text=self._reduceQuad(
                                         img[y][x]   , img[y][x+1]   ,

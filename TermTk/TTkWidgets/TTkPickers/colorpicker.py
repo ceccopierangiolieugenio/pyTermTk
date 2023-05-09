@@ -68,7 +68,7 @@ class _TTkHueCanvas(TTkWidget):
     def mouseDragEvent(self, evt):
         return self.mousePressEvent(evt)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,_ = self.size()
         self._hueList = [0x00]*(w+1)
         def _linInt(a,b,x):
@@ -82,9 +82,9 @@ class _TTkHueCanvas(TTkWidget):
                     rgb =a|(b&_linInt(b,0,6*x/w))
                 color = TTkColor.bg( f"#{rgb:06x}" )
                 if (num*w//6)+x == self._selected:
-                    self._canvas.drawChar(pos=((num*w//6)+x,0), char="◼", color=color+TTkColor.fg("#000000"))
+                    canvas.drawChar(pos=((num*w//6)+x,0), char="◼", color=color+TTkColor.fg("#000000"))
                 else:
-                    self._canvas.drawChar(pos=((num*w//6)+x,0), char=" ", color=color)
+                    canvas.drawChar(pos=((num*w//6)+x,0), char=" ", color=color)
                 self._hueList[(num*w//6)+x]=rgb
 
         _printSlice(0, 0xff0000, 0x00ff00, True)
@@ -136,15 +136,15 @@ class _TTkColorCanvas(TTkWidget):
         b = _linInt(b,0,y/h)&0x0000ff
         return r|g|b
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         for x in range(w):
             for y in range(h):
                 color = TTkColor.bg( f"#{self._colorAt(x,y,w,h):06x}" )
                 if (x,y)==self._selected:
-                    self._canvas.drawText(pos=(x,y), text="◼", color=color+TTkColor.fg("#000000"))
+                    canvas.drawText(pos=(x,y), text="◼", color=color+TTkColor.fg("#000000"))
                 else:
-                    self._canvas.drawText(pos=(x,y), text=" ", color=color)
+                    canvas.drawText(pos=(x,y), text=" ", color=color)
 
 class _TTkShowColor(TTkWidget):
     __slots__ = ('_color')
@@ -166,10 +166,10 @@ class _TTkShowColor(TTkWidget):
         self.setColor(TTkColor.bg( f"#{color:06x}" ))
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         for y in range(h):
-            self._canvas.drawText(pos=(0,y),text=" "*w, color=self._color)
+            canvas.drawText(pos=(0,y),text=" "*w, color=self._color)
 
 class _TTkColorButton(TTkButton):
     lastClicked = None
@@ -417,23 +417,23 @@ class TTkColorDialogPicker(TTkWindow):
             self._color = color
             self.update()
 
-    def paintEvent(self):
-        TTkWindow.paintEvent(self)
+    def paintEvent(self, canvas):
+        TTkWindow.paintEvent(self, canvas)
         if self.hasFocus():
             color = TTkCfg.theme.windowBorderColorFocus
         else:
             color = TTkCfg.theme.windowBorderColor
-        self._canvas.drawGrid(
+        canvas.drawGrid(
             pos=(0,2),size=(26,self._height-2),
             hlines=(10,15), vlines=(),
             color=color, grid=6)
         gg = TTkCfg.theme.grid[6]
-        self._canvas.drawChar(pos=(0,2),  char=gg[0x08], color=color)
-        self._canvas.drawChar(pos=(25,2), char=gg[0x02], color=color)
-        self._canvas.drawChar(pos=(25,self._height-1), char=gg[0x0E], color=color)
-        self._canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=TTkString(" Basic colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
-        self._canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=TTkString(" Custom colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
-        self._canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=TTkString(" Conrols "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        canvas.drawChar(pos=(0,2),  char=gg[0x08], color=color)
+        canvas.drawChar(pos=(25,2), char=gg[0x02], color=color)
+        canvas.drawChar(pos=(25,self._height-1), char=gg[0x0E], color=color)
+        canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=TTkString(" Basic colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=TTkString(" Custom colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=TTkString(" Conrols "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
 
 class TTkColorButtonPicker(_TTkColorButton):
     __slots__ = ('_type', 'colorSelected')

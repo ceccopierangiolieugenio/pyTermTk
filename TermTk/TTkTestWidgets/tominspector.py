@@ -122,7 +122,7 @@ class _DetailLazyFormView(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         x,y = self.getViewOffsets()
         w,h = self.size()
         tt = TTkCfg.theme.tree
@@ -132,7 +132,7 @@ class _DetailLazyFormView(TTkAbstractScrollView):
         for i,l in enumerate(header):
             hx  = 0 if i==0 else columnsPos[i-1]+1
             hx1 = columnsPos[i]
-            self._canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=TTkCfg.theme.treeHeaderColor)
+            canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=TTkCfg.theme.treeHeaderColor)
 
 class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     __slots__ = ('_domWidget')

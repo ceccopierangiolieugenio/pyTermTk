@@ -71,11 +71,11 @@ class _TTkLogViewer(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         ox,oy = self.getViewOffsets()
         _,h = self.size()
         for y, message in enumerate(self._messages[oy:oy+h]):
-            self._canvas.drawTTkString(pos=(-ox,y),text=message)
+            canvas.drawTTkString(pos=(-ox,y),text=message)
 
 class TTkLogViewer(TTkAbstractScrollArea):
     __slots__ = ('_logView')

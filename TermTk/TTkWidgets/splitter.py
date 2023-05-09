@@ -281,16 +281,16 @@ class TTkSplitter(TTkFrame):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries(resized=True)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         off = 1 if self.border() else 0
-        TTkFrame.paintEvent(self)
+        TTkFrame.paintEvent(self, canvas)
         w,h = self.size()
         if self._orientation == TTkK.HORIZONTAL:
             for i in self._separators[:-1]:
-                self._canvas.drawVLine(pos=(i+off,0), size=h)
+                canvas.drawVLine(pos=(i+off,0), size=h)
         else:
             for i in self._separators[:-1]:
-                self._canvas.drawHLine(pos=(0,i+off), size=w)
+                canvas.drawHLine(pos=(0,i+off), size=w)
 
     def mousePressEvent(self, evt):
         self._separatorSelected = None

@@ -57,7 +57,7 @@ class _TTkFancyTableViewHeader(TTkWidget):
         self._header += [TTkString()]*(len(self._columns)-len(self._header))
         self._alignments = [TTkK.NONE]*len(self._columns)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         total = 0
         variableCols = 0
@@ -76,7 +76,7 @@ class _TTkFancyTableViewHeader(TTkWidget):
                 sizes.append((w-total)//variableCols)
                 variableCols -= 1
         colors = [self._headerColor]*len(self._header)
-        self._canvas.drawTableLine(pos=(0,0), items=self._header, sizes=sizes, colors=colors, alignments=self._alignments)
+        canvas.drawTableLine(pos=(0,0), items=self._header, sizes=sizes, colors=colors, alignments=self._alignments)
 
 
 class _TTkFancyTableView(TTkAbstractScrollView):
@@ -306,7 +306,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             self.activated.emit(self._selected)
         return True
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         ox, oy = self.getViewOffsets()
         total = 0
@@ -349,10 +349,10 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 item[vid] = item[vid].substring(fr=strPos)
             if it == self._selected:
                 colors = [self._selectColor]*len(self._columnColors)
-                self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
+                canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
             else:
                 colors = [c.modParam(val=-val) for c in self._columnColors]
-                self._canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
+                canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
 
 class TTkFancyTableView(TTkAbstractScrollView):
     __slots__ = (

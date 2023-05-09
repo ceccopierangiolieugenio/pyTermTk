@@ -39,17 +39,17 @@ class _TestContent(TTkWidget):
     t06 = TTkString(color=TTkColor.fg("#0088ff") ,text="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
     t07 = TTkString(color=TTkColor.fg("#0000ff") ,text="Excepteur sint occaecat cupidatat non proident,")
     t08 = TTkString(color=TTkColor.fg("#ff00ff") ,text="sunt in culpa qui officia deserunt mollit anim id est laborum.")
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         # TTkLog.debug(f"Test Paint - {self._name}")
-        y=0;  self._canvas.drawText(pos=(-5,y), text=self.t01)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t02)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t03)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t04)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t05)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t06)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t07)
-        y+=1; self._canvas.drawText(pos=( 0,y), text=self.t08)
-        y+=1; self._canvas.drawGrid(
+        y=0;  canvas.drawText(pos=(-5,y), text=self.t01)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t02)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t03)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t04)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t05)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t06)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t07)
+        y+=1; canvas.drawText(pos=( 0,y), text=self.t08)
+        y+=1; canvas.drawGrid(
                 pos=(0,y),size=(self._width,self._height-y),
                 hlines=(2,5,7), vlines=(4,7,15,30),
                 color=TTkColor.fg("#aaffaa"))
@@ -75,17 +75,16 @@ class TTkTestWidget(TTkFrame):
         _TestContent(parent=self, pos=(0,8), width=50, height=50, name=f"content-{self._name}")
         TTkTestWidget.ID+=1
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         x = 1 if self.border() else 0
         y = 1 if self.border() else 0
         w = 50
-        canvas = self.getCanvas()
         canvas.drawText(pos=(x,y+3), width=w, color=self._l[0], text=f"Test Widget [{self._name}]")
         canvas.drawText(pos=(x,y+4), width=w, color=self._l[1], text=f"x,y ({self._x},{self._y})")
         canvas.drawText(pos=(x,y+5), width=w, color=self._l[2], text=f"w,h ({self._width},{self._height})")
         canvas.drawText(pos=(x,y+6), width=w, color=self._l[3], text=f"max w,h ({self._maxw},{self._maxh})")
         canvas.drawText(pos=(x,y+7), width=w, color=self._l[4], text=f"min w,h ({self._minw},{self._minh})")
-        TTkFrame.paintEvent(self)
+        TTkFrame.paintEvent(self, canvas)
 
     def mousePressEvent(self, evt):
         TTkLog.debug(f"{self._name} Test Mouse {evt}")

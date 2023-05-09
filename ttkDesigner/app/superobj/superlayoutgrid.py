@@ -76,18 +76,17 @@ class _SuperExpandButton(ttk.TTkButton):
         ttk.TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
         return super().hide()
 
-    def paintEvent(self):
-        canvas = self.getCanvas()
+    def paintEvent(self, canvas):
         # '▶','◀','▼','▲'
         w,h = self.size()
         if w==1:
-            self.getCanvas().drawText(text='╽', pos=(0,0),   color=ttk.TTkColor.fg("FFFF00"))
-            self.getCanvas().drawText(text='╿', pos=(0,h-1), color=ttk.TTkColor.fg("FFFF00"))
+            canvas.drawText(text='╽', pos=(0,0),   color=ttk.TTkColor.fg("FFFF00"))
+            canvas.drawText(text='╿', pos=(0,h-1), color=ttk.TTkColor.fg("FFFF00"))
             for yy in range(1,h-1):
-                self.getCanvas().drawText(text='┃', pos=(0, yy), color=ttk.TTkColor.fg("FFFF00"))
+                canvas.drawText(text='┃', pos=(0, yy), color=ttk.TTkColor.fg("FFFF00"))
         elif h==1:
             txt = '╼'+'━'*(w-2)+'╾'
-            self.getCanvas().drawText(text=txt, pos=(0,0), width=w, color=ttk.TTkColor.fg("FFFF00"))
+            canvas.drawText(text=txt, pos=(0,0), width=w, color=ttk.TTkColor.fg("FFFF00"))
 
         ch = {
             ttk.TTkK.TOP    : '▲',
@@ -385,19 +384,20 @@ class SuperLayoutGrid(SuperLayout):
     def paintChildCanvas(self):
         super().paintChildCanvas()
 
+        canvas = self.getCanvas()
         def _lineDraw(x,y,w,h,color):
             if h==1 and w==1:
-                self.getCanvas().drawText(text='◉', pos=(x,y), color=color)
+                canvas.drawText(text='◉', pos=(x,y), color=color)
             elif w==1:
-                self.getCanvas().drawText(text='╽', pos=(x,y),     color=color)
-                self.getCanvas().drawText(text='╿', pos=(x,y+h-1), color=color)
+                canvas.drawText(text='╽', pos=(x,y),     color=color)
+                canvas.drawText(text='╿', pos=(x,y+h-1), color=color)
                 for yy in range(y+1,y+h-1):
-                    self.getCanvas().drawText(text='┃', pos=(x, yy), color=color)
+                    canvas.drawText(text='┃', pos=(x, yy), color=color)
             elif h==1:
                 txt = '╼'+'━'*(w-2)+'╾'
-                self.getCanvas().drawText(text=txt, pos=(x,y), width=w, color=color)
+                canvas.drawText(text=txt, pos=(x,y), width=w, color=color)
             else:
-                self.getCanvas().drawBox(pos=(x,y), size=(w,h), color=color)
+                canvas.drawBox(pos=(x,y), size=(w,h), color=color)
 
         if self._dragOver is not None:
             _lineDraw(*self._dragOver, ttk.TTkColor.fg("FFFF00"))

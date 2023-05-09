@@ -78,12 +78,12 @@ class TTkLabel(TTkWidget):
             self._text  = TTkString(text).split('\n')
         self._textUpdated()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         forceColor = self.color()!=TTkColor.RST
         w = self.width()
         for y,text in enumerate(self._text):
-            self._canvas.drawText(pos=(0,y), text=' '*w, color=self.color(), forceColor=forceColor)
-            self._canvas.drawText(pos=(0,y), text=text, width=w, alignment=self._alignment, color=self.color(), forceColor=forceColor)
+            canvas.drawText(pos=(0,y), text=' '*w, color=self.color(), forceColor=forceColor)
+            canvas.drawText(pos=(0,y), text=text, width=w, alignment=self._alignment, color=self.color(), forceColor=forceColor)
 
     def _textUpdated(self):
         w, h = self.size()

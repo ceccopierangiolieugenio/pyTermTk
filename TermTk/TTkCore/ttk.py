@@ -72,9 +72,9 @@ class TTk(TTkWidget):
                 self.move(mevt.x, mevt.y)
                 self.update()
                 self.raiseWidget()
-        def paintEvent(self):
-            self._canvas.drawChar((0,0), self._cursor, self._color)
-            #self._canvas.drawChar((0,0),'✜')
+        def paintEvent(self, canvas):
+            canvas.drawChar((0,0), self._cursor, self._color)
+            #canvas.drawChar((0,0),'✜')
 
     __slots__ = (
         '_input', '_termMouse', '_termDirectMouse',
