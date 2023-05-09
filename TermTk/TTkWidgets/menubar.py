@@ -59,8 +59,8 @@ class _TTkMenuSpacer(TTkAbstractListItem):
         TTkAbstractListItem.__init__(self, *args, **kwargs)
         self.resize(1,1)
 
-    def paintEvent(self):
-        self._canvas.drawText(pos=(0,0), text="-"*self.width())
+    def paintEvent(self, canvas):
+        canvas.drawText(pos=(0,0), text="-"*self.width())
 
 class TTkMenuButton(TTkAbstractListItem):
     '''TTkMenuButton'''
@@ -149,7 +149,7 @@ class TTkMenuButton(TTkAbstractListItem):
         listw.viewport().setFocus()
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self._pressed:
             borderColor = self._borderColor
             textColor   = TTkCfg.theme.menuButtonColorClicked
@@ -158,7 +158,7 @@ class TTkMenuButton(TTkAbstractListItem):
             borderColor = self._borderColor
             textColor   = self._color
             scColor     =  TTkCfg.theme.menuButtonShortcutColor
-        self._canvas.drawMenuBarButton(
+        canvas.drawMenuBarButton(
                         pos=(0,0),text=self.text(),
                         width=self.width(),
                         shortcuts=self._shortcut,

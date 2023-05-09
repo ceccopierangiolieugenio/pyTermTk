@@ -116,9 +116,12 @@ class SuperWidget(ttk.TTkWidget):
     @staticmethod
     def swFromWidget(wid, *args, **kwargs):
         swClass = {
-            ttk.TTkTextEdit: so.SuperWidgetTextEdit,
-            ttk.TTkRadioButton: so.SuperWidgetRadioButton,
-                }.get(type(wid),so.SuperWidget)
+            ttk.TTkTextEdit:       so.SuperWidgetTextEdit,
+            ttk.TTkRadioButton:    so.SuperWidgetRadioButton,
+            ttk.TTkFrame:          so.SuperWidgetFrame,
+            ttk.TTkResizableFrame: so.SuperWidgetFrame,
+            ttk.TTkWindow:         so.SuperWidgetFrame,
+                }.get(type(wid), so.SuperWidget)
         return swClass._swFromWidget(wid=wid, *args, **kwargs)
 
     @staticmethod
@@ -252,20 +255,20 @@ class SuperWidget(ttk.TTkWidget):
         self.superResized.emit(w,h)
         return super().resizeEvent(w, h)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         if SuperWidget._showLayout:
             t,b,l,r = self._wid.getPadding()
             for y in range(h):
-                self._canvas.drawText(pos=(0,y),text='',width=w,color=self._layoutColor)
+                canvas.drawText(pos=(0,y),text='',width=w,color=self._layoutColor)
             for y in range(t,h-b):
-                self._canvas.drawText(pos=(l,y),text='',width=w-r-l,color=self._layoutPadColor)
-            # self._canvas.fill(color=self._layoutColor)
-            # self._canvas.fill(pos=(l,t), size=(w-r-l,h-b-t), color=self._layoutPadColor)
+                canvas.drawText(pos=(l,y),text='',width=w-r-l,color=self._layoutPadColor)
+            # canvas.fill(color=self._layoutColor)
+            # canvas.fill(pos=(l,t), size=(w-r-l,h-b-t), color=self._layoutPadColor)
         else:
             self._wid.getCanvas().updateSize()
-            self._wid.paintEvent()
-            self._canvas.paintCanvas(
+            self._wid.paintEvent(canvas)
+            canvas.paintCanvas(
                     self._wid.getCanvas(),
                     (    0,     0, w, h), # geometry
                     (    0,     0, w, h), # slice

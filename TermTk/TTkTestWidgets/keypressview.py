@@ -104,17 +104,17 @@ class TTkKeyPressView(TTkWidget):
             ret[2] += m[2]
         return ret
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         for alpha,text,_ in self._keys:
             r = int(0xbb*alpha)
             g = int(0xff*alpha)
             b = int(0xff*alpha)
             color = TTkColor.fg(f"#{r<<16|g<<8|b:06x}")
-            #self._canvas.drawText(pos=((self.width()-len(text))//2,0),text=text,color=color)
+            #canvas.drawText(pos=((self.width()-len(text))//2,0),text=text,color=color)
             m = self.txt2map(text)
-            self._canvas.drawText(pos=((self.width()-len(text)*3)//2,0),text=m[0],color=color)
-            self._canvas.drawText(pos=((self.width()-len(text)*3)//2,1),text=m[1],color=color)
-            self._canvas.drawText(pos=((self.width()-len(text)*3)//2,2),text=m[2],color=color)
+            canvas.drawText(pos=((self.width()-len(text)*3)//2,0),text=m[0],color=color)
+            canvas.drawText(pos=((self.width()-len(text)*3)//2,1),text=m[1],color=color)
+            canvas.drawText(pos=((self.width()-len(text)*3)//2,2),text=m[2],color=color)
 
     fontMap = TTkKeyPressViewFont.bitmap
     # fontMap = TTkKeyPressViewFont.calvin_s

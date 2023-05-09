@@ -142,14 +142,14 @@ class TTkSpinBox(TTkWidget):
         self._lineEdit.setEnabled(enabled)
         return super().setEnabled(enabled)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self.isEnabled():
             textColor   = TTkCfg.theme.textColorDisabled
         else:
             textColor   = TTkColor.RST
         w = self.width()
-        self._canvas.drawChar(pos=(w-2,0),char="▲", color=textColor)
-        self._canvas.drawChar(pos=(w-1,0),char="▼", color=textColor)
+        canvas.drawChar(pos=(w-2,0),char="▲", color=textColor)
+        canvas.drawChar(pos=(w-1,0),char="▼", color=textColor)
 
     def focusInEvent(self):
         self._lineEdit._color = TTkCfg.theme.lineEditTextColorFocus

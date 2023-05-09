@@ -56,7 +56,7 @@ class TTkGraph(TTkWidget):
         self._data.append(values)
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self._data: return
         w,h = self.size()
         x=0
@@ -79,11 +79,11 @@ class TTkGraph(TTkWidget):
             v1 = data[i]
             if i%2==0:
                 if self._direction == TTkK.RIGHT:
-                    self._canvas.drawHChart(pos=(x+i//2,y),values=(v2,v1), zoom=zoom, color=self._color.modParam(val=-y))
+                    canvas.drawHChart(pos=(x+i//2,y),values=(v2,v1), zoom=zoom, color=self._color.modParam(val=-y))
                 else:
-                    self._canvas.drawHChart(pos=(w-(x+i//2),y),values=(v1,v2), zoom=zoom, color=self._color.modParam(val=-y))
+                    canvas.drawHChart(pos=(w-(x+i//2),y),values=(v1,v2), zoom=zoom, color=self._color.modParam(val=-y))
         if i%2==1:
             if self._direction == TTkK.RIGHT:
-                self._canvas.drawHChart(pos=(x+i//2+1,y),values=(v1,v1), zoom=zoom, color=self._color.modParam(val=-y))
+                canvas.drawHChart(pos=(x+i//2+1,y),values=(v1,v1), zoom=zoom, color=self._color.modParam(val=-y))
             else:
-                self._canvas.drawHChart(pos=(w-(x+i//2+1),y),values=(v1,v1), zoom=zoom, color=self._color.modParam(val=-y))
+                canvas.drawHChart(pos=(w-(x+i//2+1),y),values=(v1,v1), zoom=zoom, color=self._color.modParam(val=-y))

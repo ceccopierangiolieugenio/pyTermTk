@@ -32,14 +32,14 @@ class TTkTestWidgetSizes(TTkFrame):
         self._name = kwargs.get('name' , f"TestWidgetSizes-{TTkTestWidgetSizes.ID}" )
         TTkTestWidgetSizes.ID+=1
 
-    def paintEvent(self):
-        TTkFrame.paintEvent(self)
+    def paintEvent(self, canvas):
+        TTkFrame.paintEvent(self, canvas)
         t,_,l,_ = self.getPadding()
-        self._canvas.drawText(pos=(l,t+0), text=f"Test Widget [{self._name}]")
-        self._canvas.drawText(pos=(l,t+1), text=f"x,y ({self._x},{self._y})")
-        self._canvas.drawText(pos=(l,t+2), text=f"w,h ({self._width},{self._height})")
-        self._canvas.drawText(pos=(l,t+3), text=f"max w,h ({self._maxw},{self._maxh})")
-        self._canvas.drawText(pos=(l,t+4), text=f"min w,h ({self._minw},{self._minh})")
+        canvas.drawText(pos=(l,t+0), text=f"Test Widget [{self._name}]")
+        canvas.drawText(pos=(l,t+1), text=f"x,y ({self._x},{self._y})")
+        canvas.drawText(pos=(l,t+2), text=f"w,h ({self._width},{self._height})")
+        canvas.drawText(pos=(l,t+3), text=f"max w,h ({self._maxw},{self._maxh})")
+        canvas.drawText(pos=(l,t+4), text=f"min w,h ({self._minw},{self._minh})")
 
     def mousePressEvent(self, evt): return True
     def mouseReleaseEvent(self, evt): return True

@@ -66,7 +66,7 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self._textWrap: return
         _, oy = self.getViewOffsets()
         w, h = self.size()
@@ -78,13 +78,13 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
                 else:
                     txt = f"{dt}"
                     color = TTkCfg.theme.textEditLineNumberColor
-                self._canvas.drawText(pos=(0,i), text=txt, width=w, color=color)
-                self._canvas.drawChar(pos=(w-1,i), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
+                canvas.drawText(pos=(0,i), text=txt, width=w, color=color)
+                canvas.drawChar(pos=(w-1,i), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
         else:
             color = TTkCfg.theme.textEditLineNumberColor
             for y in range(h):
-                self._canvas.drawText(pos=(0,y), text=f"{y+oy}", width=w, color=color)
-                self._canvas.drawChar(pos=(w-1,y), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
+                canvas.drawText(pos=(0,y), text=f"{y+oy}", width=w, color=color)
+                canvas.drawChar(pos=(w-1,y), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
 
 class TTkTextEditView(TTkAbstractScrollView):
     '''TTkTextEditView'''
@@ -560,7 +560,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def focusOutEvent(self):
         TTkHelper.hideCursor()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         ox, oy = self.getViewOffsets()
         if self.hasFocus():
             selectColor = TTkCfg.theme.lineEditTextColorSelected
@@ -574,10 +574,10 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         for y, l in enumerate(subLines):
             t = outLines[l[0]-subLines[0][0]]
-            self._canvas.drawTTkString(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
+            canvas.drawTTkString(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
 
         if self._lineWrapMode == TTkK.FixedWidth:
-            self._canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
+            canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
         self._pushCursor()
 
 class TTkTextEdit(TTkAbstractScrollArea):

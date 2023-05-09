@@ -47,9 +47,9 @@ from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetI
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
 class _superSimpleHorizontalLine(TTkWidget):
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
-        self._canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=TTkColor.fg("#888888"))
+        canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=TTkColor.fg("#888888"))
 
 # List taken from:
 # https://emojipicker.com

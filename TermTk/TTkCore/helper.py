@@ -289,9 +289,10 @@ class TTkHelper:
             if not widget.isVisibleAndParent(): continue
             # Resize the canvas just before the paintEvent
             # to avoid too many allocations
-            widget.getCanvas().updateSize()
-            widget.getCanvas().clean()
-            widget.paintEvent()
+            canvas = widget.getCanvas()
+            canvas.updateSize()
+            canvas.clean()
+            widget.paintEvent(canvas)
 
         # Compose all the canvas to the parents
         # From the deepest children to the bottom

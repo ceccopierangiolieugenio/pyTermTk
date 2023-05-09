@@ -334,7 +334,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
         self.viewChanged.emit()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         x,y = self.getViewOffsets()
         w,h = self.size()
         tt = TTkCfg.theme.tree
@@ -343,15 +343,15 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for i,l in enumerate(self._header):
             hx  = 0 if i==0 else self._columnsPos[i-1]+1
             hx1 = self._columnsPos[i]
-            self._canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=self._headerColor)
+            canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=self._headerColor)
             if i == self._sortColumn:
                 s = tt[6] if self._sortOrder == TTkK.AscendingOrder else tt[7]
-                self._canvas.drawText(pos=(hx1-x-1,0), text=s, color=self._headerColor)
+                canvas.drawText(pos=(hx1-x-1,0), text=s, color=self._headerColor)
         # Draw header separators
         for sx in self._columnsPos:
-            self._canvas.drawChar(pos=(sx-x,0), char=tt[5], color=self._headerColor)
+            canvas.drawChar(pos=(sx-x,0), char=tt[5], color=self._headerColor)
             for sy in range(1,h):
-                self._canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=self._lineColor)
+                canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=self._lineColor)
 
         # Draw cache
         for i, c in enumerate(self._cache):
@@ -363,6 +363,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
                 text = c.data[il]
                 if item.isSelected():
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=text.completeColor(self._selectedColor), width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor)
+                    canvas.drawText(pos=(lx-x,i-y+1), text=text.completeColor(self._selectedColor), width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor)
                 else:
-                    self._canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il))
+                    canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il))

@@ -107,11 +107,11 @@ class TTkFrame(TTkWidget):
         self._borderColor = color
         self.update()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self._border:
-            self._canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=self._borderColor)
+            canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=self._borderColor)
             if len(self._title) != 0:
-                self._canvas.drawBoxTitle(
+                canvas.drawBoxTitle(
                                 pos=(0,0),
                                 size=(self._width,self._height),
                                 text=self._title,
@@ -119,4 +119,4 @@ class TTkFrame(TTkWidget):
                                 color=self._borderColor,
                                 colorText=self._titleColor)
         elif self._menubarTop:
-            self._canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+            canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)

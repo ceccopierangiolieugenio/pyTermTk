@@ -152,7 +152,7 @@ class TTkComboBox(TTkWidget):
         w,h = self.size()
         self._lineEdit.setGeometry(1,0,w-4,h)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if not self.isEnabled():
             borderColor = TTkCfg.theme.comboboxBorderColorDisabled
             color       = TTkCfg.theme.comboboxContentColorDisabled
@@ -168,12 +168,12 @@ class TTkComboBox(TTkWidget):
             text = self._list[self._id]
         w = self.width()
 
-        self._canvas.drawTTkString(pos=(1,0), text=TTkString(text), width=w-3, alignment=self._textAlign, color=color)
-        self._canvas.drawText(pos=(0,0), text="[",    color=borderColor)
+        canvas.drawTTkString(pos=(1,0), text=TTkString(text), width=w-3, alignment=self._textAlign, color=color)
+        canvas.drawText(pos=(0,0), text="[",    color=borderColor)
         if self._editable:
-            self._canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
+            canvas.drawText(pos=(w-3,0), text="[^]", color=borderColor)
         else:
-            self._canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
+            canvas.drawText(pos=(w-2,0), text="^]", color=borderColor)
 
     def currentText(self):
         '''currentText'''

@@ -90,7 +90,7 @@ class TTkScrollBar(TTkWidget):
               |---|            pageStep, asciiStep (step size in ascii)
 
     '''
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self._orientation == TTkK.VERTICAL:
             size=self._height
         else:
@@ -113,7 +113,7 @@ class TTkScrollBar(TTkWidget):
             # convert i screen coordinates
             aa = asciiDrawingSize * a // (self._maximum - self._minimum)
             bb = aa + asciiStep
-        self._canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
+        canvas.drawScroll(pos=(0,0),size=size,slider=(aa+1,bb+1),orientation=self._orientation, color=color)
         # Update the screen position coordinates
         self._screenPgDown =   ( 1 ,    aa+1     )
         self._screenScroller = ( aa+1 , bb+1)

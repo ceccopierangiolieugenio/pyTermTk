@@ -110,7 +110,7 @@ class SuperLayout(ttk.TTkWidget):
         data = self
         canvas = self.getCanvas()
         canvas.clean()
-        self.paintEvent()
+        self.paintEvent(canvas)
         ttk.TTkWidget._paintChildCanvas(canvas, self.layout(), self.layout().geometry(), self.layout().offset())
         drag.setHotSpot(evt.x, evt.y)
         drag.setPixmap(canvas)
@@ -213,11 +213,11 @@ class SuperLayout(ttk.TTkWidget):
         self._lay.setGeometry(x,y,w,h)
         return super().resizeEvent(w, h)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         if self._selectable:
             if so.SuperWidget._showLayout:
                 w,h = self.size()
-                self._canvas.drawBox(pos=(0,0),size=(w,h), color=ttk.TTkColor.fg('#88DD88', modifier=ttk.TTkColorGradient(increment=+1)))
+                canvas.drawBox(pos=(0,0),size=(w,h), color=ttk.TTkColor.fg('#88DD88', modifier=ttk.TTkColorGradient(increment=+1)))
             else:
                 w,h = self.size()
-                self._canvas.drawBox(pos=(0,0),size=(w,h), color=ttk.TTkColor.fg('#223322', modifier=ttk.TTkColorGradient(increment=+1)))
+                canvas.drawBox(pos=(0,0),size=(w,h), color=ttk.TTkColor.fg('#223322', modifier=ttk.TTkColorGradient(increment=+1)))

@@ -101,10 +101,10 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
     def viewDisplayedSize(self):
         return self.size()
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
-        # self._canvas.fill(pos=(0,0),size=(w,h), char="╳", color=ttk.TTkColor.fg("#444400")+ttk.TTkColor.bg("#000044"))
-        self._canvas.fill(pos=(0,0),size=(w,h), char="#", color=ttk.TTkColor.fg("#220044")+ttk.TTkColor.bg("#000022"))
+        # canvas.fill(pos=(0,0),size=(w,h), char="╳", color=ttk.TTkColor.fg("#444400")+ttk.TTkColor.bg("#000044"))
+        canvas.fill(pos=(0,0),size=(w,h), char="#", color=ttk.TTkColor.fg("#220044")+ttk.TTkColor.bg("#000022"))
 
 class WindowEditor(ttk.TTkAbstractScrollArea):
     __slots__ = ('getTTk', 'dumpDict', 'importSuperWidget',
