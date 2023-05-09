@@ -119,6 +119,12 @@ class SuperLayout(ttk.TTkWidget):
         self.parentWidget().removeSuperWidget(self)
         return True
 
+    def isRootWidget(self):
+        return self._superRootWidget
+
+    def makeRootWidget(self):
+        self._superRootWidget = True
+
     def superChild(self):
         return self._lay
 
