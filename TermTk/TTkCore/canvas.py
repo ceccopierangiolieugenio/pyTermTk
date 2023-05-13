@@ -244,7 +244,7 @@ class TTkCanvas:
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
             self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
 
-    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+    def drawText(self, text="", pos=(0,0), width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
             NOTE:
             drawText is one of the most abused functions,

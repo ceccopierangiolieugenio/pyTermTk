@@ -43,7 +43,7 @@ class TestUndoRedo(ttk.TTkWidget):
         self.update()
         return super().mousePressEvent(evt)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         return
         def _getSelect(i,p):
             selSt = p.selectionStart()

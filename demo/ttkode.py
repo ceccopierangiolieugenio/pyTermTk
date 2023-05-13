@@ -45,10 +45,10 @@ class _KolorFrame(TTkFrame):
     def setFillColor(self, color):
         self._fillColor = color
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
         for y in range(h):
-            self._canvas.drawText(pos=(0,y),text='',width=w,color=self._fillColor)
+            canvas.drawText(pos=(0,y),text='',width=w,color=self._fillColor)
         return super().paintEvent()
 
 

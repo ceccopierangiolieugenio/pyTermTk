@@ -154,10 +154,10 @@ class PaintCanvas(TTkWidget):
                 _place(x1,i,c[5])
                 _place(x2,i,c[5])
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         for x,l in enumerate(self._map):
             for y,c in enumerate(l):
-                self._canvas.drawChar(pos=(x,y), char=c)
+                canvas.drawChar(pos=(x,y), char=c)
 
         # Draw the yellow reference BOX
         if self._pressPos and self._dragPos:
@@ -166,7 +166,7 @@ class PaintCanvas(TTkWidget):
             w = max(self._pressPos[0]-x, self._dragPos[0]-x)
             h = max(self._pressPos[1]-y, self._dragPos[1]-y)
             if w>0 and h>0:
-                self._canvas.drawBox(pos=(x,y),size=(w,h), color=TTkColor.fg('#ffff00'))
+                canvas.drawBox(pos=(x,y),size=(w,h), color=TTkColor.fg('#ffff00'))
 
 root = TTk()
 if fullscreen:

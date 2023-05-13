@@ -35,9 +35,9 @@ class TestWidget(ttk.TTkWidget):
         self._cc = cc
         super().__init__(*args, **kwargs)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         for y in range(self.height()):
-            self._canvas.drawText(pos=(0,y), text=self._cc*self.width())
+            canvas.drawText(pos=(0,y), text=self._cc*self.width())
 
 root = TermTk.TTk()
 
