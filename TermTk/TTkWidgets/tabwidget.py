@@ -34,7 +34,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.button import TTkButton
-from TermTk.TTkWidgets.menubar import TTkMenuButton
+from TermTk.TTkWidgets.menubar import TTkMenuBarButton
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
@@ -130,9 +130,9 @@ class TTkTabButton(TTkButton):
             color=self._borderColor )
         canvas.drawText(pos=(1,1 if self._border else 0), text=self.text(), color=self.color())
 
-class _TTkTabMenuButton(TTkMenuButton):
+class _TTkTabMenuButton(TTkMenuBarButton):
     def __init__(self, *args, **kwargs):
-        TTkMenuButton.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def paintEvent(self, canvas):
         if self._pressed:

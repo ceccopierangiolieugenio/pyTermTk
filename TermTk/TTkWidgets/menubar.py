@@ -24,51 +24,22 @@
 
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
+from TermTk.TTkWidgets.menu import TTkMenu, TTkMenuButton, _TTkMenuSpacer
 
-
-class _TTkMenuListWidget(TTkListWidget):
-    __slots__ = ('_previous')
-    def __init__(self, *args, **kwargs):
-        TTkListWidget.__init__(self, *args, **kwargs)
-        self._previous = kwargs.get('previous',TTkHelper.getFocus())
-
-    def keyEvent(self, evt):
-        if evt.type == TTkK.SpecialKey:
-            if evt.key == TTkK.Key_Left:
-                TTkHelper.removeOverlayAndChild(self)
-                if self._previous:
-                    self._previous.setFocus()
-                return True
-            elif evt.key == TTkK.Key_Right:
-                if self._highlighted and \
-                   isinstance(self._highlighted,TTkMenuButton) and \
-                   self._highlighted._menu:
-                    self._highlighted.menuButtonEvent()
-                return True
-        return TTkListWidget.keyEvent(self, evt)
-
-
-class _TTkMenuSpacer(TTkAbstractListItem):
-    def __init__(self, *args, **kwargs):
-        TTkAbstractListItem.__init__(self, *args, **kwargs)
-        self.resize(1,1)
-
-    def paintEvent(self, canvas):
-        canvas.drawText(pos=(0,0), text="-"*self.width())
-
-class TTkMenuButton(TTkAbstractListItem):
+class TTkMenuBarButton(TTkAbstractListItem):
     '''TTkMenuButton'''
     __slots__ = ('_border', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked', '_menuOffset')
     def __init__(self, *args, **kwargs):
         TTkAbstractListItem.__init__(self, *args, **kwargs)
         # signals
-        self.menuButtonClicked = pyTTkSignal(TTkButton)
+        self.menuButtonClicked = pyTTkSignal(TTkMenuButton)
         self._color = kwargs.get('color', TTkCfg.theme.menuButtonColor )
         self._border = kwargs.get('border', TTkCfg.theme.menuButtonColor )
         self._borderColor = kwargs.get('borderColor', TTkCfg.theme.menuButtonBorderColor )
@@ -90,7 +61,6 @@ class TTkMenuButton(TTkAbstractListItem):
     def addMenu(self, text):
         '''addMenu'''
         button = TTkMenuButton(text=text, borderColor=self._borderColor, border=False)
-        button.menuButtonClicked.connect(self._menuCallback)
         self._menu.append(button)
         return button
 
@@ -109,44 +79,18 @@ class TTkMenuButton(TTkAbstractListItem):
     def shortcutEvent(self):
         self.menuButtonEvent()
 
-    @pyTTkSlot(TTkButton)
-    def _menuCallback(self, button):
-        #self._id = self._list.index(label)
-        TTkLog.debug(f"Bind Clicked {button.text}")
-        self.menuButtonClicked.emit(button)
-        TTkHelper.removeOverlay()
-        self.update()
-
     @pyTTkSlot(TTkAbstractListItem)
     def menuButtonEvent(self, listItem=None):
         if not self._menu:
             self.menuButtonClicked.emit(self)
             return
-        # Import here to avoid circular import
-        from TermTk.TTkWidgets.list_ import TTkList
-        from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
-        # Stupid way to find out if I am a submenu
-        isSubmenu = not self._border
-        frameHeight = len(self._menu) + 2
-        frameWidth = self.width()
-        if frameHeight > 15: frameHeight = 15
-        if frameWidth  < 15: frameWidth = 15
-        if isSubmenu:
-            frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight))
-            pos = (self.width(), -1)
-        else:
-            frame = TTkResizableFrame(layout=TTkHBoxLayout(), size=(frameWidth,frameHeight), title=self.text(), titleAlign=TTkK.LEFT_ALIGN)
-            pos = self._menuOffset
-        menuListWidget = _TTkMenuListWidget()
-        listw = TTkList(parent=frame, listWidget = menuListWidget)
-        # listw.textClicked.connect(self._menuCallback)
-        # listw.textClicked.connect(self._menuCallback)
-        # TTkLog.debug(f"{self._menu}")
-        for item in self._menu:
-            listw.addItem(item)
-        TTkHelper.overlay(self, frame, pos[0], pos[1])
-        listw.viewport().setFocus()
+        width = 3+max((len(smb._text) + (2 if smb._submenu else 0)) for smb in self._menu if type(smb) is TTkMenuButton)
+        height = len(self._menu)+2
+        subMenu = TTkMenu(pos=(8,6), size=(width,height), title=self.text(), titleAlign=TTkK.LEFT_ALIGN)
+        for smb  in self._menu:
+            subMenu.addMenuItem(smb)
+        TTkHelper.overlay(self, subMenu, -1, 0)
         self.update()
 
     def paintEvent(self, canvas):
@@ -198,7 +142,7 @@ class TTkMenuLayout(TTkHBoxLayout):
 
     def addMenu(self, text, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
-        button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
+        button = TTkMenuBarButton(text=text, borderColor=self._borderColor, border=True)
         if  alignment == TTkK.LEFT_ALIGN:
             self._itemsLeft.addWidget(button)
         elif alignment == TTkK.CENTER_ALIGN:

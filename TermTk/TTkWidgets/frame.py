@@ -25,7 +25,6 @@
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.menubar import TTkMenuLayout
 
 class TTkFrame(TTkWidget):
     '''
@@ -67,6 +66,7 @@ class TTkFrame(TTkWidget):
 
     def menubarTop(self):
         if not self._menubarTop:
+            from TermTk.TTkWidgets.menubar import TTkMenuLayout
             self._menubarTop = TTkMenuLayout(borderColor=self._borderColor)
             self.rootLayout().addItem(self._menubarTop)
             self._menubarTop.setGeometry(1,self._menubarTopPosition,self.width()-2,1)
