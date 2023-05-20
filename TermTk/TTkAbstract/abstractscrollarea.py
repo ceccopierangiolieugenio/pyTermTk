@@ -39,8 +39,8 @@ class TTkAbstractScrollArea(TTkWidget):
         self._processing = False
         self._viewport = None
         # self.setLayout(TTkGridLayout())
-        self._verticalScrollBar = TTkScrollBar(orientation=TTkK.VERTICAL)
-        self._horizontalScrollBar = TTkScrollBar(orientation=TTkK.HORIZONTAL)
+        self._verticalScrollBar = TTkScrollBar(orientation=TTkK.VERTICAL, visible=False)
+        self._horizontalScrollBar = TTkScrollBar(orientation=TTkK.HORIZONTAL, visible=False)
         self._verticalScrollBarPolicy   = kwargs.get("verticalScrollBarPolicy",  TTkK.ScrollBarAsNeeded)
         self._horizontalScrollBarPolicy = kwargs.get("horizontalScrollBarPolicy",TTkK.ScrollBarAsNeeded)
         super().__init__(*args, **kwargs)
