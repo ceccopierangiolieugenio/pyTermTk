@@ -31,9 +31,9 @@ sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
 class superSimpleHorizontalLine(ttk.TTkWidget):
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         w,h = self.size()
-        self._canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=ttk.TTkColor.fg("#888888"))
+        canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=ttk.TTkColor.fg("#888888"))
 
 def demoTextEditSecondary(root=None, document=None):
     te = ttk.TTkTextEdit(parent=root, document=document)

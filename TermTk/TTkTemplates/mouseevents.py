@@ -133,7 +133,7 @@ class TMouseEvents():
         :return: **True** if the event has been handled
         :rtype: bool
         '''
-        return False
+        return self._processStyleEvent(self._S_HOVER)
 
     def leaveEvent(self, evt) -> bool :
         '''
@@ -147,4 +147,5 @@ class TMouseEvents():
         :return: **True** if the event has been handled
         :rtype: bool
         '''
-        return False
+        return self._processStyleEvent(self._S_NONE)
+

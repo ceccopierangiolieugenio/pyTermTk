@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -32,18 +30,39 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
 
 class TTkAbstractScrollArea(TTkWidget):
     __slots__ = (
+        '_processing', # this flag is required to avoid unnecessary loop on edge cases
         '_viewport',
         '_verticalScrollBar',   '_verticalScrollBarPolicy',
         '_horizontalScrollBar', '_horizontalScrollBarPolicy',)
 
     def __init__(self, *args, **kwargs):
+        self._processing = False
         self._viewport = None
-        super().__init__(*args, **kwargs)
-        self.setLayout(TTkGridLayout())
+        # self.setLayout(TTkGridLayout())
         self._verticalScrollBar = TTkScrollBar(orientation=TTkK.VERTICAL)
         self._horizontalScrollBar = TTkScrollBar(orientation=TTkK.HORIZONTAL)
         self._verticalScrollBarPolicy   = kwargs.get("verticalScrollBarPolicy",  TTkK.ScrollBarAsNeeded)
         self._horizontalScrollBarPolicy = kwargs.get("horizontalScrollBarPolicy",TTkK.ScrollBarAsNeeded)
+        super().__init__(*args, **kwargs)
+        self.layout().addWidget(self._verticalScrollBar)
+        self.layout().addWidget(self._horizontalScrollBar)
+
+    def _resizeEvent(self):
+        if self._processing: return
+        self._processing = True
+        w,h = self.size()
+        vert = 1 if self._verticalScrollBar.isVisible() else 0
+        hori = 1 if self._horizontalScrollBar.isVisible() else 0
+        if vert:
+            self._verticalScrollBar.setGeometry(w-1,0,1,h-hori)
+        if hori:
+            self._horizontalScrollBar.setGeometry(0,h-1,w-vert,1)
+        if self._viewport:
+            self._viewport.setGeometry(0,0,w-vert,h-hori)
+        self._processing = False
+
+    def resizeEvent(self, w: int, h: int):
+        self._resizeEvent()
 
     @pyTTkSlot()
     def _viewportChanged(self):
@@ -87,6 +106,7 @@ class TTkAbstractScrollArea(TTkWidget):
             self._horizontalScrollBar.show()
         else:
             self._horizontalScrollBar.hide()
+        self._resizeEvent()
 
     @pyTTkSlot(int)
     def _vscrollMoved(self, val):
@@ -101,6 +121,9 @@ class TTkAbstractScrollArea(TTkWidget):
     def setViewport(self, viewport):
         if not isinstance(viewport, TTkAbstractScrollViewInterface):
             raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollArea.setVewport(viewport)")
+        if self._viewport:
+            self._viewport.viewChanged.disconnect(self._viewportChanged)
+            self.layout().removeWidget(self._viewport)
         self._viewport = viewport
         self._viewport.viewChanged.connect(self._viewportChanged)
         self._verticalScrollBar.sliderMoved.connect(self._vscrollMoved)
@@ -108,11 +131,10 @@ class TTkAbstractScrollArea(TTkWidget):
         # TODO: Remove this check once
         #  unified  "addWidget" and "addItem" in the TTKGridLayout
         if isinstance(viewport, TTkWidget):
-            self.layout().addWidget(viewport,0,0)
+            self.layout().addWidget(viewport)
         else:
-            self.layout().addItem(viewport,0,0)
-        self.layout().addWidget(self._verticalScrollBar,0,1)
-        self.layout().addWidget(self._horizontalScrollBar,1,0)
+            self.layout().addItem(viewport)
+        self._resizeEvent()
 
     def setVerticalScrollBarPolicy(self, policy):
         if policy != self._verticalScrollBarPolicy:

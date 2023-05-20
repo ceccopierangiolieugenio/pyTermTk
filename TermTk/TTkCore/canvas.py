@@ -244,7 +244,7 @@ class TTkCanvas:
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
             self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
 
-    def drawText(self, pos, text, width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
+    def drawText(self, text="", pos=(0,0), width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
             NOTE:
             drawText is one of the most abused functions,
@@ -594,9 +594,9 @@ class TTkCanvas:
 
     def drawMenuBarBg(self, pos, size, color=TTkColor.RST ):
         mb = TTkCfg.theme.menuBar
-        self.drawText(pos, text=f"{mb[3]}{mb[1]*(size-2)}{mb[4]}", color=color)
+        self.drawText(pos=pos, text=f"{mb[3]}{mb[1]*(size-2)}{mb[4]}", color=color)
 
-    def drawMenuBarButton(self, pos, width, text, border=True, submenu=False, shortcuts=[], color=TTkColor.RST, borderColor=TTkColor.RST, shortcutColor=TTkColor.UNDERLINE ):
+    def drawMenuBarButton(self, width, text, pos=(0,0), border=True, submenu=False, shortcuts=[], color=TTkColor.RST, borderColor=TTkColor.RST, shortcutColor=TTkColor.UNDERLINE ):
         mb = TTkCfg.theme.menuBar
         x,y = pos
         if border:

@@ -38,7 +38,7 @@ class EasingShow(ttk.TTkWidget):
     def __init__(self, easingCb, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._easingCb = ttk.TTkEasingCurve(easingCb)
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         # gen w*2,h*4 pixmap
         w,h = self.size()
         pm = [[0]*h*4 for _ in range(w*2)]
@@ -65,7 +65,6 @@ class EasingShow(ttk.TTkWidget):
 
             TTkTheme.braille[( o1<<4 | o2 )] = Braille UTF-8 char
         '''
-        canvas = self.getCanvas()
         gb=ttk.TTkCfg.theme.braille
         color=ttk.TTkColor.fg("#FFFF00")+ttk.TTkColor.bg("#004400", modifier=ttk.TTkColorGradient(increment=-5))
         for x in range(w):

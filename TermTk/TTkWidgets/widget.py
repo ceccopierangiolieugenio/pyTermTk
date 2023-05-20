@@ -26,6 +26,7 @@ from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
+from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
@@ -103,7 +104,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_visible', '_transparent',
         '_pendingMouseRelease',
         '_enabled',
-        '_lookAndFeel',
+        '_lookAndFeel', '_style', '_currentStyle',
         '_toolTip',
         #Signals
         'focusChanged', 'sizeChanged')
@@ -119,6 +120,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._lookAndFeel = None
         self.setLookAndFeel(kwargs.get('lookAndFeel', TTkLookAndFeel()))
+        self._style = TTkWidget._BASE_STYLE
+        self._currentStyle = TTkWidget._BASE_STYLE['default']
 
         self._pendingMouseRelease = False
 
@@ -144,6 +147,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._visible = kwargs.get('visible', True)
         self._enabled = kwargs.get('enabled', True)
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
 
         self._toolTip = TTkString(kwargs.get('toolTip',''))
 
@@ -445,6 +449,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         if evt.evt == TTkK.Release:
             self._pendingMouseRelease = False
+            self._processStyleEvent(TTkWidget._S_NONE)
             if self.mouseReleaseEvent(evt):
                 return True
 
@@ -456,6 +461,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             if w.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 w.setFocus()
                 w.raiseWidget()
+            self._processStyleEvent(TTkWidget._S_PRESSED)
             if evt.tap == 2 and self.mouseDoubleClickEvent(evt):
                 #self._pendingMouseRelease = True
                 return True
@@ -693,6 +699,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''setEnabled'''
         if self._enabled == enabled: return
         self._enabled = enabled
+        self._processStyleEvent(TTkWidget._S_DEFAULT if enabled else TTkWidget._S_DISABLED)
         self.update()
 
     @pyTTkSlot(bool)
@@ -724,3 +731,52 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             if w._name == name:
                 return w
         return None
+
+    _BASE_STYLE = {'default' : {'color': TTkColor.RST}}
+
+    # Style Methods
+    _S_NONE     = 0x00
+    _S_DEFAULT  = 0x01
+    _S_ACTIVE   = 0x02
+    _S_DISABLED = 0x03
+    _S_HOVER    = 0x10
+    _S_PRESSED  = 0x20
+    _S_RELEASED = 0x40
+
+    def style(self):
+        return self._style
+
+    def currentStyle(self):
+        return self._currentStyle
+
+    def setStyle(self, style):
+        self._style = style[type(self)]
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
+
+    def _processStyleEvent(self, evt):
+        if not self._style: return False
+        if not self._enabled and 'disabled' in self._style:
+            self._currentStyle = self._style['disabled']
+            self.update()
+            return True
+
+        self._currentStyle = self._style['default']
+        if evt in (TTkWidget._S_DEFAULT,
+                   TTkWidget._S_NONE,
+                   TTkWidget._S_ACTIVE) and 'default' in self._style:
+            self._currentStyle = self._style['default']
+            self.update()
+            return True
+        elif evt & TTkWidget._S_HOVER and 'hover' in self._style:
+            self._currentStyle = self._style['hover']
+            self.update()
+            return True
+        elif evt & TTkWidget._S_PRESSED and 'clicked' in self._style:
+            self._currentStyle = self._style['clicked']
+            self.update()
+            return True
+        elif evt & TTkWidget._S_DISABLED and 'disabled' in self._style:
+            self._currentStyle = self._style['disabled']
+            self.update()
+            return True
+        return False

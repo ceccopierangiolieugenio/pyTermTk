@@ -126,18 +126,18 @@ class TTkPeppered(TTkWidget):
             # Use Blue as splitter
             return splitReduce(2)
 
-    def paintEvent(self):
+    def paintEvent(self, canvas):
         for y, row in enumerate(TTkPeppered.peppered_old):
             for x, col in enumerate(row):
                 if col == "#000000":
                     color=TTkColor.RST
                 else:
                     color=TTkColor.bg(col)
-                self._canvas.drawText(pos=(x,y), text=' ', color=color)
+                canvas.drawText(pos=(x,y), text=' ', color=color)
         img = self.peppered_20
         for y in range(0, len(img)&(~1), 2):
             for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                self._canvas.drawText( \
+                canvas.drawText( \
                         pos=(x//2+11,y//2), \
                         text=self.reduce(
                                     img[y][x]   , img[y][x+1]   ,
@@ -145,13 +145,13 @@ class TTkPeppered(TTkWidget):
         img = self.peppered_10
         for y in range(0, len(img)&(~1), 2):
             for x in range(0, min(len(img[y])&(~1),len(img[y+1])&(~1)), 2):
-                self._canvas.drawText( \
+                canvas.drawText( \
                         pos=(x//2+22,y//2), \
                         text=self.reduce(
                                     img[y][x]   , img[y][x+1]   ,
                                     img[y+1][x] , img[y+1][x+1] ))
 
-        self._canvas.drawText(pos=(22,6), text='TEST Peppered')
+        canvas.drawText(pos=(22,6), text='TEST Peppered')
 
 
 root = ttk.TTk()
