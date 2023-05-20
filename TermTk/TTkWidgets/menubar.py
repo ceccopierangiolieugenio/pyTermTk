@@ -150,4 +150,5 @@ class TTkMenuLayout(TTkHBoxLayout):
         elif alignment == TTkK.RIGHT_ALIGN:
             self._itemsRight.addWidget(button)
         self._buttons.append(button)
+        self.update()
         return button

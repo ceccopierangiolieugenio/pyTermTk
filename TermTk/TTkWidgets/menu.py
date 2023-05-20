@@ -171,6 +171,9 @@ class TTkMenuButton(TTkWidget):
         w,h = self.parentWidget().size()
         ox,oy = self.parentWidget().getViewOffsets()
         x,y = self.pos()
+        # Highlight the first entry in the submenu
+        if btns := [b for b in self._submenu if type(b)==TTkMenuButton]:
+            btns[0].setHighlight(True)
         TTkHelper.overlay(self.parentWidget(), subMenu, w, y-oy-1)
 
     def _triggerButton(self):
