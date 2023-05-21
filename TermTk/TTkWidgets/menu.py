@@ -75,7 +75,7 @@ class TTkMenuButton(TTkWidget):
             {TTkMenuButton : {
                 'default':     {'color': TTkColor.RST},
                 'highlighted': {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')},
-                'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')},
+                'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
                 'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
                 'clicked':     {'color': TTkColor.fg('#FFFF00')},
                 'disabled':    {'color': TTkColor.fg('#888888')},
@@ -211,13 +211,17 @@ class TTkMenuButton(TTkWidget):
         else:
             style = self.currentStyle()
 
-        # canvas.drawText(text=self._text, width=self.width(), color=style['color'])
-        canvas.drawMenuBarButton(
-            text=self._text,
-            width=self.width(),
-            color=style['color'],
-            shortcuts=self._shortcuts,
-            border=False, submenu=self._submenu)
+        # '▶','□','▣'
+        w = self.width()
+        if self._checkable:
+            canvas.drawText(width=w, color=style['color'] ,text=('▣ ' if self._checked else '□ ')+self._text)
+        else:
+            canvas.drawText(width=w, color=style['color'] ,text=self._text)
+        if self._submenu:
+            canvas._set(0, w-1, '▶', style['color'])
+        off = 0
+        for i in self._shortcuts:
+            canvas._set(0,i+off, self._text.charAt(i), TTkColor.UNDERLINE) 
 
 class _TTkMenuAreaWidget(TTkAbstractScrollView):
     __slots__ = ('_submenu','_minWith','_caller')

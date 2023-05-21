@@ -22,12 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-from PIL import Image
-import zlib, pickle, base64
-
-import sys, os, argparse, math, random
-
+import sys, os
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
@@ -64,8 +59,8 @@ fileMenu = ttk.TTkMenu(parent=root, pos=(8,6), size=(20,12))
 fileMenu.addMenu("New File")
 fileMenu.addMenu("Old File")
 fileMenu.addSpacer()
-fileMenu.addMenu("Open")
-fileMenu.addMenu("Save")
+fileMenu.addMenu("Open",checkable=True)
+fileMenu.addMenu("Save",checkable=True,checked=True)
 fileMenu.addMenu("Save as").setDisabled()
 fileMenu.addSpacer()
 exportFileMenu = fileMenu.addMenu("E&xport")
@@ -81,7 +76,7 @@ fileMenu.addMenu("Close")
 fileMenu.addSpacer()
 fileMenu.addMenu("Exit")
 
-window = ttk.TTkWindow(title="Test MenuBar", parent=root,pos=(20,1), size=(60,10), border=True)
+window = ttk.TTkWindow(title="Test MenuBar", parent=root,pos=(30,1), size=(60,10), border=True)
 fileMenu2 = window.menubarTop().addMenu("&Fi&le")
 fileMenu2.addMenu("New File")
 fileMenu2.addMenu("Old File")
@@ -102,7 +97,7 @@ fileMenu2.addMenu("Close")
 fileMenu2.addSpacer()
 fileMenu2.addMenu("Exit")
 
-window = ttk.TTkWindow(title="LOG", parent=root, pos=(0,15), size=(100,10), border=True, layout=ttk.TTkGridLayout())
+window = ttk.TTkWindow(title="LOG", parent=root, pos=(0,20), size=(100,10), border=True, layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=window)
 
 root.mainloop()
