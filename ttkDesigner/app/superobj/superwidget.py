@@ -267,7 +267,7 @@ class SuperWidget(ttk.TTkWidget):
             # canvas.fill(pos=(l,t), size=(w-r-l,h-b-t), color=self._layoutPadColor)
         else:
             self._wid.getCanvas().updateSize()
-            self._wid.paintEvent(canvas)
+            self._wid.paintEvent(self._wid.getCanvas())
             canvas.paintCanvas(
                     self._wid.getCanvas(),
                     (    0,     0, w, h), # geometry

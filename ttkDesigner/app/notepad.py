@@ -22,7 +22,7 @@
 
 import TermTk as ttk
 
-class superSimpleHorizontalLine(ttk.TTkWidget):
+class SuperSimpleHorizontalLine(ttk.TTkWidget):
     def paintEvent(self, canvas):
         w,h = self.size()
         canvas.drawText(pos=(0,h-1), text='┕'+('━'*(w-2))+'┙',color=ttk.TTkColor.fg("#888888"))
@@ -78,7 +78,7 @@ class NotePad(ttk.TTkGridLayout):
         btn_redo.clicked.connect(te.redo)
 
         # Useless custom horizontal bar for aestetic reason
-        fontLayout.addWidget(superSimpleHorizontalLine(),0,12,2,1)
+        fontLayout.addWidget(SuperSimpleHorizontalLine(),0,12,2,1)
 
         @ttk.pyTTkSlot(ttk.TTkColor)
         def _currentColorChangedCB(format):
