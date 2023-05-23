@@ -620,6 +620,7 @@ class TTkTabWidget(TTkFrame):
                 self._tabBarTopLayout.addItem(self._topRightLayout,1 if self.border() else 0,2)
             layout = self._topRightLayout
         layout.addWidget(button)
+        self._tabBarTopLayout.update()
         return button
 
     def addTab(self, widget, label, data=None):

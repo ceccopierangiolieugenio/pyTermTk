@@ -30,7 +30,25 @@ ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
 
 root = ttk.TTk(mouseTrack=True)
 
+
+class RightClickFrame(ttk.TTkResizableFrame):
+    def paintEvent(self, canvas:ttk.TTkCanvas):
+        canvas.drawText(pos=(1,1), text="RightClick")
+        return super().paintEvent(canvas)
+    def mousePressEvent(self, evt):
+        if evt.key == ttk.TTkK.RightButton:
+            menu = ttk.TTkMenu(parent=root)
+            menu.addMenu("New File")
+            menu.addMenu("Old File")
+            menu.addMenu("Average File")
+            menu.resize(20,5)
+            ttk.TTkHelper.overlay(self, menu, evt.x, evt.y)
+        return super().mousePressEvent(evt)
+
+
 ttk.TTkButton(parent=root, pos=(0,0), border=True, text='BTN', size=(20,7))
+
+RightClickFrame(parent=root, pos=(35,10), size=(20,5), border=True)
 
 fileMenu = ttk.TTkMenu(parent=root, pos=(2,2), size=(30,10))
 
