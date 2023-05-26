@@ -190,7 +190,9 @@ class TTkLayout(TTkLayoutItem):
         return None
 
     def setParent(self, parent):
-        if isinstance(parent, TTkLayoutItem):
+        if parent is None:
+            self._parent = parent
+        elif isinstance(parent, TTkLayoutItem):
             self._parent = parent
         else:
             self._parent = parent.widgetItem()
@@ -291,6 +293,9 @@ class TTkLayout(TTkLayoutItem):
         for item in items:
             if item in self._items:
                 self._items.remove(item)
+                if item._layoutItemType == TTkK.WidgetItem:
+                    item.widget().setParent(None)
+                item.setParent(None)
         self._zSortItems()
 
     def removeWidget(self, widget):
@@ -311,7 +316,6 @@ class TTkLayout(TTkLayoutItem):
             if item._layoutItemType == TTkK.WidgetItem and \
                item.widget() in widgets:
                 self.removeItem(item)
-                return
             elif item._layoutItemType == TTkK.LayoutItem:
                 item.removeWidgets(widgets)
 
