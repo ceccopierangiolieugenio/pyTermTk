@@ -8,12 +8,16 @@ tests/test.dummy.py
 *.swp
 tmp
 profiler.*
-.vscode
+.vscode/*
+!.vscode/launch.json
 .idea
 docs/html
 experiments
 sandbox
 !tests/sandbox
+
+# VizTracker default file
+result.json
 
 # C extensions
 *.so

@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },{
+            "name": "Python: Test Player",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["-p", "tmp/test.input.bin"]
+        },{
+            "name": "Python: TTk Designer",
+            "type": "python",
+            "request": "launch",
+            "module": "ttkDesigner",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },{
+            "name": "Python: Demo",
+            "type": "python",
+            "request": "launch",
+            "program": "demo/demo.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },{
+            "name": "Python: Demo Mouse tracking",
+            "type": "python",
+            "request": "launch",
+            "program": "demo/demo.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["-t"]
+        },
+    ]
+}
