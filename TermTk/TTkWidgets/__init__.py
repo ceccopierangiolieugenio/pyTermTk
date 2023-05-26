@@ -23,6 +23,7 @@ from .spacer          import TTkSpacer
 from .spinbox         import TTkSpinBox
 from .splitter        import TTkSplitter
 from .tabwidget       import TTkTabWidget, TTkTabButton, TTkTabBar
+from .kodetab         import TTkKodeTab
 from .texedit         import TTkTextEdit
 from .TTkModelView    import *
 from .TTkPickers      import *
