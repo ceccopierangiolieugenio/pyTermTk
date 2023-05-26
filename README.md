@@ -92,6 +92,20 @@ python3 demo/gittk.py
 python3 tests/test.ui.018.TextEdit.Pygments.py README.md
 ```
 #### Profiling
+
+##### [VizTracer](https://pypi.org/project/viztracer/)
+this tool is able to generate a tracker file that can be viewed using [Perfetto](https://perfetto.dev) ([UI](https://ui.perfetto.dev/))
+```bash
+# install cprofilev:
+#     pip3 install viztracer
+viztracer --tracer_entries 10000010 tests/test.ui.030.menu.01.py
+
+# View the results
+# loading the "result.json" in https://ui.perfetto.dev
+# or running
+vizviewer result.json
+```
+
 ##### [cProfile](https://docs.python.org/3/library/profile.html), [cProfilev](https://github.com/ymichael/cprofilev)
 ```bash
 python3 -m cProfile -o profiler.bin tests/test.ui.004.py
