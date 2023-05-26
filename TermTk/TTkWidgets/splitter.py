@@ -168,7 +168,7 @@ class TTkSplitter(TTkFrame):
         return minsize, maxsize
 
     def _updateGeometries(self, resized=False):
-        if not self.isVisible(): return
+        if not self.isVisible() or not self._items: return
         _,_,w,h = self.geometry()
         if w==h==0: return
         sep = self._separators = self._separators[0:len(self._items)]
