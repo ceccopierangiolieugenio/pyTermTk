@@ -32,17 +32,25 @@ root = ttk.TTk(mouseTrack=True)
 
 
 class RightClickFrame(ttk.TTkResizableFrame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.menu = ttk.TTkMenu(parent=root)
+        self.menu.addMenu("New File")
+        self.menu.addMenu("Old File")
+        af = self.menu.addMenu("Average File")
+        af.addMenu("New File",checkable=True)
+        af.addMenu("Old File",checkable=True,checked=True)
+        af1 = af.addMenu("Average File")
+        af1.addMenu("New File")
+        af1.addMenu("Old File")
+        af2 = af1.addMenu("Average File")
+
     def paintEvent(self, canvas:ttk.TTkCanvas):
         canvas.drawText(pos=(1,1), text="RightClick")
         return super().paintEvent(canvas)
     def mousePressEvent(self, evt):
         if evt.key == ttk.TTkK.RightButton:
-            menu = ttk.TTkMenu(parent=root)
-            menu.addMenu("New File")
-            menu.addMenu("Old File")
-            menu.addMenu("Average File")
-            menu.resize(20,5)
-            ttk.TTkHelper.overlay(self, menu, evt.x, evt.y)
+            ttk.TTkHelper.overlay(self, self.menu, evt.x, evt.y)
         return super().mousePressEvent(evt)
 
 
