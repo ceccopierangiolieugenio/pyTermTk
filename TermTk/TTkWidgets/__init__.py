@@ -24,7 +24,7 @@ from .spinbox         import TTkSpinBox
 from .splitter        import TTkSplitter
 from .tabwidget       import TTkTabWidget, TTkTabButton, TTkTabBar
 from .kodetab         import TTkKodeTab
-from .texedit         import TTkTextEdit
+from .texedit         import TTkTextEdit, TTkTextEditView
 from .TTkModelView    import *
 from .TTkPickers      import *
 from .window          import TTkWindow
