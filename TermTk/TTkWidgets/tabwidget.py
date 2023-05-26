@@ -284,6 +284,7 @@ class TTkTabBar(TTkWidget):
         self._tabButtons.insert(index,button)
         self._tabData.insert(index,data)
         button.clicked.connect(lambda :self.setCurrentIndex(self._tabButtons.index(button)))
+        button.clicked.connect(lambda :self.tabBarClicked.emit(self._tabButtons.index(button)))
         button.closeClicked.connect(lambda :self.tabCloseRequested.emit(self._tabButtons.index(button)))
         self._updateTabs()
         return index
@@ -292,6 +293,8 @@ class TTkTabBar(TTkWidget):
     def removeTab(self, index):
         '''removeTab'''
         button = self._tabButtons[index]
+        button.clicked.clear()
+        button.closeClicked.clear()
         self.layout().removeWidget(button)
         self._tabButtons.pop(index)
         self._tabData.pop(index)
@@ -304,7 +307,9 @@ class TTkTabBar(TTkWidget):
 
     def tabData(self, index):
         '''tabData'''
-        return self._tabData[index]
+        if 0 <= index < len(self._tabData):
+            return self._tabData[index]
+        return None
 
     def setTabData(self, index, data):
         '''setTabData'''
@@ -531,7 +536,9 @@ class TTkTabWidget(TTkFrame):
 
     def widget(self, index):
         '''widget'''
-        return self._tabWidgets[index]
+        if 0 <= index < len(self._tabWidgets):
+            return self._tabWidgets[index]
+        return None
 
     def currentWidget(self):
         '''currentWidget'''
