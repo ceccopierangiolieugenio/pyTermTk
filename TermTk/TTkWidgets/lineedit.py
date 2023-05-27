@@ -81,6 +81,10 @@ class TTkLineEdit(TTkWidget):
         '''inputType'''
         return self._inputType
 
+    def resizeEvent(self, w: int, h: int):
+        self._pushCursor()
+        return super().resizeEvent(w, h)
+
     def _pushCursor(self):
         w = self.width()
 
