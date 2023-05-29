@@ -33,23 +33,23 @@ def demoMenuBar(root=None):
     frameTop    = ttk.TTkFrame(parent=frame, border=False)
     frameBottom = ttk.TTkFrame(parent=frame, border=True,layout=ttk.TTkVBoxLayout())
 
-    fileMenu = frameTop.menubarTop().addMenu("&File")
+    fileMenu = frameTop.newMenubarTop().addMenu("&File")
     fileMenu.addMenu("Open")
     fileMenu.addMenu("Close")
     fileMenu.addMenu("Exit")
 
-    frameTop.menubarTop().addMenu("&Edit")
-    frameTop.menubarTop().addMenu("&Selection")
+    frameTop.newMenubarTop().addMenu("&Edit")
+    frameTop.newMenubarTop().addMenu("&Selection")
 
-    frameTop.menubarTop().addMenu("&Center 1", alignment=ttk.TTkK.CENTER_ALIGN)
-    frameTop.menubarTop().addMenu("Cen&te&r 2", alignment=ttk.TTkK.CENTER_ALIGN)
+    frameTop.newMenubarTop().addMenu("&Center 1", alignment=ttk.TTkK.CENTER_ALIGN)
+    frameTop.newMenubarTop().addMenu("Cen&te&r 2", alignment=ttk.TTkK.CENTER_ALIGN)
 
-    frameTop.menubarTop().addMenu("_", alignment=ttk.TTkK.RIGHT_ALIGN)
-    frameTop.menubarTop().addMenu("^", alignment=ttk.TTkK.RIGHT_ALIGN)
-    frameTop.menubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
+    frameTop.newMenubarTop().addMenu("_", alignment=ttk.TTkK.RIGHT_ALIGN)
+    frameTop.newMenubarTop().addMenu("^", alignment=ttk.TTkK.RIGHT_ALIGN)
+    frameTop.newMenubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
 
     window = ttk.TTkWindow(title="Test MenuBar", parent=frameTop,pos=(1,1), size=(60,10), border=True)
-    fileMenu2 = window.menubarTop().addMenu("&Fi&le")
+    fileMenu2 = window.newMenubarTop().addMenu("&Fi&le")
     fileMenu2.addMenu("New File")
     fileMenu2.addMenu("Old File")
     fileMenu2.addSpacer()
@@ -69,7 +69,7 @@ def demoMenuBar(root=None):
     fileMenu2.addSpacer()
     fileMenu2.addMenu("Exit")
 
-    editMenu2 = window.menubarTop().addMenu("&E&dit")
+    editMenu2 = window.newMenubarTop().addMenu("&E&dit")
     editMenu2.addMenu("Undo")
     editMenu2.addMenu("Redo")
     editMenu2.addMenu("Cut")
@@ -78,20 +78,20 @@ def demoMenuBar(root=None):
     editMenu2.addMenu("Find")
     editMenu2.addMenu("Replace")
 
-    window.menubarTop().addMenu("&Selection")
+    window.newMenubarTop().addMenu("&Selection")
 
-    window.menubarTop().addMenu("&Center 3", alignment=ttk.TTkK.CENTER_ALIGN)
+    window.newMenubarTop().addMenu("&Center 3", alignment=ttk.TTkK.CENTER_ALIGN)
 
-    window.menubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
+    window.newMenubarTop().addMenu("X", alignment=ttk.TTkK.RIGHT_ALIGN)
 
 
-    fileMenu3 = frameBottom.menubarTop().addMenu("&File 2")
+    fileMenu3 = frameBottom.newMenubarTop().addMenu("&File 2")
     fileMenu3.addMenu("Open")
     fileMenu3.addMenu("Close")
     fileMenu3.addMenu("Exit")
 
-    frameBottom.menubarTop().addMenu("&Edit 2")
-    frameBottom.menubarTop().addMenu("&Selection 2")
+    frameBottom.newMenubarTop().addMenu("&Edit 2")
+    frameBottom.newMenubarTop().addMenu("&Selection 2")
 
     ttk.TTkLogViewer(parent=frameBottom)
 

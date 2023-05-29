@@ -100,6 +100,10 @@ class TTkHelper:
     def quit():
         if TTkHelper._rootWidget:
             TTkHelper._rootWidget.quit()
+    
+    @staticmethod
+    def getTerminalSize():
+        return TTkGlbl.term_w, TTkGlbl.term_h
 
     @staticmethod
     def rootOverlay(widget):
@@ -163,6 +167,10 @@ class TTkHelper:
         if forceBoundaries:
             wx = max(0, wx+x if wx+x+w < TTkGlbl.term_w else TTkGlbl.term_w-w )
             wy = max(0, wy+y if wy+y+h < TTkGlbl.term_h else TTkGlbl.term_h-h )
+            mw,mh = widget.minimumSize()
+            ww = min(w,max(mw, TTkGlbl.term_w))
+            wh = min(h,max(mh, TTkGlbl.term_h))
+            widget.resize(ww,wh)
         else:
             wx += x
             wy += y

@@ -131,14 +131,14 @@ class TTkDesigner(TTkGridLayout):
 
         self.weModified.connect(self._treeInspector.refresh)
 
-        fileMenu = topMenuFrame.menubarTop().addMenu("&File")
+        fileMenu = topMenuFrame.newMenubarTop().addMenu("&File")
         fileMenu.addMenu("New").menuButtonClicked.connect(self.new)
         fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
         fileMenu.addMenu("Save").menuButtonClicked.connect(self.save)
         fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
         fileMenu.addMenu("Exit").menuButtonClicked.connect(TTkHelper.quit)
 
-        extraMenu = topMenuFrame.menubarTop().addMenu("E&xtra")
+        extraMenu = topMenuFrame.newMenubarTop().addMenu("E&xtra")
         extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
         extraMenu.addSpacer()
         extraMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
@@ -148,7 +148,7 @@ class TTkDesigner(TTkGridLayout):
         def _showAboutTTk(btn):
             TTkHelper.overlay(None, TTkAbout(), 30,10)
 
-        helpMenu = topMenuFrame.menubarTop().addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
+        helpMenu = topMenuFrame.newMenubarTop().addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
