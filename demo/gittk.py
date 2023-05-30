@@ -22,30 +22,48 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, time, argparse
+import sys, os, time, argparse, re
+import subprocess
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
-import git
+class GitHelper():
+    def graph():
+        return subprocess.run(['git',"log", "--pretty=format:---CC%hCC--- ---DD%adDD--- ---MM%s%dMM--- ---AA%anAA---", "--graph", "--date=short", "--color=always"],capture_output=True).stdout.decode('utf-8').split('\n')
+
+    def show(commit):
+        return subprocess.run(['git',"show", commit, "--color=always"],capture_output=True).stdout.decode('utf-8')
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', help='Full Screen', action='store_true')
 args = parser.parse_args()
 
 fullscreen = args.f
-
-repo = git.Repo('.')
-assert not repo.bare
-
-allCommits = list(repo.iter_commits('main'))
-
+allCommits = []
 commitResults = []
-for commit in allCommits:
-    t = time.strftime("%d-%m-%Y %H:%M", time.gmtime(commit.committed_date))
-    message = commit.message.split('\n')[0]
-    author = commit.author
-    commitResults.append((message,str(author),str(t)))
+minGraph = 0
+minAuthor = 0
+minDate = 0
+reGraph   = re.compile(r'^(.*)---CC.*$')
+reTime    = re.compile(r'^.*---DD(.*)DD---.*$')
+reMessage = re.compile(r'^.*---MM(.*)MM---.*$')
+reAuthor  = re.compile(r'^.*---AA(.*)AA---.*$')
+reCommit  = re.compile(r'^.*---CC(.*)CC---.*$')
+for line in GitHelper.graph():
+    g = _m.group(1) if (_m:=reGraph.match(line))   else line
+    g = ttk.TTkString(g)
+    minGraph = max(minGraph, g.termWidth())
+    d = _m.group(1) if (_m:=reTime.match(line))    else ""
+    minDate = max(minDate, len(d))
+    a = _m.group(1) if (_m:=reAuthor.match(line))  else ""
+    minAuthor = max(minAuthor, len(a))
+    m = _m.group(1) if (_m:=reMessage.match(line)) else ""
+    c = _m.group(1) if (_m:=reCommit.match(line))  else ""
+    cc = f"{c} - {m}" if c and m else ""
+    allCommits.append(c)
+    commitResults.append((g, cc, a, d))
 
 ttk.TTkLog.use_default_file_logging()
 
@@ -65,10 +83,11 @@ diffText = ttk.TTkTextEdit(parent=gittkHsplitter)
 gittkHsplitter.addWidget(ttk.TTkTestWidgetSizes(border=True, title="Details"),20)
 gittkVsplitter.addWidget(ttk.TTkLogViewer(),3)
 
-tableCommit.setColumnSize((-1,20,20))
+tableCommit.setColumnSize((minGraph,-1,minAuthor+1,15))
 
-tableCommit.setHeader(("commit","Name","Date"))
+tableCommit.setHeader(("","commit","Name","Date"))
 tableCommit.setColumnColors((
+        ttk.TTkColor.RST,
         ttk.TTkColor.fg('#cccccc', modifier=ttk.TTkColorGradient(increment=-2)),
         ttk.TTkColor.fg('#888800', modifier=ttk.TTkColorGradient(increment=6)),
         ttk.TTkColor.fg('#00dddd', modifier=ttk.TTkColorGradient(increment=-4)),
@@ -80,21 +99,9 @@ for commit in commitResults:
 @ttk.pyTTkSlot(int)
 def _tableCallback(val):
     commit = allCommits[val]
-    diff = repo.git.diff(f"{commit.hexsha}~",f"{commit.hexsha}")
-    # ttk.TTkLog.debug(diff)
-    lines = ttk.TTkString()
-    for line in diff.split('\n'):
-        color = ttk.TTkColor.RST
-        if   line.startswith('---') or line.startswith('+++'):
-            color = ttk.TTkColor.fg('#000000')+ttk.TTkColor.bg('#888888')
-        elif line.startswith('+'):
-            color = ttk.TTkColor.fg('#00ff00')
-        elif line.startswith('-'):
-            color = ttk.TTkColor.fg('#ff0000')
-        elif line.startswith('@@'):
-            color = ttk.TTkColor.fg('#0088ff')
-        lines += ttk.TTkString(line+"\n",color).tab2spaces()
-    diffText.setText(lines)
+    if not commit: return
+    diff = GitHelper.show(commit)
+    diffText.setText(diff)
 
 tableCommit.activated.connect(_tableCallback)
 

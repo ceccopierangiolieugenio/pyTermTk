@@ -28,18 +28,30 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
-class _TTkFancyTableViewHeader(TTkWidget):
+class _TTkFancyTableViewHeader(TTkAbstractScrollView):
     __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._columns = kwargs.get('columns' , [-1] )
         self._header = [TTkString()]*len(self._columns)
         self._alignments = [TTkK.NONE]*len(self._columns)
         self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
         self.setMaximumHeight(1)
         self.setMinimumHeight(1)
+
+    # Override this function
+    def viewFullAreaSize(self) -> (int, int):
+        return self.size()
+
+    # Override this function
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+    @pyTTkSlot(int, int)
+    def viewMoveTo(self, x: int, y: int):
+        pass
 
     def setAlignment(self, alignments):
         if len(alignments) != len(self._columns):
@@ -93,7 +105,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
         self._tableDataText = []
         self._tableDataWidget = []
         self._shownWidgets = []
-        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         # define signals
         self.activated = pyTTkSignal(int) # Value
         self.doubleClicked = pyTTkSignal(int) # Value
@@ -354,7 +366,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 colors = [c.modParam(val=-val) for c in self._columnColors]
                 canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
 
-class TTkFancyTableView(TTkAbstractScrollView):
+class TTkFancyTableView(TTkAbstractScrollViewGridLayout):
     __slots__ = (
         '_header', '_tableView', '_showHeader', 'activated',
         # Forwarded Methods
@@ -365,15 +377,11 @@ class TTkFancyTableView(TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         if 'parent' in kwargs: kwargs.pop('parent')
         self._showHeader = kwargs.get('showHeader', True)
-        self.setLayout(TTkGridLayout())
         self._tableView = _TTkFancyTableView(*args, **kwargs)
         self._header = _TTkFancyTableViewHeader(*args, **kwargs)
-        self.layout().addWidget(self._header,0,0)
-        self.layout().addWidget(self._tableView,1,0)
+        self.addWidget(self._header,0,0)
+        self.addWidget(self._tableView,1,0)
         # Forward the tableSignals
-        self.viewMovedTo     = self._tableView.viewMovedTo
-        self.viewSizeChanged = self._tableView.viewSizeChanged
-        self.viewChanged     = self._tableView.viewChanged
         self.activated       = self._tableView.activated
         self.doubleClicked   = self._tableView.doubleClicked
         if not self._showHeader:
