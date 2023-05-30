@@ -59,7 +59,7 @@ pip3 install --upgrade pyTermTk
 
 #### Clone
 ```bash
-clone https://github.com/ceccopierangiolieugenio/pyTermTk.git
+git clone https://github.com/ceccopierangiolieugenio/pyTermTk.git
 cd pyTermTk
 ```
 
