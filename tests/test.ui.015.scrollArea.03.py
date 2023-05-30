@@ -33,7 +33,7 @@ def main():
     root = ttk.TTk()
 
     f = ttk.TTkFrame(parent=root, pos=(2,2), size=(30,5))
-    fm = f.menubarTop().addMenu("F&orm")
+    fm = f.newMenubarTop().addMenu("F&orm")
     fm.addMenu("Preview...")
 
     root.mainloop()

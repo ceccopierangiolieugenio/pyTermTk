@@ -13,7 +13,7 @@ from .label           import TTkLabel
 from .lineedit        import TTkLineEdit
 from .list_           import TTkList
 from .listwidget      import TTkListWidget
-from .menubar         import TTkMenuLayout
+from .menubar         import TTkMenuBarLayout
 from .menu            import TTkMenu, TTkMenuButton
 from .progressbar     import TTkProgressBar, TTkLookAndFeelPBar
 from .radiobutton     import TTkRadioButton
