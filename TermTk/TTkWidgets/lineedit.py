@@ -49,17 +49,17 @@ class TTkLineEdit(TTkWidget):
         self.returnPressed = pyTTkSignal()
         self.textChanged =  pyTTkSignal(str)
         self.textEdited =  pyTTkSignal(str)
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
-        self._text = TTkString(kwargs.get('text' , '' ))
-        if self._inputType & TTkK.Input_Number and\
-           not self._text.lstrip('-').isdigit(): self._text = TTkString()
-        self._color = TTkCfg.theme.lineEditTextColor
         self._offset = 0
         self._cursorPos = 0
         self._selectionFrom = 0
         self._selectionTo   = 0
         self._replace=False
+        self._text = TTkString(kwargs.get('text' , '' ))
+        self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
+        super().__init__(*args, **kwargs)
+        if self._inputType & TTkK.Input_Number and\
+           not self._text.lstrip('-').isdigit(): self._text = TTkString()
+        self._color = TTkCfg.theme.lineEditTextColor
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
