@@ -74,13 +74,13 @@ class TTkFrame(TTkWidget):
             if not self._border and self._padt == 0:
                 self.setPadding(self._menubarTopPosition,0,0,0)
         return self._menubarTop
-    
+
     def menuBar(self, position=TTkK.TOP):
         if position == TTkK.TOP:
             return self._menubarTop
         else:
             return self._menubarBottom
-    
+
     def setMenuBar(self, menuBar, position=TTkK.TOP):
         self.rootLayout().addItem(menuBar)
         if position == TTkK.TOP:
@@ -141,5 +141,8 @@ class TTkFrame(TTkWidget):
                                 align=self._titleAlign,
                                 color=self._borderColor,
                                 colorText=self._titleColor)
-        elif self._menubarTop:
-            canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+        else:
+            if self._menubarTop:
+                canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+            if self._menubarBottom:
+                canvas.drawMenuBarBg(pos=(0,self.height()-1),size=self.width(),color=self._borderColor)
