@@ -58,9 +58,9 @@ class TTkMenuBarButton(TTkAbstractListItem):
         self.setMaximumSize(txtlen+2,1)
         self.listItemClicked.connect(self.menuButtonEvent)
 
-    def addMenu(self, text):
+    def addMenu(self, text, data:object=None, checkable:bool=False, checked:bool=False):
         '''addMenu'''
-        button = TTkMenuButton(text=text, borderColor=self._borderColor, border=False)
+        button = TTkMenuButton(text=text, data=data, checkable=checkable, checked=checked)
         self._menu.append(button)
         return button
 
@@ -118,8 +118,8 @@ class TTkMenuBarButton(TTkAbstractListItem):
     def focusOutEvent(self):
         self.highlighted=False
 
-class TTkMenuLayout(TTkHBoxLayout):
-    '''TTkMenuLayout'''
+class TTkMenuBarLayout(TTkHBoxLayout):
+    '''TTkMenuBarLayout'''
     __slots__ = ('_borderColor', '_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
     def __init__(self, *args, **kwargs):
         self._buttons = []

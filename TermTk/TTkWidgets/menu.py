@@ -347,7 +347,7 @@ class TTkMenu(TTkResizableFrame):
     def addMenu(self, *args, **kwargs):
         ret = self._scrollView.addMenu(*args, **kwargs)
         w,h = self._scrollView.viewFullAreaSize()
-        self.resize(w+2,h+2)
+        self.resize(w+3,h+2)
         return ret
 
     def keyEvent(self, evt) -> bool:

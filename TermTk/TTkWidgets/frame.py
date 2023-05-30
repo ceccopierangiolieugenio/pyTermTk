@@ -51,7 +51,7 @@ class TTkFrame(TTkWidget):
     '''
     __slots__ = (
         '_border','_title', '_titleColor', '_titleAlign','_borderColor',
-        '_menubarTop', '_menubarTopPosition', '_menubarBottom')
+        '_menubarTop', '_menubarTopPosition', '_menubarBottom', '_menubarBottomPosition')
     def __init__(self, *args, **kwargs):
         self._borderColor = kwargs.get('borderColor', TTkCfg.theme.frameBorderColor )
         self._titleColor = kwargs.get('titleColor', TTkCfg.theme.frameTitleColor )
@@ -59,24 +59,47 @@ class TTkFrame(TTkWidget):
         self._title = TTkString(kwargs.get('title' , '' ))
         self._border = kwargs.get('border', True )
         self._menubarTopPosition = 0
+        self._menubarBottomPosition = 0
         self._menubarTop = None
         self._menubarBottom = None
         TTkWidget.__init__(self, *args, **kwargs)
         self.setBorder(self._border)
 
-    def menubarTop(self):
+    def newMenubarTop(self):
         if not self._menubarTop:
-            from TermTk.TTkWidgets.menubar import TTkMenuLayout
-            self._menubarTop = TTkMenuLayout(borderColor=self._borderColor)
+            from TermTk.TTkWidgets.menubar import TTkMenuBarLayout
+            self._menubarTop = TTkMenuBarLayout(borderColor=self._borderColor)
             self.rootLayout().addItem(self._menubarTop)
             self._menubarTop.setGeometry(1,self._menubarTopPosition,self.width()-2,1)
             if not self._border and self._padt == 0:
-                self.setPadding(1,0,0,0)
+                self.setPadding(self._menubarTopPosition,0,0,0)
         return self._menubarTop
+
+    def menuBar(self, position=TTkK.TOP):
+        if position == TTkK.TOP:
+            return self._menubarTop
+        else:
+            return self._menubarBottom
+
+    def setMenuBar(self, menuBar, position=TTkK.TOP):
+        self.rootLayout().addItem(menuBar)
+        if position == TTkK.TOP:
+            self._menubarTop = menuBar
+            menuBar.setGeometry(1,self._menubarTopPosition,self.width()-2,1)
+        else:
+            self._menubarBottom = menuBar
+            menuBar.setGeometry(1,self.height()-1-self._menubarBottomPosition,self.width()-2,1)
+        if not self._border:
+            pt,pb,pl,pr = self.getPadding()
+            pt = 1 if position==TTkK.TOP    else pt
+            pb = 1 if position==TTkK.BOTTOM else pb
+            self.setPadding(pt,pb,pl,pr)
 
     def resizeEvent(self, w, h):
         if self._menubarTop:
             self._menubarTop.setGeometry(1,self._menubarTopPosition,w-2,1)
+        if self._menubarBottom:
+            self._menubarBottom.setGeometry(1,h-1-self._menubarBottomPosition,w-2,1)
         super().resizeEvent(w,h)
 
     def title(self):
@@ -118,5 +141,8 @@ class TTkFrame(TTkWidget):
                                 align=self._titleAlign,
                                 color=self._borderColor,
                                 colorText=self._titleColor)
-        elif self._menubarTop:
-            canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+        else:
+            if self._menubarTop:
+                canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+            if self._menubarBottom:
+                canvas.drawMenuBarBg(pos=(0,self.height()-1),size=self.width(),color=self._borderColor)
