@@ -100,7 +100,7 @@ class TTkHelper:
     def quit():
         if TTkHelper._rootWidget:
             TTkHelper._rootWidget.quit()
-    
+
     @staticmethod
     def getTerminalSize():
         return TTkGlbl.term_w, TTkGlbl.term_h
@@ -178,6 +178,7 @@ class TTkHelper:
         if  toolWindow:
             # Forcing the layer to:
             # TTkLayoutItem.LAYER1    =  0x40000000
+            widget.move(wx,wy)
             wi = widget.widgetItem()
             wi.setLayer(wi.LAYER1)
         else:
