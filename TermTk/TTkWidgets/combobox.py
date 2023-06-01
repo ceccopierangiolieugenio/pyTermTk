@@ -190,6 +190,7 @@ class TTkComboBox(TTkWidget):
     @pyTTkSlot(int)
     def setCurrentIndex(self, index):
         '''setCurrentIndex'''
+        if index < 0: return
         if index > len(self._list)-1: return
         if self._id == index: return
         self._id = index
@@ -267,6 +268,13 @@ class TTkComboBox(TTkWidget):
         listw.textClicked.connect(self._callback)
         listw.viewport().setFocus()
         self.update()
+        return True
+
+    def wheelEvent(self, evt):
+        if evt.evt == TTkK.WHEEL_Up:
+            self.setCurrentIndex(self._id-1)
+        else:
+            self.setCurrentIndex(self._id+1)
         return True
 
     def mousePressEvent(self, evt):
