@@ -74,7 +74,7 @@ class TTkFileBuffer():
         self._width=0
         self._buffer = [None]*self._numW
         self._pages = [None]
-        self._fd = open(self._filename, 'r', errors='replace')
+        self._fd = open(self._filename, 'r', errors='replace', newline='\n')
         threading.Thread(target=self.createIndex).start()
 
     def __del__(self):
@@ -111,7 +111,7 @@ class TTkFileBuffer():
             self._indexesMutex.release()
             buffer = self._pages[page].buffer
             for i in range(self._window):
-                buffer[i] = self._fd.readline()
+                buffer[i] = self._fd.readline().replace('\r','')
                 #self._width = max(self._width,len(buffer[i]))
         else:
             # Push the page to the top of the buffer
@@ -153,20 +153,37 @@ class TTkFileBuffer():
 
     def searchRe(self, regex, ignoreCase=False):
         indexes = []
-        id = 0
         rr = re.compile(regex, re.IGNORECASE if ignoreCase else 0)
         TTkLog.debug(f"Search RE: {regex}")
-        with open(self._filename, 'r', errors='replace') as infile:
-            for line in infile:
-                ma = rr.search(line)
-                if ma:
-                    indexes.append(id)
-                id += 1
+        # from datetime import datetime
+        # now = datetime.now()
+        # TTkLog.debug(f"Time1 {now}")
+        with open(self._filename, 'r', errors='replace', newline='\n') as infile:
+            # for i,line in enumerate(infile):
+            #     if rr.search(line):
+            #         indexes.append(i)
+
+            # id = 0
+            # for line in infile:
+            #     ma = rr.search(line)
+            #     if ma:
+            #         indexes.append(id)
+            #     id += 1
+
+            # for i,index in enumerate(self._indexes):
+            #     infile.seek(index)
+            #     rl = infile.readline()
+            #     if rr.search(rl):
+            #         indexes.append(i)
+
+            indexes = [i for i,line in enumerate(infile) if rr.search(line)]
+        # TTkLog.debug(f"Time2 {datetime.now()}")
+        # TTkLog.debug(f"Diff: {datetime.now() - now}")
         return indexes
 
     def search(self, txt):
         indexes = []
-        with open(self._filename, 'r', errors='replace') as infile:
+        with open(self._filename, 'r', errors='replace', newline='\n') as infile:
             for line in infile:
                 if txt in line:
                     indexes.append(id)
