@@ -300,10 +300,11 @@ class TTkCanvas:
             l=1
         else:
             l = w-2-text.termWidth()
+        l+=x
         r = l+text.termWidth()+1
 
-        self._set(y,l, gg[7], color)
-        self._set(y,r, gg[6], color)
+        self._set(y,l, gg[0x0B], color)
+        self._set(y,r, gg[0x08], color)
         self.drawText(pos=(l+1,y),text=text,color=colorText)
 
 

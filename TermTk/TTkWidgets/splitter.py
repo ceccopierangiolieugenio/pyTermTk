@@ -23,18 +23,23 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.frame import TTkFrame
 
-class TTkSplitter(TTkFrame):
+class TTkSplitter(TTkWidget):
     '''TTkSplitter'''
     __slots__ = (
         '_orientation', '_separators', '_refSizes',
-        '_items', '_separatorSelected')
+        '_items', '_titles', '_separatorSelected',
+        '_border')
     def __init__(self, *args, **kwargs):
         self._items = []
+        self._titles = []
         self._separators = []
         self._refSizes = []
+        self._border = False
         self._separatorSelected = None
         self._orientation = TTkK.HORIZONTAL
         super().__init__(*args, **kwargs)
@@ -53,9 +58,33 @@ class TTkSplitter(TTkFrame):
                 self.addItem(item)
         self.setLayout(_SplitterLayout())
 
+    def setBorder(self, border):
+        '''setBorder'''
+        self._border = border
+        if border: self.setPadding(1,1,1,1)
+        else:      self.setPadding(0,0,0,0)
+        self.update()
+
+    def border(self):
+        '''border'''
+        return self._border
+
     def orientation(self):
         '''orientation'''
         return self._orientation
+
+    def setOrientation(self, orientation):
+        if orientation == self._orientation: return
+        if orientation not in (TTkK.HORIZONTAL, TTkK.VERTICAL): return
+        self._orientation = orientation
+        self._updateGeometries()
+
+    def clean(self):
+        for i in reversed(self._items):
+            if issubclass(type(i),TTkWidget):
+                self.removeWidget(i)
+            else:
+                self.removeItem(i)
 
     def count(self):
         '''count'''
@@ -69,18 +98,28 @@ class TTkSplitter(TTkFrame):
         '''widget'''
         return self._items[index]
 
-    def replaceItem(self, index, item):
+    def replaceItem(self, index, item, title=None):
         '''replaceItem'''
+        if index >= len(self._items):
+            return self.addItem(item)
         TTkLayout.removeItem(self.layout(), self._items[index])
-        TTkLayout.insertItem(self.layout(), index, item)
+        TTkLayout.insertItem(self.layout(), index, item, title=title)
         self._items[index] = item
+        w,h = self.size()
+        b = 2 if self._border else 0
+        self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
-    def replaceWidget(self, index, widget):
+    def replaceWidget(self, index, widget, title=None):
         '''replaceWidget'''
+        if index >= len(self._items):
+            return self.addWidget(widget, title=title)
         TTkLayout.removeWidget(self.layout(), self._items[index])
-        TTkLayout.insertWidget(self.layout(), index, widget)
+        TTkLayout.insertWidget(self.layout(), index, widget, title=title)
         self._items[index] = widget
+        w,h = self.size()
+        b = 2 if self._border else 0
+        self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
     def removeItem(self, item):
@@ -90,6 +129,9 @@ class TTkSplitter(TTkFrame):
         self._refSizes.pop(index)
         self._separators.pop(index)
         TTkLayout.removeItem(self.layout(), item)
+        w,h = self.size()
+        b = 2 if self._border else 0
+        self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
     def removeWidget(self, widget):
@@ -99,36 +141,38 @@ class TTkSplitter(TTkFrame):
         self._refSizes.pop(index)
         self._separators.pop(index)
         TTkLayout.removeWidget(self.layout(), widget)
+        w,h = self.size()
+        b = 2 if self._border else 0
+        self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
-    def addItem(self, item, size=None):
+    def addItem(self, item, size=None, title=None):
         '''addItem'''
-        self.insertItem(len(self._items), item, size)
+        self.insertItem(len(self._items), item, size=size, title=title)
 
-    def insertItem(self, index, item, size=None):
+    def insertItem(self, index, item, size=None, title=None):
         '''insertItem'''
         TTkLayout.insertItem(self.layout(), index, item)
-        self._insertWidgetItem(index, item, size)
+        self._insertWidgetItem(index, item, size=size, title=title)
 
-    def addWidget(self, widget, size=None):
+    def addWidget(self, widget, size=None, title=None):
         '''addWidget'''
-        self.insertWidget(len(self._items), widget, size)
+        self.insertWidget(len(self._items), widget, size=size, title=title)
 
-    def insertWidget(self, index, widget, size=None):
+    def insertWidget(self, index, widget, size=None, title=None):
         '''insertWidget'''
         TTkLayout.insertWidget(self.layout(), index, widget)
-        self._insertWidgetItem(index, widget, size)
+        self._insertWidgetItem(index, widget, size=size, title=title)
 
-    def _insertWidgetItem(self, index, widgetItem, size=None):
-        _,_,w,h = self.geometry()
-        if self.border():
-            w-=2
-            h-=2
+    def _insertWidgetItem(self, index, widgetItem, size=None, title=None):
         self._items.insert(index, widgetItem)
+        self._titles.insert(index, TTkString(title) if title else None)
 
         # assign the same slice to all the widgets
         self._refSizes.insert(index, size)
-        self._processRefSizes(w,h)
+        w,h = self.size()
+        b = 2 if self._border else 0
+        self._processRefSizes(w-b,h-b)
         self._updateGeometries()
         if self.parentWidget():
             self.parentWidget().update(repaint=True, updateLayout=True)
@@ -139,7 +183,7 @@ class TTkSplitter(TTkFrame):
         sizes=sizes[:ls]+[None]*max(0,ls-len(sizes))
         self._refSizes = sizes.copy()
         w,h = self.size()
-        b = 2 if self.border() else 0
+        b = 2 if self._border else 0
         self._processRefSizes(w-b,h-b)
         self._updateGeometries()
 
@@ -169,10 +213,10 @@ class TTkSplitter(TTkFrame):
 
     def _updateGeometries(self, resized=False):
         if not self.isVisible() or not self._items: return
-        _,_,w,h = self.geometry()
+        w,h = self.size()
         if w==h==0: return
         sep = self._separators = self._separators[0:len(self._items)]
-        if self.border():
+        if self._border:
             w-=2
             h-=2
 
@@ -277,25 +321,14 @@ class TTkSplitter(TTkFrame):
             self._separators = [int(i*diff) for i in self._separators]
 
     def resizeEvent(self, w, h):
-        b = 2 if self.border() else 0
+        b = 2 if self._border else 0
         self._processRefSizes(w-b,h-b)
         self._updateGeometries(resized=True)
-
-    def paintEvent(self, canvas):
-        off = 1 if self.border() else 0
-        TTkFrame.paintEvent(self, canvas)
-        w,h = self.size()
-        if self._orientation == TTkK.HORIZONTAL:
-            for i in self._separators[:-1]:
-                canvas.drawVLine(pos=(i+off,0), size=h)
-        else:
-            for i in self._separators[:-1]:
-                canvas.drawHLine(pos=(0,i+off), size=w)
 
     def mousePressEvent(self, evt):
         self._separatorSelected = None
         x,y = evt.x, evt.y
-        if self.border():
+        if self._border:
             x-=1 ; y-=1
         # TTkLog.debug(f"{self._separators} {evt}")
         for i, val in enumerate(self._separators):
@@ -312,7 +345,7 @@ class TTkSplitter(TTkFrame):
     def mouseDragEvent(self, evt):
         if self._separatorSelected is not None:
             x,y = evt.x, evt.y
-            if self.border():
+            if self._border:
                 x-=1 ; y-=1
             if self._orientation == TTkK.HORIZONTAL:
                 self._separators[self._separatorSelected] = x
@@ -326,7 +359,7 @@ class TTkSplitter(TTkFrame):
         self._separatorSelected = None
 
     def minimumHeight(self) -> int:
-        ret = 2 if self.border() else 0
+        ret = 2 if self._border else 0
         if not self._items: return ret
         if self._orientation == TTkK.VERTICAL:
             for item in self._items:
@@ -339,7 +372,7 @@ class TTkSplitter(TTkFrame):
         return ret
 
     def minimumWidth(self)  -> int:
-        ret = 2 if self.border() else 0
+        ret = 2 if self._border else 0
         if not self._items: return ret
         if self._orientation == TTkK.HORIZONTAL:
             for item in self._items:
@@ -352,7 +385,7 @@ class TTkSplitter(TTkFrame):
         return ret
 
     def maximumHeight(self) -> int:
-        b = 2 if self.border() else 0
+        b = 2 if self._border else 0
         if not self._items: return 0x10000
         if self._orientation == TTkK.VERTICAL:
             ret = b
@@ -367,12 +400,12 @@ class TTkSplitter(TTkFrame):
         return ret
 
     def maximumWidth(self)  -> int:
-        b = 2 if self.border() else 0
+        b = 2 if self._border else 0
         if not self._items: return 0x10000
         if self._orientation == TTkK.HORIZONTAL:
             ret = b
             for item in self._items:
-                ret+=item.maximumHeight()+1
+                ret+=item.maximumWidth()+1
             ret = max(b,ret-1)
         else:
             ret = 0x10000
@@ -380,3 +413,40 @@ class TTkSplitter(TTkFrame):
                 if ret > item.maximumWidth():
                     ret = item.maximumWidth()
         return ret
+
+    def paintEvent(self, canvas):
+        off = 0
+        w,h = self.size()
+
+        if self._border:
+            off= 1
+            canvas.drawBox(pos=(0,0),size=(w,h))
+
+        if self._orientation == TTkK.HORIZONTAL:
+            for i in self._separators[:-1]:
+                canvas.drawVLine(pos=(i+off,0), size=h)
+        else:
+            for i in self._separators[:-1]:
+                canvas.drawHLine(pos=(0,i+off), size=w)
+
+        if self._orientation == TTkK.HORIZONTAL and self._border:
+            for i,t in enumerate(self._titles):
+                if not t: continue
+                a = (off + self._separators[i-1]) if i>0 else 0
+                b =  off + self._separators[i]
+                canvas.drawBoxTitle(
+                                pos=(a,0),
+                                size=(b-a+1,1),
+                                text=t)
+        elif self._orientation == TTkK.VERTICAL:
+            for i,t in enumerate(self._titles):
+                if i == 0 and not self._border: continue
+                if not t: continue
+                a = (off + self._separators[i-1]) if i>0 else 0
+                grid = 0 if i == 0 else 5
+                canvas.drawBoxTitle(
+                                pos=(0,a),
+                                size=(w,1),
+                                grid=grid,
+                                text=t)
+

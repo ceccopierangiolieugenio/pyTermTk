@@ -28,13 +28,19 @@ from TermTk.TTkWidgets.splitter import TTkSplitter
 TTkSplitterProperties = {
     'properties' : {
         'Border' : {
-                'init': {'name':'border', 'type':bool } },
+                'init': {'name':'border', 'type':bool },
+                'get':  {'cb':TTkSplitter.border,     'type':bool } ,
+                'set':  {'cb':TTkSplitter.setBorder,  'type':bool } },
         'Orientation' : {
                 'init': {'name':'orientation', 'type':'singleflag',
                     'flags': {
                         'Horizontal' : TTkK.HORIZONTAL ,
                         'Vertical'   : TTkK.VERTICAL   } } ,
                 'get':  {'cb':TTkSplitter.orientation,     'type':'singleflag',
+                    'flags': {
+                        'Horizontal' : TTkK.HORIZONTAL ,
+                        'Vertical'   : TTkK.VERTICAL   } } ,
+                'set':  {'cb':TTkSplitter.setOrientation,  'type':'singleflag',
                     'flags': {
                         'Horizontal' : TTkK.HORIZONTAL ,
                         'Vertical'   : TTkK.VERTICAL   } } }
