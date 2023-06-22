@@ -80,6 +80,9 @@ class TTkFileBuffer():
     def __del__(self):
         self._fd.close()
 
+    def filename(self):
+        return self._filename
+
     def getLen(self):
         return len(self._indexes)
 
