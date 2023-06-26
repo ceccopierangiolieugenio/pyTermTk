@@ -58,6 +58,7 @@ TTkCheckboxProperties = {
     },
     'signals' : {
         'clicked(bool)' :            {'name' : 'clicked',      'type' : bool},
+        'toggled(bool)' :            {'name' : 'toggled',      'type' : bool},
         'stateChanged(CheckState)' : {'name' : 'stateChanged', 'type' : TTkK.CheckState},
     },
     'slots' : {

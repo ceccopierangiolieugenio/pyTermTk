@@ -62,11 +62,6 @@ class TTkCheckbox(TTkWidget):
 
             :param checked: True if checked otherwise False
             :type checked: bool
-            :param checkStatus: The state of the checkbox
-            :type checkStatus: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
-            :param tristate: | This property holds whether the checkbox is a tri-state checkbox
-                             | The default is false, i.e., the checkbox has only two states.
-            :type tristate: bool
 
         .. py:method:: stateChanged(state)
             :signal:
@@ -76,17 +71,28 @@ class TTkCheckbox(TTkWidget):
             :param state: state of the checkbox
             :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
 
+        .. py:method:: toggled(checked)
+            :signal:
+
+            This signal is emitted whenever the checkbox's state changes, i.e., whenever the user checks or unchecks it.
+
+            :param checked: True if checked otherwise False
+            :type checked: bool
+
      '''
     __slots__ = (
         '_checkStatus', '_text', '_tristate',
         # Signals
-        'clicked', 'stateChanged'
+        'clicked', 'stateChanged', 'toggled'
         )
     def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
         # Define Signals
         self.stateChanged = pyTTkSignal(TTkK.CheckState)
         self.clicked = pyTTkSignal(bool)
+        self.toggled = pyTTkSignal(bool)
+
+        TTkWidget.__init__(self, *args, **kwargs)
+
         if 'checkStatus' in kwargs:
             self._checkStatus = kwargs.get('checkStatus', TTkK.Unchecked )
         else:
@@ -198,6 +204,7 @@ class TTkCheckbox(TTkWidget):
         if not self._tristate and self._checkStatus == TTkK.PartiallyChecked:
             self._checkStatus = TTkK.Checked
         self.clicked.emit(self._checkStatus!=TTkK.Unchecked)
+        self.toggled.emit(self._checkStatus!=TTkK.Unchecked)
         self.stateChanged.emit(self._checkStatus)
         self.update()
         return True
