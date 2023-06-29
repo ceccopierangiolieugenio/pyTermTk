@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -101,10 +102,11 @@ class TTkSplitter(TTkWidget):
     def replaceItem(self, index, item, title=None):
         '''replaceItem'''
         if index >= len(self._items):
-            return self.addItem(item)
+            return self.addItem(item, title=title)
         TTkLayout.removeItem(self.layout(), self._items[index])
-        TTkLayout.insertItem(self.layout(), index, item, title=title)
+        TTkLayout.insertItem(self.layout(), index, item)
         self._items[index] = item
+        self._titles[index] = TTkString(title) if title else None
         w,h = self.size()
         b = 2 if self._border else 0
         self._processRefSizes(w-b,h-b)
@@ -115,8 +117,9 @@ class TTkSplitter(TTkWidget):
         if index >= len(self._items):
             return self.addWidget(widget, title=title)
         TTkLayout.removeWidget(self.layout(), self._items[index])
-        TTkLayout.insertWidget(self.layout(), index, widget, title=title)
+        TTkLayout.insertWidget(self.layout(), index, widget)
         self._items[index] = widget
+        self._titles[index] = TTkString(title) if title else None
         w,h = self.size()
         b = 2 if self._border else 0
         self._processRefSizes(w-b,h-b)
@@ -359,7 +362,7 @@ class TTkSplitter(TTkWidget):
         self._separatorSelected = None
 
     def minimumHeight(self) -> int:
-        ret = 2 if self._border else 0
+        ret = b = 2 if self._border else 0
         if not self._items: return ret
         if self._orientation == TTkK.VERTICAL:
             for item in self._items:
@@ -367,12 +370,11 @@ class TTkSplitter(TTkWidget):
             ret = max(0,ret-1)
         else:
             for item in self._items:
-                if ret < item.minimumHeight():
-                    ret = item.minimumHeight()
+                ret = max(ret,item.minimumHeight()+b)
         return ret
 
     def minimumWidth(self)  -> int:
-        ret = 2 if self._border else 0
+        ret = b = 2 if self._border else 0
         if not self._items: return ret
         if self._orientation == TTkK.HORIZONTAL:
             for item in self._items:
@@ -380,8 +382,7 @@ class TTkSplitter(TTkWidget):
             ret = max(0,ret-1)
         else:
             for item in self._items:
-                if ret < item.minimumWidth():
-                    ret = item.minimumWidth()
+                ret = max(ret,item.minimumWidth()+b)
         return ret
 
     def maximumHeight(self) -> int:
@@ -395,8 +396,7 @@ class TTkSplitter(TTkWidget):
         else:
             ret = 0x10000
             for item in self._items:
-                if ret > item.maximumHeight():
-                    ret = item.maximumHeight()
+                ret = min(ret,item.maximumHeight()+b)
         return ret
 
     def maximumWidth(self)  -> int:
@@ -410,8 +410,7 @@ class TTkSplitter(TTkWidget):
         else:
             ret = 0x10000
             for item in self._items:
-                if ret > item.maximumWidth():
-                    ret = item.maximumWidth()
+                ret = min(ret,item.maximumWidth()+b)
         return ret
 
     def paintEvent(self, canvas):
@@ -437,7 +436,8 @@ class TTkSplitter(TTkWidget):
                 canvas.drawBoxTitle(
                                 pos=(a,0),
                                 size=(b-a+1,1),
-                                text=t)
+                                text=t,
+                                colorText=TTkCfg.theme.frameTitleColor)
         elif self._orientation == TTkK.VERTICAL:
             for i,t in enumerate(self._titles):
                 if i == 0 and not self._border: continue
@@ -448,5 +448,6 @@ class TTkSplitter(TTkWidget):
                                 pos=(0,a),
                                 size=(w,1),
                                 grid=grid,
-                                text=t)
+                                text=t,
+                                colorText=TTkCfg.theme.frameTitleColor)
 
