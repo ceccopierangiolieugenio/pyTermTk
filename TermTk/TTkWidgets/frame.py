@@ -82,6 +82,21 @@ class TTkFrame(TTkWidget):
             return self._menubarBottom
 
     def setMenuBar(self, menuBar, position=TTkK.TOP):
+        if not menuBar: # a null menuBar remove the current one
+            if position == TTkK.TOP and self._menubarTop:
+                self.rootLayout().removeItem(self._menubarTop)
+                self._menubarTop = None
+                if not self._border:
+                    pt,pb,pl,pr = self.getPadding()
+                    self.setPadding(0,pb,pl,pr)
+            if position == TTkK.BOTTOM and self._menubarBottom:
+                self.rootLayout().removeItem(self._menubarBottom)
+                self._menubarBottom = None
+                if not self._border:
+                    pt,pb,pl,pr = self.getPadding()
+                    self.setPadding(pt,0,pl,pr)
+            return
+        # menuBar is not null and it must be added to the rootLayout
         self.rootLayout().addItem(menuBar)
         if position == TTkK.TOP:
             self._menubarTop = menuBar
