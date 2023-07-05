@@ -170,7 +170,10 @@ class TTkMenuButton(TTkWidget):
         for smb  in self._submenu:
             subMenu.addMenuItem(smb)
         w,h = self.parentWidget().size()
-        ox,oy = self.parentWidget().getViewOffsets()
+        if issubclass(type(_p := self.parentWidget()),TTkAbstractScrollView):
+            _,oy = _p.getViewOffsets()
+        else:
+            oy = 0
         x,y = self.pos()
         # Highlight the first entry in the submenu
         if btns := [b for b in self._submenu if type(b)==TTkMenuButton]:
@@ -331,9 +334,6 @@ class TTkMenu(TTkResizableFrame):
                  #Forwarded Methods
                  'addSpacer','addMenuItem')
     def __init__(self, caller=None, **kwargs):
-        self._submenu = []
-        self._minWidth = 0
-
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         sa =TTkScrollArea(parent=self)
         self._scrollView = _TTkMenuAreaWidget(caller)
