@@ -143,12 +143,24 @@ class TTkMenuBarLayout(TTkHBoxLayout):
     def addMenu(self, text, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
         button = TTkMenuBarButton(text=text, borderColor=self._borderColor, border=True)
-        if  alignment == TTkK.LEFT_ALIGN:
-            self._itemsLeft.addWidget(button)
-        elif alignment == TTkK.CENTER_ALIGN:
-            self._itemsCenter.addWidget(button)
-        elif alignment == TTkK.RIGHT_ALIGN:
-            self._itemsRight.addWidget(button)
+        # button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
+        self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)
         self.update()
         return button
+
+    def _menus(self, alignment=TTkK.LEFT_ALIGN):
+        return [w.widget() for w in self._mbItems(alignment).children()]
+
+    def _mbItems(self, alignment=TTkK.LEFT_ALIGN):
+        return {
+            TTkK.LEFT_ALIGN:   self._itemsLeft   ,
+            TTkK.CENTER_ALIGN: self._itemsCenter ,
+            TTkK.RIGHT_ALIGN:  self._itemsRight
+        }.get(alignment, self._itemsLeft)
+
+    def clear(self):
+        self._buttons = []
+        self._itemsLeft.removeItems(self._itemsLeft.children())
+        self._itemsCenter.removeItems(self._itemsCenter.children())
+        self._itemsRight.removeItems(self._itemsRight.children())
