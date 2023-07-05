@@ -27,6 +27,14 @@
             "console": "integratedTerminal",
             "justMyCode": true,
         },{
+            "name": "Python: TTk Designer Quick",
+            "type": "python",
+            "request": "launch",
+            "module": "ttkDesigner",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["experiments/MenuBar.03.tui.json"]
+        },{
             "name": "Python: Demo",
             "type": "python",
             "request": "launch",
