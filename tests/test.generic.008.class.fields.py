@@ -35,7 +35,7 @@ class B(A):
 class C(B):
     style = B.style | {'a':789, 'c':789}
     def __init__(self) -> None:
-        print(f"{self.__class__.__name__} : {self.style=} , {C.style=}, {style=}")
+        print(f"{self.__class__.__name__} : {self.style=} , {C.style=}")
 
 a = A()
 b = B()
