@@ -94,6 +94,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :type layout: :mod:`TermTk.TTkLayouts`
     '''
 
+    classStyle = {
+                'default':     {'color': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888')},
+                # 'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
+                # 'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
+                # 'clicked':     {'color': TTkColor.fg('#FFFF00')},
+            }
+
     __slots__ = (
         '_name', '_parent',
         '_x', '_y', '_width', '_height',
@@ -120,8 +128,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._lookAndFeel = None
         self.setLookAndFeel(kwargs.get('lookAndFeel', TTkLookAndFeel()))
-        self._style = TTkWidget._BASE_STYLE
-        self._currentStyle = TTkWidget._BASE_STYLE['default']
+
 
         self._pendingMouseRelease = False
 
@@ -147,6 +154,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._visible = kwargs.get('visible', True)
         self._enabled = kwargs.get('enabled', True)
+        self.setStyle(self.classStyle)
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
         self._toolTip = TTkString(kwargs.get('toolTip',''))
@@ -749,7 +757,19 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         return self._currentStyle
 
     def setStyle(self, style):
-        self._style = style[type(self)]
+        if 'default' not in style:
+            # find the closest subclass/parent holding the style
+            styleType = TTkWidget
+            for cc in type(self).__mro__:
+                if cc in style:
+                    styleType = cc
+                    break
+            # Filtering out the current object style
+            style = style[styleType]
+        defaultStyle = style['default']
+        # Use the default style to apply the missing fields of the other actions
+        mergeStyle = {t:defaultStyle | style[t] for t in style}
+        self._style = mergeStyle
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
     def _processStyleEvent(self, evt):

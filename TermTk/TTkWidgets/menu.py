@@ -44,6 +44,15 @@ class _TTkMenuSpacer(TTkWidget):
 
 class TTkMenuButton(TTkWidget):
     '''TTkMenuButton'''
+    classStyle = TTkWidget.classStyle | {
+                'default':     {'color': TTkColor.RST},
+                'highlighted': {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')},
+                'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
+                'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
+                'clicked':     {'color': TTkColor.fg('#FFFF00')},
+                'disabled':    {'color': TTkColor.fg('#888888')},
+            }
+
     __slots__ = (
         '_data','_text', '_checkable', '_checked', '_submenu', '_shortcuts', '_highlighted',
         # Signals
@@ -72,16 +81,7 @@ class TTkMenuButton(TTkWidget):
         super().__init__(**kwargs)
         width = self._text.termWidth() + (3 if self._checkable else 1)
         self.setMinimumWidth(width)
-        self.setStyle(
-            {TTkMenuButton : {
-                'default':     {'color': TTkColor.RST},
-                'highlighted': {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')},
-                'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
-                'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
-                'clicked':     {'color': TTkColor.fg('#FFFF00')},
-                'disabled':    {'color': TTkColor.fg('#888888')},
-            } }
-        )
+        # self.setStyle(self.classStyle)
 
     # Forward Focus Method
     def setFocus(self):
@@ -169,27 +169,33 @@ class TTkMenuButton(TTkWidget):
         subMenu = TTkMenu(pos=(8,6), size=(width,height), caller=self)
         for smb  in self._submenu:
             subMenu.addMenuItem(smb)
-        w,h = self.parentWidget().size()
-        if issubclass(type(_p := self.parentWidget()),TTkAbstractScrollView):
-            _,oy = _p.getViewOffsets()
-        else:
-            oy = 0
         x,y = self.pos()
+        if issubclass(type(_p := self.parentWidget()),TTkAbstractScrollView):
+            wid = _p
+            w,h = _p.size()
+            _,voy = _p.getViewOffsets()
+            ox,oy = w, y-oy-1
+        else:
+            subMenu.setTitle(self.text())
+            subMenu.setTitleAlign(TTkK.LEFT_ALIGN)
+            wid = self
+            ox,oy = -1,0
         # Highlight the first entry in the submenu
         if btns := [b for b in self._submenu if type(b)==TTkMenuButton]:
             btns[0].setHighlight(True)
-        TTkHelper.overlay(self.parentWidget(), subMenu, w, y-oy-1)
+        TTkHelper.overlay(wid, subMenu, ox,oy)
 
     def _triggerButton(self):
-        if not self._submenu:
-            self.parentWidget()._closeAll()
+        if not self._submenu and issubclass(type(_p := self.parentWidget()),TTkAbstractScrollView):
+            _p._closeAll()
         if self._checkable:
             self._checked = not self._checked
             self.toggled.emit(self._checked)
         self.menuButtonClicked.emit(self)
         self.triggered.emit(self._checked)
         self._triggerSubmenu()
-        self.parentWidget()._cleanHighlight()
+        if issubclass(type(_p := self.parentWidget()),TTkAbstractScrollView):
+            _p._cleanHighlight()
         self.setHighlight(True)
         self.update()
 
