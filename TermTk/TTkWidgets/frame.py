@@ -127,6 +127,14 @@ class TTkFrame(TTkWidget):
         self._title = TTkString(title)
         self.update()
 
+    def titleAlign(self):
+        return self._titleAlign
+
+    def setTitleAlign(self, align):
+        if align == self._titleAlign: return
+        self._titleAlign = align
+        self.update()
+
     def setBorder(self, border):
         '''setBorder'''
         self._border = border
