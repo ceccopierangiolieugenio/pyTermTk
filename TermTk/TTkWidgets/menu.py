@@ -174,7 +174,7 @@ class TTkMenuButton(TTkWidget):
             wid = _p
             w,h = _p.size()
             _,voy = _p.getViewOffsets()
-            ox,oy = w, y-oy-1
+            ox,oy = w, y-voy-1
         else:
             subMenu.setTitle(self.text())
             subMenu.setTitleAlign(TTkK.LEFT_ALIGN)
