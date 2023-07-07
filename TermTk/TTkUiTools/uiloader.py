@@ -75,6 +75,25 @@ class TTkUiLoader():
 
     @staticmethod
     def _loadDict_1_0_0(ui, baseWidget:TTkWidget=None, args=None):
+        def _setMenuButton(_menuButtonProp, _menuButton:TTkMenuButton):
+            if 'submenu' in _menuButtonProp:
+                for _sm in _menuButtonProp['submenu']:
+                    if _sm == 'spacer':
+                        _menuButton.addSpacer()
+                        continue
+                    _btn = _menuButton.addMenu(text=_sm['text'], checkable=_sm['checkable'], checked=_sm['checked'])
+                    _setMenuButton(_sm,_btn)
+
+        def _setMenuBar(_menuBarProp, _menuBar:TTkMenuBarLayout):
+            def __addMenu(__prop, __alignment):
+                for _bp in __prop:
+                    _btn = _menuBar.addMenu(_bp['text'], alignment=__alignment)
+                    _setMenuButton(_bp, _btn)
+
+            if 'left' in _menuBarProp:   __addMenu(_menuBarProp['left'],   TTkK.LEFT_ALIGN)
+            if 'center' in _menuBarProp: __addMenu(_menuBarProp['center'], TTkK.CENTER_ALIGN)
+            if 'right' in _menuBarProp:  __addMenu(_menuBarProp['right'],  TTkK.RIGHT_ALIGN)
+
         def _getWidget(_widProp, _baseWidget:TTkWidget=None, _args=None):
             properties = {}
             ttkClass = globals()[_widProp['class']]
@@ -86,6 +105,7 @@ class TTkUiLoader():
             # Init params to be configured with the setter
             setters = []
             layout = _getLayout(_widProp['layout']) if 'layout' in _widProp else TTkLayout()
+            # Process the widget params
             for pname in _widProp['params']:
                 if pname not in properties: continue
                 if 'init' in properties[pname]:
@@ -113,6 +133,7 @@ class TTkUiLoader():
                                 'cb':setcb,
                                 'value': value,
                                 'multi':type(setp['type']) is list})
+
             if _baseWidget is None:
                 widget = ttkClass(**kwargs)
             else:
@@ -122,15 +143,24 @@ class TTkUiLoader():
                 else:
                     error = f"Base Widget '{_baseWidget.__class__.__name__}' is not a subclass of '{ttkClass.__name__}'"
                     raise TypeError(error)
+
             # Init params that don't have a constrictor
             for s in setters:
                 if s['multi']:
                     s['cb'](widget, *s['value'])
                 else:
                     s['cb'](widget, s['value'])
-            TTkLog.debug(widget)
-            # for c in _widProp['children']:
-            #     widget.layout().addWidget(_getWidget(c))
+
+            # Process the optional menuBar params
+            if 'menuBar' in _widProp:
+                if 'top' in _widProp['menuBar']:
+                    widget.setMenuBar(mb := TTkMenuBarLayout(), TTkK.TOP)
+                    _setMenuBar(_widProp['menuBar']['top'], mb)
+                if 'bottom' in _widProp['menuBar']:
+                    widget.setMenuBar(mb := TTkMenuBarLayout(), TTkK.BOTTOM)
+                    _setMenuBar(_widProp['menuBar']['bottom'], mb)
+
+            # TTkLog.debug(widget)
             return widget
 
         def _getLayout(_layprop, _baseWidget:TTkWidget=None):
@@ -238,7 +268,8 @@ class TTkUiLoader():
 
         :return: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
         '''
-        cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0
+        cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0,
+              '1.0.1' : TTkUiLoader._loadDict_1_0_0
               }.get(ui['version'], None)
         if cb:
             return cb(ui, baseWidget, kwargs)
