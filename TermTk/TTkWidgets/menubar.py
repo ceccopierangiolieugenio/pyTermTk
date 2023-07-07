@@ -27,25 +27,23 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.menu import TTkMenu, TTkMenuButton, _TTkMenuSpacer
 
-class TTkMenuBarButton(TTkAbstractListItem):
-    '''TTkMenuButton'''
-    __slots__ = ('_border', '_borderColor', '_shortcut', '_menu', 'menuButtonClicked', '_menuOffset')
-    def __init__(self, *args, **kwargs):
-        TTkAbstractListItem.__init__(self, *args, **kwargs)
-        # signals
-        self.menuButtonClicked = pyTTkSignal(TTkMenuButton)
-        self._color = kwargs.get('color', TTkCfg.theme.menuButtonColor )
-        self._border = kwargs.get('border', TTkCfg.theme.menuButtonColor )
-        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.menuButtonBorderColor )
-        self._menuOffset = kwargs.get('menuOffset', (-1,0) )
+class TTkMenuBarButton(TTkMenuButton):
+    classStyle = TTkMenuButton.classStyle | {
+                'default': TTkMenuButton.classStyle['default'] | {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE},
+                'clicked': TTkMenuButton.classStyle['clicked'] | {'color': TTkColor.fg("#ffff88")},
+            }
+
+    __slots__=('_shortcut')
+    def __init__(self, *, text=..., data=None, checkable=False, checked=False, **kwargs):
         self._shortcut = []
-        self._menu = []
+        super().__init__(text=text, data=data, checkable=checkable, checked=checked, **kwargs)
         while self.text().find('&') != -1:
             index = self.text().find('&')
             shortcut = self.text().charAt(index+1)
@@ -53,70 +51,29 @@ class TTkMenuBarButton(TTkAbstractListItem):
             self._shortcut.append(index)
             self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
         txtlen = self.text().termWidth()
-        self.resize(txtlen,1)
+        self.resize(txtlen+2,1)
         self.setMinimumSize(txtlen+2,1)
         self.setMaximumSize(txtlen+2,1)
-        self.listItemClicked.connect(self.menuButtonEvent)
-
-    def addMenu(self, text, data:object=None, checkable:bool=False, checked:bool=False):
-        '''addMenu'''
-        button = TTkMenuButton(text=text, data=data, checkable=checkable, checked=checked)
-        self._menu.append(button)
-        return button
-
-    def addSpacer(self):
-        '''addSpacer'''
-        self._menu.append(_TTkMenuSpacer())
-
-    def setColor(self, color):
-        self._color = color
-        self.update()
 
     def setBorderColor(self, color):
-        self._borderColor = color
-        self.update()
-
-    def shortcutEvent(self):
-        self.menuButtonEvent()
-
-    @pyTTkSlot(TTkAbstractListItem)
-    def menuButtonEvent(self, listItem=None):
-        if not self._menu:
-            self.menuButtonClicked.emit(self)
-            return
-
-        width = 3+max((len(smb._text) + (2 if smb._submenu else 0)) for smb in self._menu if type(smb) is TTkMenuButton)
-        height = len(self._menu)+2
-        subMenu = TTkMenu(pos=(8,6), size=(width,height), title=self.text(), titleAlign=TTkK.LEFT_ALIGN)
-        for smb  in self._menu:
-            subMenu.addMenuItem(smb)
-        TTkHelper.overlay(self, subMenu, -1, 0)
-        self.update()
+        style = self.style()
+        style['default'] |= {'borderColor':color}
+        self.setStyle(style)
 
     def paintEvent(self, canvas):
-        if self._pressed:
-            borderColor = self._borderColor
-            textColor   = TTkCfg.theme.menuButtonColorClicked
-            scColor     = TTkCfg.theme.menuButtonShortcutColor
-        else:
-            borderColor = self._borderColor
-            textColor   = self._color
-            scColor     =  TTkCfg.theme.menuButtonShortcutColor
+        style = self.currentStyle()
+        borderColor = style['borderColor']
+        textColor   = style['color']
+        scColor     = style['shortcutColor']
         canvas.drawMenuBarButton(
                         pos=(0,0),text=self.text(),
                         width=self.width(),
                         shortcuts=self._shortcut,
-                        border=self._border,
-                        submenu=len(self._menu)>0,
+                        border=True,
+                        submenu=len(self._submenu)>0,
                         color=textColor,
                         borderColor=borderColor,
                         shortcutColor=scColor )
-
-    def focusInEvent(self):
-        self.highlighted=True
-
-    def focusOutEvent(self):
-        self.highlighted=False
 
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''

@@ -135,14 +135,9 @@ class _TTkTabMenuButton(TTkMenuBarButton):
         super().__init__(*args, **kwargs)
 
     def paintEvent(self, canvas):
-        if self._pressed:
-            borderColor = self._borderColor
-            textColor   = TTkCfg.theme.menuButtonColorClicked
-            # scColor     = TTkCfg.theme.menuButtonShortcutColor
-        else:
-            borderColor = self._borderColor
-            textColor   = self._color
-            # scColor     =  TTkCfg.theme.menuButtonShortcutColor
+        style = self.currentStyle()
+        borderColor = style['borderColor']
+        textColor   = style['color']
         text = TTkString('[',borderColor) + TTkString(self.text(),textColor) + TTkString(']',borderColor)
         canvas.drawText(pos=(0,0),text=text)
 
