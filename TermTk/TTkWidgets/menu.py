@@ -206,6 +206,9 @@ class TTkMenuButton(TTkWidget):
     def _menuButtonEvent(self):
         self.menuButtonClicked.emit(self)
 
+    def removeMenuItem(self, item):
+        self._submenu.pop(self._submenu.index(item))
+
     def addMenu(self, text:TTkString, data:object=None, checkable:bool=False, checked:bool=False):
         '''addMenu'''
         button = TTkMenuButton(text=text, data=data, checkable=checkable, checked=checked)

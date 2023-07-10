@@ -10,6 +10,7 @@ from .lineedit import TTkLineEditProperties
 from .list_ import TTkListProperties
 # from .listwidget import
 # from .menubar import
+from .menu import TTkMenuButtonProperties
 # from .progressbar import
 from .radiobutton import TTkRadioButtonProperties
 from .resizableframe import TTkResizableFrameProperties

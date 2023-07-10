@@ -51,9 +51,19 @@ class TTkMenuBarButton(TTkMenuButton):
             self._shortcut.append(index)
             self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
         txtlen = self.text().termWidth()
-        self.resize(txtlen+2,1)
-        self.setMinimumSize(txtlen+2,1)
-        self.setMaximumSize(txtlen+2,1)
+        self.setCheckable(self.isCheckable())
+
+    def setCheckable(self, ch):
+        txtlen = self.text().termWidth()
+        if ch:
+            self.resize(txtlen+4,1)
+            self.setMinimumSize(txtlen+4,1)
+            self.setMaximumSize(txtlen+4,1)
+        else:
+            self.resize(txtlen+2,1)
+            self.setMinimumSize(txtlen+2,1)
+            self.setMaximumSize(txtlen+2,1)
+        return super().setCheckable(ch)
 
     def setBorderColor(self, color):
         style = self.style()
@@ -65,9 +75,15 @@ class TTkMenuBarButton(TTkMenuButton):
         borderColor = style['borderColor']
         textColor   = style['color']
         scColor     = style['shortcutColor']
+        if self._checkable:
+            text = ('▣ ' if self._checked else '□ ') + self.text()
+            width = self.width()+2
+        else:
+            text = self.text()
+            width = self.width()
         canvas.drawMenuBarButton(
-                        pos=(0,0),text=self.text(),
-                        width=self.width(),
+                        pos=(0,0),text=text,
+                        width=width,
                         shortcuts=self._shortcut,
                         border=True,
                         submenu=len(self._submenu)>0,
@@ -97,9 +113,9 @@ class TTkMenuBarLayout(TTkHBoxLayout):
             b.setBorderColor(color)
         self.update()
 
-    def addMenu(self, text, alignment=TTkK.LEFT_ALIGN):
+    def addMenu(self,text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
-        button = TTkMenuBarButton(text=text, borderColor=self._borderColor, border=True)
+        button = TTkMenuBarButton(text=text, data=data, checkable=checkable, checked=checked)
         # button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
         self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)

@@ -33,6 +33,7 @@ TTkUiProperties = {
         TTkLabel.__name__:          TTkLabelProperties,
         TTkLineEdit.__name__:       TTkLineEditProperties,
         TTkList.__name__:           TTkListProperties,
+        TTkMenuButton.__name__:     TTkMenuButtonProperties,
         TTkRadioButton.__name__:    TTkRadioButtonProperties,
         TTkResizableFrame.__name__: TTkResizableFrameProperties,
         TTkScrollBar.__name__:      TTkScrollBarProperties,
