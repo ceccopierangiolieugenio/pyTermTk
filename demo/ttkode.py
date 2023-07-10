@@ -39,7 +39,6 @@ class _KolorFrame(TTkFrame):
     __slots__ = ('_fillColor')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_KolorFrame')
         self._fillColor = kwargs.get('fillColor', TTkColor.RST)
 
     def setFillColor(self, color):

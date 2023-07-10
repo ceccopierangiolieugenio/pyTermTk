@@ -39,7 +39,6 @@ class TTkGraph(TTkWidget):
         self._offset = 0
         super().__init__(*args, **kwargs)
         self._color = kwargs.get('color', TTkColor.RST )
-        self._name = kwargs.get('name' , 'TTkGraph' )
         self._maxData = kwargs.get('maxData', 0x1000)
         self._direction = kwargs.get('direction', TTkK.RIGHT)
         self._align = kwargs.get('align', TTkK.CENTER)

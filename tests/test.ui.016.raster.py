@@ -60,7 +60,6 @@ class TTkPeppered(TTkWidget):
             ['#000000', '#000000', '#000000', '#000000', '#150000', '#550000', '#210000', '#000000', '#000000', '#000000']]
     def __init__(self, *args, **kwargs):
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkPeppered' )
         self.setGeometry(0,0,40,40)
 
     def reduce(self, a,b,c,d):

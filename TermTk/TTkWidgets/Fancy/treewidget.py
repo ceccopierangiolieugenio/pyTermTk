@@ -34,7 +34,6 @@ from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkDisplayedTreeItemControl' )
         self.setMinimumSize(1, 1)
 
     def paintEvent(self, canvas):
@@ -51,7 +50,6 @@ class _TTkDisplayedTreeItem(TTkWidget):
         #Signals
         self._clicked = pyTTkSignal(bool, _TTkDisplayedTreeItem, TTkFancyTreeWidgetItem)
 
-        self._name = kwargs.get('name' , '_TTkDisplayedTreeItem' )
         self._depth = kwargs.get('depth' , 0 )
         self._text = TTkString(kwargs.get('text' , "" ))
         self._id = kwargs.get('id' , 0 )
@@ -80,7 +78,6 @@ class TTkFancyTreeWidget(TTkFancyTableView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
         self._topLevelItems = TTkFancyTreeWidgetItem(None)
         self.doubleClicked.connect(self._doubleClickItem)
         # if 'parent' in kwargs: kwargs.pop('parent')

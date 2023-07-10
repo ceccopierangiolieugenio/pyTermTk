@@ -27,8 +27,9 @@ from TermTk.TTkWidgets.widget import TTkWidget
 TTkWidgetProperties = {
     'properties' : {
         'Name' : {
-                'init': {'name':'name',        'type':str } ,
-                'get':  { 'cb':TTkWidget.name, 'type':str} },
+                'init': {'name':'name',           'type':str } ,
+                'get':  { 'cb':TTkWidget.name,    'type':str } ,
+                'set':  { 'cb':TTkWidget.setName, 'type':str } },
         # 'X' : {
         #         'init': {'name':'x', 'type':int } ,
         #         'get':  { 'cb':x,    'type':int } },

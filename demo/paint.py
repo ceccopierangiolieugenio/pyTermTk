@@ -44,7 +44,6 @@ class PaintCanvas(TTkWidget):
         self._double = False
         self._boxes = []
         TTkWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'PaintCanvas' )
         self.setFocusPolicy(TTkK.ClickFocus)
 
     def setLine(self, type):

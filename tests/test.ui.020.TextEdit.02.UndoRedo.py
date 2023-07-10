@@ -33,7 +33,6 @@ import TermTk as ttk
 class TestUndoRedo(ttk.TTkWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TestUndoRedo' )
         self._doc = kwargs.get('document', ttk.TTkTextDocument())
         self._doc.contentsChanged.connect(self.update)
         self._doc.undoAvailable.connect(lambda _: self.update())

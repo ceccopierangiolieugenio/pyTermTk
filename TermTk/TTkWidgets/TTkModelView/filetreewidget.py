@@ -47,7 +47,6 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self.fileActivated       = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderActivated     = pyTTkSignal(TTkFileTreeWidgetItem)
         TTkTreeWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFileTreeWidget' )
         self._path   = kwargs.get('path','.')
         self._filter = '*'
         self.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])

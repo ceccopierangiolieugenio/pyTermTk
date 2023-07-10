@@ -37,7 +37,6 @@ class TTkFancyTable(TTkAbstractScrollArea):
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTable' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._tableView = TTkFancyTableView(*args, **kwargs)
         # Forward the signal

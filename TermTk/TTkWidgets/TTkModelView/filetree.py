@@ -39,7 +39,6 @@ class TTkFileTree(TTkTree):
         self._fileTreeWidget = TTkFileTreeWidget(*args, **wkwargs)
 
         TTkTree.__init__(self, *args, **kwargs, treeWidget=self._fileTreeWidget)
-        self._name = kwargs.get('name' , 'TTkFileTree' )
 
         # Forward Signals
         self.fileClicked         = self._fileTreeWidget.fileClicked

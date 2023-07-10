@@ -35,7 +35,6 @@ class _TTkLogViewer(TTkAbstractScrollView):
     __slots__ = ('_color', '_text', '_messages', '_cwd', '_follow')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_TTkLogViewer' )
         self._messages = [TTkString()]
         self._cwd = os.getcwd()
         self._follow = kwargs.get('follow' , False )
@@ -81,7 +80,6 @@ class TTkLogViewer(TTkAbstractScrollArea):
     __slots__ = ('_logView')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkLogViewer' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._logView = _TTkLogViewer(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)

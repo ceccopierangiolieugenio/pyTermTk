@@ -26,7 +26,6 @@ from TermTk.TTkWidgets.frame import *
 
 class TTkTestWidgetSizes(TTkFrame):
     ID = 1
-    __slots__ = ('_name')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
         self._name = kwargs.get('name' , f"TestWidgetSizes-{TTkTestWidgetSizes.ID}" )

@@ -29,6 +29,3 @@ class TTkFancyTreeView(TTkFancyTableView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTreeView' )
-        # if 'parent' in kwargs: kwargs.pop('parent')
-

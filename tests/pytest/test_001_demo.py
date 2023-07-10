@@ -59,7 +59,6 @@ class TTkRecord(demo.ttk.TTk):
     __slots__ = ('_record', '_events', '_key_events', '_mouse_events', '_screen_events')
     def __init__(self, *args, **kwargs):
         super().__init__( *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkRecord' )
         self._record = kwargs.get('record', True)
         self._events        = self._RecordQueue()
         self._key_events    = self._RecordQueue()

@@ -193,8 +193,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._parent.layout().removeWidget(self)
             self._parent = None
 
-    def name(self):
+    def name(self) -> str:
+        '''name'''
         return self._name
+
+    def setName(self, name:str):
+        '''setName'''
+        self._name = name
+
 
     def widgetItem(self): return self._widgetItem
 
@@ -729,7 +735,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         return self._toolTip
 
     def setToolTip(self, toolTip: TTkString):
-        self._toolTip = toolTip
+        self._toolTip = TTkString(toolTip)
 
     def getWidgetByName(self, name: str):
         if name == self._name:

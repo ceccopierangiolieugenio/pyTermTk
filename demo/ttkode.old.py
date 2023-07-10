@@ -39,7 +39,6 @@ class _KolorFrame(TTkFrame):
     __slots__ = ('_fillColor')
     def __init__(self, *args, **kwargs):
         TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , '_KolorFrame')
         self._fillColor = kwargs.get('fillColor', TTkColor.RST)
 
     def setFillColor(self, color):
@@ -56,7 +55,6 @@ class KodeTab(TTkTabWidget):
     __slots__ = ('_frameOverlay')
     def __init__(self, *args, **kwargs):
         TTkTabWidget.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'KodeTab')
         self._frameOverlay = _KolorFrame('visible',False)
         self._frameOverlay.setBorderColor(TTkColor.fg("#00FFFF")+TTkColor.bg("#000044"))
         self._frameOverlay.setFillColor(TTkColor.bg("#000088", modifier=TTkColorGradient(increment=-3)))

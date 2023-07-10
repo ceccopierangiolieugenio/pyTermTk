@@ -36,8 +36,7 @@ class TTkTree(TTkAbstractScrollArea):
         'addTopLevelItem', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
     def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkTree' )
+        super().__init__(*args, **kwargs)
         if 'parent' in kwargs: kwargs.pop('parent')
         self._treeView = kwargs.get('treeWidget',TTkTreeWidget(*args, **kwargs))
         self.setViewport(self._treeView)

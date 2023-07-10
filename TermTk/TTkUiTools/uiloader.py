@@ -81,13 +81,17 @@ class TTkUiLoader():
                     if _sm == 'spacer':
                         _menuButton.addSpacer()
                         continue
-                    _btn = _menuButton.addMenu(text=_sm['text'], checkable=_sm['checkable'], checked=_sm['checked'])
+                    _btn = _menuButton.addMenu(text=_sm['params']['Text'], checkable=_sm['params']['Checkable'], checked=_sm['params']['Checked'])
+                    _btn.setName(_sm['params']['Name'])
+                    _btn.setToolTip(_sm['params']['ToolTip'])
                     _setMenuButton(_sm,_btn)
 
         def _setMenuBar(_menuBarProp, _menuBar:TTkMenuBarLayout):
             def __addMenu(__prop, __alignment):
                 for _bp in __prop:
-                    _btn = _menuBar.addMenu(_bp['text'], alignment=__alignment)
+                    _btn = _menuBar.addMenu(text=_bp['params']['Text'], checkable=_bp['params']['Checkable'], checked=_bp['params']['Checked'], alignment=__alignment)
+                    _btn.setName(_bp['params']['Name'])
+                    _btn.setToolTip(_bp['params']['ToolTip'])
                     _setMenuButton(_bp, _btn)
 
             if 'left' in _menuBarProp:   __addMenu(_menuBarProp['left'],   TTkK.LEFT_ALIGN)
