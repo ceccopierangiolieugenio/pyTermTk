@@ -1,0 +1,286 @@
+{
+ "version": "1.0.0",
+ "tui": {
+  "class": "TTkWindow",
+  "params": {
+   "Name": "MainWindow",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    70,
+    12
+   ],
+   "Min Width": 50,
+   "Min Height": 12,
+   "Max Width": 4098,
+   "Max Height": 12,
+   "Padding": [
+    3,
+    1,
+    1,
+    1
+   ],
+   "Layout": "TTkGridLayout",
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "\u001b[0m",
+   "Border": true,
+   "Title": "\u001b[0m\u001b[0mMenuBar Editor\u001b[0m",
+   "Window Flags": 134217728
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     68,
+     8
+    ]
+   },
+   "children": [
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnEditTop",
+      "Position": [
+       0,
+       1
+      ],
+      "Size": [
+       20,
+       3
+      ],
+      "Min Width": 6,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mEdit\u001b[0m",
+      "Border": true,
+      "Checkable": true,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        20,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 1,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkCheckbox",
+     "params": {
+      "Name": "CbTop",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 15,
+      "Min Height": 1,
+      "Max Width": 20,
+      "Max Height": 1,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0m MenuBar Top\u001b[0m",
+      "Tristate": false,
+      "Checked": false,
+      "Check State": 0
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        20,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnEditBottom",
+      "Position": [
+       20,
+       1
+      ],
+      "Size": [
+       20,
+       3
+      ],
+      "Min Width": 6,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0mEdit\u001b[0m",
+      "Border": true,
+      "Checkable": true,
+      "Checked": false
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        20,
+        3
+       ]
+      },
+      "children": []
+     },
+     "row": 1,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkCheckbox",
+     "params": {
+      "Name": "CbBottom",
+      "Position": [
+       20,
+       0
+      ],
+      "Size": [
+       20,
+       1
+      ],
+      "Min Width": 18,
+      "Min Height": 1,
+      "Max Width": 20,
+      "Max Height": 1,
+      "Padding": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "Layout": "TTkLayout",
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Text": "\u001b[0m\u001b[0m MenuBar Bottom\u001b[0m",
+      "Tristate": false,
+      "Checked": false,
+      "Check State": 0
+     },
+     "layout": {
+      "class": "TTkLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        20,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkSplitter",
+     "params": {
+      "Name": "EditorMenuBar",
+      "Position": [
+       0,
+       4
+      ],
+      "Size": [
+       68,
+       4
+      ],
+      "Min Width": 2,
+      "Min Height": 2,
+      "Max Width": 4096,
+      "Max Height": 4096,
+      "Padding": [
+       1,
+       1,
+       1,
+       1
+      ],
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "\u001b[0m",
+      "Border": true,
+      "Orientation": 3
+     },
+     "row": 2,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 3
+    }
+   ]
+  }
+ },
+ "connections": [
+  {
+   "sender": "CbBottom",
+   "receiver": "BtnEditBottom",
+   "signal": "clicked(bool)",
+   "slot": "setEnabled(bool)"
+  },
+  {
+   "sender": "CbTop",
+   "receiver": "BtnEditTop",
+   "signal": "clicked(bool)",
+   "slot": "setEnabled(bool)"
+  }
+ ]
+}

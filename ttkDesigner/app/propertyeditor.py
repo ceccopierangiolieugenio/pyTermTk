@@ -41,7 +41,7 @@ class PropertyEditor(ttk.TTkGridLayout):
 
         self._makeDetail(widget, *superWidget.getSuperProperties())
 
-    def _makeDetail(self, domw, exceptions, exclude):
+    def _makeDetail(self, domw, additions, exceptions, exclude):
         def _boundValue(_f,_w,_v):
             def _ret():
                 _f(_w,_v)
@@ -196,6 +196,11 @@ class PropertyEditor(ttk.TTkGridLayout):
             value.setCurrentText(prop['get']['cb'](domw).__class__.__name__)
             value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:globals()[v]()))
             return ttk.TTkTreeWidgetItem([name,value])
+        # Add a button Control
+        def _processButton(name, prop):
+            value = ttk.TTkButton(text=f" {prop['get']['text']}", border=False)
+            value.clicked.connect(lambda :prop['get']['cb'](domw))
+            return ttk.TTkTreeWidgetItem([name,value])
 
         # Unrecognised Field
         def _processUnknown(name, prop):
@@ -231,6 +236,8 @@ class PropertyEditor(ttk.TTkGridLayout):
                     return _processList(name, prop)
                 elif type(prop['get']['type']) == dict:
                     return _processDict(name, prop)
+                elif prop['get']['type'] == 'button':
+                    return _processButton(p,prop)
                 else:
                     return _processUnknown(name, prop)
 
@@ -243,6 +250,11 @@ class PropertyEditor(ttk.TTkGridLayout):
                 classItem = ttk.TTkTreeWidgetItem([ccName,''], expanded=True)
                 self._detail.addTopLevelItem(classItem)
                 if ccName in ttk.TTkUiProperties:
+                    if ccName in additions:
+                        for p in additions[ccName]:
+                            if p not in proplist:
+                                proplist.append(p)
+                                classItem.addChild(_processProp(p, additions[ccName][p]))
                     for p in ttk.TTkUiProperties[ccName]['properties']:
                         if p in exceptions:
                             prop = exceptions[p]

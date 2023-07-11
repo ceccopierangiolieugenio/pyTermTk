@@ -62,15 +62,21 @@ class SuperWidget(ttk.TTkWidget):
     _showLayout = False
     toggleHighlightLayout = ttk.pyTTkSignal(bool)
 
+    # TODO: Find a better way to handle this exception
+    # It may require some major rewrite
+    def hasControlWidget(self):
+        return True
+
     @ttk.pyTTkSlot(str)
     def setSuperName(self, name):
         if name and name not in [w.name() for w in self._designer.getWidgets()]:
             oldName = self._wid._name
-            self._wid._name = name
+            self._wid.setName(name)
             self._designer.widgetNameChanged.emit(oldName, name)
             self._designer.weModified.emit()
 
     def getSuperProperties(self):
+        additions = {}
         exceptions = {
             'Name': {
                 'get':  { 'cb':ttk.TTkWidget.name,               'type':str} ,
@@ -91,7 +97,7 @@ class SuperWidget(ttk.TTkWidget):
             }
         }
         exclude = []
-        return exceptions, exclude
+        return additions, exceptions, exclude
 
     @ttk.pyTTkSlot(bool)
     def _toggleHighlightLayout(self, state):
@@ -108,28 +114,34 @@ class SuperWidget(ttk.TTkWidget):
         return ret
 
     @staticmethod
-    def _swFromWidget(wid, *args, **kwargs):
-        sw = so.SuperWidget(wid=wid, *args, **kwargs)
+    def _swFromWidget(wid, swClass, *args, **kwargs):
+        sw = swClass(wid=wid, *args, **kwargs)
         sw.changeSuperLayout(type(wid.layout()))
         return sw
 
     @staticmethod
-    def swFromWidget(wid, *args, **kwargs):
-        swClass = {
+    def swFromWidget(wid:object, *args, **kwargs):
+        swClass = so.SuperWidget
+        for c, sc in {
             ttk.TTkTextEdit:       so.SuperWidgetTextEdit,
             ttk.TTkRadioButton:    so.SuperWidgetRadioButton,
             ttk.TTkFrame:          so.SuperWidgetFrame,
-            ttk.TTkResizableFrame: so.SuperWidgetFrame,
-            ttk.TTkWindow:         so.SuperWidgetFrame,
-                }.get(type(wid), so.SuperWidget)
-        return swClass._swFromWidget(wid=wid, *args, **kwargs)
+            # ttk.TTkResizableFrame: so.SuperWidgetFrame,
+            # ttk.TTkWindow:         so.SuperWidgetFrame,
+            ttk.TTkSplitter:       so.SuperWidgetSplitter,
+            ttk.TTkMenuButton:     so.SuperWidgetMenuButton,
+                }.items():
+            if c in type(wid).mro():
+                swClass = sc
+                break
+        return swClass._swFromWidget(wid=wid, swClass=swClass, *args, **kwargs)
 
     @staticmethod
     def loadDict(designer, parent, widProp):
         ttkClass = getattr(ttk,widProp['class'])
         if issubclass(ttkClass,ttk.TTkLayout):
             demiProp = {
-                'version':'1.0.0',
+                'version':'1.0.1',
                 'tui':{
                     'class'  : widProp['class'],
                     'params' : widProp['params'],
@@ -142,7 +154,8 @@ class SuperWidget(ttk.TTkWidget):
             sl = sup = so.SuperLayout.slFromLayout(designer=designer, layout=layout, lay=ttk.TTkLayout(), pos=(x,y), size=(w,h), selectable=True)
             children = widProp['children']
         else:
-            setLayout = 'layout' in widProp
+            setLayout  = 'layout'  in widProp
+            setMenuBar = 'menuBar' in widProp
             tui = {
                 'class'  : widProp['class'],
                 'params' : widProp['params'] }
@@ -152,6 +165,9 @@ class SuperWidget(ttk.TTkWidget):
                     'params' : widProp['layout']['params'],
                     'children' : []
                     } } if setLayout else {}
+            tui |= {
+                'menuBar': widProp['menuBar']
+                    } if setMenuBar else {}
             demiProp = {
                 'version':'1.0.0',
                 'tui': tui,

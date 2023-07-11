@@ -22,8 +22,57 @@
 
 import TermTk as ttk
 import ttkDesigner.app.superobj as so
+from ttkDesigner.app.menuBarEditor import MenuBarEditor
 
 class SuperWidgetFrame(so.SuperWidget):
     def getSuperProperties(self):
-        exceptions, exclude = super().getSuperProperties()
-        return exceptions, exclude
+        additions, exceptions, exclude = super().getSuperProperties()
+        additions |= {
+            ttk.TTkFrame.__name__ : {
+                'Menu Bar' : {
+                    'get':  {'cb':MenuBarEditor.spawnMenuBarEditor(self._designer), 'type':'button', 'text':'Edit'},
+                    'set':  {'cb':MenuBarEditor.spawnMenuBarEditor(self._designer), 'type':'button', 'text':'Edit'} },
+            }
+        }
+        return additions, exceptions, exclude
+
+    def dumpDict(self):
+        def _dumpMenuBarItem(_mbi:ttk.TTkMenuButton):
+            if not issubclass(type(_mbi),ttk.TTkMenuButton):
+                return "spacer"
+
+            ret = {'params': {
+                        'Name':      _mbi.name(),
+                        'ToolTip':   _mbi.toolTip().toAnsi(),
+                        'Text':      _mbi.text().toAnsi(),
+                        'Checkable': _mbi.isCheckable(),
+                        'Checked':   _mbi.isChecked(),
+                    }
+                }
+            if _sm := _dumpMenuBarItems(_mbi._submenu):
+                ret |= {'submenu': _sm}
+            return ret
+
+        def _dumpMenuBarItems(_mbis):
+            return [_dumpMenuBarItem(_i) for _i in _mbis]
+
+        def _dumpMenuBar(_mb):
+            ret = {}
+            if _mbis := _mb._mbItems(ttk.TTkK.LEFT_ALIGN).children():
+                ret |= {'left':_dumpMenuBarItems([_i.widget() for _i in _mbis])}
+            if _mbis := _mb._mbItems(ttk.TTkK.CENTER_ALIGN).children():
+                ret |= {'center':_dumpMenuBarItems([_i.widget() for _i in _mbis])}
+            if _mbis := _mb._mbItems(ttk.TTkK.RIGHT_ALIGN).children():
+                ret |= {'right':_dumpMenuBarItems([_i.widget() for _i in _mbis])}
+            return ret
+
+        ret = super().dumpDict()
+        barTop    = self._wid.menuBar(ttk.TTkK.TOP)
+        barBottom = self._wid.menuBar(ttk.TTkK.BOTTOM)
+        if barTop or barBottom:
+            ret |= {'menuBar' : {}}
+            if barTop:
+                ret['menuBar']['top'] = _dumpMenuBar(barTop)
+            if barBottom:
+                ret['menuBar']['bottom'] = _dumpMenuBar(barBottom)
+        return ret
