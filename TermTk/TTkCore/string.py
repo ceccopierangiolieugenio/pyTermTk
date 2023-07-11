@@ -279,7 +279,7 @@ class TTkString():
         ''' Return the ascii representation of the string '''
         return self._text
 
-    def toAnsi(self):
+    def toAnsi(self, strip=False):
         ''' Return the ansii (terminal colors/events) representation of the string '''
         out   = ""
         color = None
@@ -288,6 +288,14 @@ class TTkString():
                 color = col
                 out += str(TTkColor.RST) + str(color)
             out += ch
+        if strip:
+            rstCh  = "\u001b[0m"
+            lenRst = len(rstCh)
+            while out.startswith(rstCh):
+                out = out[lenRst:]
+            while out.endswith(rstCh):
+                out = out[:-lenRst]
+            return out
         return out+str(TTkColor.RST)
 
     def align(self, width=None, color=TTkColor.RST, alignment=TTkK.NONE):

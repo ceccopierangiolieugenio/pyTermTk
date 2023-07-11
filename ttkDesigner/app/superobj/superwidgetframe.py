@@ -43,8 +43,8 @@ class SuperWidgetFrame(so.SuperWidget):
 
             ret = {'params': {
                         'Name':      _mbi.name(),
-                        'ToolTip':   _mbi.toolTip().toAnsi(),
-                        'Text':      _mbi.text().toAnsi(),
+                        'ToolTip':   _mbi.toolTip().toAnsi(True),
+                        'Text':      _mbi.text().toAnsi(True),
                         'Checkable': _mbi.isCheckable(),
                         'Checked':   _mbi.isChecked(),
                     }

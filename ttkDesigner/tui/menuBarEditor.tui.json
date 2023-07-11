@@ -25,9 +25,9 @@
    "Layout": "TTkGridLayout",
    "Visible": true,
    "Enabled": true,
-   "ToolTip": "\u001b[0m",
+   "ToolTip": "",
    "Border": true,
-   "Title": "\u001b[0m\u001b[0mMenuBar Editor\u001b[0m",
+   "Title": "MenuBar Editor",
    "Window Flags": 134217728
   },
   "layout": {
@@ -66,8 +66,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": false,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mEdit\u001b[0m",
+      "ToolTip": "",
+      "Text": "Edit",
       "Border": true,
       "Checkable": true,
       "Checked": false
@@ -114,8 +114,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0m MenuBar Top\u001b[0m",
+      "ToolTip": "",
+      "Text": " MenuBar Top",
       "Tristate": false,
       "Checked": false,
       "Check State": 0
@@ -162,8 +162,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": false,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mEdit\u001b[0m",
+      "ToolTip": "",
+      "Text": "Edit",
       "Border": true,
       "Checkable": true,
       "Checked": false
@@ -210,8 +210,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0m MenuBar Bottom\u001b[0m",
+      "ToolTip": "",
+      "Text": " MenuBar Bottom",
       "Tristate": false,
       "Checked": false,
       "Check State": 0
@@ -257,7 +257,7 @@
       ],
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
+      "ToolTip": "",
       "Border": true,
       "Orientation": 3
      },

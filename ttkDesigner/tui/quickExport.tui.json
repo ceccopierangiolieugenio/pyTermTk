@@ -25,9 +25,9 @@
    "Layout": "TTkGridLayout",
    "Visible": true,
    "Enabled": true,
-   "ToolTip": "\u001b[0m",
+   "ToolTip": "",
    "Border": true,
-   "Title": "\u001b[0m\u001b[0mMr Export \ud83c\udf81\u001b[0m",
+   "Title": "Mr Export \ud83c\udf81",
    "Window Flags": 134250496
   },
   "layout": {
@@ -66,8 +66,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0m\ud83d\udcbe\u001b[0m",
+      "ToolTip": "",
+      "Text": "\ud83d\udcbe",
       "Border": true,
       "Checkable": false,
       "Checked": false,
@@ -119,8 +119,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mNormal\u001b[0m",
+      "ToolTip": "",
+      "Text": "Normal",
       "Border": true,
       "Checkable": false,
       "Checked": false
@@ -167,8 +167,8 @@
       "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
-      "Text": "\u001b[0m\u001b[0mCompressed\u001b[0m",
+      "ToolTip": "",
+      "Text": "Compressed",
       "Border": true,
       "Checkable": false,
       "Checked": false
@@ -214,7 +214,7 @@
       ],
       "Visible": true,
       "Enabled": true,
-      "ToolTip": "\u001b[0m",
+      "ToolTip": "",
       "Line Number": true,
       "Read Only": false,
       "Multi Line": true

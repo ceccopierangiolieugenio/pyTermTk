@@ -28,7 +28,7 @@ class SuperObject():
         def _dumpPrimitive(val):
             return val
         def _dumpTTkString(val):
-            return val.toAnsi()
+            return val.toAnsi(True)
         def _dumpTTkColor(val):
             return str(val)
         def _dumpTTkLayout(val):
