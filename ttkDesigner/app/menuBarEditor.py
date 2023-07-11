@@ -69,6 +69,7 @@ class _MenuItem(ttk.TTkWidget):
             self.resize(width+7,1)
             self._lineEdit.setGeometry(1,0,width,1)
         self.processWidgetName(f"menu_{text}")
+        self._designer.weModified.emit()
         self.update()
 
     def mouseDoubleClickEvent(self, evt) -> bool:
@@ -94,6 +95,8 @@ class _MenuItem(ttk.TTkWidget):
             self.closeClicked.emit(self)
         elif evt.x > w-7:
             self.expandMenuItem()
+        else:
+            self._designer.thingSelected.emit(self._menuButton,self._superMenuButton)
         return True
 
     def paintEvent(self, canvas: TTkCanvas):
@@ -208,6 +211,7 @@ class _SubMenuAreaWidget(ttk.TTkAbstractScrollView):
         item.closeClicked.disconnect(self.removeMenuItem)
         self._resizeEvent()
         self.itemsChanged.emit(self._items)
+        self._designer.weModified.emit()
 
     def _addMenuItem(self, item):
         item.closeClicked.clear()
@@ -216,6 +220,7 @@ class _SubMenuAreaWidget(ttk.TTkAbstractScrollView):
         self._minWidth = max(self._minWidth,item.minimumWidth())
         self._resizeEvent()
         self.itemsChanged.emit(self._items)
+        self._designer.weModified.emit()
 
     def addMenuItem(self, item):
         self._items.append(item)
@@ -306,6 +311,7 @@ class _MenuBarItemEditorView(ttk.TTkAbstractScrollView):
         self.layout().removeWidget(item)
         self._items.pop(self._items.index(item))
         self._refreshItems()
+        self._designer.weModified.emit()
 
     def _addMenuItem(self, item):
         item.sizeChanged.clear()
@@ -314,6 +320,7 @@ class _MenuBarItemEditorView(ttk.TTkAbstractScrollView):
         item.closeClicked.connect(self.removeMenuItem)
         self.layout().addWidget(item)
         self._refreshItems()
+        self._designer.weModified.emit()
 
     @ttk.pyTTkSlot()
     def addMenuItem(self):
@@ -393,6 +400,7 @@ class MenuBarEditor(ttk.TTkWindow):
             self._widget.setMenuBar(mb, place)
         else:
             self._widget.setMenuBar(None, place)
+        self._designer.weModified.emit()
 
     def _showEditor(self, place):
         if place==ttk.TTkK.TOP:
