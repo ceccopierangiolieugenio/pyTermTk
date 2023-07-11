@@ -34,7 +34,6 @@ class TTkFancyTree(TTkAbstractScrollArea):
 
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , 'TTkFancyTree' )
         if 'parent' in kwargs: kwargs.pop('parent')
         self._treeView = TTkFancyTreeWidget(*args, **kwargs)
         # Forward the signal

@@ -47,8 +47,7 @@ class TTk(TTkWidget):
     class _mouseCursor(TTkWidget):
         __slots__ = ('_cursor','_color')
         def __init__(self, input):
-            super().__init__()
-            self._name = 'MouseCursor'
+            super().__init__(name='MouseCursor')
             self._cursor = '✠'
             self._color = TTkColor.RST
             self.resize(1,1)
