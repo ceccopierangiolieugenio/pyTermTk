@@ -100,10 +100,11 @@ class TTkLineEdit(TTkWidget):
             self._offset = cursorPos
 
         TTkHelper.moveCursor(self,cursorPos-self._offset,0)
-        if self._replace:
-            TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
-        else:
-            TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
+        if self.hasFocus():
+            if self._replace:
+                TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
+            else:
+                TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
         self.update()
 
     def paintEvent(self, canvas):

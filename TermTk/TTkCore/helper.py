@@ -414,20 +414,26 @@ class TTkHelper:
 
     @staticmethod
     def showCursor(cursorType = TTkK.Cursor_Blinking_Block):
-        if   cursorType == TTkK.Cursor_Blinking_Block      : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
-        elif cursorType == TTkK.Cursor_Blinking_Block_Also : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK_ALSO
-        elif cursorType == TTkK.Cursor_Steady_Block        : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BLOCK
-        elif cursorType == TTkK.Cursor_Blinking_Underline  : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_UNDERLINE
-        elif cursorType == TTkK.Cursor_Steady_Underline    : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_UNDERLINE
-        elif cursorType == TTkK.Cursor_Blinking_Bar        : TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BAR
-        elif cursorType == TTkK.Cursor_Steady_Bar          : TTkHelper._cursorType = TTkTerm.Cursor.STEADY_BAR
-        TTkTerm.Cursor.show(TTkHelper._cursorType)
+        newType = {
+            TTkK.Cursor_Blinking_Block      : TTkTerm.Cursor.BLINKING_BLOCK,
+            TTkK.Cursor_Blinking_Block_Also : TTkTerm.Cursor.BLINKING_BLOCK_ALSO,
+            TTkK.Cursor_Steady_Block        : TTkTerm.Cursor.STEADY_BLOCK,
+            TTkK.Cursor_Blinking_Underline  : TTkTerm.Cursor.BLINKING_UNDERLINE,
+            TTkK.Cursor_Steady_Underline    : TTkTerm.Cursor.STEADY_UNDERLINE,
+            TTkK.Cursor_Blinking_Bar        : TTkTerm.Cursor.BLINKING_BAR,
+            TTkK.Cursor_Steady_Bar          : TTkTerm.Cursor.STEADY_BAR,
+        }.get(cursorType, TTkTerm.Cursor.BLINKING_BAR)
+        if not TTkHelper._cursor or TTkHelper._cursorType != newType:
+            TTkHelper._cursorType = newType
+            TTkTerm.Cursor.show(TTkHelper._cursorType)
         TTkHelper._cursor = True
+
     @staticmethod
     def hideCursor():
         TTkTerm.Cursor.hide()
         TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
         TTkHelper._cursor = False
+
     @staticmethod
     def moveCursor(widget, x, y):
         xx, yy = TTkHelper.absPos(widget)

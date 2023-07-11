@@ -94,6 +94,7 @@ class TTkTermBase():
         TTkTermBase.title = title
         TTkTermBase.mouse = mouse | directMouse
         TTkTermBase.directMouse = directMouse
+        TTkTermBase.Cursor.hide()
         TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
         if TTkTermBase.mouse:
             TTkTermBase.push(TTkTermBase.Mouse.ON)
