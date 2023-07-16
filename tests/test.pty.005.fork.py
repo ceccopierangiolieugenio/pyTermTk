@@ -35,10 +35,7 @@
 
 import os
 import pty
-import tty
 import sys
-import time
-import subprocess
 import threading
 from select import select
 
@@ -49,33 +46,31 @@ import TermTk as ttk
 class TermThread(threading.Thread):
     def __init__(self):
         super().__init__()
-        self.shell = os.environ.get('SHELL', 'sh')
-        self.master, self.slave = pty.openpty()
-        self.p = subprocess.Popen(
-            [self.shell],
-            # preexec_fn=os.setsid,
-            # universal_newlines=True,
-            stdin=self.slave,
-            stdout=self.slave,
-            stderr=self.slave)
-        self.pin = os.fdopen(self.master, 'w')
+        self._shell = os.environ.get('SHELL', 'sh')
+        pid, self._fd = pty.fork()
+        if pid == 0:
+            argv = [self._shell]
+            env = dict(TERM="screen", DISPLAY=":1")
+            os.execvpe(argv[0], argv, env)
 
-        name = os.ttyname(self.master)
-        ttk.TTkLog.debug(f"{self.master=} {name}")
+        self._inout = os.fdopen(self._fd, "w+b", 0)
 
-        name = os.ttyname(self.slave)
-        ttk.TTkLog.debug(f"{self.slave=} {name}")
+        name = os.ttyname(self._fd)
+        ttk.TTkLog.debug(f"{self._fd=} {name}")
 
     def setTextEdit(self, te):
         self.textEdit = te
 
     def run(self):
-        while self.p.poll() is None:
-            rs, ws, es = select([self.master], [], [])
+        while rs := select( [self._inout], [], [])[0]:
             ttk.TTkLog.debug(f"Select - {rs=}")
             for r in rs:
-                if r is self.master:
-                    o = os.read(self.master, 10240)
+                if r is self._inout:
+                    try:
+                        o = self._inout.read(10240)
+                    except Exception as e:
+                        ttk.TTkLog.error(f"Error: {e=}")
+                        return
                     if o:
                         # ttk.TTkLog.debug(f'Eugenio->{o}')
                         # self.textEdit.append(o.decode('utf-8').replace('\r','').replace('\033[?2004h','').replace('\033[?2004l',''))
@@ -100,14 +95,18 @@ class TerminalView(ttk.TTkTextEditView):
         if evt.type == ttk.TTkK.SpecialKey:
             if evt.key == ttk.TTkK.Key_Enter:
                 ttk.TTkLog.debug(f"Key: {evt}")
-                self.termThread.pin.write('\n')
+                self.termThread._inout.write(b'\n')
         else: # Input char
             ttk.TTkLog.debug(f"Key: {evt.key}")
-            self.termThread.pin.write(evt.key)
+            self.termThread._inout.write(evt.key.encode())
         return True
 
 ttk.TTkLog.use_default_file_logging()
 root = ttk.TTk()
+
+wlog = ttk.TTkWindow(parent=root,pos = (32,12), size=(90,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+wlog.setLayout(ttk.TTkHBoxLayout())
+ttk.TTkLogViewer(parent=wlog, follow=True )
 
 win1 = ttk.TTkWindow(parent=root, pos=(1,1), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 tt1 = TermThread()
@@ -123,8 +122,5 @@ win2.layout().addWidget(te2)
 tt2.setTextEdit(te2)
 tt2.start()
 
-wlog = ttk.TTkWindow(parent=root,pos = (32,12), size=(90,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
-wlog.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkLogViewer(parent=wlog, follow=True )
 
 root.mainloop()
