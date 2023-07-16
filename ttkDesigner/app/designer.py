@@ -28,7 +28,7 @@ from TermTk import TTkString
 from TermTk import TTkColorGradient
 from TermTk import pyTTkSlot, pyTTkSignal
 
-from TermTk import TTkWidget, TTkFrame, TTkButton, TTkLabel
+from TermTk import TTkWidget, TTkFrame, TTkButton, TTkLabel, TTkMenuButton
 from TermTk import TTkTabWidget
 from TermTk import TTkAbstractScrollArea, TTkAbstractScrollView, TTkScrollArea
 from TermTk import TTkFileDialogPicker, TTkMessageBox
@@ -43,12 +43,14 @@ from TermTk import TTkUiLoader, TTkUtil
 from .cfg  import *
 from .about import *
 from .widgetbox import DragDesignItem, WidgetBox, WidgetBoxScrollArea
-from .windoweditor import WindowEditor, SuperWidget
+from .windoweditor import WindowEditor
 from .treeinspector import TreeInspector
 from .propertyeditor import PropertyEditor
 from .signalsloteditor import SignalSlotEditor
 from .quickexport import QuickExport
 from .notepad import NotePad
+
+from .superobj import SuperWidget, SuperWidgetFrame
 
 #
 #      Mimic the QT Designer layout
@@ -123,10 +125,10 @@ class TTkDesigner(TTkGridLayout):
         mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
 
         rightSplit.addItem(self._treeInspector)
-        rightSplit.addItem(propertyEditor := PropertyEditor())
+        rightSplit.addItem(propertyEditor := PropertyEditor(), title="Property Editor")
         # rightSplit.addItem(self._sigslotEditor)
 
-        self.thingSelected.connect(lambda _,s : s.pushSuperControlWidget())
+        self.thingSelected.connect(lambda _,s : s.pushSuperControlWidget() if s.hasControlWidget() else None)
         self.thingSelected.connect(propertyEditor.setDetail)
 
         self.weModified.connect(self._treeInspector.refresh)
@@ -153,7 +155,7 @@ class TTkDesigner(TTkGridLayout):
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
         w,_ = self.size()
-        mainSplit.setSizes([25,None,40])
+        mainSplit.setSizes([25,None,42])
         centralSplit.setSizes([None,8])
 
         self._toolBar.addWidget(btnPreview := TTkButton(maxWidth=12, text='Preview...'))
@@ -175,14 +177,41 @@ class TTkDesigner(TTkGridLayout):
             self._openFile(fileName)
 
     def getWidgets(self):
-        widgets = []
+        widgets = set()
+        def _getMenu(menu):
+            widgets.add(menu)
+            for item in menu._submenu:
+                if issubclass(type(item), TTkMenuButton):
+                    _getMenu(item)
         def _getItems(layoutItem):
             if layoutItem.layoutItemType() == TTkK.WidgetItem:
                 superThing = layoutItem.widget()
                 if issubclass(type(superThing), SuperWidget):
-                    widgets.append(superThing._wid)
+                    widgets.add(superThing._wid)
                 for c in superThing.layout().children():
                     _getItems(c)
+                # Chec and add all the menubuttons
+                if issubclass(type(superThing), SuperWidgetFrame):
+                    if(_mb := superThing._wid.menuBar(TTkK.TOP)):
+                        if(_mbi := _mb._mbItems(TTkK.LEFT_ALIGN)):
+                            for _ch in _mbi.children():
+                                _getMenu(_ch.widget())
+                        if(_mbi := _mb._mbItems(TTkK.CENTER_ALIGN)):
+                            for _ch in _mbi.children():
+                                _getMenu(_ch.widget())
+                        if(_mbi := _mb._mbItems(TTkK.RIGHT_ALIGN)):
+                            for _ch in _mbi.children():
+                                _getMenu(_ch.widget())
+                    if(_mb := superThing._wid.menuBar(TTkK.BOTTOM)):
+                        if(_mbi := _mb._mbItems(TTkK.LEFT_ALIGN)):
+                            for _ch in _mbi.children():
+                                _getMenu(_ch.widget())
+                        if(_mbi := _mb._mbItems(TTkK.CENTER_ALIGN)):
+                            for _ch in _mbi.children():
+                                _getMenu(_ch.widget())
+                        if(_mbi := _mb._mbItems(TTkK.RIGHT_ALIGN)):
+                            for _ch in _mbi.children():
+                                _getMenu(_ch.widget())
         _getItems(self._windowEditor.getTTk().widgetItem())
         return widgets
 
@@ -195,7 +224,7 @@ class TTkDesigner(TTkGridLayout):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         data = {
-            'version':'1.0.0',
+            'version':'1.0.1',
             'tui':tui,
             'connections':connections}
 
@@ -218,7 +247,7 @@ class TTkDesigner(TTkGridLayout):
         # for line in jj.split('\n'):
         #     TTkLog.debug(f"{line}")
         newUI = {
-            'version':'1.0.0',
+            'version':'1.0.1',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)

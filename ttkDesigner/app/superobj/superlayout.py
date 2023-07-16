@@ -50,9 +50,10 @@ class SuperLayout(ttk.TTkWidget):
         so.SuperWidget.toggleHighlightLayout.connect(self._toggleHighlightLayout)
 
     def getSuperProperties(self):
+        additions = {}
         exceptions = {}
         exclude = []
-        return exceptions, exclude
+        return additions, exceptions, exclude
 
     @ttk.pyTTkSlot(bool)
     def _toggleHighlightLayout(self, state):

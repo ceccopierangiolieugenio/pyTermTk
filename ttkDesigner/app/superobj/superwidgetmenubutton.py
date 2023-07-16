@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,16 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .supercontrol import SuperControlWidget
+import weakref
 
-from .superwidget            import SuperWidget
-from .superwidgettextedit    import SuperWidgetTextEdit
-from .superwidgetradiobutton import SuperWidgetRadioButton
-from .superwidgetframe       import SuperWidgetFrame
-from .superwidgetsplitter    import SuperWidgetSplitter
-from .superwidgetmenubutton  import SuperWidgetMenuButton
+import TermTk as ttk
+import ttkDesigner.app.superobj as so
 
-from .superlayout     import SuperLayout
-from .superlayoutgrid import SuperLayoutGrid
-from .superlayoutvbox import SuperLayoutVBox
-from .superlayouthbox import SuperLayoutHBox
+class SuperWidgetMenuButton(so.SuperWidget):
+    _menuButtons = weakref.WeakKeyDictionary()
+    def __init__(self, designer, wid, *args, **kwargs):
+        # ttk.TTkWidget.__init__(self)
+        super().__init__(designer, wid, pos=(0,0.),**kwargs)
+
+    def hasControlWidget(self):
+        return False
+
+    def getSuperProperties(self):
+        additions, exceptions, exclude = super().getSuperProperties()
+        exclude += ['Layout', 'Position', 'Size', 'Min Width', 'Min Height', 'Max Width', 'Max Height', 'Padding', 'Layout', 'Visible', 'Enabled']
+        return additions, exceptions, exclude
+
+    @staticmethod
+    def _swFromWidget(wid, swClass, *args, **kwargs):
+        sw = swClass(wid=wid, *args, **kwargs)
+        return sw
+
+    @staticmethod
+    def factoryGetSuperWidgetMenuButton(wid:ttk.TTkMenuButton, designer):
+        if wid not in SuperWidgetMenuButton._menuButtons:
+            SuperWidgetMenuButton._menuButtons[wid] =  weakref.ref(so.SuperWidget.swFromWidget(wid=wid, designer=designer))
+        return SuperWidgetMenuButton._menuButtons[wid]()
+

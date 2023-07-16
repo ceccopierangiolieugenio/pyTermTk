@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,16 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .supercontrol import SuperControlWidget
+import TermTk as ttk
+import ttkDesigner.app.superobj as so
+from .superobj import SuperObject
 
-from .superwidget            import SuperWidget
-from .superwidgettextedit    import SuperWidgetTextEdit
-from .superwidgetradiobutton import SuperWidgetRadioButton
-from .superwidgetframe       import SuperWidgetFrame
-from .superwidgetsplitter    import SuperWidgetSplitter
-from .superwidgetmenubutton  import SuperWidgetMenuButton
 
-from .superlayout     import SuperLayout
-from .superlayoutgrid import SuperLayoutGrid
-from .superlayoutvbox import SuperLayoutVBox
-from .superlayouthbox import SuperLayoutHBox
+class SuperWidgetSplitter(so.SuperWidget):
+    def getSuperProperties(self):
+        additions, exceptions, exclude = super().getSuperProperties()
+        exclude += ['layout']
+        return additions, exceptions, exclude
+
+    def dumpDict(self):
+        wid = self._wid
+        ret = {
+            'class'  : wid.__class__.__name__,
+            'params' : SuperObject.dumpParams(wid,exclude=['Layout']),
+        }
+        return ret

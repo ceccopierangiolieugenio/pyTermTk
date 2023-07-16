@@ -24,6 +24,8 @@ import TermTk as ttk
 
 from .superobj.superwidget import SuperWidget
 from .superobj.superlayout import SuperLayout
+from .superobj.superwidgetframe import SuperWidgetFrame
+from .superobj.superwidgetmenubutton import SuperWidgetMenuButton
 
 class _TTkTomTreeWidgetItem(ttk.TTkTreeWidgetItem):
     __slots__ = ('_tomWidget','_tomSuperWidget')
@@ -88,10 +90,60 @@ class TreeInspector(ttk.TTkGridLayout):
     @ttk.pyTTkSlot()
     def refresh(self, thing=None):
         self._tomTree.clear()
-        self._tomTree.addTopLevelItem(TreeInspector._getTomTreeItem(self._windowEditor.getTTk().widgetItem()))
+        self._tomTree.addTopLevelItem(TreeInspector._getTomTreeItem(self._windowEditor.getTTk().widgetItem(),designer=self._designer))
 
     @staticmethod
-    def _getTomTreeItem(layoutItem, widSelected=None):
+    def _getTomTreeItem(layoutItem, widSelected=None, designer=None):
+        def _processMenuButton(
+                    _mb:ttk.TTkMenuButton,
+                    _top:_TTkTomTreeWidgetItem):
+            _top.addChild(_bTop := _TTkTomTreeWidgetItem(
+                                        [_mb._name, _mb.__class__.__name__, '', ''],
+                                        tomWidget=_mb,
+                                        tomSuperWidget=SuperWidgetMenuButton.factoryGetSuperWidgetMenuButton(wid=_mb, designer=designer),
+                                        expanded=expanded))
+            _processSubMenuButton(_mb._submenu, _bTop)
+
+        def _processSubMenuButton(
+                    _mbCh,
+                    _top:_TTkTomTreeWidgetItem):
+            for _ch in _mbCh:
+                if issubclass(type(_ch),ttk.TTkMenuButton):
+                    _processMenuButton(_ch, _top)
+                else:
+                    _top.addChild(_TTkTomTreeWidgetItem(['<-spacer->', '', '', ''], expanded=True))
+
+        def _processMenuBarAlign(
+                    _mbCh,
+                    _top:_TTkTomTreeWidgetItem,
+                    _text):
+            _top.addChild(_mbTop := _TTkTomTreeWidgetItem([_text, '', '', ''], expanded=True))
+            _processSubMenuButton(_mbCh, _mbTop)
+
+        def _processMenuBar(
+                    _mb:ttk.TTkMenuBarLayout,
+                    _top:_TTkTomTreeWidgetItem):
+            if ( (_mbI := _mb._mbItems(ttk.TTkK.LEFT_ALIGN)  ) and (_mbCh := [ _w.widget() for _w in _mbI.children() ]) ):
+                _processMenuBarAlign(_mbCh, _top, 'Left')
+            if ( (_mbI := _mb._mbItems(ttk.TTkK.CENTER_ALIGN)) and (_mbCh := [ _w.widget() for _w in _mbI.children() ]) ):
+                _processMenuBarAlign(_mbCh, _top, 'Center')
+            if ( (_mbI := _mb._mbItems(ttk.TTkK.RIGHT_ALIGN) ) and (_mbCh := [ _w.widget() for _w in _mbI.children() ]) ):
+                _processMenuBarAlign(_mbCh, _top, 'Right')
+
+        def _processMenuBars(
+                    _thing:ttk.TTkFrame,
+                    _top:_TTkTomTreeWidgetItem):
+            _mbTop = _thing.menuBar(ttk.TTkK.TOP)
+            _mbBottom = _thing.menuBar(ttk.TTkK.BOTTOM)
+            if _mbTop or _mbBottom:
+                _top.addChild(_mb := _TTkTomTreeWidgetItem(['Menu Bar', '', '', ''], expanded=True))
+                if _mbTop:
+                    _mb.addChild(_mbc := _TTkTomTreeWidgetItem(['Top', '', '', '']))
+                    _processMenuBar(_mbTop, _mbc)
+                if _mbBottom:
+                    _mb.addChild(_mbc := _TTkTomTreeWidgetItem(['Bottom', '', '', '']))
+                    _processMenuBar(_mbBottom, _mbc)
+
         if layoutItem.layoutItemType() == ttk.TTkK.WidgetItem:
             superThing = thing = layoutItem.widget()
             if issubclass(type(superThing), SuperWidget):
@@ -115,28 +167,30 @@ class TreeInspector(ttk.TTkGridLayout):
                             tomWidget=thing,
                             tomSuperWidget=superThing,
                             expanded=expanded)
+            if issubclass(type(superThing), SuperWidgetFrame):
+                _processMenuBars(thing, top)
             if issubclass(type(superThing), SuperWidget):
                 for c in superThing._superLayout.layout().children():
-                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
+                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected,designer))
             elif issubclass(type(superThing), SuperLayout):
                 for c in superThing.layout().children():
-                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
+                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected,designer))
             else:
                 for c in superThing.layout().children():
-                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
+                    top.addChild(TreeInspector._getTomTreeItem(c,widSelected,designer))
 
             # for c in thing.rootLayout().children():
             #     if c == thing.layout(): continue
             #     if c.layoutItemType == ttk.TTkK.LayoutItem:
             #         top.addChild(tc:=_TTkTomTreeWidgetItem(["layout (Other)", c.__class__.__name__, ""]))
             #         for cc in c.children():
-            #             tc.addChild(TreeInspector._getTomTreeItem(cc,widSelected))
+            #             tc.addChild(TreeInspector._getTomTreeItem(cc,widSelected,designer))
             return top
 
         if layoutItem.layoutItemType() == ttk.TTkK.LayoutItem:
             top = _TTkTomTreeWidgetItem(["layout", layoutItem.__class__.__name__,"",layoutItem.__class__.__name__])
             for c in layoutItem.children():
-                top.addChild(TreeInspector._getTomTreeItem(c,widSelected))
+                top.addChild(TreeInspector._getTomTreeItem(c,widSelected,designer))
             return top
 
         return _TTkTomTreeWidgetItem(["ERROR!!!", "None"])

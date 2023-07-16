@@ -33,5 +33,5 @@ setuptools.setup(
     # packages=setuptools.find_packages(),
     packages = setuptools.find_packages(where="."),
     package_dir = {"":"."},
-    python_requires=">=3.8",
+    python_requires=">=3.9",
 )

@@ -27,13 +27,13 @@ from .superobj import SuperObject
 
 class SuperWidgetTextEdit(so.SuperWidget):
     @staticmethod
-    def _swFromWidget(wid, *args, **kwargs):
-        return so.SuperWidgetTextEdit(wid=wid, *args, **kwargs)
+    def _swFromWidget(wid, swClass, *args, **kwargs):
+        return swClass(wid=wid, *args, **kwargs)
 
     def getSuperProperties(self):
-        exceptions, exclude = super().getSuperProperties()
+        additions, exceptions, exclude = super().getSuperProperties()
         exclude += ['Layout']
-        return exceptions, exclude
+        return additions, exceptions, exclude
 
     def dumpDict(self):
         wid = self._wid

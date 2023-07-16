@@ -32,4 +32,5 @@ from .propertyeditor import PropertyEditor
 from .signalsloteditor import SignalSlotEditor
 from .quickexport import QuickExport
 from .notepad import NotePad
+from .menuBarEditor import MenuBarEditor
 from .superobj import *
