@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, select, re
+import sys, os, re
+from select import select
 
 try: import fcntl, termios, tty
 except Exception as e:
@@ -47,7 +48,7 @@ class ReadInput():
 
     def read(self):
         rm = re.compile('(\033?[^\033]+)')
-        while self._readPipe[0] not in (list := select.select( [sys.stdin, self._readPipe[0]], [], [] )[0]):
+        while self._readPipe[0] not in (list := select( [sys.stdin, self._readPipe[0]], [], [] )[0]):
             # Read all the full input
             _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
             fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence

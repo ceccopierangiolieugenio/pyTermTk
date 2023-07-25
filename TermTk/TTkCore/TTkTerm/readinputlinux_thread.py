@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, select
+import sys, os
+from select import select
 import threading
 import queue
 
@@ -49,7 +50,7 @@ class ReadInput():
         tty.setcbreak(_fn)
 
         while True:
-            rlist, _, _ = select.select( [sys.stdin, self._readPipe[0]], [], [] )
+            rlist, _, _ = select( [sys.stdin, self._readPipe[0]], [], [] )
 
             if self._readPipe[0] in rlist:
                 break

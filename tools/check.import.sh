@@ -14,8 +14,10 @@ __check(){
             -e "log.py:import logging" \
             -e "log.py:from collections.abc import Callable, Set" \
             -e "from time" -e "input.py:import platform" \
-            -e "readinputlinux.py:import sys, os, select" \
-            -e "readinputlinux_thread.py:import sys, os, select" \
+            -e "readinputlinux.py:import sys, os" \
+            -e "readinputlinux.py:from select import select" \
+            -e "readinputlinux_thread.py:import sys, os" \
+            -e "readinputlinux_thread.py:from select import select" \
             -e "readinputlinux_thread.py:import threading" \
             -e "readinputlinux_thread.py:import queue" \
             -e "term.py:import importlib.util" \
