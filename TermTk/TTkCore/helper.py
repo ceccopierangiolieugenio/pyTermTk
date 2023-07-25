@@ -35,9 +35,10 @@ class TTkHelper:
     _updateWidget = set()
     _updateBuffer  = set()
     _mousePos = (0,0)
-    _cursorPos = [0,0]
+    _cursorPos = (0,0)
     _cursor = False
     _cursorType = TTkTerm.Cursor.BLINKING_BLOCK
+    _cursorWidget = None
     class _Overlay():
         __slots__ = ('_widget','_prevFocus','_x','_y','_modal')
         def __init__(self,x,y,widget,prevFocus,modal):
@@ -346,6 +347,30 @@ class TTkHelper:
         return False
 
     @staticmethod
+    def widgetAt(x, y, layout=None):
+        layout = layout if layout else TTkHelper._rootWidget.rootLayout()
+        lx,ly,lw,lh =layout.geometry()
+        lox, loy = layout.offset()
+        lx,ly,lw,lh = lx+lox, ly+loy, lw-lox, lh-loy
+        if x<lx or x>=lx+lw or y<ly or y>=lh+ly: return None
+        x-=lx
+        y-=ly
+        for item in reversed(layout.zSortedItems):
+            if item.layoutItemType() == TTkK.WidgetItem and not item.isEmpty():
+                widget = item.widget()
+                if not widget._visible: continue
+                wx,wy,ww,wh = widget.geometry()
+
+                if wx <= x < wx+ww and wy <= y < wy+wh:
+                    return TTkHelper.widgetAt(x-wx, y-wy, widget.rootLayout())
+                continue
+
+            elif item.layoutItemType() == TTkK.LayoutItem:
+                if (wid:=TTkHelper.widgetAt(x, y, item)):
+                    return wid
+        return layout.parentWidget()
+
+    @staticmethod
     def absPos(widget) -> (int,int):
         wx, wy = 0,0
         layout = widget.widgetItem()
@@ -433,12 +458,21 @@ class TTkHelper:
         TTkTerm.Cursor.hide()
         TTkHelper._cursorType = TTkTerm.Cursor.BLINKING_BLOCK
         TTkHelper._cursor = False
+        # TTkHelper._cursorWidget = None
 
     @staticmethod
     def moveCursor(widget, x, y):
+        TTkHelper._cursorWidget = widget
         xx, yy = TTkHelper.absPos(widget)
-        TTkHelper._cursorPos = [xx+x,yy+y]
+        pos = (xx+x,yy+y)
+        if TTkHelper._cursorPos == pos:
+            return
+        TTkHelper._cursorPos = pos
         TTkTerm.push(TTkTerm.Cursor.moveTo(yy+y+1,xx+x+1))
+
+    @staticmethod
+    def cursorWidget():
+        return TTkHelper._cursorWidget
 
     class Color(TTkTermColor): pass
 

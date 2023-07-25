@@ -30,7 +30,6 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
@@ -133,7 +132,9 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._clipboard = TTkClipboard()
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.setDocument(kwargs.get('document', TTkTextDocument()))
+        self.disableWidgetCursor(self._readOnly)
         self._updateSize()
+        self.viewChanged.connect(self._pushCursor)
 
     def multiLine(self) -> bool :
         '''multiline'''
@@ -225,6 +226,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     def setReadOnly(self, ro):
         self._readOnly = ro
+        self.disableWidgetCursor(ro)
 
     def clear(self):
         self.setText(TTkString())
@@ -334,8 +336,6 @@ class TTkTextEditView(TTkAbstractScrollView):
         return self.size()
 
     def _pushCursor(self):
-        if self._readOnly or not self.hasFocus():
-            return
         ox, oy = self.getViewOffsets()
 
         x,y = self._textWrap.dataToScreenPosition(
@@ -344,23 +344,13 @@ class TTkTextEditView(TTkAbstractScrollView):
         y -= oy
         x -= ox
 
-        if x > self.width() or y>=self.height() or \
-           x<0 or y<0:
-            TTkHelper.hideCursor()
-            return
-
-        # Avoid the show/move cursor to be called again if in the same position
-        if self._cursorParams and \
-           self._cursorParams['pos'] == (x,y) and \
-           self._cursorParams['replace'] == self._replace:
-            return
-
         self._cursorParams = {'pos': (x,y), 'replace': self._replace}
-        TTkHelper.moveCursor(self,x,y)
+
         if self._replace:
-            TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
+            self.setWidgetCursor(pos=(x,y), type=TTkK.Cursor_Blinking_Block)
         else:
-            TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
+            self.setWidgetCursor(pos=(x,y), type=TTkK.Cursor_Blinking_Bar)
+
         self.update()
 
     def _setCursorPos(self, x, y, moveAnchor=True, addCursor=False):
@@ -389,6 +379,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         ox, oy = self.getViewOffsets()
         self._setCursorPos(evt.x + ox, evt.y + oy, addCursor=evt.mod&TTkK.ControlModifier==TTkK.ControlModifier)
         self._textCursor.clearColor()
+        self._pushCursor()
         self.update()
         return True
 
@@ -404,6 +395,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         x,y = self._setCursorPos(evt.x + ox, evt.y + oy, moveAnchor=False)
         self._textCursor.clearColor()
         self._scrolToInclude(x,y)
+        self._pushCursor()
         self.update()
         return True
 
@@ -414,6 +406,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         if self._textCursor.hasSelection():
             self.copy()
         self._textCursor.clearColor()
+        self._pushCursor()
         self.update()
         return True
 
@@ -424,6 +417,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         if self._textCursor.hasSelection():
             self.copy()
         self._textCursor.clearColor()
+        self._pushCursor()
         self.update()
         return True
 
@@ -536,6 +530,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
             self._updateSize()
             self._scrolToInclude(cx,cy)
+            self._pushCursor()
             self.update()
             return True
         else: # Input char
@@ -549,16 +544,11 @@ class TTkTextEditView(TTkAbstractScrollView):
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
             self._updateSize()
             self._scrolToInclude(cx,cy)
+            self._pushCursor()
             self.update()
             return True
 
         return super().keyEvent(evt)
-
-    def focusInEvent(self):
-        self.update()
-
-    def focusOutEvent(self):
-        TTkHelper.hideCursor()
 
     def paintEvent(self, canvas):
         ox, oy = self.getViewOffsets()
@@ -578,7 +568,6 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         if self._lineWrapMode == TTkK.FixedWidth:
             canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
-        self._pushCursor()
 
 class TTkTextEdit(TTkAbstractScrollArea):
     '''TTkTextEdit

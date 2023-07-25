@@ -114,6 +114,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_enabled',
         '_lookAndFeel', '_style', '_currentStyle',
         '_toolTip',
+        '_widgetCursor', '_widgetCursorEnabled', '_widgetCursorType',
         #Signals
         'focusChanged', 'sizeChanged')
 
@@ -122,6 +123,10 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.focusChanged = pyTTkSignal(bool)
         self.sizeChanged = pyTTkSignal(int,int)
         # self.sizeChanged.connect(self.resizeEvent)
+
+        self._widgetCursor = (0,0)
+        self._widgetCursorEnabled = False
+        self._widgetCursorType = TTkK.Cursor_Blinking_Bar
 
         self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
@@ -676,6 +681,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._focus = True
         self.focusChanged.emit(self._focus)
         self.focusInEvent()
+        self._pushWidgetCursor()
 
     def clearFocus(self):
         # TTkLog.debug(f"clearFocus: {self._name} - {self._focus}")
@@ -805,3 +811,31 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self.update()
             return True
         return False
+
+    # Widget Cursor Helpers
+    def enableWidgetCursor(self, enable=True):
+        self._widgetCursorEnabled = enable
+        self._pushWidgetCursor()
+
+    def disableWidgetCursor(self, disable=True):
+        self._widgetCursorEnabled = not disable
+        self._pushWidgetCursor()
+
+    def setWidgetCursor(self, pos=None, type=None):
+        self._widgetCursor     = pos  if pos  else self._widgetCursor
+        self._widgetCursorType = type if type else self._widgetCursorType
+        self._pushWidgetCursor()
+
+    def _pushWidgetCursor(self):
+        if self._widgetCursorEnabled and self._visible and ( self._focus or self == TTkHelper.cursorWidget() ):
+            cx,cy  = self._widgetCursor
+            ax, ay = TTkHelper.absPos(self)
+            if ( self == TTkHelper.widgetAt(cx+ax, cy+ay) or
+                # Since the blinking bar can be placed also at the left side of the next
+                # char, it can be displayed also if its position is one char outside the boudaries
+                 ( self._widgetCursorType == TTkK.Cursor_Blinking_Bar and
+                   self == TTkHelper.widgetAt(cx+ax-1, cy+ay) ) ):
+                TTkHelper.showCursor(self._widgetCursorType)
+                TTkHelper.moveCursor(self, cx, cy)
+            else:
+                TTkHelper.hideCursor()
