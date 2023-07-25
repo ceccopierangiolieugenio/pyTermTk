@@ -39,14 +39,14 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalNormalScreen():
-    __slots__ = ('_lines', '_cursor')
+    __slots__ = ('_lines', '_terminalCursor')
     def __init__(self) -> None:
         self._lines = [TTkString()]
-        self._cursor = (0,0)
+        self._terminalCursor = (0,0)
 
     def _pushTxt(self, txt):
-        x,y = self._cursor
-        self._cursor = (x+len(txt),y)
+        x,y = self._terminalCursor
+        self._terminalCursor = (x+len(txt),y)
         l = self._lines[y]
         if x < len(l):
             self._lines[y] = l.substring(to=x) + txt + l.substring(fr=x+len(txt))
@@ -58,16 +58,16 @@ class _TTkTerminalNormalScreen():
         for i,l in enumerate(lines):
             if i:
                 self._lines.append(TTkString(color=self._lines[-1]._baseColor))
-                self._cursor = (0,len(self._lines)-1)
+                self._terminalCursor = (0,len(self._lines)-1)
             ls = l.split('\r')
             for ii,ll in enumerate(ls):
                 if ii:
-                    self._cursor=(0,len(self._lines)-1)
-                lls = ll.split('\b')
+                    self._terminalCursor=(0,len(self._lines)-1)
+                lls = ll.split('\b') # 0x08 = Backspace
                 for iii,lll in enumerate(lls):
                     if iii:
-                        x,y = self._cursor
-                        self._cursor = (max(0,x-1),y)
+                        x,y = self._terminalCursor
+                        self._terminalCursor = (max(0,x-1),y)
                     self._pushTxt(lll)
 
 
@@ -80,40 +80,75 @@ class _TTkTerminalNormalScreen():
 
 
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
-    def _CSI___ICH(self, ps, _): pass
+    def _CSI___ICH(self, ps, _):
+        x,y = self._terminalCursor
+        self._lines[y] = self._lines[y].substring(to=x) + (' '*ps) + self._lines[y].substring(fr=x)
 
     # CSI Ps SP @   (SP = Space)
     #           Shift left Ps columns(s) (default = 1) (SL), ECMA-48.
-    def _CSI___SL( self, ps, _): pass
+    # def _CSI___SL( self, ps, _):
+    #     x,y = self._terminalCursor
+    #     self._lines[y] = self._lines[y].substring(to=x) + (' '*ps) + self._lines[y].substring(fr=x)
 
     # CSI Ps A  Cursor Up Ps Times (default = 1) (CUU).
-    def _CSI_A_CUU(self, ps, _): pass
+    def _CSI_A_CUU(self, ps, _):
+        x,y = self._terminalCursor
+        self._terminalCursor=(x,max(0,y-ps))
 
     # CSI Ps SP A   (SP = Space)
     #           Shift right Ps columns(s) (default = 1) (SR), ECMA-48.
-    def _CSI_A_SR( self, ps, _): pass
+    # def _CSI_A_SR( self, ps, _):
+    #     x,y = self._terminalCursor
+    #     self._terminalCursor=(x,max(0,y-ps))
 
     # CSI Ps B  Cursor Down Ps Times (default = 1) (CUD).
-    def _CSI_B_CUD(self, ps, _): pass
+    def _CSI_B_CUD(self, ps, _):
+        x,y = self._terminalCursor
+        # w,h = self.size()
+        y = min(len(self._lines)-1,y+ps)
+        self._terminalCursor=(x,y)
 
     # CSI Ps C  Cursor Forward Ps Times (default = 1) (CUF).
-    def _CSI_C_CUF(self, ps, _): pass
+    def _CSI_C_CUF(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self.size()
+        x = min(w-1,x+ps)
+        self._terminalCursor=(x,y)
 
     # CSI Ps D  Cursor Backward Ps Times (default = 1) (CUB).
-    def _CSI_D_CUB(self, ps, _): pass
+    def _CSI_D_CUB(self, ps, _):
+        x,y = self._terminalCursor
+        # w,h = self.size()
+        x = max(0,x-ps)
+        self._terminalCursor=(x,y)
 
     # CSI Ps E  Cursor Next Line Ps Times (default = 1) (CNL).
-    def _CSI_E_CNL(self, ps, _): pass
+    def _CSI_E_CNL(self, ps, _):
+        x,y = self._terminalCursor
+        # w,h = self.size()
+        y = min(len(self._lines)-1,y+ps)
+        self._terminalCursor=(0,y)
 
     # CSI Ps F  Cursor Preceding Line Ps Times (default = 1) (CPL).
-    def _CSI_F_CPL(self, ps, _): pass
+    def _CSI_F_CPL(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self.size()
+        y = max(0,len(self._lines)-h,y-ps)
+        self._terminalCursor=(0,y)
 
     # CSI Ps G  Cursor Character Absolute  [column] (default = [row,1]) (CHA).
-    def _CSI_G_CHA(self, ps, _): pass
+    def _CSI_G_CHA(self, row, _):
+        x,y = self._terminalCursor
+        w,h = self.size()
+        self._terminalCursor=(max(0,min(w-1,row)),y)
 
     # CSI Ps ; Ps H
     #           Cursor Position [row;column] (default = [1,1]) (CUP).
-    def _CSI_H_CUP(self, row, col): pass
+    def _CSI_H_CUP(self, row, col):
+        x,y = self._terminalCursor
+        w,h = self.size()
+        self._terminalCursor=(max(0,min(w-1,col)),max(0,min(len(self._lines)-1,col)))
+
 
     # CSI Ps I  Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
     def _CSI_I_CHT(self, ps, _): pass
@@ -151,6 +186,7 @@ class _TTkTerminalNormalScreen():
     def _CSI_M_DL(self, ps, _): pass
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
+    def _CSI_P_DCH(self, ps, _): pass
 
     # CSI # P
     # CSI Pm # P
@@ -1385,7 +1421,7 @@ class _TTkTerminalNormalScreen():
         '@': _CSI___ICH,
         # '@': _CSI___SL,
         'A': _CSI_A_CUU,
-        'A': _CSI_A_SR,
+        # 'A': _CSI_A_SR,
         'B': _CSI_B_CUD,
         'C': _CSI_C_CUF,
         'D': _CSI_D_CUB,
@@ -1398,6 +1434,7 @@ class _TTkTerminalNormalScreen():
         'K': _CSI_K_el,
         'L': _CSI_L_IL,
         'M': _CSI_M_DL,
+        'P': _CSI_P_DCH,
         'S': _CSI_S_SU,
         'T': _CSI_T_SD,
         'X': _CSI_X_ECH,

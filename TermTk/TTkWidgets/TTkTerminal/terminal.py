@@ -129,9 +129,9 @@ class TTkTerminal(TTkWidget):
                                 slice = slice[en:]
                             elif m := TTkTerminal.re_CURSOR.match(slice):
                                 en = m.end()
-                                y  = ps =  m.group(1)
+                                y  = ps = int(y) if (y:=m.group(1)) else 1
                                 sep = m.group(2)
-                                x  = m.group(3)
+                                x =       int(x) if (x:=m.group(3)) else 1
                                 fn = m.group(4)
                                 TTkLog.debug(f"ps:{y=} {sep=} {x=} {fn=}")
                                 _ex = self._screen_current._CSI_MAP.get(fn,lambda a,b,c: None)

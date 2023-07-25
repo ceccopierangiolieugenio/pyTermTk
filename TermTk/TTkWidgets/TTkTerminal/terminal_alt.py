@@ -127,6 +127,7 @@ class _TTkTerminalAltScreen():
     def _CSI_M_DL(self, ps, _): pass
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
+    def _CSI_P_DCH(self, ps, _): pass
 
     # CSI # P
     # CSI Pm # P
@@ -1361,7 +1362,7 @@ class _TTkTerminalAltScreen():
         '@': _CSI___ICH,
         # '@': _CSI___SL,
         'A': _CSI_A_CUU,
-        'A': _CSI_A_SR,
+        # 'A': _CSI_A_SR,
         'B': _CSI_B_CUD,
         'C': _CSI_C_CUF,
         'D': _CSI_D_CUB,
@@ -1374,6 +1375,7 @@ class _TTkTerminalAltScreen():
         'K': _CSI_K_el,
         'L': _CSI_L_IL,
         'M': _CSI_M_DL,
+        'P': _CSI_P_DCH,
         'S': _CSI_S_SU,
         'T': _CSI_T_SD,
         'X': _CSI_X_ECH,
