@@ -79,10 +79,11 @@ class TermThread(threading.Thread):
                         ttk.TTkLog.error(f"Error: {e=}")
                         return
                     if o:
-                        # ttk.TTkLog.debug(f'Eugenio->{o}')
+                        ttk.TTkLog.debug(f'Eugenio->{o}')
                         # self.textEdit.append(o.decode('utf-8').replace('\r','').replace('\033[?2004h','').replace('\033[?2004l',''))
                         cursor = self.textEdit.textCursor()
                         cursor.insertText(o.decode('utf-8').replace('\r','').replace('\033[?2004h','').replace('\033[?2004l',''))
+                        # cursor.insertText(o.decode('utf-8').replace('\r','<-r->').replace('\033','<-ESC->'))
                         cursor.movePosition(ttk.TTkTextCursor.End)
                         self.textEdit.textEditView()._updateSize()
                         self.textEdit.textEditView().viewMoveTo(0, cursor.position().line)

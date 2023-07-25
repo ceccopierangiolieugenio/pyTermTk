@@ -28,3 +28,5 @@ from .texedit         import TTkTextEdit, TTkTextEditView
 from .TTkModelView    import *
 from .TTkPickers      import *
 from .window          import TTkWindow
+
+from .TTkTerminal     import *
