@@ -20,11 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os, pty, threading
-import re
-from select import select
 from TermTk.TTkCore.canvas import TTkCanvas
-
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
@@ -41,8 +37,6 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-
-from .vt102 import TTkVT102
 
 class _TTkTerminalNormalScreen():
     __slots__ = ('_lines', '_cursor')

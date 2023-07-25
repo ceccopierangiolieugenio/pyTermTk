@@ -20,11 +20,7 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
-import os, pty, threading
-import re
-from select import select
 from TermTk.TTkCore.canvas import TTkCanvas
-
 
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog

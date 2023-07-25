@@ -42,10 +42,10 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
-from .terminal_alt    import _TTkTerminalAltScreen
-from .terminal_normal import _TTkTerminalNormalScreen
+from TermTk.TTkWidgets.TTkTerminal.terminal_alt    import _TTkTerminalAltScreen
+from TermTk.TTkWidgets.TTkTerminal.terminal_normal import _TTkTerminalNormalScreen
 
-from .vt102 import TTkVT102
+from TermTk.TTkWidgets.vt102 import TTkVT102
 
 __all__ = ['TTkTerminal']
 
