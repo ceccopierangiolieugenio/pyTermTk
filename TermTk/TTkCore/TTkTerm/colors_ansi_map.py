@@ -26,16 +26,49 @@
 # https://conemu.github.io/en/AnsiEscapeCodes.html
 # Map retrieved from:
 # https://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
+# https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 
 ansiMap16 = {
-    0 :(0x00,0x00,0x00),
-    1 :(0xff,0x00,0x00),
-    2 :(0x00,0xff,0x00),
-    3 :(0xff,0xff,0x00),
-    4 :(0x00,0x00,0xff),
-    5 :(0xff,0x00,0xff),
-    6 :(0x00,0xff,0xff),
-    7 :(0xc0,0xc0,0xc0)
+    # xterm Color Map
+    # fg
+     30 : (0x00,0x00,0x00), # Black    # old: (0x00,0x00,0x00),
+     31 : ( 205,0x00,0x00), # Red      # old: (0xff,0x00,0x00),
+     32 : (0x00, 205,0x00), # Green    # old: (0x00,0xff,0x00),
+     33 : ( 205, 205,0x00), # Yellow   # old: (0xff,0xff,0x00),
+     34 : (0x00,0x00, 238), # Blue     # old: (0x00,0x00,0xff),
+     35 : ( 205,0x00, 205), # Magenta  # old: (0xff,0x00,0xff),
+     36 : (0x00, 205, 205), # Cyan     # old: (0x00,0xff,0xff),
+     37 : ( 229, 229, 229), # White    # old: (0xc0,0xc0,0xc0),
+
+    #bg
+     40 : (0x00,0x00,0x00), # Black
+     41 : ( 205,0x00,0x00), # Red
+     42 : (0x00, 205,0x00), # Green
+     43 : ( 205, 205,0x00), # Yellow
+     44 : (0x00,0x00, 238), # Blue
+     45 : ( 205,0x00, 205), # Magenta
+     46 : (0x00, 205, 205), # Cyan
+     47 : ( 229, 229, 229), # White
+
+    # fg (bright)
+     90 : ( 127, 127, 127), # Bright Black (Gray)
+     91 : ( 255,   0,   0), # Bright Red
+     92 : (   0, 255,   0), # Bright Green
+     93 : ( 255, 255,   0), # Bright Yellow
+     94 : (  92,  92, 255), # Bright Blue
+     95 : ( 255,   0, 255), # Bright Magenta
+     96 : (   0, 255, 255), # Bright Cyan
+     97 : ( 255, 255, 255), # Bright White
+
+    # bg (bright)
+    100 : ( 127, 127, 127), # Bright Black (Gray)
+    101 : ( 255,   0,   0), # Bright Red
+    102 : (   0, 255,   0), # Bright Green
+    103 : ( 255, 255,   0), # Bright Yellow
+    104 : (  92,  92, 255), # Bright Blue
+    105 : ( 255,   0, 255), # Bright Magenta
+    106 : (   0, 255, 255), # Bright Cyan
+    107 : ( 255, 255, 255), # Bright White
 }
 
 ansiMap256 = {
