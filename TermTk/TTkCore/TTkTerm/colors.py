@@ -90,7 +90,7 @@ class TTkTermColor():
                 elif ( # Ansi 16 colors
                      40  <= s <= 47 or   # bg [ 40 -  47]
                      100 <= s <= 107 ) : # bg [100 - 107] Bright
-                    fg = ansiMap16.get(s)
+                    bg = ansiMap16.get(s)
                 elif s == 38:
                     t =  int(values.pop(0))
                     if t == 5:# 256 fg
