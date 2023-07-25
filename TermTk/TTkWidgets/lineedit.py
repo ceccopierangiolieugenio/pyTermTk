@@ -63,6 +63,7 @@ class TTkLineEdit(TTkWidget):
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.enableWidgetCursor()
 
     @pyTTkSlot(str)
     def setText(self, text, cursorPos=0x1000):
@@ -99,12 +100,11 @@ class TTkLineEdit(TTkWidget):
         if cursorPos - self._offset < 0:
             self._offset = cursorPos
 
-        TTkHelper.moveCursor(self,cursorPos-self._offset,0)
-        if self.hasFocus():
-            if self._replace:
-                TTkHelper.showCursor(TTkK.Cursor_Blinking_Block)
-            else:
-                TTkHelper.showCursor(TTkK.Cursor_Blinking_Bar)
+        if self._replace:
+            self.setWidgetCursor(pos=(cursorPos-self._offset, 0), type=TTkK.Cursor_Blinking_Block)
+        else:
+            self.setWidgetCursor(pos=(cursorPos-self._offset, 0), type=TTkK.Cursor_Blinking_Bar)
+
         self.update()
 
     def paintEvent(self, canvas):
