@@ -82,10 +82,15 @@ class TTkTermColor():
 
             while values:
                 s = int(values.pop(0))
-                if 30 <= s <= 37: # Ansi 16 colors - fg
-                    fg = ansiMap16.get(s-30)
-                elif 40 <= s <= 47: # Ansi 16 colors - bg
-                    bg = ansiMap16.get(s-40)
+
+                if ( # Ansi 16 colors
+                     30  <= s <= 37 or   # fg [ 30 -  37]
+                     90  <= s <= 97 ):   # fg [ 90 -  97] Bright
+                    fg = ansiMap16.get(s)
+                elif ( # Ansi 16 colors
+                     40  <= s <= 47 or   # bg [ 40 -  47]
+                     100 <= s <= 107 ) : # bg [100 - 107] Bright
+                    fg = ansiMap16.get(s)
                 elif s == 38:
                     t =  int(values.pop(0))
                     if t == 5:# 256 fg

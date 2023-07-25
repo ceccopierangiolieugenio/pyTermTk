@@ -23,6 +23,10 @@
 # SOFTWARE.
 
 # This test is based on:
+#   pyte - In memory VTXXX-compatible terminal emulator.
+#          Terminal Emulator Example
+#   https://github.com/selectel/pyte/blob/master/examples/terminal_emulator.py
+#
 #   pty — Pseudo-terminal utilities¶
 #   https://docs.python.org/3/library/pty.html#example
 #
@@ -47,6 +51,9 @@ class TermThread(threading.Thread):
     def __init__(self):
         super().__init__()
         self._shell = os.environ.get('SHELL', 'sh')
+
+        # This slice is loosely inspired by:
+        # https://github.com/selectel/pyte/blob/b40cf6261fdf7a05a7d7fd04ea7d9b0ea1743269/examples/terminal_emulator.py#L109-L115
         pid, self._fd = pty.fork()
         if pid == 0:
             argv = [self._shell]
