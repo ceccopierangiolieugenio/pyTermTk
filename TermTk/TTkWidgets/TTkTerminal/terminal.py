@@ -45,7 +45,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.TTkTerminal.terminal_alt    import _TTkTerminalAltScreen
 from TermTk.TTkWidgets.TTkTerminal.terminal_normal import _TTkTerminalNormalScreen
 
-from TermTk.TTkWidgets.vt102 import TTkVT102
+from TermTk.TTkWidgets.TTkTerminal.vt102 import TTkVT102
 
 __all__ = ['TTkTerminal']
 
