@@ -96,14 +96,6 @@ class TTkTerminal(TTkWidget):
     re_DEC_SET_RST  = re.compile('^\?(\d+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
-    def _process_cursor_match(self, m):
-        y  = ps =  m.group(1)
-        sep = m.group(2)
-        x  = m.group(3)
-        fn = m.group(4)
-        _ex = self._screen_current._CSI_MAP.get(fn,lambda a,b,c: None)
-        _ex(self._screen_current,y,x)
-
     def loop(self, _):
         while rs := select( [self._inout], [], [])[0]:
             TTkLog.debug(f"Select - {rs=}")
@@ -136,10 +128,15 @@ class TTkTerminal(TTkWidget):
                                     pass
                                 slice = slice[en:]
                             elif m := TTkTerminal.re_CURSOR.match(slice):
-                                TTkLog.debug(f"{m.group(0)=} {m.group(1)=} {m.group(2)=}")
                                 en = m.end()
-                                self._process_cursor_match(m)
-                                slice[en:]
+                                y  = ps =  m.group(1)
+                                sep = m.group(2)
+                                x  = m.group(3)
+                                fn = m.group(4)
+                                TTkLog.debug(f"ps:{y=} {sep=} {x=} {fn=}")
+                                _ex = self._screen_current._CSI_MAP.get(fn,lambda a,b,c: None)
+                                _ex(self._screen_current,y,x)
+                                slice = slice[en:]
                             else:
                                 slice = '\033[' + slice.replace('\r','')
 
