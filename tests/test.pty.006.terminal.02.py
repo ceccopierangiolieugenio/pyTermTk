@@ -56,15 +56,16 @@ split.addItem(top := ttk.TTkLayout())
 
 split.addWidget(ttk.TTkLogViewer(follow=False ), title='Log')
 
-win1  = ttk.TTkWindow(pos=(1,1), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
+win1  = ttk.TTkWindow(pos=(90,5), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term1 = ttk.TTkTerminal(parent=win1)
 term1.runShell()
 
-win2  = ttk.TTkWindow(pos=(10,5), size=(70,15), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
+win2  = ttk.TTkWindow(pos=(0,0), size=(150,30), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term2 = ttk.TTkTerminal(parent=win2)
 term2.runShell()
 
 top.addWidgets([win1,win2])
 
+term2.setFocus()
 
 root.mainloop()

@@ -39,9 +39,19 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalAltScreen():
-    __slots__ = ('_lines')
-    def __init__(self) -> None:
+    __slots__ = ('_lines', '_terminalCursor', '_w', '_h')
+    def __init__(self, w=80, h=24) -> None:
         self._lines = [TTkString()]
+        self._terminalCursor = (0,0)
+        self._w = w
+        self._h = h
+
+    def getCursor(self):
+        return self._terminalCursor
+
+    def resize(self, w, h):
+        self._w = w
+        self._h = h
 
     def pushLine(self, line:str):
         lines = line.replace('\r','').split('\n')
@@ -112,7 +122,7 @@ class _TTkTerminalAltScreen():
     #             Ps = 0  ⇒  Erase to Right (default).
     #             Ps = 1  ⇒  Erase to Left.
     #             Ps = 2  ⇒  Erase All.
-    def _CSI_K_el(self, ps, _): pass
+    def _CSI_K_EL(self, ps, _): pass
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
@@ -1372,7 +1382,7 @@ class _TTkTerminalAltScreen():
         'H': _CSI_H_CUP,
         'I': _CSI_I_CHT,
         'J': _CSI_J_ED,
-        'K': _CSI_K_el,
+        'K': _CSI_K_EL,
         'L': _CSI_L_IL,
         'M': _CSI_M_DL,
         'P': _CSI_P_DCH,

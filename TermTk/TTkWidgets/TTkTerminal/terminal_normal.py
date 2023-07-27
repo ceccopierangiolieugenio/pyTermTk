@@ -39,38 +39,58 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalNormalScreen():
-    __slots__ = ('_lines', '_terminalCursor')
-    def __init__(self) -> None:
+    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_bufferSize')
+    def __init__(self, w=80, h=24, bufferSize=200) -> None:
         self._lines = [TTkString()]
         self._terminalCursor = (0,0)
+        self._w = w
+        self._h = h
+        self._bufferSize = bufferSize
+
+    def getCursor(self):
+        x,y = self._terminalCursor
+        h = self._h
+        l = len(self._lines)
+        y = y if l<h else y-l+h
+        return x,y
+
+    def resize(self, w, h):
+        self._w = w
+        self._h = h
 
     def _pushTxt(self, txt):
         x,y = self._terminalCursor
+        txt = TTkString(txt)
         self._terminalCursor = (x+len(txt),y)
         l = self._lines[y]
-        if x < len(l):
+        ll = len(l)
+        if x < ll:
             self._lines[y] = l.substring(to=x) + txt + l.substring(fr=x+len(txt))
-        else:
+        elif x == ll:
             self._lines[y] += txt
+        else:
+            self._lines[y] += TTkString(' '*(x-ll)) + txt
 
     def pushLine(self, line:str):
+        x,y = self._terminalCursor
         lines = line.split('\n')
         for i,l in enumerate(lines):
             if i:
-                self._lines.append(TTkString(color=self._lines[-1]._baseColor))
-                self._terminalCursor = (0,len(self._lines)-1)
+                y += 1
+                if y >= len(self._lines):
+                    self._lines.append(TTkString())
+                    self._lines = self._lines[-self._bufferSize:]
+                self._terminalCursor = (x,y) = (0,min(self._bufferSize-1, y))
             ls = l.split('\r')
             for ii,ll in enumerate(ls):
                 if ii:
-                    self._terminalCursor=(0,len(self._lines)-1)
+                    self._terminalCursor=(0,y)
                 lls = ll.split('\b') # 0x08 = Backspace
                 for iii,lll in enumerate(lls):
                     if iii:
                         x,y = self._terminalCursor
                         self._terminalCursor = (max(0,x-1),y)
                     self._pushTxt(lll)
-
-
 
     def paintEvent(self, canvas:TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
         canvas.drawText(text="NORMAL Screen", pos=(0,0), width=w)
@@ -93,7 +113,9 @@ class _TTkTerminalNormalScreen():
     # CSI Ps A  Cursor Up Ps Times (default = 1) (CUU).
     def _CSI_A_CUU(self, ps, _):
         x,y = self._terminalCursor
-        self._terminalCursor=(x,max(0,y-ps))
+        l = len(self._lines)
+        y = max(0, l-self._h, y-ps)
+        self._terminalCursor=(x,y)
 
     # CSI Ps SP A   (SP = Space)
     #           Shift right Ps columns(s) (default = 1) (SR), ECMA-48.
@@ -104,50 +126,57 @@ class _TTkTerminalNormalScreen():
     # CSI Ps B  Cursor Down Ps Times (default = 1) (CUD).
     def _CSI_B_CUD(self, ps, _):
         x,y = self._terminalCursor
-        # w,h = self.size()
-        y = min(len(self._lines)-1,y+ps)
+        l = len(self._lines)
+        y = min(l-1, y+ps)
         self._terminalCursor=(x,y)
 
     # CSI Ps C  Cursor Forward Ps Times (default = 1) (CUF).
     def _CSI_C_CUF(self, ps, _):
         x,y = self._terminalCursor
-        w,h = self.size()
-        x = min(w-1,x+ps)
+        x = min(self._w-1, x+ps)
         self._terminalCursor=(x,y)
 
     # CSI Ps D  Cursor Backward Ps Times (default = 1) (CUB).
     def _CSI_D_CUB(self, ps, _):
         x,y = self._terminalCursor
-        # w,h = self.size()
         x = max(0,x-ps)
         self._terminalCursor=(x,y)
 
     # CSI Ps E  Cursor Next Line Ps Times (default = 1) (CNL).
     def _CSI_E_CNL(self, ps, _):
         x,y = self._terminalCursor
-        # w,h = self.size()
-        y = min(len(self._lines)-1,y+ps)
+        l = len(self._lines)
+        y = min(l-1, y+ps)
         self._terminalCursor=(0,y)
 
     # CSI Ps F  Cursor Preceding Line Ps Times (default = 1) (CPL).
     def _CSI_F_CPL(self, ps, _):
         x,y = self._terminalCursor
-        w,h = self.size()
-        y = max(0,len(self._lines)-h,y-ps)
+        l = len(self._lines)
+        y = max(0, l-self._h, y-ps)
         self._terminalCursor=(0,y)
 
     # CSI Ps G  Cursor Character Absolute  [column] (default = [row,1]) (CHA).
     def _CSI_G_CHA(self, row, _):
         x,y = self._terminalCursor
-        w,h = self.size()
-        self._terminalCursor=(max(0,min(w-1,row)),y)
+        w = self._w
+        x = max( 0, min(w-1, row-1))
+        self._terminalCursor=(x,y)
 
     # CSI Ps ; Ps H
     #           Cursor Position [row;column] (default = [1,1]) (CUP).
     def _CSI_H_CUP(self, row, col):
         x,y = self._terminalCursor
-        w,h = self.size()
-        self._terminalCursor=(max(0,min(w-1,col)),max(0,min(len(self._lines)-1,col)))
+        w,h = self._w, self._h
+        row, col = row-1, col-1
+        l = len(self._lines)
+        oy = max(0,l-h) # y offset
+        ny = row + oy   # y row
+        x = max(0, min(w-1, col))
+        y = max(oy, min(ny,oy+h))
+        self._terminalCursor=(x,y)
+        if y>=l:
+            self._lines += [TTkString()]*(y-l+1)
 
 
     # CSI Ps I  Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
@@ -158,7 +187,19 @@ class _TTkTerminalNormalScreen():
     #             Ps = 1  ⇒  Erase Above.
     #             Ps = 2  ⇒  Erase All.
     #             Ps = 3  ⇒  Erase Saved Lines, xterm.
-    def _CSI_J_ED(self, ps, _): pass
+    def _CSI_J_ED(self, ps, _):
+        x,y = self._terminalCursor
+        h = self._h
+        l = len(self._lines)
+        # y = max(0,y-l-h)
+        if ps == 0:
+            self._lines[y+1:] = [TTkString()]*(l-y-1)
+            self._lines[y] = self._lines[y].substring(to=x)
+        elif ps == 1:
+            self._lines[-h:y-1] = [TTkString()]*(y-1-l+h)
+            self._lines[y] = TTkString(' '*x) + self._lines[y].substring(fr=x)
+        elif ps == 2:
+            self._lines[-h:] = [TTkString()]*(h)
 
     # CSI ? Ps J
     #           Erase in Display (DECSED), VT220.
@@ -171,16 +212,27 @@ class _TTkTerminalNormalScreen():
     #             Ps = 0  ⇒  Erase to Right (default).
     #             Ps = 1  ⇒  Erase to Left.
     #             Ps = 2  ⇒  Erase All.
-    def _CSI_K_el(self, ps, _): pass
+    def _CSI_K_EL(self, ps, _):
+        x,y = self._terminalCursor
+        line = self._lines[y]
+        if ps == 0:
+            self._lines[y] = line.substring(to=x)
+        elif ps == 1:
+            self._lines[y] = TTkString(' '*x) + self._lines[y].substring(fr=x)
+        elif ps == 2:
+            self._lines[y] = TTkString()
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
     #             Ps = 0  ⇒  Selective Erase to Right (default).
     #             Ps = 1  ⇒  Selective Erase to Left.
     #             Ps = 2  ⇒  Selective Erase All.
+    # def _CSI_K_DeCSEL(self, ps, _): pass
 
     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
-    def _CSI_L_IL(self, ps, _): pass
+    def _CSI_L_IL(self, ps, _):
+        x,y = self._terminalCursor
+        self._lines[y:y] = [TTkString()]*ps
 
     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
     def _CSI_M_DL(self, ps, _): pass
@@ -1431,7 +1483,7 @@ class _TTkTerminalNormalScreen():
         'H': _CSI_H_CUP,
         'I': _CSI_I_CHT,
         'J': _CSI_J_ED,
-        'K': _CSI_K_el,
+        'K': _CSI_K_EL,
         'L': _CSI_L_IL,
         'M': _CSI_M_DL,
         'P': _CSI_P_DCH,

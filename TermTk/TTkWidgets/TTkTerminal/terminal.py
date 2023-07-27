@@ -64,7 +64,17 @@ class TTkTerminal(TTkWidget):
 
         super().__init__(*args, **kwargs)
 
+        w,h = self.size()
+        self._screen_alt.resize(w,h)
+        self._screen_normal.resize(w,h)
+
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+        self.enableWidgetCursor()
+
+    def resizeEvent(self, w: int, h: int):
+        self._screen_alt.resize(w,h)
+        self._screen_normal.resize(w,h)
+        return super().resizeEvent(w, h)
 
     def runShell(self, program=None):
         self._shell = program if program else self._shell
@@ -85,7 +95,7 @@ class TTkTerminal(TTkWidget):
     # xterm escape sequences from:
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_
-    re_CURSOR      = re.compile('^(\d*)(;?)(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeginqx])')
+    re_CURSOR      = re.compile('^(\d*)(;(\d*))?([@ABCDEFGIJKLMPSTXZ^`abcdeginqxHf])')
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_
     # Basic Re for CSI Ps matches:
     #   CSI : Control Sequence Introducer "<ESC>[" = '\033['
@@ -145,6 +155,8 @@ class TTkTerminal(TTkWidget):
                             slice = slice.replace('\033','<ESC>').replace('\n','\\n')
                             TTkLog.debug(f"{slice=}")
                         self.update()
+                        self.setWidgetCursor(pos=self._screen_current.getCursor())
+                        TTkLog.debug(f"wc:{self._screen_current.getCursor()}")
 
     def mousePressEvent(self, evt):
         return True
@@ -152,7 +164,6 @@ class TTkTerminal(TTkWidget):
     def keyEvent(self, evt):
         # TTkLog.debug(f"Key: {evt.code=}")
         TTkLog.debug(f"Key: {str(evt)=}")
-        self._inout.write(evt.code.encode())
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Enter:
                 TTkLog.debug(f"Key: Enter")
@@ -161,6 +172,7 @@ class TTkTerminal(TTkWidget):
         else: # Input char
             TTkLog.debug(f"Key: {evt.key=}")
             # self._inout.write(evt.key.encode())
+        self._inout.write(evt.code.encode())
         return True
 
     def paintEvent(self, canvas: TTkCanvas):
