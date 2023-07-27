@@ -116,10 +116,13 @@ class TTkTerminal(TTkWidget):
                     except Exception as e:
                         TTkLog.error(f"Error: {e=}")
                         return
-                    if out:
+                    out = out.decode('utf-8','ignore')
+                    for bi, bout in enumerate(out.split('\a')): # grab the bells
                         # TTkLog.debug(f'Eugenio->{out}')
-                        sout = out.decode('utf-8','ignore')
-                        sout = sout.split('\033[')
+                        # sout = bout.decode('utf-8','ignore')
+                        if bi:
+                            TTkLog.debug("BELL!!! 🔔🔔🔔")
+                        sout = bout.split('\033[')
                         self._screen_current.pushLine(sout[0])
                         TTkLog.debug(f"{sout[0]=}")
                         for slice in sout[1:]:
@@ -144,7 +147,7 @@ class TTkTerminal(TTkWidget):
                                 x =       int(x) if (x:=m.group(3)) else 1
                                 fn = m.group(4)
                                 TTkLog.debug(f"ps:{y=} {sep=} {x=} {fn=}")
-                                _ex = self._screen_current._CSI_MAP.get(fn,lambda a,b,c: None)
+                                _ex = self._screen_current._CSI_MAP.get(fn,lambda a,b,c: TTkLog.warn(f"Unhandled <ESC> {x=} {y=} {fn=}"))
                                 _ex(self._screen_current,y,x)
                                 slice = slice[en:]
                             else:

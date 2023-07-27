@@ -216,9 +216,9 @@ class _TTkTerminalNormalScreen():
         x,y = self._terminalCursor
         line = self._lines[y]
         if ps == 0:
-            self._lines[y] = line.substring(to=x)
-        elif ps == 1:
             self._lines[y] = TTkString(' '*x) + self._lines[y].substring(fr=x)
+        elif ps == 1:
+            self._lines[y] = line.substring(to=x)
         elif ps == 2:
             self._lines[y] = TTkString()
 
@@ -235,10 +235,15 @@ class _TTkTerminalNormalScreen():
         self._lines[y:y] = [TTkString()]*ps
 
     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
-    def _CSI_M_DL(self, ps, _): pass
+    def _CSI_M_DL(self, ps, _):
+        x,y = self._terminalCursor
+        self._lines[y+1:y+1+ps] = []
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
-    def _CSI_P_DCH(self, ps, _): pass
+    def _CSI_P_DCH(self, ps, _):
+        x,y = self._terminalCursor
+        l = self._lines[y]
+        self._lines[y] = l.substring(to=x) + l.substring(fr=x+ps)
 
     # CSI # P
     # CSI Pm # P
@@ -259,7 +264,14 @@ class _TTkTerminalNormalScreen():
     #           XTPOPCOLOR (default = 0) (XTREPORTCOLORS), xterm.
 
     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
-    def _CSI_S_SU(self, ps, _): pass
+    def _CSI_S_SU(self, ps, _):
+        h = self._w
+        l = len(self._lines)
+        oy = max(0,l-h) # y offset
+        screen = self._lines[oy:]
+        # Rotate up
+        screen = screen[min(ps,h):]+[TTkString()]*min(ps,h)
+        self._lines[oy:] = screen[:h]
 
     # CSI ? Pi ; Pa ; Pv S
     #           Set or request graphics attribute (XTSMGRAPHICS), xterm.  If
@@ -317,7 +329,14 @@ class _TTkTerminalNormalScreen():
     #               rather than a failure.
 
     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
-    def _CSI_T_SD(self, ps, _): pass
+    def _CSI_T_SD(self, ps, _):
+        h = self._h
+        l = len(self._lines)
+        oy = max(0,l-h) # y offset
+        screen = self._lines[oy:]
+        # Rotate down
+        screen = [TTkString()]*min(ps,h) + screen
+        self._lines[oy:] = screen[:h]
 
     # CSI Ps ; Ps ; Ps ; Ps ; Ps T
     #           Initiate highlight mouse tracking (XTHIMOUSE), xterm.
@@ -339,7 +358,13 @@ class _TTkTerminalNormalScreen():
     #           (See discussion of Title Modes).
 
     # CSI Ps X  Erase Ps Character(s) (default = 1) (ECH).
-    def _CSI_X_ECH(self, ps, _): pass
+    def _CSI_X_ECH(self, ps, _):
+        x,y = self._terminalCursor
+        w = self._w
+        ps = min(w,ps)
+        line = self._lines[y]
+        line = line.substring(to=x) + TTkString(' '*ps) + line.substring(fr=x+ps)
+        self._lines[y] = line.substring(to=w)
 
     # CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
     def _CSI_Z_CBT(self, ps, _): pass
@@ -1490,23 +1515,23 @@ class _TTkTerminalNormalScreen():
         'S': _CSI_S_SU,
         'T': _CSI_T_SD,
         'X': _CSI_X_ECH,
-        'Z': _CSI_Z_CBT,
-        '^': _CSI___SD,
-        '`': _CSI___HPA,
-        'a': _CSI_a_HPR,
-        'b': _CSI_b_REP,
-        'c': _CSI_c_Pri_DA,
-        'd': _CSI_d_VPA,
-        'e': _CSI_e_VPR,
-        'f': _CSI_f_HVP,
-        'g': _CSI_g_TBC,
-        'h': _CSI_h_SM,
-        'i': _CSI_i_MC,
-        'l': _CSI_l_RM,
-        'm': _CSI_m_SGR,
-        'n': _CSI_n_DSR,
-        'q': _CSI_q_DECLL,
-        's': _CSI_s_SCOSC,
-        'u': _CSI_u_SCORC,
-        'x': _CSI_x_DECREQTPARM
+        # 'Z': _CSI_Z_CBT,
+        # '^': _CSI___SD,
+        # '`': _CSI___HPA,
+        # 'a': _CSI_a_HPR,
+        # 'b': _CSI_b_REP,
+        # 'c': _CSI_c_Pri_DA,
+        # 'd': _CSI_d_VPA,
+        # 'e': _CSI_e_VPR,
+        # 'f': _CSI_f_HVP,
+        # 'g': _CSI_g_TBC,
+        # 'h': _CSI_h_SM,
+        # 'i': _CSI_i_MC,
+        # 'l': _CSI_l_RM,
+        # 'm': _CSI_m_SGR,
+        # 'n': _CSI_n_DSR,
+        # 'q': _CSI_q_DECLL,
+        # 's': _CSI_s_SCOSC,
+        # 'u': _CSI_u_SCORC,
+        # 'x': _CSI_x_DECREQTPARM
     }
