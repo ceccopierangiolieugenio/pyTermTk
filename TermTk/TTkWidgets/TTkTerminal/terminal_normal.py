@@ -39,13 +39,17 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalNormalScreen():
-    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_bufferSize')
-    def __init__(self, w=80, h=24, bufferSize=200) -> None:
+    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_bufferSize', '_color')
+    def __init__(self, w=80, h=24, bufferSize=200, color=TTkColor.RST) -> None:
         self._lines = [TTkString()]
         self._terminalCursor = (0,0)
         self._w = w
         self._h = h
         self._bufferSize = bufferSize
+        self._color = color
+
+    def setColor(self, color):
+        self._color = color
 
     def getCursor(self):
         x,y = self._terminalCursor
@@ -60,7 +64,7 @@ class _TTkTerminalNormalScreen():
 
     def _pushTxt(self, txt):
         x,y = self._terminalCursor
-        txt = TTkString(txt)
+        txt = TTkString(txt, self._color)
         self._terminalCursor = (x+len(txt),y)
         l = self._lines[y]
         ll = len(l)

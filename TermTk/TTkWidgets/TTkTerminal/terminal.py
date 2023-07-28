@@ -47,6 +47,9 @@ from TermTk.TTkWidgets.TTkTerminal.terminal_normal import _TTkTerminalNormalScre
 
 from TermTk.TTkWidgets.TTkTerminal.vt102 import TTkVT102
 
+from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
+from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
+
 __all__ = ['TTkTerminal']
 
 class TTkTerminal(TTkWidget):
@@ -95,7 +98,7 @@ class TTkTerminal(TTkWidget):
     # xterm escape sequences from:
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_
-    re_CURSOR      = re.compile('^(\d*)(;(\d*))?([@ABCDEFGIJKLMPSTXZ^`abcdeginqxHf])')
+    re_CURSOR      = re.compile('^((\d*)(;(\d*))*)([@ABCDEFGIJKLMPSTXZ^`abcdeginmqxHf])')
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_
     # Basic Re for CSI Ps matches:
     #   CSI : Control Sequence Introducer "<ESC>[" = '\033['
@@ -140,14 +143,72 @@ class TTkTerminal(TTkWidget):
                                     # Bracketedpaste OFF
                                     pass
                                 slice = slice[en:]
-                            elif m := TTkTerminal.re_CURSOR.match(slice):
+                            elif ( (m      := TTkTerminal.re_CURSOR.match(slice)) and
+                                   (mg     := m.groups()) and
+                                    mg[-1] == 'm' ):
+                                TTkLog.debug(f"Handle color {mg[0]=}")
+                                en = m.end()
+
+                                color=TTkColor.RST
+
+                                if mg[0] != '0m':
+                                    values = mg[0].split(';')
+
+                                    fg = None
+                                    bg = None
+                                    mod = 0
+                                    clean = False
+
+                                    while values:
+                                        s = int(values.pop(0))
+                                        if s==0: # Reset Color/Format
+                                            fg = None
+                                            bg = None
+                                            mod = 0
+                                            clean = True
+                                        elif ( # Ansi 16 colors
+                                            30  <= s <= 37 or   # fg [ 30 -  37]
+                                            90  <= s <= 97 ):   # fg [ 90 -  97] Bright
+                                            fg = ansiMap16.get(s)
+                                        elif ( # Ansi 16 colors
+                                            40  <= s <= 47 or   # bg [ 40 -  47]
+                                            100 <= s <= 107 ) : # bg [100 - 107] Bright
+                                            bg = ansiMap16.get(s)
+                                        elif s == 38:
+                                            t =  int(values.pop(0))
+                                            if t == 5:# 256 fg
+                                                fg = ansiMap256.get(int(values.pop(0)))
+                                            if t == 2:# 24 bit fg
+                                                fg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
+                                        elif s == 48:
+                                            t =  int(values.pop(0))
+                                            if t == 5:# 256 bg
+                                                bg = ansiMap256.get(int(values.pop(0)))
+                                            if t == 2:# 24 bit bg
+                                                bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
+                                        elif s==1: mod += TTkTermColor.BOLD
+                                        elif s==3: mod += TTkTermColor.ITALIC
+                                        elif s==4: mod += TTkTermColor.UNDERLINE
+                                        elif s==9: mod += TTkTermColor.STRIKETROUGH
+                                        elif s==5: mod += TTkTermColor.BLINKING
+                                    color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
+
+                                self._screen_alt.setColor(color)
+                                self._screen_normal.setColor(color)
+
+                                TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
+
+                                slice = slice[en:]
+                            elif m:
                                 en = m.end()
                                 y  = ps = int(y) if (y:=m.group(1)) else 1
                                 sep = m.group(2)
                                 x =       int(x) if (x:=m.group(3)) else 1
                                 fn = m.group(4)
                                 TTkLog.debug(f"ps:{y=} {sep=} {x=} {fn=}")
-                                _ex = self._screen_current._CSI_MAP.get(fn,lambda a,b,c: TTkLog.warn(f"Unhandled <ESC> {x=} {y=} {fn=}"))
+                                _ex = self._screen_current._CSI_MAP.get(
+                                        fn,
+                                        lambda a,b,c: TTkLog.warn(f"Unhandled <ESC> {y=} {sep=} {x=} {fn=}"))
                                 _ex(self._screen_current,y,x)
                                 slice = slice[en:]
                             else:

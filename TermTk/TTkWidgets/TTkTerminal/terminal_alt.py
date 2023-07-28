@@ -39,12 +39,16 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalAltScreen():
-    __slots__ = ('_lines', '_terminalCursor', '_w', '_h')
-    def __init__(self, w=80, h=24) -> None:
+    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_color')
+    def __init__(self, w=80, h=24, color=TTkColor.RST) -> None:
         self._lines = [TTkString()]
         self._terminalCursor = (0,0)
         self._w = w
         self._h = h
+        self._color = color
+
+    def setColor(self, color):
+        self._color = color
 
     def getCursor(self):
         return self._terminalCursor
