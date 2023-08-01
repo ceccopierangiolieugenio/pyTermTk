@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import sys, os, signal
+from threading import Thread, Lock
 
 try: import termios
 except Exception as e:
@@ -118,11 +119,20 @@ class TTkTerm(TTkTermBase):
            print(f'ERROR: {e}')
     TTkTermBase.getTerminalSize = _getTerminalSize
 
+    _sigWinChMutex = Lock()
+
+    @staticmethod
+    def _sigWinChThreaded():
+        if not TTkTerm._sigWinChMutex.acquire(blocking=False): return
+        while (TTkTerm.width, TTkTerm.height) != (wh:=TTkTerm.getTerminalSize()):
+            TTkTerm.width, TTkTerm.height = wh
+            if TTkTerm._sigWinChCb is not None:
+                TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
+        TTkTerm._sigWinChMutex.release()
+
     @staticmethod
     def _sigWinCh(signum, frame):
-        TTkTerm.width, TTkTerm.height = TTkTerm.getTerminalSize()
-        if TTkTerm._sigWinChCb is not None:
-            TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
+        Thread(target=TTkTerm._sigWinChThreaded).start()
 
     @staticmethod
     def _registerResizeCb(callback):
