@@ -24,6 +24,7 @@ __check(){
             -e "term.*.py:import sys, os, signal" \
             -e "term.*.py:from .term_base import TTkTermBase" \
             -e "term_pyodide.py:import pyodideProxy" \
+            -e "term_unix.py:from threading import Thread, Lock" \
             -e "timer.py:import importlib" \
             -e "timer_unix.py:import threading" \
             -e "timer_pyodide.py:import pyodideProxy" \
