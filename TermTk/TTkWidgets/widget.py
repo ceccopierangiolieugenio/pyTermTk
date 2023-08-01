@@ -827,7 +827,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._pushWidgetCursor()
 
     def _pushWidgetCursor(self):
-        if self._widgetCursorEnabled and self._visible and ( self._focus or self == TTkHelper.cursorWidget() ):
+        if ( self._widgetCursorEnabled and
+             self._visible and
+             ( self._focus or self == TTkHelper.cursorWidget() ) ):
             cx,cy  = self._widgetCursor
             ax, ay = TTkHelper.absPos(self)
             if ( self == TTkHelper.widgetAt(cx+ax, cy+ay) or
