@@ -28,10 +28,10 @@ _TOOLS_BASE_PATH=$(dirname $(readlink -f $0))
 _BASE_PATH=${_TOOLS_BASE_PATH}/..
 _TMP_PATH=${_BASE_PATH}/tmp
 
-_MAJOR=$( git describe | sed 's,\([0-9]*\)\..*,\1,'                     )
-_MINOR=$( git describe | sed 's,[0-9]*\.\([0-9]*\)\..*,\1,'             )
-_PATCH=$( git describe | sed 's,[0-9]*\.[0-9]*\.\([0-9]*\)[^0-9].*,\1,' )
-_STAGE=$( git describe | sed 's,[^-]*-a-\?\([0-9]*\).*,\1,'             )
+_MAJOR=$( git describe --tags | sed 's,\([0-9]*\)\..*,\1,'                     )
+_MINOR=$( git describe --tags | sed 's,[0-9]*\.\([0-9]*\)\..*,\1,'             )
+_PATCH=$( git describe --tags | sed 's,[0-9]*\.[0-9]*\.\([0-9]*\)[^0-9].*,\1,' )
+_STAGE=$( git describe --tags | sed 's,[^-]*-a-\?\([0-9]*\).*,\1,'             )
 
 _VERSION="${_MAJOR}.${_MINOR}.${_PATCH}-a${_STAGE}"
 
