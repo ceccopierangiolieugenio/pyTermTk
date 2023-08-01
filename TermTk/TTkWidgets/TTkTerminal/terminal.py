@@ -67,6 +67,9 @@ class TTkTerminal(TTkWidget):
 
         super().__init__(*args, **kwargs)
 
+        # self._screen_alt._CSI_MAP     |= self._CSI_MAP
+        # self._screen_current._CSI_MAP |= self._CSI_MAP
+
         w,h = self.size()
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
@@ -86,7 +89,7 @@ class TTkTerminal(TTkWidget):
 
         if pid == 0:
             argv = [self._shell]
-            env = dict(TERM="screen", DISPLAY=":1")
+            env = os.environ
             os.execvpe(argv[0], argv, env)
         else:
             self._inout = os.fdopen(self._fd, "w+b", 0)
@@ -98,20 +101,21 @@ class TTkTerminal(TTkWidget):
     # xterm escape sequences from:
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_
-    re_CURSOR      = re.compile('^((\d*)(;(\d*))*)([@ABCDEFGIJKLMPSTXZ^`abcdeginmqxHf])')
+    re_CURSOR      = re.compile('^\[((\d*)(;(\d*))*)([@^`A-Za-z])')
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_
     # Basic Re for CSI Ps matches:
     #   CSI : Control Sequence Introducer "<ESC>[" = '\033['
     #   Ps  : A single (usually optional) numeric parameter, composed of one or more digits.
     #   fn  : the single char defining the function
-    re_CSI_Ps_fu    = re.compile('^(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeginqx])')
-    re_CSI_Ps_Ps_fu = re.compile('^(\d*);(\d*)([Hf])')
-    re_DEC_SET_RST  = re.compile('^\?(\d+)([lh])')
+    re_CSI_Ps_fu    = re.compile('^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])')
+    re_CSI_Ps_Ps_fu = re.compile('^\[(\d*);(\d*)([Hf])')
+
+    re_DEC_SET_RST  = re.compile('^\[\?(\d+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
     def loop(self, _):
         while rs := select( [self._inout], [], [])[0]:
-            TTkLog.debug(f"Select - {rs=}")
+            # TTkLog.debug(f"Select - {rs=}")
             for r in rs:
                 if r is self._inout:
                     try:
@@ -119,39 +123,34 @@ class TTkTerminal(TTkWidget):
                     except Exception as e:
                         TTkLog.error(f"Error: {e=}")
                         return
-                    out = out.decode('utf-8','ignore')
+                    # out = out.decode('utf-8','ignore')
+                    out = out.decode()
                     for bi, bout in enumerate(out.split('\a')): # grab the bells
                         # TTkLog.debug(f'Eugenio->{out}')
                         # sout = bout.decode('utf-8','ignore')
                         if bi:
                             TTkLog.debug("BELL!!! 🔔🔔🔔")
-                        sout = bout.split('\033[')
-                        self._screen_current.pushLine(sout[0])
+                        sout = bout.split('\033')
                         TTkLog.debug(f"{sout[0]=}")
+                        self._screen_current.pushLine(sout[0])
                         for slice in sout[1:]:
+                            ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
+                            TTkLog.debug(f"slice: {ssss}")
                             if m := TTkTerminal.re_DEC_SET_RST.match(slice):
-                                # l = len(m.group(0))
                                 en = m.end()
                                 ps = int(m.group(1))
-                                sr = m.group(2)
-                                if ps == 1049 and sr == 'l': # NORMAL SCREEN
-                                    self._screen_current = self._screen_normal
-                                elif ps == 1049 and sr == 'h': # ALT SCREEN
-                                    self._screen_current = self._screen_alt
-                                elif ps == 2004:
-                                    # Bracketedpaste ON
-                                    # Bracketedpaste OFF
-                                    pass
+                                sr = (m.group(2) == 'h')
+                                self._CSI_DEC_SET_RST(ps,sr)
                                 slice = slice[en:]
                             elif ( (m      := TTkTerminal.re_CURSOR.match(slice)) and
                                    (mg     := m.groups()) and
                                     mg[-1] == 'm' ):
-                                TTkLog.debug(f"Handle color {mg[0]=}")
+                                # TTkLog.debug(f"Handle color {mg[0]=}")
                                 en = m.end()
 
                                 color=TTkColor.RST
 
-                                if mg[0] != '0m':
+                                if mg[0] not in ['0','']:
                                     values = mg[0].split(';')
 
                                     fg = None
@@ -196,28 +195,47 @@ class TTkTerminal(TTkWidget):
                                 self._screen_alt.setColor(color)
                                 self._screen_normal.setColor(color)
 
-                                TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
+                                # TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
 
                                 slice = slice[en:]
                             elif m:
                                 en = m.end()
-                                y  = ps = int(y) if (y:=m.group(1)) else 1
-                                sep = m.group(2)
-                                x =       int(x) if (x:=m.group(3)) else 1
-                                fn = m.group(4)
-                                TTkLog.debug(f"ps:{y=} {sep=} {x=} {fn=}")
-                                _ex = self._screen_current._CSI_MAP.get(
-                                        fn,
-                                        lambda a,b,c: TTkLog.warn(f"Unhandled <ESC> {y=} {sep=} {x=} {fn=}"))
-                                _ex(self._screen_current,y,x)
+                                y  = ps = int(y) if (y:=m.group(2)) else 1
+                                sep = m.group(3)
+                                x =       int(x) if (x:=m.group(4)) else 1
+                                fn = m.group(5)
+                                TTkLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
+                                if fn in ['n']:
+                                    _ex = self._CSI_MAP.get(
+                                            fn,
+                                            lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                    _ex(self,y,x)
+                                else:
+                                    _ex = self._screen_current._CSI_MAP.get(
+                                            fn,
+                                            lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                    _ex(self._screen_current,y,x)
                                 slice = slice[en:]
                             else:
-                                slice = '\033[' + slice.replace('\r','')
+                                slice = '\033' + slice.replace('\r','')
+                                ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
+                                TTkLog.warn(f"Unhandled Slice:{ssss}")
 
                             # TTkLog.debug(f'Eugenio->{slice}')
-                            self._screen_current.pushLine(slice)
-                            slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                            TTkLog.debug(f"{slice=}")
+                            if '\033' in slice:
+                                # import time
+                                # ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
+                                # TTkLog.warn(f"WAIT FOR Unhandled Slice:{ssss}")
+                                # time.sleep(0.5)
+                                # self._screen_current.pushLine(slice)
+                                # TTkLog.warn(f"DONE!!!! Unhandled Slice:{ssss}")
+                                slice = slice.replace('\033','<ESC>').replace('\n','\\n')
+                                TTkLog.warn(f"Unhandled slice: {slice=}")
+                                # time.sleep(1.5)
+                            else:
+                                self._screen_current.pushLine(slice)
+                                slice = slice.replace('\033','<ESC>').replace('\n','\\n')
+                                # TTkLog.debug(f"{slice=}")
                         self.update()
                         self.setWidgetCursor(pos=self._screen_current.getCursor())
                         TTkLog.debug(f"wc:{self._screen_current.getCursor()}")
@@ -242,3 +260,51 @@ class TTkTerminal(TTkWidget):
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
         self._screen_current.paintEvent(canvas,w,h)
+
+    # CSI Ps n  Device Status Report (DSR).
+    #             Ps = 5  ⇒  Status Report.
+    #           Result ("OK") is CSI 0 n
+    #             Ps = 6  ⇒  Report Cursor Position (CPR) [row;column].
+    #           Result is CSI r ; c R
+    #
+    #           Note: it is possible for this sequence to be sent by a
+    #           function key.  For example, with the default keyboard
+    #           configuration the shifted F1 key may send (with shift-,
+    #           control-, alt-modifiers)
+    #
+    #             CSI 1 ; 2  R , or
+    #             CSI 1 ; 5  R , or
+    #             CSI 1 ; 6  R , etc.
+    #
+    #           The second parameter encodes the modifiers; values range from
+    #           2 to 16.  See the section PC-Style Function Keys for the
+    #           codes.  The modifyFunctionKeys and modifyKeyboard resources
+    #           can change the form of the string sent from the modified F1
+    #           key.
+    def _CSI_n_DSR(self, ps, _):
+        x,y = self._screen_current.getCursor()
+        if ps==6:
+            self._inout.write(f"\033[{y+1};{x+1}R".encode())
+        elif ps==5:
+            self._inout.write(f"\033[0n".encode())
+
+    _CSI_MAP = {
+        'n': _CSI_n_DSR,
+    }
+
+    def _CSI_DEC_SET_RST(self, ps, s):
+        _dec = self._CSI_DEC_SET_RST_MAP.get(
+                ps,
+                lambda a,b: TTkLog.warn(f"Unhandled DEC <ESC>[{ps}{'h' if s else 'l'}"))
+        _dec(self, s)
+
+    def _CSI_DEC_SR_1049(self, s):
+        if s:
+            self._screen_current = self._screen_alt
+        else:
+            self._screen_current = self._screen_normal
+
+
+    _CSI_DEC_SET_RST_MAP = {
+        1049: _CSI_DEC_SR_1049
+    }

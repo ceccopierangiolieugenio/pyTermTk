@@ -184,7 +184,7 @@ class _TTkTerminalNormalScreen():
 
 
     # CSI Ps I  Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
-    def _CSI_I_CHT(self, ps, _): pass
+    # def _CSI_I_CHT(self, ps, _): pass
 
     # CSI Ps J  Erase in Display (ED), VT100.
     #             Ps = 0  ⇒  Erase Below (default).
@@ -1510,7 +1510,7 @@ class _TTkTerminalNormalScreen():
         'F': _CSI_F_CPL,
         'G': _CSI_G_CHA,
         'H': _CSI_H_CUP,
-        'I': _CSI_I_CHT,
+        # 'I': _CSI_I_CHT,
         'J': _CSI_J_ED,
         'K': _CSI_K_EL,
         'L': _CSI_L_IL,

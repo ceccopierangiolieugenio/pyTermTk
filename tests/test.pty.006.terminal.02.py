@@ -54,7 +54,7 @@ split = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
 
 split.addItem(top := ttk.TTkLayout())
 
-split.addWidget(ttk.TTkLogViewer(follow=False ), title='Log')
+split.addWidget(ttk.TTkLogViewer(follow=False ), title='Log', size=20)
 
 win1  = ttk.TTkWindow(pos=(90,5), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term1 = ttk.TTkTerminal(parent=win1)

@@ -39,13 +39,14 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalAltScreen():
-    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_color')
+    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_color', '_canvas')
     def __init__(self, w=80, h=24, color=TTkColor.RST) -> None:
         self._lines = [TTkString()]
         self._terminalCursor = (0,0)
         self._w = w
         self._h = h
         self._color = color
+        self._canvas = TTkCanvas(width=w, height=h)
 
     def setColor(self, color):
         self._color = color
@@ -56,64 +57,129 @@ class _TTkTerminalAltScreen():
     def resize(self, w, h):
         self._w = w
         self._h = h
+        newCanvas = TTkCanvas(width=w, height=h)
+        s = (0,0,w,h)
+        newCanvas.paintCanvas(self._canvas,s,s,s)
+
+        self._canvas = newCanvas
+        x,y = self._terminalCursor
+        self._terminalCursor = (min(x,w-1),min(y,h-1))
+
+    def _pushTxt(self, txt):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        txt = TTkString(txt, self._color)
+        self._terminalCursor = (min(w-1,x+len(txt)),y)
+        self._canvas.drawTTkString(text=txt, pos=(x,y))
 
     def pushLine(self, line:str):
-        lines = line.replace('\r','').split('\n')
+        if not line: return
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        lines = line.split('\n')
         for i,l in enumerate(lines):
             if i:
-                self._lines.append(TTkString(l))
-            else:
-                self._lines[-1] += TTkString(l)
+                self._terminalCursor = (x,y) = (0,min(h-1,y+1))
+            ls = l.split('\r')
+            for ii,ll in enumerate(ls):
+                if ii:
+                    self._terminalCursor = (x,y) = (0,y)
+                lls = ll.split('\b') # 0x08 = Backspace
+                for iii,lll in enumerate(lls):
+                    if iii:
+                        self._terminalCursor = (max(0,x-1),y)
+                    self._pushTxt(lll)
 
     def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
-        canvas.drawText(text="ALT Screen", pos=(0,0), width=w)
-
+        w,h = self._w, self._h
+        s = (0,0,w,h)
+        canvas.paintCanvas(self._canvas,s,s,s)
+        TTkLog.debug("Paint")
 
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
-    def _CSI___ICH(self, ps, _): pass
+    def _CSI___ICH(self, ps, _):
+        x,y = self._terminalCursor
+        self._canvas.drawText(' '*ps,pos=(x,y))
 
     # CSI Ps SP @   (SP = Space)
     #           Shift left Ps columns(s) (default = 1) (SL), ECMA-48.
-    def _CSI___SL( self, ps, _): pass
+    def _CSI___SL( self, ps, _):
+        x,y = self._terminalCursor
+        self._canvas.drawText(' '*ps,pos=(x,y))
 
     # CSI Ps A  Cursor Up Ps Times (default = 1) (CUU).
-    def _CSI_A_CUU(self, ps, _): pass
+    def _CSI_A_CUU(self, ps, _):
+        x,y = self._terminalCursor
+        self._terminalCursor = (x,max(0,y-ps))
 
     # CSI Ps SP A   (SP = Space)
     #           Shift right Ps columns(s) (default = 1) (SR), ECMA-48.
-    def _CSI_A_SR( self, ps, _): pass
+    # def _CSI_A_SR( self, ps, _):
+    #     x,y = self._terminalCursor
+    #     w,h = self._w, self._h
+    #     self._terminalCursor = (min(x+ps,w-1),y)
 
     # CSI Ps B  Cursor Down Ps Times (default = 1) (CUD).
-    def _CSI_B_CUD(self, ps, _): pass
+    def _CSI_B_CUD(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        self._terminalCursor = (x,min(y+ps,h-1))
 
     # CSI Ps C  Cursor Forward Ps Times (default = 1) (CUF).
-    def _CSI_C_CUF(self, ps, _): pass
+    def _CSI_C_CUF(self, ps, _):
+         x,y = self._terminalCursor
+         w,h = self._w, self._h
+         self._terminalCursor = (min(x+ps,w-1),y)
 
     # CSI Ps D  Cursor Backward Ps Times (default = 1) (CUB).
-    def _CSI_D_CUB(self, ps, _): pass
+    def _CSI_D_CUB(self, ps, _):
+         x,y = self._terminalCursor
+         self._terminalCursor = (max(0,x-ps),y)
 
     # CSI Ps E  Cursor Next Line Ps Times (default = 1) (CNL).
-    def _CSI_E_CNL(self, ps, _): pass
+    def _CSI_E_CNL(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        self._terminalCursor = (0,min(y+ps,h-1))
 
     # CSI Ps F  Cursor Preceding Line Ps Times (default = 1) (CPL).
-    def _CSI_F_CPL(self, ps, _): pass
+    def _CSI_F_CPL(self, ps, _):
+        x,y = self._terminalCursor
+        self._terminalCursor = (0,max(0,y-ps))
 
     # CSI Ps G  Cursor Character Absolute  [column] (default = [row,1]) (CHA).
-    def _CSI_G_CHA(self, ps, _): pass
+    def _CSI_G_CHA(self, col, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        self._terminalCursor = (min(col-1,w-1),y)
+
 
     # CSI Ps ; Ps H
     #           Cursor Position [row;column] (default = [1,1]) (CUP).
-    def _CSI_H_CUP(self, row, col): pass
+    def _CSI_H_CUP(self, row, col):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        self._terminalCursor = (min(col-1,w-1), min(row-1,h-1))
 
     # CSI Ps I  Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
-    def _CSI_I_CHT(self, ps, _): pass
+    # def _CSI_I_CHT(self, ps, _): pass
 
     # CSI Ps J  Erase in Display (ED), VT100.
     #             Ps = 0  ⇒  Erase Below (default).
     #             Ps = 1  ⇒  Erase Above.
     #             Ps = 2  ⇒  Erase All.
     #             Ps = 3  ⇒  Erase Saved Lines, xterm.
-    def _CSI_J_ED(self, ps, _): pass
+    def _CSI_J_ED(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w,self._h
+        if ps == 0:
+            self._canvas.fill(char=' ', pos=(0,y+1),size=(w,h))
+            self._canvas.fill(char=' ', pos=(x,y),size=(w,1))
+        elif ps == 1:
+            self._canvas.fill(char=' ', pos=(0,0),size=(w,y-1))
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
+        elif ps == 2:
+            self._canvas.fill(char=' ', pos=(0,0),size=(w,h))
 
     # CSI ? Ps J
     #           Erase in Display (DECSED), VT220.
@@ -126,7 +192,15 @@ class _TTkTerminalAltScreen():
     #             Ps = 0  ⇒  Erase to Right (default).
     #             Ps = 1  ⇒  Erase to Left.
     #             Ps = 2  ⇒  Erase All.
-    def _CSI_K_EL(self, ps, _): pass
+    def _CSI_K_EL(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w,self._h
+        if ps == 0:
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
+        elif ps == 1:
+            self._canvas.fill(char=' ', pos=(x,y),size=(w,1))
+        elif ps == 2:
+            self._canvas.fill(char=' ', pos=(0,y),size=(w,1))
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
@@ -135,13 +209,13 @@ class _TTkTerminalAltScreen():
     #             Ps = 2  ⇒  Selective Erase All.
 
     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
-    def _CSI_L_IL(self, ps, _): pass
+    # def _CSI_L_IL(self, ps, _): pass
 
     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
-    def _CSI_M_DL(self, ps, _): pass
+    # def _CSI_M_DL(self, ps, _): pass
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
-    def _CSI_P_DCH(self, ps, _): pass
+    # def _CSI_P_DCH(self, ps, _): pass
 
     # CSI # P
     # CSI Pm # P
@@ -841,7 +915,7 @@ class _TTkTerminalAltScreen():
     #           codes.  The modifyFunctionKeys and modifyKeyboard resources
     #           can change the form of the string sent from the modified F1
     #           key.
-    def _CSI_n_DSR(self, ps, _): pass
+    # def _CSI_n_DSR(self, ps, _): pass
 
     # CSI > Ps n
     #           Disable key modifier options, xterm.  These modifiers may be
@@ -1384,32 +1458,32 @@ class _TTkTerminalAltScreen():
         'F': _CSI_F_CPL,
         'G': _CSI_G_CHA,
         'H': _CSI_H_CUP,
-        'I': _CSI_I_CHT,
+        # 'I': _CSI_I_CHT,
         'J': _CSI_J_ED,
         'K': _CSI_K_EL,
-        'L': _CSI_L_IL,
-        'M': _CSI_M_DL,
-        'P': _CSI_P_DCH,
-        'S': _CSI_S_SU,
-        'T': _CSI_T_SD,
-        'X': _CSI_X_ECH,
-        'Z': _CSI_Z_CBT,
-        '^': _CSI___SD,
-        '`': _CSI___HPA,
-        'a': _CSI_a_HPR,
-        'b': _CSI_b_REP,
-        'c': _CSI_c_Pri_DA,
-        'd': _CSI_d_VPA,
-        'e': _CSI_e_VPR,
-        'f': _CSI_f_HVP,
-        'g': _CSI_g_TBC,
-        'h': _CSI_h_SM,
-        'i': _CSI_i_MC,
-        'l': _CSI_l_RM,
-        'm': _CSI_m_SGR,
-        'n': _CSI_n_DSR,
-        'q': _CSI_q_DECLL,
-        's': _CSI_s_SCOSC,
-        'u': _CSI_u_SCORC,
-        'x': _CSI_x_DECREQTPARM
+        # 'L': _CSI_L_IL,
+        # 'M': _CSI_M_DL,
+        # 'P': _CSI_P_DCH,
+        # 'S': _CSI_S_SU,
+        # 'T': _CSI_T_SD,
+        # 'X': _CSI_X_ECH,
+        # 'Z': _CSI_Z_CBT,
+        # '^': _CSI___SD,
+        # '`': _CSI___HPA,
+        # 'a': _CSI_a_HPR,
+        # 'b': _CSI_b_REP,
+        # 'c': _CSI_c_Pri_DA,
+        # 'd': _CSI_d_VPA,
+        # 'e': _CSI_e_VPR,
+        # 'f': _CSI_f_HVP,
+        # 'g': _CSI_g_TBC,
+        #    'h': _CSI_h_SM,
+        # 'i': _CSI_i_MC,
+        #    'l': _CSI_l_RM,
+        # 'm': _CSI_m_SGR,
+        # 'n': _CSI_n_DSR,
+        # 'q': _CSI_q_DECLL,
+        # 's': _CSI_s_SCOSC,
+        # 'u': _CSI_u_SCORC,
+        # 'x': _CSI_x_DECREQTPARM
     }
