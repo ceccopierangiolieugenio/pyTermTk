@@ -117,6 +117,7 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span>  <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span>       <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span>    <span class="kn">import</span> <span class="n">TTkHelper</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span>     <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span>    <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.canvas</span>    <span class="kn">import</span> <span class="n">TTkCanvas</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span>    <span class="kn">import</span> <span class="n">pyTTkSignal</span><span class="p">,</span> <span class="n">pyTTkSlot</span>
@@ -184,6 +185,14 @@
 <span class="sd">    :type layout: :mod:`TermTk.TTkLayouts`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">)},</span>
+                <span class="c1"># &#39;hover&#39;:       {&#39;color&#39;: TTkColor.fg(&#39;#00FF00&#39;)+TTkColor.bg(&#39;#0077FF&#39;)},</span>
+                <span class="c1"># &#39;checked&#39;:     {&#39;color&#39;: TTkColor.fg(&#39;#00FF00&#39;)+TTkColor.bg(&#39;#00FFFF&#39;)},</span>
+                <span class="c1"># &#39;clicked&#39;:     {&#39;color&#39;: TTkColor.fg(&#39;#FFFF00&#39;)},</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_parent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_width&#39;</span><span class="p">,</span> <span class="s1">&#39;_height&#39;</span><span class="p">,</span>
@@ -194,8 +203,9 @@
         <span class="s1">&#39;_visible&#39;</span><span class="p">,</span> <span class="s1">&#39;_transparent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_pendingMouseRelease&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_enabled&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_lookAndFeel&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_lookAndFeel&#39;</span><span class="p">,</span> <span class="s1">&#39;_style&#39;</span><span class="p">,</span> <span class="s1">&#39;_currentStyle&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_toolTip&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_widgetCursor&#39;</span><span class="p">,</span> <span class="s1">&#39;_widgetCursorEnabled&#39;</span><span class="p">,</span> <span class="s1">&#39;_widgetCursorType&#39;</span><span class="p">,</span>
         <span class="c1">#Signals</span>
         <span class="s1">&#39;focusChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;sizeChanged&#39;</span><span class="p">)</span>
 
@@ -205,11 +215,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sizeChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
         <span class="c1"># self.sizeChanged.connect(self.resizeEvent)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorEnabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorType</span> <span class="o">=</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Cursor_Blinking_Bar</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="kc">None</span> <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_lookAndFeel</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLookAndFeel</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lookAndFeel&#39;</span><span class="p">,</span> <span class="n">TTkLookAndFeel</span><span class="p">()))</span>
+
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -235,6 +250,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;enabled&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classStyle</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processStyleEvent</span><span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DEFAULT</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolTip</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;toolTip&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
 
@@ -272,8 +289,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+<div class="viewcode-block" id="TTkWidget.name"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;name&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span></div>
+
+<div class="viewcode-block" id="TTkWidget.setName"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.setName">[docs]</a>    <span class="k">def</span> <span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setName&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span></div>
+
 
     <span class="k">def</span> <span class="nf">widgetItem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetItem</span>
 
@@ -309,17 +332,17 @@
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;&lt;TTkWidget&gt;.removeWidget(...) is deprecated, use &lt;TTkWidget&gt;.layout().removeWidget(...)&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TTkWidget.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkWidget.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">:</span><span class="n">TTkCanvas</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Paint Event callback,</span>
 <span class="sd">        this need to be overridden in the widget.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="nf">getPixmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">paintEvent</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">getPixmap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TTkCanvas</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paintChildCanvas</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCanvas</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_paintChildCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
@@ -536,6 +559,7 @@
 
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Release</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pendingMouseRelease</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processStyleEvent</span><span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_NONE</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
@@ -547,6 +571,7 @@
             <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">focusPolicy</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">:</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processStyleEvent</span><span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_PRESSED</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">tap</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouseDoubleClickEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">):</span>
                 <span class="c1">#self._pendingMouseRelease = True</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -700,7 +725,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">removeOverlayAndChild</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
@@ -747,7 +771,8 @@
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focus</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">focusInEvent</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusInEvent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pushWidgetCursor</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">clearFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TTkLog.debug(f&quot;clearFocus: {self._name} - {self._focus}&quot;)</span>
@@ -784,6 +809,7 @@
         <span class="sd">&#39;&#39;&#39;setEnabled&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">==</span> <span class="n">enabled</span><span class="p">:</span> <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="n">enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processStyleEvent</span><span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DEFAULT</span> <span class="k">if</span> <span class="n">enabled</span> <span class="k">else</span> <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DISABLED</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TTkWidget.setDisabled"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.setDisabled">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
@@ -806,7 +832,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolTip</span>
 
     <span class="k">def</span> <span class="nf">setToolTip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toolTip</span><span class="p">:</span> <span class="n">TTkString</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_toolTip</span> <span class="o">=</span> <span class="n">toolTip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toolTip</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">toolTip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">getWidgetByName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">:</span>
@@ -814,7 +840,96 @@
         <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">(</span><span class="n">onlyVisible</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">_name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">w</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">_BASE_STYLE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default&#39;</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">}}</span>
+
+    <span class="c1"># Style Methods</span>
+    <span class="n">_S_NONE</span>     <span class="o">=</span> <span class="mh">0x00</span>
+    <span class="n">_S_DEFAULT</span>  <span class="o">=</span> <span class="mh">0x01</span>
+    <span class="n">_S_ACTIVE</span>   <span class="o">=</span> <span class="mh">0x02</span>
+    <span class="n">_S_DISABLED</span> <span class="o">=</span> <span class="mh">0x03</span>
+    <span class="n">_S_HOVER</span>    <span class="o">=</span> <span class="mh">0x10</span>
+    <span class="n">_S_PRESSED</span>  <span class="o">=</span> <span class="mh">0x20</span>
+    <span class="n">_S_RELEASED</span> <span class="o">=</span> <span class="mh">0x40</span>
+
+    <span class="k">def</span> <span class="nf">style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span>
+
+    <span class="k">def</span> <span class="nf">currentStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span>
+
+    <span class="k">def</span> <span class="nf">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;default&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">style</span><span class="p">:</span>
+            <span class="c1"># find the closest subclass/parent holding the style</span>
+            <span class="n">styleType</span> <span class="o">=</span> <span class="n">TTkWidget</span>
+            <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">style</span><span class="p">:</span>
+                    <span class="n">styleType</span> <span class="o">=</span> <span class="n">cc</span>
+                    <span class="k">break</span>
+            <span class="c1"># Filtering out the current object style</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="n">styleType</span><span class="p">]</span>
+        <span class="n">defaultStyle</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
+        <span class="c1"># Use the default style to apply the missing fields of the other actions</span>
+        <span class="n">mergeStyle</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span><span class="n">defaultStyle</span> <span class="o">|</span> <span class="n">style</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">style</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_style</span> <span class="o">=</span> <span class="n">mergeStyle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processStyleEvent</span><span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DEFAULT</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_processStyleEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span> <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="ow">and</span> <span class="s1">&#39;disabled&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="s1">&#39;disabled&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">evt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DEFAULT</span><span class="p">,</span>
+                   <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_NONE</span><span class="p">,</span>
+                   <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_ACTIVE</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">evt</span> <span class="o">&amp;</span> <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_HOVER</span> <span class="ow">and</span> <span class="s1">&#39;hover&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="s1">&#39;hover&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">evt</span> <span class="o">&amp;</span> <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_PRESSED</span> <span class="ow">and</span> <span class="s1">&#39;clicked&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="s1">&#39;clicked&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">evt</span> <span class="o">&amp;</span> <span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DISABLED</span> <span class="ow">and</span> <span class="s1">&#39;disabled&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="s1">&#39;disabled&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Widget Cursor Helpers</span>
+    <span class="k">def</span> <span class="nf">enableWidgetCursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorEnabled</span> <span class="o">=</span> <span class="n">enable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pushWidgetCursor</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">disableWidgetCursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorEnabled</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">disable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pushWidgetCursor</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">setWidgetCursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursor</span>     <span class="o">=</span> <span class="n">pos</span>  <span class="k">if</span> <span class="n">pos</span>  <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorType</span> <span class="o">=</span> <span class="nb">type</span> <span class="k">if</span> <span class="nb">type</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorType</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pushWidgetCursor</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_pushWidgetCursor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorEnabled</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="ow">and</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span> <span class="ow">or</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">cursorWidget</span><span class="p">()</span> <span class="p">):</span>
+            <span class="n">cx</span><span class="p">,</span><span class="n">cy</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursor</span>
+            <span class="n">ax</span><span class="p">,</span> <span class="n">ay</span> <span class="o">=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">absPos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">widgetAt</span><span class="p">(</span><span class="n">cx</span><span class="o">+</span><span class="n">ax</span><span class="p">,</span> <span class="n">cy</span><span class="o">+</span><span class="n">ay</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="c1"># Since the blinking bar can be placed also at the left side of the next</span>
+                <span class="c1"># char, it can be displayed also if its position is one char outside the boudaries</span>
+                 <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Cursor_Blinking_Bar</span> <span class="ow">and</span>
+                   <span class="bp">self</span> <span class="o">==</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">widgetAt</span><span class="p">(</span><span class="n">cx</span><span class="o">+</span><span class="n">ax</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cy</span><span class="o">+</span><span class="n">ay</span><span class="p">)</span> <span class="p">)</span> <span class="p">):</span>
+                <span class="n">TTkHelper</span><span class="o">.</span><span class="n">showCursor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widgetCursorType</span><span class="p">)</span>
+                <span class="n">TTkHelper</span><span class="o">.</span><span class="n">moveCursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">TTkHelper</span><span class="o">.</span><span class="n">hideCursor</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

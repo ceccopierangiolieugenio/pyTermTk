@@ -370,7 +370,7 @@
         <span class="sd">&#39;&#39;&#39; Return the ascii representation of the string &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span></div>
 
-<div class="viewcode-block" id="TTkString.toAnsi"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.toAnsi">[docs]</a>    <span class="k">def</span> <span class="nf">toAnsi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkString.toAnsi"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.toAnsi">[docs]</a>    <span class="k">def</span> <span class="nf">toAnsi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Return the ansii (terminal colors/events) representation of the string &#39;&#39;&#39;</span>
         <span class="n">out</span>   <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span>
@@ -379,6 +379,14 @@
                 <span class="n">color</span> <span class="o">=</span> <span class="n">col</span>
                 <span class="n">out</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
             <span class="n">out</span> <span class="o">+=</span> <span class="n">ch</span>
+        <span class="k">if</span> <span class="n">strip</span><span class="p">:</span>
+            <span class="n">rstCh</span>  <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u001b</span><span class="s2">[0m&quot;</span>
+            <span class="n">lenRst</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rstCh</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">out</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">rstCh</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">lenRst</span><span class="p">:]</span>
+            <span class="k">while</span> <span class="n">out</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">rstCh</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:</span><span class="o">-</span><span class="n">lenRst</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">out</span>
         <span class="k">return</span> <span class="n">out</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkString.align"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString.align">[docs]</a>    <span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">NONE</span><span class="p">):</span>

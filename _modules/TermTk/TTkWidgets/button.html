@@ -344,7 +344,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">mouseMoveEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TTkButton.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkButton.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.button.html#TermTk.TTkWidgets.button.TTkButton.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
             <span class="n">borderColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_borderColorDisabled</span>
             <span class="n">textColor</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_textColorDisabled</span>
@@ -378,7 +378,6 @@
                     <span class="n">borderColor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span>
 
         <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-        <span class="n">canvas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCanvas</span><span class="p">()</span>
 
         <span class="c1"># Draw the border and bgcolor</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="ow">and</span> <span class="p">(</span> <span class="n">h</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span> <span class="n">h</span><span class="o">&gt;</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span><span class="o">&gt;</span><span class="n">h</span><span class="o">-</span><span class="mi">2</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">!=</span><span class="mi">0</span> <span class="p">))):</span>

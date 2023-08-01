@@ -24,6 +24,7 @@ TermTk.TTkUiTools.properties
   TermTk.TTkUiTools.properties.lineedit
   TermTk.TTkUiTools.properties.list_
   TermTk.TTkUiTools.properties.listwidget
+  TermTk.TTkUiTools.properties.menu
   TermTk.TTkUiTools.properties.menubar
   TermTk.TTkUiTools.properties.progressbar
   TermTk.TTkUiTools.properties.radiobutton

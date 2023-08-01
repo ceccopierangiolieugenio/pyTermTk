@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkAbstract.abstractscrollarea</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -123,18 +121,39 @@
 
 <div class="viewcode-block" id="TTkAbstractScrollArea"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollarea.html#TermTk.TTkAbstract.abstractscrollarea.TTkAbstractScrollArea">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollArea</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;_processing&#39;</span><span class="p">,</span> <span class="c1"># this flag is required to avoid unnecessary loop on edge cases</span>
         <span class="s1">&#39;_viewport&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_verticalScrollBar&#39;</span><span class="p">,</span>   <span class="s1">&#39;_verticalScrollBarPolicy&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_horizontalScrollBar&#39;</span><span class="p">,</span> <span class="s1">&#39;_horizontalScrollBarPolicy&#39;</span><span class="p">,)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">TTkGridLayout</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span> <span class="o">=</span> <span class="n">TTkScrollBar</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span> <span class="o">=</span> <span class="n">TTkScrollBar</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="c1"># self.setLayout(TTkGridLayout())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span> <span class="o">=</span> <span class="n">TTkScrollBar</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span> <span class="o">=</span> <span class="n">TTkScrollBar</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBarPolicy</span>   <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verticalScrollBarPolicy&quot;</span><span class="p">,</span>  <span class="n">TTkK</span><span class="o">.</span><span class="n">ScrollBarAsNeeded</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBarPolicy</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;horizontalScrollBarPolicy&quot;</span><span class="p">,</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ScrollBarAsNeeded</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processing</span><span class="p">:</span> <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="n">vert</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">hori</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">vert</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">h</span><span class="o">-</span><span class="n">hori</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hori</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">h</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="n">vert</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="n">vert</span><span class="p">,</span><span class="n">h</span><span class="o">-</span><span class="n">hori</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processing</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="TTkAbstractScrollArea.resizeEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollarea.html#TermTk.TTkAbstract.abstractscrollarea.TTkAbstractScrollArea.resizeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeEvent</span><span class="p">()</span></div>
 
     <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">_viewportChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -178,6 +197,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeEvent</span><span class="p">()</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_vscrollMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
@@ -192,6 +212,9 @@
     <span class="k">def</span> <span class="nf">setViewport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viewport</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">viewport</span><span class="p">,</span> <span class="n">TTkAbstractScrollViewInterface</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;TTkAbstractScrollViewInterface is required in TTkAbstractScrollArea.setVewport(viewport)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewportChanged</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span> <span class="o">=</span> <span class="n">viewport</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewportChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span><span class="o">.</span><span class="n">sliderMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vscrollMoved</span><span class="p">)</span>
@@ -199,11 +222,10 @@
         <span class="c1"># TODO: Remove this check once</span>
         <span class="c1">#  unified  &quot;addWidget&quot; and &quot;addItem&quot; in the TTKGridLayout</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">viewport</span><span class="p">,</span> <span class="n">TTkWidget</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">viewport</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">viewport</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">viewport</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_horizontalScrollBar</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">viewport</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeEvent</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">setVerticalScrollBarPolicy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">policy</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBarPolicy</span><span class="p">:</span>

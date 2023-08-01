@@ -20,10 +20,12 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.frame
   TermTk.TTkWidgets.graph
   TermTk.TTkWidgets.image
+  TermTk.TTkWidgets.kodetab
   TermTk.TTkWidgets.label
   TermTk.TTkWidgets.lineedit
   TermTk.TTkWidgets.list_
   TermTk.TTkWidgets.listwidget
+  TermTk.TTkWidgets.menu
   TermTk.TTkWidgets.menubar
   TermTk.TTkWidgets.progressbar
   TermTk.TTkWidgets.radiobutton

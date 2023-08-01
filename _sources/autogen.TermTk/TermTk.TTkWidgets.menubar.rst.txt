@@ -8,17 +8,17 @@ TermTk.TTkWidgets.menubar
 
 
 
-TTkMenuButton
-=============
+TTkMenuBarButton
+================
 
-.. autoclass:: TTkMenuButton
+.. autoclass:: TTkMenuBarButton
    :members:
    :inherited-members:
 
 
-TTkMenuLayout
-=============
+TTkMenuBarLayout
+================
 
-.. autoclass:: TTkMenuLayout
+.. autoclass:: TTkMenuBarLayout
    :members:
    :inherited-members:

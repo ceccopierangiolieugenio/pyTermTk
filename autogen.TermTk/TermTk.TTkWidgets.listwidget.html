@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkWidgets.menubar" href="TermTk.TTkWidgets.menubar.html" />
+    <link rel="next" title="TermTk.TTkWidgets.menu" href="TermTk.TTkWidgets.menu.html" />
     <link rel="prev" title="TermTk.TTkWidgets.list_" href="TermTk.TTkWidgets.list_.html" /> 
 </head>
 
@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.kodetab.html">TermTk.TTkWidgets.kodetab</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.label.html">TermTk.TTkWidgets.label</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.lineedit.html">TermTk.TTkWidgets.lineedit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.list_.html">TermTk.TTkWidgets.list_</a></li>
@@ -81,6 +82,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#ttklistwidget">TTkListWidget</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menu.html">TermTk.TTkWidgets.menu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
@@ -541,6 +543,11 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.paintChildCanvas">
 <span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.paintChildCanvas" title="Permalink to this definition"></a></dt>
 <dd><div class="admonition caution">
@@ -551,7 +558,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.paintEvent">
-<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.paintEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
 this need to be overridden in the widget.</p>
 </dd></dl>
@@ -635,6 +642,11 @@ this need to be overridden in the widget.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkAbstractListItem.setName" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkAbstractListItem.setPadding">
@@ -1130,6 +1142,11 @@ this need to be overridden in the widget.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkListWidget.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkListWidget.paintChildCanvas">
 <span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.paintChildCanvas" title="Permalink to this definition"></a></dt>
 <dd><div class="admonition caution">
@@ -1140,7 +1157,7 @@ this need to be overridden in the widget.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkListWidget.paintEvent">
-<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.paintEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkCore.canvas.html#TermTk.TTkCore.canvas.TTkCanvas" title="TermTk.TTkCore.canvas.TTkCanvas"><span class="pre">TTkCanvas</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
 this need to be overridden in the widget.</p>
 </dd></dl>
@@ -1246,6 +1263,11 @@ this need to be overridden in the widget.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkListWidget.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.setName" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.listwidget.TTkListWidget.setPadding">
 <span class="sig-name descname"><span class="pre">setPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.listwidget.TTkListWidget.setPadding" title="Permalink to this definition"></a></dt>
 <dd><p>Set the padding of the widget</p>
@@ -1307,7 +1329,7 @@ this need to be overridden in the widget.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TermTk.TTkWidgets.list_.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.list_" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="TermTk.TTkWidgets.menubar.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.menubar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkWidgets.menu.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.menu" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
