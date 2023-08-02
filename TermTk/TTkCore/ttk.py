@@ -86,7 +86,11 @@ class TTk(TTkWidget):
         'paintExecuted')
 
     def __init__(self, *args, **kwargs):
-        if ('TERMTK_LOG_TO' in os.environ and (_logFile := os.environ['TERMTK_LOG_TO'])):
+        # If the "TERMTK_FILE_LOG" env variable is defined
+        # logs are saved in the file identified by this variable
+        # i.e.
+        #      TERMTK_FILE_LOG=session.log   python3   demo/demo.py
+        if ('TERMTK_FILE_LOG' in os.environ and (_logFile := os.environ['TERMTK_FILE_LOG'])):
             TTkLog.use_default_file_logging(_logFile)
 
         self.paintExecuted = pyTTkSignal()
@@ -311,8 +315,12 @@ class TTk(TTkWidget):
         # TODO: Redraw the screen
 
     def _SIGINT(self, signum, fraTERMTK_STACKTRACEme):
-        if ('TERMTK_STACKTRACE' in os.environ and os.environ['TERMTK_STACKTRACE'] == '1'):
-            with open('stacktrace.txt','w') as f:
+        # If the "TERMTK_STACKTRACE" env variable is defined
+        # a stacktrace file is generated once CTRL+C is pressed
+        # i.e.
+        #      TERMTK_STACKTRACE=stacktracetxt   python3   demo/demo.py
+        if ('TERMTK_STACKTRACE' in os.environ and (_stacktraceFile := os.environ['TERMTK_STACKTRACE'])):
+            with open(_stacktraceFile,'w') as f:
                 import faulthandler
                 faulthandler.dump_traceback(f)
 

@@ -94,15 +94,15 @@ python3 tests/test.ui.018.TextEdit.Pygments.py README.md
 
 #### Debug
 There are few ENV Variables that can be used to force some debugging features;
-##### (TERMTK_LOG_TO) - Log to a file
-To force a file logging
+##### (TERMTK_FILE_LOG) - Log to a file
+To force logging to a file
 ```bash
-TERMTK_LOG_TO=session.log   python3   demo/demo.py
+TERMTK_FILE_LOG=session.log   python3   demo/demo.py
 ```
 ##### (TERMTK_STACKTRACE) - Force stacktrace generation with CTRL+C
-Use this env variable to force a stacktrace generation to "**stacktrace.txt**"
+Use this env variable to force a stacktrace generation to the file defined (i.e. "**stacktrace.txt**")
 ```bash
-TERMTK_STACKTRACE=1   python3   demo/demo.py
+TERMTK_STACKTRACE=stacktrace.txt   python3   demo/demo.py
 ```
 
 #### Profiling
