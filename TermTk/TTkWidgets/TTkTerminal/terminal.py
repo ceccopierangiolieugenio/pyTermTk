@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 import os, pty, threading
+import struct, fcntl, termios
+
 import re
 from select import select
 from TermTk.TTkCore.canvas import TTkCanvas
@@ -78,6 +80,14 @@ class TTkTerminal(TTkWidget):
         self.enableWidgetCursor()
 
     def resizeEvent(self, w: int, h: int):
+        if self._fd:
+            # s = struct.pack('HHHH', 0, 0, 0, 0)
+            # t = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, s)
+            # print(struct.unpack('HHHH', t))
+            s = struct.pack('HHHH', h, w, 0, 0)
+            t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
+
+            # termios.tcsetwinsize(self._fd,(h,w))
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
         return super().resizeEvent(w, h)
@@ -297,7 +307,28 @@ class TTkTerminal(TTkWidget):
                 ps,
                 lambda a,b: TTkLog.warn(f"Unhandled DEC <ESC>[{ps}{'h' if s else 'l'}"))
         _dec(self, s)
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 2 5  ⇒  Show cursor (DECTCEM), VT220.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 2 5  ⇒  Hide cursor (DECTCEM), VT220.
+    def _CSI_DEC_SR_25(self, s):
+        self.enableWidgetCursor(enable=s)
 
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 4 9  ⇒  Save cursor as in DECSC, xterm.  After
+    #           saving the cursor, switch to the Alternate Screen Buffer,
+    #           clearing it first.  This may be disabled by the titeInhibit
+    #           resource.  This control combines the effects of the 1 0 4 7
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 4 9  ⇒  Use Normal Screen Buffer and restore cursor
+    #           as in DECRC, xterm.  This may be disabled by the titeInhibit
+    #           resource.  This combines the effects of the 1 0 4 7  and 1 0 4
+    #           8  modes.  Use this with terminfo-based applications rather
+    #           than the 4 7  mode.
     def _CSI_DEC_SR_1049(self, s):
         if s:
             self._screen_current = self._screen_alt
@@ -306,5 +337,6 @@ class TTkTerminal(TTkWidget):
 
 
     _CSI_DEC_SET_RST_MAP = {
+        25  : _CSI_DEC_SR_25,
         1049: _CSI_DEC_SR_1049
     }
