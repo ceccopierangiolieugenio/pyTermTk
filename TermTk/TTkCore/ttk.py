@@ -86,6 +86,9 @@ class TTk(TTkWidget):
         'paintExecuted')
 
     def __init__(self, *args, **kwargs):
+        if ('TERMTK_LOG_TO' in os.environ and (_logFile := os.environ['TERMTK_LOG_TO'])):
+            TTkLog.use_default_file_logging(_logFile)
+
         self.paintExecuted = pyTTkSignal()
         super().__init__(*args, **kwargs)
         self._termMouse = True
@@ -307,7 +310,12 @@ class TTk(TTkWidget):
         # TODO: Restart threads
         # TODO: Redraw the screen
 
-    def _SIGINT(self, signum, frame):
+    def _SIGINT(self, signum, fraTERMTK_STACKTRACEme):
+        if ('TERMTK_STACKTRACE' in os.environ and os.environ['TERMTK_STACKTRACE'] == '1'):
+            with open('stacktrace.txt','w') as f:
+                import faulthandler
+                faulthandler.dump_traceback(f)
+
         TTkLog.debug("Captured SIGINT <CTRL-C>")
         # Deregister the handler
         # so CTRL-C can be redirected to the default handler if the app does not exit
