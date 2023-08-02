@@ -82,7 +82,6 @@ def demoWindowsFlags(root=None):
 
 
 def main():
-    ttk.TTkLog.use_default_file_logging()
     root = ttk.TTk()
     win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(60,30), title="Test Window Flags", border=True, layout=ttk.TTkGridLayout(), flags=ttk.TTkK.NONE)
     demoWindowsFlags(win1)

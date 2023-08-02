@@ -55,8 +55,6 @@ def main():
     parser.add_argument('-f', help='Full Screen', action='store_true')
     args = parser.parse_args()
 
-    ttk.TTkLog.use_default_file_logging()
-
     root = ttk.TTk()
     if args.f:
         rootLayout = root
