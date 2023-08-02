@@ -58,8 +58,6 @@ def main():
     args = parser.parse_args()
     windowed = args.w
 
-    ttk.TTkLog.use_default_file_logging()
-
     root = ttk.TTk()
 
     if windowed:

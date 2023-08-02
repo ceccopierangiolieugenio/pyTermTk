@@ -69,8 +69,6 @@ def demoLayout(root=None):
 
 
 def main():
-    ttk.TTkLog.use_default_file_logging()
-
     root = ttk.TTk()
     root.setLayout(ttk.TTkHBoxLayout())
     demoLayout(root)
