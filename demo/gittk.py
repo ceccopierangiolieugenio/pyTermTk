@@ -65,8 +65,6 @@ for line in GitHelper.graph():
     allCommits.append(c)
     commitResults.append((g, cc, a, d))
 
-ttk.TTkLog.use_default_file_logging()
-
 
 root = ttk.TTk()
 if fullscreen:

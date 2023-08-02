@@ -151,7 +151,6 @@ def main():
     parser.add_argument('-f', help='Full Screen', action='store_true')
     args = parser.parse_args()
 
-    TTkLog.use_default_file_logging()
     TTkTheme.loadTheme(TTkTheme.NERD)
 
     root = TTk(title="ttkode")
