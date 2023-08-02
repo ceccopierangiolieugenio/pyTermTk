@@ -51,7 +51,6 @@ def demoWindows(root=None):
 
 
 def main():
-    ttk.TTkLog.use_default_file_logging()
     root = ttk.TTk()
     win1 = ttk.TTkWindow(parent=root,pos = (1,1), size=(100,45), title="Test Window 1", border=True, layout=ttk.TTkGridLayout())
     demoWindows(win1)

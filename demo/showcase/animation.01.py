@@ -253,8 +253,6 @@ def main():
     args = parser.parse_args()
     windowed = args.w
 
-    ttk.TTkLog.use_default_file_logging()
-
     root = ttk.TTk()
     if windowed:
         rootTree = ttk.TTkWindow(parent=root,pos = (0,0), size=(70,40), title="Test Text Edit", layout=ttk.TTkGridLayout(), border=True)
