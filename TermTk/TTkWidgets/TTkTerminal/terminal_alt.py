@@ -157,7 +157,6 @@ class _TTkTerminalAltScreen():
     # CSI Ps ; Ps H
     #           Cursor Position [row;column] (default = [1,1]) (CUP).
     def _CSI_H_CUP(self, row, col):
-        x,y = self._terminalCursor
         w,h = self._w, self._h
         self._terminalCursor = (min(col-1,w-1), min(row-1,h-1))
 
@@ -421,7 +420,9 @@ class _TTkTerminalAltScreen():
     # CSI Ps ; Ps f
     #           Horizontal and Vertical Position [row;column] (default =
     #           [1,1]) (HVP).
-    def _CSI_f_HVP(self, row, col): pass
+    def _CSI_f_HVP(self, row, col):
+        w,h = self._w, self._h
+        self._terminalCursor = (min(col-1,w-1), min(row-1,h-1))
 
     # CSI Ps g  Tab Clear (TBC).  ECMA-48 defines additional codes, but the
     #           VT100 user manual notes that it ignores other codes.  DEC's
@@ -1475,7 +1476,7 @@ class _TTkTerminalAltScreen():
         # 'c': _CSI_c_Pri_DA,
         # 'd': _CSI_d_VPA,
         # 'e': _CSI_e_VPR,
-        # 'f': _CSI_f_HVP,
+        'f': _CSI_f_HVP,
         # 'g': _CSI_g_TBC,
         #    'h': _CSI_h_SM,
         # 'i': _CSI_i_MC,

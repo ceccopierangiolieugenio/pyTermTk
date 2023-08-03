@@ -55,13 +55,15 @@ from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
 __all__ = ['TTkTerminal']
 
 class TTkTerminal(TTkWidget):
-    __slots__ = ('_shell', '_fd', '_inout', '_mode_normal'
+    __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
                  '_buffer_lines', '_buffer_screen',
                  '_screen_current', '_screen_normal', '_screen_alt')
     def __init__(self, *args, **kwargs):
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
+        self._proc = None
         self._mode_normal = True
+        self._quit_pipe = None
         self._buffer_lines = [TTkString()]
         self._screen_normal  = _TTkTerminalNormalScreen()
         self._screen_alt     = _TTkTerminalAltScreen()
@@ -78,6 +80,7 @@ class TTkTerminal(TTkWidget):
 
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.enableWidgetCursor()
+        TTkHelper.quitEvent.connect(self._quit)
 
     def resizeEvent(self, w: int, h: int):
         if self._fd:
@@ -98,13 +101,21 @@ class TTkTerminal(TTkWidget):
         pid, self._fd = pty.fork()
 
         if pid == 0:
-            argv = [self._shell]
-            env = os.environ
-            os.execvpe(argv[0], argv, env)
+            def _spawnTerminal(argv=[self._shell], env=os.environ):
+                os.execvpe(argv[0], argv, env)
+            threading.Thread(target=_spawnTerminal).start()
+            TTkHelper.quit()
+            # os.execvpe(argv[0], argv, env)
+            # os.execvpe(argv[0], argv, env)
+            # self._proc = subprocess.Popen(self._shell)
+            # TTkLog.debug(f"Terminal PID={self._proc.pid=}")
+            # self._proc.wait()
         else:
             self._inout = os.fdopen(self._fd, "w+b", 0)
             name = os.ttyname(self._fd)
-            TTkLog.debug(f"{self._fd=} {name}")
+            TTkLog.debug(f"{pid=} {self._fd=} {name}")
+
+            self._quit_pipe = os.pipe()
 
             threading.Thread(target=self.loop,args=[self]).start()
 
@@ -123,132 +134,140 @@ class TTkTerminal(TTkWidget):
     re_DEC_SET_RST  = re.compile('^\[\?(\d+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
+    @pyTTkSlot()
+    def _quit(self):
+        if self._quit_pipe:
+            os.write(self._quit_pipe[1], b'quit')
+
     def loop(self, _):
-        while rs := select( [self._inout], [], [])[0]:
+        while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
+            if self._quit_pipe[0] in rs:
+                break
             # TTkLog.debug(f"Select - {rs=}")
             for r in rs:
-                if r is self._inout:
-                    try:
-                        out = self._inout.read(10240)
-                    except Exception as e:
-                        TTkLog.error(f"Error: {e=}")
-                        return
-                    # out = out.decode('utf-8','ignore')
-                    out = out.decode()
-                    for bi, bout in enumerate(out.split('\a')): # grab the bells
-                        # TTkLog.debug(f'Eugenio->{out}')
-                        # sout = bout.decode('utf-8','ignore')
-                        if bi:
-                            TTkLog.debug("BELL!!! 🔔🔔🔔")
-                        sout = bout.split('\033')
-                        TTkLog.debug(f"{sout[0]=}")
-                        self._screen_current.pushLine(sout[0])
-                        for slice in sout[1:]:
-                            ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
-                            TTkLog.debug(f"slice: {ssss}")
-                            if m := TTkTerminal.re_DEC_SET_RST.match(slice):
-                                en = m.end()
-                                ps = int(m.group(1))
-                                sr = (m.group(2) == 'h')
-                                self._CSI_DEC_SET_RST(ps,sr)
-                                slice = slice[en:]
-                            elif ( (m      := TTkTerminal.re_CURSOR.match(slice)) and
-                                   (mg     := m.groups()) and
-                                    mg[-1] == 'm' ):
-                                # TTkLog.debug(f"Handle color {mg[0]=}")
-                                en = m.end()
+                if r is not self._inout:
+                    continue
+                try:
+                    out = self._inout.read(10240)
+                except Exception as e:
+                    TTkLog.error(f"Error: {e=}")
+                    return
+                # out = out.decode('utf-8','ignore')
+                out = out.decode()
+                for bi, bout in enumerate(out.split('\a')): # grab the bells
+                    # TTkLog.debug(f'Eugenio->{out}')
+                    # sout = bout.decode('utf-8','ignore')
+                    if bi:
+                        TTkLog.debug("BELL!!! 🔔🔔🔔")
+                    sout = bout.split('\033')
+                    TTkLog.debug(f"{sout[0]=}")
+                    self._screen_current.pushLine(sout[0])
+                    for slice in sout[1:]:
+                        ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
+                        TTkLog.debug(f"slice: {ssss}")
+                        if m := TTkTerminal.re_DEC_SET_RST.match(slice):
+                            en = m.end()
+                            ps = int(m.group(1))
+                            sr = (m.group(2) == 'h')
+                            self._CSI_DEC_SET_RST(ps,sr)
+                            slice = slice[en:]
+                        elif ( (m      := TTkTerminal.re_CURSOR.match(slice)) and
+                                (mg     := m.groups()) and
+                                mg[-1] == 'm' ):
+                            # TTkLog.debug(f"Handle color {mg[0]=}")
+                            en = m.end()
 
-                                color=TTkColor.RST
+                            color=TTkColor.RST
 
-                                if mg[0] not in ['0','']:
-                                    values = mg[0].split(';')
+                            if mg[0] not in ['0','']:
+                                values = mg[0].split(';')
 
-                                    fg = None
-                                    bg = None
-                                    mod = 0
-                                    clean = False
+                                fg = None
+                                bg = None
+                                mod = 0
+                                clean = False
 
-                                    while values:
-                                        s = int(values.pop(0))
-                                        if s==0: # Reset Color/Format
-                                            fg = None
-                                            bg = None
-                                            mod = 0
-                                            clean = True
-                                        elif ( # Ansi 16 colors
-                                            30  <= s <= 37 or   # fg [ 30 -  37]
-                                            90  <= s <= 97 ):   # fg [ 90 -  97] Bright
-                                            fg = ansiMap16.get(s)
-                                        elif ( # Ansi 16 colors
-                                            40  <= s <= 47 or   # bg [ 40 -  47]
-                                            100 <= s <= 107 ) : # bg [100 - 107] Bright
-                                            bg = ansiMap16.get(s)
-                                        elif s == 38:
-                                            t =  int(values.pop(0))
-                                            if t == 5:# 256 fg
-                                                fg = ansiMap256.get(int(values.pop(0)))
-                                            if t == 2:# 24 bit fg
-                                                fg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
-                                        elif s == 48:
-                                            t =  int(values.pop(0))
-                                            if t == 5:# 256 bg
-                                                bg = ansiMap256.get(int(values.pop(0)))
-                                            if t == 2:# 24 bit bg
-                                                bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
-                                        elif s==1: mod += TTkTermColor.BOLD
-                                        elif s==3: mod += TTkTermColor.ITALIC
-                                        elif s==4: mod += TTkTermColor.UNDERLINE
-                                        elif s==9: mod += TTkTermColor.STRIKETROUGH
-                                        elif s==5: mod += TTkTermColor.BLINKING
-                                    color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
+                                while values:
+                                    s = int(values.pop(0))
+                                    if s==0: # Reset Color/Format
+                                        fg = None
+                                        bg = None
+                                        mod = 0
+                                        clean = True
+                                    elif ( # Ansi 16 colors
+                                        30  <= s <= 37 or   # fg [ 30 -  37]
+                                        90  <= s <= 97 ):   # fg [ 90 -  97] Bright
+                                        fg = ansiMap16.get(s)
+                                    elif ( # Ansi 16 colors
+                                        40  <= s <= 47 or   # bg [ 40 -  47]
+                                        100 <= s <= 107 ) : # bg [100 - 107] Bright
+                                        bg = ansiMap16.get(s)
+                                    elif s == 38:
+                                        t =  int(values.pop(0))
+                                        if t == 5:# 256 fg
+                                            fg = ansiMap256.get(int(values.pop(0)))
+                                        if t == 2:# 24 bit fg
+                                            fg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
+                                    elif s == 48:
+                                        t =  int(values.pop(0))
+                                        if t == 5:# 256 bg
+                                            bg = ansiMap256.get(int(values.pop(0)))
+                                        if t == 2:# 24 bit bg
+                                            bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
+                                    elif s==1: mod += TTkTermColor.BOLD
+                                    elif s==3: mod += TTkTermColor.ITALIC
+                                    elif s==4: mod += TTkTermColor.UNDERLINE
+                                    elif s==9: mod += TTkTermColor.STRIKETROUGH
+                                    elif s==5: mod += TTkTermColor.BLINKING
+                                color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
-                                self._screen_alt.setColor(color)
-                                self._screen_normal.setColor(color)
+                            self._screen_alt.setColor(color)
+                            self._screen_normal.setColor(color)
 
-                                # TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
+                            # TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
 
-                                slice = slice[en:]
-                            elif m:
-                                en = m.end()
-                                y  = ps = int(y) if (y:=m.group(2)) else 1
-                                sep = m.group(3)
-                                x =       int(x) if (x:=m.group(4)) else 1
-                                fn = m.group(5)
-                                TTkLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
-                                if fn in ['n']:
-                                    _ex = self._CSI_MAP.get(
-                                            fn,
-                                            lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
-                                    _ex(self,y,x)
-                                else:
-                                    _ex = self._screen_current._CSI_MAP.get(
-                                            fn,
-                                            lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
-                                    _ex(self._screen_current,y,x)
-                                slice = slice[en:]
+                            slice = slice[en:]
+                        elif m:
+                            en = m.end()
+                            y  = ps = int(y) if (y:=m.group(2)) else 1
+                            sep = m.group(3)
+                            x =       int(x) if (x:=m.group(4)) else 1
+                            fn = m.group(5)
+                            TTkLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
+                            if fn in ['n']:
+                                _ex = self._CSI_MAP.get(
+                                        fn,
+                                        lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                _ex(self,y,x)
                             else:
-                                slice = '\033' + slice.replace('\r','')
-                                ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
-                                TTkLog.warn(f"Unhandled Slice:{ssss}")
+                                _ex = self._screen_current._CSI_MAP.get(
+                                        fn,
+                                        lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                _ex(self._screen_current,y,x)
+                            slice = slice[en:]
+                        else:
+                            slice = '\033' + slice.replace('\r','')
+                            ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
+                            TTkLog.warn(f"Unhandled Slice:{ssss}")
 
-                            # TTkLog.debug(f'Eugenio->{slice}')
-                            if '\033' in slice:
-                                # import time
-                                # ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
-                                # TTkLog.warn(f"WAIT FOR Unhandled Slice:{ssss}")
-                                # time.sleep(0.5)
-                                # self._screen_current.pushLine(slice)
-                                # TTkLog.warn(f"DONE!!!! Unhandled Slice:{ssss}")
-                                slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                                TTkLog.warn(f"Unhandled slice: {slice=}")
-                                # time.sleep(1.5)
-                            else:
-                                self._screen_current.pushLine(slice)
-                                slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                                # TTkLog.debug(f"{slice=}")
-                        self.update()
-                        self.setWidgetCursor(pos=self._screen_current.getCursor())
-                        TTkLog.debug(f"wc:{self._screen_current.getCursor()}")
+                        # TTkLog.debug(f'Eugenio->{slice}')
+                        if '\033' in slice:
+                            # import time
+                            # ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
+                            # TTkLog.warn(f"WAIT FOR Unhandled Slice:{ssss}")
+                            # time.sleep(0.5)
+                            # self._screen_current.pushLine(slice)
+                            # TTkLog.warn(f"DONE!!!! Unhandled Slice:{ssss}")
+                            slice = slice.replace('\033','<ESC>').replace('\n','\\n')
+                            TTkLog.warn(f"Unhandled slice: {slice=}")
+                            # time.sleep(1.5)
+                        else:
+                            self._screen_current.pushLine(slice)
+                            slice = slice.replace('\033','<ESC>').replace('\n','\\n')
+                            # TTkLog.debug(f"{slice=}")
+                    self.update()
+                    self.setWidgetCursor(pos=self._screen_current.getCursor())
+                    TTkLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
 
     def mousePressEvent(self, evt):
         return True
