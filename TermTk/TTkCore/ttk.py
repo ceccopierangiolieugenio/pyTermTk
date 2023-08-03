@@ -289,11 +289,28 @@ class TTk(TTkWidget):
         self._drawMutex.release()
         TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
 
-
+    @pyTTkSlot()
     def quit(self):
+        '''quit TermTk
+
+        .. warning::
+            Method Deprecated,
+
+            use :class:`~TermTk.TTkCore.helper.TTkHelper` -> :class:`~TermTk.TTkCore.helper.TTkHelper.quit` instead
+
+            i.e.
+
+            .. code:: python
+
+                buttonQuit = TTkButton(text="QUIT",border=True)
+                buttonQuit.clicked.connect(TTkHelper.quit)
+        '''
+        TTkHelper.quit()
+
+    @pyTTkSlot()
+    def _quit(self):
         '''Tells the application to exit with a return code.'''
         self._input.inputEvent.clear()
-        TTkTimer.quitAll()
         self._paintEvent.set()
         self._input.close()
 
@@ -328,7 +345,7 @@ class TTk(TTkWidget):
         # Deregister the handler
         # so CTRL-C can be redirected to the default handler if the app does not exit
         signal.signal(signal.SIGINT,  signal.SIG_DFL)
-        self.quit()
+        TTkHelper.quit()
 
     def isVisibleAndParent(self):
         return self.isVisible()

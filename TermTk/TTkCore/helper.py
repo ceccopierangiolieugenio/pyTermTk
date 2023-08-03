@@ -26,8 +26,13 @@ from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 class TTkHelper:
+    '''TTkHelper
+
+    This is a collection of helper utilities to be used all around TermTk
+    '''
     # TODO: Add Setter/Getter
     _focusWidget = None
     _rootCanvas = None
@@ -97,10 +102,15 @@ class TTkHelper:
         TTkHelper._rootWidget = widget
         TTkHelper._rootCanvas.enableDoubleBuffer()
 
+    quitEvent = pyTTkSignal()
+
     @staticmethod
+    @pyTTkSlot()
     def quit():
+        '''Quit TermTk'''
+        TTkHelper.quitEvent.emit()
         if TTkHelper._rootWidget:
-            TTkHelper._rootWidget.quit()
+            TTkHelper._rootWidget._quit()
 
     @staticmethod
     def getTerminalSize():
