@@ -23,9 +23,9 @@
 import threading
 
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.helper import TTkHelper
 
 class TTkTimer(threading.Thread):
-    _timers = []
     __slots__ = (
         'timeout', '_delay',
         '_timer', '_quit', '_start')
@@ -36,12 +36,7 @@ class TTkTimer(threading.Thread):
         self._start = threading.Event()
         self._timer = threading.Event()
         super().__init__()
-        TTkTimer._timers.append(self)
-
-    @staticmethod
-    def quitAll():
-        for timer in TTkTimer._timers:
-            timer.quit()
+        TTkHelper.quitEvent.connect(self.quit)
 
     def quit(self):
         self._quit.set()
