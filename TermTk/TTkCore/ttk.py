@@ -310,6 +310,7 @@ class TTk(TTkWidget):
     @pyTTkSlot()
     def _quit(self):
         '''Tells the application to exit with a return code.'''
+        self._timer.timeout.disconnect(self._time_event)
         self._input.inputEvent.clear()
         self._paintEvent.set()
         self._input.close()
