@@ -270,10 +270,22 @@ class _TTkTerminalAltScreen():
         #TODO: Avoid this HACK
         baseData = [' ']*w
         baseColors = [TTkColor.RST]*w
-        self._canvas._data[b:b]   = [baseData.copy() for _ in range(ps)]
-        self._canvas._colors[b:b] = [baseColors.copy() for _ in range(ps)]
-        self._canvas._data   = self._canvas._data[:t] + self._canvas._data[t+ps:]
-        self._canvas._colors = self._canvas._colors[:t] + self._canvas._colors[t+ps:]
+        # Split the content in 3 slices [top, center, bottom]
+        topd = self._canvas._data[:t]
+        topc = self._canvas._colors[:t]
+        centerd = self._canvas._data[t:b]
+        centerc = self._canvas._colors[t:b]
+        bottomd = self._canvas._data[b:]
+        bottomc = self._canvas._colors[b:]
+        # Rotate the center part
+        centerd = centerd[ps:] + [baseData.copy() for _ in range(ps)  ]
+        centerc = centerc[ps:] + [baseColors.copy() for _ in range(ps)]
+        centerd = centerd[:b-t]
+        centerc = centerc[:b-t]
+        # assemble it back
+        self._canvas._data   = topd + centerd + bottomd
+        self._canvas._colors = topc + centerc + bottomc
+
 
     # CSI ? Pi ; Pa ; Pv S
     #           Set or request graphics attribute (XTSMGRAPHICS), xterm.  If
@@ -331,7 +343,27 @@ class _TTkTerminalAltScreen():
     #               rather than a failure.
 
     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
-    def _CSI_T_SD(self, ps, _): pass
+    def _CSI_T_SD(self, ps, _):
+        t,b = self._scrollingRegion
+        w,h = self._w, self._h
+        #TODO: Avoid this HACK
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
+        # Split the content in 3 slices [top, center, bottom]
+        topd = self._canvas._data[:t]
+        topc = self._canvas._colors[:t]
+        centerd = self._canvas._data[t:b]
+        centerc = self._canvas._colors[t:b]
+        bottomd = self._canvas._data[b:]
+        bottomc = self._canvas._colors[b:]
+        # Rotate the center part
+        centerd = [baseData.copy() for _ in range(ps)  ] + centerd
+        centerc = [baseColors.copy() for _ in range(ps)] + centerc
+        centerd = centerd[:b-t]
+        centerc = centerc[:b-t]
+        # assemble it back
+        self._canvas._data   = topd + centerd + bottomd
+        self._canvas._colors = topc + centerc + bottomc
 
     # CSI Ps ; Ps ; Ps ; Ps ; Ps T
     #           Initiate highlight mouse tracking (XTHIMOUSE), xterm.
@@ -1506,7 +1538,7 @@ class _TTkTerminalAltScreen():
         # 'M': _CSI_M_DL,
         # 'P': _CSI_P_DCH,
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
-        # 'T': _CSI_T_SD,
+        'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
         # 'X': _CSI_X_ECH,
         # 'Z': _CSI_Z_CBT,
         # '^': _CSI___SD,
