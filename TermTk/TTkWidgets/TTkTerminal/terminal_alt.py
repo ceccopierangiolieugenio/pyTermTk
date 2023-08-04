@@ -65,7 +65,7 @@ class _TTkTerminalAltScreen():
         #     sb = min(h,oh)
         # else:# Terminal height increasing
         #     sb = h-oh+sb
-        self._scrollingRegion = (st,sb)
+        # self._scrollingRegion = (st,sb)
         self._scrollingRegion = (1,h)
         newCanvas = TTkCanvas(width=w, height=h)
         s = (0,0,w,h)
@@ -89,7 +89,11 @@ class _TTkTerminalAltScreen():
         lines = line.split('\n')
         for i,l in enumerate(lines):
             if i:
-                self._terminalCursor = (x,y) = (0,min(h-1,y+1))
+                y+=1
+                if y >= h:
+                    self._CSI_S_SU(y-h+1, None) # scroll up
+                    y=h-1
+                self._terminalCursor = (x,y)
             ls = l.split('\r')
             for ii,ll in enumerate(ls):
                 if ii:
@@ -260,7 +264,16 @@ class _TTkTerminalAltScreen():
     #           XTPOPCOLOR (default = 0) (XTREPORTCOLORS), xterm.
 
     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
-    def _CSI_S_SU(self, ps, _): pass
+    def _CSI_S_SU(self, ps, _):
+        t,b = self._scrollingRegion
+        w,h = self._w, self._h
+        #TODO: Avoid this HACK
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
+        self._canvas._data[b:b]   = [baseData.copy() for _ in range(ps)]
+        self._canvas._colors[b:b] = [baseColors.copy() for _ in range(ps)]
+        self._canvas._data   = self._canvas._data[:t] + self._canvas._data[t+ps:]
+        self._canvas._colors = self._canvas._colors[:t] + self._canvas._colors[t+ps:]
 
     # CSI ? Pi ; Pa ; Pv S
     #           Set or request graphics attribute (XTSMGRAPHICS), xterm.  If
@@ -1110,7 +1123,7 @@ class _TTkTerminalAltScreen():
     #           Set Scrolling Region [top;bottom] (default = full size of
     #           window) (DECSTBM), VT100.
     def _CSI_r_DECSTBM(self, top, bottom):
-        self._scrollingRegion = (top-1, bottom-1)
+        self._scrollingRegion = (top-1, bottom)
 
     # CSI ? Pm r
     #           Restore DEC Private Mode Values (XTRESTORE), xterm.  The value
@@ -1492,7 +1505,7 @@ class _TTkTerminalAltScreen():
         'L': _CSI_L_IL,     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
         # 'M': _CSI_M_DL,
         # 'P': _CSI_P_DCH,
-        # 'S': _CSI_S_SU,
+        'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         # 'T': _CSI_T_SD,
         # 'X': _CSI_X_ECH,
         # 'Z': _CSI_Z_CBT,
