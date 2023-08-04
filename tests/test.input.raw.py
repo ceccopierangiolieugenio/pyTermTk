@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, select
+import sys, os, select, signal
 import logging
 
 try: import fcntl, termios, tty
@@ -31,10 +31,10 @@ except Exception as e:
     exit(1)
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog, TTkK, TTkInput, TTkTerm
+from TermTk import TTkTerm
 
-TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
-TTkLog.info("Press q or <ESC> to exit")
+print("Retrieve Keyboard, Mouse press/drag/wheel Events")
+print("Press q or <ESC> to exit")
 
 TTkTerm.push(TTkTerm.Mouse.ON)
 # TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
@@ -43,6 +43,12 @@ TTkTerm.setEcho(False)
 # Init
 _attr = termios.tcgetattr(sys.stdin)
 tty.setcbreak(sys.stdin)
+
+# Capture Terminal Resize:
+def _sigwinch(a,b):
+    print(f"SIGWINCH: {os.get_terminal_size()=} {a=} {b=}")
+
+signal.signal(signal.SIGWINCH, _sigwinch)
 
 def read():
     rlist, _, _ = select.select( [sys.stdin], [], [] )
@@ -74,7 +80,7 @@ def read_new():
         else:
             for ch in stdinRead:
                 yield ch
-
+# print("--->\033[?1h<---")
 try:
     for stdinRead in read_new():
         print(f"{stdinRead=}")

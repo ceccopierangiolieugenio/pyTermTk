@@ -41,20 +41,25 @@ import os
 import pty
 import sys
 import threading
+import argparse
 from select import select
-
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
-ttk.TTkLog.use_default_file_logging()
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', help='Debug (Add LogViewer Panel)',    action='store_true')
+args = parser.parse_args()
+
+# ttk.TTkLog.use_default_file_logging()
 root = ttk.TTk(layout=ttk.TTkGridLayout())
 
 split = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
 
 split.addItem(top := ttk.TTkLayout())
 
-split.addWidget(ttk.TTkLogViewer(follow=False ), title='Log', size=20)
+if args.d:
+    split.addWidget(ttk.TTkLogViewer(follow=False ), title='Log', size=20)
 
 quitBtn = ttk.TTkButton(text="QUIT", border=True)
 quitBtn.clicked.connect(ttk.TTkHelper.quit)

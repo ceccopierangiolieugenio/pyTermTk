@@ -23,6 +23,8 @@
 import os, pty, threading
 import struct, fcntl, termios
 
+from dataclasses import dataclass
+
 import re
 from select import select
 from TermTk.TTkCore.canvas import TTkCanvas
@@ -46,6 +48,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 from TermTk.TTkWidgets.TTkTerminal.terminal_alt    import _TTkTerminalAltScreen
 from TermTk.TTkWidgets.TTkTerminal.terminal_normal import _TTkTerminalNormalScreen
+from TermTk.TTkWidgets.TTkTerminal.mode            import TTkTerminalModes
 
 from TermTk.TTkWidgets.TTkTerminal.vt102 import TTkVT102
 
@@ -55,8 +58,13 @@ from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
 __all__ = ['TTkTerminal']
 
 class TTkTerminal(TTkWidget):
+    @dataclass
+    class _Keyboard():
+        flags: int = 0
+
+
     __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
-                 '_buffer_lines', '_buffer_screen',
+                 '_buffer_lines', '_buffer_screen', '_keyboard',
                  '_screen_current', '_screen_normal', '_screen_alt')
     def __init__(self, *args, **kwargs):
         self._shell = os.environ.get('SHELL', 'sh')
@@ -64,6 +72,7 @@ class TTkTerminal(TTkWidget):
         self._proc = None
         self._mode_normal = True
         self._quit_pipe = None
+        self._keyboard = TTkTerminal._Keyboard()
         self._buffer_lines = [TTkString()]
         self._screen_normal  = _TTkTerminalNormalScreen()
         self._screen_alt     = _TTkTerminalAltScreen()
@@ -93,6 +102,7 @@ class TTkTerminal(TTkWidget):
             # termios.tcsetwinsize(self._fd,(h,w))
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
+        TTkLog.info(f"Resize Terminal: {w=} {h=}")
         return super().resizeEvent(w, h)
 
     def runShell(self, program=None):
@@ -118,6 +128,8 @@ class TTkTerminal(TTkWidget):
             self._quit_pipe = os.pipe()
 
             threading.Thread(target=self.loop,args=[self]).start()
+            w,h = self.size()
+            self.resizeEvent(w,h)
 
     # xterm escape sequences from:
     # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
@@ -148,12 +160,24 @@ class TTkTerminal(TTkWidget):
                 if r is not self._inout:
                     continue
                 try:
-                    out = self._inout.read(10240)
+                    _fl = fcntl.fcntl(self._inout, fcntl.F_GETFL)
+                    fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
+                    out = b""
+                    while _out := self._inout.read():
+                        out += _out
+                    fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl)
                 except Exception as e:
                     TTkLog.error(f"Error: {e=}")
                     return
+
                 # out = out.decode('utf-8','ignore')
-                out = out.decode()
+                try:
+                    out = out.decode()
+                except Exception as e:
+                    TTkLog.error(f"{e=}")
+                    TTkLog.error(f"Failed to decode {out}")
+                    out = out.decode('utf-8','ignore')
+
                 for bi, bout in enumerate(out.split('\a')): # grab the bells
                     # TTkLog.debug(f'Eugenio->{out}')
                     # sout = bout.decode('utf-8','ignore')
@@ -229,10 +253,11 @@ class TTkTerminal(TTkWidget):
                             slice = slice[en:]
                         elif m:
                             en = m.end()
-                            y  = ps = int(y) if (y:=m.group(2)) else 1
-                            sep = m.group(3)
-                            x =       int(x) if (x:=m.group(4)) else 1
                             fn = m.group(5)
+                            defval = self._CSI_Default_MAP.get(fn,(1,1))
+                            y  = ps = int(y) if (y:=m.group(2)) else defval[0]
+                            sep = m.group(3)
+                            x =       int(x) if (x:=m.group(4)) else defval[1]
                             TTkLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
                             if fn in ['n']:
                                 _ex = self._CSI_MAP.get(
@@ -276,6 +301,13 @@ class TTkTerminal(TTkWidget):
         # TTkLog.debug(f"Key: {evt.code=}")
         TTkLog.debug(f"Key: {str(evt)=}")
         if evt.type == TTkK.SpecialKey:
+            if self._keyboard.flags & TTkTerminalModes.DECCKM:
+                if code := {TTkK.Key_Up:       b"\033OA",
+                               TTkK.Key_Down:  b"\033OB",
+                               TTkK.Key_Right: b"\033OC",
+                               TTkK.Key_Left:  b"\033OD"}.get(evt.key):
+                    self._inout.write(code)
+                    return True
             if evt.key == TTkK.Key_Enter:
                 TTkLog.debug(f"Key: Enter")
                 # self._inout.write(b'\n')
@@ -289,6 +321,17 @@ class TTkTerminal(TTkWidget):
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
         self._screen_current.paintEvent(canvas,w,h)
+
+
+
+    # This map include the default values in case Ps or Row/Col are empty
+    # Since almost all the CSI use 1 as default, I am including here only
+    # the ones that are different
+    _CSI_Default_MAP = {
+        'J' : (0,None),
+        'K' : (0,None)
+    }
+
 
     # CSI Ps n  Device Status Report (DSR).
     #             Ps = 5  ⇒  Status Report.
@@ -321,19 +364,82 @@ class TTkTerminal(TTkWidget):
         'n': _CSI_n_DSR,
     }
 
+
+
+
+
     def _CSI_DEC_SET_RST(self, ps, s):
         _dec = self._CSI_DEC_SET_RST_MAP.get(
                 ps,
                 lambda a,b: TTkLog.warn(f"Unhandled DEC <ESC>[{ps}{'h' if s else 'l'}"))
         _dec(self, s)
+
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1  ⇒  Application Cursor Keys (DECCKM), VT100.
+    #                UP    = \0330A
+    #                DOWN  = \0330B
+    #                LEFT  = \0330C
+    #                RIGHT = \0330D
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1  ⇒  Normal Cursor Keys (DECCKM), VT100.
+    #                UP    = \033[A
+    #                DOWN  = \033[B
+    #                LEFT  = \033[C
+    #                RIGHT = \033[D
+    def _CSI_DEC_SR_1_DECCKM(self, s):
+        if s:
+            self._keyboard.flags |= TTkTerminalModes.DECCKM
+        else:
+            self._keyboard.flags &= ~TTkTerminalModes.DECCKM
+
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
     #             Ps = 2 5  ⇒  Show cursor (DECTCEM), VT220.
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 2 5  ⇒  Hide cursor (DECTCEM), VT220.
-    def _CSI_DEC_SR_25(self, s):
+    def _CSI_DEC_SR_25_DECTCEM(self, s):
         self.enableWidgetCursor(enable=s)
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 0 2  ⇒  Use Cell Motion Mouse Tracking, xterm.  See
+    #           the section Button-event tracking.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 0 2  ⇒  Don't use Cell Motion Mouse Tracking,
+    #           xterm.  See the section Button-event tracking.
+    def _CSI_DEC_SR_1002(self, s):
+        pass
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 4 7  ⇒  Use Alternate Screen Buffer, xterm.  This
+    #           may be disabled by the titeInhibit resource.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 4 7  ⇒  Use Normal Screen Buffer, xterm.  Clear the
+    #           screen first if in the Alternate Screen Buffer.  This may be
+    #           disabled by the titeInhibit resource.
+    def _CSI_DEC_SR_1047(self, s):
+        if s:
+            self._screen_current = self._screen_alt
+        else:
+            self._screen_current = self._screen_normal
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 4 8  ⇒  Save cursor as in DECSC, xterm.  This may
+    #           be disabled by the titeInhibit resource.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 4 8  ⇒  Restore cursor as in DECRC, xterm.  This
+    #           may be disabled by the titeInhibit resource.
+    def _CSI_DEC_SR_1048(self, s):
+            pass
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -349,13 +455,21 @@ class TTkTerminal(TTkWidget):
     #           8  modes.  Use this with terminfo-based applications rather
     #           than the 4 7  mode.
     def _CSI_DEC_SR_1049(self, s):
-        if s:
-            self._screen_current = self._screen_alt
-        else:
-            self._screen_current = self._screen_normal
+        self._CSI_DEC_SR_1047(s)
+        self._CSI_DEC_SR_1048(s)
 
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 2 0 0 4  ⇒  Set bracketed paste mode, xterm.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 2 0 0 4  ⇒  Reset bracketed paste mode, xterm.
+    def _CSI_DEC_SR_2004(self, s):
+        pass
 
     _CSI_DEC_SET_RST_MAP = {
-        25  : _CSI_DEC_SR_25,
+        1   : _CSI_DEC_SR_1_DECCKM,
+        25  : _CSI_DEC_SR_25_DECTCEM,
+        1047: _CSI_DEC_SR_1047,
         1049: _CSI_DEC_SR_1049
     }

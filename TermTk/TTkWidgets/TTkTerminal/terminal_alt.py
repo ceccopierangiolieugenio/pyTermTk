@@ -39,12 +39,15 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class _TTkTerminalAltScreen():
-    __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_color', '_canvas')
+    __slots__ = ('_lines', '_terminalCursor',
+                 '_scrollingRegion',
+                 '_w', '_h', '_color', '_canvas')
     def __init__(self, w=80, h=24, color=TTkColor.RST) -> None:
         self._lines = [TTkString()]
         self._terminalCursor = (0,0)
         self._w = w
         self._h = h
+        self._scrollingRegion = (0,h)
         self._color = color
         self._canvas = TTkCanvas(width=w, height=h)
 
@@ -55,8 +58,15 @@ class _TTkTerminalAltScreen():
         return self._terminalCursor
 
     def resize(self, w, h):
-        self._w = w
-        self._h = h
+        ow, oh = self._w, self._h
+        self._w, self._h = w, h
+        st,sb = self._scrollingRegion
+        # if oh <= h: # Terminal height decreasing
+        #     sb = min(h,oh)
+        # else:# Terminal height increasing
+        #     sb = h-oh+sb
+        self._scrollingRegion = (st,sb)
+        self._scrollingRegion = (1,h)
         newCanvas = TTkCanvas(width=w, height=h)
         s = (0,0,w,h)
         newCanvas.paintCanvas(self._canvas,s,s,s)
@@ -195,9 +205,9 @@ class _TTkTerminalAltScreen():
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
-            self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
-        elif ps == 1:
             self._canvas.fill(char=' ', pos=(x,y),size=(w,1))
+        elif ps == 1:
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
         elif ps == 2:
             self._canvas.fill(char=' ', pos=(0,y),size=(w,1))
 
@@ -208,7 +218,22 @@ class _TTkTerminalAltScreen():
     #             Ps = 2  ⇒  Selective Erase All.
 
     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
-    # def _CSI_L_IL(self, ps, _): pass
+    def _CSI_L_IL(self, ps, _):
+        x,y = self._terminalCursor
+        t,b = self._scrollingRegion
+        w,h = self._w, self._h
+        bkl = h-b
+        l = len(self._canvas._data)
+        #TODO: Avoid this HACK
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
+        bkData   = self._canvas._data[-bkl:]
+        bkColors = self._canvas._colors[-bkl:]
+        self._canvas._data[y:y]   = [baseData.copy() for _ in range(ps)]
+        self._canvas._colors[y:y] = [baseColors.copy() for _ in range(ps)]
+        self._canvas._data   = self._canvas._data[:h-bkl] + bkData
+        self._canvas._colors = self._canvas._colors[:h-bkl] + bkColors
+
 
     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
     # def _CSI_M_DL(self, ps, _): pass
@@ -1084,6 +1109,8 @@ class _TTkTerminalAltScreen():
     # CSI Ps ; Ps r
     #           Set Scrolling Region [top;bottom] (default = full size of
     #           window) (DECSTBM), VT100.
+    def _CSI_r_DECSTBM(self, top, bottom):
+        self._scrollingRegion = (top-1, bottom-1)
 
     # CSI ? Pm r
     #           Restore DEC Private Mode Values (XTRESTORE), xterm.  The value
@@ -1448,21 +1475,21 @@ class _TTkTerminalAltScreen():
     #             Ps = 2  ⇒  host-writable.
 
     _CSI_MAP = {
-        '@': _CSI___ICH,
-        # '@': _CSI___SL,
-        'A': _CSI_A_CUU,
-        # 'A': _CSI_A_SR,
-        'B': _CSI_B_CUD,
-        'C': _CSI_C_CUF,
-        'D': _CSI_D_CUB,
-        'E': _CSI_E_CNL,
-        'F': _CSI_F_CPL,
-        'G': _CSI_G_CHA,
-        'H': _CSI_H_CUP,
+        '@': _CSI___ICH,    # CSI Ps @        Insert Ps (Blank) Character(s) (default = 1) (ICH).
+        # '@': _CSI___SL,   #
+        'A': _CSI_A_CUU,    # CSI Ps A        Cursor Up Ps Times (default = 1) (CUU).
+        # 'A': _CSI_A_SR,   #
+        'B': _CSI_B_CUD,    # CSI Ps B        Cursor Down Ps Times (default = 1) (CUD).
+        'C': _CSI_C_CUF,    # CSI Ps C        Cursor Forward Ps Times (default = 1) (CUF).
+        'D': _CSI_D_CUB,    # CSI Ps D        Cursor Backward Ps Times (default = 1) (CUB).
+        'E': _CSI_E_CNL,    # CSI Ps E        Cursor Next Line Ps Times (default = 1) (CNL).
+        'F': _CSI_F_CPL,    # CSI Ps F        Cursor Preceding Line Ps Times (default = 1) (CPL).
+        'G': _CSI_G_CHA,    # CSI Ps G        Cursor Character Absolute  [column] (default = [row,1]) (CHA).
+        'H': _CSI_H_CUP,    # CSI Ps ; Ps H   Cursor Position [row;column] (default = [1,1]) (CUP).
         # 'I': _CSI_I_CHT,
-        'J': _CSI_J_ED,
-        'K': _CSI_K_EL,
-        # 'L': _CSI_L_IL,
+        'J': _CSI_J_ED,     # CSI Ps J  Erase in Display (ED), VT100. [0:Below, 1:Above, 2:All, 3:SavedLines]
+        'K': _CSI_K_EL,     # CSI Ps K  Erase in Line (EL), VT100.    [0:Right, 1:Left,  2:All]
+        'L': _CSI_L_IL,     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
         # 'M': _CSI_M_DL,
         # 'P': _CSI_P_DCH,
         # 'S': _CSI_S_SU,
@@ -1476,7 +1503,7 @@ class _TTkTerminalAltScreen():
         # 'c': _CSI_c_Pri_DA,
         # 'd': _CSI_d_VPA,
         # 'e': _CSI_e_VPR,
-        'f': _CSI_f_HVP,
+        'f': _CSI_f_HVP,     # CSI Ps ; Ps f    Horizontal and Vertical Position [row;column] (default = [1,1]) (HVP).
         # 'g': _CSI_g_TBC,
         #    'h': _CSI_h_SM,
         # 'i': _CSI_i_MC,
@@ -1484,6 +1511,7 @@ class _TTkTerminalAltScreen():
         # 'm': _CSI_m_SGR,
         # 'n': _CSI_n_DSR,
         # 'q': _CSI_q_DECLL,
+        'r': _CSI_r_DECSTBM, # CSI Ps ; Ps r    Set Scrolling Region [top;bottom] (default = full size of window) (DECSTBM), VT100.
         # 's': _CSI_s_SCOSC,
         # 'u': _CSI_u_SCORC,
         # 'x': _CSI_x_DECREQTPARM

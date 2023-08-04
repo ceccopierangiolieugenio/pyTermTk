@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 class TTkTerminalModes(int):
+    DECCKM = 1
     #             Ps = 1  ⇒  Application Cursor Keys (DECCKM), VT100.
     #             Ps = 1  ⇒  Normal Cursor Keys (DECCKM), VT100.
 

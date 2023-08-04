@@ -197,11 +197,11 @@ class _TTkTerminalNormalScreen():
         l = len(self._lines)
         # y = max(0,y-l-h)
         if ps == 0:
-            self._lines[y+1:] = [TTkString()]*(l-y-1)
-            self._lines[y] = self._lines[y].substring(to=x)
-        elif ps == 1:
             self._lines[-h:y-1] = [TTkString()]*(y-1-l+h)
             self._lines[y] = TTkString(' '*x) + self._lines[y].substring(fr=x)
+        elif ps == 1:
+            self._lines[y+1:] = [TTkString()]*(l-y-1)
+            self._lines[y] = self._lines[y].substring(to=x)
         elif ps == 2:
             self._lines[-h:] = [TTkString()]*(h)
 
@@ -220,9 +220,9 @@ class _TTkTerminalNormalScreen():
         x,y = self._terminalCursor
         line = self._lines[y]
         if ps == 0:
-            self._lines[y] = TTkString(' '*x) + self._lines[y].substring(fr=x)
-        elif ps == 1:
             self._lines[y] = line.substring(to=x)
+        elif ps == 1:
+            self._lines[y] = TTkString(' '*x) + self._lines[y].substring(fr=x)
         elif ps == 2:
             self._lines[y] = TTkString()
 
