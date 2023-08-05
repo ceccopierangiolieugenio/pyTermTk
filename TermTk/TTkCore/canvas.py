@@ -140,25 +140,23 @@ class TTkCanvas:
         w,h = self.size()
         if not size:
             size=(w,h)
-        fx,fy = pos
+        fxa,fya = pos
         fw,fh = size
+        fxb,fyb = fxa+fw, fya+fh
         # the fill area is outside the boundaries
-        if fx >= w or fy>=h: return
-        if fx<0:
-            fw += fx
-            fx =  0
-        if fy<0:
-            fh += fy
-            fy =  0
-        if fw<=0 or fh<=0: return
-        fw = min(fw, w+fx)
-        fh = min(fh, h+fy)
+        if ( fxa >= w or fya >= h or
+             fxb <= 0 or fyb <= 0): return
+
+        fxa = max(0,fxa)
+        fya = max(0,fya)
+        fxb = min(w,fxb)
+        fyb = min(h,fyb)
 
         fillCh    = [char]*fw
         fillColor = [color]*fw
-        for iy in range(fy,fy+fh):
-            self._data[iy][fx:fx+fw]   = fillCh
-            self._colors[iy][fx:fx+fw] = fillColor
+        for iy in range(fya,fyb):
+            self._data[iy][fxa:fxb]   = fillCh
+            self._colors[iy][fxa:fxb] = fillColor
 
     def drawVLine(self, pos, size, color=TTkColor.RST):
         if size == 0: return
