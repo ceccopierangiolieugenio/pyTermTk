@@ -79,7 +79,7 @@ class TTk(TTkWidget):
         '_input', '_termMouse', '_termDirectMouse',
         '_title',
         '_showMouseCursor',
-        '_sigmask',
+        '_sigmask', '_timer',
         '_drawMutex',
         '_paintEvent',
         '_lastMultiTap',
@@ -93,6 +93,7 @@ class TTk(TTkWidget):
         if ('TERMTK_FILE_LOG' in os.environ and (_logFile := os.environ['TERMTK_FILE_LOG'])):
             TTkLog.use_default_file_logging(_logFile)
 
+        self._timer = None
         self.paintExecuted = pyTTkSignal()
         super().__init__(*args, **kwargs)
         self._termMouse = True
@@ -310,7 +311,8 @@ class TTk(TTkWidget):
     @pyTTkSlot()
     def _quit(self):
         '''Tells the application to exit with a return code.'''
-        self._timer.timeout.disconnect(self._time_event)
+        if self._timer:
+            self._timer.timeout.disconnect(self._time_event)
         self._input.inputEvent.clear()
         self._paintEvent.set()
         self._input.close()
