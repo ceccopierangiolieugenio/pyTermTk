@@ -30,10 +30,10 @@ class TTkTermBase():
     NORMAL_SCREEN = "\033[?1049l"                       #* Switch to normal screen
 
     class Mouse():
-        ON         = "\033[?1002h\033[?1015h\033[?1006h" # Enable reporting of mouse position on click and release
-        OFF        = "\033[?1002l"                       # Disable mouse reporting
-        DIRECT_ON  = "\033[?1003h"                       # Enable reporting of mouse position at any movement
-        DIRECT_OFF = "\033[?1003l"                       # Disable direct mouse reporting
+        ON         = "\033[?1002h\033[?1006h" # Enable reporting of mouse position on click and release
+        OFF        = "\033[?1002l\033[?1006l" # Disable mouse reporting
+        DIRECT_ON  = "\033[?1003h"            # Enable reporting of mouse position at any movement
+        DIRECT_OFF = "\033[?1003l"            # Disable direct mouse reporting
 
     class Cursor():
         # from:
