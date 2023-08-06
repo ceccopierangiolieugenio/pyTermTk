@@ -62,9 +62,13 @@ class TTkTerminal(TTkWidget):
     class _Keyboard():
         flags: int = 0
 
+    @dataclass
+    class _Mouse():
+        tracking: bool = False
+        sgrMode:  bool = False
 
     __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
-                 '_buffer_lines', '_buffer_screen', '_keyboard',
+                 '_buffer_lines', '_buffer_screen', '_keyboard', '_mouse',
                  '_screen_current', '_screen_normal', '_screen_alt')
     def __init__(self, *args, **kwargs):
         self._shell = os.environ.get('SHELL', 'sh')
@@ -73,6 +77,7 @@ class TTkTerminal(TTkWidget):
         self._mode_normal = True
         self._quit_pipe = None
         self._keyboard = TTkTerminal._Keyboard()
+        self._mouse = TTkTerminal._Mouse()
         self._buffer_lines = [TTkString()]
         self._screen_normal  = _TTkTerminalNormalScreen()
         self._screen_alt     = _TTkTerminalAltScreen()
@@ -115,6 +120,8 @@ class TTkTerminal(TTkWidget):
                 os.execvpe(argv[0], argv, env)
             threading.Thread(target=_spawnTerminal).start()
             TTkHelper.quit()
+            import sys
+            sys.exit()
             # os.execvpe(argv[0], argv, env)
             # os.execvpe(argv[0], argv, env)
             # self._proc = subprocess.Popen(self._shell)
@@ -318,6 +325,127 @@ class TTkTerminal(TTkWidget):
         self._inout.write(evt.code.encode())
         return True
 
+    # Extended coordinates
+    # The original X10 mouse protocol limits the Cx and Cy ordinates to 223
+    # (=255 - 32).  XTerm supports more than one scheme for extending this
+    # range, by changing the protocol encoding:
+    #
+    # UTF-8 (1005)
+    #           This enables UTF-8 encoding for Cx and Cy under all tracking
+    #           modes, expanding the maximum encodable position from 223 to
+    #           2015.  For positions less than 95, the resulting output is
+    #           identical under both modes.  Under extended mouse mode,
+    #           positions greater than 95 generate "extra" bytes which will
+    #           confuse applications which do not treat their input as a UTF-8
+    #           stream.  Likewise, Cb will be UTF-8 encoded, to reduce
+    #           confusion with wheel mouse events.
+    #
+    #           Under normal mouse mode, positions outside (160,94) result in
+    #           byte pairs which can be interpreted as a single UTF-8
+    #           character; applications which do treat their input as UTF-8
+    #           will almost certainly be confused unless extended mouse mode
+    #           is active.
+    #
+    #           This scheme has the drawback that the encoded coordinates will
+    #           not pass through luit(1) unchanged, e.g., for locales using
+    #           non-UTF-8 encoding.
+    #
+    # SGR (1006)
+    #           The normal mouse response is altered to use
+    #
+    #           o   CSI < followed by semicolon-separated
+    #
+    #           o   encoded button value,
+    #
+    #           o   Px and Py ordinates and
+    #
+    #           o   a final character which is M  for button press and m  for
+    #               button release.
+    #
+    #           The encoded button value in this case does not add 32 since
+    #           that was useful only in the X10 scheme for ensuring that the
+    #           byte containing the button value is a printable code.
+    #
+    #           o   The modifiers are encoded in the same way.
+    #
+    #           o   A different final character is used for button release to
+    #               resolve the X10 ambiguity regarding which button was
+    #               released.
+    #
+    #           The highlight tracking responses are also modified to an SGR-
+    #           like format, using the same SGR-style scheme and button-
+    #           encodings.
+    #
+    # URXVT (1015)
+    #           The normal mouse response is altered to use
+    #
+    #           o   CSI followed by semicolon-separated
+    #
+    #           o   encoded button value,
+    #
+    #           o   the Px and Py ordinates and final character M .
+    #
+    #           This uses the same button encoding as X10, but printing it as
+    #           a decimal integer rather than as a single byte.
+    #
+    #           However, CSI M  can be mistaken for DL (delete lines), while
+    #           the highlight tracking CSI T  can be mistaken for SD (scroll
+    #           down), and the Window manipulation controls.  For these
+    #           reasons, the 1015 control is not recommended; it is not an
+    #           improvement over 1006.
+    #
+    # SGR-Pixels (1016)
+    #           Use the same mouse response format as the 1006 control, but
+    #           report position in pixels rather than character cells.
+
+    def _sendMouse(self, evt):
+        if not self._mouse.tracking: return True
+        x,y = evt.x+1, evt.y+1
+        if self._mouse.sgrMode:
+            k = {
+                TTkK.NoButton     : 3,
+                TTkK.AllButtons   : 0,
+                TTkK.LeftButton   : 0,
+                TTkK.RightButton  : 2,
+                TTkK.MidButton    : 1,
+                TTkK.MiddleButton : 1,
+                TTkK.Wheel        : 64,
+            }.get(evt.key, 0)
+
+            km,pr = {
+                TTkK.Press:     ( 0,'M'),
+                TTkK.Release:   ( 0,'m'),
+                TTkK.Move:      ( 0,'M'),
+                TTkK.Drag:      (32,'M'),
+                TTkK.WHEEL_Up:  ( 0,'M'),
+                TTkK.WHEEL_Down:( 1,'M')}.get(
+                    evt.evt,(0,'M'))
+
+            self._inout.write(f'\033[<{k+km};{x};{y}{pr}'.encode())
+        else:
+            head = {
+                TTkK.Press:     b'\033[M ',
+                TTkK.Release:   b'\033[M#',
+                # TTkK.Move:      b'\033[M@',
+                TTkK.Drag:      b'\033[M@',
+                TTkK.WHEEL_Up:  b'\033[M`',
+                TTkK.WHEEL_Down:b'\033[Ma'}.get(
+                    evt.evt,
+                    b'')
+            bah = bytearray(head)
+            bah.append((x+32)%0xff)
+            bah.append((y+32)%0xff)
+            self._inout.write(bah)
+        return True
+
+    def mousePressEvent(self, evt):   return self._sendMouse(evt)
+    def mouseReleaseEvent(self, evt): return self._sendMouse(evt)
+    def mouseDragEvent(self, evt):    return self._sendMouse(evt)
+    def mouseMoveEvent(self, evt):    return self._sendMouse(evt)
+    def wheelEvent(self, evt):        return self._sendMouse(evt)
+    def mouseTapEvent(self, evt):     return self._sendMouse(evt)
+    def mouseDoubleClickEvent(self, evt): return self._sendMouse(evt)
+
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
         self._screen_current.paintEvent(canvas,w,h)
@@ -364,10 +492,6 @@ class TTkTerminal(TTkWidget):
         'n': _CSI_n_DSR,
     }
 
-
-
-
-
     def _CSI_DEC_SET_RST(self, ps, s):
         _dec = self._CSI_DEC_SET_RST_MAP.get(
                 ps,
@@ -413,7 +537,27 @@ class TTkTerminal(TTkWidget):
     #             Ps = 1 0 0 2  ⇒  Don't use Cell Motion Mouse Tracking,
     #           xterm.  See the section Button-event tracking.
     def _CSI_DEC_SR_1002(self, s):
-        pass
+        self._mouse.tracking = s
+        TTkLog.info(f"1002 Mouse Tracking {s=}")
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 0 6  ⇒  Enable SGR Mouse Mode, xterm.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 0 6  ⇒  Disable SGR Mouse Mode, xterm.
+    def _CSI_DEC_SR_1006(self, s):
+        self._mouse.sgrMode = s
+        TTkLog.info(f"1006 SGR Mouse Mode {s=}")
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 1 5  ⇒  Enable urxvt Mouse Mode.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 1 5  ⇒  Disable urxvt Mouse Mode.
+    def _CSI_DEC_SR_1015(self, s):
+        TTkLog.warn(f"1015 {s=} Unimplemented: _CSI_DEC_SR_1015 urxvt Mouse Mode.")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -470,6 +614,9 @@ class TTkTerminal(TTkWidget):
     _CSI_DEC_SET_RST_MAP = {
         1   : _CSI_DEC_SR_1_DECCKM,
         25  : _CSI_DEC_SR_25_DECTCEM,
+        1002: _CSI_DEC_SR_1002,
+        1006: _CSI_DEC_SR_1006,
+        1015: _CSI_DEC_SR_1015,
         1047: _CSI_DEC_SR_1047,
         1049: _CSI_DEC_SR_1049
     }

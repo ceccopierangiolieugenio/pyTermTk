@@ -36,7 +36,15 @@ from TermTk import TTkTerm
 print("Retrieve Keyboard, Mouse press/drag/wheel Events")
 print("Press q or <ESC> to exit")
 
-TTkTerm.push(TTkTerm.Mouse.ON)
+# Reset
+TTkTerm.push("\033[?1002l")
+TTkTerm.push("\033[?1015l")
+TTkTerm.push("\033[?1006l")
+
+TTkTerm.push("\033[?1002h")
+# TTkTerm.push("\033[?1006h")
+TTkTerm.push("\033[?1015h")
+# TTkTerm.push(TTkTerm.Mouse.ON)
 # TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
 TTkTerm.setEcho(False)
 
@@ -69,14 +77,19 @@ def read_new():
     while rlist := select.select( [sys.stdin], [], [] )[0]:
         _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
         fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
-        stdinRead = sys.stdin.read()
+        stdinRead = sys.stdin.buffer.read()
         fcntl.fcntl(sys.stdin, fcntl.F_SETFL, _fl)
+        try:
+            stdinRead = stdinRead.decode()
+        except Exception as e:
+            yield f"bin: {stdinRead}"
+            continue
         print(f"{len(stdinRead)=}")
         if '\033' in stdinRead:
             stdinSplit = stdinRead.split('\033')
             for ansi in stdinSplit[1:]:
                 print(f"{ansi=}")
-                yield '\033'+ansi
+                yield '<ESC>'+ansi
         else:
             for ch in stdinRead:
                 yield ch
@@ -85,6 +98,10 @@ try:
     for stdinRead in read_new():
         print(f"{stdinRead=}")
 finally:
+    # Reset
+    TTkTerm.push("\033[?1002l")
+    TTkTerm.push("\033[?1015l")
+    TTkTerm.push("\033[?1006l")
     termios.tcsetattr(sys.stdin, termios.TCSANOW, _attr)
     TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
     TTkTerm.setEcho(True)
