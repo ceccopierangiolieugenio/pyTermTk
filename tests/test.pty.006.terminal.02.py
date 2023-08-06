@@ -72,7 +72,15 @@ win2  = ttk.TTkWindow(pos=(0,0), size=(150,30), title="Terminallo n.2", border=T
 term2 = ttk.TTkTerminal(parent=win2)
 term2.runShell()
 
-top.addWidgets([quitBtn, win1, win2])
+win3  = ttk.TTkWindow(pos=(92,8), size=(70,15), title="Terminallo n.3", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
+term3 = ttk.TTkTerminal(parent=win3)
+term3.runShell()
+
+win4  = ttk.TTkWindow(pos=(94,11), size=(70,15), title="Terminallo n.4", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
+term4 = ttk.TTkTerminal(parent=win4)
+term4.runShell()
+
+top.addWidgets([quitBtn, win1, win2, win3, win4])
 
 term2.setFocus()
 
