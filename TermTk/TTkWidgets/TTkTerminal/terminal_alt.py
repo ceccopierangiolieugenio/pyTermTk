@@ -86,13 +86,15 @@ class _TTkTerminalAltScreen():
         if not line: return
         x,y = self._terminalCursor
         w,h = self._w, self._h
+        st,sb = self._scrollingRegion
+
         lines = line.split('\n')
         for i,l in enumerate(lines):
             if i:
                 y+=1
-                if y >= h:
-                    self._CSI_S_SU(y-h+1, None) # scroll up
-                    y=h-1
+                if y >= sb:
+                    self._CSI_S_SU(y-sb+1, None) # scroll up
+                    y=sb-1
                 self._terminalCursor = (x,y)
             ls = l.split('\r')
             for ii,ll in enumerate(ls):
@@ -240,7 +242,29 @@ class _TTkTerminalAltScreen():
 
 
     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
-    # def _CSI_M_DL(self, ps, _): pass
+    def _CSI_M_DL(self, ps, _):
+        x,y = self._terminalCursor
+        t,b = self._scrollingRegion
+        w,h = self._w, self._h
+        t=min(b,max(t,y))
+        #TODO: Avoid this HACK
+        baseData = [' ']*w
+        baseColors = [TTkColor.RST]*w
+        # Split the content in 3 slices [top, center, bottom]
+        topd = self._canvas._data[:t]
+        topc = self._canvas._colors[:t]
+        centerd = self._canvas._data[t:b]
+        centerc = self._canvas._colors[t:b]
+        bottomd = self._canvas._data[b:]
+        bottomc = self._canvas._colors[b:]
+        # Rotate the center part
+        centerd = centerd[ps:] + [baseData.copy() for _ in range(ps)  ]
+        centerc = centerc[ps:] + [baseColors.copy() for _ in range(ps)]
+        centerd = centerd[:b-t]
+        centerc = centerc[:b-t]
+        # assemble it back
+        self._canvas._data   = topd + centerd + bottomd
+        self._canvas._colors = topc + centerc + bottomc
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
     # def _CSI_P_DCH(self, ps, _): pass
@@ -1535,7 +1559,7 @@ class _TTkTerminalAltScreen():
         'J': _CSI_J_ED,     # CSI Ps J  Erase in Display (ED), VT100. [0:Below, 1:Above, 2:All, 3:SavedLines]
         'K': _CSI_K_EL,     # CSI Ps K  Erase in Line (EL), VT100.    [0:Right, 1:Left,  2:All]
         'L': _CSI_L_IL,     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
-        # 'M': _CSI_M_DL,
+        'M': _CSI_M_DL,
         # 'P': _CSI_P_DCH,
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
