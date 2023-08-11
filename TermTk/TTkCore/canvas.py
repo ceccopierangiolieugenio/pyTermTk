@@ -681,6 +681,22 @@ class TTkCanvas:
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
                 self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
 
+    def toAnsi(self):
+        # TTkLog.debug("pushToTerminal")
+        ret = ""
+        lastcolor = TTkColor.RST
+        for y in range(0, self._height):
+            ansi = str(TTkColor.RST)
+            for x in range(0, self._width):
+                ch = self._data[y][x]
+                color = self._colors[y][x]
+                if color != lastcolor:
+                    ansi += str(color-lastcolor)
+                    lastcolor = color
+                ansi+=ch
+            ret += ansi + '\n'
+        return ret
+
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
         lastcolor = TTkColor.RST
