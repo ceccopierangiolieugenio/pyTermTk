@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import collections
+
 from TermTk.TTkCore.canvas import TTkCanvas
 
 from TermTk.TTkCore.color import TTkColor
@@ -41,7 +43,8 @@ from TermTk.TTkWidgets.widget import TTkWidget
 class _TTkTerminalNormalScreen():
     __slots__ = ('_lines', '_terminalCursor', '_w', '_h', '_bufferSize', '_color')
     def __init__(self, w=80, h=24, bufferSize=200, color=TTkColor.RST) -> None:
-        self._lines = [TTkString()]
+        self._lines = collections.deque(maxlen=bufferSize)
+        self._lines.append(TTkString())
         self._terminalCursor = (0,0)
         self._w = w
         self._h = h
@@ -83,7 +86,7 @@ class _TTkTerminalNormalScreen():
                 y += 1
                 if y >= len(self._lines):
                     self._lines.append(TTkString())
-                    self._lines = self._lines[-self._bufferSize:]
+                    # self._lines = self._lines[-self._bufferSize:]
                 self._terminalCursor = (x,y) = (0,min(self._bufferSize-1, y))
             ls = l.split('\r')
             for ii,ll in enumerate(ls):
@@ -98,8 +101,12 @@ class _TTkTerminalNormalScreen():
 
     def paintEvent(self, canvas:TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
         canvas.drawText(text="NORMAL Screen", pos=(0,0), width=w)
-        for y,l in enumerate(self._lines[-h:]):
-            canvas.drawTTkString(text=l, pos=(0,y), width=w)
+        # for y,l in enumerate(self._lines[-h:]):
+        #     canvas.drawTTkString(text=l, pos=(0,y), width=w)
+        di = max(0,len(self._lines)-h)
+        for i in range(di,len(self._lines)):
+            canvas.drawTTkString(text=self._lines[i], pos=(0,i-di), width=w)
+
 
 
 

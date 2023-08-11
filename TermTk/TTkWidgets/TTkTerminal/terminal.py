@@ -64,8 +64,10 @@ class TTkTerminal(TTkWidget):
 
     @dataclass
     class _Mouse():
-        tracking: bool = False
-        sgrMode:  bool = False
+        reportPress: bool = False
+        reportDrag:  bool = False
+        reportMove:  bool = False
+        sgrMode:     bool = False
 
     __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
                  '_buffer_lines', '_buffer_screen', '_keyboard', '_mouse',
@@ -399,7 +401,12 @@ class TTkTerminal(TTkWidget):
     #           report position in pixels rather than character cells.
 
     def _sendMouse(self, evt):
-        if not self._mouse.tracking: return True
+        if   not self._mouse.reportPress:
+            return True
+        if ( not self._mouse.reportDrag and
+            evt.evt in (TTkK.Drag, TTkK.Move)):
+            return True
+
         x,y = evt.x+1, evt.y+1
         if self._mouse.sgrMode:
             k = {
@@ -530,6 +537,21 @@ class TTkTerminal(TTkWidget):
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 0 0  ⇒  Send Mouse X & Y on button press and
+    #           release.  See the section Mouse Tracking.  This is the X11
+    #           xterm mouse protocol.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 0 0  ⇒  Don't send Mouse X & Y on button press and
+    #           release.  See the section Mouse Tracking.
+    def _CSI_DEC_SR_1000(self, s):
+        self._mouse.reportPress = s
+        self._mouse.reportDrag  = False
+        self._mouse.reportMove  = False
+        TTkLog.info(f"1002 Mouse Tracking {s=}")
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
     #             Ps = 1 0 0 2  ⇒  Use Cell Motion Mouse Tracking, xterm.  See
     #           the section Button-event tracking.
     # CSI ? Pm l
@@ -537,7 +559,9 @@ class TTkTerminal(TTkWidget):
     #             Ps = 1 0 0 2  ⇒  Don't use Cell Motion Mouse Tracking,
     #           xterm.  See the section Button-event tracking.
     def _CSI_DEC_SR_1002(self, s):
-        self._mouse.tracking = s
+        self._mouse.reportPress = s
+        self._mouse.reportDrag  = s
+        self._mouse.reportMove  = False
         TTkLog.info(f"1002 Mouse Tracking {s=}")
 
     # CSI ? Pm h
@@ -614,6 +638,7 @@ class TTkTerminal(TTkWidget):
     _CSI_DEC_SET_RST_MAP = {
         1   : _CSI_DEC_SR_1_DECCKM,
         25  : _CSI_DEC_SR_25_DECTCEM,
+        1000: _CSI_DEC_SR_1000,
         1002: _CSI_DEC_SR_1002,
         1006: _CSI_DEC_SR_1006,
         1015: _CSI_DEC_SR_1015,
