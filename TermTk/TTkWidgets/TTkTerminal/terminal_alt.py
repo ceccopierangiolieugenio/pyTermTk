@@ -20,6 +20,8 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
+import collections
+
 from TermTk.TTkCore.canvas import TTkCanvas
 
 from TermTk.TTkCore.color import TTkColor
@@ -41,12 +43,14 @@ from TermTk.TTkWidgets.widget import TTkWidget
 class _TTkTerminalAltScreen():
     __slots__ = ('_lines', '_terminalCursor',
                  '_scrollingRegion',
+                 '_bufferSize', '_bufferedLines',
                  '_w', '_h', '_color', '_canvas')
-    def __init__(self, w=80, h=24, color=TTkColor.RST) -> None:
-        self._lines = [TTkString()]
-        self._terminalCursor = (0,0)
+    def __init__(self, w=80, h=24, bufferSize=1000, color=TTkColor.RST) -> None:
         self._w = w
         self._h = h
+        self._bufferSize = bufferSize
+        self._bufferedLines = collections.deque(maxlen=bufferSize)
+        self._terminalCursor = (0,0)
         self._scrollingRegion = (0,h)
         self._color = color
         self._canvas = TTkCanvas(width=w, height=h)
@@ -301,6 +305,10 @@ class _TTkTerminalAltScreen():
         centerc = self._canvas._colors[t:b]
         bottomd = self._canvas._data[b:]
         bottomc = self._canvas._colors[b:]
+        # Copy the rotated lines in the buffer
+        for chars,colors in zip(centerd[:ps],centerd[:ps]):
+            oldString = TTkString._importString1("".join(chars), colors)
+            self._bufferedLines.append(oldString)
         # Rotate the center part
         centerd = centerd[ps:] + [baseData.copy() for _ in range(ps)  ]
         centerc = centerc[ps:] + [baseColors.copy() for _ in range(ps)]

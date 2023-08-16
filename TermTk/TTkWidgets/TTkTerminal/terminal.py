@@ -81,7 +81,8 @@ class TTkTerminal(TTkWidget):
         self._keyboard = TTkTerminal._Keyboard()
         self._mouse = TTkTerminal._Mouse()
         self._buffer_lines = [TTkString()]
-        self._screen_normal  = _TTkTerminalNormalScreen()
+        # self._screen_normal  = _TTkTerminalNormalScreen()
+        self._screen_normal  = _TTkTerminalAltScreen()
         self._screen_alt     = _TTkTerminalAltScreen()
         self._screen_current = self._screen_normal
 
