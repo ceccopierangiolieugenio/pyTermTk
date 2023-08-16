@@ -42,6 +42,7 @@ def reset():
     TTkTerm.push("\033[?1002l")
     TTkTerm.push("\033[?1015l")
     TTkTerm.push("\033[?1006l")
+    TTkTerm.push("\033[?1049l") # Switch to normal screen
     TTkTerm.push("\033[?2004l") # Paste Bracketed mode
 
 reset()
@@ -51,6 +52,8 @@ TTkTerm.push("\033[?2004h") # Paste Bracketed mode
 # TTkTerm.push("\033[?1002h")
 # TTkTerm.push("\033[?1006h")
 # TTkTerm.push("\033[?1015h")
+TTkTerm.push("\033[?1049h") # Switch to alternate screen
+
 # TTkTerm.push(TTkTerm.Mouse.ON)
 # TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
 TTkTerm.setEcho(False)
