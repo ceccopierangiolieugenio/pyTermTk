@@ -36,16 +36,24 @@ from TermTk import TTkTerm
 print("Retrieve Keyboard, Mouse press/drag/wheel Events")
 print("Press q or <ESC> to exit")
 
-# Reset
-TTkTerm.push("\033[?1000l")
-TTkTerm.push("\033[?1002l")
-TTkTerm.push("\033[?1015l")
-TTkTerm.push("\033[?1006l")
+def reset():
+    # Reset
+    TTkTerm.push("\033[?1000l")
+    TTkTerm.push("\033[?1002l")
+    TTkTerm.push("\033[?1015l")
+    TTkTerm.push("\033[?1006l")
+    TTkTerm.push("\033[?1049l") # Switch to normal screen
+    TTkTerm.push("\033[?2004l") # Paste Bracketed mode
 
-TTkTerm.push("\033[?1000h")
+reset()
+
+TTkTerm.push("\033[?2004h") # Paste Bracketed mode
+# TTkTerm.push("\033[?1000h")
 # TTkTerm.push("\033[?1002h")
 # TTkTerm.push("\033[?1006h")
 # TTkTerm.push("\033[?1015h")
+TTkTerm.push("\033[?1049h") # Switch to alternate screen
+
 # TTkTerm.push(TTkTerm.Mouse.ON)
 # TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
 TTkTerm.setEcho(False)
@@ -101,10 +109,7 @@ try:
         print(f"{stdinRead=}")
 finally:
     # Reset
-    TTkTerm.push("\033[?1000l")
-    TTkTerm.push("\033[?1002l")
-    TTkTerm.push("\033[?1015l")
-    TTkTerm.push("\033[?1006l")
+    reset()
     termios.tcsetattr(sys.stdin, termios.TCSANOW, _attr)
     TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
     TTkTerm.setEcho(True)

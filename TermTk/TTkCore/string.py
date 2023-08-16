@@ -73,6 +73,16 @@ class TTkString():
         # raise AttributeError(f"{type(text)} not supported in TTkString")
 
     @staticmethod
+    def _importString1(text, colors):
+        ret = TTkString()
+        ret._text = text
+        ret._colors = colors
+        ret._baseColor = colors[-1]
+        ret._hasTab = '\t' in text
+        ret._checkWidth()
+        return ret
+
+    @staticmethod
     def _parseAnsi(text, color = TTkColor.RST):
         pos = 0
         txtret = ""

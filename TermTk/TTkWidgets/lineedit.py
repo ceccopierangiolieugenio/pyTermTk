@@ -177,6 +177,32 @@ class TTkLineEdit(TTkWidget):
         self.update()
         return True
 
+    def pasteEvent(self, txt:str):
+        txt = TTkString().join(txt.split('\n'))
+
+        text = self._text
+
+        if self._selectionFrom < self._selectionTo:
+            pre  = text.substring(to=self._selectionFrom)
+            post = text.substring(fr=self._selectionTo)
+            self._cursorPos = self._selectionFrom
+        else:
+            pre = text.substring(to=self._cursorPos)
+            if self._replace:
+                post = text.substring(fr=self._cursorPos+1)
+            else:
+                post = text.substring(fr=self._cursorPos)
+
+        text = pre + txt + post
+        if self._inputType & TTkK.Input_Number and \
+            not text.lstrip('-').isdigit():
+            return True
+        self.setText(text, self._cursorPos+txt.termWidth())
+
+        self._pushCursor()
+        self.textEdited.emit(self._text)
+        return True
+
     def keyEvent(self, evt):
         baseText = self._text
         if evt.type == TTkK.SpecialKey:

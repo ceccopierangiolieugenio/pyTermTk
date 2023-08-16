@@ -340,7 +340,7 @@ class TTkLayout(TTkLayoutItem):
     def lowerWidget(self, widget):
         '''lowerWidget'''
         item = self._findBranchWidget(widget)
-        for item in self._items: item.z+=1
+        for i in self._items: i._z+=1
         item._z = item._layer
         if item._layoutItemType == TTkK.LayoutItem:
             item.lowerWidget(widget)

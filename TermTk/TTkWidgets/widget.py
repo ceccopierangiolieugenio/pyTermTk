@@ -395,6 +395,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                     return True
         return False
 
+    def pasteEvent(self, txt:str):
+        return False
+
     _mouseOver = None
     _mouseOverTmp = None
     _mouseOverProcessed = False

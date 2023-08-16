@@ -26,35 +26,7 @@ import sys, os
 import logging
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog, TTkK, TTkInput, TTkTerm
-
-def message_handler(mode, context, message):
-    log = logging.debug
-    if mode == TTkLog.InfoMsg:       log = logging.info
-    elif mode == TTkLog.WarningMsg:  log = logging.warning
-    elif mode == TTkLog.CriticalMsg: log = logging.critical
-    elif mode == TTkLog.FatalMsg:    log = logging.fatal
-    elif mode == TTkLog.ErrorMsg:    log = logging.error
-    log(f"{context.file} {message}")
-
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(levelname)s:(%(threadName)-9s) %(message)s',)
-TTkLog.installMessageHandler(message_handler)
-
-TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
-TTkLog.info("Press q or <ESC> to exit")
-
-TTkTerm.push(TTkTerm.Mouse.ON)
-TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
-TTkTerm.push(TTkTerm.SET_BRACKETED_PM)
-TTkTerm.setEcho(False)
-
-def winCallback(width, height):
-    TTkLog.info(f"Resize: w:{width}, h:{height}")
-
-TTkTerm.registerResizeCb(winCallback)
-
-input = TTkInput()
+from TermTk import TTkLog, TTkK, TTkGridLayout, TTk, TTkLogViewer, TTkHelper
 
 def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
@@ -70,14 +42,16 @@ def keyCallback(kevt=None, mevt=None):
     return True
 
 def pasteCallback(txt:str):
-    TTkLog.info(f"PASTE = {txt}")
+    TTkLog.info(f"PASTE:")
+    for s in txt.split('\n'):
+        TTkLog.info(f" | {s}")
     return True
 
-input.inputEvent.connect(keyCallback)
-input.pasteEvent.connect(pasteCallback)
+root = TTk(layout=TTkGridLayout())
 
-try:
-    input.start()
-finally:
-    TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
-    TTkTerm.setEcho(True)
+TTkLogViewer(parent=root)
+
+TTkHelper._rootWidget._input.inputEvent.connect(keyCallback)
+TTkHelper._rootWidget._input.pasteEvent.connect(pasteCallback)
+
+root.mainloop()
