@@ -59,6 +59,10 @@ __all__ = ['TTkTerminal']
 
 class TTkTerminal(TTkWidget):
     @dataclass
+    class _Terminal():
+        bracketedMode: bool = False
+
+    @dataclass
     class _Keyboard():
         flags: int = 0
 
@@ -70,7 +74,9 @@ class TTkTerminal(TTkWidget):
         sgrMode:     bool = False
 
     __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
-                 '_buffer_lines', '_buffer_screen', '_keyboard', '_mouse',
+                 '_clipboard',
+                 '_buffer_lines', '_buffer_screen',
+                 '_keyboard', '_mouse', '_terminal',
                  '_screen_current', '_screen_normal', '_screen_alt')
     def __init__(self, *args, **kwargs):
         self._shell = os.environ.get('SHELL', 'sh')
@@ -78,6 +84,7 @@ class TTkTerminal(TTkWidget):
         self._proc = None
         self._mode_normal = True
         self._quit_pipe = None
+        self._terminal = TTkTerminal._Terminal()
         self._keyboard = TTkTerminal._Keyboard()
         self._mouse = TTkTerminal._Mouse()
         self._buffer_lines = [TTkString()]
@@ -85,6 +92,7 @@ class TTkTerminal(TTkWidget):
         self._screen_normal  = _TTkTerminalAltScreen()
         self._screen_alt     = _TTkTerminalAltScreen()
         self._screen_current = self._screen_normal
+        self._clipboard = TTkClipboard()
 
         super().__init__(*args, **kwargs)
 
@@ -304,18 +312,25 @@ class TTkTerminal(TTkWidget):
                     self.setWidgetCursor(pos=self._screen_current.getCursor())
                     TTkLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
 
-    def mousePressEvent(self, evt):
+    def pasteEvent(self, txt:str):
+        if self._terminal.bracketedMode:
+            txt = "\033[200~"+txt+"\033[201~"
+        self._inout.write(txt.encode())
         return True
 
     def keyEvent(self, evt):
         # TTkLog.debug(f"Key: {evt.code=}")
         TTkLog.debug(f"Key: {str(evt)=}")
         if evt.type == TTkK.SpecialKey:
+            if evt.mod == TTkK.ControlModifier and evt.key == TTkK.Key_V:
+                txt = self._clipboard.text()
+                self.pasteEvent(str(txt))
+                return True
             if self._keyboard.flags & TTkTerminalModes.DECCKM:
-                if code := {TTkK.Key_Up:       b"\033OA",
-                               TTkK.Key_Down:  b"\033OB",
-                               TTkK.Key_Right: b"\033OC",
-                               TTkK.Key_Left:  b"\033OD"}.get(evt.key):
+                if code := {TTkK.Key_Up:    b"\033OA",
+                            TTkK.Key_Down:  b"\033OB",
+                            TTkK.Key_Right: b"\033OC",
+                            TTkK.Key_Left:  b"\033OD"}.get(evt.key):
                     self._inout.write(code)
                     return True
             if evt.key == TTkK.Key_Enter:
@@ -634,7 +649,7 @@ class TTkTerminal(TTkWidget):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 2 0 0 4  ⇒  Reset bracketed paste mode, xterm.
     def _CSI_DEC_SR_2004(self, s):
-        pass
+        self._terminal.bracketedMode = s
 
     _CSI_DEC_SET_RST_MAP = {
         1   : _CSI_DEC_SR_1_DECCKM,
@@ -644,5 +659,6 @@ class TTkTerminal(TTkWidget):
         1006: _CSI_DEC_SR_1006,
         1015: _CSI_DEC_SR_1015,
         1047: _CSI_DEC_SR_1047,
-        1049: _CSI_DEC_SR_1049
+        1049: _CSI_DEC_SR_1049,
+        2004: _CSI_DEC_SR_2004
     }
