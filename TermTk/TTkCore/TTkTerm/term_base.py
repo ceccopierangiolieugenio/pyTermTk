@@ -98,7 +98,10 @@ class TTkTermBase():
         TTkTermBase.mouse = mouse | directMouse
         TTkTermBase.directMouse = directMouse
         TTkTermBase.Cursor.hide()
-        TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.SET_BRACKETED_PM + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
+        TTkTermBase.push(TTkTermBase.escTitle(TTkTermBase.title))
+        TTkTermBase.push(TTkTermBase.ALT_SCREEN)
+        TTkTermBase.push(TTkTermBase.SET_BRACKETED_PM)
+        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE)
         if TTkTermBase.mouse:
             TTkTermBase.push(TTkTermBase.Mouse.ON)
         if TTkTermBase.directMouse:

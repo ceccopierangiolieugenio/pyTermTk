@@ -289,9 +289,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot()
     def paste(self):
         txt = self._clipboard.text()
-        if not self._multiLine:
-            txt = TTkString().join(txt.split('\n'))
-        self._textCursor.insertText(txt)
+        self.pasteEvent(txt)
 
     @pyTTkSlot()
     def _documentChanged(self):
@@ -421,6 +419,23 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
+    def pasteEvent(self, txt:str):
+        txt = TTkString(txt)
+        if not self._multiLine:
+            txt = TTkString().join(txt.split('\n'))
+        if self._replace:
+            self._textCursor.replaceText(txt, moveCursor=True)
+        else:
+            self._textCursor.insertText(txt, moveCursor=True)
+        # Scroll to align to the cursor
+        p = self._textCursor.position()
+        cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+        self._updateSize()
+        self._scrolToInclude(cx,cy)
+        self._pushCursor()
+        self.update()
+        return True
+
     def keyEvent(self, evt):
         if self._readOnly:
             return super().keyEvent(evt)
@@ -523,8 +538,7 @@ class TTkTextEditView(TTkAbstractScrollView):
                 self._textCursor.removeSelectedText()
             elif evt.key == TTkK.Key_Enter:
                 if self._multiLine:
-                    self._textCursor.insertText('\n')
-                self._textCursor.movePosition(TTkTextCursor.Right)
+                    self._textCursor.insertText('\n', moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
@@ -535,10 +549,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             return True
         else: # Input char
             if self._replace:
-                self._textCursor.replaceText(evt.key)
+                self._textCursor.replaceText(evt.key, moveCursor=True)
             else:
-                self._textCursor.insertText(evt.key)
-            self._textCursor.movePosition(TTkTextCursor.Right)
+                self._textCursor.insertText(evt.key, moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)

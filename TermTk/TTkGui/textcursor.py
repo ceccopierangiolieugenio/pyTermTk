@@ -308,7 +308,7 @@ class TTkTextCursor():
             l = self._document._dataLines[-1]
             self.setPosition(len(self._document._dataLines)-1, len(l), moveMode, cID=cID)
 
-        operations = {
+        op = {
                 TTkTextCursor.Right : moveRight,
                 TTkTextCursor.Left  : moveLeft,
                 TTkTextCursor.Up    : moveUpDown(-1),
@@ -316,18 +316,19 @@ class TTkTextCursor():
                 TTkTextCursor.EndOfLine  : moveEndOfLine,
                 TTkTextCursor.StartOfLine: moveHome,
                 TTkTextCursor.End: moveEnd,
-            }
+            }.get(operation,lambda _:_)
 
-        for cID, prop in enumerate(self._properties):
+        for _ in range(n):
+          for cID, prop in enumerate(self._properties):
             p = prop.position
-            operations.get(operation,lambda _:_)(cID,p,n)
+            op(cID,p,n)
 
         self._checkCursors(notify=self.position().toNum()!=currPos)
 
     def document(self):
         return self._document
 
-    def replaceText(self, text):
+    def replaceText(self, text, moveCursor=False):
         # if there is no selection, just select the next n chars till the end of the line
         # the newline is not replaced
         for p in self._properties:
@@ -340,9 +341,9 @@ class TTkTextCursor():
                     pos = self._document._dataLines[line].nextPos(pos)
                 pos = min(size,pos)
                 p.anchor.set(line,pos)
-        return self.insertText(text)
+        return self.insertText(text, moveCursor)
 
-    def insertText(self, text):
+    def insertText(self, text, moveCursor=False):
         _lineFirst = -1
         if self.hasSelection():
             _lineFirst, _lineRem, _lineAdd = self._removeSelectedText()
@@ -395,6 +396,8 @@ class TTkTextCursor():
             for nl in reversed(newLines[1:]):
                 self._document._dataLines.insert(l+1, nl)
 
+            # Move/Shift the cursors based on the pasted content
+            #
             # 2 scenarios:
             #  1) No Newline(s) added
             #                p     p+1   p+2
@@ -417,7 +420,8 @@ class TTkTextCursor():
                 diffPos = len(text.split('\n')[-1]) - p
             else:
                 diffPos = len(text)
-            for pp in self._properties[i+1:]:
+            # Realign all the cursos (move the same if required)
+            for pp in self._properties[i+(0 if moveCursor else 1):]:
                 if pp.position.line == l:
                     pp.position.pos  += diffPos
                     pp.anchor.pos  += diffPos

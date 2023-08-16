@@ -165,8 +165,7 @@ class TTkTextDialogPicker(TTkWindow):
         def _showEmojiPicker():
             ep = _emojiPicker(size=(40,10))
             def _addEmoji(e):
-                self._textEdit.textCursor().insertText(e)
-                self._textEdit.textCursor().movePosition(TTkTextCursor.Right)
+                self._textEdit.textCursor().insertText(e, moveCursor=True)
             ep.emojiClicked.connect(_addEmoji)
             TTkHelper.overlay(btn_emoji, ep, 0, 0)
 

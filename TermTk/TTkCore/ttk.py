@@ -100,6 +100,7 @@ class TTk(TTkWidget):
         self._termDirectMouse = kwargs.get('mouseTrack',False)
         self._input = TTkInput()
         self._input.inputEvent.connect(self._processInput)
+        self._input.pasteEvent.connect(self._processPaste)
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
@@ -178,6 +179,12 @@ class TTk(TTkWidget):
         if platform.system() == 'Emscripten':
             return
         self._input.start()
+
+    @pyTTkSlot(str)
+    def _processPaste(self, txt:str):
+        if focusWidget := TTkHelper.getFocus():
+            while focusWidget and not focusWidget.pasteEvent(txt):
+                focusWidget = focusWidget.parentWidget()
 
     @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
     def _processInput(self, kevt, mevt):

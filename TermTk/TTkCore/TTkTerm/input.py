@@ -85,9 +85,11 @@ class TTkInput:
     def key_process(self, stdinRead):
         if self._bracketedPaste:
             if stdinRead.endswith("\033[201~"):
-                self._pasteBuffer += stdinRead[:6]
+                self._pasteBuffer += stdinRead[:-6]
                 self._bracketedPaste = False
-                self.pasteEvent.emit(self._pasteBuffer)
+                # due to the CRNL methos (don't ask me why) the terminal
+                # is substituting all the \n with \r
+                self.pasteEvent.emit(self._pasteBuffer.replace('\r','\n'))
                 self._pasteBuffer = ""
             else:
                 self._pasteBuffer += stdinRead
