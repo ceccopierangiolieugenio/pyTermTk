@@ -46,6 +46,7 @@ TTkLog.info("Press q or <ESC> to exit")
 
 TTkTerm.push(TTkTerm.Mouse.ON)
 TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
+TTkTerm.push(TTkTerm.SET_BRACKETED_PM)
 TTkTerm.setEcho(False)
 
 def winCallback(width, height):
@@ -68,7 +69,12 @@ def keyCallback(kevt=None, mevt=None):
             return False
     return True
 
+def pasteCallback(txt:str):
+    TTkLog.info(f"PASTE = {txt}")
+    return True
+
 input.inputEvent.connect(keyCallback)
+input.pasteEvent.connect(pasteCallback)
 
 try:
     input.start()
