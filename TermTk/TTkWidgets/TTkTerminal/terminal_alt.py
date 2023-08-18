@@ -104,12 +104,14 @@ class _TTkTerminalAltScreen():
                     self._canvas._colors[y][x] = self._color
                 elif l > 1:
                     self._canvas._data[y][x]   = ch
-                    self._canvas._data[y][x+1] = ""
+                    self._canvas._data[y][x+1] = ''
                     self._canvas._colors[y][x]   = self._color
                     self._canvas._colors[y][x+1] = self._color
                 else: # l==0
-                    self._canvas._data[y][x]  += ch
-                    self._canvas._colors[y][x] = self._color
+                    if x>0 and self._canvas._data[y][x-1] != '':
+                        self._canvas._data[y][x-1]  += ch
+                    elif x>1:
+                        self._canvas._data[y][x-2]  += ch
                 x+=l
 
             self._terminalCursor = (x,y)
