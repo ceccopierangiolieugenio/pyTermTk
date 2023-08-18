@@ -61,6 +61,8 @@ class TTkTerminal(TTkWidget):
     @dataclass
     class _Terminal():
         bracketedMode: bool = False
+        DCSactive: bool = False
+        DCSstrring: str = ""
 
     @dataclass
     class _Keyboard():
