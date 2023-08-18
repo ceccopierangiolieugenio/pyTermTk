@@ -21,6 +21,7 @@
     # SOFTWARE.
 
 import collections
+import unicodedata
 
 from TermTk.TTkCore.canvas import TTkCanvas
 
@@ -82,12 +83,36 @@ class _TTkTerminalAltScreen():
     def _pushTxt(self, txt:str):
         x,y = self._terminalCursor
         w,h = self._w, self._h
+        st,sb = self._scrollingRegion
         for bi, tout in enumerate(txt.split('\a')): # grab the bells
             if bi:
                 TTkLog.debug("BELL!!! 🔔🔔🔔")
-            tstr = TTkString(tout, self._color)
-            self._terminalCursor = (min(w-1,x+tstr.termWidth()),y)
-            self._canvas.drawTTkString(text=tstr, pos=(x,y))
+
+            # I check the size of each char in order to draw
+            # it in the correct position
+            for ch in tout:
+                l = TTkString._getWidthText(ch)
+                # Scroll up if we are at the right border
+                if l+x > w:
+                    x=0
+                    y+=1
+                    if y >= sb:
+                        self._CSI_S_SU(y-sb+1, None) # scroll up
+                        y=sb-1
+                if l==1:
+                    self._canvas._data[y][x]   = ch
+                    self._canvas._colors[y][x] = self._color
+                elif l > 1:
+                    self._canvas._data[y][x]   = ch
+                    self._canvas._data[y][x+1] = ""
+                    self._canvas._colors[y][x]   = self._color
+                    self._canvas._colors[y][x+1] = self._color
+                else: # l==0
+                    self._canvas._data[y][x]  += ch
+                    self._canvas._colors[y][x] = self._color
+                x+=l
+
+            self._terminalCursor = (x,y)
 
     def pushLine(self, line:str):
         if not line: return
