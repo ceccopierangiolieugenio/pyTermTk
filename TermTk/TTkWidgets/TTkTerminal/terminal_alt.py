@@ -110,7 +110,9 @@ class _TTkTerminalAltScreen():
                 lls = ll.split('\b') # 0x08 = Backspace
                 for iii,lll in enumerate(lls):
                     if iii:
-                        self._terminalCursor = (max(0,x-1),y)
+                        x,y = self._terminalCursor = (x,y)
+                        x = max(0,x-1)
+                        self._terminalCursor = (x,y)
                     self._pushTxt(lll)
 
     def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
@@ -274,7 +276,18 @@ class _TTkTerminalAltScreen():
         self._canvas._colors = topc + centerc + bottomc
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
-    # def _CSI_P_DCH(self, ps, _): pass
+    #   s1 = "abc12fg"
+    #   x  = 3   |
+    #   ps = 2
+    #   s2 = "abcfg"
+    def _CSI_P_DCH(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        ps = min(ps,w-x)
+        self._canvas._data[y][x:x+ps]   = []
+        self._canvas._colors[y][x:x+ps] = []
+        self._canvas._data[y]   += [' ']*ps
+        self._canvas._colors[y] += [TTkColor.RST]*ps
 
     # CSI # P
     # CSI Pm # P
@@ -541,6 +554,7 @@ class _TTkTerminalAltScreen():
     #             Ps = 4  ⇒  Insert Mode (IRM).
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Automatic Newline (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
     def _CSI_h_SM(self, ps, _): pass
 
     # CSI ? Pm h
@@ -691,6 +705,7 @@ class _TTkTerminalAltScreen():
     #             Ps = 4  ⇒  Replace Mode (IRM).
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
     def _CSI_l_RM(self, ps, _): pass
 
     # CSI ? Pm l
@@ -1571,7 +1586,7 @@ class _TTkTerminalAltScreen():
         'K': _CSI_K_EL,     # CSI Ps K  Erase in Line (EL), VT100.    [0:Right, 1:Left,  2:All]
         'L': _CSI_L_IL,     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
         'M': _CSI_M_DL,
-        # 'P': _CSI_P_DCH,
+        'P': _CSI_P_DCH,
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
         # 'X': _CSI_X_ECH,

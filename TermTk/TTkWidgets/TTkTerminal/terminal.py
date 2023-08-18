@@ -162,7 +162,7 @@ class TTkTerminal(TTkWidget):
     re_CSI_Ps_fu    = re.compile('^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])')
     re_CSI_Ps_Ps_fu = re.compile('^\[(\d*);(\d*)([Hf])')
 
-    re_DEC_SET_RST  = re.compile('^\[\?(\d+)([lh])')
+    re_DEC_SET_RST  = re.compile('^\[(\??)(\d+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
     @pyTTkSlot()
@@ -208,7 +208,8 @@ class TTkTerminal(TTkWidget):
             TTkLog.debug(f"{sout[0]=}")
 
             # The first element is not an escaped sequence
-            self._screen_current.pushLine(sout[0])
+            if sout[0]:
+                self._screen_current.pushLine(sout[0])
 
             escapeGenerator = (i for i in sout[1:])
             for slice in escapeGenerator:
@@ -217,6 +218,10 @@ class TTkTerminal(TTkWidget):
 
                 ################################################
                 # CSI Modes
+                #   CSI Pm h
+                #       Set Mode (SM).
+                #   CSI Pm l
+                #       Reset Mode (RM).
                 #   CSI ? Pm h
                 #      DEC Private Mode Set (DECSET).
                 #   CSI ? Pm l
@@ -224,9 +229,13 @@ class TTkTerminal(TTkWidget):
                 ################################################
                 if m := TTkTerminal.re_DEC_SET_RST.match(slice):
                     en = m.end()
-                    ps = int(m.group(1))
-                    sr = (m.group(2) == 'h')
-                    self._CSI_DEC_SET_RST(ps,sr)
+                    qm = m.group(1) == '?'
+                    ps = int(m.group(2))
+                    sr = (m.group(3) == 'h')
+                    if qm:
+                        self._CSI_DEC_SET_RST(ps,sr)
+                    else:
+                        self._CSI_SM_RM(ps,sr)
                     slice = slice[en:]
 
                 ################################################
@@ -287,7 +296,6 @@ class TTkTerminal(TTkWidget):
                     self._screen_normal.setColor(color)
 
                     # TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
-
                     slice = slice[en:]
 
                 ################################################
@@ -306,19 +314,29 @@ class TTkTerminal(TTkWidget):
                         # Handle the non screen related functions
                         _ex = self._CSI_MAP.get(
                                 fn,
-                                lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                lambda a,b,c: TTkLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
                         _ex(self,y,x)
                     else:
                         # Handle the screen related functions
                         _ex = self._screen_current._CSI_MAP.get(
                                 fn,
-                                lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                lambda a,b,c: TTkLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
                         _ex(self._screen_current,y,x)
                     slice = slice[en:]
 
                 ################################################
+                # ESC =     Application Keypad (DECKPAM).
                 ################################################
-                # elif slice and slice[0] in ['=']: pass
+                elif slice and slice[0] in ['=','>']:
+                    # ESC =     Application Keypad (DECKPAM).
+                    if slice[0] == '=':
+                        self._keyboard.flags |= TTkTerminalModes.MODE_DECKPAM
+                        TTkLog.warn("Unhandled <ESC> = (DECKPAM)")
+                    # ESC >     Normal Keypad (DECKPNM), VT100.
+                    elif slice[0] == '>':
+                        self._keyboard.flags &= ~TTkTerminalModes.MODE_DECKPAM
+                        TTkLog.warn("Unhandled <ESC> > (DECKPNM)")
+                    slice = slice[1:]
 
                 ################################################
                 # ESC P
@@ -331,7 +349,7 @@ class TTkTerminal(TTkWidget):
                 #
                 # NOTE:
                 #    DCS is an escape sequence that does not happen often
-                #    So far I saw it only during vim initialization and it is used
+                #    So far I saw it only during vim initialization and
                 #    only to check if the TERM=screen is capable to handle DCS
                 #    I try to keep everything related in a self contained place
                 ################################################
@@ -375,25 +393,11 @@ class TTkTerminal(TTkWidget):
                 # Everything else
                 ################################################
                 else:
-                    slice = '\033' + slice.replace('\r','')
-                    ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
-                    TTkLog.warn(f"Unhandled Slice:{ssss}")
+                    TTkLog.warn(f"Unhandled Slice:'<ESC>{slice}'".replace('\n','\\n'))
+                    continue
 
-                # TTkLog.debug(f'Eugenio->{slice}')
-                if '\033' in slice:
-                    # import time
-                    # ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
-                    # TTkLog.warn(f"WAIT FOR Unhandled Slice:{ssss}")
-                    # time.sleep(0.5)
-                    # self._screen_current.pushLine(slice)
-                    # TTkLog.warn(f"DONE!!!! Unhandled Slice:{ssss}")
-                    slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                    TTkLog.warn(f"Unhandled slice: {slice=}")
-                    # time.sleep(1.5)
-                else:
-                    self._screen_current.pushLine(slice)
-                    slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                    # TTkLog.debug(f"{slice=}")
+                self._screen_current.pushLine(slice)
+
             self.update()
             self.setWidgetCursor(pos=self._screen_current.getCursor())
             TTkLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
@@ -412,7 +416,7 @@ class TTkTerminal(TTkWidget):
                 txt = self._clipboard.text()
                 self.pasteEvent(str(txt))
                 return True
-            if self._keyboard.flags & TTkTerminalModes.DECCKM:
+            if self._keyboard.flags & TTkTerminalModes.MODE_DECCKM:
                 if code := {TTkK.Key_Up:    b"\033OA",
                             TTkK.Key_Down:  b"\033OB",
                             TTkK.Key_Right: b"\033OC",
@@ -601,32 +605,50 @@ class TTkTerminal(TTkWidget):
         'n': _CSI_n_DSR,
     }
 
+    # CSI Pm h  Set Mode (SM).
+    #             Ps = 2  ⇒  Keyboard Action Mode (KAM).
+    #             Ps = 4  ⇒  Insert Mode (IRM).
+    #             Ps = 1 2  ⇒  Send/receive (SRM).
+    #             Ps = 2 0  ⇒  Automatic Newline (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
+    # CSI Pm l  Reset Mode (RM).
+    #             Ps = 2  ⇒  Keyboard Action Mode (KAM).
+    #             Ps = 4  ⇒  Replace Mode (IRM).
+    #             Ps = 1 2  ⇒  Send/receive (SRM).
+    #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
+    def _CSI_SM_RM(self, ps, s):
+        if ps == 34:
+            TTkLog.warn(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'} Normal Cursor Visibility")
+        TTkLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
+
     def _CSI_DEC_SET_RST(self, ps, s):
         _dec = self._CSI_DEC_SET_RST_MAP.get(
                 ps,
-                lambda a,b: TTkLog.warn(f"Unhandled DEC <ESC>[{ps}{'h' if s else 'l'}"))
+                lambda a,b: TTkLog.error(f"Unhandled (DEC) <ESC>[{ps}{'h' if s else 'l'}"))
         _dec(self, s)
+
 
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
-    #             Ps = 1  ⇒  Application Cursor Keys (DECCKM), VT100.
+    #             Ps = 1  ⇒  Application Cursor Keys (MODE_DECCKM), VT100.
     #                UP    = \0330A
     #                DOWN  = \0330B
     #                LEFT  = \0330C
     #                RIGHT = \0330D
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
-    #             Ps = 1  ⇒  Normal Cursor Keys (DECCKM), VT100.
+    #             Ps = 1  ⇒  Normal Cursor Keys (MODE_DECCKM), VT100.
     #                UP    = \033[A
     #                DOWN  = \033[B
     #                LEFT  = \033[C
     #                RIGHT = \033[D
-    def _CSI_DEC_SR_1_DECCKM(self, s):
+    def _CSI_DEC_SR_1_MODE_DECCKM(self, s):
         if s:
-            self._keyboard.flags |= TTkTerminalModes.DECCKM
+            self._keyboard.flags |= TTkTerminalModes.MODE_DECCKM
         else:
-            self._keyboard.flags &= ~TTkTerminalModes.DECCKM
+            self._keyboard.flags &= ~TTkTerminalModes.MODE_DECCKM
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -738,7 +760,7 @@ class TTkTerminal(TTkWidget):
         self._terminal.bracketedMode = s
 
     _CSI_DEC_SET_RST_MAP = {
-        1   : _CSI_DEC_SR_1_DECCKM,
+        1   : _CSI_DEC_SR_1_MODE_DECCKM,
         25  : _CSI_DEC_SR_25_DECTCEM,
         1000: _CSI_DEC_SR_1000,
         1002: _CSI_DEC_SR_1002,

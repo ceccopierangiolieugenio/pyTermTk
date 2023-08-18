@@ -21,7 +21,14 @@
 # SOFTWARE.
 
 class TTkTerminalModes(int):
-    DECCKM = 1
+    # define masks for keyboard flags
+    MODE_KAM     = 0x01 # mode 2: keyboard action mode
+    MODE_DECKPAM = 0x02 # keypad application mode
+    MODE_DECCKM  = 0x04 # private mode 1: cursor keys
+    MODE_SRM     = 0x08 # mode 12: send-receive mode
+    MODE_DECBKM  = 0x10 # private mode 67: backarrow
+    MODE_DECSDM  = 0x20 # private mode 80: sixel DISPLAY mode -- note, when SDM is off, the terminal is in sixel SCROLLING mode
+
     #             Ps = 1  ⇒  Application Cursor Keys (DECCKM), VT100.
     #             Ps = 1  ⇒  Normal Cursor Keys (DECCKM), VT100.
 
