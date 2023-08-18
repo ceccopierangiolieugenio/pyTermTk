@@ -26,7 +26,6 @@ import sys, os
 sys.path.append(os.path.join(sys.path[0],'../..'))
 
 import TermTk
-TermTk.TTk()  # in order to have TTkCfg.theme
 
 def test_stringAlign1():
     test1 = TermTk.TTkString('Yes\u231b\u231b\u231b') # 'Yes⌛⌛⌛'
