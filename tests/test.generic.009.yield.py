@@ -34,4 +34,18 @@ for v in ( k:=yieldFunc1()):
         print(f"{vv=}")
         break
 
-print(f"{v=} {vv=}")
+print(f"----- {v=} {vv=}")
+
+# Example adapted from:
+#   https://www.pythonforbeginners.com/basics/create-generator-from-a-list-in-python
+myList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+mygen = (i for i in myList)
+
+for v in mygen:
+    print(f"{v=} {k=}")
+    for vv in mygen:
+        print(f"{vv=}")
+        break
+
+print(f"----- {v=} {vv=}")
+

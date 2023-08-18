@@ -79,12 +79,15 @@ class _TTkTerminalAltScreen():
         x,y = self._terminalCursor
         self._terminalCursor = (min(x,w-1),min(y,h-1))
 
-    def _pushTxt(self, txt):
+    def _pushTxt(self, txt:str):
         x,y = self._terminalCursor
         w,h = self._w, self._h
-        txt = TTkString(txt, self._color)
-        self._terminalCursor = (min(w-1,x+len(txt)),y)
-        self._canvas.drawTTkString(text=txt, pos=(x,y))
+        for bi, tout in enumerate(txt.split('\a')): # grab the bells
+            if bi:
+                TTkLog.debug("BELL!!! 🔔🔔🔔")
+            tstr = TTkString(tout, self._color)
+            self._terminalCursor = (min(w-1,x+tstr.termWidth()),y)
+            self._canvas.drawTTkString(text=tstr, pos=(x,y))
 
     def pushLine(self, line:str):
         if not line: return
