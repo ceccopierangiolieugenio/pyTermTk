@@ -317,6 +317,10 @@ class TTkTerminal(TTkWidget):
                     slice = slice[en:]
 
                 ################################################
+                ################################################
+                # elif slice and slice[0] in ['=']: pass
+
+                ################################################
                 # ESC P
                 #   Device Control String (DCS  is 0x90).
                 # ESC \
@@ -333,35 +337,37 @@ class TTkTerminal(TTkWidget):
                 ################################################
                 elif slice and slice[0] == 'P':
                     # Sarting DCS (ESC P) and wait for ST (ESC \)
-                    _inDcs = True
                     self._terminal.DCSstring = slice[1:]
-                    for dcs in escapeGenerator:
-                        if dcs[0] == '\\':
-                            TTkLog.warn(f"DCS: {self._terminal.DCSstring} - Not Handled")
-                            self._terminal.DCSstring = ""
-                            slice = dcs[1:]
-                            _inDcs = False
-                            break
-                        self._terminal.DCSstring += dcs
+                    slice = ""
 
-                    # If the terminator is not in the current escaped slices
-                    # I need to fetch from the input until I got all of them
-                    # This is not the nicest thing but it save a bunch of extra
-                    # hcecks at any input just to find if we are in DCS mode or not
-                    for out in inputgenerator:
-                        if not _inDcs:
-                            break
-                        sout = out.split('\033')
-                        self._terminal.DCSstring += sout[0]
-                        escapeGenerator = (i for i in sout[1:])
-                        for slice in escapeGenerator:
-                            if dcs[0] == ['\\']:
+                    # I am using a closure in order to exit the routine at the end
+                    def __processDCSEscapeGenerator():
+                        for dcs in escapeGenerator:
+                            if dcs[0] == '\\':
                                 TTkLog.warn(f"DCS: {self._terminal.DCSstring} - Not Handled")
                                 self._terminal.DCSstring = ""
-                                slice = dcs[1:]
-                                _inDcs = False
-                                break
+                                return True, dcs[1:]
                             self._terminal.DCSstring += dcs
+                        return False, ""
+
+                    def __processDCSInputGenerator(slice):
+                        # If the terminator is not in the current escaped slices
+                        # I need to fetch from the input until I got all of them
+                        # This is not the nicest thing but it save a bunch of extra
+                        # hcecks at any input just to find if we are in DCS mode or not
+                        for out in inputgenerator:
+                            sout = out.split('\033')
+                            self._terminal.DCSstring += sout[0]
+                            escapeGenerator = (i for i in sout[1:])
+                            ret, slice =  __processDCSEscapeGenerator()
+                            if not ret:
+                                return escapeGenerator, slice
+
+                    ret, slice =  __processDCSEscapeGenerator()
+
+                    if not ret:
+                        escapeGenerator, slice = __processDCSInputGenerator()
+
                     if not slice:
                         continue
 
