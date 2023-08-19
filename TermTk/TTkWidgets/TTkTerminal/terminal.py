@@ -620,7 +620,8 @@ class TTkTerminal(TTkWidget):
     def _CSI_SM_RM(self, ps, s):
         if ps == 34:
             TTkLog.warn(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'} Normal Cursor Visibility")
-        TTkLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
+        else:
+            TTkLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
 
     def _CSI_DEC_SET_RST(self, ps, s):
         _dec = self._CSI_DEC_SET_RST_MAP.get(

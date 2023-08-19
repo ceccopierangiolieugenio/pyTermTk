@@ -91,6 +91,9 @@ class _TTkTerminalAltScreen():
             # I check the size of each char in order to draw
             # it in the correct position
             for ch in tout:
+                if ord(ch) < 0x20:
+                    TTkLog.error(f"Unhandled ASCII: 0x{ord(ch):02x}")
+                    continue
                 l = TTkString._getWidthText(ch)
                 # Scroll up if we are at the right border
                 if l+x > w:
@@ -99,15 +102,15 @@ class _TTkTerminalAltScreen():
                     if y >= sb:
                         self._CSI_S_SU(y-sb+1, None) # scroll up
                         y=sb-1
-                if l==1:
+                if l==1:   # push normal char
                     self._canvas._data[y][x]   = ch
                     self._canvas._colors[y][x] = self._color
-                elif l > 1:
+                elif l > 1: # push wide char
                     self._canvas._data[y][x]   = ch
                     self._canvas._data[y][x+1] = ''
                     self._canvas._colors[y][x]   = self._color
                     self._canvas._colors[y][x+1] = self._color
-                else: # l==0
+                else: # l==0 # push zero sized char
                     if x>0 and self._canvas._data[y][x-1] != '':
                         self._canvas._data[y][x-1]  += ch
                     elif x>1:
