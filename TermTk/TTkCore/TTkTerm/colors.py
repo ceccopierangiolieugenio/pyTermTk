@@ -35,6 +35,7 @@ class TTkTermColor():
     UNDERLINE    = 0x04
     STRIKETROUGH = 0x08
     BLINKING     = 0x10
+    REVERSED     = 0x20
 
     @staticmethod
     def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, clean:bool=False):
@@ -58,6 +59,8 @@ class TTkTermColor():
             ret.append('9')
         if mod & TTkTermColor.BLINKING:
             ret.append('5')
+        if mod & TTkTermColor.REVERSED:
+            ret.append('7')
 
         if ret:
             return f'\033[{";".join(str(x) for x in ret)}m'
@@ -108,11 +111,11 @@ class TTkTermColor():
                     bg = None
                     mod = 0
                     clean = True
-                elif s==1: mod += TTkTermColor.BOLD
-                elif s==3: mod += TTkTermColor.ITALIC
-                elif s==4: mod += TTkTermColor.UNDERLINE
-                elif s==9: mod += TTkTermColor.STRIKETROUGH
-                elif s==5: mod += TTkTermColor.BLINKING
+                elif s==1: mod |= TTkTermColor.BOLD
+                elif s==3: mod |= TTkTermColor.ITALIC
+                elif s==4: mod |= TTkTermColor.UNDERLINE
+                elif s==9: mod |= TTkTermColor.STRIKETROUGH
+                elif s==5: mod |= TTkTermColor.BLINKING
         return fg,bg,mod,clean
 
 
