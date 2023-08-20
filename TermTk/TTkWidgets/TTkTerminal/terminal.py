@@ -62,6 +62,7 @@ class TTkTerminal(TTkWidget):
     class _Terminal():
         bracketedMode: bool = False
         DCSstring: str = ""
+        IRM: bool = False
 
     @dataclass
     class _Keyboard():
@@ -209,7 +210,7 @@ class TTkTerminal(TTkWidget):
 
             # The first element is not an escaped sequence
             if sout[0]:
-                self._screen_current.pushLine(sout[0])
+                self._screen_current.pushLine(sout[0],irm=self._terminal.IRM)
 
             escapeGenerator = (i for i in sout[1:])
             for slice in escapeGenerator:
@@ -252,10 +253,10 @@ class TTkTerminal(TTkWidget):
 
                     if mg[0] not in ['0','']:
                         values = mg[0].split(';')
-
-                        fg = None
-                        bg = None
-                        mod = 0
+                        color = self._screen_current.color()
+                        fg = color._fg
+                        bg = color._bg
+                        mod = color._mod
                         clean = False
 
                         while values:
@@ -285,11 +286,12 @@ class TTkTerminal(TTkWidget):
                                     bg = ansiMap256.get(int(values.pop(0)))
                                 if t == 2:# 24 bit bg
                                     bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
-                            elif s==1: mod += TTkTermColor.BOLD
-                            elif s==3: mod += TTkTermColor.ITALIC
-                            elif s==4: mod += TTkTermColor.UNDERLINE
-                            elif s==9: mod += TTkTermColor.STRIKETROUGH
-                            elif s==5: mod += TTkTermColor.BLINKING
+                            elif s==1: mod |= TTkTermColor.BOLD
+                            elif s==3: mod |= TTkTermColor.ITALIC
+                            elif s==4: mod |= TTkTermColor.UNDERLINE
+                            elif s==9: mod |= TTkTermColor.STRIKETROUGH
+                            elif s==5: mod |= TTkTermColor.BLINKING
+                            elif s==7: mod |= TTkTermColor.REVERSED
                         color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
                     self._screen_alt.setColor(color)
@@ -396,7 +398,7 @@ class TTkTerminal(TTkWidget):
                     TTkLog.warn(f"Unhandled Slice:'<ESC>{slice}'".replace('\n','\\n'))
                     continue
 
-                self._screen_current.pushLine(slice)
+                self._screen_current.pushLine(slice,irm=self._terminal.IRM)
 
             self.update()
             self.setWidgetCursor(pos=self._screen_current.getCursor())
@@ -618,7 +620,9 @@ class TTkTerminal(TTkWidget):
     #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
     #             Ps = 3 4  ⇒  Normal Cursor Visibility
     def _CSI_SM_RM(self, ps, s):
-        if ps == 34:
+        if ps == 4: # Insert/Replace Mode
+            self._terminal.IRM = s
+        elif ps == 34:
             TTkLog.warn(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'} Normal Cursor Visibility")
         else:
             TTkLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
