@@ -57,7 +57,25 @@ from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
 
 __all__ = ['TTkTerminal']
 
+class _termLog():
+    # debug = TTkLog.debug
+    # info  = TTkLog.info
+    # error = TTkLog.error
+    # warn  = TTkLog.warn
+    # fatal = TTkLog.fatal
+    debug = lambda _:None
+    info  = lambda _:None
+    error = lambda _:None
+    warn  = lambda _:None
+    fatal = lambda _:None
+
 class TTkTerminal(TTkWidget):
+    @dataclass
+    class _Terminal():
+        bracketedMode: bool = False
+        DCSstring: str = ""
+        IRM: bool = False
+
     @dataclass
     class _Keyboard():
         flags: int = 0
@@ -70,7 +88,9 @@ class TTkTerminal(TTkWidget):
         sgrMode:     bool = False
 
     __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
-                 '_buffer_lines', '_buffer_screen', '_keyboard', '_mouse',
+                 '_clipboard',
+                 '_buffer_lines', '_buffer_screen',
+                 '_keyboard', '_mouse', '_terminal',
                  '_screen_current', '_screen_normal', '_screen_alt')
     def __init__(self, *args, **kwargs):
         self._shell = os.environ.get('SHELL', 'sh')
@@ -78,6 +98,7 @@ class TTkTerminal(TTkWidget):
         self._proc = None
         self._mode_normal = True
         self._quit_pipe = None
+        self._terminal = TTkTerminal._Terminal()
         self._keyboard = TTkTerminal._Keyboard()
         self._mouse = TTkTerminal._Mouse()
         self._buffer_lines = [TTkString()]
@@ -85,6 +106,11 @@ class TTkTerminal(TTkWidget):
         self._screen_normal  = _TTkTerminalAltScreen()
         self._screen_alt     = _TTkTerminalAltScreen()
         self._screen_current = self._screen_normal
+        self._clipboard = TTkClipboard()
+
+        self._screen_normal.bell.connect(lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
+        self._screen_alt.bell.connect(   lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
+
 
         super().__init__(*args, **kwargs)
 
@@ -110,7 +136,7 @@ class TTkTerminal(TTkWidget):
             # termios.tcsetwinsize(self._fd,(h,w))
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
-        TTkLog.info(f"Resize Terminal: {w=} {h=}")
+        _termLog.info(f"Resize Terminal: {w=} {h=}")
         return super().resizeEvent(w, h)
 
     def runShell(self, program=None):
@@ -128,12 +154,12 @@ class TTkTerminal(TTkWidget):
             # os.execvpe(argv[0], argv, env)
             # os.execvpe(argv[0], argv, env)
             # self._proc = subprocess.Popen(self._shell)
-            # TTkLog.debug(f"Terminal PID={self._proc.pid=}")
+            # _termLog.debug(f"Terminal PID={self._proc.pid=}")
             # self._proc.wait()
         else:
             self._inout = os.fdopen(self._fd, "w+b", 0)
             name = os.ttyname(self._fd)
-            TTkLog.debug(f"{pid=} {self._fd=} {name}")
+            _termLog.debug(f"{pid=} {self._fd=} {name}")
 
             self._quit_pipe = os.pipe()
 
@@ -153,7 +179,7 @@ class TTkTerminal(TTkWidget):
     re_CSI_Ps_fu    = re.compile('^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])')
     re_CSI_Ps_Ps_fu = re.compile('^\[(\d*);(\d*)([Hf])')
 
-    re_DEC_SET_RST  = re.compile('^\[\?(\d+)([lh])')
+    re_DEC_SET_RST  = re.compile('^\[(\??)(\d+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
     @pyTTkSlot()
@@ -161,14 +187,16 @@ class TTkTerminal(TTkWidget):
         if self._quit_pipe:
             os.write(self._quit_pipe[1], b'quit')
 
-    def loop(self, _):
+    def _inputGenerator(self):
         while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
-                break
-            # TTkLog.debug(f"Select - {rs=}")
+                return
+
+            # _termLog.debug(f"Select - {rs=}")
             for r in rs:
                 if r is not self._inout:
                     continue
+
                 try:
                     _fl = fcntl.fcntl(self._inout, fcntl.F_GETFL)
                     fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
@@ -177,153 +205,248 @@ class TTkTerminal(TTkWidget):
                         out += _out
                     fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl)
                 except Exception as e:
-                    TTkLog.error(f"Error: {e=}")
+                    _termLog.error(f"Error: {e=}")
                     return
 
                 # out = out.decode('utf-8','ignore')
                 try:
                     out = out.decode()
                 except Exception as e:
-                    TTkLog.error(f"{e=}")
-                    TTkLog.error(f"Failed to decode {out}")
+                    _termLog.error(f"{e=}")
+                    _termLog.error(f"Failed to decode {out}")
                     out = out.decode('utf-8','ignore')
 
-                for bi, bout in enumerate(out.split('\a')): # grab the bells
-                    # TTkLog.debug(f'Eugenio->{out}')
-                    # sout = bout.decode('utf-8','ignore')
-                    if bi:
-                        TTkLog.debug("BELL!!! 🔔🔔🔔")
-                    sout = bout.split('\033')
-                    TTkLog.debug(f"{sout[0]=}")
-                    self._screen_current.pushLine(sout[0])
-                    for slice in sout[1:]:
-                        ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
-                        TTkLog.debug(f"slice: {ssss}")
-                        if m := TTkTerminal.re_DEC_SET_RST.match(slice):
-                            en = m.end()
-                            ps = int(m.group(1))
-                            sr = (m.group(2) == 'h')
-                            self._CSI_DEC_SET_RST(ps,sr)
-                            slice = slice[en:]
-                        elif ( (m      := TTkTerminal.re_CURSOR.match(slice)) and
-                                (mg     := m.groups()) and
-                                mg[-1] == 'm' ):
-                            # TTkLog.debug(f"Handle color {mg[0]=}")
-                            en = m.end()
+                yield out
 
-                            color=TTkColor.RST
+    def loop(self, _):
+        inputgenerator = self._inputGenerator()
+        for out in inputgenerator:
+            sout = out.split('\033')
+            _termLog.debug(f"{sout[0]=}")
 
-                            if mg[0] not in ['0','']:
-                                values = mg[0].split(';')
+            # The first element is not an escaped sequence
+            if sout[0]:
+                self._screen_current.pushLine(sout[0],irm=self._terminal.IRM)
 
+            escapeGenerator = (i for i in sout[1:])
+            for slice in escapeGenerator:
+                ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
+                _termLog.debug(f"slice: {ssss}")
+
+                ################################################
+                # CSI Modes
+                #   CSI Pm h
+                #       Set Mode (SM).
+                #   CSI Pm l
+                #       Reset Mode (RM).
+                #   CSI ? Pm h
+                #      DEC Private Mode Set (DECSET).
+                #   CSI ? Pm l
+                #      DEC Private Mode Reset (DECRST).
+                ################################################
+                if m := TTkTerminal.re_DEC_SET_RST.match(slice):
+                    en = m.end()
+                    qm = m.group(1) == '?'
+                    ps = int(m.group(2))
+                    sr = (m.group(3) == 'h')
+                    if qm:
+                        self._CSI_DEC_SET_RST(ps,sr)
+                    else:
+                        self._CSI_SM_RM(ps,sr)
+                    slice = slice[en:]
+
+                ################################################
+                # CSI Color Functions
+                #   CSI Pm ; Pm ; ... m
+                ################################################
+                elif ((m      := TTkTerminal.re_CURSOR.match(slice)) and
+                      (mg     := m.groups()) and
+                       mg[-1] == 'm' ):
+                    # _termLog.debug(f"Handle color {mg[0]=}")
+                    en = m.end()
+
+                    color=TTkColor.RST
+
+                    if mg[0] not in ['0','']:
+                        values = mg[0].split(';')
+                        color = self._screen_current.color()
+                        fg = color._fg
+                        bg = color._bg
+                        mod = color._mod
+                        clean = False
+
+                        while values:
+                            s = int(values.pop(0))
+                            if s==0: # Reset Color/Format
                                 fg = None
                                 bg = None
                                 mod = 0
-                                clean = False
+                                clean = True
+                            elif ( # Ansi 16 colors
+                                30  <= s <= 37 or   # fg [ 30 -  37]
+                                90  <= s <= 97 ):   # fg [ 90 -  97] Bright
+                                fg = ansiMap16.get(s)
+                            elif ( # Ansi 16 colors
+                                40  <= s <= 47 or   # bg [ 40 -  47]
+                                100 <= s <= 107 ) : # bg [100 - 107] Bright
+                                bg = ansiMap16.get(s)
+                            elif s == 38:
+                                t =  int(values.pop(0))
+                                if t == 5:# 256 fg
+                                    fg = ansiMap256.get(int(values.pop(0)))
+                                if t == 2:# 24 bit fg
+                                    fg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
+                            elif s == 48:
+                                t =  int(values.pop(0))
+                                if t == 5:# 256 bg
+                                    bg = ansiMap256.get(int(values.pop(0)))
+                                if t == 2:# 24 bit bg
+                                    bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
+                            elif s==1: mod |= TTkTermColor.BOLD
+                            elif s==3: mod |= TTkTermColor.ITALIC
+                            elif s==4: mod |= TTkTermColor.UNDERLINE
+                            elif s==9: mod |= TTkTermColor.STRIKETROUGH
+                            elif s==5: mod |= TTkTermColor.BLINKING
+                            elif s==7: mod |= TTkTermColor.REVERSED
+                        color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
-                                while values:
-                                    s = int(values.pop(0))
-                                    if s==0: # Reset Color/Format
-                                        fg = None
-                                        bg = None
-                                        mod = 0
-                                        clean = True
-                                    elif ( # Ansi 16 colors
-                                        30  <= s <= 37 or   # fg [ 30 -  37]
-                                        90  <= s <= 97 ):   # fg [ 90 -  97] Bright
-                                        fg = ansiMap16.get(s)
-                                    elif ( # Ansi 16 colors
-                                        40  <= s <= 47 or   # bg [ 40 -  47]
-                                        100 <= s <= 107 ) : # bg [100 - 107] Bright
-                                        bg = ansiMap16.get(s)
-                                    elif s == 38:
-                                        t =  int(values.pop(0))
-                                        if t == 5:# 256 fg
-                                            fg = ansiMap256.get(int(values.pop(0)))
-                                        if t == 2:# 24 bit fg
-                                            fg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
-                                    elif s == 48:
-                                        t =  int(values.pop(0))
-                                        if t == 5:# 256 bg
-                                            bg = ansiMap256.get(int(values.pop(0)))
-                                        if t == 2:# 24 bit bg
-                                            bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
-                                    elif s==1: mod += TTkTermColor.BOLD
-                                    elif s==3: mod += TTkTermColor.ITALIC
-                                    elif s==4: mod += TTkTermColor.UNDERLINE
-                                    elif s==9: mod += TTkTermColor.STRIKETROUGH
-                                    elif s==5: mod += TTkTermColor.BLINKING
-                                color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
+                    self._screen_alt.setColor(color)
+                    self._screen_normal.setColor(color)
 
-                            self._screen_alt.setColor(color)
-                            self._screen_normal.setColor(color)
+                    # _termLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
+                    slice = slice[en:]
 
-                            # TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
+                ################################################
+                # CSI Common Functions
+                #   CSI Pm ; Pm ; ... X
+                ################################################
+                elif m:
+                    en = m.end()
+                    fn = m.group(5)
+                    defval = self._CSI_Default_MAP.get(fn,(1,1))
+                    y  = ps = int(y) if (y:=m.group(2)) else defval[0]
+                    sep = m.group(3)
+                    x =       int(x) if (x:=m.group(4)) else defval[1]
+                    _termLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
+                    if fn in ['n']:
+                        # Handle the non screen related functions
+                        _ex = self._CSI_MAP.get(
+                                fn,
+                                lambda a,b,c: _termLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                        _ex(self,y,x)
+                    else:
+                        # Handle the screen related functions
+                        _ex = self._screen_current._CSI_MAP.get(
+                                fn,
+                                lambda a,b,c: _termLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                        _ex(self._screen_current,y,x)
+                    slice = slice[en:]
 
-                            slice = slice[en:]
-                        elif m:
-                            en = m.end()
-                            fn = m.group(5)
-                            defval = self._CSI_Default_MAP.get(fn,(1,1))
-                            y  = ps = int(y) if (y:=m.group(2)) else defval[0]
-                            sep = m.group(3)
-                            x =       int(x) if (x:=m.group(4)) else defval[1]
-                            TTkLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
-                            if fn in ['n']:
-                                _ex = self._CSI_MAP.get(
-                                        fn,
-                                        lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
-                                _ex(self,y,x)
-                            else:
-                                _ex = self._screen_current._CSI_MAP.get(
-                                        fn,
-                                        lambda a,b,c: TTkLog.warn(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
-                                _ex(self._screen_current,y,x)
-                            slice = slice[en:]
-                        else:
-                            slice = '\033' + slice.replace('\r','')
-                            ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
-                            TTkLog.warn(f"Unhandled Slice:{ssss}")
+                ################################################
+                # ESC =     Application Keypad (DECKPAM).
+                ################################################
+                elif slice and slice[0] in ['=','>']:
+                    # ESC =     Application Keypad (DECKPAM).
+                    if slice[0] == '=':
+                        self._keyboard.flags |= TTkTerminalModes.MODE_DECKPAM
+                        _termLog.warn("Unhandled <ESC> = (DECKPAM)")
+                    # ESC >     Normal Keypad (DECKPNM), VT100.
+                    elif slice[0] == '>':
+                        self._keyboard.flags &= ~TTkTerminalModes.MODE_DECKPAM
+                        _termLog.warn("Unhandled <ESC> > (DECKPNM)")
+                    slice = slice[1:]
 
-                        # TTkLog.debug(f'Eugenio->{slice}')
-                        if '\033' in slice:
-                            # import time
-                            # ssss = slice.replace('\033','<ESC>').replace('\n','\\n')
-                            # TTkLog.warn(f"WAIT FOR Unhandled Slice:{ssss}")
-                            # time.sleep(0.5)
-                            # self._screen_current.pushLine(slice)
-                            # TTkLog.warn(f"DONE!!!! Unhandled Slice:{ssss}")
-                            slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                            TTkLog.warn(f"Unhandled slice: {slice=}")
-                            # time.sleep(1.5)
-                        else:
-                            self._screen_current.pushLine(slice)
-                            slice = slice.replace('\033','<ESC>').replace('\n','\\n')
-                            # TTkLog.debug(f"{slice=}")
-                    self.update()
-                    self.setWidgetCursor(pos=self._screen_current.getCursor())
-                    TTkLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
+                ################################################
+                # ESC P
+                #   Device Control String (DCS  is 0x90).
+                # ESC \
+                #   String Terminator (ST  is 0x9c).
+                #
+                #   ESC P Pt ESC \
+                #     Device Control String (DCS) xterm implements no DCS functions; Pt is ignored. Pt need not be printable characters.
+                #
+                # NOTE:
+                #    DCS is an escape sequence that does not happen often
+                #    So far I saw it only during vim initialization and
+                #    only to check if the TERM=screen is capable to handle DCS
+                #    I try to keep everything related in a self contained place
+                ################################################
+                elif slice and slice[0] == 'P':
+                    # Sarting DCS (ESC P) and wait for ST (ESC \)
+                    self._terminal.DCSstring = slice[1:]
+                    slice = ""
 
-    def mousePressEvent(self, evt):
+                    # I am using a closure in order to exit the routine at the end
+                    def __processDCSEscapeGenerator():
+                        for dcs in escapeGenerator:
+                            if dcs[0] == '\\':
+                                _termLog.warn(f"DCS: {self._terminal.DCSstring} - Not Handled")
+                                self._terminal.DCSstring = ""
+                                return True, dcs[1:]
+                            self._terminal.DCSstring += dcs
+                        return False, ""
+
+                    def __processDCSInputGenerator(slice):
+                        # If the terminator is not in the current escaped slices
+                        # I need to fetch from the input until I got all of them
+                        # This is not the nicest thing but it save a bunch of extra
+                        # hcecks at any input just to find if we are in DCS mode or not
+                        for out in inputgenerator:
+                            sout = out.split('\033')
+                            self._terminal.DCSstring += sout[0]
+                            escapeGenerator = (i for i in sout[1:])
+                            ret, slice =  __processDCSEscapeGenerator()
+                            if not ret:
+                                return escapeGenerator, slice
+
+                    ret, slice =  __processDCSEscapeGenerator()
+
+                    if not ret:
+                        escapeGenerator, slice = __processDCSInputGenerator()
+
+                    if not slice:
+                        continue
+
+                ################################################
+                # Everything else
+                ################################################
+                else:
+                    _termLog.warn(f"Unhandled Slice:'<ESC>{slice}'".replace('\n','\\n'))
+                    continue
+
+                self._screen_current.pushLine(slice,irm=self._terminal.IRM)
+
+            self.update()
+            self.setWidgetCursor(pos=self._screen_current.getCursor())
+            _termLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
+
+    def pasteEvent(self, txt:str):
+        if self._terminal.bracketedMode:
+            txt = "\033[200~"+txt+"\033[201~"
+        self._inout.write(txt.encode())
         return True
 
     def keyEvent(self, evt):
-        # TTkLog.debug(f"Key: {evt.code=}")
-        TTkLog.debug(f"Key: {str(evt)=}")
+        # _termLog.debug(f"Key: {evt.code=}")
+        _termLog.debug(f"Key: {str(evt)=}")
         if evt.type == TTkK.SpecialKey:
-            if self._keyboard.flags & TTkTerminalModes.DECCKM:
-                if code := {TTkK.Key_Up:       b"\033OA",
-                               TTkK.Key_Down:  b"\033OB",
-                               TTkK.Key_Right: b"\033OC",
-                               TTkK.Key_Left:  b"\033OD"}.get(evt.key):
+            if evt.mod == TTkK.ControlModifier and evt.key == TTkK.Key_V:
+                txt = self._clipboard.text()
+                self.pasteEvent(str(txt))
+                return True
+            if self._keyboard.flags & TTkTerminalModes.MODE_DECCKM:
+                if code := {TTkK.Key_Up:    b"\033OA",
+                            TTkK.Key_Down:  b"\033OB",
+                            TTkK.Key_Right: b"\033OC",
+                            TTkK.Key_Left:  b"\033OD"}.get(evt.key):
                     self._inout.write(code)
                     return True
             if evt.key == TTkK.Key_Enter:
-                TTkLog.debug(f"Key: Enter")
+                _termLog.debug(f"Key: Enter")
                 # self._inout.write(b'\n')
                 # self._inout.write(evt.code.encode())
         else: # Input char
-            TTkLog.debug(f"Key: {evt.key=}")
+            _termLog.debug(f"Key: {evt.key=}")
             # self._inout.write(evt.key.encode())
         self._inout.write(evt.code.encode())
         return True
@@ -500,32 +623,53 @@ class TTkTerminal(TTkWidget):
         'n': _CSI_n_DSR,
     }
 
+    # CSI Pm h  Set Mode (SM).
+    #             Ps = 2  ⇒  Keyboard Action Mode (KAM).
+    #             Ps = 4  ⇒  Insert Mode (IRM).
+    #             Ps = 1 2  ⇒  Send/receive (SRM).
+    #             Ps = 2 0  ⇒  Automatic Newline (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
+    # CSI Pm l  Reset Mode (RM).
+    #             Ps = 2  ⇒  Keyboard Action Mode (KAM).
+    #             Ps = 4  ⇒  Replace Mode (IRM).
+    #             Ps = 1 2  ⇒  Send/receive (SRM).
+    #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
+    def _CSI_SM_RM(self, ps, s):
+        if ps == 4: # Insert/Replace Mode
+            self._terminal.IRM = s
+        elif ps == 34:
+            _termLog.warn(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'} Normal Cursor Visibility")
+        else:
+            _termLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
+
     def _CSI_DEC_SET_RST(self, ps, s):
         _dec = self._CSI_DEC_SET_RST_MAP.get(
                 ps,
-                lambda a,b: TTkLog.warn(f"Unhandled DEC <ESC>[{ps}{'h' if s else 'l'}"))
+                lambda a,b: _termLog.error(f"Unhandled (DEC) <ESC>[{ps}{'h' if s else 'l'}"))
         _dec(self, s)
+
 
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
-    #             Ps = 1  ⇒  Application Cursor Keys (DECCKM), VT100.
+    #             Ps = 1  ⇒  Application Cursor Keys (MODE_DECCKM), VT100.
     #                UP    = \0330A
     #                DOWN  = \0330B
     #                LEFT  = \0330C
     #                RIGHT = \0330D
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
-    #             Ps = 1  ⇒  Normal Cursor Keys (DECCKM), VT100.
+    #             Ps = 1  ⇒  Normal Cursor Keys (MODE_DECCKM), VT100.
     #                UP    = \033[A
     #                DOWN  = \033[B
     #                LEFT  = \033[C
     #                RIGHT = \033[D
-    def _CSI_DEC_SR_1_DECCKM(self, s):
+    def _CSI_DEC_SR_1_MODE_DECCKM(self, s):
         if s:
-            self._keyboard.flags |= TTkTerminalModes.DECCKM
+            self._keyboard.flags |= TTkTerminalModes.MODE_DECCKM
         else:
-            self._keyboard.flags &= ~TTkTerminalModes.DECCKM
+            self._keyboard.flags &= ~TTkTerminalModes.MODE_DECCKM
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -549,7 +693,7 @@ class TTkTerminal(TTkWidget):
         self._mouse.reportPress = s
         self._mouse.reportDrag  = False
         self._mouse.reportMove  = False
-        TTkLog.info(f"1002 Mouse Tracking {s=}")
+        _termLog.info(f"1002 Mouse Tracking {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -563,7 +707,7 @@ class TTkTerminal(TTkWidget):
         self._mouse.reportPress = s
         self._mouse.reportDrag  = s
         self._mouse.reportMove  = False
-        TTkLog.info(f"1002 Mouse Tracking {s=}")
+        _termLog.info(f"1002 Mouse Tracking {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -573,7 +717,7 @@ class TTkTerminal(TTkWidget):
     #             Ps = 1 0 0 6  ⇒  Disable SGR Mouse Mode, xterm.
     def _CSI_DEC_SR_1006(self, s):
         self._mouse.sgrMode = s
-        TTkLog.info(f"1006 SGR Mouse Mode {s=}")
+        _termLog.info(f"1006 SGR Mouse Mode {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -582,7 +726,7 @@ class TTkTerminal(TTkWidget):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 1 5  ⇒  Disable urxvt Mouse Mode.
     def _CSI_DEC_SR_1015(self, s):
-        TTkLog.warn(f"1015 {s=} Unimplemented: _CSI_DEC_SR_1015 urxvt Mouse Mode.")
+        _termLog.warn(f"1015 {s=} Unimplemented: _CSI_DEC_SR_1015 urxvt Mouse Mode.")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -634,15 +778,16 @@ class TTkTerminal(TTkWidget):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 2 0 0 4  ⇒  Reset bracketed paste mode, xterm.
     def _CSI_DEC_SR_2004(self, s):
-        pass
+        self._terminal.bracketedMode = s
 
     _CSI_DEC_SET_RST_MAP = {
-        1   : _CSI_DEC_SR_1_DECCKM,
+        1   : _CSI_DEC_SR_1_MODE_DECCKM,
         25  : _CSI_DEC_SR_25_DECTCEM,
         1000: _CSI_DEC_SR_1000,
         1002: _CSI_DEC_SR_1002,
         1006: _CSI_DEC_SR_1006,
         1015: _CSI_DEC_SR_1015,
         1047: _CSI_DEC_SR_1047,
-        1049: _CSI_DEC_SR_1049
+        1049: _CSI_DEC_SR_1049,
+        2004: _CSI_DEC_SR_2004
     }

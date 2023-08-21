@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
-# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,26 +20,32 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.import sys
+# SOFTWARE.
 
-# Thanks to: https://stackoverflow.com/questions/43162722/mocking-a-module-import-in-pytest
+def yieldFunc1():
+    for i in range(10):
+        print(f"V {i}")
+        yield f"{i=}"
+        print(f"^ {i}")
 
-class Mock_TTkInput():
-    def __init__(self): pass
-    def close(self): pass
-    def stop(self): pass
-    def cont(self): pass
-    def get_key(self, callback=None): pass
-    def start(self): pass
+for v in ( k:=yieldFunc1()):
+    print(f"{v=} {k=}")
+    for vv in k:
+        print(f"{vv=}")
+        break
 
-    class inputEvent():
-        def connect(*args):
-            pass
-        def clear():
-            pass
+print(f"----- {v=} {vv=}")
 
-    class pasteEvent():
-        def connect(*args):
-            pass
-        def clear():
-            pass
+# Example adapted from:
+#   https://www.pythonforbeginners.com/basics/create-generator-from-a-list-in-python
+myList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+mygen = (i for i in myList)
+
+for v in mygen:
+    print(f"{v=} {k=}")
+    for vv in mygen:
+        print(f"{vv=}")
+        break
+
+print(f"----- {v=} {vv=}")
+

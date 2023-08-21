@@ -83,7 +83,7 @@ class TTkTextWrap():
             if not (w := self._wrapWidth):
                 return
 
-            def _process(i,l):
+            def _process(i,l:TTkString):
                 fr = 0
                 to = 0
                 if not len(l): # if the line is empty append it

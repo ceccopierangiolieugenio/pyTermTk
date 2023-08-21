@@ -21,6 +21,7 @@
     # SOFTWARE.
 
 import collections
+import unicodedata
 
 from TermTk.TTkCore.canvas import TTkCanvas
 
@@ -44,8 +45,12 @@ class _TTkTerminalAltScreen():
     __slots__ = ('_lines', '_terminalCursor',
                  '_scrollingRegion',
                  '_bufferSize', '_bufferedLines',
-                 '_w', '_h', '_color', '_canvas')
+                 '_w', '_h', '_color', '_canvas',
+                 # Signals
+                 'bell'
+                 )
     def __init__(self, w=80, h=24, bufferSize=1000, color=TTkColor.RST) -> None:
+        self.bell = pyTTkSignal()
         self._w = w
         self._h = h
         self._bufferSize = bufferSize
@@ -54,6 +59,9 @@ class _TTkTerminalAltScreen():
         self._scrollingRegion = (0,h)
         self._color = color
         self._canvas = TTkCanvas(width=w, height=h)
+
+    def color(self):
+        return self._color
 
     def setColor(self, color):
         self._color = color
@@ -70,7 +78,7 @@ class _TTkTerminalAltScreen():
         # else:# Terminal height increasing
         #     sb = h-oh+sb
         # self._scrollingRegion = (st,sb)
-        self._scrollingRegion = (1,h)
+        self._scrollingRegion = (0,h)
         newCanvas = TTkCanvas(width=w, height=h)
         s = (0,0,w,h)
         newCanvas.paintCanvas(self._canvas,s,s,s)
@@ -79,14 +87,64 @@ class _TTkTerminalAltScreen():
         x,y = self._terminalCursor
         self._terminalCursor = (min(x,w-1),min(y,h-1))
 
-    def _pushTxt(self, txt):
+    def _pushTxt(self, txt:str, irm:bool=False):
         x,y = self._terminalCursor
         w,h = self._w, self._h
-        txt = TTkString(txt, self._color)
-        self._terminalCursor = (min(w-1,x+len(txt)),y)
-        self._canvas.drawTTkString(text=txt, pos=(x,y))
+        st,sb = self._scrollingRegion
+        for bi, tout in enumerate(txt.split('\a')): # grab the bells
+            if bi:
+                self.bell.emit()
 
-    def pushLine(self, line:str):
+            # I check the size of each char in order to draw
+            # it in the correct position
+            for ch in tout:
+                if ord(ch) < 0x20:
+                    # TTkLog.error(f"Unhandled ASCII: 0x{ord(ch):02x}")
+                    continue
+                l = TTkString._getWidthText(ch)
+                # Scroll up if we are at the right border
+                if l+x > w:
+                    x=0
+                    y+=1
+                    if y >= sb:
+                        self._CSI_S_SU(y-sb+1, None) # scroll up
+                        y=sb-1
+                if l==1:   # push normal char
+                    if irm:
+                        self._canvas._data[y][x:x] = [ch]
+                        self._canvas._colors[y][x:x] = [self._color]
+                        # self._canvas._data[y].insert(x,ch)
+                        # self._canvas._colors[y].insert(x,self._color)
+                        self._canvas._data[y].pop()
+                        self._canvas._colors[y].pop()
+                    else:
+                        self._canvas._data[y][x]   = ch
+                        self._canvas._colors[y][x] = self._color
+                elif l > 1: # push wide char
+                    if irm:
+                        self._canvas._data[y][x:x] = [ch,'']
+                        self._canvas._colors[y][x:x] = [self._color,self._color]
+                        # self._canvas._data[y].insert(x,ch)
+                        # self._canvas._colors[y].insert(x,self._color)
+                        self._canvas._data[y].pop()
+                        self._canvas._data[y].pop()
+                        self._canvas._colors[y].pop()
+                        self._canvas._colors[y].pop()
+                    else:
+                        self._canvas._data[y][x]   = ch
+                        self._canvas._data[y][x+1] = ''
+                        self._canvas._colors[y][x]   = self._color
+                        self._canvas._colors[y][x+1] = self._color
+                else: # l==0 # push zero sized char
+                    if x>0 and self._canvas._data[y][x-1] != '':
+                        self._canvas._data[y][x-1]  += ch
+                    elif x>1:
+                        self._canvas._data[y][x-2]  += ch
+                x+=l
+
+            self._terminalCursor = (x,y)
+
+    def pushLine(self, line:str, irm:bool=False):
         if not line: return
         x,y = self._terminalCursor
         w,h = self._w, self._h
@@ -107,14 +165,16 @@ class _TTkTerminalAltScreen():
                 lls = ll.split('\b') # 0x08 = Backspace
                 for iii,lll in enumerate(lls):
                     if iii:
-                        self._terminalCursor = (max(0,x-1),y)
-                    self._pushTxt(lll)
+                        x,y = self._terminalCursor
+                        x = max(0,x-1)
+                        self._terminalCursor = (x,y)
+                    self._pushTxt(lll,irm)
 
     def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
         w,h = self._w, self._h
         s = (0,0,w,h)
         canvas.paintCanvas(self._canvas,s,s,s)
-        TTkLog.debug("Paint")
+        # TTkLog.debug("Paint")
 
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
     def _CSI___ICH(self, ps, _):
@@ -271,7 +331,18 @@ class _TTkTerminalAltScreen():
         self._canvas._colors = topc + centerc + bottomc
 
     # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
-    # def _CSI_P_DCH(self, ps, _): pass
+    #   s1 = "abc12fg"
+    #   x  = 3   |
+    #   ps = 2
+    #   s2 = "abcfg"
+    def _CSI_P_DCH(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        ps = min(ps,w-x)
+        self._canvas._data[y][x:x+ps]   = []
+        self._canvas._colors[y][x:x+ps] = []
+        self._canvas._data[y]   += [' ']*ps
+        self._canvas._colors[y] += [TTkColor.RST]*ps
 
     # CSI # P
     # CSI Pm # P
@@ -513,7 +584,9 @@ class _TTkTerminalAltScreen():
     # def _CSI_c_DA(self, ps, _): pass
 
     # CSI Ps d  Line Position Absolute  [row] (default = [1,column]) (VPA).
-    def _CSI_d_VPA(self, ps, _): pass
+    def _CSI_d_VPA(self, ps, _):
+        x,y = self._terminalCursor
+        self._terminalCursor = (x,ps-1)
 
     # CSI Ps e  Line Position Relative  [rows] (default = [row+1,column])
     #           (VPR).
@@ -538,6 +611,7 @@ class _TTkTerminalAltScreen():
     #             Ps = 4  ⇒  Insert Mode (IRM).
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Automatic Newline (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
     def _CSI_h_SM(self, ps, _): pass
 
     # CSI ? Pm h
@@ -688,6 +762,7 @@ class _TTkTerminalAltScreen():
     #             Ps = 4  ⇒  Replace Mode (IRM).
     #             Ps = 1 2  ⇒  Send/receive (SRM).
     #             Ps = 2 0  ⇒  Normal Linefeed (LNM).
+    #             Ps = 3 4  ⇒  Normal Cursor Visibility
     def _CSI_l_RM(self, ps, _): pass
 
     # CSI ? Pm l
@@ -1568,7 +1643,7 @@ class _TTkTerminalAltScreen():
         'K': _CSI_K_EL,     # CSI Ps K  Erase in Line (EL), VT100.    [0:Right, 1:Left,  2:All]
         'L': _CSI_L_IL,     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
         'M': _CSI_M_DL,
-        # 'P': _CSI_P_DCH,
+        'P': _CSI_P_DCH,
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
         # 'X': _CSI_X_ECH,
@@ -1578,7 +1653,7 @@ class _TTkTerminalAltScreen():
         # 'a': _CSI_a_HPR,
         # 'b': _CSI_b_REP,
         # 'c': _CSI_c_Pri_DA,
-        # 'd': _CSI_d_VPA,
+        'd': _CSI_d_VPA,
         # 'e': _CSI_e_VPR,
         'f': _CSI_f_HVP,     # CSI Ps ; Ps f    Horizontal and Vertical Position [row;column] (default = [1,1]) (HVP).
         # 'g': _CSI_g_TBC,
