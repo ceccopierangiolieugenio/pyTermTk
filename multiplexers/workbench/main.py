@@ -88,5 +88,10 @@ win1  = WBWindow(parent=wb, pos=(10,5), size=(60,20),
 term1 = ttk.TTkTerminal(parent=win1)
 term1.runShell()
 
+wink  = WBWindow(parent=wb, pos=(10,30), size=(70,6),
+                 wbbg=bgBLACK+fgWHITE,
+                 title="Terminallo n.1",layout=ttk.TTkVBoxLayout())
+ttk.TTkKeyPressView(parent=wink)
+
 
 root.mainloop()
