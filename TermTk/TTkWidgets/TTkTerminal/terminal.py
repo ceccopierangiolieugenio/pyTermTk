@@ -57,6 +57,18 @@ from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
 
 __all__ = ['TTkTerminal']
 
+class _termLog():
+    # debug = TTkLog.debug
+    # info  = TTkLog.info
+    # error = TTkLog.error
+    # warn  = TTkLog.warn
+    # fatal = TTkLog.fatal
+    debug = lambda _:None
+    info  = lambda _:None
+    error = lambda _:None
+    warn  = lambda _:None
+    fatal = lambda _:None
+
 class TTkTerminal(TTkWidget):
     @dataclass
     class _Terminal():
@@ -96,6 +108,10 @@ class TTkTerminal(TTkWidget):
         self._screen_current = self._screen_normal
         self._clipboard = TTkClipboard()
 
+        self._screen_normal.bell.connect(lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
+        self._screen_alt.bell.connect(   lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
+
+
         super().__init__(*args, **kwargs)
 
         # self._screen_alt._CSI_MAP     |= self._CSI_MAP
@@ -120,7 +136,7 @@ class TTkTerminal(TTkWidget):
             # termios.tcsetwinsize(self._fd,(h,w))
         self._screen_alt.resize(w,h)
         self._screen_normal.resize(w,h)
-        TTkLog.info(f"Resize Terminal: {w=} {h=}")
+        _termLog.info(f"Resize Terminal: {w=} {h=}")
         return super().resizeEvent(w, h)
 
     def runShell(self, program=None):
@@ -138,12 +154,12 @@ class TTkTerminal(TTkWidget):
             # os.execvpe(argv[0], argv, env)
             # os.execvpe(argv[0], argv, env)
             # self._proc = subprocess.Popen(self._shell)
-            # TTkLog.debug(f"Terminal PID={self._proc.pid=}")
+            # _termLog.debug(f"Terminal PID={self._proc.pid=}")
             # self._proc.wait()
         else:
             self._inout = os.fdopen(self._fd, "w+b", 0)
             name = os.ttyname(self._fd)
-            TTkLog.debug(f"{pid=} {self._fd=} {name}")
+            _termLog.debug(f"{pid=} {self._fd=} {name}")
 
             self._quit_pipe = os.pipe()
 
@@ -176,7 +192,7 @@ class TTkTerminal(TTkWidget):
             if self._quit_pipe[0] in rs:
                 return
 
-            # TTkLog.debug(f"Select - {rs=}")
+            # _termLog.debug(f"Select - {rs=}")
             for r in rs:
                 if r is not self._inout:
                     continue
@@ -189,15 +205,15 @@ class TTkTerminal(TTkWidget):
                         out += _out
                     fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl)
                 except Exception as e:
-                    TTkLog.error(f"Error: {e=}")
+                    _termLog.error(f"Error: {e=}")
                     return
 
                 # out = out.decode('utf-8','ignore')
                 try:
                     out = out.decode()
                 except Exception as e:
-                    TTkLog.error(f"{e=}")
-                    TTkLog.error(f"Failed to decode {out}")
+                    _termLog.error(f"{e=}")
+                    _termLog.error(f"Failed to decode {out}")
                     out = out.decode('utf-8','ignore')
 
                 yield out
@@ -206,7 +222,7 @@ class TTkTerminal(TTkWidget):
         inputgenerator = self._inputGenerator()
         for out in inputgenerator:
             sout = out.split('\033')
-            TTkLog.debug(f"{sout[0]=}")
+            _termLog.debug(f"{sout[0]=}")
 
             # The first element is not an escaped sequence
             if sout[0]:
@@ -215,7 +231,7 @@ class TTkTerminal(TTkWidget):
             escapeGenerator = (i for i in sout[1:])
             for slice in escapeGenerator:
                 ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
-                TTkLog.debug(f"slice: {ssss}")
+                _termLog.debug(f"slice: {ssss}")
 
                 ################################################
                 # CSI Modes
@@ -246,7 +262,7 @@ class TTkTerminal(TTkWidget):
                 elif ((m      := TTkTerminal.re_CURSOR.match(slice)) and
                       (mg     := m.groups()) and
                        mg[-1] == 'm' ):
-                    # TTkLog.debug(f"Handle color {mg[0]=}")
+                    # _termLog.debug(f"Handle color {mg[0]=}")
                     en = m.end()
 
                     color=TTkColor.RST
@@ -297,7 +313,7 @@ class TTkTerminal(TTkWidget):
                     self._screen_alt.setColor(color)
                     self._screen_normal.setColor(color)
 
-                    # TTkLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
+                    # _termLog.debug(TTkString(f"color - <ESC>[{mg[0]}",color).toAnsi())
                     slice = slice[en:]
 
                 ################################################
@@ -311,18 +327,18 @@ class TTkTerminal(TTkWidget):
                     y  = ps = int(y) if (y:=m.group(2)) else defval[0]
                     sep = m.group(3)
                     x =       int(x) if (x:=m.group(4)) else defval[1]
-                    TTkLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
+                    _termLog.debug(f"{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}")
                     if fn in ['n']:
                         # Handle the non screen related functions
                         _ex = self._CSI_MAP.get(
                                 fn,
-                                lambda a,b,c: TTkLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                lambda a,b,c: _termLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
                         _ex(self,y,x)
                     else:
                         # Handle the screen related functions
                         _ex = self._screen_current._CSI_MAP.get(
                                 fn,
-                                lambda a,b,c: TTkLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
+                                lambda a,b,c: _termLog.error(f"Unhandled <ESC>[{mg[0]}{fn} = ps:{y=} {sep=} {x=} {fn=}"))
                         _ex(self._screen_current,y,x)
                     slice = slice[en:]
 
@@ -333,11 +349,11 @@ class TTkTerminal(TTkWidget):
                     # ESC =     Application Keypad (DECKPAM).
                     if slice[0] == '=':
                         self._keyboard.flags |= TTkTerminalModes.MODE_DECKPAM
-                        TTkLog.warn("Unhandled <ESC> = (DECKPAM)")
+                        _termLog.warn("Unhandled <ESC> = (DECKPAM)")
                     # ESC >     Normal Keypad (DECKPNM), VT100.
                     elif slice[0] == '>':
                         self._keyboard.flags &= ~TTkTerminalModes.MODE_DECKPAM
-                        TTkLog.warn("Unhandled <ESC> > (DECKPNM)")
+                        _termLog.warn("Unhandled <ESC> > (DECKPNM)")
                     slice = slice[1:]
 
                 ################################################
@@ -364,7 +380,7 @@ class TTkTerminal(TTkWidget):
                     def __processDCSEscapeGenerator():
                         for dcs in escapeGenerator:
                             if dcs[0] == '\\':
-                                TTkLog.warn(f"DCS: {self._terminal.DCSstring} - Not Handled")
+                                _termLog.warn(f"DCS: {self._terminal.DCSstring} - Not Handled")
                                 self._terminal.DCSstring = ""
                                 return True, dcs[1:]
                             self._terminal.DCSstring += dcs
@@ -395,14 +411,14 @@ class TTkTerminal(TTkWidget):
                 # Everything else
                 ################################################
                 else:
-                    TTkLog.warn(f"Unhandled Slice:'<ESC>{slice}'".replace('\n','\\n'))
+                    _termLog.warn(f"Unhandled Slice:'<ESC>{slice}'".replace('\n','\\n'))
                     continue
 
                 self._screen_current.pushLine(slice,irm=self._terminal.IRM)
 
             self.update()
             self.setWidgetCursor(pos=self._screen_current.getCursor())
-            TTkLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
+            _termLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
 
     def pasteEvent(self, txt:str):
         if self._terminal.bracketedMode:
@@ -411,8 +427,8 @@ class TTkTerminal(TTkWidget):
         return True
 
     def keyEvent(self, evt):
-        # TTkLog.debug(f"Key: {evt.code=}")
-        TTkLog.debug(f"Key: {str(evt)=}")
+        # _termLog.debug(f"Key: {evt.code=}")
+        _termLog.debug(f"Key: {str(evt)=}")
         if evt.type == TTkK.SpecialKey:
             if evt.mod == TTkK.ControlModifier and evt.key == TTkK.Key_V:
                 txt = self._clipboard.text()
@@ -426,11 +442,11 @@ class TTkTerminal(TTkWidget):
                     self._inout.write(code)
                     return True
             if evt.key == TTkK.Key_Enter:
-                TTkLog.debug(f"Key: Enter")
+                _termLog.debug(f"Key: Enter")
                 # self._inout.write(b'\n')
                 # self._inout.write(evt.code.encode())
         else: # Input char
-            TTkLog.debug(f"Key: {evt.key=}")
+            _termLog.debug(f"Key: {evt.key=}")
             # self._inout.write(evt.key.encode())
         self._inout.write(evt.code.encode())
         return True
@@ -623,14 +639,14 @@ class TTkTerminal(TTkWidget):
         if ps == 4: # Insert/Replace Mode
             self._terminal.IRM = s
         elif ps == 34:
-            TTkLog.warn(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'} Normal Cursor Visibility")
+            _termLog.warn(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'} Normal Cursor Visibility")
         else:
-            TTkLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
+            _termLog.error(f"Unhandled (SM) <ESC>{ps}{'h' if s else 'l'}")
 
     def _CSI_DEC_SET_RST(self, ps, s):
         _dec = self._CSI_DEC_SET_RST_MAP.get(
                 ps,
-                lambda a,b: TTkLog.error(f"Unhandled (DEC) <ESC>[{ps}{'h' if s else 'l'}"))
+                lambda a,b: _termLog.error(f"Unhandled (DEC) <ESC>[{ps}{'h' if s else 'l'}"))
         _dec(self, s)
 
 
@@ -677,7 +693,7 @@ class TTkTerminal(TTkWidget):
         self._mouse.reportPress = s
         self._mouse.reportDrag  = False
         self._mouse.reportMove  = False
-        TTkLog.info(f"1002 Mouse Tracking {s=}")
+        _termLog.info(f"1002 Mouse Tracking {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -691,7 +707,7 @@ class TTkTerminal(TTkWidget):
         self._mouse.reportPress = s
         self._mouse.reportDrag  = s
         self._mouse.reportMove  = False
-        TTkLog.info(f"1002 Mouse Tracking {s=}")
+        _termLog.info(f"1002 Mouse Tracking {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -701,7 +717,7 @@ class TTkTerminal(TTkWidget):
     #             Ps = 1 0 0 6  ⇒  Disable SGR Mouse Mode, xterm.
     def _CSI_DEC_SR_1006(self, s):
         self._mouse.sgrMode = s
-        TTkLog.info(f"1006 SGR Mouse Mode {s=}")
+        _termLog.info(f"1006 SGR Mouse Mode {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -710,7 +726,7 @@ class TTkTerminal(TTkWidget):
     #           DEC Private Mode Reset (DECRST).
     #             Ps = 1 0 1 5  ⇒  Disable urxvt Mouse Mode.
     def _CSI_DEC_SR_1015(self, s):
-        TTkLog.warn(f"1015 {s=} Unimplemented: _CSI_DEC_SR_1015 urxvt Mouse Mode.")
+        _termLog.warn(f"1015 {s=} Unimplemented: _CSI_DEC_SR_1015 urxvt Mouse Mode.")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).

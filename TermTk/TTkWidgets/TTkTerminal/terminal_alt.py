@@ -45,8 +45,12 @@ class _TTkTerminalAltScreen():
     __slots__ = ('_lines', '_terminalCursor',
                  '_scrollingRegion',
                  '_bufferSize', '_bufferedLines',
-                 '_w', '_h', '_color', '_canvas')
+                 '_w', '_h', '_color', '_canvas',
+                 # Signals
+                 'bell'
+                 )
     def __init__(self, w=80, h=24, bufferSize=1000, color=TTkColor.RST) -> None:
+        self.bell = pyTTkSignal()
         self._w = w
         self._h = h
         self._bufferSize = bufferSize
@@ -89,13 +93,13 @@ class _TTkTerminalAltScreen():
         st,sb = self._scrollingRegion
         for bi, tout in enumerate(txt.split('\a')): # grab the bells
             if bi:
-                TTkLog.debug("BELL!!! 🔔🔔🔔")
+                self.bell.emit()
 
             # I check the size of each char in order to draw
             # it in the correct position
             for ch in tout:
                 if ord(ch) < 0x20:
-                    TTkLog.error(f"Unhandled ASCII: 0x{ord(ch):02x}")
+                    # TTkLog.error(f"Unhandled ASCII: 0x{ord(ch):02x}")
                     continue
                 l = TTkString._getWidthText(ch)
                 # Scroll up if we are at the right border
@@ -170,7 +174,7 @@ class _TTkTerminalAltScreen():
         w,h = self._w, self._h
         s = (0,0,w,h)
         canvas.paintCanvas(self._canvas,s,s,s)
-        TTkLog.debug("Paint")
+        # TTkLog.debug("Paint")
 
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
     def _CSI___ICH(self, ps, _):
