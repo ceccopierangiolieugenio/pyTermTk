@@ -26,6 +26,7 @@ from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.drag import TTkDrag
@@ -54,7 +55,27 @@ class _TTkTabBarDragData():
     def tabButton(self): return self._tabButton
     def tabBar(self): return self._tabBar
 
-class TTkTabButton(TTkButton):
+class _TTkTabColorButton(TTkButton):
+    def color(self):
+        return self.currentStyle()['color']
+
+    @pyTTkSlot(TTkColor)
+    def setColor(self, color):
+        style = self.style()
+        for t in style:
+            if 'color' in style[t]:
+                style[t]['color'] = color
+        self.setStyle(style)
+
+    @pyTTkSlot(TTkColor)
+    def setBorderColor(self, color):
+        style = self.style()
+        for t in style:
+            if 'borderColor' in style[t]:
+                style[t]['borderColor'] = color
+        self.setStyle(style)
+
+class TTkTabButton(_TTkTabColorButton):
     '''TTkTabButton'''
     __slots__ = ('_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButton')
     def __init__(self, *args, **kwargs):
@@ -123,12 +144,17 @@ class TTkTabButton(TTkButton):
         return super().mouseDragEvent(evt)
 
     def paintEvent(self, canvas):
+        style = self.currentStyle()
+
+        borderColor = style['borderColor']
+        textColor   = style['color']
+
         canvas.drawTabButton(
             pos=(0,0), size=self.size(),
             small=(not self._border),
             sideEnd=self._sideEnd, status=self._tabStatus,
-            color=self._borderColor )
-        canvas.drawText(pos=(1,1 if self._border else 0), text=self.text(), color=self.color())
+            color=borderColor )
+        canvas.drawText(pos=(1,1 if self._border else 0), text=self.text(), color=textColor)
 
 class _TTkTabMenuButton(TTkMenuBarButton):
     def __init__(self, *args, **kwargs):
@@ -141,7 +167,7 @@ class _TTkTabMenuButton(TTkMenuBarButton):
         text = TTkString('[',borderColor) + TTkString(self.text(),textColor) + TTkString(']',borderColor)
         canvas.drawText(pos=(0,0),text=text)
 
-class _TTkTabScrollerButton(TTkButton):
+class _TTkTabScrollerButton(_TTkTabColorButton):
     __slots__ = ('_side', '_sideEnd')
     def __init__(self, *args, **kwargs):
         self._side = kwargs.get('side',TTkK.LEFT)
@@ -182,28 +208,32 @@ class _TTkTabScrollerButton(TTkButton):
         return True
 
     def paintEvent(self, canvas):
+        style = self.currentStyle()
+        borderColor = style['borderColor']
+        # textColor   = style['color']
+
         tt = TTkCfg.theme.tab
         if self._border:
             lse = tt[11] if self._sideEnd &  TTkK.LEFT  else tt[13]
             rse = tt[15] if self._sideEnd &  TTkK.RIGHT else tt[13]
             if self._side == TTkK.LEFT:
-                canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[7] +tt[1])
-                canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[9] +tt[31])
-                canvas.drawText(pos=(0,2), color=self._borderColor, text=lse   +tt[12])
+                canvas.drawText(pos=(0,0), color=borderColor, text=tt[7] +tt[1])
+                canvas.drawText(pos=(0,1), color=borderColor, text=tt[9] +tt[31])
+                canvas.drawText(pos=(0,2), color=borderColor, text=lse   +tt[12])
                 canvas.drawChar(pos=(1,1), char=tt[31], color=TTkCfg.theme.tabOffsetColor)
             else:
-                canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[1] +tt[8])
-                canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[32]+tt[9])
-                canvas.drawText(pos=(0,2), color=self._borderColor, text=tt[12]+rse)
+                canvas.drawText(pos=(0,0), color=borderColor, text=tt[1] +tt[8])
+                canvas.drawText(pos=(0,1), color=borderColor, text=tt[32]+tt[9])
+                canvas.drawText(pos=(0,2), color=borderColor, text=tt[12]+rse)
                 canvas.drawChar(pos=(0,1), char=tt[32], color=TTkCfg.theme.tabOffsetColor)
         else:
             if self._side == TTkK.LEFT:
-                canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[9] +tt[31])
-                canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[23]+tt[1])
+                canvas.drawText(pos=(0,0), color=borderColor, text=tt[9] +tt[31])
+                canvas.drawText(pos=(0,1), color=borderColor, text=tt[23]+tt[1])
                 canvas.drawChar(pos=(1,0), char=tt[31], color=TTkCfg.theme.tabOffsetColor)
             else:
-                canvas.drawText(pos=(0,0), color=self._borderColor, text=tt[32]+tt[9])
-                canvas.drawText(pos=(0,1), color=self._borderColor, text=tt[1] +tt[24])
+                canvas.drawText(pos=(0,0), color=borderColor, text=tt[32]+tt[9])
+                canvas.drawText(pos=(0,1), color=borderColor, text=tt[1] +tt[24])
                 canvas.drawChar(pos=(0,0), char=tt[32], color=TTkCfg.theme.tabOffsetColor)
 '''
 _curentIndex =              2

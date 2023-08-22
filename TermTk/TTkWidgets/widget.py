@@ -100,6 +100,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 # 'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
                 # 'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
                 # 'clicked':     {'color': TTkColor.fg('#FFFF00')},
+                # 'focus':       {'color': TTkColor.fg('#FFFF88')},
             }
 
     __slots__ = (
@@ -157,21 +158,22 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._minh = kwargs.get('minHeight', 0x00000)
         self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
 
-        self._visible = kwargs.get('visible', True)
-        self._enabled = kwargs.get('enabled', True)
-        self.setStyle(self.classStyle)
-        self._processStyleEvent(TTkWidget._S_DEFAULT)
-
-        self._toolTip = TTkString(kwargs.get('toolTip',''))
-
         self._focus = False
         self._focus_policy = TTkK.NoFocus
+
+        self._visible = kwargs.get('visible', True)
+        self._enabled = kwargs.get('enabled', True)
+
+        self._toolTip = TTkString(kwargs.get('toolTip',''))
 
         self._widgetItem = TTkWidgetItem(widget=self)
 
         self._layout = TTkLayout() # root layout
         self._layout.setParent(self)
         self._layout.addItem(kwargs.get('layout',TTkLayout())) # main layout
+
+        self.setStyle(self.classStyle)
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
 
         self._canvas = TTkCanvas(
                             widget = self,
@@ -679,12 +681,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
-        TTkHelper.removeOverlayChild(self)
         TTkHelper.setFocus(self)
         self._focus = True
         self.focusChanged.emit(self._focus)
         self.focusInEvent()
+        TTkHelper.removeOverlayChild(self)
         self._pushWidgetCursor()
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
 
     def clearFocus(self):
         # TTkLog.debug(f"clearFocus: {self._name} - {self._focus}")
@@ -693,6 +696,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._focus = False
         self.focusChanged.emit(self._focus)
         self.focusOutEvent()
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
         self.update(repaint=True, updateLayout=False)
 
     def hasFocus(self):
@@ -787,7 +791,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._style = mergeStyle
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
-    def _processStyleEvent(self, evt):
+    def _processStyleEvent(self, evt=_S_DEFAULT):
         if not self._style: return False
         if not self._enabled and 'disabled' in self._style:
             self._currentStyle = self._style['disabled']
@@ -797,10 +801,15 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._currentStyle = self._style['default']
         if evt in (TTkWidget._S_DEFAULT,
                    TTkWidget._S_NONE,
-                   TTkWidget._S_ACTIVE) and 'default' in self._style:
-            self._currentStyle = self._style['default']
-            self.update()
-            return True
+                   TTkWidget._S_ACTIVE):
+            if self.hasFocus() and 'focus' in self._style:
+                self._currentStyle = self._style['focus']
+                self.update()
+                return True
+            elif 'default' in self._style:
+                self._currentStyle = self._style['default']
+                self.update()
+                return True
         elif evt & TTkWidget._S_HOVER and 'hover' in self._style:
             self._currentStyle = self._style['hover']
             self.update()

@@ -180,16 +180,19 @@ class _TTkColorButton(TTkButton):
         self._color = kwargs.get('color', TTkColor.RST )
         self._custom = kwargs.get('custom', False)
         self.clicked.connect(self._clicked)
-        self._textColorFocus = self._textColor
+        self.setColor(self._color)
 
     @pyTTkSlot(TTkColor)
     def setColor(self, color):
-        self._textColor = color
-        self._textColorFocus = color
-        self.update()
+        style = self.style()
+        self._color = color
+        for t in style:
+            if 'color' in style[t]:
+                style[t]['color'] = color
+        self.setStyle(style)
 
     def color(self):
-        return self._textColor
+        return self._color
 
     def isCustom(self):
         return self._custom
@@ -198,7 +201,7 @@ class _TTkColorButton(TTkButton):
     def _clicked(self):
         if self._custom:
             _TTkColorButton.lastClicked = self
-        self.colorClicked.emit(self._textColor)
+        self.colorClicked.emit(self._color)
 
 class TTkColorDialogPicker(TTkWindow):
     ''' Color Picker Layout sizes:
@@ -443,8 +446,8 @@ class TTkColorButtonPicker(_TTkColorButton):
         _TTkColorButton.__init__(self, *args, **kwargs)
         self._custom = False
         self.clicked.connect(self._colorClicked)
-        self._type = self._textColor.colorType()
-        hexColor =  self._textColor.getHex(self._type)
+        self._type = self.color().colorType()
+        hexColor =  self.color().getHex(self._type)
         self.setColor(TTkColor.bg(hexColor))
 
     @pyTTkSlot()
@@ -454,3 +457,13 @@ class TTkColorButtonPicker(_TTkColorButton):
         colorPicker.colorSelected.connect(self.colorSelected.emit)
         TTkHelper.overlay(self, colorPicker, -1,-1, True)
 
+    def setFocus(self):
+        lastFocus = TTkHelper.getFocus()
+        return super().setFocus()
+
+    def clearFocus(self):
+        lastFocus = TTkHelper.getFocus()
+        return super().clearFocus()
+
+    def paintEvent(self, canvas):
+        return super().paintEvent(canvas)

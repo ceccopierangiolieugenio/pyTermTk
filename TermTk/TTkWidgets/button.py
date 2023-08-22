@@ -26,6 +26,7 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkButton(TTkWidget):
@@ -87,13 +88,33 @@ class TTkButton(TTkWidget):
 
     '''
 
+    classStyle = {
+                'default':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044"),
+                                'borderColor': TTkColor.RST,
+                                'grid':1},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888'),
+                                'grid':0},
+                'hover':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000050")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#FFFFCC")+TTkColor.BOLD,
+                                'grid':1},
+                'checked':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#004488"),
+                                'borderColor': TTkColor.fg("#FFFFFF"),
+                                'grid':0},
+                'unchecked':   {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044"),
+                                'borderColor': TTkColor.RST,
+                                'grid':3},
+                'clicked':     {'color': TTkColor.fg("#FFFFDD")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#DDDDDD")+TTkColor.BOLD,
+                                'grid':1},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
+                                'grid':1},
+            }
+
     __slots__ = (
         '_text', '_border', '_pressed', '_keyPressed',
         '_checkable', '_checked',
-        '_borderColor',        '_textColor',
-        '_borderColorClicked', '_textColorClicked',
-        '_borderColorFocus',   '_textColorFocus',
-        '_borderColorDisabled','_textColorDisabled',
         # Signals
         'clicked', 'toggled'
         )
@@ -113,14 +134,6 @@ class TTkButton(TTkWidget):
 
         self._checked = kwargs.get('checked', False )
         self._checkable = kwargs.get('checkable', False )
-        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.buttonBorderColor )
-        self._textColor   = kwargs.get('color',       TTkCfg.theme.buttonTextColor )
-        self._borderColorClicked = TTkCfg.theme.buttonBorderColorClicked
-        self._textColorClicked   = TTkCfg.theme.buttonTextColorClicked
-        self._borderColorFocus   = TTkCfg.theme.buttonBorderColorFocus
-        self._textColorFocus     = TTkCfg.theme.buttonTextColorFocus
-        self._borderColorDisabled= TTkCfg.theme.buttonBorderColorDisabled
-        self._textColorDisabled  = TTkCfg.theme.buttonTextColorDisabled
 
         self._pressed = False
         self._keyPressed = False
@@ -180,20 +193,6 @@ class TTkButton(TTkWidget):
         self.toggled.emit(self._checked)
         self.update()
 
-    def color(self):
-        return self._textColor
-
-    def setColor(self, color):
-        self._textColor = color
-        self.update()
-
-    def borderColor(self):
-        return self._borderColor
-
-    def setBorderColor(self, color):
-        self._borderColor = color
-        self.update()
-
     def text(self):
         ''' This property holds the text shown on the button
 
@@ -243,48 +242,22 @@ class TTkButton(TTkWidget):
             return True
         return False
 
-    def enterEvent(self, evt) -> bool:
-        self.update()
-
-    def leaveEvent(self, evt) -> bool:
-        self.update()
-
     def mouseMoveEvent(self, evt) -> bool:
         self.update()
         return super().mouseMoveEvent(evt)
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            borderColor = self._borderColorDisabled
-            textColor   = self._textColorDisabled
-            grid = TTkCfg.theme.buttonBoxGridDisabled
-        elif self._pressed:
-            borderColor = self._borderColorClicked
-            textColor   = self._textColorClicked
-            grid = TTkCfg.theme.buttonBoxGridClicked
-        else:
-            if self._checkable:
-                if self._checked:
-                    grid = TTkCfg.theme.buttonBoxGridChecked
-                    borderColor = TTkCfg.theme.buttonBorderColorChecked
-                    textColor = TTkCfg.theme.buttonTextColorChecked
-                else:
-                    grid = TTkCfg.theme.buttonBoxGridUnchecked
-                    borderColor = TTkCfg.theme.buttonBorderColorUnchecked
-                    textColor = TTkCfg.theme.buttonTextColorUnchecked
-                if self.hasFocus():
-                    borderColor = self._borderColorFocus
+        if self.isEnabled() and self._checkable:
+            if self._checked:
+                style = self.style()['checked']
             else:
-                grid = TTkCfg.theme.buttonBoxGrid
-                if self.hasFocus():
-                    textColor   = self._textColorFocus
-                    borderColor = self._borderColorFocus
-                elif self.isEntered():
-                    textColor   = TTkCfg.theme.buttonTextColorHover
-                    borderColor = TTkCfg.theme.buttonBorderColorHover
-                else:
-                    textColor   = self._textColor
-                    borderColor = self._borderColor
+                style = self.style()['unchecked']
+        else:
+            style = self.currentStyle()
+
+        borderColor = style['borderColor']
+        textColor   = style['color']
+        grid = style['grid']
 
         w,h = self.size()
 
