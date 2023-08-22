@@ -41,6 +41,16 @@ class _MinimizedButton(TTkButton):
 
 class TTkWindow(TTkResizableFrame):
     '''TTkWindow'''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST,
+                                'borderColor': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff55")}
+            }
+
     __slots__ = (
             '_title', '_mouseDelta', '_draggable',
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
@@ -141,17 +151,6 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.setGeometry(1,1,w-2,1)
         super().resizeEvent(w,h)
 
-    def paintEvent(self, canvas):
-        if self.hasFocus():
-            color = TTkCfg.theme.windowBorderColorFocus
-        else:
-            color = TTkCfg.theme.windowBorderColor
-        canvas.drawText(pos=(2,1),text=self._title)
-        canvas.drawGrid(
-                    color=color,
-                    pos=(0,0), size=self.size(),
-                    hlines=[2], grid=2)
-
     def mousePressEvent(self, evt):
         self._mouseDelta = (evt.x, evt.y)
         self._draggable = False
@@ -172,13 +171,17 @@ class TTkWindow(TTkResizableFrame):
             return True
         return TTkResizableFrame.mouseDragEvent(self, evt)
 
-    def focusInEvent(self):
-        if self._menubarTop:
-            self._menubarTop.setBorderColor(TTkColor.fg("#ffff55"))
-        self.update()
 
     def focusOutEvent(self):
         self._draggable = False
-        if self._menubarTop:
-            self._menubarTop.setBorderColor(TTkColor.RST)
-        self.update()
+
+    def paintEvent(self, canvas):
+        style = self.currentStyle()
+        color = style['color']
+        borderColor = style['borderColor']
+
+        canvas.drawText(pos=(2,1),text=self._title, color=color)
+        canvas.drawGrid(
+                    color=borderColor,
+                    pos=(0,0), size=self.size(),
+                    hlines=[2], grid=2)
