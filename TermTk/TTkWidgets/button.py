@@ -106,7 +106,7 @@ class TTkButton(TTkWidget):
                                 'grid':3},
                 'clicked':     {'color': TTkColor.fg("#FFFFDD")+TTkColor.BOLD,
                                 'borderColor': TTkColor.fg("#DDDDDD")+TTkColor.BOLD,
-                                'grid':1},
+                                'grid':0},
                 'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
                                 'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
                                 'grid':1},
