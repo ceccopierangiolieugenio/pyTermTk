@@ -822,6 +822,10 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             self._currentStyle = self._style['disabled']
             self.update()
             return True
+        if self.hasFocus() and 'focus' in self._style:
+            self._currentStyle = self._style['focus']
+            self.update()
+            return True
         return False
 
     # Widget Cursor Helpers

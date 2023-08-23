@@ -273,8 +273,6 @@ class TTkTabBar(TTkWidget):
 
         TTkWidget.__init__(self, *args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
-        self.focusChanged.connect(self._focusChanged)
-
 
         # Add and connect the scrollers
         self.layout().addWidget(self._leftScroller)
@@ -468,15 +466,6 @@ class TTkTabBar(TTkWidget):
             return True
         return False
 
-    @pyTTkSlot(bool)
-    def _focusChanged(self, focus):
-        if focus:
-            borderColor = TTkCfg.theme.tabBorderColorFocus
-        else:
-            borderColor = TTkCfg.theme.tabBorderColor
-        self.setBorderColor(borderColor)
-
-
     def paintEvent(self, canvas):
         w = self.width()
         tt = TTkCfg.theme.tab
@@ -534,7 +523,6 @@ class TTkTabWidget(TTkFrame):
         self._tabBar.currentChanged.connect(self._tabChanged)
         self.setFocusPolicy(self._tabBar.focusPolicy())
         self._tabBar.setFocusPolicy(TTkK.ParentFocus)
-        self.focusChanged.connect(self._focusChanged)
 
         self._spacer = TTkSpacer(parent=self)
 
@@ -589,15 +577,6 @@ class TTkTabWidget(TTkFrame):
                 self._spacer.hide()
             else:
                 widget.hide()
-
-    @pyTTkSlot(bool)
-    def _focusChanged(self, focus):
-        if focus:
-            borderColor = TTkCfg.theme.tabBorderColorFocus
-        else:
-            borderColor = TTkCfg.theme.tabBorderColor
-        self.setBorderColor(borderColor)
-        self._tabBar.setBorderColor(borderColor)
 
     def keyEvent(self, evt) -> bool:
         return self._tabBar.keyEvent(evt)
