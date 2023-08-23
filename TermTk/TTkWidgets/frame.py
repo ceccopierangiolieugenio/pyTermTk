@@ -24,9 +24,9 @@
 
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 
-class TTkFrame(TTkWidget):
+class TTkFrame(TTkContainer):
     '''
 
     ::
@@ -62,10 +62,26 @@ class TTkFrame(TTkWidget):
         self._menubarBottomPosition = 0
         self._menubarTop = None
         self._menubarBottom = None
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.setBorder(self._border)
 
     def newMenubarTop(self):
+        '''newMenubarTop
+
+        .. warning::
+            Method Deprecated,
+
+            use :class:`~TermTk.TTkWidgets.frame.setMenuBar` instead
+
+            i.e.
+
+            .. code:: python
+
+                menuBar = TTkMenuBarLayout()
+                frame.setMenuBar(menuBar)
+                menuBar.addMenu("File")
+
+        '''
         if not self._menubarTop:
             from TermTk.TTkWidgets.menubar import TTkMenuBarLayout
             self._menubarTop = TTkMenuBarLayout(borderColor=self._borderColor)

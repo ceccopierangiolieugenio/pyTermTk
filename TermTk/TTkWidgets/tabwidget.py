@@ -31,6 +31,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.drag import TTkDrag
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.button import TTkButton
@@ -214,7 +215,7 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
                  leftscroller                     rightScroller
 '''
 
-class TTkTabBar(TTkWidget):
+class TTkTabBar(TTkContainer):
     '''TTkTabBar'''
     __slots__ = (
         '_tabButtons', '_tabData', '_tabMovable', '_small',
@@ -241,7 +242,7 @@ class TTkTabBar(TTkWidget):
         self._leftScroller.clicked.connect( self._moveToTheLeft)
         self._rightScroller.clicked.connect(self._andMoveToTheRight)
 
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.focusChanged.connect(self._focusChanged)
 

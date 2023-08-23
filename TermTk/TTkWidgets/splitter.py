@@ -27,9 +27,9 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkWidgets.container import TTkContainer
 
-class TTkSplitter(TTkWidget):
+class TTkSplitter(TTkContainer):
     '''TTkSplitter'''
     __slots__ = (
         '_orientation', '_separators', '_refSizes',
