@@ -33,6 +33,12 @@ dWidgets = {
         "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{'size':(30,10)}},
         "Splitter"     : { "class":ttk.TTkSplitter  , "params":{'size':(40,10)}},
     },
+    'Containers':{
+        "Container"       : { "class":ttk.TTkContainer,      "params":{'size':(20,10)}},
+        "Window"          : { "class":ttk.TTkWindow,         "params":{'size':(20,10)}},
+        "Frame"           : { "class":ttk.TTkFrame,          "params":{'size':(20,5), 'border':True}},
+        "Resizable Frame" : { "class":ttk.TTkResizableFrame, "params":{'size':(20,5)}},
+   },
     'Buttons':{
         "Button"       : { "class":ttk.TTkButton,      "params":{'size':(20,3), 'text':'Button', 'border':True, }},
         "Button Slim"  : { "class":ttk.TTkButton,      "params":{'size':(20,1), 'text':'Button', 'border':False, }},
@@ -54,10 +60,7 @@ dWidgets = {
         "Scroll Area"     : { "class":ttk.TTkScrollArea,     "params":{'size':(20,5)}, "disabled": True},
         "Spacer"          : { "class":ttk.TTkSpacer,         "params":{'size':(10,5)}},
         "Tab Widget"      : { "class":ttk.TTkTabWidget,      "params":{'size':(20,3)}, "disabled": True},
-        "Window"          : { "class":ttk.TTkWindow,         "params":{'size':(20,10)}},
         "Widget"          : { "class":ttk.TTkWidget,         "params":{'size':(20,5)}},
-        "Frame"           : { "class":ttk.TTkFrame,          "params":{'size':(20,5), 'border':True}},
-        "Resizable Frame" : { "class":ttk.TTkResizableFrame, "params":{'size':(20,5)}},
     },
     'Pickers':{
         "Color Picker"     : { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,3), 'border':True}},
@@ -68,7 +71,7 @@ dWidgets = {
     'Debug':{
         "Log Viewer"       : { "class":ttk.TTkLogViewer,       "params":{'size':(60,10)}},
         "Input View"       : { "class":ttk.TTkKeyPressView,    "params":{'size':(60,3)}},
-        "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
+        # "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
         "Test Widget"      : { "class":ttk.TTkTestWidgets,     "params":{'size':(40,10)}, "disabled": True},
         "Test Widget info" : { "class":ttk.TTkTestWidgetSizes, "params":{'size':(40,10)}},
     }

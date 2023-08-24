@@ -27,11 +27,11 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkLayouts import TTkGridLayout
-from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
 
-class TTkSpinBox(TTkWidget):
+class TTkSpinBox(TTkContainer):
     '''TTkSpinBox'''
     __slots__= (
         '_lineEdit', '_value', '_maximum', '_minimum',
@@ -41,7 +41,7 @@ class TTkSpinBox(TTkWidget):
     def __init__(self, *args, **kwargs):
         # Signals
         self.valueChanged=pyTTkSignal(int)
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._value = kwargs.get("value",0)
         self._maximum = kwargs.get("maximum",99)
         self._minimum = kwargs.get("minimum",0)

@@ -1,9 +1,16 @@
+# Base widhgets
 from .widget          import TTkWidget
+from .container       import TTkContainer
+
+# Containerised widgets
 from .frame           import TTkFrame
 from .resizableframe  import TTkResizableFrame
-from .button          import TTkButton
+from .window          import TTkWindow
+from .splitter        import TTkSplitter
 
+# Everything else
 from .about           import TTkAbout
+from .button          import TTkButton
 from .checkbox        import TTkCheckbox
 from .combobox        import TTkComboBox
 from .Fancy           import *
@@ -21,10 +28,8 @@ from .scrollarea      import TTkScrollArea
 from .scrollbar       import TTkScrollBar
 from .spacer          import TTkSpacer
 from .spinbox         import TTkSpinBox
-from .splitter        import TTkSplitter
 from .tabwidget       import TTkTabWidget, TTkTabButton, TTkTabBar
 from .kodetab         import TTkKodeTab
 from .texedit         import TTkTextEdit, TTkTextEditView
 from .TTkModelView    import *
 from .TTkPickers      import *
-from .window          import TTkWindow

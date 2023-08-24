@@ -24,7 +24,7 @@ import TermTk as ttk
 import ttkDesigner.app.superobj as so
 from ttkDesigner.app.menuBarEditor import MenuBarEditor
 
-class SuperWidgetFrame(so.SuperWidget):
+class SuperWidgetFrame(so.SuperWidgetContainer):
     def getSuperProperties(self):
         additions, exceptions, exclude = super().getSuperProperties()
         additions |= {

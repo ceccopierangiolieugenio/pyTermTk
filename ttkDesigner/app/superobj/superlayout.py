@@ -26,7 +26,7 @@ import TermTk as ttk
 import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
-class SuperLayout(ttk.TTkWidget):
+class SuperLayout(ttk.TTkContainer):
     __slots__ = ('_lay', '_dropBorder', '_superRootWidget', '_selectable', '_designer')
     def __init__(self, lay, designer, *args, **kwargs):
         self._designer = designer
@@ -48,6 +48,11 @@ class SuperLayout(ttk.TTkWidget):
         # self._layoutColor    = ttk.TTkColor.bg(f"#{r:02X}{g:02X}{b:02X}")
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
         so.SuperWidget.toggleHighlightLayout.connect(self._toggleHighlightLayout)
+
+    # TODO: Find a better way to handle this exception
+    # It may require some major rewrite
+    def hasControlWidget(self):
+        return True
 
     def getSuperProperties(self):
         additions = {}
@@ -183,28 +188,41 @@ class SuperLayout(ttk.TTkWidget):
             self._lay.addItem(sl._lay)
             sl.show()
             sl.move(evt.x-hsx, evt.y-hsy)
-        elif issubclass(type(data), so.SuperWidget):
+        elif issubclass(type(data), so.SuperWidgetContainer):
             sw = data
             self.addSuperWidget(sw)
             self._lay.addWidget(sw._wid)
             sl = sw._superLayout
             sw.move(evt.x-hsx, evt.y-hsy)
             sw.show()
-        elif issubclass(type(data),ttk.TTkWidget):
+        elif issubclass(type(data), so.SuperWidget):
+            sw = data
+            self.addSuperWidget(sw)
+            self._lay.addWidget(sw._wid)
+            sl = None
+            sw.move(evt.x-hsx, evt.y-hsy)
+            sw.show()
+        elif issubclass(type(data),ttk.TTkContainer):
             self.addSuperWidget(sw := so.SuperWidget.swFromWidget(designer=self._designer, wid=data, pos=(evt.x-hsx, evt.y-hsy)))
             self._lay.addWidget(data)
             sw.move(evt.x-hsx, evt.y-hsy)
             sl = sw._superLayout
+        elif issubclass(type(data),ttk.TTkWidget):
+            self.addSuperWidget(sw := so.SuperWidget.swFromWidget(designer=self._designer, wid=data, pos=(evt.x-hsx, evt.y-hsy)))
+            self._lay.addWidget(data)
+            sw.move(evt.x-hsx, evt.y-hsy)
+            sl = None
         else:
             return False
 
         self.layout().update()
 
         # set the Drop Border in case this layout auto resize
-        if issubclass(type(self.layout()),ttk.TTkGridLayout):
-            sl.setDropBorder(1)
-        else:
-            sl.setDropBorder(0)
+        if sl:
+            if issubclass(type(self.layout()),ttk.TTkGridLayout):
+                sl.setDropBorder(1)
+            else:
+                sl.setDropBorder(0)
 
         self.update()
         self._designer.weModified.emit()
