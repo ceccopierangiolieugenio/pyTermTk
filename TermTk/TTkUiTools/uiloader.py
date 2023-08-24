@@ -285,6 +285,14 @@ class TTkUiLoader():
         return widget
 
     @staticmethod
+    def normalise(ui):
+        cb = {'1.0.0' : TTkUiLoader._convert_1_0_1_to_2_0_0,
+              '1.0.1' : TTkUiLoader._convert_1_0_1_to_2_0_0,
+              '2.0.0' : lambda x: x
+              }.get(ui['version'], lambda x: x)
+        return cb(ui)
+
+    @staticmethod
     def loadDict(ui, baseWidget:TTkWidget=None, kwargs=None) -> TTkWidget:
         '''load the dictionary representing the ui definition of the widget
 

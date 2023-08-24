@@ -277,6 +277,7 @@ class TTkDesigner(TTkGridLayout):
 
         with open(fileName) as fp:
             dd = json.load(fp)
+            dd = TTkUiLoader.normalise(dd)
             sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), dd['tui'])
             self._windowEditor.importSuperWidget(sw)
             self._sigslotEditor.importConnections(dd['connections'])

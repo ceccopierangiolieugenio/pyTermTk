@@ -172,15 +172,19 @@ class SuperWidget(ttk.TTkContainer):
             sch = SuperWidget.loadDict(designer, parent, ch)
             if issubclass(type(sch),so.SuperLayout):
                 schl = sch
-            else:
+            elif issubclass(type(sch),so.SuperWidgetContainer):
                 schl = sch._superLayout
+            else:
+                schl = None
 
             if issubclass(type(sl),so.SuperLayoutGrid):
                 sl.layout().addWidget(sch,ch['row'],ch['col'],ch['rowspan'],ch['colspan'])
-                schl.setDropBorder(1)
+                if schl:
+                    schl.setDropBorder(1)
             else:
                 sl.layout().addWidget(sch)
-                schl.setDropBorder(0)
+                if schl:
+                    schl.setDropBorder(0)
         return sup
 
     def updateAll(self):
