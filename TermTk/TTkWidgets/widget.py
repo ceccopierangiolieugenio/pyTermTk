@@ -169,9 +169,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         # TODO: Check this,
         # The parent should always have a layout
-        if hasattr(self._parent,'layout') and self._parent.layout():
-            self._parent.layout().addWidget(self)
-            self._parent.update(repaint=True, updateLayout=True)
+        if self._parent:
+            if not hasattr(self._parent,'layout'):
+                TTkLog.warn(f"The parent={self._parent} is not a container")
+            else:
+                if self._parent.layout():
+                    self._parent.layout().addWidget(self)
+                    self._parent.update(repaint=True, updateLayout=True)
 
         self.update(repaint=True, updateLayout=True)
 
