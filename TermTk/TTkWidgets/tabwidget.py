@@ -101,14 +101,14 @@ class TTkTabButton(TTkButton):
         if  self._closable and evt.key == TTkK.MidButton:
             self.closeClicked.emit()
             return True
-        if y == (1 if self._border else 0) and w-4<=x<w-1:
+        if self._closable and y == (1 if self._border else 0) and w-4<=x<w-1:
             self._closeButtonPressed = True
             return True
         return super().mouseReleaseEvent(evt)
     def mouseReleaseEvent(self, evt):
         x,y = evt.x,evt.y
         w,h = self.size()
-        if y == (1 if self._border else 0) and w-4<=x<w-1 and self._closeButtonPressed:
+        if self._closable and y == (1 if self._border else 0) and w-4<=x<w-1 and self._closeButtonPressed:
             self._closeButtonPressed = False
             self.closeClicked.emit()
             return True
