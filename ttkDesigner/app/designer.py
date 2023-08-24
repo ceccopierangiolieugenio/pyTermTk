@@ -223,7 +223,7 @@ class TTkDesigner(TTkGridLayout):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         data = {
-            'version':'1.0.1',
+            'version':'2.0.0',
             'tui':tui,
             'connections':connections}
 
@@ -246,7 +246,7 @@ class TTkDesigner(TTkGridLayout):
         # for line in jj.split('\n'):
         #     TTkLog.debug(f"{line}")
         newUI = {
-            'version':'1.0.1',
+            'version':'2.0.0',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)
@@ -298,7 +298,7 @@ class TTkDesigner(TTkGridLayout):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         newUI = {
-            'version':'1.0.0',
+            'version':'2.0.0',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)

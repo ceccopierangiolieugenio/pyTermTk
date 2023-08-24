@@ -118,7 +118,7 @@ class SuperWidget(ttk.TTkContainer):
         ttkClass = getattr(ttk,widProp['class'])
         if issubclass(ttkClass,ttk.TTkLayout):
             demiProp = {
-                'version':'1.0.1',
+                'version':'2.0.0',
                 'tui':{
                     'class'  : widProp['class'],
                     'params' : widProp['params'],
@@ -146,7 +146,7 @@ class SuperWidget(ttk.TTkContainer):
                 'menuBar': widProp['menuBar']
                     } if setMenuBar else {}
             demiProp = {
-                'version':'1.0.0',
+                'version':'2.0.0',
                 'tui': tui,
                 'connections':[]
             }
@@ -160,7 +160,7 @@ class SuperWidget(ttk.TTkContainer):
                 'class'  : widProp['class'],
                 'params' : widProp['params'] }
             demiProp = {
-                'version':'1.0.0',
+                'version':'2.0.0',
                 'tui': tui,
                 'connections':[]
             }
