@@ -49,6 +49,11 @@ class SuperLayout(ttk.TTkContainer):
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
         so.SuperWidget.toggleHighlightLayout.connect(self._toggleHighlightLayout)
 
+    # TODO: Find a better way to handle this exception
+    # It may require some major rewrite
+    def hasControlWidget(self):
+        return True
+
     def getSuperProperties(self):
         additions = {}
         exceptions = {}

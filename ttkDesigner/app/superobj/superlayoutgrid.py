@@ -330,11 +330,17 @@ class SuperLayoutGrid(SuperLayout):
         ix, iw = horSizes[col]
         iy, ih = verSizes[row]
 
+        dt = y-iy
+        db = iy+ih-y-1
+        dl = x-ix
+        dr = ix+iw-x-1
+        dmin = min(dt,db,dl,dr)
+
         if self.layout().itemAtPosition(row,col) == None:
             ret = (ix, iy, iw, ih)
         else:
-            #Top
-            if ((y==iy) and (self._orientation & ttk.TTkK.VERTICAL) and
+            #Top - we are closer to this edge
+            if ((dt==dmin) and (self._orientation & ttk.TTkK.VERTICAL) and
                 (  row==0 or
                  ( row>0 and self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row-1,col)))):
                 dir = ttk.TTkK.VERTICAL
@@ -342,16 +348,16 @@ class SuperLayoutGrid(SuperLayout):
                     ret = (ix,    iy-1,    iw, 2)
                 else:
                     ret = (ix,    iy,    iw, 1)
-            #Bottom
-            if ((iy+ih==y+1) and (self._orientation & ttk.TTkK.VERTICAL) and
+            #Bottom - we are closer to this edge
+            if ((db==dmin) and (self._orientation & ttk.TTkK.VERTICAL) and
                 self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row+1,col)):
                 dir = ttk.TTkK.VERTICAL
                 if row<rows-1 and self.layout().itemAtPosition(row+1,col):
                     ret = (ix,    iy+ih-1, iw, 2)
                 else:
                     ret = (ix,    iy+ih-1, iw, 1)
-            #Left
-            if ((x==ix) and (self._orientation & ttk.TTkK.HORIZONTAL) and
+            #Left - we are closer to this edge
+            if ((dl==dmin) and (self._orientation & ttk.TTkK.HORIZONTAL) and
                 (  col==0 or
                  ( col>0 and self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row,col-1)))):
                 dir = ttk.TTkK.HORIZONTAL
@@ -359,8 +365,8 @@ class SuperLayoutGrid(SuperLayout):
                     ret = (ix-1,  iy,    2, ih)
                 else:
                     ret = (ix,    iy,    1, ih)
-            #Right
-            if ((ix+iw==x+1) and (self._orientation & ttk.TTkK.HORIZONTAL) and
+            #Right - we are closer to this edge
+            if ((dr==dmin) and (self._orientation & ttk.TTkK.HORIZONTAL) and
                 self.layout().itemAtPosition(row,col) != self.layout().itemAtPosition(row,col+1)):
                 dir = ttk.TTkK.HORIZONTAL
                 if col<cols-1 and self.layout().itemAtPosition(row,col+1):
