@@ -36,8 +36,7 @@ from TermTk import TTkFileTree, TTkTextEdit
 
 from TermTk import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter
-from TermTk import TTkLogViewer, TTkTomInspector
-
+from TermTk import TTkLogViewer
 from TermTk import TTkUiLoader, TTkUtil
 
 from .cfg  import *

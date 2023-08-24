@@ -189,7 +189,7 @@ class _SignalSlotItem(ttk.TTkTreeWidgetItem):
                         signals[ccName] = ttk.TTkUiProperties[ccName]['signals']
         return signals,slots
 
-class SignalSlotEditor(ttk.TTkWidget):
+class SignalSlotEditor(ttk.TTkContainer):
     __slots__ = ('_items', '_designer')
     def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)

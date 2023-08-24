@@ -27,8 +27,8 @@ import TermTk as ttk
 import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
-class SuperWidget(ttk.TTkWidget):
-    __slots__ = ('_wid', '_superLayout', '_superRootWidget', '_designer',
+class SuperWidget(ttk.TTkContainer):
+    __slots__ = ('_wid', '_superRootWidget', '_designer',
                  'superMoved', 'superResized')
     def __init__(self, designer, wid, *args, **kwargs):
         self.superMoved   = ttk.pyTTkSignal(int,int)
@@ -37,18 +37,10 @@ class SuperWidget(ttk.TTkWidget):
         self._wid = wid
         self._wid.move(*kwargs['pos'])
         self._wid._canvas.show()
-        self._superLayout = so.SuperLayout(designer=designer, lay=self._wid.layout(),)
         self._superRootWidget = kwargs.get('superRootWidget',False)
-        kwargs['layout'] = ttk.TTkGridLayout()
-        kwargs['layout'].addWidget(self._superLayout)
         kwargs['maxSize'] = wid.maximumSize()
         kwargs['minSize'] = wid.minimumSize()
         kwargs['size']    = wid.size()
-        padt, padb, padl, padr = wid.getPadding()
-        kwargs['paddingTop'] = padt
-        kwargs['paddingBottom'] = padb
-        kwargs['paddingLeft'] = padl
-        kwargs['paddingRight'] = padr
         super().__init__(*args, **kwargs)
         #self.resize(*self._wid.size())
         h,s,l = randint(0,359),100,randint(60,80)
@@ -81,20 +73,6 @@ class SuperWidget(ttk.TTkWidget):
             'Name': {
                 'get':  { 'cb':ttk.TTkWidget.name,               'type':str} ,
                 'set':  { 'cb':lambda _,n: self.setSuperName(n), 'type':str} },
-            'Layout' : {
-                'get':  { 'cb': lambda _: self._superLayout.layout().__class__ , 'type':'singleflag',
-                    'flags': {
-                        'TTkLayout'     : ttk.TTkLayout     ,
-                        'TTkGridLayout' : ttk.TTkGridLayout ,
-                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
-                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
-                'set':  { 'cb': lambda _,l: self.changeSuperLayout(l) , 'type':'singleflag',
-                    'flags': {
-                        'TTkLayout'     : ttk.TTkLayout     ,
-                        'TTkGridLayout' : ttk.TTkGridLayout ,
-                        'TTkVBoxLayout' : ttk.TTkVBoxLayout ,
-                        'TTkHBoxLayout' : ttk.TTkHBoxLayout } },
-            }
         }
         exclude = []
         return additions, exceptions, exclude
@@ -109,14 +87,12 @@ class SuperWidget(ttk.TTkWidget):
         ret = {
             'class'  : wid.__class__.__name__,
             'params' : SuperObject.dumpParams(wid),
-            'layout': self._superLayout.dumpDict()
         }
         return ret
 
     @staticmethod
     def _swFromWidget(wid, swClass, *args, **kwargs):
         sw = swClass(wid=wid, *args, **kwargs)
-        sw.changeSuperLayout(type(wid.layout()))
         return sw
 
     @staticmethod
@@ -125,11 +101,12 @@ class SuperWidget(ttk.TTkWidget):
         for c, sc in {
             ttk.TTkTextEdit:       so.SuperWidgetTextEdit,
             ttk.TTkRadioButton:    so.SuperWidgetRadioButton,
-            ttk.TTkFrame:          so.SuperWidgetFrame,
             # ttk.TTkResizableFrame: so.SuperWidgetFrame,
             # ttk.TTkWindow:         so.SuperWidgetFrame,
             ttk.TTkSplitter:       so.SuperWidgetSplitter,
             ttk.TTkMenuButton:     so.SuperWidgetMenuButton,
+            ttk.TTkFrame:          so.SuperWidgetFrame,
+            ttk.TTkContainer:      so.SuperWidgetContainer,
                 }.items():
             if c in type(wid).mro():
                 swClass = sc
@@ -153,7 +130,7 @@ class SuperWidget(ttk.TTkWidget):
             x,y,w,h = layout.geometry()
             sl = sup = so.SuperLayout.slFromLayout(designer=designer, layout=layout, lay=ttk.TTkLayout(), pos=(x,y), size=(w,h), selectable=True)
             children = widProp['children']
-        else:
+        elif issubclass(ttkClass,ttk.TTkContainer):
             setLayout  = 'layout'  in widProp
             setMenuBar = 'menuBar' in widProp
             tui = {
@@ -174,9 +151,22 @@ class SuperWidget(ttk.TTkWidget):
                 'connections':[]
             }
             wid = ttk.TTkUiLoader.loadDict(demiProp)
-            sup = so.SuperWidget.swFromWidget(designer=designer, wid=wid, pos=wid.pos())
+            sup = so.SuperWidgetContainer.swFromWidget(designer=designer, wid=wid, pos=wid.pos())
             sl = sup._superLayout
             children = widProp['layout']['children'] if setLayout else []
+        else:
+            setMenuBar = 'menuBar' in widProp
+            tui = {
+                'class'  : widProp['class'],
+                'params' : widProp['params'] }
+            demiProp = {
+                'version':'1.0.0',
+                'tui': tui,
+                'connections':[]
+            }
+            wid = ttk.TTkUiLoader.loadDict(demiProp)
+            sup = so.SuperWidget.swFromWidget(designer=designer, wid=wid, pos=wid.pos())
+            children = []
 
         for ch in children:
             sch = SuperWidget.loadDict(designer, parent, ch)
@@ -193,26 +183,9 @@ class SuperWidget(ttk.TTkWidget):
                 schl.setDropBorder(0)
         return sup
 
-    def changeSuperLayout(self, layout):
-        sl = self._superLayout
-        self.layout().removeWidget(sl)
-        if layout == ttk.TTkVBoxLayout:
-            sl = so.SuperLayoutVBox(designer=self._designer, lay=self._wid.layout(), selectable=False)
-        elif layout == ttk.TTkHBoxLayout:
-            sl = so.SuperLayoutHBox(designer=self._designer, lay=self._wid.layout(), selectable=False)
-        elif layout == ttk.TTkGridLayout:
-            sl = so.SuperLayoutGrid(designer=self._designer, lay=self._wid.layout(), selectable=False)
-        else:
-            sl = so.SuperLayout(    designer=self._designer, lay=self._wid.layout(), selectable=False)
-        self._superLayout = sl
-        self._wid.setLayout(layout())
-        self.layout().addWidget(sl)
-        self._designer.weModified.emit()
-
     def updateAll(self):
         self.resize(*(self._wid.size()))
         self.move(*(self._wid.pos()))
-        self.setPadding(*(self._wid.getPadding()))
         self.setMaximumSize(*(self._wid.maximumSize()))
         self.setMinimumSize(*(self._wid.minimumSize()))
         self.update()
@@ -252,13 +225,6 @@ class SuperWidget(ttk.TTkWidget):
     def superChild(self):
         return self._wid
 
-    def dropEvent(self, evt) -> bool:
-        padt, padb, padl, padr = self._wid.getPadding()
-        # evt = evt.copy()
-        evt.x-=padl
-        evt.y-=padt
-        return self._superLayout.dropEvent(evt)
-
     def move(self, x: int, y: int):
         self._wid.move(x,y)
         self.update()
@@ -274,11 +240,10 @@ class SuperWidget(ttk.TTkWidget):
     def paintEvent(self, canvas):
         w,h = self.size()
         if SuperWidget._showLayout:
-            t,b,l,r = self._wid.getPadding()
             for y in range(h):
                 canvas.drawText(pos=(0,y),text='',width=w,color=self._layoutColor)
-            for y in range(t,h-b):
-                canvas.drawText(pos=(l,y),text='',width=w-r-l,color=self._layoutPadColor)
+            for y in range(0,h):
+                canvas.drawText(pos=(0,y),text='',width=w,color=self._layoutPadColor)
             # canvas.fill(color=self._layoutColor)
             # canvas.fill(pos=(l,t), size=(w-r-l,h-b-t), color=self._layoutPadColor)
         else:

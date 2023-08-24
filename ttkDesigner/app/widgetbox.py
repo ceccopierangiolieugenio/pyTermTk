@@ -68,7 +68,7 @@ dWidgets = {
     'Debug':{
         "Log Viewer"       : { "class":ttk.TTkLogViewer,       "params":{'size':(60,10)}},
         "Input View"       : { "class":ttk.TTkKeyPressView,    "params":{'size':(60,3)}},
-        "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
+        # "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
         "Test Widget"      : { "class":ttk.TTkTestWidgets,     "params":{'size':(40,10)}, "disabled": True},
         "Test Widget info" : { "class":ttk.TTkTestWidgetSizes, "params":{'size':(40,10)}},
     }
