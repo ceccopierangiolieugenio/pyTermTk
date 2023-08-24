@@ -36,8 +36,7 @@ from TermTk import TTkFileTree, TTkTextEdit
 
 from TermTk import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter
-from TermTk import TTkLogViewer, TTkTomInspector
-
+from TermTk import TTkLogViewer
 from TermTk import TTkUiLoader, TTkUtil
 
 from .cfg  import *
@@ -224,7 +223,7 @@ class TTkDesigner(TTkGridLayout):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         data = {
-            'version':'1.0.1',
+            'version':'2.0.0',
             'tui':tui,
             'connections':connections}
 
@@ -247,7 +246,7 @@ class TTkDesigner(TTkGridLayout):
         # for line in jj.split('\n'):
         #     TTkLog.debug(f"{line}")
         newUI = {
-            'version':'1.0.1',
+            'version':'2.0.0',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)
@@ -278,6 +277,7 @@ class TTkDesigner(TTkGridLayout):
 
         with open(fileName) as fp:
             dd = json.load(fp)
+            dd = TTkUiLoader.normalise(dd)
             sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), dd['tui'])
             self._windowEditor.importSuperWidget(sw)
             self._sigslotEditor.importConnections(dd['connections'])
@@ -299,7 +299,7 @@ class TTkDesigner(TTkGridLayout):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         newUI = {
-            'version':'1.0.0',
+            'version':'2.0.0',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)

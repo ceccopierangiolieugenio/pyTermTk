@@ -30,11 +30,12 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
-class TTkComboBox(TTkWidget):
+class TTkComboBox(TTkContainer):
     ''' TTkComboBox:
 
     Editable = False
@@ -67,7 +68,7 @@ class TTkComboBox(TTkWidget):
         self.currentIndexChanged = pyTTkSignal(int)
         self.currentTextChanged  = pyTTkSignal(str)
         self.editTextChanged     = pyTTkSignal(str)
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         # self.checked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
         self._list = kwargs.get('list', [] )

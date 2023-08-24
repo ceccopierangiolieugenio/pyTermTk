@@ -78,21 +78,6 @@ TTkWidgetProperties = {
                 'init': {'name':'maxHeight',    'type':int } ,
                 'get':  { 'cb':TTkWidget.maximumHeight,   'type':int } ,
                 'set':  { 'cb':TTkWidget.setMaximumHeight,'type':int } },
-        'Padding': {
-                'get':  { 'cb':TTkWidget.getPadding,    'type': [
-                                { 'name': 'top',    'type':int  } ,
-                                { 'name': 'bottom', 'type':int  } ,
-                                { 'name': 'left',   'type':int  } ,
-                                { 'name': 'right',  'type':int } ] },
-                'set':  { 'cb':TTkWidget.setPadding,   'type': [
-                                { 'name': 'top',    'type':int  } ,
-                                { 'name': 'bottom', 'type':int  } ,
-                                { 'name': 'left',   'type':int  } ,
-                                { 'name': 'right',  'type':int } ] } },
-        'Layout' : {
-                'init': {'name':'layout', 'type':TTkLayout} ,
-                'get':  { 'cb':TTkWidget.layout,    'type':TTkLayout} ,
-                'set':  { 'cb':TTkWidget.setLayout, 'type':TTkLayout} },
         'Visible' : {
                 'init': {'name':'visible', 'type':bool } ,
                 'get':  { 'cb':TTkWidget.isVisible,   'type':bool } ,

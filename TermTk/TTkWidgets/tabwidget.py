@@ -32,6 +32,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.drag import TTkDrag
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.button import TTkButton
@@ -77,19 +78,17 @@ class _TTkTabColorButton(TTkButton):
 
 class TTkTabButton(_TTkTabColorButton):
     '''TTkTabButton'''
-    __slots__ = ('_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButton')
+    __slots__ = ('_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButtonPressed')
     def __init__(self, *args, **kwargs):
         self._sideEnd = TTkK.NONE
         self._tabStatus = TTkK.Unchecked
         self._closable = kwargs.get('closable', False)
         self.closeClicked = pyTTkSignal()
         TTkButton.__init__(self, *args, **kwargs)
+        self._closeButtonPressed = False
         size = self.text().termWidth() + 2
         if self._closable:
             size += 3
-            self._closeButton = TTkButton(parent=self, border=False, text="x", pos=(size-4,1 if self._border else 0), size=(3,1))
-            self._closeButton.setFocusPolicy(TTkK.ParentFocus)
-            self._closeButton.clicked.connect(self.closeClicked.emit)
         if self._border:
             self.resize(size, 3)
             self.setMinimumSize(size, 3)
@@ -117,14 +116,28 @@ class TTkTabButton(_TTkTabColorButton):
     # This is a hack to force the action aftet the keypress
     # And not key release as normally happen to the button
     def mousePressEvent(self, evt):
+        x,y = evt.x,evt.y
+        w,h = self.size()
+        self._closeButtonPressed = False
         if  self._closable and evt.key == TTkK.MidButton:
             self.closeClicked.emit()
             return True
+        if self._closable and y == (1 if self._border else 0) and w-4<=x<w-1:
+            self._closeButtonPressed = True
+            return True
         return super().mouseReleaseEvent(evt)
     def mouseReleaseEvent(self, evt):
+        x,y = evt.x,evt.y
+        w,h = self.size()
+        if self._closable and y == (1 if self._border else 0) and w-4<=x<w-1 and self._closeButtonPressed:
+            self._closeButtonPressed = False
+            self.closeClicked.emit()
+            return True
+        self._closeButtonPressed = False
         return False
     def mouseDragEvent(self, evt) -> bool:
         drag = TTkDrag()
+        self._closeButtonPressed = False
         if tb := self.parentWidget():
             if issubclass(type(tb),TTkTabBar):
                 if tw:= tb.parentWidget():
@@ -149,12 +162,16 @@ class TTkTabButton(_TTkTabColorButton):
         borderColor = style['borderColor']
         textColor   = style['color']
 
+        w,h = self.size()
+
         canvas.drawTabButton(
             pos=(0,0), size=self.size(),
             small=(not self._border),
             sideEnd=self._sideEnd, status=self._tabStatus,
             color=borderColor )
         canvas.drawText(pos=(1,1 if self._border else 0), text=self.text(), color=textColor)
+        if self._closable:
+            canvas.drawText(pos=(w-4,1 if self._border else 0), text="[X]", color=textColor)
 
 class _TTkTabMenuButton(TTkMenuBarButton):
     def __init__(self, *args, **kwargs):
@@ -244,7 +261,7 @@ _labels=        │◀│La│Label1║Label2║Label3│Label4│▶│
                  leftscroller                     rightScroller
 '''
 
-class TTkTabBar(TTkWidget):
+class TTkTabBar(TTkContainer):
     '''TTkTabBar'''
     __slots__ = (
         '_tabButtons', '_tabData', '_tabMovable', '_small',
@@ -271,7 +288,7 @@ class TTkTabBar(TTkWidget):
         self._leftScroller.clicked.connect( self._moveToTheLeft)
         self._rightScroller.clicked.connect(self._andMoveToTheRight)
 
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
         # Add and connect the scrollers

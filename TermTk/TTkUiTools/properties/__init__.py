@@ -2,6 +2,7 @@
 from .button import TTkButtonProperties
 from .checkbox import TTkCheckboxProperties
 from .combobox import TTkComboBoxProperties
+from .container import TTkContainerProperties
 from .frame import TTkFrameProperties
 # from .graph import
 # from .image import
