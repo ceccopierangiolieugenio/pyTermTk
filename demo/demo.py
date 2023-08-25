@@ -39,7 +39,7 @@ from  showcase.graph         import demoGraph
 from  showcase.splitter      import demoSplitter
 from  showcase.windows       import demoWindows
 from  showcase.windowsflags  import demoWindowsFlags
-from  showcase.formwidgets   import demoFormWidgets
+from  showcase.formwidgets02 import demoFormWidgets
 from  showcase.scrollarea01  import demoScrollArea01
 from  showcase.scrollarea02  import demoScrollArea02
 from  showcase.list          import demoList
@@ -180,7 +180,7 @@ def demoShowcase(root=None, border=True):
     tabWidgets.addTab(demoFancyTable(),  " Old Table ")
     tabWidgets.addTab(demoFancyTree(),   " Old Tree ")
     tabWidgetsSources = [
-        'showcase/formwidgets.py',
+        'showcase/formwidgets02.py',
         'showcase/textedit.py',
         'showcase/list.py',
         'showcase/tree.py',
