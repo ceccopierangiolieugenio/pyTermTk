@@ -95,8 +95,8 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     '''
 
     classStyle = {
-                'default':     {'color': TTkColor.RST},
-                'disabled':    {'color': TTkColor.fg('#888888')},
+                'default':     {'color': TTkColor.RST,           'borderColor': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'), 'borderColor': TTkColor.fg('#888888')},
                 # 'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
                 # 'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
                 # 'clicked':     {'color': TTkColor.fg('#FFFF00')},

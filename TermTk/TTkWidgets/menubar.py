@@ -25,14 +25,12 @@
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
+# from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.button import TTkButton
-from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
-from TermTk.TTkWidgets.menu import TTkMenu, TTkMenuButton, _TTkMenuSpacer
+from TermTk.TTkWidgets.menu import TTkMenuButton
 
 class TTkMenuBarButton(TTkMenuButton):
     classStyle = TTkMenuButton.classStyle | {
