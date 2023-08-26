@@ -113,7 +113,7 @@ class TTkButton(TTkWidget):
             }
 
     __slots__ = (
-        '_text', '_border', '_pressed', '_keyPressed',
+        '_text', '_border',
         '_checkable', '_checked',
         # Signals
         'clicked', 'toggled'
@@ -127,7 +127,7 @@ class TTkButton(TTkWidget):
         else:
             self.setDefaultSize(kwargs, textWidth+2, len(self._text))
 
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Define Signals
         self.clicked = pyTTkSignal()
         self.toggled = pyTTkSignal(bool)
@@ -135,8 +135,6 @@ class TTkButton(TTkWidget):
         self._checked = kwargs.get('checked', False )
         self._checkable = kwargs.get('checkable', False )
 
-        self._pressed = False
-        self._keyPressed = False
         if self._border:
             if 'minSize' not in kwargs:
                 if 'minWidth' not in kwargs:
@@ -218,13 +216,11 @@ class TTkButton(TTkWidget):
 
     def mousePressEvent(self, evt):
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
-        self._pressed = True
         self.update()
         return True
 
     def mouseReleaseEvent(self, evt):
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
-        self._pressed = False
         if self._checkable:
             self._checked = not self._checked
             self.toggled.emit(self._checked)
@@ -235,16 +231,10 @@ class TTkButton(TTkWidget):
     def keyEvent(self, evt):
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
-            self._keyPressed = True
-            self._pressed = True
             self.update()
             self.clicked.emit()
             return True
         return False
-
-    def mouseMoveEvent(self, evt) -> bool:
-        self.update()
-        return super().mouseMoveEvent(evt)
 
     def paintEvent(self, canvas):
         if self.isEnabled() and self._checkable:
