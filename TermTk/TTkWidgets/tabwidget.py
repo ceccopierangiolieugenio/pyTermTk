@@ -674,7 +674,7 @@ class TTkTabWidget(TTkFrame):
 
     def addMenu(self, text, position=TTkK.LEFT):
         '''addMenu'''
-        button = _TTkTabMenuButton(text=text, borderColor=TTkCfg.theme.tabBorderColor)
+        button = _TTkTabMenuButton(text=text)
         self._tabBar.setSideEnd(self._tabBar.sideEnd() & ~position)
         if position==TTkK.LEFT:
             if not self._topLeftLayout:

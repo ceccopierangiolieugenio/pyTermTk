@@ -42,6 +42,14 @@ class _MinimizedButton(TTkButton):
 class TTkWindow(TTkResizableFrame):
     '''TTkWindow'''
 
+    _windowStyleNormal = {
+            'default':     {'borderColor': TTkColor.RST},
+        }
+
+    _windowStyleFocussed = {
+            'default':     {'borderColor': TTkColor.fg("#ffff55")},
+        }
+
     classStyle = {
                 'default':     {'color': TTkColor.RST,
                                 'borderColor': TTkColor.RST},
@@ -93,6 +101,7 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.update()
 
         self.setWindowFlag(kwargs.get('flags', TTkK.WindowFlag.WindowCloseButtonHint))
+        self.focusChanged.connect(self._focusChanged)
 
     def _maximize(self):
         if not (pw := self.parentWidget()): return
@@ -170,6 +179,21 @@ class TTkWindow(TTkResizableFrame):
             self.move(x+dx, y+dy)
             return True
         return TTkResizableFrame.mouseDragEvent(self, evt)
+
+    def _focusChanged(self, focus):
+        if focus:
+            styleToMerge = TTkWindow._windowStyleFocussed
+        else:
+            styleToMerge = TTkWindow._windowStyleNormal
+
+        def _applyStyle(_mb):
+            if not _mb: return
+            for m in _mb._menus(TTkK.LEFT_ALIGN):   m.mergeStyle(styleToMerge)
+            for m in _mb._menus(TTkK.RIGHT_ALIGN):  m.mergeStyle(styleToMerge)
+            for m in _mb._menus(TTkK.CENTER_ALIGN): m.mergeStyle(styleToMerge)
+
+        _applyStyle(self.menuBar(TTkK.TOP))
+        _applyStyle(self.menuBar(TTkK.BOTTOM))
 
 
     def focusOutEvent(self):
