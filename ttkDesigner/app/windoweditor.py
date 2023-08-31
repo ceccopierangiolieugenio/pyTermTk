@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .superobj import SuperWidget
+from .superobj import SuperWidget,SuperWidgetContainer
 
 import TermTk as ttk
 
@@ -40,7 +40,7 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
             self._ttk.superResized.disconnect(self._superChanged)
             self._ttk.superMoved.disconnect(self._superChanged)
             self.layout().removeWidget(self._ttk)
-        self._ttk = SuperWidget(wid=ttk.TTkWindow(name = 'MainWindow'), designer=self._designer, pos=(4,2), superRootWidget=True)
+        self._ttk = SuperWidget.swFromWidget(wid=ttk.TTkWindow(name = 'MainWindow'), designer=self._designer, pos=(4,2), superRootWidget=True)
         self._ttk.resize(self.width()-8,self.height()-4)
         self._snapRootWidget = True
         self.layout().addWidget(self._ttk)
@@ -53,7 +53,7 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
             self._ttk.superResized.disconnect(self._superChanged)
             self._ttk.superMoved.disconnect(self._superChanged)
             self.layout().removeWidget(self._ttk)
-        self._ttk = SuperWidget(wid=ttk.TTkWidget(name = 'MainWidget'), designer=self._designer, pos=(4,2), superRootWidget=True)
+        self._ttk = SuperWidget.swFromWidget(wid=ttk.TTkContainer(name = 'MainWidget'), designer=self._designer, pos=(4,2), superRootWidget=True)
         self._ttk.resize(self.width()-8,self.height()-4)
         self._snapRootWidget = True
         self.layout().addWidget(self._ttk)

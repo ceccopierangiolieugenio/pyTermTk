@@ -32,29 +32,39 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-class TTkAbstractListItem(TTkLabel):
+class TTkAbstractListItem(TTkWidget):
     '''TTkAbstractListItem'''
-    __slots__ = ('_pressed', '_selected', '_highlighted', 'listItemClicked', '_data')
-    def __init__(self, *args, **kwargs):
-        TTkLabel.__init__(self, *args, **kwargs)
-        self._data  = kwargs.get('data', "" )
-        # Define Signals
-        self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
-        self._selected = False
-        self._pressed = False
-        self._highlighted = False
-        self.setFocusPolicy(TTkK.ClickFocus)
 
-    def _updateColor(self):
-        if self._highlighted:
-            if self._selected:
-                self.setColor(TTkCfg.theme.listColorHighlighted + TTkColor.UNDERLINE)
-            else:
-                self.setColor(TTkCfg.theme.listColorHighlighted)
-        elif self._selected:
-            self.setColor(TTkCfg.theme.listColorSelected)
-        else:
-            self.setColor(TTkCfg.theme.listColor)
+    classStyle = TTkWidget.classStyle | {
+                'default':     {'color': TTkColor.RST},
+                'highlighted': {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')+TTkColor.UNDERLINE},
+                'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0088FF')},
+                'selected':    {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')},
+                'clicked':     {'color': TTkColor.fg('#FFFF00')},
+                'disabled':    {'color': TTkColor.fg('#888888')},
+            }
+
+    __slots__ = ('_text', '_selected', '_highlighted', '_data',
+                 'listItemClicked')
+    def __init__(self, *, text='', data=None, **kwargs):
+        self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
+
+        self._selected = False
+        self._highlighted = False
+
+        self._text = TTkString(text)
+        self._data  = data
+
+        super().__init__(**kwargs)
+
+        self.setFocusPolicy(TTkK.ParentFocus)
+
+    def text(self):
+        return self._text
+
+    def setText(self, text):
+        self._text = TTkString(text)
+        self.update()
 
     def data(self):
         '''data'''
@@ -62,57 +72,47 @@ class TTkAbstractListItem(TTkLabel):
 
     def setData(self, data):
         '''setData'''
-        if self._data != data:
-            self._data = data
-            self.update()
-
-    def keyEvent(self, evt):
-        return self.parentWidget().keyEvent(evt)
-
-    def mousePressEvent(self, evt):
-        self._pressed = True
-        self.highlighted = True
+        if self._data == data: return
+        self._data = data
         self.update()
-        return True
 
-    def mouseReleaseEvent(self, evt):
-        self._pressed = False
+    def mousePressEvent(self, evt) -> bool:
         self.listItemClicked.emit(self)
-        self.update()
         return True
 
-    @property
-    def selected(self):
-        return self._selected
+    def _setSelected(self, selected):
+        if self._selected == selected: return
+        self._selected = selected
+        self._highlighted = not selected
+        self.update()
 
-    @selected.setter
-    def selected(self, selected):
-        if self._selected != selected:
-            self._selected = selected
-            self._updateColor()
+    def _setHighlighted(self, highlighted):
+        if self._highlighted == highlighted: return
+        self._highlighted = highlighted
+        self.update()
 
-    @property
-    def highlighted(self):
-        return self._highlighted
+    def paintEvent(self, canvas):
+        style = self.currentStyle()
+        if style == self.classStyle['hover']:
+            pass
+        elif self._highlighted:
+            style = self.style()['highlighted']
+        elif self._selected:
+            style = self.style()['selected']
 
-    @highlighted.setter
-    def highlighted(self, highlighted):
-        if self._highlighted != highlighted:
-            self._highlighted = highlighted
-            self._updateColor()
+        w = self.width()
 
+        canvas.drawTTkString(pos=(0,0), width=w, color=style['color'] ,text=self._text)
 
 class TTkListWidget(TTkAbstractScrollView):
     '''TTkListWidget'''
-    __slots__ = ('itemClicked', 'textClicked', '_color', '_selectedColor', '_selectedItems', '_selectionMode', '_highlighted', '_items')
+    __slots__ = ('itemClicked', 'textClicked', '_selectedItems', '_selectionMode', '_highlighted', '_items')
     def __init__(self, *args, **kwargs):
         # Default Class Specific Values
         self._selectionMode = kwargs.get("selectionMode", TTkK.SingleSelection)
         self._selectedItems = []
         self._items = []
         self._highlighted = None
-        self._color = TTkCfg.theme.listColor
-        self._selectedColor = TTkCfg.theme.listColorSelected
         # Signals
         self.itemClicked = pyTTkSignal(TTkWidget)
         self.textClicked = pyTTkSignal(str)
@@ -127,26 +127,25 @@ class TTkListWidget(TTkAbstractScrollView):
         self.layout().setOffset(-x,-y)
 
     @pyTTkSlot(TTkAbstractListItem)
-    def _labelSelectedHandler(self, label):
+    def _labelSelectedHandler(self, label:TTkAbstractListItem):
         if self._selectionMode == TTkK.SingleSelection:
             for item in self._selectedItems:
-                item.selected = False
-                item.highlighted = False
+                item._setSelected(False)
+                item._setHighlighted(False)
             self._selectedItems = [label]
-            label.selected = True
+            label._setSelected(True)
         elif self._selectionMode == TTkK.MultiSelection:
             for item in self._selectedItems:
-                item.highlighted = False
-            label.selected = not label.selected
-            if label.selected:
+                item._setHighlighted(False)
+            label._setSelected(not label._selected)
+            if label._selected:
                 self._selectedItems.append(label)
             else:
                 self._selectedItems.remove(label)
         if self._highlighted:
-            self._highlighted.highlighted = False
-        label.highlighted = True
+            self._highlighted._setHighlighted(False)
+        label._setHighlighted(True)
         self._highlighted = label
-        self.setFocus()
         self.itemClicked.emit(label)
         self.textClicked.emit(label.text())
 
@@ -200,9 +199,8 @@ class TTkListWidget(TTkAbstractScrollView):
         if isinstance(item, str) or isinstance(item, TTkString):
             #label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
             label = TTkAbstractListItem(text=item, data=data)
-            label.listItemClicked.connect(self._labelSelectedHandler)
             return self.addItemAt(label,pos)
-        # item.listItemClicked.connect(self._labelSelectedHandler)
+        item.listItemClicked.connect(self._labelSelectedHandler)
         self._items.insert(pos,item)
         self.layout().addWidget(item)
         self._placeItems()
@@ -289,9 +287,9 @@ class TTkListWidget(TTkAbstractScrollView):
             elif evt.key == TTkK.Key_End:
                 self.viewMoveTo(0x10000, offy)
 
-            self._highlighted.highlighted = False
+            self._highlighted._setHighlighted(False)
             self._highlighted = self._items[index]
-            self._highlighted.highlighted = True
+            self._highlighted._setHighlighted(True)
             self._moveToHighlighted()
             return True
         return False
@@ -300,9 +298,9 @@ class TTkListWidget(TTkAbstractScrollView):
         if not self._items: return
         if not self._highlighted:
             self._highlighted = self._items[0]
-        self._highlighted.highlighted=True
+        self._highlighted._setHighlighted(True)
         self._moveToHighlighted()
 
     def focusOutEvent(self):
         if self._highlighted:
-            self._highlighted.highlighted=False
+            self._highlighted._setHighlighted(False)

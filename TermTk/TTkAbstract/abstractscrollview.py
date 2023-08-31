@@ -26,6 +26,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkAbstractScrollViewInterface():
@@ -44,7 +45,7 @@ class TTkAbstractScrollViewInterface():
     def getViewOffsets(self):
         return self._viewOffsetX, self._viewOffsetY
 
-class TTkAbstractScrollView(TTkWidget, TTkAbstractScrollViewInterface):
+class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
         # Signals
@@ -55,7 +56,7 @@ class TTkAbstractScrollView(TTkWidget, TTkAbstractScrollViewInterface):
         self.viewMovedTo = pyTTkSignal(int, int) # x, y
         self.viewSizeChanged = pyTTkSignal(int, int) # w, h
         self.viewChanged = pyTTkSignal()
-        TTkWidget.__init__(self, *args, **kwargs)
+        TTkContainer.__init__(self, *args, **kwargs)
         self._viewOffsetX = 0
         self._viewOffsetY = 0
 

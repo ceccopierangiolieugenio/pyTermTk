@@ -28,9 +28,9 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
-
 
 '''
      Line Edit: |_________-___________|
@@ -40,8 +40,17 @@ from TermTk.TTkWidgets.widget import TTkWidget
 '''
 class TTkLineEdit(TTkWidget):
     '''TTkLineEdit'''
+
+    classStyle = {
+                'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
+                                'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008844")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'selectedColor': TTkColor.fg("#888888")+TTkColor.bg("#444444")},
+                'focus':       {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#000044")},
+            }
+
     __slots__ = (
-        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo', '_color',
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, *args, **kwargs):
@@ -59,7 +68,6 @@ class TTkLineEdit(TTkWidget):
         super().__init__(*args, **kwargs)
         if self._inputType & TTkK.Input_Number and\
            not self._text.lstrip('-').isdigit(): self._text = TTkString()
-        self._color = TTkCfg.theme.lineEditTextColor
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -108,17 +116,13 @@ class TTkLineEdit(TTkWidget):
         self.update()
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            color = TTkCfg.theme.textColorDisabled
-            selectColor = TTkCfg.theme.textColorDisabled
-        elif self.hasFocus():
-            color = TTkCfg.theme.lineEditTextColorFocus
-            selectColor = TTkCfg.theme.lineEditTextColorSelected
-        else:
-            color = self._color
-            selectColor = TTkCfg.theme.lineEditTextColorSelected
+        style = self.currentStyle()
+
+        color         = style['color']
+        selectColor = style['selectedColor']
+
         w = self.width()
-        text = TTkString() + color
+        text = TTkString('', color)
         if self._inputType & TTkK.Input_Password:
             text += ("*"*(len(self._text)))
         else:

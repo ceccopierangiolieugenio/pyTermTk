@@ -80,6 +80,19 @@ class TTkCheckbox(TTkWidget):
             :type checked: bool
 
      '''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST,
+                                'borderColor':TTkColor.RST,
+                                'cbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888'),
+                                'cbContentColor': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
+                                'cbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD},
+            }
+
     __slots__ = (
         '_checkStatus', '_text', '_tristate',
         # Signals
@@ -175,18 +188,12 @@ class TTkCheckbox(TTkWidget):
         self.update()
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            textColor   = TTkCfg.theme.checkboxTextColor
-            borderColor = TTkCfg.theme.textColorDisabled
-            xColor = TTkCfg.theme.textColorDisabled
-        elif self.hasFocus():
-            borderColor = TTkCfg.theme.checkboxBorderColorFocus
-            textColor   = TTkCfg.theme.checkboxTextColorFocus
-            xColor      = TTkCfg.theme.checkboxContentColorFocus
-        else:
-            borderColor = TTkCfg.theme.checkboxBorderColor
-            textColor   = TTkCfg.theme.checkboxTextColor
-            xColor      = TTkCfg.theme.checkboxContentColor
+        style = self.currentStyle()
+
+        borderColor = style['borderColor']
+        textColor   = style['color']
+        xColor = style['cbContentColor']
+
         canvas.drawText(pos=(0,0), color=borderColor ,text="[ ]")
         canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         text = {

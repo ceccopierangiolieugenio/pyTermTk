@@ -30,6 +30,8 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
+__all__ = ['TTkFancyTableView']
+
 class _TTkFancyTableViewHeader(TTkAbstractScrollView):
     __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
     def __init__(self, *args, **kwargs):

@@ -99,16 +99,22 @@ def demoMenuBar(root=None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+    parser.add_argument('-w', help='Windowed',    action='store_true')
+    parser.add_argument('-t', help='Track Mouse', action='store_true')
     args = parser.parse_args()
+    windowed = args.w
+    mouseTrack = args.t
 
-    root = ttk.TTk()
-    if args.f:
-        rootLayout = root
-        root.setLayout(ttk.TTkGridLayout())
+    root = ttk.TTk(title="pyTermTk MenuiBar Demo", mouseTrack=mouseTrack)
+    if windowed:
+        rootTab = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
+        border=True
     else:
-        rootLayout = ttk.TTkWindow(title="Test MenuBar", parent=root,pos=(1,1), size=(100,40), border=True, layout=ttk.TTkGridLayout())
-    demoMenuBar(rootLayout)
+        rootTab = root
+        root.setLayout(ttk.TTkGridLayout())
+        border=False
+    demoMenuBar(rootTab)
     root.mainloop()
 
 if __name__ == "__main__":

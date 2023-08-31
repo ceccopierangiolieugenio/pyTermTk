@@ -28,13 +28,15 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
-class TTkComboBox(TTkWidget):
+class TTkComboBox(TTkContainer):
     ''' TTkComboBox:
 
     Editable = False
@@ -59,6 +61,16 @@ class TTkComboBox(TTkWidget):
     :param editable: This property holds whether the combo box can be edited by the user, defaults to False
     :type editable: bool, optional
     '''
+
+    classStyle = {
+                'default':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#222222"),
+                                'borderColor':TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#ffff88")+TTkColor.bg("#222222"),
+                                'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD},
+            }
+
     __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
@@ -67,7 +79,7 @@ class TTkComboBox(TTkWidget):
         self.currentIndexChanged = pyTTkSignal(int)
         self.currentTextChanged  = pyTTkSignal(str)
         self.editTextChanged     = pyTTkSignal(str)
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         # self.checked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
         self._list = kwargs.get('list', [] )
@@ -153,15 +165,11 @@ class TTkComboBox(TTkWidget):
         self._lineEdit.setGeometry(1,0,w-4,h)
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            borderColor = TTkCfg.theme.comboboxBorderColorDisabled
-            color       = TTkCfg.theme.comboboxContentColorDisabled
-        elif self.hasFocus():
-            borderColor = TTkCfg.theme.comboboxBorderColorFocus
-            color       = TTkCfg.theme.comboboxContentColorFocus
-        else:
-            borderColor = TTkCfg.theme.comboboxBorderColor
-            color       = TTkCfg.theme.comboboxContentColor
+        style = self.currentStyle()
+
+        color   = style['color']
+        borderColor = style['borderColor']
+
         if self._id == -1:
             text = "- select -"
         else:

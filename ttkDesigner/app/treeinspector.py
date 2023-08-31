@@ -23,6 +23,7 @@
 import TermTk as ttk
 
 from .superobj.superwidget import SuperWidget
+from .superobj.superwidgetcontainer import SuperWidgetContainer
 from .superobj.superlayout import SuperLayout
 from .superobj.superwidgetframe import SuperWidgetFrame
 from .superobj.superwidgetmenubutton import SuperWidgetMenuButton
@@ -151,11 +152,18 @@ class TreeInspector(ttk.TTkGridLayout):
             elif issubclass(type(superThing), SuperLayout):
                 thing = thing._lay
             expanded = True # ttk.TTkHelper.isParent(widSelected,thing) if widSelected else False
-            if issubclass(type(superThing), SuperWidget):
+            if issubclass(type(superThing), SuperWidgetContainer):
                 top = _TTkTomTreeWidgetItem([
                             thing._name,   thing.__class__.__name__,
                             str(thing.isVisible()),
                             thing.layout().__class__.__name__],
+                            tomWidget=thing,
+                            tomSuperWidget=superThing,
+                            expanded=expanded)
+            elif issubclass(type(superThing), SuperWidget):
+                top = _TTkTomTreeWidgetItem([
+                            thing._name,   thing.__class__.__name__,
+                            str(thing.isVisible()),""],
                             tomWidget=thing,
                             tomSuperWidget=superThing,
                             expanded=expanded)
@@ -169,7 +177,7 @@ class TreeInspector(ttk.TTkGridLayout):
                             expanded=expanded)
             if issubclass(type(superThing), SuperWidgetFrame):
                 _processMenuBars(thing, top)
-            if issubclass(type(superThing), SuperWidget):
+            if issubclass(type(superThing), SuperWidgetContainer):
                 for c in superThing._superLayout.layout().children():
                     top.addChild(TreeInspector._getTomTreeItem(c,widSelected,designer))
             elif issubclass(type(superThing), SuperLayout):
