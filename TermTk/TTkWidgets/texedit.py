@@ -102,9 +102,11 @@ class TTkTextEditView(TTkAbstractScrollView):
     classStyle = {
                 'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
                                 'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008844"),
+                                'lineColor':     TTkColor.fg("#444444"),
                                 'wrapLineColor': TTkColor.fg("#888888")+TTkColor.bg("#333333")},
                 'disabled':    {'color': TTkColor.fg('#888888'),
                                 'selectedColor': TTkColor.bg("#888888"),
+                                'lineColor':     TTkColor.fg("#888888"),
                                 'wrapLineColor': TTkColor.fg('#888888')},
                 'focus':       {'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008888")},
             }
@@ -591,6 +593,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         style = self.currentStyle()
         color         = style['color']
         selectColor = style['selectedColor']
+        lineColor = style['lineColor']
 
         h = self.height()
         subLines = self._textWrap._lines[oy:oy+h]
@@ -602,7 +605,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             canvas.drawTTkString(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
 
         if self._lineWrapMode == TTkK.FixedWidth:
-            canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
+            canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=lineColor)
 
 class TTkTextEdit(TTkAbstractScrollArea):
     '''TTkTextEdit
