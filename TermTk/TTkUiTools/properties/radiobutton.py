@@ -26,6 +26,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.radiobutton import TTkRadioButton
 
+__all__ = ['TTkRadioButtonProperties']
+
 TTkRadioButtonProperties = {
     'properties' : {
         'Text' : {

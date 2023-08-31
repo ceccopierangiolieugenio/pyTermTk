@@ -31,6 +31,7 @@ import TermTk.TTkTheme.fileicon_ascii as fi_ascii
 import TermTk.TTkTheme.draw_utf8      as draw_utf8
 import TermTk.TTkTheme.draw_ascii     as draw_ascii
 
+__all__ = ['TTkTheme']
 
 class TTkTheme():
     '''Default Theme Class

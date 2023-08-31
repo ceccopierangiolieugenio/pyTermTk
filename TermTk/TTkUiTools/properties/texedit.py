@@ -27,6 +27,8 @@
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.texedit import TTkTextEdit
 
+__all__ = ['TTkTextEditProperties']
+
 TTkTextEditProperties = {
     'properties' : {
         'Line Number': {
