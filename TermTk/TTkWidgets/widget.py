@@ -30,7 +30,6 @@ from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
-from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 from TermTk.TTkTemplates.dragevents import TDragEvents
 from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
@@ -80,9 +79,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param toolTip: This property holds the widget's tooltip
     :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`
 
-    :param lookAndFeel: the style helper to be used for any customization
-    :type lookAndFeel: :class:`~TermTk.TTkTemplates.lookandfeel.TTkTTkLookAndFeel`
-
     :param bool,optional visible: the visibility, optional, defaults to True
     :param bool,optional enabled: the ability to handle input events, optional, defaults to True
     '''
@@ -105,7 +101,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_visible', '_transparent',
         '_pendingMouseRelease',
         '_enabled',
-        '_lookAndFeel', '_style', '_currentStyle',
+        '_style', '_currentStyle',
         '_toolTip',
         '_widgetCursor', '_widgetCursorEnabled', '_widgetCursorType',
         #Signals
@@ -124,10 +120,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
-
-        self._lookAndFeel = None
-        self.setLookAndFeel(kwargs.get('lookAndFeel', TTkLookAndFeel()))
-
 
         self._pendingMouseRelease = False
 
@@ -564,17 +556,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def setDisabled(self, disabled=True):
         '''setDisabled'''
         self.setEnabled(not disabled)
-
-    def lookAndFeel(self):
-        return self._lookAndFeel
-
-    def setLookAndFeel(self, laf):
-        if self._lookAndFeel:
-            self._lookAndFeel.modified.disconnect(self.update)
-        if not laf:
-            laf = TTkLookAndFeel()
-        self._lookAndFeel = laf
-        self._lookAndFeel.modified.connect(self.update)
 
     def toolTip(self):
         return self._toolTip
