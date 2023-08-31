@@ -24,6 +24,7 @@
 
 from TermTk.TTkCore.cfg import *
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.container import TTkContainer
 
 class TTkFrame(TTkContainer):
@@ -49,12 +50,18 @@ class TTkFrame(TTkContainer):
     :type border: bool, optional
 
     '''
+
+    classStyle = {
+                'default':     {'color': TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
+                                'borderColor': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888')}
+            }
+
     __slots__ = (
-        '_border','_title', '_titleColor', '_titleAlign','_borderColor',
+        '_border','_title', '_titleAlign',
         '_menubarTop', '_menubarTopPosition', '_menubarBottom', '_menubarBottomPosition')
     def __init__(self, *args, **kwargs):
-        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.frameBorderColor )
-        self._titleColor = kwargs.get('titleColor', TTkCfg.theme.frameTitleColor )
         self._titleAlign = kwargs.get('titleAlign' , TTkK.CENTER_ALIGN )
         self._title = TTkString(kwargs.get('title' , '' ))
         self._border = kwargs.get('border', True )
@@ -84,7 +91,7 @@ class TTkFrame(TTkContainer):
         '''
         if not self._menubarTop:
             from TermTk.TTkWidgets.menubar import TTkMenuBarLayout
-            self._menubarTop = TTkMenuBarLayout(borderColor=self._borderColor)
+            self._menubarTop = TTkMenuBarLayout()
             self.rootLayout().addItem(self._menubarTop)
             self._menubarTop.setGeometry(1,self._menubarTopPosition,self.width()-2,1)
             if not self._border and self._padt == 0:
@@ -162,26 +169,23 @@ class TTkFrame(TTkContainer):
         '''border'''
         return self._border
 
-    def borderColor(self):
-        return self._borderColor
-
-    def setBorderColor(self, color):
-        self._borderColor = color
-        self.update()
-
     def paintEvent(self, canvas):
+        style = self.currentStyle()
+        color = style['color']
+        borderColor = style['borderColor']
+
         if self._border:
-            canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=self._borderColor)
+            canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=borderColor)
             if len(self._title) != 0:
                 canvas.drawBoxTitle(
                                 pos=(0,0),
                                 size=(self._width,self._height),
                                 text=self._title,
                                 align=self._titleAlign,
-                                color=self._borderColor,
-                                colorText=self._titleColor)
+                                color=borderColor,
+                                colorText=color)
         else:
             if self._menubarTop:
-                canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=self._borderColor)
+                canvas.drawMenuBarBg(pos=(0,0),size=self.width(),color=borderColor)
             if self._menubarBottom:
-                canvas.drawMenuBarBg(pos=(0,self.height()-1),size=self.width(),color=self._borderColor)
+                canvas.drawMenuBarBg(pos=(0,self.height()-1),size=self.width(),color=borderColor)

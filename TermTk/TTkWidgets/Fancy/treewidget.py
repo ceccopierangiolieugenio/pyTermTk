@@ -32,6 +32,8 @@ from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
 
+__all__ = ['TTkFancyTreeWidget']
+
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

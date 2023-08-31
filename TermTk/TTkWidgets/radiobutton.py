@@ -59,6 +59,18 @@ class TTkRadioButton(TTkWidget):
 
      '''
 
+    classStyle = {
+                'default':     {'color': TTkColor.RST,
+                                'borderColor':TTkColor.RST,
+                                'rbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888'),
+                                'rbContentColor': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
+                                'rbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD},
+            }
+
     _radioLists = {}
     __slots__ = (
         '_checked', '_text', '_radiogroup'
@@ -144,14 +156,12 @@ class TTkRadioButton(TTkWidget):
         self.update()
 
     def paintEvent(self, canvas):
-        if self.hasFocus():
-            borderColor = TTkCfg.theme.radioButtonBorderColorFocus
-            textColor   = TTkCfg.theme.radioButtonTextColorFocus
-            xColor      = TTkCfg.theme.radioButtonContentColorFocus
-        else:
-            borderColor = TTkCfg.theme.radioButtonBorderColor
-            textColor   = TTkCfg.theme.radioButtonTextColor
-            xColor      = TTkCfg.theme.radioButtonContentColor
+        style = self.currentStyle()
+
+        borderColor = style['borderColor']
+        textColor   = style['color']
+        xColor = style['rbContentColor']
+
         canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
         canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         if self._checked:

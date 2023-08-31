@@ -26,6 +26,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.Fancy.treewidget import TTkFancyTreeWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
+__all__ = ['TTkFancyTree']
+
 class TTkFancyTree(TTkAbstractScrollArea):
     __slots__ = (
         '_treeView', 'activated',

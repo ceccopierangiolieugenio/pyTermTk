@@ -33,6 +33,13 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
 class TTkSpinBox(TTkContainer):
     '''TTkSpinBox'''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD},
+            }
+
     __slots__= (
         '_lineEdit', '_value', '_maximum', '_minimum',
         '_mouseDelta', '_valueDelta', '_draggable',
@@ -143,20 +150,13 @@ class TTkSpinBox(TTkContainer):
         return super().setEnabled(enabled)
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            textColor   = TTkCfg.theme.textColorDisabled
-        else:
-            textColor   = TTkColor.RST
+        style = self.currentStyle()
+        color = style['color']
         w = self.width()
-        canvas.drawChar(pos=(w-2,0),char="▲", color=textColor)
-        canvas.drawChar(pos=(w-1,0),char="▼", color=textColor)
-
-    def focusInEvent(self):
-        self._lineEdit._color = TTkCfg.theme.lineEditTextColorFocus
-        self._lineEdit.update()
+        canvas.drawChar(pos=(w-2,0),char="▲", color=color)
+        canvas.drawChar(pos=(w-1,0),char="▼", color=color)
 
     def focusOutEvent(self):
         self._draggable = False
-        self._lineEdit._color = TTkCfg.theme.lineEditTextColor
         self._lineEdit.focusOutEvent()
         self._lineEdit.update()

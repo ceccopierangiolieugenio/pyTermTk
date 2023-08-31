@@ -30,7 +30,6 @@ from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
-from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 from TermTk.TTkTemplates.dragevents import TDragEvents
 from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
@@ -38,20 +37,20 @@ from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
-    ''' Widget Layout sizes:
+    ''' Widget sizes:
 
     ::
 
-        Terminal area (i.e. XTerm)
+        Terminal area (i.e. XTerm) = TTk
         ┌─────────────────────────────────────────┐
         │                                         │
         │    TTkWidget     width                  │
         │ (x,y)┌─────────────────────────┐        │
-        │      │      padt (Top Padding) │        │
-        │      │    ┌───────────────┐    │ height │
-        │      │padl│ Layout/child  │padr│        │
-        │      │    └───────────────┘    │        │
-        │      │      padb (Bottom Pad.) │        │
+        │      │                         │        │
+        │      │                         │ height │
+        │      │                         │        │
+        │      │                         │        │
+        │      │                         │        │
         │      └─────────────────────────┘        │
         └─────────────────────────────────────────┘
 
@@ -70,11 +69,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param int height: the height of the widget, defaults to 0
     :param [int,int] size: the size [width, height] of the widget (override the previously defined sizes), optional, default=[0,0]
 
-    :param int padding: the padding (top, bottom, left, right) of the widget, defaults to 0
-    :param int paddingTop: the Top padding, override Top padding if already defined, optional, default=padding
-    :param int paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=padding
-    :param int paddingLeft: the Left padding, override Left padding if already defined, optional, default=padding
-    :param int paddingRight: the Right padding, override Right padding if already defined, optional, default=padding
     :param int maxWidth: the maxWidth of the widget, optional, defaults to 0x10000
     :param int maxHeight: the maxHeight of the widget, optional, defaults to 0x10000
     :param [int,int] maxSize: the max [width,height] of the widget, optional
@@ -85,21 +79,17 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param toolTip: This property holds the widget's tooltip
     :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`
 
-    :param lookAndFeel: the style helper to be used for any customization
-    :type lookAndFeel: :class:`~TermTk.TTkTemplates.lookandfeel.TTkTTkLookAndFeel`
-
     :param bool,optional visible: the visibility, optional, defaults to True
     :param bool,optional enabled: the ability to handle input events, optional, defaults to True
-    :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
-    :type layout: :mod:`TermTk.TTkLayouts`
     '''
 
     classStyle = {
-                'default':     {'color': TTkColor.RST},
-                'disabled':    {'color': TTkColor.fg('#888888')},
+                'default':     {'color': TTkColor.RST,           'borderColor': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'), 'borderColor': TTkColor.fg('#888888')},
                 # 'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0077FF')},
                 # 'checked':     {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#00FFFF')},
                 # 'clicked':     {'color': TTkColor.fg('#FFFF00')},
+                # 'focus':       {'color': TTkColor.fg('#FFFF88')},
             }
 
     __slots__ = (
@@ -111,16 +101,17 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_visible', '_transparent',
         '_pendingMouseRelease',
         '_enabled',
-        '_lookAndFeel', '_style', '_currentStyle',
+        '_style', '_currentStyle',
         '_toolTip',
         '_widgetCursor', '_widgetCursorEnabled', '_widgetCursorType',
         #Signals
-        'focusChanged', 'sizeChanged')
+        'focusChanged', 'sizeChanged', 'currentStyleChanged')
 
     def __init__(self, *args, **kwargs):
         #Signals
         self.focusChanged = pyTTkSignal(bool)
         self.sizeChanged = pyTTkSignal(int,int)
+        self.currentStyleChanged = pyTTkSignal(dict)
         # self.sizeChanged.connect(self.resizeEvent)
 
         self._widgetCursor = (0,0)
@@ -129,10 +120,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
         self._name = kwargs.get('name', self.__class__.__name__)
         self._parent = kwargs.get('parent', None )
-
-        self._lookAndFeel = None
-        self.setLookAndFeel(kwargs.get('lookAndFeel', TTkLookAndFeel()))
-
 
         self._pendingMouseRelease = False
 
@@ -150,17 +137,19 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._minh = kwargs.get('minHeight', 0x00000)
         self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
 
-        self._visible = kwargs.get('visible', True)
-        self._enabled = kwargs.get('enabled', True)
-        self.setStyle(self.classStyle)
-        self._processStyleEvent(TTkWidget._S_DEFAULT)
-
-        self._toolTip = TTkString(kwargs.get('toolTip',''))
-
         self._focus = False
         self._focus_policy = TTkK.NoFocus
 
+        self._visible = kwargs.get('visible', True)
+        self._enabled = kwargs.get('enabled', True)
+
+        self._toolTip = TTkString(kwargs.get('toolTip',''))
+
         self._widgetItem = TTkWidgetItem(widget=self)
+
+        self._currentStyle = TTkWidget.classStyle['default']
+        self.setStyle(self.classStyle)
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
 
         self._canvas = TTkCanvas(
                             widget = self,
@@ -360,10 +349,10 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             w = self
             while w._parent and (w.focusPolicy() & TTkK.ParentFocus) == TTkK.ParentFocus:
                 w = w._parent
+            self._processStyleEvent(TTkWidget._S_PRESSED)
             if w.focusPolicy() & TTkK.ClickFocus == TTkK.ClickFocus:
                 w.setFocus()
                 w.raiseWidget()
-            self._processStyleEvent(TTkWidget._S_PRESSED)
             if evt.tap == 2 and self.mouseDoubleClickEvent(evt):
                 #self._pendingMouseRelease = True
                 return True
@@ -478,9 +467,10 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     @pyTTkSlot()
     def close(self):
         '''close'''
-        if self._parent is not None and \
-           self._parent.rootLayout() is not None:
-            self._parent.rootLayout().removeWidget(self)
+        if _p := self._parent:
+            if _rl := _p.rootLayout():
+                _rl.removeWidget(self)
+            _p.update()
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
         self.hide()
@@ -515,12 +505,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         if tmp == self: return
         if tmp is not None:
             tmp.clearFocus()
-        TTkHelper.removeOverlayChild(self)
         TTkHelper.setFocus(self)
         self._focus = True
         self.focusChanged.emit(self._focus)
         self.focusInEvent()
+        TTkHelper.removeOverlayChild(self)
         self._pushWidgetCursor()
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
 
     def clearFocus(self):
         # TTkLog.debug(f"clearFocus: {self._name} - {self._focus}")
@@ -529,6 +520,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._focus = False
         self.focusChanged.emit(self._focus)
         self.focusOutEvent()
+        self._processStyleEvent(TTkWidget._S_DEFAULT)
         self.update(repaint=True, updateLayout=False)
 
     def hasFocus(self):
@@ -565,17 +557,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''setDisabled'''
         self.setEnabled(not disabled)
 
-    def lookAndFeel(self):
-        return self._lookAndFeel
-
-    def setLookAndFeel(self, laf):
-        if self._lookAndFeel:
-            self._lookAndFeel.modified.disconnect(self.update)
-        if not laf:
-            laf = TTkLookAndFeel()
-        self._lookAndFeel = laf
-        self._lookAndFeel.modified.connect(self.update)
-
     def toolTip(self):
         return self._toolTip
 
@@ -604,6 +585,12 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def currentStyle(self):
         return self._currentStyle
 
+    def setCurrentStyle(self, style):
+        if style == self._currentStyle: return
+        self._currentStyle = style
+        self.currentStyleChanged.emit(style)
+        self.update()
+
     def setStyle(self, style):
         if 'default' not in style:
             # find the closest subclass/parent holding the style
@@ -620,31 +607,42 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._style = mergeStyle
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
-    def _processStyleEvent(self, evt):
+    def mergeStyle(self, style):
+        cs = None
+        for t in self._style:
+            if self._style[t] == self._currentStyle:
+                cs = t
+            if t in style:
+                self._style[t] =  self._style[t] | style[t]
+        if cs:
+            self.setCurrentStyle(self._style[cs])
+
+    def _processStyleEvent(self, evt=_S_DEFAULT):
         if not self._style: return False
         if not self._enabled and 'disabled' in self._style:
-            self._currentStyle = self._style['disabled']
-            self.update()
+            self.setCurrentStyle(self._style['disabled'])
             return True
 
-        self._currentStyle = self._style['default']
         if evt in (TTkWidget._S_DEFAULT,
                    TTkWidget._S_NONE,
-                   TTkWidget._S_ACTIVE) and 'default' in self._style:
-            self._currentStyle = self._style['default']
-            self.update()
-            return True
+                   TTkWidget._S_ACTIVE):
+            if self.hasFocus() and 'focus' in self._style:
+                self.setCurrentStyle(self._style['focus'])
+                return True
+            elif 'default' in self._style:
+                self.setCurrentStyle(self._style['default'])
+                return True
         elif evt & TTkWidget._S_HOVER and 'hover' in self._style:
-            self._currentStyle = self._style['hover']
-            self.update()
+            self.setCurrentStyle(self._style['hover'])
             return True
         elif evt & TTkWidget._S_PRESSED and 'clicked' in self._style:
-            self._currentStyle = self._style['clicked']
-            self.update()
+            self.setCurrentStyle(self._style['clicked'])
             return True
         elif evt & TTkWidget._S_DISABLED and 'disabled' in self._style:
-            self._currentStyle = self._style['disabled']
-            self.update()
+            self.setCurrentStyle(self._style['disabled'])
+            return True
+        if self.hasFocus() and 'focus' in self._style:
+            self.setCurrentStyle(self._style['focus'])
             return True
         return False
 

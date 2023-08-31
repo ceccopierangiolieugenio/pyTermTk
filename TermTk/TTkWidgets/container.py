@@ -20,31 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
-from TermTk.TTkCore.color     import TTkColor
-from TermTk.TTkCore.string    import TTkString
-from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
-from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
-from TermTk.TTkTemplates.dragevents import TDragEvents
-from TermTk.TTkTemplates.mouseevents import TMouseEvents
-from TermTk.TTkTemplates.keyevents import TKeyEvents
-from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
-from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkContainer(TTkWidget):
-    ''' Widget Layout sizes:
+    ''' TTkContainer Layout sizes:
 
     ::
 
-        Terminal area (i.e. XTerm)
+        Terminal area (i.e. XTerm) = TTk
         ┌─────────────────────────────────────────┐
         │                                         │
-        │    TTkWidget     width                  │
+        │    TTkContainer   width                 │
         │ (x,y)┌─────────────────────────┐        │
         │      │      padt (Top Padding) │        │
         │      │    ┌───────────────┐    │ height │
@@ -54,51 +45,27 @@ class TTkContainer(TTkWidget):
         │      └─────────────────────────┘        │
         └─────────────────────────────────────────┘
 
-    The TTkWidget class is the base class of all user interface objects
-
-    :param name: the name of the widget, defaults to ""
-    :type name: str, optional
-    :param parent: the parent widget, defaults to None
-    :type parent: :class:`TTkWidget`, optional
-
-    :param int x: the x position, defaults to 0
-    :param int y: the y position, defaults to 0
-    :param [int,int] pos: the [x,y] position (override the previously defined x, y), optional, default=[0,0]
-
-    :param int width: the width of the widget, defaults to 0
-    :param int height: the height of the widget, defaults to 0
-    :param [int,int] size: the size [width, height] of the widget (override the previously defined sizes), optional, default=[0,0]
+    :param bool forwardStyle: any change of style will reflect the children, defaults to False
+    :type forwardStyle: bool
 
     :param int padding: the padding (top, bottom, left, right) of the widget, defaults to 0
     :param int paddingTop: the Top padding, override Top padding if already defined, optional, default=padding
     :param int paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=padding
     :param int paddingLeft: the Left padding, override Left padding if already defined, optional, default=padding
     :param int paddingRight: the Right padding, override Right padding if already defined, optional, default=padding
-    :param int maxWidth: the maxWidth of the widget, optional, defaults to 0x10000
-    :param int maxHeight: the maxHeight of the widget, optional, defaults to 0x10000
-    :param [int,int] maxSize: the max [width,height] of the widget, optional
-    :param int minWidth: the minWidth of the widget, defaults to 0
-    :param int minHeight: the minHeight of the widget, defaults to 0
-    :param [int,int] minSize: the minSize [width,height] of the widget, optional
 
-    :param toolTip: This property holds the widget's tooltip
-    :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`
-
-    :param lookAndFeel: the style helper to be used for any customization
-    :type lookAndFeel: :class:`~TermTk.TTkTemplates.lookandfeel.TTkTTkLookAndFeel`
-
-    :param bool,optional visible: the visibility, optional, defaults to True
-    :param bool,optional enabled: the ability to handle input events, optional, defaults to True
     :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
     :type layout: :mod:`TermTk.TTkLayouts`
     '''
 
     __slots__ = (
         '_padt', '_padb', '_padl', '_padr',
+        '_forwardStyle',
         '_layout')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *, padding=(0,0,0,0), forwardStyle=False,**kwargs):
 
+        self._forwardStyle = forwardStyle
         padding = kwargs.get('padding', 0 )
         self._padt = kwargs.get('paddingTop',    padding )
         self._padb = kwargs.get('paddingBottom', padding )
@@ -143,6 +110,27 @@ class TTkContainer(TTkWidget):
         '''
         TTkLog.error("<TTkWidget>.removeWidget(...) is deprecated, use <TTkWidget>.layout().removeWidget(...)")
         if self.layout(): self.layout().removeWidget(widget)
+
+    # def forwardStyleTo(self, widget:TTkWidget):
+    #     widget._currentStyle |= self._currentStyle
+    #     widget.update()
+
+    def _processForwardStyle(self):
+        if not self._forwardStyle: return
+        def _getChildren():
+            for w in self.rootLayout().iterWidgets(onlyVisible=True, recurse=False):
+                yield w
+            for w in self.layout().iterWidgets(onlyVisible=True, recurse=False):
+                yield w
+
+        for w in _getChildren():
+            self.setCurrentStyle(w._currentStyle | self._currentStyle)
+            if issubclass(type(w),TTkContainer):
+                w._processForwardStyle()
+
+    def setCurrentStyle(self, *args, **kwargs):
+        super().setCurrentStyle(*args, **kwargs)
+        self._processForwardStyle()
 
     @staticmethod
     def _paintChildCanvas(canvas, item, geometry, offset):

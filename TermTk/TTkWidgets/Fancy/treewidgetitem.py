@@ -25,6 +25,8 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal
 
+__all__ = ['TTkFancyTreeWidgetItem']
+
 class TTkFancyTreeWidgetItem():
     __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
         # Signals
