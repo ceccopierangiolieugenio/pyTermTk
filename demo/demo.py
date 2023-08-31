@@ -89,6 +89,7 @@ def stupidPythonHighlighter(txt):
     return txt
 
 def showSource(file):
+    if not file: return
     ttk.TTkLog.debug(f"Placeholder for the Sources - {file}")
     content = "Nothing"
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),file)) as f:
@@ -153,79 +154,53 @@ def demoShowcase(root=None, border=True):
 
     listMenu.addItem(f"Layouts")
     tabLayouts = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabLayouts.addTab(demoLayout(),      " Layout Test ")
-    tabLayouts.addTab(demoLayoutNested()," Nested Layout Test ")
-    tabLayouts.addTab(demoLayoutSpan(),  " Layout Span Test ")
-    tabLayouts.addTab(demoSplitter(),    " Splitter Test ")
-    tabLayoutsSources = [
-        'showcase/layout_basic.py',
-        'showcase/layout_nested.py',
-        'showcase/layout_span.py',
-        'showcase/splitter.py' ]
-    tabLayouts.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabLayoutsSources[tabLayouts.currentIndex()]))
+    tabLayouts.addTab(demoLayout(),      " Layout Test ",        'showcase/layout_basic.py')
+    tabLayouts.addTab(demoLayoutNested()," Nested Layout Test ", 'showcase/layout_nested.py')
+    tabLayouts.addTab(demoLayoutSpan(),  " Layout Span Test ",   'showcase/layout_span.py')
+    tabLayouts.addTab(demoSplitter(),    " Splitter Test ",      'showcase/splitter.py')
+    tabLayouts.addMenu("sources", ttk.TTkK.RIGHT, tabLayouts).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"MenuBar")
     tabMenuBar = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabMenuBar.addTab(demoMenuBar(),     " MenuBar Test ")
-    tabMenuBarSources = [ 'showcase/menubar.py' ]
-    tabMenuBar.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabMenuBarSources[tabMenuBar.currentIndex()]))
+    tabMenuBar.addTab(demoMenuBar(),     " MenuBar Test ", 'showcase/menubar.py')
+    tabMenuBar.addMenu("sources", ttk.TTkK.RIGHT, tabMenuBar).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Widgets")
     tabWidgets = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabWidgets.addTab(demoFormWidgets(), " Form Test ")
-    tabWidgets.addTab(demoTextEdit(),    " Text Edit ")
-    tabWidgets.addTab(demoList(),        " List Test ")
-    tabWidgets.addTab(demoTree(),        " Tree Test")
-    tabWidgets.addTab(demoTab(),         " Tab Test ")
-    tabWidgets.addTab(demoFancyTable(),  " Old Table ")
-    tabWidgets.addTab(demoFancyTree(),   " Old Tree ")
-    tabWidgetsSources = [
-        'showcase/formwidgets02.py',
-        'showcase/textedit.py',
-        'showcase/list.py',
-        'showcase/tree.py',
-        'showcase/tab.py',
-        'showcase/fancytable.py',
-        'showcase/fancytree.py' ]
-    tabWidgets.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabWidgetsSources[tabWidgets.currentIndex()]))
+    tabWidgets.addTab(demoFormWidgets(), " Form Test ", 'showcase/formwidgets02.py')
+    tabWidgets.addTab(demoTextEdit(),    " Text Edit ", 'showcase/textedit.py')
+    tabWidgets.addTab(demoList(),        " List Test ", 'showcase/list.py')
+    tabWidgets.addTab(demoTree(),        " Tree Test",  'showcase/tree.py')
+    tabWidgets.addTab(demoTab(),         " Tab Test ",  'showcase/tab.py')
+    tabWidgets.addTab(demoFancyTable(),  " Old Table ", 'showcase/fancytable.py')
+    tabWidgets.addTab(demoFancyTree(),   " Old Tree ",  'showcase/fancytree.py')
+    tabWidgets.addMenu("sources", ttk.TTkK.RIGHT, tabWidgets).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Pickers")
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabPickers.addTab(demoFilePicker(),  " File Picker ")
-    tabPickers.addTab(demoColorPicker(), " Color Picker ")
-    tabPickersSources = [
-        'showcase/filepicker.py',
-        'showcase/colorpicker.py' ]
-    tabPickers.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabPickersSources[tabPickers.currentIndex()]))
+    tabPickers.addTab(demoFilePicker(),  " File Picker ",  'showcase/filepicker.py')
+    tabPickers.addTab(demoColorPicker(), " Color Picker ", 'showcase/colorpicker.py')
+    tabPickers.addMenu("sources", ttk.TTkK.RIGHT, tabPickers).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Graphs")
     tabGraphs = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabGraphs.addTab(demoGraph(),       " Graph Test ")
-    tabGraphsSources = [ 'showcase/graph.py' ]
-    tabGraphs.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabGraphsSources[tabGraphs.currentIndex()]))
+    tabGraphs.addTab(demoGraph(),       " Graph Test ", 'showcase/graph.py')
+    tabGraphs.addMenu("sources", ttk.TTkK.RIGHT, tabGraphs).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Windows")
     tabWindows = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabWindows.addTab(demoWindows(),     " Windows Test ")
-    tabWindows.addTab(demoWindowsFlags()," Windows Flags ")
-    tabWindowsSources = [ 'showcase/windows.py', 'showcase/windowsflags.py' ]
-    tabWindows.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabWindowsSources[tabWindows.currentIndex()]))
+    tabWindows.addTab(demoWindows(),     " Windows Test ",  'showcase/windows.py')
+    tabWindows.addTab(demoWindowsFlags()," Windows Flags ", 'showcase/windowsflags.py')
+    tabWindows.addMenu("sources", ttk.TTkK.RIGHT, tabWindows).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Extra")
     tabArea = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
-    tabArea.addTab(demoScrollArea01()," Scroll Area 1 ")
-    tabArea.addTab(demoScrollArea02()," Scroll Area 2 ")
-    tabArea.addTab(demoDnD(),         " Drag'n Drop ")
-    tabArea.addTab(demoDnDTabs(),     " D'n D Tabs ")
-    tabArea.addTab(demoSigmask(),     " Sigmask ")
-    tabAreaSources = [
-        'showcase/scrollarea01.py',
-        'showcase/scrollarea02.py',
-        'showcase/dragndrop.py',
-        'showcase/dndtabs.py',
-        'showcase/sigmask.py' ]
-    tabArea.addMenu("sources", ttk.TTkK.RIGHT).menuButtonClicked.connect(lambda x : showSource(tabAreaSources[tabArea.currentIndex()]))
-
+    tabArea.addTab(demoScrollArea01()," Scroll Area 1 ", 'showcase/scrollarea01.py')
+    tabArea.addTab(demoScrollArea02()," Scroll Area 2 ", 'showcase/scrollarea02.py')
+    tabArea.addTab(demoDnD(),         " Drag'n Drop ",   'showcase/dragndrop.py')
+    tabArea.addTab(demoDnDTabs(),     " D'n D Tabs ",    'showcase/dndtabs.py')
+    tabArea.addTab(demoSigmask(),     " Sigmask ",       'showcase/sigmask.py')
+    tabArea.addMenu("sources", ttk.TTkK.RIGHT, tabArea).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     @ttk.pyTTkSlot(str)
     def _listCallback(label):
