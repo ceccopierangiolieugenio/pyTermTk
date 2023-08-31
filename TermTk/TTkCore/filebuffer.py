@@ -28,6 +28,8 @@ import threading
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal
 
+__all__ = ['TTkFileBuffer']
+
 '''
              w1   w3   w2   w5
     Buffer |----|----|----|----|            cache buffer

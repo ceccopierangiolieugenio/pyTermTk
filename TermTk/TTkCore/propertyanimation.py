@@ -28,6 +28,8 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
 
+__all = ['TTkPropertyAnimation', 'TTkEasingCurve']
+
 class TTkEasingCurve():
     Linear       = 0
     InQuad       = 1

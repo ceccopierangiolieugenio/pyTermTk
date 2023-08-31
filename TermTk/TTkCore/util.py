@@ -22,6 +22,8 @@
 
 import zlib, pickle, base64
 
+__all__ = ['TTkUtil']
+
 class TTkUtil():
     @staticmethod
     def obj_inflate_2_base64(obj):
