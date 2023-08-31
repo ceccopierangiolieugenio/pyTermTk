@@ -64,11 +64,6 @@ class TTkButton(TTkWidget):
     :param bool checkable: define if the button is checkable, defaults to "False"
     :type checkable: bool, optional
 
-    :param TTkColor color: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonTextColor`
-    :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
-    :param TTkColor borderColor: the color of the border of the button, defaults to :class:`~TermTk.TTkTheme.theme.TTkTheme.buttonBorderColor`
-    :type borderColor: :class:`~TermTk.TTkCore.color.TTkColor`, optional
-
     +-----------------------------------------------------------------------------------------------+
     | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
     +-----------------------------------------------------------------------------------------------+
