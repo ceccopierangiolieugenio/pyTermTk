@@ -36,6 +36,8 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
+__all__ = ['TTkTextEditView', 'TTkTextEdit']
+
 class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
     classStyle = {
                 'default':     {

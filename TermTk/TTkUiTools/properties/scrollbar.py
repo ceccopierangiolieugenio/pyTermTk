@@ -26,6 +26,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
+__all__ = ['TTkScrollBarProperties']
+
 TTkScrollBarProperties = {
     'properties' : {
         'Orientation' : {

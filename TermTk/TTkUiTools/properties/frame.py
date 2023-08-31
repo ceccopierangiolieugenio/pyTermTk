@@ -23,6 +23,8 @@
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.frame import TTkFrame
 
+__all__ = ['TTkFrameProperties']
+
 TTkFrameProperties = {
     'properties' : {
         'Border' : {

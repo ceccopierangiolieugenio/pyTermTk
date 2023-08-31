@@ -24,6 +24,8 @@
 
 from TermTk.TTkCore.signal import pyTTkSignal
 
+__all__ = ['TTkAbstractItemModel']
+
 class TTkAbstractItemModel():
     __slots__ = (
         # Signals

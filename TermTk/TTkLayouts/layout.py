@@ -28,6 +28,8 @@
 
 from TermTk.TTkCore.constant import TTkK
 
+__all__ = ['TTkLayoutItem', 'TTkLayout']
+
 class TTkLayoutItem:
     ''' :class:`~TTkLayoutItem` is the base class of layout Items inherited by :class:`~TTkLayout`, :class:`~TTkWidgetItem`, and all the derived layout managers.
 

@@ -24,6 +24,8 @@
 
 import importlib.util
 
+__all__ = ['TTkClipboard']
+
 class TTkClipboard():
     _clipboard = ''
     __slots__ = ('_setText', '_text')

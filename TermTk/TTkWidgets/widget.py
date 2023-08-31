@@ -36,6 +36,8 @@ from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
+__all__ = ['TTkWidget']
+
 class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     ''' Widget sizes:
 

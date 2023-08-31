@@ -29,6 +29,8 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor, _TTkColor
 
+__all__ = ['TTkString']
+
 class TTkString():
     ''' TermTk String Helper
 

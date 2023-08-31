@@ -28,6 +28,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
+__all__ = ['TTkTextWrap']
+
 class TTkTextWrap():
     __slots__ = (
         '_lines', '_textDocument', '_tabSpaces',

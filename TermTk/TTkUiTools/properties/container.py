@@ -24,6 +24,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.container import TTkContainer
 
+__all__ = ['TTkContainerProperties']
+
 TTkContainerProperties = {
     'properties' : {
         'Padding': {

@@ -23,6 +23,8 @@
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
+__all__ = ['TTkColorButtonPickerProperties']
+
 TTkColorButtonPickerProperties = {
     'properties' : {
         'Color' : {

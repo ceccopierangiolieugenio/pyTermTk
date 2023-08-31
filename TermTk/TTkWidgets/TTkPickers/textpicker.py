@@ -47,6 +47,8 @@ from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
+__all__ = ['TTkTextPicker', 'TTkTextDialogPicker']
+
 class _superSimpleHorizontalLine(TTkWidget):
     def paintEvent(self, canvas):
         w,h = self.size()

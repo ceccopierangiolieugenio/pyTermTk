@@ -23,6 +23,8 @@
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.button import TTkButton
 
+__all__ = ['TTkButtonProperties']
+
 TTkButtonProperties = {
     'properties' : {
         'Text' : {

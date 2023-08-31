@@ -41,6 +41,8 @@ from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.TTkTerm.inputkey   import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
+__all__ = ['TTkInput']
+
 class TTkInput:
     __slots__ = (
             '_readInput',

@@ -22,6 +22,8 @@
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.menu import TTkMenuButton
 
+__all__ = ['TTkMenuButtonProperties']
+
 TTkMenuButtonProperties = {
     'properties' : {
         'Text' : {

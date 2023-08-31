@@ -46,6 +46,8 @@ from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
+__all__ = ['TTkTomInspector']
+
 class _DetailGridView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout')
     def __init__(self, *args, **kwargs):

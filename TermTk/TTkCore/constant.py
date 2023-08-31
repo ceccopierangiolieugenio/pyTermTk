@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkConstant', 'TTkK']
+
 class TTkConstant:
     '''Class container of all the constants used in :mod:`~TermTk`'''
 

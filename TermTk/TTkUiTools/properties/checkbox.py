@@ -24,6 +24,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 
+__all__ = ['TTkCheckboxProperties']
+
 TTkCheckboxProperties = {
     'properties' : {
        'Text' : {

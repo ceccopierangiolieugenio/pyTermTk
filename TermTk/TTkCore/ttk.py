@@ -44,6 +44,8 @@ from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
+__all__ = ['TTk']
+
 class TTk(TTkContainer):
     class _mouseCursor(TTkWidget):
         __slots__ = ('_cursor','_color')

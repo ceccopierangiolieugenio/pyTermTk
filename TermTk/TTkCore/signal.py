@@ -60,6 +60,8 @@ Methods
 from inspect import getfullargspec
 from types import LambdaType
 
+__all__ = ['pyTTkSlot', 'pyTTkSignal']
+
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function

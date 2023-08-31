@@ -27,6 +27,8 @@ from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
+__all__ = ['TTkScrollArea']
+
 class _TTkAreaWidget(TTkAbstractScrollView):
     __slots__ = ()
     def __init__(self, *args, **kwargs):
