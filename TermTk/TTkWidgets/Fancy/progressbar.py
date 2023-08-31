@@ -29,7 +29,6 @@ from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 
 __all__ = ['TTkFancyProgressBar', 'TTkLookAndFeelFPBar']
 
