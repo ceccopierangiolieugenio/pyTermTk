@@ -36,6 +36,8 @@ from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
+__all__ = ['TTkComboBox']
+
 class TTkComboBox(TTkContainer):
     ''' TTkComboBox:
 

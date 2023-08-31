@@ -30,6 +30,7 @@ from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
+__all__ = ['TTkSpinBox']
 
 class TTkSpinBox(TTkContainer):
     '''TTkSpinBox'''

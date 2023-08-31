@@ -35,6 +35,8 @@ from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
+__all__ = ['TTkMenuButton', 'TTkMenu']
+
 class _TTkMenuSpacer(TTkWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

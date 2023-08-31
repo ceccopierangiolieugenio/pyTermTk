@@ -30,6 +30,8 @@ from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
+__all__ = ['TTkSplitter']
+
 class TTkSplitter(TTkContainer):
     '''TTkSplitter'''
 

@@ -27,6 +27,8 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkScrollBar']
+
 '''
     ref: https://doc.qt.io/qt-5/qscrollbar.html
 '''

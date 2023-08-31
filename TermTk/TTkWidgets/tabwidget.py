@@ -40,6 +40,8 @@ from TermTk.TTkWidgets.menubar import TTkMenuBarButton
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
+__all__ = ['TTkTabButton', 'TTkTabBar', 'TTkTabWidget']
+
 _tabStyle  = {
             'default':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044"),
                             'borderColor': TTkColor.RST,

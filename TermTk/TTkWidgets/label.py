@@ -28,6 +28,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkLabel']
+
 class TTkLabel(TTkWidget):
     '''TTkLabel'''
     __slots__ = ('_text','_color','_alignment')

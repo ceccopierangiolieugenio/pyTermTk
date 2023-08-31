@@ -27,6 +27,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.container import TTkContainer
 
+__all__ = ['TTkFrame']
+
 class TTkFrame(TTkContainer):
     '''
 

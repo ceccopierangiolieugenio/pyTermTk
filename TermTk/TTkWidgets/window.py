@@ -29,6 +29,8 @@ from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
+__all__ = ['TTkWindow']
+
 class _MinimizedButton(TTkButton):
     __slots__ = ('_windowWidget')
     def __init__(self, *args, **kwargs):

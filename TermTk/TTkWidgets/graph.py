@@ -32,6 +32,8 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkGraph']
+
 class TTkGraph(TTkWidget):
     __slots__ = ('_data', '_maxData', '_offset', '_direction', '_align', '_color')
     def __init__(self, *args, **kwargs):

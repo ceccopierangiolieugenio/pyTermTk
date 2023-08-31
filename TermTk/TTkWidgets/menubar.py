@@ -32,6 +32,8 @@ from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.menu import TTkMenuButton
 
+__all__ = ['TTkMenuBarButton', 'TTkMenuBarLayout']
+
 class TTkMenuBarButton(TTkMenuButton):
     classStyle = TTkMenuButton.classStyle | {
                 'default': TTkMenuButton.classStyle['default'] | {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE},
