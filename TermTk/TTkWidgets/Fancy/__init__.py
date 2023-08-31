@@ -4,3 +4,4 @@ from .tree            import *
 from .treeview        import *
 from .treewidget      import *
 from .treewidgetitem  import *
+from .progressbar     import *
