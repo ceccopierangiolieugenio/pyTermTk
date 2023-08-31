@@ -237,10 +237,10 @@ class TTkCanvas:
         # Check the full wide chars on the edge of the two canvasses
         if ((0 <= (x+a) < self._width) and self._data[y][x+a] == ''):
             self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
-            self._colors[y][x+a] = TTkCfg.theme.unicodeWideOverflowColor
+            self._colors[y][x+a] = TTkString.unicodeWideOverflowColor
         if ((0 <= (x+b-1) < self._width) and TTkString._isWideCharData(self._data[y][x+b-1])):
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
-            self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
+            self._colors[y][x+b-1] = TTkString.unicodeWideOverflowColor
 
     def drawText(self, text="", pos=(0,0), width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
@@ -670,16 +670,16 @@ class TTkCanvas:
             # Check the full wide chars on the edge of the two canvasses
             if ((0 <= a < cw) and self._data[y+iy][a]==''):
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
-                self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][a] = TTkString.unicodeWideOverflowColor
             if ((0 < b <= cw) and self._data[y+iy][b-1] and TTkString._isWideCharData(self._data[y+iy][b-1])):
                 self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
-                self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][b-1] = TTkString.unicodeWideOverflowColor
             if ((0 < a <= cw) and self._data[y+iy][a-1] and TTkString._isWideCharData(self._data[y+iy][a-1])):
                 self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
-                self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][a-1] = TTkString.unicodeWideOverflowColor
             if ((0 <= b < cw) and self._data[y+iy][b]==''):
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
-                self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][b] = TTkString.unicodeWideOverflowColor
 
     def toAnsi(self):
         # TTkLog.debug("pushToTerminal")
