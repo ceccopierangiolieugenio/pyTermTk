@@ -29,6 +29,8 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkLayouts.layout import TTkLayout
 
+__all__ = ['TTkGridLayout']
+
 class TTkGridLayout(TTkLayout):
     '''
     The grid layout allows an automatic place all the widgets in a grid, <br/>

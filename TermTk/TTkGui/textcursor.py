@@ -27,6 +27,8 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
+__all__ = ['TTkTextCursor']
+
 class TTkTextCursor():
     class MoveMode():
         MoveAnchor = 0x00
