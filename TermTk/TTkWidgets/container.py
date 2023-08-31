@@ -20,20 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
-from TermTk.TTkCore.color     import TTkColor
-from TermTk.TTkCore.string    import TTkString
-from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
-from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
-from TermTk.TTkTemplates.dragevents import TDragEvents
-from TermTk.TTkTemplates.mouseevents import TMouseEvents
-from TermTk.TTkTemplates.keyevents import TKeyEvents
-from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
-from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkContainer(TTkWidget):
