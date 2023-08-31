@@ -32,7 +32,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
-__all__ = ['TTkAbstractListItem']
+__all__ = ['TTkAbstractListItem', 'TTkListWidget']
 
 class TTkAbstractListItem(TTkWidget):
     '''TTkAbstractListItem'''

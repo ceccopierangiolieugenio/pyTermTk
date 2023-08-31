@@ -24,6 +24,8 @@ from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLa
 from TermTk.TTkWidgets import *
 from .properties import *
 
+__all__ = ['TTkUiProperties']
+
 TTkUiProperties = {
     # Widgets
         TTkButton.__name__:         TTkButtonProperties,
