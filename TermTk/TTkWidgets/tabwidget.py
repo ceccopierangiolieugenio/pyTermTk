@@ -211,9 +211,6 @@ class TTkTabButton(_TTkTabColorButton):
             canvas.drawText(pos=(w-4,1 if self._border else 0), text="[X]", color=textColor)
 
 class _TTkTabMenuButton(TTkMenuBarButton):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def paintEvent(self, canvas):
         style = self.currentStyle()
         borderColor = style['borderColor']
@@ -265,6 +262,7 @@ class _TTkTabScrollerButton(_TTkTabColorButton):
     def paintEvent(self, canvas):
         style = self.currentStyle()
         borderColor = style['borderColor']
+        offsetColor = style['tabOffsetColor']
         # textColor   = style['color']
 
         tt = TTkCfg.theme.tab
@@ -275,21 +273,21 @@ class _TTkTabScrollerButton(_TTkTabColorButton):
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[7] +tt[1])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[9] +tt[31])
                 canvas.drawText(pos=(0,2), color=borderColor, text=lse   +tt[12])
-                canvas.drawChar(pos=(1,1), char=tt[31], color=TTkCfg.theme.tabOffsetColor)
+                canvas.drawChar(pos=(1,1), char=tt[31], color=offsetColor)
             else:
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[1] +tt[8])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[32]+tt[9])
                 canvas.drawText(pos=(0,2), color=borderColor, text=tt[12]+rse)
-                canvas.drawChar(pos=(0,1), char=tt[32], color=TTkCfg.theme.tabOffsetColor)
+                canvas.drawChar(pos=(0,1), char=tt[32], color=offsetColor)
         else:
             if self._side == TTkK.LEFT:
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[9] +tt[31])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[23]+tt[1])
-                canvas.drawChar(pos=(1,0), char=tt[31], color=TTkCfg.theme.tabOffsetColor)
+                canvas.drawChar(pos=(1,0), char=tt[31], color=offsetColor)
             else:
                 canvas.drawText(pos=(0,0), color=borderColor, text=tt[32]+tt[9])
                 canvas.drawText(pos=(0,1), color=borderColor, text=tt[1] +tt[24])
-                canvas.drawChar(pos=(0,0), char=tt[32], color=TTkCfg.theme.tabOffsetColor)
+                canvas.drawChar(pos=(0,0), char=tt[32], color=offsetColor)
 '''
 _curentIndex =              2
 _tabButtons  =    [0],[1],  [2],   [3],   [4],
@@ -672,9 +670,9 @@ class TTkTabWidget(TTkFrame):
         TTkLog.debug(f"Drop -> pos={evt.pos()}")
         return True
 
-    def addMenu(self, text, position=TTkK.LEFT):
+    def addMenu(self, text, position=TTkK.LEFT, data=None):
         '''addMenu'''
-        button = _TTkTabMenuButton(text=text)
+        button = _TTkTabMenuButton(text=text, data=data)
         self._tabBar.setSideEnd(self._tabBar.sideEnd() & ~position)
         if position==TTkK.LEFT:
             if not self._topLeftLayout:
