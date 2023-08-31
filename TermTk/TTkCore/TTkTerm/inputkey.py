@@ -24,7 +24,7 @@
 
 from TermTk.TTkCore.constant import TTkK
 
-__all = ['TTkKeyEvent']
+__all__ = ['TTkKeyEvent']
 
 class TTkKeyEvent:
     ''' Keyboard Events

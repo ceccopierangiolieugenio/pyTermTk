@@ -28,7 +28,7 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
 
-__all = ['TTkPropertyAnimation', 'TTkEasingCurve']
+__all__ = ['TTkPropertyAnimation', 'TTkEasingCurve']
 
 class TTkEasingCurve():
     Linear       = 0

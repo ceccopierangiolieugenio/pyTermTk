@@ -29,4 +29,4 @@ if importlib.util.find_spec('pyodideProxy'):
 else:
     from .term_unix import TTkTerm
 
-__all = ['TTkTerm']
+__all__ = ['TTkTerm']
