@@ -25,12 +25,13 @@
 import os, json
 
 from TermTk import TTkLog
-from TermTk import TTkCfg
+from TermTk import TTkCfg, TTkColor
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
+__all__ = ['TTkUiLoader']
 class TTkUiLoader():
     '''TTkUiLoader
 

@@ -202,6 +202,11 @@ class SuperLayout(ttk.TTkContainer):
             sl = None
             sw.move(evt.x-hsx, evt.y-hsy)
             sw.show()
+        elif issubclass(type(data),ttk.TTkTextEdit):
+            self.addSuperWidget(sw := so.SuperWidget.swFromWidget(designer=self._designer, wid=data, pos=(evt.x-hsx, evt.y-hsy)))
+            self._lay.addWidget(data)
+            sw.move(evt.x-hsx, evt.y-hsy)
+            sl = None
         elif issubclass(type(data),ttk.TTkContainer):
             self.addSuperWidget(sw := so.SuperWidget.swFromWidget(designer=self._designer, wid=data, pos=(evt.x-hsx, evt.y-hsy)))
             self._lay.addWidget(data)

@@ -31,6 +31,8 @@ from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkCore.signal    import pyTTkSlot
 
+__all__ = ['TTkToolTip']
+
 class _TTkToolTipDisplayWidget(TTkWidget):
     __slots__ = ('_toolTip', '_x', '_y')
     def __init__(self, *args, **kwargs):

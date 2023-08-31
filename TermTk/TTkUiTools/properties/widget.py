@@ -24,6 +24,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkWidgetProperties']
+
 TTkWidgetProperties = {
     'properties' : {
         'Name' : {

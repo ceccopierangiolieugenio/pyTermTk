@@ -1,4 +1,4 @@
-from .colorpicker import TTkColorButtonPicker, TTkColorDialogPicker
-from .filepicker import TTkFileDialog, TTkFileDialogPicker, TTkFileButtonPicker
-from .textpicker import TTkTextPicker, TTkTextDialogPicker
-from .messagebox import TTkMessageBox
+from .colorpicker import *
+from .filepicker  import *
+from .textpicker  import *
+from .messagebox  import *

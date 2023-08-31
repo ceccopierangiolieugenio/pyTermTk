@@ -27,6 +27,8 @@ from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkContainer']
+
 class TTkContainer(TTkWidget):
     ''' TTkContainer Layout sizes:
 

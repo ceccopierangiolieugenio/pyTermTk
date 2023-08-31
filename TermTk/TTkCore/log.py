@@ -29,6 +29,8 @@ import inspect
 import logging
 from collections.abc import Callable, Set
 
+__all__ = ['TTkLog']
+
 class _TTkContext:
     __slots__ = ['file', 'line', 'function']
     def __init__(self, cf):

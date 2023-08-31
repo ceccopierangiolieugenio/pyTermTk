@@ -25,6 +25,8 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.window import TTkWindow
 
+__all__ = ['TTkWindowProperties']
+
 TTkWindowProperties = {
     'properties' : {
         'Window Flags' : {

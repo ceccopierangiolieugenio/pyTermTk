@@ -23,8 +23,9 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.signal import pyTTkSlot
-from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+
+__all__ = ['TTkTestAbstractScrollWidget']
 
 class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
     ID = 1

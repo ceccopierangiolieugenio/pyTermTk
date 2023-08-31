@@ -29,6 +29,8 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 
+__all__ = ['TTkCanvas']
+
 class TTkCanvas:
     ''' Init the Canvas object
 

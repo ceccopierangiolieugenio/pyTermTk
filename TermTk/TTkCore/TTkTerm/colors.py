@@ -29,6 +29,8 @@ import re
 
 from .colors_ansi_map import ansiMap256, ansiMap16
 
+__all__ = ['TTkTermColor']
+
 class TTkTermColor():
     BOLD         = 0x01
     ITALIC       = 0x02

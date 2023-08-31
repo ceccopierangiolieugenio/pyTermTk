@@ -26,6 +26,8 @@ from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkDrag', 'TTkDropEvent']
+
 class _TTkDragDisplayWidget(TTkWidget):
     __slots__ = ('_pixmap')
 

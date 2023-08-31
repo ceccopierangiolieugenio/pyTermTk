@@ -32,6 +32,8 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkLineEdit']
+
 '''
      Line Edit: |_________-___________|
      Text  "abcdefbhijklmnopqrstuvwxyz12345"

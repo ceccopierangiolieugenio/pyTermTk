@@ -32,8 +32,6 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 __all__ = ['TTkFancyProgressBar', 'TTkLookAndFeelFPBar']
 
-
-
 class TTkLookAndFeel():
     __slots__ = ('modified')
     def __init__(self, *args, **kwargs):

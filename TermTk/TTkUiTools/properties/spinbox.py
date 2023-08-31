@@ -24,6 +24,8 @@
 
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 
+__all__ = ['TTkSpinBoxProperties']
+
 TTkSpinBoxProperties = {
     'properties' : {
         'Value' : {

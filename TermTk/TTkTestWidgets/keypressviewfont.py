@@ -31,6 +31,8 @@ from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkKeyPressViewFont']
+
 class TTkKeyPressViewFont():
     bitmap = {
         ' ':[

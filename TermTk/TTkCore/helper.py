@@ -28,6 +28,8 @@ from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
+__all__ = ['TTkHelper']
+
 class TTkHelper:
     '''TTkHelper
 

@@ -30,6 +30,8 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from dataclasses import dataclass
 
+__all__ = ['TTkTreeWidget']
+
 class TTkTreeWidget(TTkAbstractScrollView):
     '''TTkTreeWidget'''
 

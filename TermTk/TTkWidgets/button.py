@@ -29,6 +29,8 @@ from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkButton']
+
 class TTkButton(TTkWidget):
     ''' TTkButton:
 

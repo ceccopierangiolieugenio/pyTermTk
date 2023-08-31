@@ -40,6 +40,8 @@ from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
+__all__ = ['TTkColorButtonPicker', 'TTkColorDialogPicker']
+
 class _TTkHueCanvas(TTkWidget):
     __slots__ = ('_hueList', '_selected', 'colorPicked')
     def __init__(self, *args, **kwargs):

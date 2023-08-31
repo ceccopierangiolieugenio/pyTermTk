@@ -29,6 +29,8 @@ from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
 
+__all__ = ['TTkAbstractScrollArea']
+
 class TTkAbstractScrollArea(TTkContainer):
     __slots__ = (
         '_processing', # this flag is required to avoid unnecessary loop on edge cases
