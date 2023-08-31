@@ -43,6 +43,7 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 
+__all__ = ['TTkFileDialog', 'TTkFileDialogPicker', 'TTkFileButtonPicker']
 
 '''
 ::

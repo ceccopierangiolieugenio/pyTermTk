@@ -25,6 +25,8 @@
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidget import TTkFileTreeWidget
 
+__all__ = ['TTkFileTree']
+
 class TTkFileTree(TTkTree):
     __slots__ = ('_fileTreeWidget',
                  # Forwarded Methods

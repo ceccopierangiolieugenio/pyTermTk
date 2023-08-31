@@ -27,6 +27,8 @@ import re
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 
+__all__ = ['TTkFileTreeWidgetItem']
+
 class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
     FILE = 0x00
     DIR  = 0x01
