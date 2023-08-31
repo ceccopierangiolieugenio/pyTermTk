@@ -21,19 +21,29 @@
 # SOFTWARE.
 
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkLayouts.layout import TTkLayout
+from TermTk.TTkWidgets.container import TTkContainer
 
-__all__ = ['TTkFrameProperties']
+__all__ = ['TTkContainerProperties']
 
-TTkFrameProperties = {
+TTkContainerProperties = {
     'properties' : {
-        'Border' : {
-                'init': {'name':'border', 'type':bool },
-                'get':  {'cb':TTkFrame.border,     'type':bool } ,
-                'set':  {'cb':TTkFrame.setBorder,  'type':bool } },
-        'Title' : {
-                'init': {'name':'title',  'type':'singleLineTTkString' },
-                'get':  {'cb':TTkFrame.title,      'type':'singleLineTTkString' } ,
-                'set':  {'cb':TTkFrame.setTitle,   'type':'singleLineTTkString' } },
-    },'signals' : {},'slots' : {}
+        'Padding': {
+                'get':  { 'cb':TTkContainer.getPadding,    'type': [
+                                { 'name': 'top',    'type':int  } ,
+                                { 'name': 'bottom', 'type':int  } ,
+                                { 'name': 'left',   'type':int  } ,
+                                { 'name': 'right',  'type':int } ] },
+                'set':  { 'cb':TTkContainer.setPadding,   'type': [
+                                { 'name': 'top',    'type':int  } ,
+                                { 'name': 'bottom', 'type':int  } ,
+                                { 'name': 'left',   'type':int  } ,
+                                { 'name': 'right',  'type':int } ] } },
+        'Layout' : {
+                'init': {'name':'layout', 'type':TTkLayout} ,
+                'get':  { 'cb':TTkContainer.layout,    'type':TTkLayout} ,
+                'set':  { 'cb':TTkContainer.setLayout, 'type':TTkLayout} },
+    },'signals' : {
+    },'slots' : {
+    }
 }

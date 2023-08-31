@@ -25,6 +25,8 @@
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.splitter import TTkSplitter
 
+__all__ = ['TTkSplitterProperties']
+
 TTkSplitterProperties = {
     'properties' : {
         'Border' : {

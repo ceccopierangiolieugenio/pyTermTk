@@ -29,6 +29,7 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
+__all__ = ['TTkTreeWidgetItem']
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
     __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',

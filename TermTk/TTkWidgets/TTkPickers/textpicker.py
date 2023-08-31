@@ -35,6 +35,7 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkWidgets.texedit import TTkTextEditView, TTkTextEdit
 from TermTk.TTkWidgets.splitter import TTkSplitter
@@ -45,6 +46,8 @@ from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
+
+__all__ = ['TTkTextPicker', 'TTkTextDialogPicker']
 
 class _superSimpleHorizontalLine(TTkWidget):
     def paintEvent(self, canvas):
@@ -254,7 +257,7 @@ class TTkTextDialogPicker(TTkWindow):
         return super().resize(w, th+t+b+4)
 
 
-class TTkTextPicker(TTkWidget):
+class TTkTextPicker(TTkContainer):
     '''TTkTextPicker
     .. note:: This is an early unstable prototype
               Do not use it unless you know what you are doing

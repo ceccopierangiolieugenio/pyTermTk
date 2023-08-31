@@ -34,6 +34,8 @@ from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
+__all__ = ['TTkFileTreeWidget']
+
 class TTkFileTreeWidget(TTkTreeWidget):
     __slots__ = ('_path', '_filter',
                  # Signals

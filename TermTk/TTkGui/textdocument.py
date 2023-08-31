@@ -26,6 +26,8 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
 
+__all__ = ['TTkTextDocument']
+
 class TTkTextDocument():
     '''
         Undo,Redo Logic

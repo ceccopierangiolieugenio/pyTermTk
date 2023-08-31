@@ -31,6 +31,8 @@ from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
+__all__ = ['TTkLogViewer']
+
 class _TTkLogViewer(TTkAbstractScrollView):
     __slots__ = ('_color', '_text', '_messages', '_cwd', '_follow')
     def __init__(self, *args, **kwargs):

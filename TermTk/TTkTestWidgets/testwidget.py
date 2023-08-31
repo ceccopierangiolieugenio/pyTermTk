@@ -30,6 +30,8 @@ from TermTk.TTkWidgets.button import *
 from TermTk.TTkWidgets.label import *
 from TermTk.TTkWidgets.frame import *
 
+__all__ = ['TTkTestWidget']
+
 class _TestContent(TTkWidget):
     t01 = TTkString(color=TTkColor.fg("#ff0000") ,text="     L😎rem ipsum dolor sit amet, ⌚ ❤ 💙 🙋'")
     t02 = TTkString(color=TTkColor.fg("#ff8800") ,text="consectetur adipiscing elit,")

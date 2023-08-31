@@ -25,12 +25,13 @@
 import os, json
 
 from TermTk import TTkLog
-from TermTk import TTkCfg
+from TermTk import TTkCfg, TTkColor
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
+__all__ = ['TTkUiLoader']
 class TTkUiLoader():
     '''TTkUiLoader
 
@@ -73,8 +74,33 @@ class TTkUiLoader():
         '''
         return TTkUiLoader.loadDict(json.loads(text), baseWidget, kwargs)
 
+    def _convert_1_0_1_to_2_0_0(ui):
+        def _processWidget(_wid):
+            if issubclass(globals()[_wid['class']],TTkContainer):
+                if hasattr(_wid,'layout'):
+                    _wid['layout']['children'] = [_processWidget(_ch) for _ch in _wid['layout']['children']]
+            elif _wid['layout']['children']:
+                _wid['class'] = 'TTkContainer'
+                _wid['layout']['children'] = [_processWidget(_ch) for _ch in _wid['layout']['children']]
+            else:
+                _wid.pop('layout',None)
+                _wid['params'].pop("layout",None)
+            return _wid
+
+        tui = _processWidget(ui['tui'])
+
+        return {
+            "version": "2.0.0",
+            "connections" : ui['connections'],
+            "tui": tui }
+
     @staticmethod
-    def _loadDict_1_0_0(ui, baseWidget:TTkWidget=None, args=None):
+    def _loadDict_1_0_0(ui, *args, **kwargs):
+        ui = TTkUiLoader._convert_1_0_1_to_2_0_0(ui)
+        return TTkUiLoader._loadDict_2_0_0(ui, *args, **kwargs)
+
+    @staticmethod
+    def _loadDict_2_0_0(ui, baseWidget:TTkWidget=None, args=None):
         def _setMenuButton(_menuButtonProp, _menuButton:TTkMenuButton):
             if 'submenu' in _menuButtonProp:
                 for _sm in _menuButtonProp['submenu']:
@@ -260,6 +286,14 @@ class TTkUiLoader():
         return widget
 
     @staticmethod
+    def normalise(ui):
+        cb = {'1.0.0' : TTkUiLoader._convert_1_0_1_to_2_0_0,
+              '1.0.1' : TTkUiLoader._convert_1_0_1_to_2_0_0,
+              '2.0.0' : lambda x: x
+              }.get(ui['version'], lambda x: x)
+        return cb(ui)
+
+    @staticmethod
     def loadDict(ui, baseWidget:TTkWidget=None, kwargs=None) -> TTkWidget:
         '''load the dictionary representing the ui definition of the widget
 
@@ -273,7 +307,8 @@ class TTkUiLoader():
         :return: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
         '''
         cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0,
-              '1.0.1' : TTkUiLoader._loadDict_1_0_0
+              '1.0.1' : TTkUiLoader._loadDict_1_0_0,
+              '2.0.0' : TTkUiLoader._loadDict_2_0_0
               }.get(ui['version'], None)
         if cb:
             return cb(ui, baseWidget, kwargs)

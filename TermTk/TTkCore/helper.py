@@ -28,6 +28,8 @@ from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
+__all__ = ['TTkHelper']
+
 class TTkHelper:
     '''TTkHelper
 
@@ -197,8 +199,9 @@ class TTkHelper:
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
         widget.setFocus()
         widget.raiseWidget()
-        for w in widget.rootLayout().iterWidgets(onlyVisible=True):
-            w.update()
+        if hasattr(widget,'rootLayout'):
+            for w in widget.rootLayout().iterWidgets(onlyVisible=True):
+                w.update()
 
     @staticmethod
     def getOverlay():
@@ -372,7 +375,10 @@ class TTkHelper:
                 wx,wy,ww,wh = widget.geometry()
 
                 if wx <= x < wx+ww and wy <= y < wy+wh:
-                    return TTkHelper.widgetAt(x-wx, y-wy, widget.rootLayout())
+                    if hasattr(widget,'rootLayout'):
+                        return TTkHelper.widgetAt(x-wx, y-wy, widget.rootLayout())
+                    else:
+                        return widget
                 continue
 
             elif item.layoutItemType() == TTkK.LayoutItem:

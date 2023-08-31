@@ -57,17 +57,21 @@ def demoTab(root=None, border=True):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+    parser.add_argument('-w', help='Windowed',    action='store_true')
+    parser.add_argument('-t', help='Track Mouse', action='store_true')
     args = parser.parse_args()
+    windowed = args.w
+    mouseTrack = args.t
 
-    root = ttk.TTk()
-    if args.f:
+    root = ttk.TTk(title="pyTermTk Tab Demo", mouseTrack=mouseTrack)
+    if windowed:
+        rootTab = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
+        border=True
+    else:
         rootTab = root
         root.setLayout(ttk.TTkGridLayout())
         border=False
-    else:
-        rootTab = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
-        border=True
     demoTab(rootTab, border)
     root.mainloop()
 

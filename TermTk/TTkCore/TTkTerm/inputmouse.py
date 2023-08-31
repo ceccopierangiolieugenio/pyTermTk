@@ -24,6 +24,8 @@
 
 from TermTk.TTkCore.constant import TTkK
 
+__all__ = ['TTkMouseEvent']
+
 class TTkMouseEvent:
     ''' Mouse Events
 

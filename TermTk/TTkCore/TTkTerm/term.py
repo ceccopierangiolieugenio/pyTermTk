@@ -28,3 +28,5 @@ if importlib.util.find_spec('pyodideProxy'):
     from .term_pyodide import TTkTerm
 else:
     from .term_unix import TTkTerm
+
+__all__ = ['TTkTerm']

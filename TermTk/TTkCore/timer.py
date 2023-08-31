@@ -26,3 +26,5 @@ if importlib.util.find_spec('pyodideProxy'):
     from .timer_pyodide import TTkTimer
 else:
     from .timer_unix import TTkTimer
+
+__all__ = ['TTkTimer']

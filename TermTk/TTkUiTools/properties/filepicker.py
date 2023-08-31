@@ -24,6 +24,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.filepicker import TTkFileButtonPicker
 
+__all__ = ['TTkFileButtonPickerProperties']
+
 TTkFileButtonPickerProperties = {
     'properties' : {
         'Path' : {

@@ -29,6 +29,8 @@ from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
+__all__ = ['TTkWindow']
+
 class _MinimizedButton(TTkButton):
     __slots__ = ('_windowWidget')
     def __init__(self, *args, **kwargs):
@@ -41,6 +43,24 @@ class _MinimizedButton(TTkButton):
 
 class TTkWindow(TTkResizableFrame):
     '''TTkWindow'''
+
+    _windowStyleNormal = {
+            'default':     {'borderColor': TTkColor.RST},
+        }
+
+    _windowStyleFocussed = {
+            'default':     {'borderColor': TTkColor.fg("#ffff55")},
+        }
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST,
+                                'borderColor': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff55")}
+            }
+
     __slots__ = (
             '_title', '_mouseDelta', '_draggable',
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
@@ -83,6 +103,7 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.update()
 
         self.setWindowFlag(kwargs.get('flags', TTkK.WindowFlag.WindowCloseButtonHint))
+        self.focusChanged.connect(self._focusChanged)
 
     def _maximize(self):
         if not (pw := self.parentWidget()): return
@@ -141,17 +162,6 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.setGeometry(1,1,w-2,1)
         super().resizeEvent(w,h)
 
-    def paintEvent(self, canvas):
-        if self.hasFocus():
-            color = TTkCfg.theme.windowBorderColorFocus
-        else:
-            color = TTkCfg.theme.windowBorderColor
-        canvas.drawText(pos=(2,1),text=self._title)
-        canvas.drawGrid(
-                    color=color,
-                    pos=(0,0), size=self.size(),
-                    hlines=[2], grid=2)
-
     def mousePressEvent(self, evt):
         self._mouseDelta = (evt.x, evt.y)
         self._draggable = False
@@ -172,13 +182,32 @@ class TTkWindow(TTkResizableFrame):
             return True
         return TTkResizableFrame.mouseDragEvent(self, evt)
 
-    def focusInEvent(self):
-        if self._menubarTop:
-            self._menubarTop.setBorderColor(TTkColor.fg("#ffff55"))
-        self.update()
+    def _focusChanged(self, focus):
+        if focus:
+            styleToMerge = TTkWindow._windowStyleFocussed
+        else:
+            styleToMerge = TTkWindow._windowStyleNormal
+
+        def _applyStyle(_mb):
+            if not _mb: return
+            for m in _mb._menus(TTkK.LEFT_ALIGN):   m.mergeStyle(styleToMerge)
+            for m in _mb._menus(TTkK.RIGHT_ALIGN):  m.mergeStyle(styleToMerge)
+            for m in _mb._menus(TTkK.CENTER_ALIGN): m.mergeStyle(styleToMerge)
+
+        _applyStyle(self.menuBar(TTkK.TOP))
+        _applyStyle(self.menuBar(TTkK.BOTTOM))
+
 
     def focusOutEvent(self):
         self._draggable = False
-        if self._menubarTop:
-            self._menubarTop.setBorderColor(TTkColor.RST)
-        self.update()
+
+    def paintEvent(self, canvas):
+        style = self.currentStyle()
+        color = style['color']
+        borderColor = style['borderColor']
+
+        canvas.drawText(pos=(2,1),text=self._title, color=color)
+        canvas.drawGrid(
+                    color=borderColor,
+                    pos=(0,0), size=self.size(),
+                    hlines=[2], grid=2)

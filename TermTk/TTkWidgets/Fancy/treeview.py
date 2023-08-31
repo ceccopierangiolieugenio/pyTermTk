@@ -24,6 +24,8 @@
 
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 
+__all__ = ['TTkFancyTreeView']
+
 class TTkFancyTreeView(TTkFancyTableView):
     __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
 

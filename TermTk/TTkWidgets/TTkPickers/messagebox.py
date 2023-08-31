@@ -34,6 +34,8 @@ from TermTk.TTkWidgets.image import TTkImage
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.button import TTkButton
 
+__all__ = ['TTkMessageBox']
+
 class TTkMessageBox(TTkWindow):
     class Icon(int):
         NoIcon      = 0

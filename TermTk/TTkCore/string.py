@@ -29,6 +29,8 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor, _TTkColor
 
+__all__ = ['TTkString']
+
 class TTkString():
     ''' TermTk String Helper
 
@@ -58,6 +60,8 @@ class TTkString():
         # Combination of constructors (Highly Unrecommended)
         str7 = TTkString("test 7", color=TTkColor.fg('#FF0000'))
     '''
+    unicodeWideOverflowColor = TTkColor.fg("#888888")+TTkColor.bg("#000088")
+
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
 
     def __init__(self, text="", color=None):
@@ -358,7 +362,7 @@ class TTkString():
                 elif sz > width:
                     ret._text   =  rt[:-1]+TTkCfg.theme.unicodeWideOverflowCh[1]
                     ret._colors =  self._colors[:len(ret._text)]
-                    ret._colors[-1] = TTkCfg.theme.unicodeWideOverflowColor
+                    ret._colors[-1] = TTkString.unicodeWideOverflowColor
                     break
         else:
             # Legacy, trim the string

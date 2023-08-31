@@ -24,6 +24,7 @@
 from .supercontrol import SuperControlWidget
 
 from .superwidget            import SuperWidget
+from .superwidgetcontainer   import SuperWidgetContainer
 from .superwidgettextedit    import SuperWidgetTextEdit
 from .superwidgetradiobutton import SuperWidgetRadioButton
 from .superwidgetframe       import SuperWidgetFrame

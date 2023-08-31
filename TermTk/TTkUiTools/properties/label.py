@@ -25,6 +25,8 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.label import TTkLabel
 
+__all__ = ['TTkLabelProperties']
+
 TTkLabelProperties = {
     'properties' : {
         'Text' : {

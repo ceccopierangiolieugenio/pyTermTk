@@ -26,6 +26,8 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkImage']
+
 class TTkImage(TTkWidget):
     FULLBLOCK = 0x00
     HALFBLOCK = 0x01

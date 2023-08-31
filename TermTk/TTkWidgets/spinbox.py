@@ -27,12 +27,20 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkLayouts import TTkGridLayout
-from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 
+__all__ = ['TTkSpinBox']
 
-class TTkSpinBox(TTkWidget):
+class TTkSpinBox(TTkContainer):
     '''TTkSpinBox'''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD},
+            }
+
     __slots__= (
         '_lineEdit', '_value', '_maximum', '_minimum',
         '_mouseDelta', '_valueDelta', '_draggable',
@@ -41,7 +49,7 @@ class TTkSpinBox(TTkWidget):
     def __init__(self, *args, **kwargs):
         # Signals
         self.valueChanged=pyTTkSignal(int)
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._value = kwargs.get("value",0)
         self._maximum = kwargs.get("maximum",99)
         self._minimum = kwargs.get("minimum",0)
@@ -143,20 +151,13 @@ class TTkSpinBox(TTkWidget):
         return super().setEnabled(enabled)
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            textColor   = TTkCfg.theme.textColorDisabled
-        else:
-            textColor   = TTkColor.RST
+        style = self.currentStyle()
+        color = style['color']
         w = self.width()
-        canvas.drawChar(pos=(w-2,0),char="▲", color=textColor)
-        canvas.drawChar(pos=(w-1,0),char="▼", color=textColor)
-
-    def focusInEvent(self):
-        self._lineEdit._color = TTkCfg.theme.lineEditTextColorFocus
-        self._lineEdit.update()
+        canvas.drawChar(pos=(w-2,0),char="▲", color=color)
+        canvas.drawChar(pos=(w-1,0),char="▼", color=color)
 
     def focusOutEvent(self):
         self._draggable = False
-        self._lineEdit._color = TTkCfg.theme.lineEditTextColor
         self._lineEdit.focusOutEvent()
         self._lineEdit.update()

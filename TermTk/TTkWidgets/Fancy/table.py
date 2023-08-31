@@ -26,6 +26,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
+__all__ = ['TTkFancyTable']
+
 class TTkFancyTable(TTkAbstractScrollArea):
     __slots__ = (
         '_tableView', 'activated',

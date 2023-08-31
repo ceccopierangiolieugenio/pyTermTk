@@ -24,13 +24,26 @@
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.frame import TTkFrame
+from TermTk.TTkWidgets.container import TTkContainer
 
-class TTkSplitter(TTkWidget):
+__all__ = ['TTkSplitter']
+
+class TTkSplitter(TTkContainer):
     '''TTkSplitter'''
+
+    classStyle = {
+                'default':     {'color': TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
+                                'borderColor': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#ffddff")+TTkColor.bg("#222222"),
+                                'borderColor': TTkColor.fg("#ffffaa")}
+            }
+
     __slots__ = (
         '_orientation', '_separators', '_refSizes',
         '_items', '_titles', '_separatorSelected',
@@ -414,19 +427,23 @@ class TTkSplitter(TTkWidget):
         return ret
 
     def paintEvent(self, canvas):
+        style = self.currentStyle()
+        color = style['color']
+        borderColor = style['borderColor']
+
         off = 0
         w,h = self.size()
 
         if self._border:
             off= 1
-            canvas.drawBox(pos=(0,0),size=(w,h))
+            canvas.drawBox(pos=(0,0),size=(w,h),color=borderColor)
 
         if self._orientation == TTkK.HORIZONTAL:
             for i in self._separators[:-1]:
-                canvas.drawVLine(pos=(i+off,0), size=h)
+                canvas.drawVLine(pos=(i+off,0), size=h,color=borderColor)
         else:
             for i in self._separators[:-1]:
-                canvas.drawHLine(pos=(0,i+off), size=w)
+                canvas.drawHLine(pos=(0,i+off), size=w,color=borderColor)
 
         if self._orientation == TTkK.HORIZONTAL and self._border:
             for i,t in enumerate(self._titles):
@@ -437,7 +454,8 @@ class TTkSplitter(TTkWidget):
                                 pos=(a,0),
                                 size=(b-a+1,1),
                                 text=t,
-                                colorText=TTkCfg.theme.frameTitleColor)
+                                color=borderColor,
+                                colorText=color)
         elif self._orientation == TTkK.VERTICAL:
             for i,t in enumerate(self._titles):
                 if i == 0 and not self._border: continue
@@ -449,5 +467,6 @@ class TTkSplitter(TTkWidget):
                                 size=(w,1),
                                 grid=grid,
                                 text=t,
-                                colorText=TTkCfg.theme.frameTitleColor)
+                                color=borderColor,
+                                colorText=color)
 

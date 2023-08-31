@@ -31,6 +31,8 @@ from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
+__all__ = ['TTkKodeTab']
+
 class _KolorFrame(TTkFrame):
     __slots__ = ('_fillColor')
     def __init__(self, *args, **kwargs):

@@ -33,6 +33,12 @@ dWidgets = {
         "Grid Layout"  : { "class":ttk.TTkGridLayout, "params":{'size':(30,10)}},
         "Splitter"     : { "class":ttk.TTkSplitter  , "params":{'size':(40,10)}},
     },
+    'Containers':{
+        "Container"       : { "class":ttk.TTkContainer,      "params":{'size':(20,10)}},
+        "Window"          : { "class":ttk.TTkWindow,         "params":{'size':(20,10)}},
+        "Frame"           : { "class":ttk.TTkFrame,          "params":{'size':(20,5), 'border':True}},
+        "Resizable Frame" : { "class":ttk.TTkResizableFrame, "params":{'size':(20,5)}},
+   },
     'Buttons':{
         "Button"       : { "class":ttk.TTkButton,      "params":{'size':(20,3), 'text':'Button', 'border':True, }},
         "Button Slim"  : { "class":ttk.TTkButton,      "params":{'size':(20,1), 'text':'Button', 'border':False, }},
@@ -54,10 +60,7 @@ dWidgets = {
         "Scroll Area"     : { "class":ttk.TTkScrollArea,     "params":{'size':(20,5)}, "disabled": True},
         "Spacer"          : { "class":ttk.TTkSpacer,         "params":{'size':(10,5)}},
         "Tab Widget"      : { "class":ttk.TTkTabWidget,      "params":{'size':(20,3)}, "disabled": True},
-        "Window"          : { "class":ttk.TTkWindow,         "params":{'size':(20,10)}},
         "Widget"          : { "class":ttk.TTkWidget,         "params":{'size':(20,5)}},
-        "Frame"           : { "class":ttk.TTkFrame,          "params":{'size':(20,5), 'border':True}},
-        "Resizable Frame" : { "class":ttk.TTkResizableFrame, "params":{'size':(20,5)}},
     },
     'Pickers':{
         "Color Picker"     : { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,3), 'border':True}},
@@ -68,13 +71,27 @@ dWidgets = {
     'Debug':{
         "Log Viewer"       : { "class":ttk.TTkLogViewer,       "params":{'size':(60,10)}},
         "Input View"       : { "class":ttk.TTkKeyPressView,    "params":{'size':(60,3)}},
-        "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
+        # "Tom Inspector"    : { "class":ttk.TTkTomInspector,    "params":{'size':(40,10)}, "disabled": True},
         "Test Widget"      : { "class":ttk.TTkTestWidgets,     "params":{'size':(40,10)}, "disabled": True},
         "Test Widget info" : { "class":ttk.TTkTestWidgetSizes, "params":{'size':(40,10)}},
     }
 }
 
 class DragDesignItem(ttk.TTkWidget):
+    classStyle = {
+                'default':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044"),
+                                'borderColor': TTkColor.RST,
+                                'shadow': TTkColor.RST+TTkColor.bg('#444444')},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor': TTkColor.fg('#888888'),
+                                'shadow': TTkColor.RST},
+                'hover':       {'color': TTkColor.fg("#dddd00")+TTkColor.bg("#004488")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#FFFF00")+TTkColor.bg("#000088")+TTkColor.BOLD,
+                                'shadow': TTkColor.fg("#FFFF00")+TTkColor.bg('#444444')},
+                'clicked':     {'color': TTkColor.fg("#FFFFDD")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#DDDDDD")+TTkColor.BOLD,
+                                'shadow':  TTkColor.fg("#DDDDDD")+TTkColor.bg('#444444')},
+            }
     __slots__ = ('_itemName', '_widgetClass', '_designer')
     def __init__(self, itemName, widgetClass, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -112,12 +129,26 @@ class DragDesignItem(ttk.TTkWidget):
         return True
 
     def paintEvent(self, canvas):
-        if self.isEnabled():
-            color=ttk.TTkColor.RST
-        else:
-            color=ttk.TTkColor.fg('#AAAAAA')
-        canvas.drawText(text=self._itemName, pos=(1,1), color=color)
-        canvas.drawBox(pos=(0,0),size=self.size(), color=color)
+        style = self.currentStyle()
+
+        textColor   = style['color']
+        borderColor = style['borderColor']
+        shadowColor = style['shadow']
+
+        w,h = self.size()
+
+        canvas.drawText(text=self._itemName, pos=(1,1), width=w-2, color=textColor)
+        canvas.drawBox(pos=(0,0),size=self.size(), color=borderColor)
+
+        # canvas.drawText(text=self._itemName, pos=(2,1), width=w-2, color=textColor)
+        # txt = '▗' + ('▄'*(w-2)) + '▖'
+        # canvas.drawText(text=txt, pos=(0,0), color=borderColor)
+        # txt = '▝' + ('▀'*(w-2))
+        # canvas.drawText(text=txt, pos=(0,2), color=shadowColor)
+        # canvas.drawText(text='▐', pos=(0,  1), color=shadowColor)
+        # canvas.drawText(text='▌', pos=(w-1,1), color=borderColor)
+        # canvas.drawText(text='▘', pos=(w-1,2), color=borderColor)
+
 
 class WidgetBox(ttk.TTkVBoxLayout):
     def __init__(self, designer, *args, **kwargs):

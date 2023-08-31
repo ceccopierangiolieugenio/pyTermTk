@@ -24,11 +24,14 @@ from TermTk.TTkCore.constant import TTkK
 # from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
 
-class TTkAbstractScrollArea(TTkWidget):
+__all__ = ['TTkAbstractScrollArea']
+
+class TTkAbstractScrollArea(TTkContainer):
     __slots__ = (
         '_processing', # this flag is required to avoid unnecessary loop on edge cases
         '_viewport',

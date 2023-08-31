@@ -42,8 +42,11 @@ from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 
-class TTk(TTkWidget):
+__all__ = ['TTk']
+
+class TTk(TTkContainer):
     class _mouseCursor(TTkWidget):
         __slots__ = ('_cursor','_color')
         def __init__(self, input):

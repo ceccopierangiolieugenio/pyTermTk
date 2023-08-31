@@ -33,6 +33,8 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 from TermTk.TTkTestWidgets.keypressviewfont import TTkKeyPressViewFont
 
+__all__ = ['TTkKeyPressView']
+
 class TTkKeyPressView(TTkWidget):
     __slots__ = ('_fadeDuration','_keys','_anim')
 

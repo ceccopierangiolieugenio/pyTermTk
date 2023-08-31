@@ -22,7 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkWidgets.frame import *
+from TermTk.TTkWidgets.frame import TTkFrame
+
+__all__ = ['TTkTestWidgetSizes']
 
 class TTkTestWidgetSizes(TTkFrame):
     ID = 1

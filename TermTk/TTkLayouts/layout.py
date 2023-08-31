@@ -28,6 +28,8 @@
 
 from TermTk.TTkCore.constant import TTkK
 
+__all__ = ['TTkLayoutItem', 'TTkLayout']
+
 class TTkLayoutItem:
     ''' :class:`~TTkLayoutItem` is the base class of layout Items inherited by :class:`~TTkLayout`, :class:`~TTkWidgetItem`, and all the derived layout managers.
 
@@ -213,8 +215,8 @@ class TTkLayout(TTkLayoutItem):
             if child._layoutItemType == TTkK.WidgetItem:
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
-                if recurse:
-                    yield from child.widget().rootLayout().iterWidgets()
+                if recurse and hasattr(cw:=child.widget(),'rootLayout'):
+                    yield from cw.rootLayout().iterWidgets()
             if child._layoutItemType == TTkK.LayoutItem and recurse:
                 yield from child.iterWidgets()
 

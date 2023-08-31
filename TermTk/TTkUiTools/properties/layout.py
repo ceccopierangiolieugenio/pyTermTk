@@ -44,6 +44,8 @@
 
 from TermTk.TTkLayouts.layout import TTkLayout
 
+__all__ = ['TTkLayoutProperties']
+
 TTkLayoutProperties = {
     'properties' : {
         'Geometry' : {

@@ -22,10 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkWidgets.widget import *
+
+__all__ = ['TTkRadioButton']
 
 class TTkRadioButton(TTkWidget):
     '''
@@ -58,6 +62,18 @@ class TTkRadioButton(TTkWidget):
             This signal is emitted when the button is activated
 
      '''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST,
+                                'borderColor':TTkColor.RST,
+                                'rbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888'),
+                                'rbContentColor': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
+                                'rbContentColor': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD},
+            }
 
     _radioLists = {}
     __slots__ = (
@@ -144,14 +160,12 @@ class TTkRadioButton(TTkWidget):
         self.update()
 
     def paintEvent(self, canvas):
-        if self.hasFocus():
-            borderColor = TTkCfg.theme.radioButtonBorderColorFocus
-            textColor   = TTkCfg.theme.radioButtonTextColorFocus
-            xColor      = TTkCfg.theme.radioButtonContentColorFocus
-        else:
-            borderColor = TTkCfg.theme.radioButtonBorderColor
-            textColor   = TTkCfg.theme.radioButtonTextColor
-            xColor      = TTkCfg.theme.radioButtonContentColor
+        style = self.currentStyle()
+
+        borderColor = style['borderColor']
+        textColor   = style['color']
+        xColor = style['rbContentColor']
+
         canvas.drawText(pos=(0,0), color=borderColor ,text="( )")
         canvas.drawText(pos=(3,0), color=textColor ,text=self._text)
         if self._checked:

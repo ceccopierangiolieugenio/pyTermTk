@@ -37,7 +37,7 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.combobox import TTkComboBox
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
-from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.button import TTkButton
@@ -45,6 +45,8 @@ from TermTk.TTkWidgets.scrollarea import TTkScrollArea, TTkAbstractScrollView
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
+
+__all__ = ['TTkTomInspector']
 
 class _DetailGridView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout')
@@ -142,7 +144,7 @@ class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     def domWidget(self):
         return self._domWidget
 
-class TTkTomInspector(TTkWidget):
+class TTkTomInspector(TTkContainer):
     __slots__ = ('_domTree','_detail','_splitter')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

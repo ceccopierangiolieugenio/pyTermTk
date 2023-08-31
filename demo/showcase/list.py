@@ -74,16 +74,20 @@ def demoList(root= None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+    parser.add_argument('-w', help='Windowed',    action='store_true')
+    parser.add_argument('-t', help='Track Mouse', action='store_true')
     args = parser.parse_args()
+    windowed = args.w
+    mouseTrack = args.t
 
-    root = ttk.TTk()
-    if args.f:
-        rootGraph = root
-        root.setLayout(ttk.TTkGridLayout())
+    root = ttk.TTk(title="pyTermTk List Demo", mouseTrack=mouseTrack)
+    if windowed:
+        rootTab = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test Tab", border=True, layout=ttk.TTkGridLayout())
     else:
-        rootGraph = ttk.TTkWindow(parent=root,pos=(1,1), size=(100,40), title="Test List", border=True, layout=ttk.TTkGridLayout())
-    demoList(rootGraph)
+        rootTab = root
+        root.setLayout(ttk.TTkGridLayout())
+    demoList(rootTab)
     root.mainloop()
 
 if __name__ == "__main__":

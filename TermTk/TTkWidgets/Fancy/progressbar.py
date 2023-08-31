@@ -24,13 +24,23 @@
 import math
 
 from TermTk.TTkCore.cfg       import TTkCfg
+from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkTemplates.lookandfeel import TTkLookAndFeel
 
-class TTkLookAndFeelPBar(TTkLookAndFeel):
+__all__ = ['TTkFancyProgressBar', 'TTkLookAndFeelFPBar']
+
+class TTkLookAndFeel():
+    __slots__ = ('modified')
+    def __init__(self, *args, **kwargs):
+        self.modified = pyTTkSignal()
+
+class TTkLookAndFeelFPBar(TTkLookAndFeel):
+    progresssBarColor = TTkColor.fg('#0000aa')+TTkColor.bg("#000044")
+    progressBarTextColor = TTkColor.fg('#ffffff')
+
     __slots__ = ('_textWidth', '_showText')
     def __init__(self, showText=True, textWidth=4):
         super().__init__()
@@ -56,21 +66,22 @@ class TTkLookAndFeelPBar(TTkLookAndFeel):
         self.modified.emit()
 
     def color(self, value, minimum, maximum):
-        return TTkCfg.theme.progresssBarColor
+        return self.progresssBarColor
 
     def text(self, value, minimum, maximum):
         percent = round(100*(value-minimum)/(maximum-minimum))
-        return TTkString(f"{percent:3}%", color=TTkCfg.theme.progressBarTextColor)
+        return TTkString(f"{percent:3}%", color=self.progressBarTextColor)
 
 '''
      Progressbar:  |████████▌      |
         rest block          ^
         full blocks ^^^^^^^^
 '''
-class TTkProgressBar(TTkWidget):
-    '''TTkProgressBar'''
+class TTkFancyProgressBar(TTkWidget):
+    '''TTkFancyProgressBar'''
 
     __slots__ = (
+        '_lookAndFeel',
         '_value', '_minimum', '_maximum',
         # Signals
         'valueChanged')
@@ -78,8 +89,8 @@ class TTkProgressBar(TTkWidget):
     def __init__(self, *args, **kwargs):
         self.valueChanged = pyTTkSignal(float)
         TTkWidget.__init__(self, *args, **kwargs)
-        if not kwargs.get('lookAndFeel'):
-            self.setLookAndFeel(TTkLookAndFeelPBar())
+        self._lookAndFeel = kwargs.get('lookAndFeel',TTkLookAndFeelFPBar())
+        self._lookAndFeel.modified.connect(self.update)
         self._value_min, self._value_max, self._value = 0.0, 1.0, 0.0
         self.setValue(kwargs.get('value', 0.0))
         self.setMinimumSize(3, 1)
@@ -154,7 +165,7 @@ class TTkProgressBar(TTkWidget):
 
     def paintEvent(self, canvas):
         width, height = self.size()
-        laf = self.lookAndFeel()
+        laf = self._lookAndFeel
         text = laf.text(self._value, self._value_min, self._value_max)
         color_bar = laf.color(self._value, self._value_min, self._value_max)
         blocks = TTkCfg.theme.progressbarBlocks

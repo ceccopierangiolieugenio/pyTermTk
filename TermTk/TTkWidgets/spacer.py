@@ -24,6 +24,8 @@
 
 from TermTk.TTkWidgets.widget import TTkWidget
 
+__all__ = ['TTkSpacer']
+
 class TTkSpacer(TTkWidget):
     '''TTkSpacer'''
     __slots__ = ()
