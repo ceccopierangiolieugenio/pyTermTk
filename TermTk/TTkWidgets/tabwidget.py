@@ -115,13 +115,14 @@ class _TTkTabColorButton(TTkContainer):
 
 class TTkTabButton(_TTkTabColorButton):
     '''TTkTabButton'''
-    __slots__ = ('_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButtonPressed')
-    def __init__(self, *args, **kwargs):
+    __slots__ = ('_data','_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButtonPressed','_data')
+    def __init__(self, *, data=None, closable=False, **kwargs):
         self._sideEnd = TTkK.NONE
         self._tabStatus = TTkK.Unchecked
-        self._closable = kwargs.get('closable', False)
+        self._data = data
+        self._closable = closable
         self.closeClicked = pyTTkSignal()
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         self._closeButtonPressed = False
         size = self.text().termWidth() + 2
         if self._closable:
@@ -135,6 +136,12 @@ class TTkTabButton(_TTkTabColorButton):
             self.setMinimumSize(size, 2)
             self.setMaximumSize(size, 2)
         self.setFocusPolicy(TTkK.ParentFocus)
+
+    def data(self):
+        return self._data
+
+    def setData(self, data):
+        self._data=data
 
     def sideEnd(self):
         return self._sideEnd
@@ -301,7 +308,7 @@ class TTkTabBar(TTkContainer):
     '''TTkTabBar'''
     classStyle = _tabStyle
     __slots__ = (
-        '_tabButtons', '_tabData', '_tabMovable', '_small',
+        '_tabButtons', '_tabMovable', '_small',
         '_highlighted', '_currentIndex','_lastIndex',
         '_leftScroller', '_rightScroller',
         '_tabClosable',
@@ -311,7 +318,6 @@ class TTkTabBar(TTkContainer):
 
     def __init__(self, **kwargs):
         self._tabButtons = []
-        self._tabData = []
         self._currentIndex = -1
         self._lastIndex = -1
         self._highlighted = -1
@@ -355,15 +361,14 @@ class TTkTabBar(TTkContainer):
 
     def addTab(self, label, data=None):
         '''addTab'''
-        return self.insertTab(len(self._tabButtons), label, data)
+        return self.insertTab(len(self._tabButtons), label=label, data=data)
 
     def insertTab(self, index, label, data=None):
         '''insertTab'''
         if index <= self._currentIndex:
             self._currentIndex += 1
-        button = TTkTabButton(parent=self, text=label, border=not self._small, closable=self._tabClosable)
+        button = TTkTabButton(parent=self, text=label, border=not self._small, closable=self._tabClosable, data=data)
         self._tabButtons.insert(index,button)
-        self._tabData.insert(index,data)
         button.clicked.connect(lambda :self.setCurrentIndex(self._tabButtons.index(button)))
         button.clicked.connect(lambda :self.tabBarClicked.emit(self._tabButtons.index(button)))
         button.closeClicked.connect(lambda :self.tabCloseRequested.emit(self._tabButtons.index(button)))
@@ -378,7 +383,6 @@ class TTkTabBar(TTkContainer):
         button.closeClicked.clear()
         self.layout().removeWidget(button)
         self._tabButtons.pop(index)
-        self._tabData.pop(index)
         if self._currentIndex == index:
             self._lastIndex = -2
         if self._currentIndex >= index:
@@ -386,15 +390,18 @@ class TTkTabBar(TTkContainer):
         self._highlighted = self._currentIndex
         self._updateTabs()
 
+    def currentData(self):
+        return self.tabData(self._currentIndex)
+
     def tabData(self, index):
         '''tabData'''
-        if 0 <= index < len(self._tabData):
-            return self._tabData[index]
+        if 0 <= index < len(self._tabButtons):
+            return self._tabButtons[index].data()
         return None
 
     def setTabData(self, index, data):
         '''setTabData'''
-        self._tabData[index] = data
+        self._tabButtons[index].setData(data)
 
     def tabsClosable(self):
         '''tabsClosable'''
@@ -552,7 +559,7 @@ class TTkTabWidget(TTkFrame):
         'currentChanged', 'tabBarClicked',
         # forward methods
         'tabsClosable', 'setTabsClosable',
-        'tabData', 'setData', 'setTabData',
+        'tabData', 'setTabData', 'currentData',
         'currentIndex', 'setCurrentIndex', 'tabCloseRequested')
 
     def __init__(self, **kwargs):
@@ -584,8 +591,9 @@ class TTkTabWidget(TTkFrame):
         # forwarded methods
         self.currentIndex    = self._tabBar.currentIndex
         self.setCurrentIndex = self._tabBar.setCurrentIndex
-        self.tabData    = self._tabBar.tabData
-        self.setTabData = self._tabBar.setTabData
+        self.tabData     = self._tabBar.tabData
+        self.setTabData  = self._tabBar.setTabData
+        self.currentData = self._tabBar.currentData
         self.tabsClosable    = self._tabBar.tabsClosable
         self.setTabsClosable = self._tabBar.setTabsClosable
         # forwarded Signals
