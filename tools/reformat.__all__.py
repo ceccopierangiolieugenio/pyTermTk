@@ -34,7 +34,7 @@
 #    done
 #
 
-__all__ = ['a', 'b', 'c']
+__all__ = []
 __version__ = '1.0'
 __author__ = 'Eugenio Parodi'
 
