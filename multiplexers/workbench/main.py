@@ -43,7 +43,7 @@ from wblib import *
 
 # class WBWindow(ttk.TTkWindow):
 
-class WorkBench(ttk.TTkWidget):
+class WorkBench(ttk.TTkContainer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setPadding(1,0,0,0)
