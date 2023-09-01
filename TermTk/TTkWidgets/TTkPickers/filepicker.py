@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFileDialog', 'TTkFileDialogPicker', 'TTkFileButtonPicker']
+
 import os
 import re
 
@@ -42,8 +42,6 @@ from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
-
-__all__ = ['TTkFileDialog', 'TTkFileDialogPicker', 'TTkFileButtonPicker']
 
 '''
 ::

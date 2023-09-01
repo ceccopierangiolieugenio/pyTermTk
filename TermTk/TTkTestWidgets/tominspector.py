@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTomInspector']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -45,8 +47,6 @@ from TermTk.TTkWidgets.scrollarea import TTkScrollArea, TTkAbstractScrollView
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
-
-__all__ = ['TTkTomInspector']
 
 class _DetailGridView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout')

@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import zlib, pickle, base64
-
 __all__ = ['TTkUtil']
+
+import zlib, pickle, base64
 
 class TTkUtil():
     @staticmethod

@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkKodeTab']
+
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import  TTkHelper
 from TermTk.TTkCore.log import TTkLog
@@ -30,8 +32,6 @@ from TermTk.TTkWidgets.tabwidget import TTkTabWidget
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-
-__all__ = ['TTkKodeTab']
 
 class _KolorFrame(TTkFrame):
     __slots__ = ('_fillColor')

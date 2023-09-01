@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFrameProperties']
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.frame import TTkFrame
-
-__all__ = ['TTkFrameProperties']
 
 TTkFrameProperties = {
     'properties' : {

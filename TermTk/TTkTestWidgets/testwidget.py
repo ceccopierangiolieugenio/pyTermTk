@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTestWidget']
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
@@ -29,8 +29,6 @@ from TermTk.TTkWidgets.widget import *
 from TermTk.TTkWidgets.button import *
 from TermTk.TTkWidgets.label import *
 from TermTk.TTkWidgets.frame import *
-
-__all__ = ['TTkTestWidget']
 
 class _TestContent(TTkWidget):
     t01 = TTkString(color=TTkColor.fg("#ff0000") ,text="     L😎rem ipsum dolor sit amet, ⌚ ❤ 💙 🙋'")

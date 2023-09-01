@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkWidgets.spinbox import TTkSpinBox
-
 __all__ = ['TTkSpinBoxProperties']
+
+from TermTk.TTkWidgets.spinbox import TTkSpinBox
 
 TTkSpinBoxProperties = {
     'properties' : {

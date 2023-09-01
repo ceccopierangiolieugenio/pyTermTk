@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFileButtonPickerProperties']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.filepicker import TTkFileButtonPicker
-
-__all__ = ['TTkFileButtonPickerProperties']
 
 TTkFileButtonPickerProperties = {
     'properties' : {

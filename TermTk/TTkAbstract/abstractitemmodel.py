@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.signal import pyTTkSignal
-
 __all__ = ['TTkAbstractItemModel']
+
+from TermTk.TTkCore.signal import pyTTkSignal
 
 class TTkAbstractItemModel():
     __slots__ = (

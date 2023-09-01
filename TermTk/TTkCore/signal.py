@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -57,10 +55,10 @@ Methods
 .. autodecorator:: TermTk.pyTTkSlot
 '''
 
+__all__ = ['pyTTkSlot', 'pyTTkSignal']
+
 from inspect import getfullargspec
 from types import LambdaType
-
-__all__ = ['pyTTkSlot', 'pyTTkSignal']
 
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):

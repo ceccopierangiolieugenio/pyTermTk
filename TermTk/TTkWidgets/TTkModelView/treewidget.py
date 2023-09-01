@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTreeWidget']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -29,8 +31,6 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from dataclasses import dataclass
-
-__all__ = ['TTkTreeWidget']
 
 class TTkTreeWidget(TTkAbstractScrollView):
     '''TTkTreeWidget'''

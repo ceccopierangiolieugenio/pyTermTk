@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkMenuButton', 'TTkMenu']
+
 from TermTk.TTkCore.cfg import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
@@ -34,8 +36,6 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-
-__all__ = ['TTkMenuButton', 'TTkMenu']
 
 class _TTkMenuSpacer(TTkWidget):
     def __init__(self, *args, **kwargs):

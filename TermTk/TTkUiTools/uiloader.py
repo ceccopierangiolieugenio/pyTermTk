@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkUiLoader']
+
 # Yaml is not included by default
 # import yaml
 import os, json
@@ -31,7 +33,6 @@ from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
 
-__all__ = ['TTkUiLoader']
 class TTkUiLoader():
     '''TTkUiLoader
 

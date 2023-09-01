@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -26,9 +24,9 @@
 **Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`__]
 '''
 
-from TermTk.TTkCore.constant import TTkK
-
 __all__ = ['TTkLayoutItem', 'TTkLayout']
+
+from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:
     ''' :class:`~TTkLayoutItem` is the base class of layout Items inherited by :class:`~TTkLayout`, :class:`~TTkWidgetItem`, and all the derived layout managers.

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -26,10 +24,10 @@
 **Grid Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkgridlayout>`__]
 '''
 
+__all__ = ['TTkGridLayout']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkLayouts.layout import TTkLayout
-
-__all__ = ['TTkGridLayout']
 
 class TTkGridLayout(TTkLayout):
     '''

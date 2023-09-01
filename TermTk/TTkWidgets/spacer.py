@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkWidgets.widget import TTkWidget
-
 __all__ = ['TTkSpacer']
+
+from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkSpacer(TTkWidget):
     '''TTkSpacer'''
