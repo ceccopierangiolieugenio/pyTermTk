@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkLog']
+
 # This code is inspired by
 # https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuDebug.py
 
 import inspect
 import logging
 from collections.abc import Callable, Set
-
-__all__ = ['TTkLog']
 
 class _TTkContext:
     __slots__ = ['file', 'line', 'function']

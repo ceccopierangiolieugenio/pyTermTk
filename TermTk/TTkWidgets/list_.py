@@ -22,10 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkList']
+
 from TermTk.TTkWidgets.listwidget import TTkListWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-
-__all__ = ['TTkList']
 
 class TTkList(TTkAbstractScrollArea):
     '''TTkList'''

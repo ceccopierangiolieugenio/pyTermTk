@@ -57,10 +57,10 @@ Methods
 .. autodecorator:: TermTk.pyTTkSlot
 '''
 
+__all__ = ['pyTTkSlot', 'pyTTkSignal']
+
 from inspect import getfullargspec
 from types import LambdaType
-
-__all__ = ['pyTTkSlot', 'pyTTkSignal']
 
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):

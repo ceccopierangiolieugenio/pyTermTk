@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTextEditView', 'TTkTextEdit']
+
 from math import log10, floor
 
 from TermTk.TTkCore.color import TTkColor
@@ -35,8 +37,6 @@ from TermTk.TTkGui.textdocument import TTkTextDocument
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-
-__all__ = ['TTkTextEditView', 'TTkTextEdit']
 
 class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
     classStyle = {

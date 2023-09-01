@@ -22,10 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTestAbstractScrollWidget']
+
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
-
-__all__ = ['TTkTestAbstractScrollWidget']
 
 class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
     ID = 1

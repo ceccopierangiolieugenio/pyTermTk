@@ -22,9 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import importlib.util
-
 __all__ = ['TTkClipboard']
+
+import importlib.util
 
 class TTkClipboard():
     _clipboard = ''

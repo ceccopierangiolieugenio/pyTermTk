@@ -22,9 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkWidgets.widget import TTkWidget
-
 __all__ = ['TTkSpacer']
+
+from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkSpacer(TTkWidget):
     '''TTkSpacer'''

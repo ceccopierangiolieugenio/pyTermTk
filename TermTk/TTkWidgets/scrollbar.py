@@ -22,12 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkScrollBar']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkScrollBar']
 
 '''
     ref: https://doc.qt.io/qt-5/qscrollbar.html

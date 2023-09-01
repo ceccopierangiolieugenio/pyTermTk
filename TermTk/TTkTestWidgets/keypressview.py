@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkKeyPressView']
+
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent, mod2str, key2str
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkCore.helper import TTkHelper
@@ -32,8 +34,6 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.widget import TTkWidget
 
 from TermTk.TTkTestWidgets.keypressviewfont import TTkKeyPressViewFont
-
-__all__ = ['TTkKeyPressView']
 
 class TTkKeyPressView(TTkWidget):
     __slots__ = ('_fadeDuration','_keys','_anim')

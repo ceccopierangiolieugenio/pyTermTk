@@ -22,12 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFrame']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.container import TTkContainer
-
-__all__ = ['TTkFrame']
 
 class TTkFrame(TTkContainer):
     '''

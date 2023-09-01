@@ -22,9 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.constant import TTkK
-
 __all__ = ['TTkKeyEvent']
+
+from TermTk.TTkCore.constant import TTkK
 
 class TTkKeyEvent:
     ''' Keyboard Events

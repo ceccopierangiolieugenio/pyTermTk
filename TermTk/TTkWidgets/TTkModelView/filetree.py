@@ -22,10 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFileTree']
+
 from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidget import TTkFileTreeWidget
-
-__all__ = ['TTkFileTree']
 
 class TTkFileTree(TTkTree):
     __slots__ = ('_fileTreeWidget',

@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkGraph']
+
 # inspired by:
 # https://grafana.com/docs/grafana/latest/panels/visualizations/graph-panel/
 # And of course:
@@ -31,8 +33,6 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkGraph']
 
 class TTkGraph(TTkWidget):
     __slots__ = ('_data', '_maxData', '_offset', '_direction', '_align', '_color')

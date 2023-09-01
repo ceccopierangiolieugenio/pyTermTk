@@ -22,9 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.signal import pyTTkSignal
-
 __all__ = ['TTkAbstractItemModel']
+
+from TermTk.TTkCore.signal import pyTTkSignal
 
 class TTkAbstractItemModel():
     __slots__ = (

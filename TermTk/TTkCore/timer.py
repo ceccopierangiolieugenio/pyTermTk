@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTimer']
+
 import importlib.util
 
 if importlib.util.find_spec('pyodideProxy'):
@@ -27,4 +29,3 @@ if importlib.util.find_spec('pyodideProxy'):
 else:
     from .timer_unix import TTkTimer
 
-__all__ = ['TTkTimer']

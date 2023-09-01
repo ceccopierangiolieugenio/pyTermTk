@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkWidget']
+
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
@@ -35,8 +37,6 @@ from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
 from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
-
-__all__ = ['TTkWidget']
 
 class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     ''' Widget sizes:

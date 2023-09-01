@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTreeWidgetItem']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
-
-__all__ = ['TTkTreeWidgetItem']
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
     __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',

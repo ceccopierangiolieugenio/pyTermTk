@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkLineEdit']
+
 import re
 
 from TermTk.TTkCore.cfg import TTkCfg
@@ -31,8 +33,6 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkLineEdit']
 
 '''
      Line Edit: |_________-___________|

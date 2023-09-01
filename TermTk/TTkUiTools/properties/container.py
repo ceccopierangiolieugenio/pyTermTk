@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkContainerProperties']
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.container import TTkContainer
-
-__all__ = ['TTkContainerProperties']
 
 TTkContainerProperties = {
     'properties' : {

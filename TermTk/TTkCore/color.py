@@ -22,10 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkColor', 'TTkColorGradient', 'TTkLinearGradient']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
-
-__all__ = ['TTkColor', 'TTkColorGradient', 'TTkLinearGradient']
 
 # Ansi Escape Codes:
 # https://conemu.github.io/en/AnsiEscapeCodes.html

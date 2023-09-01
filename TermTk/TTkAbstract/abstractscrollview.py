@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkAbstractScrollViewInterface', 'TTkAbstractScrollView', 'TTkAbstractScrollViewGridLayout']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-
-__all__ = ['TTkAbstractScrollViewInterface', 'TTkAbstractScrollView', 'TTkAbstractScrollViewGridLayout']
 
 class TTkAbstractScrollViewInterface():
     # Override this function

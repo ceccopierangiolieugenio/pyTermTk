@@ -22,13 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkHelper']
+
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-
-__all__ = ['TTkHelper']
 
 class TTkHelper:
     '''TTkHelper

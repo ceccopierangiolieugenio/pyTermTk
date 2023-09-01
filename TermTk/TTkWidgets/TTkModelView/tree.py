@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTree']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-
-__all__ = ['TTkTree']
 
 class TTkTree(TTkAbstractScrollArea):
     __slots__ = (

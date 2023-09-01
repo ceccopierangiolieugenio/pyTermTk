@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkColorButtonPickerProperties']
+
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
-
-__all__ = ['TTkColorButtonPickerProperties']
 
 TTkColorButtonPickerProperties = {
     'properties' : {

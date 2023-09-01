@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkImage']
+
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkImage']
 
 class TTkImage(TTkWidget):
     FULLBLOCK = 0x00

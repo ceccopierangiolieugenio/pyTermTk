@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkWindow']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
-
-__all__ = ['TTkWindow']
 
 class _MinimizedButton(TTkButton):
     __slots__ = ('_windowWidget')

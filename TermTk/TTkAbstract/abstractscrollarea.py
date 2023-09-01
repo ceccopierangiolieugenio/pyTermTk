@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkAbstractScrollArea']
+
 from TermTk.TTkCore.constant import TTkK
 # from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot
@@ -28,8 +30,6 @@ from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
-
-__all__ = ['TTkAbstractScrollArea']
 
 class TTkAbstractScrollArea(TTkContainer):
     __slots__ = (

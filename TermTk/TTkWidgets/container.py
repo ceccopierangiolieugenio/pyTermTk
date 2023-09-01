@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkContainer']
+
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkContainer']
 
 class TTkContainer(TTkWidget):
     ''' TTkContainer Layout sizes:

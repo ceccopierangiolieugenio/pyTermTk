@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkCanvas']
+
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-
-__all__ = ['TTkCanvas']
 
 class TTkCanvas:
     ''' Init the Canvas object

@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkLogViewer']
+
 import os
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -30,8 +32,6 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
-
-__all__ = ['TTkLogViewer']
 
 class _TTkLogViewer(TTkAbstractScrollView):
     __slots__ = ('_color', '_text', '_messages', '_cwd', '_follow')

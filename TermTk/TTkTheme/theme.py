@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTheme']
+
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.helper import TTkHelper
 # from TermTk.TTkCore.string import TTkString
@@ -30,8 +32,6 @@ import TermTk.TTkTheme.fileicon_utf8  as fi_utf8
 import TermTk.TTkTheme.fileicon_ascii as fi_ascii
 import TermTk.TTkTheme.draw_utf8      as draw_utf8
 import TermTk.TTkTheme.draw_ascii     as draw_ascii
-
-__all__ = ['TTkTheme']
 
 class TTkTheme():
     '''Default Theme Class

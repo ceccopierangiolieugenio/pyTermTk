@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTk']
+
 import os
 import signal
 import time
@@ -43,8 +45,6 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
-
-__all__ = ['TTk']
 
 class TTk(TTkContainer):
     class _mouseCursor(TTkWidget):

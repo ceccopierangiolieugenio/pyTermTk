@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkComboBox']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -35,8 +37,6 @@ from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
-
-__all__ = ['TTkComboBox']
 
 class TTkComboBox(TTkContainer):
     ''' TTkComboBox:

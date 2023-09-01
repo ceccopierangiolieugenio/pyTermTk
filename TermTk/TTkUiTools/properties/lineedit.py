@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkLineEditProperties']
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
-
-__all__ = ['TTkLineEditProperties']
 
 TTkLineEditProperties = {
     'properties' : {

@@ -26,10 +26,10 @@
 **Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`__]
 '''
 
+__all__ = ['TTkHBoxLayout', 'TTkVBoxLayout']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-
-__all__ = ['TTkHBoxLayout', 'TTkVBoxLayout']
 
 class TTkHBoxLayout(TTkGridLayout):
     ''' The TTkHBoxLayout class lines up widgets horizontally

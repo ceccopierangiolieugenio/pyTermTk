@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFancyTreeWidget']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.string import TTkString
@@ -31,8 +33,6 @@ from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
-
-__all__ = ['TTkFancyTreeWidget']
 
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
     def __init__(self, *args, **kwargs):

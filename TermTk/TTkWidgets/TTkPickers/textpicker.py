@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTextPicker', 'TTkTextDialogPicker']
+
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
@@ -46,8 +48,6 @@ from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
-
-__all__ = ['TTkTextPicker', 'TTkTextDialogPicker']
 
 class _superSimpleHorizontalLine(TTkWidget):
     def paintEvent(self, canvas):

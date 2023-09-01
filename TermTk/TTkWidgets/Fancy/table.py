@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFancyTable']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-
-__all__ = ['TTkFancyTable']
 
 class TTkFancyTable(TTkAbstractScrollArea):
     __slots__ = (

@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkRadioButtonProperties']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.radiobutton import TTkRadioButton
-
-__all__ = ['TTkRadioButtonProperties']
 
 TTkRadioButtonProperties = {
     'properties' : {

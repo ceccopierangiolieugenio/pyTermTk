@@ -22,9 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.constant import TTkK
-
 __all__ = ['TTkCfg', 'TTkGlbl']
+
+from TermTk.TTkCore.constant import TTkK
 
 class TTkCfg:
     version="__VERSION__"

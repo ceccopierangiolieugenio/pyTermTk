@@ -22,10 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFancyTreeWidgetItem']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal
-
-__all__ = ['TTkFancyTreeWidgetItem']
 
 class TTkFancyTreeWidgetItem():
     __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
