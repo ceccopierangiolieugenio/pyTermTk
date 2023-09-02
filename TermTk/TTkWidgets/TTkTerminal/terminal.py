@@ -219,6 +219,8 @@ class TTkTerminal(TTkWidget):
                 yield out
 
     def loop(self, _):
+        SGR_SET = TTkTermColor.SGR_SET # Precacing those variables to
+        SGR_RST = TTkTermColor.SGR_RST # speedup the search
         inputgenerator = self._inputGenerator()
         for out in inputgenerator:
             sout = out.split('\033')
@@ -302,12 +304,12 @@ class TTkTerminal(TTkWidget):
                                     bg = ansiMap256.get(int(values.pop(0)))
                                 if t == 2:# 24 bit bg
                                     bg = (int(values.pop(0)),int(values.pop(0)),int(values.pop(0)))
-                            elif s==1: mod |= TTkTermColor.BOLD
-                            elif s==3: mod |= TTkTermColor.ITALIC
-                            elif s==4: mod |= TTkTermColor.UNDERLINE
-                            elif s==9: mod |= TTkTermColor.STRIKETROUGH
-                            elif s==5: mod |= TTkTermColor.BLINKING
-                            elif s==7: mod |= TTkTermColor.REVERSED
+                            elif _sgr:=SGR_SET.get(s,None):
+                                mod |= _sgr
+                            elif _sgr:=SGR_RST.get(s,None):
+                                mod &= _sgr
+                            else:
+                                _termLog.warn(f"Unhandled color: <ESC>{slice}")
                         color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
                     self._screen_alt.setColor(color)
@@ -551,7 +553,7 @@ class TTkTerminal(TTkWidget):
                 TTkK.WHEEL_Up:  ( 0,'M'),
                 TTkK.WHEEL_Down:( 1,'M')}.get(
                     evt.evt,(0,'M'))
-
+            # _termLog.error(f'Mouse: <ESC>[<{k+km};{x};{y}{pr}')
             self._inout.write(f'\033[<{k+km};{x};{y}{pr}'.encode())
         else:
             head = {
@@ -566,16 +568,20 @@ class TTkTerminal(TTkWidget):
             bah = bytearray(head)
             bah.append((x+32)%0xff)
             bah.append((y+32)%0xff)
+            # _termLog.error(f'Mouse: '+bah.decode().replace('\033','<ESC>'))
             self._inout.write(bah)
         return True
 
     def mousePressEvent(self, evt):   return self._sendMouse(evt)
     def mouseReleaseEvent(self, evt): return self._sendMouse(evt)
     def mouseDragEvent(self, evt):    return self._sendMouse(evt)
-    def mouseMoveEvent(self, evt):    return self._sendMouse(evt)
     def wheelEvent(self, evt):        return self._sendMouse(evt)
     def mouseTapEvent(self, evt):     return self._sendMouse(evt)
     def mouseDoubleClickEvent(self, evt): return self._sendMouse(evt)
+    def mouseMoveEvent(self, evt):
+        if self._mouse.reportMove:
+            return self._sendMouse(evt)
+        return True
 
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
@@ -711,6 +717,20 @@ class TTkTerminal(TTkWidget):
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 0 3  ⇒  Use All Motion Mouse Tracking, xterm.  See
+    #           the section Any-event tracking.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 0 3  ⇒  Don't use All Motion Mouse Tracking, xterm.
+    #           See the section Any-event tracking.
+    def _CSI_DEC_SR_1003(self, s):
+        self._mouse.reportPress = s
+        self._mouse.reportDrag  = s
+        self._mouse.reportMove  = s
+        _termLog.info(f"1003 Mouse Tracking {s=}")
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
     #             Ps = 1 0 0 6  ⇒  Enable SGR Mouse Mode, xterm.
     # CSI ? Pm l
     #           DEC Private Mode Reset (DECRST).
@@ -785,6 +805,7 @@ class TTkTerminal(TTkWidget):
         25  : _CSI_DEC_SR_25_DECTCEM,
         1000: _CSI_DEC_SR_1000,
         1002: _CSI_DEC_SR_1002,
+        1003: _CSI_DEC_SR_1003,
         1006: _CSI_DEC_SR_1006,
         1015: _CSI_DEC_SR_1015,
         1047: _CSI_DEC_SR_1047,

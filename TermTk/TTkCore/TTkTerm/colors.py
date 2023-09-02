@@ -30,12 +30,35 @@ import re
 from .colors_ansi_map import ansiMap256, ansiMap16
 
 class TTkTermColor():
-    BOLD         = 0x01
-    ITALIC       = 0x02
-    UNDERLINE    = 0x04
-    STRIKETROUGH = 0x08
-    BLINKING     = 0x10
-    REVERSED     = 0x20
+    BOLD         = 0x01  # <ESC>[1m
+    FAINT        = 0x02  # <ESC>[2m
+    ITALIC       = 0x04  # <ESC>[3m
+    UNDERLINE    = 0x08  # <ESC>[4m
+    BLINKING     = 0x10  # <ESC>[5m
+    REVERSED     = 0x20  # <ESC>[7m
+    HIDDEN       = 0x40  # <ESC>[8m
+    STRIKETROUGH = 0x80  # <ESC>[9m
+
+    SGR_SET = {        # CSI Pm m  Character Attributes (SGR).
+                           # Ps = 0  ⇒  Normal (default), VT100.
+        1: BOLD ,          # Ps = 1  ⇒  Bold, VT100.
+        2: FAINT ,         # Ps = 2  ⇒  Faint, decreased intensity, ECMA-48 2nd.
+        3: ITALIC ,        # Ps = 3  ⇒  Italicized, ECMA-48 2nd.
+        4: UNDERLINE ,     # Ps = 4  ⇒  Underlined, VT100.
+        5: BLINKING ,      # Ps = 5  ⇒  Blink, VT100. - This appears as Bold in X11R6 xterm.
+        7: REVERSED ,      # Ps = 7  ⇒  Inverse, VT100.
+        8: HIDDEN ,        # Ps = 8  ⇒  Invisible, i.e., hidden, ECMA-48 2nd, VT300.
+        9: STRIKETROUGH }  # Ps = 9  ⇒  Crossed-out characters, ECMA-48 3rd.
+
+    SGR_RST = {       # CSI Pm m  Character Attributes (SGR).
+                            # Ps = 2 1  ⇒  Doubly-underlined, ECMA-48 3rd.
+        22: ~(BOLD|FAINT),  # Ps = 2 2  ⇒  Normal (neither bold nor faint), ECMA-48 3rd.
+        23: ~ITALIC,        # Ps = 2 3  ⇒  Not italicized, ECMA-48 3rd.
+        24: ~UNDERLINE,     # Ps = 2 4  ⇒  Not underlined, ECMA-48 3rd.
+        25: ~BLINKING,      # Ps = 2 5  ⇒  Steady (not blinking), ECMA-48 3rd.
+        27: ~REVERSED,      # Ps = 2 7  ⇒  Positive (not inverse), ECMA-48 3rd.
+        28: ~HIDDEN,        # Ps = 2 8  ⇒  Visible, i.e., not hidden, ECMA-48 3rd, VT300.
+        29: ~STRIKETROUGH } # Ps = 2 9  ⇒  Not crossed-out, ECMA-48 3rd.
 
     @staticmethod
     def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, clean:bool=False):
@@ -51,17 +74,20 @@ class TTkTermColor():
 
         if mod & TTkTermColor.BOLD:
             ret.append('1')
+        if mod & TTkTermColor.FAINT:
+            ret.append('2')
         if mod & TTkTermColor.ITALIC:
             ret.append('3')
         if mod & TTkTermColor.UNDERLINE:
             ret.append('4')
-        if mod & TTkTermColor.STRIKETROUGH:
-            ret.append('9')
         if mod & TTkTermColor.BLINKING:
             ret.append('5')
         if mod & TTkTermColor.REVERSED:
             ret.append('7')
-
+        if mod & TTkTermColor.HIDDEN:
+            ret.append('8')
+        if mod & TTkTermColor.STRIKETROUGH:
+            ret.append('9')
         if ret:
             return f'\033[{";".join(str(x) for x in ret)}m'
         else:
@@ -111,11 +137,10 @@ class TTkTermColor():
                     bg = None
                     mod = 0
                     clean = True
-                elif s==1: mod |= TTkTermColor.BOLD
-                elif s==3: mod |= TTkTermColor.ITALIC
-                elif s==4: mod |= TTkTermColor.UNDERLINE
-                elif s==9: mod |= TTkTermColor.STRIKETROUGH
-                elif s==5: mod |= TTkTermColor.BLINKING
+                elif _sgr:=TTkTermColor.SGR_SET.get(s,None):
+                    mod |= _sgr
+                elif _sgr:=TTkTermColor.SGR_RST.get(s,None):
+                    mod &= _sgr
         return fg,bg,mod,clean
 
 

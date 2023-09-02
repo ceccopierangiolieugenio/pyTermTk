@@ -52,7 +52,7 @@ parser.add_argument('-d', help='Debug (Add LogViewer Panel)',    action='store_t
 args = parser.parse_args()
 
 # ttk.TTkLog.use_default_file_logging()
-root = ttk.TTk(layout=ttk.TTkGridLayout())
+root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 
 split = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
 
