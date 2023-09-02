@@ -76,6 +76,8 @@ cb_q.stateChanged.connect(lambda x: ttk.TTkTerm.setSigmask(ttk.TTkTerm.Sigmask.C
 
 win1  = ttk.TTkWindow(pos=(90,5), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term1 = ttk.TTkTerminal(parent=win1)
+term1.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
+term1.titleChanged.connect(win1.setTitle)
 term1.runShell()
 
 win2  = ttk.TTkWindow(pos=(10,0), size=(100,30), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)

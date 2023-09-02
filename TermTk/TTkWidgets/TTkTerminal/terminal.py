@@ -60,14 +60,15 @@ __all__ = ['TTkTerminal']
 class _termLog():
     # debug = TTkLog.debug
     # info  = TTkLog.info
-    # error = TTkLog.error
-    # warn  = TTkLog.warn
-    # fatal = TTkLog.fatal
+    error = TTkLog.error
+    warn  = TTkLog.warn
+    fatal = TTkLog.fatal
+
     debug = lambda _:None
     info  = lambda _:None
-    error = lambda _:None
-    warn  = lambda _:None
-    fatal = lambda _:None
+    # error = lambda _:None
+    # warn  = lambda _:None
+    # fatal = lambda _:None
 
 class TTkTerminal(TTkWidget):
     @dataclass
@@ -91,8 +92,13 @@ class TTkTerminal(TTkWidget):
                  '_clipboard',
                  '_buffer_lines', '_buffer_screen',
                  '_keyboard', '_mouse', '_terminal',
-                 '_screen_current', '_screen_normal', '_screen_alt')
+                 '_screen_current', '_screen_normal', '_screen_alt',
+                 # Signals
+                 'titleChanged', 'bell')
     def __init__(self, *args, **kwargs):
+        self.bell = pyTTkSignal()
+        self.titleChanged = pyTTkSignal(str)
+
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
         self._proc = None
@@ -108,9 +114,10 @@ class TTkTerminal(TTkWidget):
         self._screen_current = self._screen_normal
         self._clipboard = TTkClipboard()
 
-        self._screen_normal.bell.connect(lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
-        self._screen_alt.bell.connect(   lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
-
+        # self._screen_normal.bell.connect(lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
+        # self._screen_alt.bell.connect(   lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
+        self._screen_normal.bell.connect(self.bell.emit)
+        self._screen_alt.bell.connect(   self.bell.emit)
 
         super().__init__(*args, **kwargs)
 
@@ -182,6 +189,8 @@ class TTkTerminal(TTkWidget):
     re_DEC_SET_RST  = re.compile('^\[(\??)(\d+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
+    re_OSC_ps_Pt    = re.compile('^(\d*);(.*)$')
+
     @pyTTkSlot()
     def _quit(self):
         if self._quit_pipe:
@@ -222,9 +231,10 @@ class TTkTerminal(TTkWidget):
         SGR_SET = TTkTermColor.SGR_SET # Precacing those variables to
         SGR_RST = TTkTermColor.SGR_RST # speedup the search
         inputgenerator = self._inputGenerator()
+        leftUnhandled = ""
         for out in inputgenerator:
-            sout = out.split('\033')
-            _termLog.debug(f"{sout[0]=}")
+            sout = (leftUnhandled+out).split('\033')
+            _termLog.debug(f"{leftUnhandled=} - {sout[0]=}")
 
             # The first element is not an escaped sequence
             if sout[0]:
@@ -232,6 +242,7 @@ class TTkTerminal(TTkWidget):
 
             escapeGenerator = (i for i in sout[1:])
             for slice in escapeGenerator:
+                leftUnhandled = ""
                 ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
                 _termLog.debug(f"slice: {ssss}")
 
@@ -398,7 +409,7 @@ class TTkTerminal(TTkWidget):
                             self._terminal.DCSstring += sout[0]
                             escapeGenerator = (i for i in sout[1:])
                             ret, slice =  __processDCSEscapeGenerator()
-                            if not ret:
+                            if ret:
                                 return escapeGenerator, slice
 
                     ret, slice =  __processDCSEscapeGenerator()
@@ -409,11 +420,298 @@ class TTkTerminal(TTkWidget):
                     if not slice:
                         continue
 
+                # Operating System Commands = <ESC> ]
+                #
+                # OSC Ps ; Pt BEL
+                #
+                # OSC Ps ; Pt ST
+                #           Set Text Parameters.  Some control sequences return
+                #           information:
+                #           o   For colors and font, if Pt is a "?", the control sequence
+                #               elicits a response which consists of the control sequence
+                #               which would set the corresponding value.
+                #           o   The dtterm control sequences allow you to determine the
+                #               icon name and window title.
+                #
+                #           XTerm accepts either BEL  or ST  for terminating OSC
+                #           sequences, and when returning information, uses the same
+                #           terminator used in a query.  While the latter is preferred,
+                #           the former is supported for legacy applications:
+                #           o   Although documented in the changes for X.V10R4 (December
+                #               1986), BEL  as a string terminator dates from X11R4
+                #               (December 1989).
+                #           o   Since XFree86-3.1.2Ee (August 1996), xterm has accepted ST
+                #               (the documented string terminator in ECMA-48).
+                #
+                #           Ps specifies the type of operation to perform:
+                #             Ps = 0  -> Change Icon Name and Window Title to Pt.
+                #             Ps = 1  -> Change Icon Name to Pt.
+                #             Ps = 2  -> Change Window Title to Pt.
+                #             Ps = 3  -> Set X property on top-level window.  Pt should be
+                #           in the form "prop=value", or just "prop" to delete the
+                #           property.
+                #             Ps = 4 ; c ; spec -> Change Color Number c to the color
+                #           specified by spec.
+                #
+                #           The spec can be a name or RGB specification as per
+                #           XParseColor.  Any number of c/spec pairs may be given.  The
+                #           color numbers correspond to the ANSI colors 0-7, their bright
+                #           versions 8-15, and if supported, the remainder of the 88-color
+                #           or 256-color table.
+                #
+                #           If a "?" is given rather than a name or RGB specification,
+                #           xterm replies with a control sequence of the same form which
+                #           can be used to set the corresponding color.  Because more than
+                #           one pair of color number and specification can be given in one
+                #           control sequence, xterm can make more than one reply.
+                #
+                #             Ps = 5 ; c ; spec -> Change Special Color Number c to the
+                #           color specified by spec.
+                #
+                #           The spec parameter can be a name or RGB specification as per
+                #           XParseColor.  Any number of c/spec pairs may be given.  The
+                #           special colors can also be set by adding the maximum number of
+                #           colors (e.g., 88 or 256) to these codes in an OSC 4  control:
+                #
+                #               Pc = 0  <- resource colorBD (BOLD).
+                #               Pc = 1  <- resource colorUL (UNDERLINE).
+                #               Pc = 2  <- resource colorBL (BLINK).
+                #               Pc = 3  <- resource colorRV (REVERSE).
+                #               Pc = 4  <- resource colorIT (ITALIC).
+                #
+                #             Ps = 6 ; c ; f -> Enable/disable Special Color Number c.
+                #           The second parameter tells xterm to enable the corresponding
+                #           color mode if nonzero, disable it if zero.  OSC 6  is the same
+                #           as OSC 1 0 6 .
+                #
+                #           If no parameters are given, this control has no effect.
+                #
+                #           The 10 colors (below) which may be set or queried using 1 0
+                #           through 1 9  are denoted dynamic colors, since the
+                #           corresponding control sequences were the first means for
+                #           setting xterm's colors dynamically, i.e., after it was
+                #           started.  They are not the same as the ANSI colors (however,
+                #           the dynamic text foreground and background colors are used
+                #           when ANSI colors are reset using SGR 3 9  and 4 9 ,
+                #           respectively).  These controls may be disabled using the
+                #           allowColorOps resource.  At least one parameter is expected
+                #           for Pt.  Each successive parameter changes the next color in
+                #           the list.  The value of Ps tells the starting point in the
+                #           list.  The colors are specified by name or RGB specification
+                #           as per XParseColor.
+                #
+                #           If a "?" is given rather than a name or RGB specification,
+                #           xterm replies with a control sequence of the same form which
+                #           can be used to set the corresponding dynamic color.  Because
+                #           more than one pair of color number and specification can be
+                #           given in one control sequence, xterm can make more than one
+                #           reply.
+                #
+                #             Ps = 1 0  -> Change VT100 text foreground color to Pt.
+                #             Ps = 1 1  -> Change VT100 text background color to Pt.
+                #             Ps = 1 2  -> Change text cursor color to Pt.
+                #             Ps = 1 3  -> Change pointer foreground color to Pt.
+                #             Ps = 1 4  -> Change pointer background color to Pt.
+                #             Ps = 1 5  -> Change Tektronix foreground color to Pt.
+                #             Ps = 1 6  -> Change Tektronix background color to Pt.
+                #             Ps = 1 7  -> Change highlight background color to Pt.
+                #             Ps = 1 8  -> Change Tektronix cursor color to Pt.
+                #             Ps = 1 9  -> Change highlight foreground color to Pt.
+                #
+                #             Ps = 2 2  -> Change pointer cursor to Pt.
+                #
+                #             Ps = 4 6  -> Change Log File to Pt.  This is normally
+                #           disabled by a compile-time option.
+                #
+                #             Ps = 5 0  -> Set Font to Pt.  These controls may be disabled
+                #           using the allowFontOps resource.  If Pt begins with a "#",
+                #           index in the font menu, relative (if the next character is a
+                #           plus or minus sign) or absolute.  A number is expected but not
+                #           required after the sign (the default is the current entry for
+                #           relative, zero for absolute indexing).
+                #
+                #           The same rule (plus or minus sign, optional number) is used
+                #           when querying the font.  The remainder of Pt is ignored.
+                #
+                #           A font can be specified after a "#" index expression, by
+                #           adding a space and then the font specifier.
+                #
+                #           If the TrueType Fonts menu entry is set (the renderFont
+                #           resource), then this control sets/queries the faceName
+                #           resource.
+                #
+                #             Ps = 5 1  -> reserved for Emacs shell.
+                #
+                #             Ps = 5 2  -> Manipulate Selection Data.  These controls may
+                #           be disabled using the allowWindowOps resource.  The parameter
+                #           Pt is parsed as
+                #                Pc ; Pd
+                #
+                #           The first, Pc, may contain zero or more characters from the
+                #           set c , p , q , s , 0 , 1 , 2 , 3 , 4 , 5 , 6 , and 7 .  It is
+                #           used to construct a list of selection parameters for
+                #           clipboard, primary, secondary, select, or cut-buffers 0
+                #           through 7 respectively, in the order given.  If the parameter
+                #           is empty, xterm uses s 0 , to specify the configurable
+                #           primary/clipboard selection and cut-buffer 0.
+                #
+                #           The second parameter, Pd, gives the selection data.  Normally
+                #           this is a string encoded in base64 (RFC-4648).  The data
+                #           becomes the new selection, which is then available for pasting
+                #           by other applications.
+                #
+                #           If the second parameter is a ? , xterm replies to the host
+                #           with the selection data encoded using the same protocol.  It
+                #           uses the first selection found by asking successively for each
+                #           item from the list of selection parameters.
+                #
+                #           If the second parameter is neither a base64 string nor ? ,
+                #           then the selection is cleared.
+                #
+                #             Ps = 6 0  -> Query allowed features (XTQALLOWED).  XTerm
+                #           replies with
+                #
+                #             OSC 6 0  ; Pt ST
+                #
+                #           where Pt is a comma-separated list of the allowed optional
+                #           runtime features, i.e., zero or more of these resource names:
+                #
+                #             allowColorOps
+                #             allowFontOps
+                #             allowMouseOps
+                #             allowPasteControls
+                #             allowTcapOps
+                #             allowTitleOps
+                #             allowWindowOps
+                #
+                #             Ps = 6 1  -> Query disallowed features (XTQDISALLOWED).  The
+                #           second parameter (i.e., the main feature) must be one of the
+                #           resource names returned by OSC 6 0 .  XTerm replies with
+                #
+                #             OSC 6 1  ; Pt ST
+                #
+                #           where Pt is a comma-separated list of the optional runtime
+                #           features which would be disallowed if the main feature is
+                #           disabled.
+                #
+                #             Ps = 1 0 4 ; c -> Reset Color Number c.  It is reset to the
+                #           color specified by the corresponding X resource.  Any number
+                #           of c parameters may be given.  These parameters correspond to
+                #           the ANSI colors 0-7, their bright versions 8-15, and if
+                #           supported, the remainder of the 88-color or 256-color table.
+                #           If no parameters are given, the entire table will be reset.
+                #
+                #             Ps = 1 0 5 ; c -> Reset Special Color Number c.  It is reset
+                #           to the color specified by the corresponding X resource.  Any
+                #           number of c parameters may be given.  These parameters
+                #           correspond to the special colors which can be set using an OSC
+                #           5  control (or by adding the maximum number of colors using an
+                #           OSC 4  control).
+                #
+                #           If no parameters are given, all special colors will be reset.
+                #
+                #             Ps = 1 0 6 ; c ; f -> Enable/disable Special Color Number c.
+                #           The second parameter tells xterm to enable the corresponding
+                #           color mode if nonzero, disable it if zero.
+                #
+                #               Pc = 0  <- resource colorBDMode (BOLD).
+                #               Pc = 1  <- resource colorULMode (UNDERLINE).
+                #               Pc = 2  <- resource colorBLMode (BLINK).
+                #               Pc = 3  <- resource colorRVMode (REVERSE).
+                #               Pc = 4  <- resource colorITMode (ITALIC).
+                #               Pc = 5  <- resource colorAttrMode (Override ANSI).
+                #
+                #           If no parameters are given, this control has no effect.
+                #
+                #           The dynamic colors can also be reset to their default
+                #           (resource) values:
+                #             Ps = 1 1 0  -> Reset VT100 text foreground color.
+                #             Ps = 1 1 1  -> Reset VT100 text background color.
+                #             Ps = 1 1 2  -> Reset text cursor color.
+                #             Ps = 1 1 3  -> Reset pointer foreground color.
+                #             Ps = 1 1 4  -> Reset pointer background color.
+                #             Ps = 1 1 5  -> Reset Tektronix foreground color.
+                #             Ps = 1 1 6  -> Reset Tektronix background color.
+                #             Ps = 1 1 7  -> Reset highlight color.
+                #             Ps = 1 1 8  -> Reset Tektronix cursor color.
+                #             Ps = 1 1 9  -> Reset highlight foreground color.
+                #
+                #             Ps = I  ; c -> Set icon to file.  Sun shelltool, CDE dtterm.
+                #           The file is expected to be XPM format, and uses the same
+                #           search logic as the iconHint resource.
+                #
+                #             Ps = l  ; c -> Set window title.  Sun shelltool, CDE dtterm.
+                #
+                #             Ps = L  ; c -> Set icon label.  Sun shelltool, CDE dtterm.
+                elif slice and slice[0] == ']':
+                    # Sarting OSC (ESC ]) and wait for ST (ESC \) or BEL (\a)
+                    slice = slice[1:]
+                    oscString = ""
+
+                    def __checkOSCBell(__osc:str, __oscString:str):
+                        if '\a' in __osc: # BEL (Ctrl-G) (\a) as terminator
+                            belIndex = __osc.index('\a')
+                            __oscString += __osc[:belIndex]
+                            return True, __osc[belIndex+1:], __oscString
+                        __oscString += __osc
+                        return False, "", __oscString
+
+                    # I am using a closure in order to exit the routine at the end
+                    def __processOSCEscapeGenerator(__oscString:str):
+                        _slice = ""
+                        for __osc in escapeGenerator:
+                            if __osc[0] == '\\': # ST (0x9c) (<ESC> \) as terminator
+                                return True, __osc[1:], __oscString
+                            ret, _slice = __checkOSCBell(__osc, __oscString)
+                            if ret:
+                                return ret, _slice, __oscString
+                        return False, "", __oscString
+
+                    def __processOSCInputGenerator(__oscString:str):
+                        # If the terminator is not in the current escaped slices
+                        # I need to fetch from the input until I got all of them
+                        # This is not the nicest thing but it save a bunch of extra
+                        # hcecks at any input just to find if we are in OSC mode or not
+                        for out in inputgenerator:
+                            sout = out.split('\033')
+                            self._terminal.DCSstring += sout[0]
+                            escapeGenerator = (i for i in sout[1:])
+                            ret, _slice, __oscString =  __processOSCEscapeGenerator(__oscString)
+                            if ret:
+                                return escapeGenerator, slice, __oscString
+
+                    ret, slice, oscString = __checkOSCBell(slice,oscString)
+
+                    if not ret:
+                        ret, slice, oscString = __processOSCEscapeGenerator(oscString)
+
+                    if not ret:
+                        escapeGenerator, slice, oscString = __processOSCInputGenerator(oscString)
+
+                    _termLog.info(f"OSC: {oscString}")
+
+                    if m := TTkTerminal.re_OSC_ps_Pt.match(oscString):
+                        en = m.end()
+                        ps = int(m.group(1))
+                        pt = m.group(2)
+                            # Ps specifies the type of operation to perform:
+                            #   Ps = 0  -> Change Icon Name and Window Title to Pt.
+                            #   Ps = 1  -> Change Icon Name to Pt.
+                            #   Ps = 2  -> Change Window Title to Pt.
+                        if ps in (0,1,2):
+                            self.titleChanged.emit(pt)
+                    else:
+                        _termLog.warn(f"OSC: {oscString} - Not Recognised - yet")
+
+                    if not slice:
+                        continue
+
                 ################################################
                 # Everything else
                 ################################################
                 else:
                     _termLog.warn(f"Unhandled Slice:'<ESC>{slice}'".replace('\n','\\n'))
+                    leftUnhandled = "\033"+slice
                     continue
 
                 self._screen_current.pushLine(slice,irm=self._terminal.IRM)
