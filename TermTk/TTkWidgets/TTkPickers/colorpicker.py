@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkColorButtonPicker', 'TTkColorDialogPicker']
+
 import re
 
 from TermTk.TTkCore.constant import TTkK
@@ -39,8 +39,6 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-
-__all__ = ['TTkColorButtonPicker', 'TTkColorDialogPicker']
 
 class _TTkHueCanvas(TTkWidget):
     __slots__ = ('_hueList', '_selected', 'colorPicked')

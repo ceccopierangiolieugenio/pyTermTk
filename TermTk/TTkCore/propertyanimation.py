@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkPropertyAnimation', 'TTkEasingCurve']
+
 import time, math
 from inspect import getfullargspec
 from types import LambdaType
@@ -27,8 +29,6 @@ from types import LambdaType
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
-
-__all__ = ['TTkPropertyAnimation', 'TTkEasingCurve']
 
 class TTkEasingCurve():
     Linear       = 0

@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkCheckboxProperties']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
-
-__all__ = ['TTkCheckboxProperties']
 
 TTkCheckboxProperties = {
     'properties' : {

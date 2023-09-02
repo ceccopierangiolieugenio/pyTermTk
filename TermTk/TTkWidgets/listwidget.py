@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkAbstractListItem', 'TTkListWidget']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -31,8 +31,6 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
-
-__all__ = ['TTkAbstractListItem', 'TTkListWidget']
 
 class TTkAbstractListItem(TTkWidget):
     '''TTkAbstractListItem'''

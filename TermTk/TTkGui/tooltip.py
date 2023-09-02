@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkToolTip']
+
 # from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.canvas    import TTkCanvas
@@ -30,8 +32,6 @@ from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkCore.signal    import pyTTkSlot
-
-__all__ = ['TTkToolTip']
 
 class _TTkToolTipDisplayWidget(TTkWidget):
     __slots__ = ('_toolTip', '_x', '_y')

@@ -21,6 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFancyProgressBar', 'TTkLookAndFeelFPBar']
+
 import math
 
 from TermTk.TTkCore.cfg       import TTkCfg
@@ -29,8 +31,6 @@ from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.string    import TTkString
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkFancyProgressBar', 'TTkLookAndFeelFPBar']
 
 class TTkLookAndFeel():
     __slots__ = ('modified')

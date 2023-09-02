@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkSpinBox']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
@@ -29,8 +29,6 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
-
-__all__ = ['TTkSpinBox']
 
 class TTkSpinBox(TTkContainer):
     '''TTkSpinBox'''

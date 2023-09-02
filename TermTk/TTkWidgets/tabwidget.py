@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTabButton', 'TTkTabBar', 'TTkTabWidget']
+
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.log import TTkLog
@@ -39,8 +39,6 @@ from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.menubar import TTkMenuBarButton
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-
-__all__ = ['TTkTabButton', 'TTkTabBar', 'TTkTabWidget']
 
 _tabStyle  = {
             'default':     {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044"),

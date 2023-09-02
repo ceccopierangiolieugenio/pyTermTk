@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -20,22 +22,54 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkLayoutProperties']
+# usage:
+#
+#    # Prepare the folders:
+#    cp -a TermTk tmp
+#
+#    # Run the script
+#    for i in $(find TermTk -name "*.py") ;
+#        do echo $i ;
+#        tools/reformat.__all__.py $i > tmp/$i ;
+#    done
+#
 
-from TermTk.TTkLayouts.layout import TTkLayout
+__all__ = []
+__version__ = '1.0'
+__author__ = 'Eugenio Parodi'
 
-TTkLayoutProperties = {
-    'properties' : {
-        'Geometry' : {
-                'get':  { 'cb':TTkLayout.geometry,    'type': [
-                                { 'name': 'x',     'type':int } ,
-                                { 'name': 'y',     'type':int } ,
-                                { 'name': 'width', 'type':int } ,
-                                { 'name': 'height','type':int } ] },
-                'set':  { 'cb':TTkLayout.setGeometry, 'type': [
-                                { 'name': 'x',     'type':int } ,
-                                { 'name': 'y',     'type':int } ,
-                                { 'name': 'width', 'type':int } ,
-                                { 'name': 'height','type':int } ] } },
-    },'signals' : {},'slots' : {}
-}
+import os
+import sys
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', type=str, help='the filename')
+    args = parser.parse_args()
+
+    lines = []
+    all = ''
+
+    with open(args.filename) as f:
+        while l := f.readline():
+            # removing the python  header
+            if "env python3" in l:
+                while (l:=f.readline()) == '\n': pass
+
+            # Process the __all__ directive
+            if l.startswith('__all__'):
+                all = l
+                l = f.readline()
+                if l != '\n':
+                    lines.append(l)
+            else:
+                lines.append(l)
+
+    for l in lines:
+        if l == '# SOFTWARE.\n' and all:
+            print(f"{l}\n{all}",end='')
+        else:
+            print(l,end='')
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFileTreeWidget']
+
 import os
 import datetime
 
@@ -33,8 +33,6 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-
-__all__ = ['TTkFileTreeWidget']
 
 class TTkFileTreeWidget(TTkTreeWidget):
     __slots__ = ('_path', '_filter',

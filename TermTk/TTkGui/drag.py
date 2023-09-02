@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkDrag', 'TTkDropEvent']
+
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
 from TermTk.TTkWidgets.widget import TTkWidget
-
-__all__ = ['TTkDrag', 'TTkDropEvent']
 
 class _TTkDragDisplayWidget(TTkWidget):
     __slots__ = ('_pixmap')

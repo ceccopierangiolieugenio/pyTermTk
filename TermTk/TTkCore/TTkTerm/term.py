@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTerm']
+
 import importlib.util
 
 if importlib.util.find_spec('pyodideProxy'):
     from .term_pyodide import TTkTerm
 else:
     from .term_unix import TTkTerm
-
-__all__ = ['TTkTerm']

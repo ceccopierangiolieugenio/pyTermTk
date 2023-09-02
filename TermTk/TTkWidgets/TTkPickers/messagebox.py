@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkMessageBox']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSignal,pyTTkSlot
 from TermTk.TTkCore.color import TTkColor
@@ -33,8 +35,6 @@ from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.image import TTkImage
 from TermTk.TTkWidgets.label import TTkLabel
 from TermTk.TTkWidgets.button import TTkButton
-
-__all__ = ['TTkMessageBox']
 
 class TTkMessageBox(TTkWindow):
     class Icon(int):
