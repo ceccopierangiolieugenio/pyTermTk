@@ -30,6 +30,5 @@ import TermTk as ttk
 ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
-ttk.TTkFrame(parent=root, x=5, y=3, width=20, height=15, border=True)
-# ttk.Button(root, text="Hello World").grid()
+ttk.TTkWindow(parent=root, pops=(0,0), size=(30,5), border=True)
 root.mainloop()
