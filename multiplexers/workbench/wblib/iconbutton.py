@@ -24,6 +24,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
@@ -32,14 +33,43 @@ from .colors import *
 __all__ = ['WBIconButton']
 
 class WBIconButton(TTkWidget):
-    __slots__ = ('_text')
-    def __init__(self, text="", **kwargs):
+    IconTerminal = 0x01
+
+    _iconS = { IconTerminal: [
+                    # TTkString("🬦"              "🬹🬹🬹🬹🬹🬹"                                           "🬓"),
+                    TTkString("▗"              "▄▄▄▄▄▄"                                           "▖"),
+                    TTkString("▐")+ TTkString(" C:\  ",fgORANGE+bgWHITE+TTkColor.BOLD)+ TTkString("▌",fgWHITE+bgBLACK),
+                    TTkString("🬉")+ TTkString("🬎🬎🬎🬎🬎🬎", fgWHITE+bgBLACK)+ TTkString("🬄",fgWHITE+bgBLACK)]
+                    # TTkString("┌──────┐"),
+                    # TTkString("│ C:\  │"),
+                    # TTkString("└──────┘")]
+                    }
+
+    classStyle = {
+                'default':     {'color': fgWHITE+bgBLUE},
+                'disabled':    {'color': fgWHITE+bgBLUE},
+                'focus':       {'color': fgWHITE+bgBLUE},
+                'clicked':     {'color': fgWHITE+bgBLACK},
+            }
+
+    __slots__ = ('_text', '_icon', 'clicked')
+    def __init__(self, text="", icon=IconTerminal, **kwargs):
+        self.clicked = pyTTkSignal()
         self._text = text
+        self._icon = WBIconButton._iconS[icon]
         super().__init__(**kwargs)
         self.getCanvas().setTransparent(True)
-        self.resize(len(text),3)
+        self.resize(len(text),len(self._icon)+1)
+
+    def mouseDoubleClickEvent(self, evt) -> bool:
+        self.clicked.emit()
+        return True
 
     def paintEvent(self, canvas: TTkCanvas):
-        canvas.drawText(text="-----", pos=(0,0))
-        canvas.drawText(text="-----", pos=(0,1))
-        canvas.drawText(text=self._text, pos=(0,2))
+        style = self.currentStyle()
+        color = style['color']
+
+        y=-1
+        for y,l in enumerate(self._icon):
+            canvas.drawTTkString(text=l, pos=(0,y),color=color)
+        canvas.drawText(text=self._text, pos=(0,y+1),color=color)

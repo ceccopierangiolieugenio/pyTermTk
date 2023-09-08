@@ -37,10 +37,11 @@ __all__ = [
     'bgBLUE','bgORANGE','bgBLACK','bgWHITE']
 
 fgBLUE   = ttk.TTkColor.fg('#0055aa')
-fgORANGE = ttk.TTkColor.fg('#0055aa')
+fgORANGE = ttk.TTkColor.fg('#ff8800')
 fgBLACK  = ttk.TTkColor.fg('#000000')
 fgWHITE  = ttk.TTkColor.fg('#ffffff')
+
 bgBLUE   = ttk.TTkColor.bg('#0055aa')
-bgORANGE = ttk.TTkColor.bg('#0055aa')
+bgORANGE = ttk.TTkColor.bg('#ff8800')
 bgBLACK  = ttk.TTkColor.bg('#000000')
 bgWHITE  = ttk.TTkColor.bg('#ffffff')

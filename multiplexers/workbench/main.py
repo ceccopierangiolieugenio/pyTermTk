@@ -65,7 +65,7 @@ class TTkWorkbench(ttk.TTk):
     def paintEvent(self, canvas: TTkCanvas):
         canvas.fill(color=bgBLUE)
 
-root = TTkWorkbench(layout=ttk.TTkGridLayout())
+root = TTkWorkbench(layout=ttk.TTkGridLayout(), mouseTrack=True)
 root.setPadding(3,3,15,10)
 
 wbl = WBLoader(size=root.size())
@@ -73,25 +73,22 @@ root.rootLayout().addWidget(wbl)
 
 wb = WorkBench(parent=root)
 
-win2  = WBWindow(parent=wb, pos=(5,2), size=(50,15), title="euWorkbench",)
+ttk.pyTTkSlot()
+def _openTerminal(term=[]):
+    _x,_y = 15,5
+    while (_x,_y) in [_t['pos'] for _t in term]:
+        _x += 4
+        _y += 2
+    _win  = WBWindow(parent=wb, pos=(_x,_y), size=(60,20),
+                    whiteBg=False,
+                    title=f"Terminallo n.{len(term)+1}",layout=ttk.TTkVBoxLayout())
+    _term = ttk.TTkTerminal(parent=_win)
+    _term.runShell()
+    _term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
+    _term.titleChanged.connect(_win.setTitle)
+    term.append({'pos':(_x,_y),'term':_term,'win':_win})
 
-
-win3  = WBWindow(parent=wb, pos=(15,10), size=(70,25),
-                 wbbg=bgBLACK+fgWHITE,
-                 title="Terminallo n.1",layout=ttk.TTkVBoxLayout())
-term3 = ttk.TTkTerminal(parent=win3)
-term3.runShell()
-
-win1  = WBWindow(parent=wb, pos=(10,5), size=(60,20),
-                 wbbg=bgBLACK+fgWHITE,
-                 title="Terminallo n.1",layout=ttk.TTkVBoxLayout())
-term1 = ttk.TTkTerminal(parent=win1)
-term1.runShell()
-
-wink  = WBWindow(parent=wb, pos=(10,30), size=(70,6),
-                 wbbg=bgBLACK+fgWHITE,
-                 title="Terminallo n.1",layout=ttk.TTkVBoxLayout())
-ttk.TTkKeyPressView(parent=wink)
-
+winWb  = WBWindow(parent=wb, pos=(5,2), size=(50,15), title="euWorkbench")
+WBIconButton(parent=winWb, text="Terminal").clicked.connect(_openTerminal)
 
 root.mainloop()

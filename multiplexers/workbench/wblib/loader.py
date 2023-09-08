@@ -20,13 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk import TTkUtil, TTkWidget, TTkLabel, TTkCanvas
+from TermTk import TTkUtil, TTkWidget, TTkLabel, TTkCanvas, TTkString
 
 from .colors import *
 
 __all__ = ['WBLoader']
 
 class WBLoader(TTkWidget):
+    __slots__ = ('_data')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -83,10 +84,7 @@ class WBLoader(TTkWidget):
             "6BRGSodjmgRv5h6h7HwYjO4/SNzM5Ky/+WyAwofNiveesfHqkWXInDCVJLD+nAsd4F24iLb2m+bwZGi4U674UR/G9hOZuqErc+P56zvvfDNhplNxl3j0rvAlu/aIO5k3" +
             "+5lvbuVvvLm9kxuPaYD11gLac/Mj/H3EO9/o+nqeQotm/um3/wW9x45d")
 
-        w,h = self.size()
-        l = TTkLabel(parent=self, text=data)
-        lw,lh = l.size()
-        l.move((w-lw)//2,(h-lh)//2)
+        self._data = TTkString(data).split('\n')
 
             #
             #      ▀▄ █ ██  █ ▖ █    █ ▝▀▀▄ ██
@@ -104,9 +102,16 @@ class WBLoader(TTkWidget):
             #   ▌    ▐  ╚═╝                  ╚═╝
             #     ▚▄▄▘
 
-    def mouseReleaseEvent(self, evt) -> bool:
+    def mousePressEvent(self, evt) -> bool:
         self.close()
         return True
 
     def paintEvent(self, canvas: TTkCanvas):
+        w,h = self.size()
+        dw = self._data[0].termWidth()
+        dh = len(self._data)
+        x = (w-dw)//2
+        y = (h-dh)//2
         canvas.fill(color=bgWHITE)
+        for dy, txt in enumerate(self._data,y):
+            canvas.drawTTkString(pos=(x,dy), text=txt)

@@ -45,18 +45,44 @@ class _MinimizedButton(TTkButton):
         self.clicked.connect(_cb)
 
 class WBWindow(TTkResizableFrame):
-    '''TTkWindow'''
+    '''WBWindow'''
+
+    _styleBgWhite = {
+                'default':     {'color': fgWHITE+bgBLUE},
+                'disabled':    {'color': fgWHITE+bgBLUE},
+                'focus':       {'color': fgWHITE+bgBLUE},
+            }
+
+    _styleBgNone = {
+                'default':     {'color': fgWHITE},
+                'disabled':    {'color': fgWHITE},
+                'focus':       {'color': fgWHITE},
+            }
+
+    classStyle = {
+                'default':     {'titleChar': '⚏',
+                                'borderColor': bgWHITE+fgBLUE},
+                'disabled':    {'titleChar': '⚏',
+                                'borderColor':bgWHITE+fgBLUE},
+                'focus':       {'titleChar': '☰',
+                                'borderColor': bgWHITE+fgBLUE}
+            }
+
     __slots__ = (
             '_title', '_mouseDelta', '_draggable',
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
             '_flags', '_winTopLayout',
-            '_sbRight', '_sbBottom',
-            '_maxBk', '_redBk',
-            '_wbbg')
-    def __init__(self, wbbg=fgWHITE+bgBLUE, *args, **kwargs):
+            '_sbRight', '_sbBottom')
+
+    def __init__(self, whiteBg=True, *args, **kwargs):
         self._winTopLayout = TTkGridLayout()
-        self._wbbg = wbbg
         super().__init__(*args, **kwargs)
+
+        if whiteBg:
+            self.mergeStyle(self._styleBgWhite)
+        else:
+            self.mergeStyle(self._styleBgNone)
+
         self._flags = TTkK.NONE
         self.setPadding(1,1,1,1)
         self._mouseDelta = (0,0)
@@ -74,8 +100,6 @@ class WBWindow(TTkResizableFrame):
         self._sbBottom.setGeometry( 0  , h-1, w-1, 1  )
 
     def resizeEvent(self, w, h):
-        self._maxBk = None
-        self._redBk = None
         self._winTopLayout.setGeometry(1,1,w-2,1)
         self._sbRight.setGeometry(  w-1, 1,   1,   h-2)
         self._sbBottom.setGeometry( 0  , h-1, w-1, 1  )
@@ -119,28 +143,25 @@ class WBWindow(TTkResizableFrame):
         self.update()
 
     def paintEvent(self, canvas=TTkCanvas):
-        if self.hasFocus():
-            color = TTkCfg.theme.windowBorderColorFocus
-            titleChar = '☰'
-        else:
-            color = TTkCfg.theme.windowBorderColor
-            # titleChar = '☷'
-            titleChar = '⚏'
+        style = self.currentStyle()
+        color = style['color']
+        borderColor = style['borderColor']
+        titleChar = style['titleChar']
 
         w,h = self.size()
 
 
         canvas.fill(color=bgBLUE)
-        canvas.fill(char='▎',pos=(0,1), size=(1,h-2), color=self._wbbg)
+        canvas.fill(char='▎',pos=(0,1), size=(1,h-2), color=color)
         # draw the title ┃ │
         canvas.drawText(
             text=f"│▣│ {self._title} {titleChar*w}",
             # text=f"│⚀│ {self._title} {titleChar*w}",
-            color=bgWHITE+fgBLUE)
+            color=borderColor)
 
         canvas.drawText(
             text="│◪│◩│",
             pos=(w-5,0),
-            color=bgWHITE+fgBLUE)
+            color=borderColor)
 
-        canvas.drawChar(pos=(w-1,h-1),char='⇱',color=fgBLUE+bgWHITE)
+        canvas.drawChar(pos=(w-1,h-1),char='⇱',color=borderColor)
