@@ -191,6 +191,8 @@ class TTkTerminal(TTkWidget):
 
     re_OSC_ps_Pt    = re.compile('^(\d*);(.*)$')
 
+    re_XTWINOPS     = re.compile('^')
+
     @pyTTkSlot()
     def _quit(self):
         if self._quit_pipe:
@@ -244,7 +246,7 @@ class TTkTerminal(TTkWidget):
             for slice in escapeGenerator:
                 leftUnhandled = ""
                 ssss = slice.replace('\033','<ESC>').replace('\n','\\n').replace('\r','\\r')
-                _termLog.debug(f"slice: {ssss}")
+                _termLog.debug(f"slice: '{ssss}'")
 
                 ################################################
                 # CSI Modes
@@ -829,6 +831,7 @@ class TTkTerminal(TTkWidget):
             return True
         if ( not self._mouse.reportDrag and
             evt.evt in (TTkK.Drag, TTkK.Move)):
+            _termLog.error(f"{self._mouse.reportDrag=} {evt.evt in (TTkK.Drag, TTkK.Move)=}")
             return True
 
         x,y = evt.x+1, evt.y+1
@@ -843,21 +846,21 @@ class TTkTerminal(TTkWidget):
                 TTkK.Wheel        : 64,
             }.get(evt.key, 0)
 
-            km,pr = {
-                TTkK.Press:     ( 0,'M'),
-                TTkK.Release:   ( 0,'m'),
-                TTkK.Move:      ( 0,'M'),
-                TTkK.Drag:      (32,'M'),
-                TTkK.WHEEL_Up:  ( 0,'M'),
-                TTkK.WHEEL_Down:( 1,'M')}.get(
-                    evt.evt,(0,'M'))
-            # _termLog.error(f'Mouse: <ESC>[<{k+km};{x};{y}{pr}')
+            k,km,pr = {
+                TTkK.Press:     (k,  0,'M'),
+                TTkK.Release:   (k,  0,'m'),
+                TTkK.Move:      (35, 0,'M'),
+                TTkK.Drag:      (k, 32,'M'),
+                TTkK.WHEEL_Up:  (k,  0,'M'),
+                TTkK.WHEEL_Down:(k,  1,'M')}.get(
+                    evt.evt,(0,0,'M'))
+            _termLog.error(f'Mouse: <ESC>[<{k+km};{x};{y}{pr}')
             self._inout.write(f'\033[<{k+km};{x};{y}{pr}'.encode())
         else:
             head = {
                 TTkK.Press:     b'\033[M ',
                 TTkK.Release:   b'\033[M#',
-                # TTkK.Move:      b'\033[M@',
+                TTkK.Move:      b'\033[MC',
                 TTkK.Drag:      b'\033[M@',
                 TTkK.WHEEL_Up:  b'\033[M`',
                 TTkK.WHEEL_Down:b'\033[Ma'}.get(
@@ -866,7 +869,7 @@ class TTkTerminal(TTkWidget):
             bah = bytearray(head)
             bah.append((x+32)%0xff)
             bah.append((y+32)%0xff)
-            # _termLog.error(f'Mouse: '+bah.decode().replace('\033','<ESC>'))
+            _termLog.error(f'Mouse: '+bah.decode().replace('\033','<ESC>'))
             self._inout.write(bah)
         return True
 
@@ -922,6 +925,84 @@ class TTkTerminal(TTkWidget):
             self._inout.write(f"\033[{y+1};{x+1}R".encode())
         elif ps==5:
             self._inout.write(f"\033[0n".encode())
+
+    # CSI Ps ; Ps ; Ps t
+    #           Window manipulation (XTWINOPS), dtterm, extended by xterm.
+    #           These controls may be disabled using the allowWindowOps
+    #           resource.
+    #
+    #           xterm uses Extended Window Manager Hints (EWMH) to maximize
+    #           the window.  Some window managers have incomplete support for
+    #           EWMH.  For instance, fvwm, flwm and quartz-wm advertise
+    #           support for maximizing windows horizontally or vertically, but
+    #           in fact equate those to the maximize operation.
+    #
+    #           Valid values for the first (and any additional parameters)
+    #           are:
+    #             Ps = 1  ⇒  De-iconify window.
+    #             Ps = 2  ⇒  Iconify window.
+    #             Ps = 3 ;  x ;  y ⇒  Move window to [x, y].
+    #             Ps = 4 ;  height ;  width ⇒  Resize the xterm window to
+    #           given height and width in pixels.  Omitted parameters reuse
+    #           the current height or width.  Zero parameters use the
+    #           display's height or width.
+    #             Ps = 5  ⇒  Raise the xterm window to the front of the
+    #           stacking order.
+    #             Ps = 6  ⇒  Lower the xterm window to the bottom of the
+    #           stacking order.
+    #             Ps = 7  ⇒  Refresh the xterm window.
+    #             Ps = 8 ;  height ;  width ⇒  Resize the text area to given
+    #           height and width in characters.  Omitted parameters reuse the
+    #           current height or width.  Zero parameters use the display's
+    #           height or width.
+    #             Ps = 9 ;  0  ⇒  Restore maximized window.
+    #             Ps = 9 ;  1  ⇒  Maximize window (i.e., resize to screen
+    #           size).
+    #             Ps = 9 ;  2  ⇒  Maximize window vertically.
+    #             Ps = 9 ;  3  ⇒  Maximize window horizontally.
+    #             Ps = 1 0 ;  0  ⇒  Undo full-screen mode.
+    #             Ps = 1 0 ;  1  ⇒  Change to full-screen.
+    #             Ps = 1 0 ;  2  ⇒  Toggle full-screen.
+    #             Ps = 1 1  ⇒  Report xterm window state.
+    #           If the xterm window is non-iconified, it returns CSI 1 t .
+    #           If the xterm window is iconified, it returns CSI 2 t .
+    #             Ps = 1 3  ⇒  Report xterm window position.
+    #           Note: X Toolkit positions can be negative, but the reported
+    #           values are unsigned, in the range 0-65535.  Negative values
+    #           correspond to 32768-65535.
+    #           Result is CSI 3 ; x ; y t
+    #             Ps = 1 3 ;  2  ⇒  Report xterm text-area position.
+    #           Result is CSI 3 ; x ; y t
+    #             Ps = 1 4  ⇒  Report xterm text area size in pixels.
+    #           Result is CSI  4 ;  height ;  width t
+    #             Ps = 1 4 ;  2  ⇒  Report xterm window size in pixels.
+    #           Normally xterm's window is larger than its text area, since it
+    #           includes the frame (or decoration) applied by the window
+    #           manager, as well as the area used by a scroll-bar.
+    #           Result is CSI  4 ;  height ;  width t
+    #             Ps = 1 5  ⇒  Report size of the screen in pixels.
+    #           Result is CSI  5 ;  height ;  width t
+    #             Ps = 1 6  ⇒  Report xterm character cell size in pixels.
+    #           Result is CSI  6 ;  height ;  width t
+    #             Ps = 1 8  ⇒  Report the size of the text area in characters.
+    #           Result is CSI  8 ;  height ;  width t
+    #             Ps = 1 9  ⇒  Report the size of the screen in characters.
+    #           Result is CSI  9 ;  height ;  width t
+    #             Ps = 2 0  ⇒  Report xterm window's icon label.
+    #           Result is OSC  L  label ST
+    #             Ps = 2 1  ⇒  Report xterm window's title.
+    #           Result is OSC  l  label ST
+    #             Ps = 2 2 ; 0  ⇒  Save xterm icon and window title on stack.
+    #             Ps = 2 2 ; 1  ⇒  Save xterm icon title on stack.
+    #             Ps = 2 2 ; 2  ⇒  Save xterm window title on stack.
+    #             Ps = 2 3 ; 0  ⇒  Restore xterm icon and window title from
+    #           stack.
+    #             Ps = 2 3 ; 1  ⇒  Restore xterm icon title from stack.
+    #             Ps = 2 3 ; 2  ⇒  Restore xterm window title from stack.
+    #             Ps >= 2 4  ⇒  Resize to Ps lines (DECSLPP), VT340 and VT420.
+    #           xterm adapts this by resizing its window.
+    def _CSI_t_XTWINOPS(self, ps, _):
+        pass
 
     _CSI_MAP = {
         'n': _CSI_n_DSR,
@@ -997,7 +1078,7 @@ class TTkTerminal(TTkWidget):
         self._mouse.reportPress = s
         self._mouse.reportDrag  = False
         self._mouse.reportMove  = False
-        _termLog.info(f"1002 Mouse Tracking {s=}")
+        _termLog.info(f"1000 Mouse Tracking {s=}")
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -1026,6 +1107,16 @@ class TTkTerminal(TTkWidget):
         self._mouse.reportDrag  = s
         self._mouse.reportMove  = s
         _termLog.info(f"1003 Mouse Tracking {s=}")
+
+    # CSI ? Pm h
+    #           DEC Private Mode Set (DECSET).
+    #             Ps = 1 0 0 4  ⇒  Send FocusIn/FocusOut events, xterm.
+    # CSI ? Pm l
+    #           DEC Private Mode Reset (DECRST).
+    #             Ps = 1 0 0 4  ⇒  Don't send FocusIn/FocusOut events, xterm.
+    def _CSI_DEC_SR_1004(self, s):
+        _termLog.warn(f"Unhandled 1004 Focus In/Out event {s=}")
+
 
     # CSI ? Pm h
     #           DEC Private Mode Set (DECSET).
@@ -1104,6 +1195,7 @@ class TTkTerminal(TTkWidget):
         1000: _CSI_DEC_SR_1000,
         1002: _CSI_DEC_SR_1002,
         1003: _CSI_DEC_SR_1003,
+        1004: _CSI_DEC_SR_1004,
         1006: _CSI_DEC_SR_1006,
         1015: _CSI_DEC_SR_1015,
         1047: _CSI_DEC_SR_1047,

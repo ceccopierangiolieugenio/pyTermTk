@@ -46,6 +46,7 @@ class _TTkTerminalAltScreen():
                  '_scrollingRegion',
                  '_bufferSize', '_bufferedLines',
                  '_w', '_h', '_color', '_canvas',
+                 '_last',
                  # Signals
                  'bell'
                  )
@@ -53,6 +54,7 @@ class _TTkTerminalAltScreen():
         self.bell = pyTTkSignal()
         self._w = w
         self._h = h
+        self._last = None
         self._bufferSize = bufferSize
         self._bufferedLines = collections.deque(maxlen=bufferSize)
         self._terminalCursor = (0,0)
@@ -91,6 +93,8 @@ class _TTkTerminalAltScreen():
         x,y = self._terminalCursor
         w,h = self._w, self._h
         st,sb = self._scrollingRegion
+        self._last = txt[-1] if txt else None
+
         for bi, tout in enumerate(txt.split('\a')): # grab the bells
             if bi:
                 self.bell.emit()
@@ -507,7 +511,9 @@ class _TTkTerminalAltScreen():
     def _CSI_a_HPR(self, ps, _): pass
 
     # CSI Ps b  Repeat the preceding graphic character Ps times (REP).
-    def _CSI_b_REP(self, ps, _): pass
+    def _CSI_b_REP(self, ps, _):
+        if self._last:
+            self._pushTxt(self._last*ps)
 
     # CSI Ps c  Send Device Attributes (Primary DA).
     #             Ps = 0  or omitted ⇒  request attributes from terminal.  The
@@ -1642,8 +1648,8 @@ class _TTkTerminalAltScreen():
         'J': _CSI_J_ED,     # CSI Ps J  Erase in Display (ED), VT100. [0:Below, 1:Above, 2:All, 3:SavedLines]
         'K': _CSI_K_EL,     # CSI Ps K  Erase in Line (EL), VT100.    [0:Right, 1:Left,  2:All]
         'L': _CSI_L_IL,     # CSI Ps L  Insert Ps Line(s) (default = 1) (IL).
-        'M': _CSI_M_DL,
-        'P': _CSI_P_DCH,
+        'M': _CSI_M_DL,     # CSI Ps M  Delete Ps Line(s) (default = 1) (DL).
+        'P': _CSI_P_DCH,    # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
         # 'X': _CSI_X_ECH,
@@ -1651,11 +1657,11 @@ class _TTkTerminalAltScreen():
         # '^': _CSI___SD,
         # '`': _CSI___HPA,
         # 'a': _CSI_a_HPR,
-        # 'b': _CSI_b_REP,
+        'b': _CSI_b_REP,    # CSI Ps b  Repeat the preceding graphic character Ps times (REP).
         # 'c': _CSI_c_Pri_DA,
-        'd': _CSI_d_VPA,
+        'd': _CSI_d_VPA,    # CSI Ps d  Line Position Absolute  [row] (default = [1,column]) (VPA).
         # 'e': _CSI_e_VPR,
-        'f': _CSI_f_HVP,     # CSI Ps ; Ps f    Horizontal and Vertical Position [row;column] (default = [1,1]) (HVP).
+        'f': _CSI_f_HVP,    # CSI Ps ; Ps f    Horizontal and Vertical Position [row;column] (default = [1,1]) (HVP).
         # 'g': _CSI_g_TBC,
         #    'h': _CSI_h_SM,
         # 'i': _CSI_i_MC,
