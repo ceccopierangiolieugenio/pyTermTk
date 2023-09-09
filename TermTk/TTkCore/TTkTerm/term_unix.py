@@ -29,6 +29,7 @@ except Exception as e:
     exit(1)
 
 from .term_base import TTkTermBase
+from ..log import TTkLog
 
 class TTkTerm(TTkTermBase):
     _sigWinChCb = None
@@ -80,8 +81,13 @@ class TTkTerm(TTkTermBase):
 
     @staticmethod
     def _push(*args):
-        sys.stdout.write(str(*args))
-        sys.stdout.flush()
+        try:
+            sys.stdout.write(str(*args))
+            sys.stdout.flush()
+        except BlockingIOError as e:
+            TTkLog.fatal(f"{e=} {e.characters_written=}")
+        except Exception as e:
+            TTkLog.fatal(e)
     TTkTermBase.push = _push
 
     @staticmethod
