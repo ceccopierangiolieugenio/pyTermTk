@@ -638,6 +638,14 @@ class TTkCanvas:
         if bx+bw<0 or by+bh<0 or bx>=cw or by>=ch: return
         if x+w<=bx or y+h<=by or bx+bw<=x or by+bh<=y: return
 
+        if (0,0,cw,ch)==geom==bound and (cw,ch)==canvas.size():
+            # fast Copy
+            # the canvas match exactly on top of the current one
+            for y in range(h):
+                self._data[y]   = canvas._data[y].copy()
+                self._colors[y] = canvas._colors[y].copy()
+            return
+
         x = min(x,cw-1)
         y = min(y,ch-1)
         w = min(w,cw-x)
@@ -743,6 +751,56 @@ class TTkCanvas:
                     lastcolor = color
                 ansi+=ch
             if not empty:
+                TTkTerm.push(ansi)
+                empty=True
+        # Reset the color at the end
+        TTkTerm.push(TTkColor.RST)
+        # TTkTerm.flush()
+        # Switch the buffer
+        self._bufferedData, self._bufferedColors = data, colors
+        self._data,         self._colors         = oldData, oldColors
+
+    def pushToTerminalBufferedOld(self, x, y, w, h):
+        # TTkLog.debug("pushToTerminal")
+        data, colors = self._data, self._colors
+        oldData, oldColors = self._bufferedData, self._bufferedColors
+        lastcolor = TTkColor.RST
+        empty = True
+        ansi = ""
+        for y,(lda,ldb,lca,lcb) in enumerate(zip(data,oldData,colors,oldColors)):
+            count = 0
+            chBk = ''
+            for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
+                if da==db and ca==cb:
+                    if not empty:
+                        ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
+                        TTkTerm.push(ansi)
+                        count = 0
+                        chBk = ''
+                        empty=True
+                    continue
+                ch = da
+                color = ca
+                if empty:
+                    ansi = ("" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b") + TTkTerm.Cursor.moveTo(y+1,x+1)
+                    empty = False
+                    count = 0
+                    chBk = ''
+                if color != lastcolor:
+                    ansi += ("" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b") + str(color-lastcolor)
+                    lastcolor = color
+                    count = 0
+                    chBk = ''
+                # "Collect the consecutive characters"
+                if ch == chBk:
+                    count+=1
+                else:
+                    ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
+                    chBk = ch
+                    count=1
+                # ansi+=ch
+            if not empty:
+                ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
                 TTkTerm.push(ansi)
                 empty=True
         # Reset the color at the end
