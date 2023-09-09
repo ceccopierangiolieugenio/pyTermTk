@@ -63,12 +63,14 @@ class _termLog():
     error = TTkLog.error
     warn  = TTkLog.warn
     fatal = TTkLog.fatal
+    # mouse = TTkLog.error
 
     debug = lambda _:None
     info  = lambda _:None
     # error = lambda _:None
     # warn  = lambda _:None
     # fatal = lambda _:None
+    mouse = lambda _:None
 
 class TTkTerminal(TTkWidget):
     @dataclass
@@ -831,7 +833,7 @@ class TTkTerminal(TTkWidget):
             return True
         if ( not self._mouse.reportDrag and
             evt.evt in (TTkK.Drag, TTkK.Move)):
-            _termLog.error(f"{self._mouse.reportDrag=} {evt.evt in (TTkK.Drag, TTkK.Move)=}")
+            _termLog.mouse(f"{self._mouse.reportDrag=} {evt.evt in (TTkK.Drag, TTkK.Move)=}")
             return True
 
         x,y = evt.x+1, evt.y+1
@@ -854,7 +856,7 @@ class TTkTerminal(TTkWidget):
                 TTkK.WHEEL_Up:  (k,  0,'M'),
                 TTkK.WHEEL_Down:(k,  1,'M')}.get(
                     evt.evt,(0,0,'M'))
-            _termLog.error(f'Mouse: <ESC>[<{k+km};{x};{y}{pr}')
+            _termLog.mouse(f'Mouse: <ESC>[<{k+km};{x};{y}{pr}')
             self._inout.write(f'\033[<{k+km};{x};{y}{pr}'.encode())
         else:
             head = {
@@ -869,7 +871,7 @@ class TTkTerminal(TTkWidget):
             bah = bytearray(head)
             bah.append((x+32)%0xff)
             bah.append((y+32)%0xff)
-            _termLog.error(f'Mouse: '+bah.decode().replace('\033','<ESC>'))
+            _termLog.mouse(f'Mouse: '+bah.decode().replace('\033','<ESC>'))
             self._inout.write(bah)
         return True
 
