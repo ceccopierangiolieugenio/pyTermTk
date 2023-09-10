@@ -205,7 +205,7 @@ splitter = ttk.TTkSplitter(parent=root)
 splitter.addWidget(smt := SigmaskTool(), 25)
 splitter.addWidget(mainSplitter := ttk.TTkSplitter(orientation=ttk.TTkK.VERTICAL))
 mainSplitter.addWidget(imageSplitter := ttk.TTkSplitter(orientation=ttk.TTkK.HORIZONTAL))
-mainSplitter.addWidget(controlsWidget := ttk.TTkWidget(layout=ttk.TTkGridLayout()),6)
+mainSplitter.addWidget(controlsWidget := ttk.TTkContainer(layout=ttk.TTkGridLayout()),6)
 mainSplitter.addWidget(te := ttk.TTkTextEdit(lineNumber=True, readOnly=False))
 mainSplitter.addWidget(ttk.TTkLogViewer(),6)
 
