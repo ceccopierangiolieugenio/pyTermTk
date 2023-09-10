@@ -279,11 +279,11 @@ class _TTkTerminalAltScreen():
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
-            self._canvas.fill(char=' ', pos=(x,y),size=(w,1))
+            self._canvas.fill(char=' ', pos=(x,y),size=(w,1), color=self._color)
         elif ps == 1:
-            self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1), color=self._color)
         elif ps == 2:
-            self._canvas.fill(char=' ', pos=(0,y),size=(w,1))
+            self._canvas.fill(char=' ', pos=(0,y),size=(w,1), color=self._color)
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
@@ -492,7 +492,14 @@ class _TTkTerminalAltScreen():
     #           (See discussion of Title Modes).
 
     # CSI Ps X  Erase Ps Character(s) (default = 1) (ECH).
-    def _CSI_X_ECH(self, ps, _): pass
+    def _CSI_X_ECH(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        ps = min(ps,w-x)
+        self._canvas._data[y][x:x+ps]   = [' ']*ps
+        self._canvas._colors[y][x:x+ps] = [TTkColor.RST]*ps
+        self._canvas._data[y] = self._canvas._data[y][:w]
+        self._canvas._colors[y] = self._canvas._colors[y][:w]
 
     # CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
     def _CSI_Z_CBT(self, ps, _): pass
@@ -1652,7 +1659,7 @@ class _TTkTerminalAltScreen():
         'P': _CSI_P_DCH,    # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
-        # 'X': _CSI_X_ECH,
+        'X': _CSI_X_ECH,    # CSI Ps X  Erase Ps Character(s) (default = 1) (ECH).
         # 'Z': _CSI_Z_CBT,
         # '^': _CSI___SD,
         # '`': _CSI___HPA,

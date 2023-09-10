@@ -299,6 +299,10 @@ class TTkTerminal(TTkWidget):
                                 bg = None
                                 mod = 0
                                 clean = True
+                            elif s==39: # Ps = 3 9  ⇒  Set foreground color to default, ECMA-48 3rd.
+                                fg = None
+                            elif s==49: # Ps = 4 9  ⇒  Set background color to default, ECMA-48 3rd.
+                                bg = None
                             elif ( # Ansi 16 colors
                                 30  <= s <= 37 or   # fg [ 30 -  37]
                                 90  <= s <= 97 ):   # fg [ 90 -  97] Bright
