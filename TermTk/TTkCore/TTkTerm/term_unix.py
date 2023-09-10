@@ -29,7 +29,7 @@ except Exception as e:
     exit(1)
 
 from .term_base import TTkTermBase
-from ..log import TTkLog
+from TermTk.TTkCore.log import TTkLog
 
 class TTkTerm(TTkTermBase):
     _sigWinChCb = None
