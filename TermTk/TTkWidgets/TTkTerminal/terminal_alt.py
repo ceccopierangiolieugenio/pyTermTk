@@ -300,7 +300,7 @@ class _TTkTerminalAltScreen():
         l = len(self._canvas._data)
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         bkData   = self._canvas._data[-bkl:]
         bkColors = self._canvas._colors[-bkl:]
         self._canvas._data[y:y]   = [baseData.copy() for _ in range(ps)]
@@ -317,7 +317,7 @@ class _TTkTerminalAltScreen():
         t=min(b,max(t,y))
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
@@ -346,7 +346,7 @@ class _TTkTerminalAltScreen():
         self._canvas._data[y][x:x+ps]   = []
         self._canvas._colors[y][x:x+ps] = []
         self._canvas._data[y]   += [' ']*ps
-        self._canvas._colors[y] += [TTkColor.RST]*ps
+        self._canvas._colors[y] += [self._color]*ps
 
     # CSI # P
     # CSI Pm # P
@@ -372,7 +372,7 @@ class _TTkTerminalAltScreen():
         w,h = self._w, self._h
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
@@ -455,7 +455,7 @@ class _TTkTerminalAltScreen():
         w,h = self._w, self._h
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
@@ -497,7 +497,7 @@ class _TTkTerminalAltScreen():
         w,h = self._w, self._h
         ps = min(ps,w-x)
         self._canvas._data[y][x:x+ps]   = [' ']*ps
-        self._canvas._colors[y][x:x+ps] = [TTkColor.RST]*ps
+        self._canvas._colors[y][x:x+ps] = [self._color]*ps
         self._canvas._data[y] = self._canvas._data[y][:w]
         self._canvas._colors[y] = self._canvas._colors[y][:w]
 
