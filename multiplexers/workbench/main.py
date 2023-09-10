@@ -44,26 +44,72 @@ from wblib import *
 # class WBWindow(ttk.TTkWindow):
 
 class WorkBench(ttk.TTkContainer):
+    __slots__ = ('_barSelected', '_barPosition', '_backLayout')
     def __init__(self, *args, **kwargs):
+        self._barselected = False
+        self._barPosition = 0
+        self._backLayout = ttk.TTkLayout()
+        self._backLayout.setGeometry(0,0,0,0)
         super().__init__(*args, **kwargs)
         self.setPadding(1,0,0,0)
+        self.setFocusPolicy(ttk.TTkK.ClickFocus)
+        self.rootLayout().addItem(self._backLayout)
+
+        _win = ttk.TTkWindow(pos=(10,0), size=(100,30),title=f"Loader Demo", layout=ttk.TTkGridLayout())
+        WBLoader(parent=_win)
+        self._backLayout.addWidget(_win)
+
+        if os.path.isfile(_fileName := os.path.join(sys.path[0],"dontsavethisfile.txt")):
+            with open(_fileName,'r') as f:
+                data = ttk.TTkUtil.base64_deflate_2_obj(f.read())
+                _win = ttk.TTkWindow(pos=(10,0), size=(100,30),title=f"Guru Meditation", layout=ttk.TTkGridLayout())
+                _sa = ttk.TTkScrollArea(parent=_win)
+                ttk.TTkImage(parent=_sa.viewport(), data=data)
+                self._backLayout.addWidget(_win)
+
+    def mousePressEvent(self, evt):
+        self._barSelected = evt.y == self._barPosition
+        return True
+
+    def mouseReleaseEvent(self, evt) -> bool:
+        self._barSelected = False
+        return True
+
+    def mouseDragEvent(self, evt):
+        if not self._barSelected: return True
+        w,h = self.size()
+        y = max(0,min(evt.y,h-1))
+        self.setPadding(y+1,0,0,0)
+        self._barPosition = y
+        self._backLayout.setGeometry(0,0,w,y)
+        self.update()
+        return True
+
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
-        canvas.fill(color=bgBLUE)
+
+        canvas.fill(size=(w,self._barPosition))
+        canvas.fill(pos=(0,self._barPosition),color=bgBLUE)
         # draw the title
         canvas.drawText(
+            pos=(0,self._barPosition),
             text=" pyTermTk Workbench.  Version 1.0   plenty of free memory",
             width=w,
             color=bgWHITE+fgBLUE)
 
         canvas.drawText(
+            pos=(w-5,self._barPosition),
             text="│◪│◩│",
-            pos=(w-5,0),
             color=bgWHITE+fgBLUE)
 
 class TTkWorkbench(ttk.TTk):
     def paintEvent(self, canvas: TTkCanvas):
         canvas.fill(color=bgBLUE)
+
+logWin = WBWindow(pos=(10,10), size=(60,20),
+                whiteBg=False,
+                title=f"Key Press Viewer",layout=ttk.TTkVBoxLayout())
+logViewer = ttk.TTkLogViewer(parent=logWin)
 
 root = TTkWorkbench(layout=ttk.TTkGridLayout(), mouseTrack=True)
 root.setPadding(3,3,15,10)
@@ -87,8 +133,66 @@ def _openTerminal(term=[]):
     _term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
     _term.titleChanged.connect(_win.setTitle)
     term.append({'pos':(_x,_y),'term':_term,'win':_win})
+    _win.raiseWidget()
+
+ttk.pyTTkSlot()
+def _openInputViewer():
+    _win  = WBWindow(parent=wb, pos=(10,10), size=(60,6),
+                    whiteBg=False,
+                    title=f"Key Press Viewer",layout=ttk.TTkVBoxLayout())
+    ttk.TTkKeyPressView(parent=_win)
+    _win.raiseWidget()
+
+def _openPreferences():
+    _style = {'default':     {'color': fgWHITE+bgBLUE},}
+    _win  = WBWindow(parent=wb, pos=(10,10), size=(60,7),title=f"Preferences")
+    ttk.TTkLabel(parent=_win, pos=(0,0), text="Padding").setStyle(_style)
+    ttk.TTkLabel(parent=_win, pos=(2,1), text="Top"    ).setStyle(_style)
+    ttk.TTkLabel(parent=_win, pos=(2,2), text="Bottom" ).setStyle(_style)
+    ttk.TTkLabel(parent=_win, pos=(2,3), text="Left"   ).setStyle(_style)
+    ttk.TTkLabel(parent=_win, pos=(2,4), text="Right"  ).setStyle(_style)
+
+    ttk.TTkLabel(parent=_win, pos=(30,0), text="Style\nComing soon...\nOr Not").setStyle(_style)
+
+    t,b,l,r = root.getPadding()
+    _sbT = ttk.TTkSpinBox(parent=_win, pos=(10,1), size=(6,1), value=t, maximum=30, minimum=0)
+    _sbB = ttk.TTkSpinBox(parent=_win, pos=(10,2), size=(6,1), value=b, maximum=30, minimum=0)
+    _sbL = ttk.TTkSpinBox(parent=_win, pos=(10,3), size=(6,1), value=l, maximum=30, minimum=0)
+    _sbR = ttk.TTkSpinBox(parent=_win, pos=(10,4), size=(6,1), value=r, maximum=30, minimum=0)
+
+    _sbT.setStyle(_style)
+    _sbB.setStyle(_style)
+    _sbL.setStyle(_style)
+    _sbR.setStyle(_style)
+
+    def _updatePadding(_,_sbT=_sbT,_sbB=_sbB,_sbL=_sbL,_sbR=_sbR):
+        root.setPadding(_sbT.value(),_sbB.value(),_sbL.value(),_sbR.value())
+
+    _sbT.valueChanged.connect(_updatePadding)
+    _sbB.valueChanged.connect(_updatePadding)
+    _sbL.valueChanged.connect(_updatePadding)
+    _sbR.valueChanged.connect(_updatePadding)
+
+    _win.raiseWidget()
+
+
+
+ttk.pyTTkSlot()
+def _openLogViewer():
+    wb.layout().addWidget(logWin)
+    logWin.show()
+    logWin.resize(80,30)
+    logViewer.update()
+    logWin.raiseWidget()
 
 winWb  = WBWindow(parent=wb, pos=(5,2), size=(50,15), title="euWorkbench")
-WBIconButton(parent=winWb, text="Terminal").clicked.connect(_openTerminal)
+WBIconButton(parent=winWb,
+             text="Terminal").clicked.connect(_openTerminal)
+WBIconButton(parent=winWb, pos=(10,0), icon=WBIconButton.IconInputLog,
+            text="Input Viewer").clicked.connect(_openInputViewer)
+WBIconButton(parent=winWb, pos=(25,0), icon=WBIconButton.IconLogViewer,
+             text="Log Viewer").clicked.connect(_openLogViewer)
+WBIconButton(parent=winWb, pos=(0,6), icon=WBIconButton.IconPreferences,
+             text="Preferences").clicked.connect(_openPreferences)
 
 root.mainloop()

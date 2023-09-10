@@ -33,16 +33,31 @@ from .colors import *
 __all__ = ['WBIconButton']
 
 class WBIconButton(TTkWidget):
-    IconTerminal = 0x01
+    IconTerminal    = 0x01
+    IconPreferences = 0x02
+    IconInputLog    = 0x03
+    IconLogViewer    = 0x03
 
     _iconS = { IconTerminal: [
                     # TTkString("🬦"              "🬹🬹🬹🬹🬹🬹"                                           "🬓"),
                     TTkString("▗"              "▄▄▄▄▄▄"                                           "▖"),
                     TTkString("▐")+ TTkString(" C:\  ",fgORANGE+bgWHITE+TTkColor.BOLD)+ TTkString("▌",fgWHITE+bgBLACK),
-                    TTkString("🬉")+ TTkString("🬎🬎🬎🬎🬎🬎", fgWHITE+bgBLACK)+ TTkString("🬄",fgWHITE+bgBLACK)]
+                    TTkString("🬉")+ TTkString("🬎🬎🬎🬎🬎🬎", fgWHITE+bgBLACK)+ TTkString("🬄",fgWHITE+bgBLACK)],
                     # TTkString("┌──────┐"),
                     # TTkString("│ C:\  │"),
                     # TTkString("└──────┘")]
+                IconPreferences: [
+                    TTkString("   ┌───┐"),
+                    TTkString("   │ ? │"),
+                    TTkString("   └───┘")],
+                IconInputLog: [
+                    TTkString("┌────────┐"),
+                    TTkString("│ ABC... │"),
+                    TTkString("└────────┘")],
+                IconLogViewer: [
+                    TTkString("┌──────┐"),
+                    TTkString("│ LOGS │"),
+                    TTkString("└──────┘")],
                     }
 
     classStyle = {
