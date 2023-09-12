@@ -22,27 +22,13 @@
 
 __all__ = ['']
 
-import collections
-import unicodedata
-
-from TermTk.TTkCore.canvas import TTkCanvas
-
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkGui.clipboard import TTkClipboard
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
-from TermTk.TTkGui.textcursor import TTkTextCursor
-from TermTk.TTkGui.textdocument import TTkTextDocument
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-from TermTk.TTkWidgets.widget import TTkWidget
 
+# Note:
+# This Class is supposed to be inherited by and only by
+# terminal_screen.py : _TTkTerminalScreen
+# Due to the huge amount of Escape commands required to be handled
+# I decided to split tham in multiple files
 class _TTkTerminalScreen_CSI():
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
     def _CSI___ICH(self, ps, _):
@@ -55,9 +41,9 @@ class _TTkTerminalScreen_CSI():
 
     # CSI Ps SP @   (SP = Space)
     #           Shift left Ps columns(s) (default = 1) (SL), ECMA-48.
-    def _CSI___SL( self, ps, _):
-        x,y = self._terminalCursor
-        self._canvas.drawText(' '*ps,pos=(x,y))
+    # def _CSI___SL( self, ps, _):
+    #     x,y = self._terminalCursor
+    #     self._canvas.drawText(' '*ps,pos=(x,y))
 
     # CSI Ps A  Cursor Up Ps Times (default = 1) (CUU).
     def _CSI_A_CUU(self, ps, _):
@@ -238,29 +224,49 @@ class _TTkTerminalScreen_CSI():
     def _CSI_S_SU(self, ps, _=None):
         t,b = self._scrollingRegion
         w,h = self._w, self._h
-        #TODO: Avoid this HACK
+        #TODO: Avoid this HACK... HAHAHHAHAHHAHA H HAHAHAHAH AHAHAHA HHAHA HA
         baseData = [' ']*w
         baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
+        topCNL = self._canvasNewLine[:t]
+        topCLS = self._canvasLineSize[:t]
         centerd = self._canvas._data[t:b]
         centerc = self._canvas._colors[t:b]
+        centerCNL = self._canvasNewLine[t:b]
+        centerCLS = self._canvasLineSize[t:b]
         bottomd = self._canvas._data[b:]
         bottomc = self._canvas._colors[b:]
-        # Copy the rotated lines in the buffer
-        for chars,colors in zip(centerd[:ps],centerd[:ps]):
-            oldString = TTkString._importString1("".join(chars), colors)
-            self._bufferedLines.append(oldString)
+        bottomCNL = self._canvasNewLine[b:]
+        bottomCLS = self._canvasLineSize[b:]
+        # Push the rotated slices to the buffer
+        for d,c,nl,sz in zip(
+                    centerd[:ps],
+                    centerc[:ps],
+                    centerCNL[:ps],
+                    centerCLS[:ps]):
+            if sz:
+                self._bufferedLines.append(TTkString._importString1(''.join(d[:sz]),c[:sz]))
+            else:
+                self._bufferedLines.append(TTkString())
+            # from TermTk.TTkCore.log import TTkLog
+            # TTkLog.debug(str(self._bufferedLines[-1])+f" - {sz=} {t=} {ps=} {self._canvasLineSize=}")
         # Rotate the center part
         centerd = centerd[ps:] + [baseData.copy() for _ in range(ps)  ]
         centerc = centerc[ps:] + [baseColors.copy() for _ in range(ps)]
         centerd = centerd[:b-t]
         centerc = centerc[:b-t]
+        centerCNL = centerCNL[ps:] + [True]*ps
+        centerCLS = centerCLS[ps:] + [0]*ps
+        centerCNL = centerCNL[:b-t]
+        centerCLS = centerCLS[:b-t]
         # assemble it back
         self._canvas._data   = topd + centerd + bottomd
         self._canvas._colors = topc + centerc + bottomc
-
+        self._canvasNewLine  = topCNL + centerCNL + bottomCNL
+        self._canvasLineSize = topCLS + centerCLS + bottomCLS
+        self.bufferedLinesChanged.emit()
 
     # CSI ? Pi ; Pa ; Pv S
     #           Set or request graphics attribute (XTSMGRAPHICS), xterm.  If

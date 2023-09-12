@@ -51,14 +51,18 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                  '_scrollingRegion',
                  '_bufferSize', '_bufferedLines',
                  '_w', '_h', '_color', '_canvas',
+                 '_canvasNewLine', '_canvasLineSize',
                  '_last',
                  # Signals
-                 'bell'
+                 'bell', 'bufferedLinesChanged'
                  )
     def __init__(self, w=80, h=24, bufferSize=1000, color=TTkColor.RST) -> None:
         self.bell = pyTTkSignal()
+        self.bufferedLinesChanged = pyTTkSignal()
         self._w = w
         self._h = h
+        self._canvasNewLine  = [True]*h
+        self._canvasLineSize = [0]*h
         self._last = None
         self._bufferSize = bufferSize
         self._bufferedLines = collections.deque(maxlen=bufferSize)
@@ -90,6 +94,11 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         s = (0,0,w,h)
         newCanvas.paintCanvas(self._canvas,s,s,s)
 
+        self._canvasNewLine  += [True]*h
+        self._canvasLineSize += [0]*h
+        self._canvasNewLine  = self._canvasNewLine[:h]
+        self._canvasLineSize = self._canvasLineSize[:h]
+
         self._canvas = newCanvas
         x,y = self._terminalCursor
         self._terminalCursor = (min(x,w-1),min(y,h-1))
@@ -113,6 +122,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                 l = TTkString._getWidthText(ch)
                 # Scroll up if we are at the right border
                 if l+x > w:
+                    self._canvasNewLine[y] = False
                     x=0
                     y+=1
                     if y >= sb:
@@ -152,6 +162,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                         self._canvas._data[y][x-2]  += ch
                 x+=l
                 self._terminalCursor = (x+l,y)
+                self._canvasLineSize[y] = max(self._canvasLineSize[y],x)
             self._terminalCursor = (x,y)
 
     def pushLine(self, line:str, irm:bool=False):
@@ -183,6 +194,8 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
 
     def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
         w,h = self._w, self._h
-        s = (0,0,w,h)
+        ll = len(self._bufferedLines)
+        for y in range(ll-oy):
+            canvas.drawTTkString(pos=(0,y),text=self._bufferedLines[oy+y])
+        s = (-ox,ll-oy,w,h)
         canvas.paintCanvas(self._canvas,s,s,s)
-        # TTkLog.debug("Paint")

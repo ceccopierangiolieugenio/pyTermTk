@@ -22,27 +22,11 @@
 
 __all__ = ['']
 
-import collections
-import unicodedata
-
-from TermTk.TTkCore.canvas import TTkCanvas
-
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkGui.clipboard import TTkClipboard
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
-from TermTk.TTkGui.textcursor import TTkTextCursor
-from TermTk.TTkGui.textdocument import TTkTextDocument
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-from TermTk.TTkWidgets.widget import TTkWidget
-
+# Note:
+# This Class is supposed to be inherited by and only by
+# terminal_screen.py : _TTkTerminalScreen
+# Due to the huge amount of Escape commands required to be handled
+# I decided to split tham in multiple files
 class _TTkTerminalScreen_C1():
     # C1 (8-Bit) Control Characters
     #

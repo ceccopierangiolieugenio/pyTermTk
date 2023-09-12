@@ -73,7 +73,7 @@ class _termLog():
     # fatal = lambda _:None
     mouse = lambda _:None
 
-class TTkTerminal(TTkWidget, _TTkTerminal_CSI_DEC):
+class TTkTerminal(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     @dataclass
     class _Terminal():
         bracketedMode: bool = False
@@ -134,6 +134,26 @@ class TTkTerminal(TTkWidget, _TTkTerminal_CSI_DEC):
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         self.enableWidgetCursor()
         TTkHelper.quitEvent.connect(self._quit)
+        self.viewChanged.connect(self._viewChangedHandler)
+        self._screen_normal.bufferedLinesChanged.connect(self._screenChanged)
+        self._screen_alt.bufferedLinesChanged.connect(self._screenChanged)
+
+    @pyTTkSlot()
+    def _screenChanged(self):
+        self.viewMoveTo(0, len(self._screen_current._bufferedLines))
+        self.viewChanged.emit()
+
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        self.update()
+
+    def viewFullAreaSize(self) -> (int, int):
+        w,h = self.size()
+        h += len(self._screen_current._bufferedLines)
+        return w,h
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
 
     def resizeEvent(self, w: int, h: int):
         if self._fd:
@@ -905,7 +925,8 @@ class TTkTerminal(TTkWidget, _TTkTerminal_CSI_DEC):
 
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
-        self._screen_current.paintEvent(canvas,w,h)
+        ox,oy = self.getViewOffsets()
+        self._screen_current.paintEvent(canvas,w,h,ox,oy)
 
 
 

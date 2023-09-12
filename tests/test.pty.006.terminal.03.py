@@ -76,12 +76,13 @@ cb_q.stateChanged.connect(lambda x: ttk.TTkTerm.setSigmask(ttk.TTkTerm.Sigmask.C
 
 win1  = ttk.TTkWindow(pos=(90,5), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term1 = ttk.TTkTerminal(parent=win1)
-term1.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
-term1.titleChanged.connect(win1.setTitle)
 term1.runShell()
 
 win2  = ttk.TTkWindow(pos=(10,0), size=(100,30), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
-term2 = ttk.TTkTerminal(parent=win2)
+sa2 = ttk.TTkScrollArea(parent=win2)
+sa2.setViewport(term2 := ttk.TTkTerminal())
+term2.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
+term2.titleChanged.connect(win2.setTitle)
 term2.runShell()
 
 win3  = ttk.TTkWindow(pos=(92,8), size=(70,15), title="Terminallo n.3", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
