@@ -60,7 +60,7 @@ class TTkWindow(TTkResizableFrame):
             }
 
     __slots__ = (
-            '_title', '_mouseDelta', '_draggable',
+            '_mouseDelta', '_draggable',
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
             '_flags', '_winTopLayout',
             '_maxBk', '_redBk' )

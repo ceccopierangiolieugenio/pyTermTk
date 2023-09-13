@@ -32,11 +32,18 @@ from TermTk.TTkWidgets.widget import TTkWidget
 '''
 class TTkScrollBar(TTkWidget):
     '''TTkScrollBar'''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST},
+                'disabled':    {'color': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg('#cccc00')},
+            }
+
     __slots__ = (
         '_orientation',
         '_minimum', '_maximum',
         '_singleStep', '_pageStep',
-        '_value', '_color', '_focusColor',
+        '_value',
         '_draggable', '_mouseDelta',
         # Those Vars are required to handle the mouseclick
         #  |-----|           Screen Pg Down
@@ -67,8 +74,6 @@ class TTkScrollBar(TTkWidget):
         self._singleStep = kwargs.get('singleStep' , 1 )
         self._pageStep = kwargs.get('pageStep' , 10 )
         self._value = kwargs.get('value' , 0 )
-        self._color = kwargs.get('color', TTkColor.RST )
-        self._focusColor = kwargs.get('focusColor', TTkColor.fg('#cccc00') )
         self._screenPgDown = (0,0)
         self._screenPgUp = (0,0)
         self._screenScroller = (0,0)
@@ -91,15 +96,14 @@ class TTkScrollBar(TTkWidget):
 
     '''
     def paintEvent(self, canvas):
+        style = self.currentStyle()
+        color   = style['color']
+
         if self._orientation == TTkK.VERTICAL:
             size=self._height
         else:
             size=self._width
 
-        if self.hasFocus():
-            color = self._focusColor
-        else:
-            color = self._color
         if self._maximum == self._minimum:
             # Special case where no scroll is needed
             aa=0
