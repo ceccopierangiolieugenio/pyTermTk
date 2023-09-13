@@ -188,14 +188,15 @@ def _openLogViewer():
 
 winWb  = WBScrollWin(parent=wb, pos=(5,2), size=(50,15), title="euWorkbench")
 
-winWb.viewport().addWidget(_bttn:=WBIconButton(text="Terminal"))
+winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(3,0), icon=WBIconButton.IconTerminal,
+            text="Terminal"))
 _bttn.clicked.connect(_openTerminal)
 
-winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(10,0), icon=WBIconButton.IconInputLog,
+winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(18,0), icon=WBIconButton.IconInputLog,
             text="Input Viewer"))
 _bttn.clicked.connect(_openInputViewer)
 
-winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(25,0), icon=WBIconButton.IconLogViewer,
+winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(35,3), icon=WBIconButton.IconLogViewer,
              text="Log Viewer"))
 _bttn.clicked.connect(_openLogViewer)
 

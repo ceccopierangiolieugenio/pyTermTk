@@ -30,7 +30,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewLayout, TTkAbstractScrollViewInterface
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewLayout, TTkAbstractScrollViewInterface
 
 
 from .colors import *
@@ -48,6 +48,40 @@ class _MinimizedButton(TTkButton):
             self._windowWidget.show()
             self.close()
         self.clicked.connect(_cb)
+
+class WBScrollWiewport(TTkAbstractScrollView):
+    classStyle = {
+                'default':     {'color': fgWHITE+bgBLUE},
+                'disabled':    {'color': fgWHITE+bgBLUE},
+                'focus':       {'color': fgWHITE+bgBLUE},
+            }
+
+    __slots__ = ()
+    def __init__(self, *args, **kwargs):
+        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        self.viewChanged.connect(self._viewChangedHandler)
+
+    @pyTTkSlot()
+    def _viewChangedHandler(self):
+        x,y = self.getViewOffsets()
+        self.layout().setOffset(-x,-y)
+
+    def viewFullAreaSize(self) -> (int, int):
+        _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        return w , h
+
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
+    def maximumWidth(self):   return 0x10000
+    def maximumHeight(self):  return 0x10000
+    def minimumWidth(self):   return 0
+    def minimumHeight(self):  return 0
+
+    def paintEvent(self, canvas: TTkCanvas):
+        style = self.currentStyle()
+        color = style['color']
+        canvas.fill(color=color)
 
 class WBScrollWin(TTkResizableFrame):
     '''WBScrollWin'''
@@ -93,7 +127,7 @@ class WBScrollWin(TTkResizableFrame):
 
     def __init__(self, whiteBg=True, *args, **kwargs):
         self._winTopLayout = TTkGridLayout()
-        self._viewport = TTkAbstractScrollViewLayout()
+        self._viewport = WBScrollWiewport()
 
         super().__init__(*args, **kwargs|{'layout':TTkGridLayout()})
 
@@ -102,7 +136,6 @@ class WBScrollWin(TTkResizableFrame):
 
         self.rootLayout().addWidgets([self._verticalScrollBar, self._horizontalScrollBar])
 
-        self.layout().addItem(self._viewport)
 
         if whiteBg:
             self.mergeStyle(self._styleBgWhite)
@@ -115,7 +148,7 @@ class WBScrollWin(TTkResizableFrame):
         self.setFocusPolicy(TTkK.ClickFocus)
         self._draggable = False
 
-        self._resizeEvent()
+        self.setViewport(self._viewport)
 
     def setViewport(self, viewport):
         if not isinstance(viewport, TTkAbstractScrollViewInterface):
