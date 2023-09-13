@@ -39,6 +39,9 @@ CUSTOM_THEME  = TTkTheme.NERD | {'draw':draw_custom}
 TTkTheme.loadTheme( CUSTOM_THEME )
 
 class WBScrollBar(TTkScrollBar):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._color = self._focusColor = fgBLUE+bgWHITE
+    classStyle = {
+                'default':     {'color': bgWHITE+fgBLUE},
+                'disabled':    {'color': bgWHITE+fgBLUE},
+                'focus':       {'color': bgWHITE+fgBLUE},
+            }
+

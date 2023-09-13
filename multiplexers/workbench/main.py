@@ -34,6 +34,8 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from TermTk.TTkCore.canvas import TTkCanvas
+from TermTk.TTkTestWidgets.logviewer import _TTkLogViewer
+
 
 from wblib import *
 
@@ -106,10 +108,10 @@ class TTkWorkbench(ttk.TTk):
     def paintEvent(self, canvas: TTkCanvas):
         canvas.fill(color=bgBLUE)
 
-logWin = WBWindow(pos=(10,10), size=(60,20),
+logWin = WBScrollWin(pos=(10,10), size=(60,20),
                 whiteBg=False,
                 title=f"Key Press Viewer",layout=ttk.TTkVBoxLayout())
-logViewer = ttk.TTkLogViewer(parent=logWin)
+logWin.setViewport(_TTkLogViewer())
 
 root = TTkWorkbench(layout=ttk.TTkGridLayout(), mouseTrack=True)
 root.setPadding(3,3,15,10)
@@ -125,10 +127,10 @@ def _openTerminal(term=[]):
     while (_x,_y) in [_t['pos'] for _t in term]:
         _x += 4
         _y += 2
-    _win  = WBWindow(parent=wb, pos=(_x,_y), size=(60,20),
+    _win  = WBScrollWin(parent=wb, pos=(_x,_y), size=(60,20),
                     whiteBg=False,
                     title=f"Terminallo n.{len(term)+1}",layout=ttk.TTkVBoxLayout())
-    _term = ttk.TTkTerminal(parent=_win)
+    _win.setViewport(_term := ttk.TTkTerminalView())
     _term.runShell()
     _term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
     _term.titleChanged.connect(_win.setTitle)
@@ -182,17 +184,23 @@ def _openLogViewer():
     wb.layout().addWidget(logWin)
     logWin.show()
     logWin.resize(80,30)
-    logViewer.update()
     logWin.raiseWidget()
 
-winWb  = WBWindow(parent=wb, pos=(5,2), size=(50,15), title="euWorkbench")
-WBIconButton(parent=winWb,
-             text="Terminal").clicked.connect(_openTerminal)
-WBIconButton(parent=winWb, pos=(10,0), icon=WBIconButton.IconInputLog,
-            text="Input Viewer").clicked.connect(_openInputViewer)
-WBIconButton(parent=winWb, pos=(25,0), icon=WBIconButton.IconLogViewer,
-             text="Log Viewer").clicked.connect(_openLogViewer)
-WBIconButton(parent=winWb, pos=(0,6), icon=WBIconButton.IconPreferences,
-             text="Preferences").clicked.connect(_openPreferences)
+winWb  = WBScrollWin(parent=wb, pos=(5,2), size=(50,15), title="euWorkbench")
+
+winWb.viewport().addWidget(_bttn:=WBIconButton(text="Terminal"))
+_bttn.clicked.connect(_openTerminal)
+
+winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(10,0), icon=WBIconButton.IconInputLog,
+            text="Input Viewer"))
+_bttn.clicked.connect(_openInputViewer)
+
+winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(25,0), icon=WBIconButton.IconLogViewer,
+             text="Log Viewer"))
+_bttn.clicked.connect(_openLogViewer)
+
+winWb.viewport().addWidget(_bttn:=WBIconButton(pos=(0,6), icon=WBIconButton.IconPreferences,
+             text="Preferences"))
+_bttn.clicked.connect(_openPreferences)
 
 root.mainloop()
