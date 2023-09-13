@@ -126,7 +126,12 @@ class TTkAbstractScrollArea(TTkContainer):
             raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollArea.setVewport(viewport)")
         if self._viewport:
             self._viewport.viewChanged.disconnect(self._viewportChanged)
-            self.layout().removeWidget(self._viewport)
+            # TODO: Remove this check once
+            #  unified  "addWidget" and "addItem" in the TTKGridLayout
+            if isinstance(viewport, TTkWidget):
+                self.layout().removeWidget(self._viewport)
+            else:
+                self.layout().removeItem(self._viewport)
         self._viewport = viewport
         self._viewport.viewChanged.connect(self._viewportChanged)
         self._verticalScrollBar.sliderMoved.connect(self._vscrollMoved)
