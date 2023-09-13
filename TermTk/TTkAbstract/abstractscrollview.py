@@ -25,8 +25,8 @@ __all__ = ['TTkAbstractScrollViewInterface', 'TTkAbstractScrollView', 'TTkAbstra
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
-from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
+from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkAbstractScrollViewInterface():
@@ -97,6 +97,38 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
             self.viewChanged.emit()
         return super().update(repaint, updateLayout, updateParent)
 
+class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
+    __slots__ = (
+        '_viewOffsetX', '_viewOffsetY',
+        # Signals
+         'viewMovedTo', 'viewSizeChanged', 'viewChanged', '_excludeEvent')
+
+    def __init__(self, *args, **kwargs):
+        # Signals
+        self.viewMovedTo = pyTTkSignal(int, int) # x, y
+        self.viewSizeChanged = pyTTkSignal(int, int) # w, h
+        self.viewChanged = pyTTkSignal()
+        self._viewOffsetX = 0
+        self._viewOffsetY = 0
+        self._excludeEvent = False
+        TTkLayout.__init__(self, *args, **kwargs)
+
+    def viewFullAreaSize(self) -> (int, int):
+        _,_,w,h = self.fullWidgetAreaGeometry()
+        return w,h
+
+    def viewDisplayedSize(self) -> (int, int):
+        _,_,w,h = self.geometry()
+        return w,h
+
+    @pyTTkSlot(int, int)
+    def viewMoveTo(self, x: int, y: int):
+        self.setOffset(-x,-y)
+
+    def setGeometry(self, x, y, w, h):
+        TTkLayout.setGeometry(self, x, y, w, h)
+        self.viewChanged.emit()
+
 class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterface):
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
@@ -108,10 +140,10 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         self.viewMovedTo = pyTTkSignal(int, int) # x, y
         self.viewSizeChanged = pyTTkSignal(int, int) # w, h
         self.viewChanged = pyTTkSignal()
-        TTkGridLayout.__init__(self, *args, **kwargs)
         self._viewOffsetX = 0
         self._viewOffsetY = 0
         self._excludeEvent = False
+        TTkGridLayout.__init__(self, *args, **kwargs)
 
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
