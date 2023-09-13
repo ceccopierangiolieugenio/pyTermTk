@@ -20,176 +20,30 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
-import collections
-import unicodedata
+__all__ = ['']
 
-from TermTk.TTkCore.canvas import TTkCanvas
-
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.helper import TTkHelper
-from TermTk.TTkGui.clipboard import TTkClipboard
-from TermTk.TTkGui.textwrap1 import TTkTextWrap
-from TermTk.TTkGui.textcursor import TTkTextCursor
-from TermTk.TTkGui.textdocument import TTkTextDocument
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
-from TermTk.TTkWidgets.widget import TTkWidget
 
-class _TTkTerminalAltScreen():
-    __slots__ = ('_lines', '_terminalCursor',
-                 '_scrollingRegion',
-                 '_bufferSize', '_bufferedLines',
-                 '_w', '_h', '_color', '_canvas',
-                 '_last',
-                 # Signals
-                 'bell'
-                 )
-    def __init__(self, w=80, h=24, bufferSize=1000, color=TTkColor.RST) -> None:
-        self.bell = pyTTkSignal()
-        self._w = w
-        self._h = h
-        self._last = None
-        self._bufferSize = bufferSize
-        self._bufferedLines = collections.deque(maxlen=bufferSize)
-        self._terminalCursor = (0,0)
-        self._scrollingRegion = (0,h)
-        self._color = color
-        self._canvas = TTkCanvas(width=w, height=h)
-
-    def color(self):
-        return self._color
-
-    def setColor(self, color):
-        self._color = color
-
-    def getCursor(self):
-        return self._terminalCursor
-
-    def resize(self, w, h):
-        ow, oh = self._w, self._h
-        self._w, self._h = w, h
-        st,sb = self._scrollingRegion
-        # if oh <= h: # Terminal height decreasing
-        #     sb = min(h,oh)
-        # else:# Terminal height increasing
-        #     sb = h-oh+sb
-        # self._scrollingRegion = (st,sb)
-        self._scrollingRegion = (0,h)
-        newCanvas = TTkCanvas(width=w, height=h)
-        s = (0,0,w,h)
-        newCanvas.paintCanvas(self._canvas,s,s,s)
-
-        self._canvas = newCanvas
-        x,y = self._terminalCursor
-        self._terminalCursor = (min(x,w-1),min(y,h-1))
-
-    def _pushTxt(self, txt:str, irm:bool=False):
-        x,y = self._terminalCursor
-        w,h = self._w, self._h
-        st,sb = self._scrollingRegion
-        self._last = txt[-1] if txt else None
-
-        for bi, tout in enumerate(txt.split('\a')): # grab the bells
-            if bi:
-                self.bell.emit()
-
-            # I check the size of each char in order to draw
-            # it in the correct position
-            for ch in tout:
-                if ord(ch) < 0x20:
-                    # TTkLog.error(f"Unhandled ASCII: 0x{ord(ch):02x}")
-                    continue
-                l = TTkString._getWidthText(ch)
-                # Scroll up if we are at the right border
-                if l+x > w:
-                    x=0
-                    y+=1
-                    if y >= sb:
-                        self._CSI_S_SU(y-sb+1, None) # scroll up
-                        y=sb-1
-                if l==1:   # push normal char
-                    if irm:
-                        self._canvas._data[y][x:x] = [ch]
-                        self._canvas._colors[y][x:x] = [self._color]
-                        # self._canvas._data[y].insert(x,ch)
-                        # self._canvas._colors[y].insert(x,self._color)
-                        self._canvas._data[y].pop()
-                        self._canvas._colors[y].pop()
-                    else:
-                        self._canvas._data[y][x]   = ch
-                        self._canvas._colors[y][x] = self._color
-                elif l > 1: # push wide char
-                    if irm:
-                        self._canvas._data[y][x:x] = [ch,'']
-                        self._canvas._colors[y][x:x] = [self._color,self._color]
-                        # self._canvas._data[y].insert(x,ch)
-                        # self._canvas._colors[y].insert(x,self._color)
-                        self._canvas._data[y].pop()
-                        self._canvas._data[y].pop()
-                        self._canvas._colors[y].pop()
-                        self._canvas._colors[y].pop()
-                    else:
-                        self._canvas._data[y][x]   = ch
-                        self._canvas._data[y][x+1] = ''
-                        self._canvas._colors[y][x]   = self._color
-                        self._canvas._colors[y][x+1] = self._color
-                else: # l==0 # push zero sized char
-                    if x>0 and self._canvas._data[y][x-1] != '':
-                        self._canvas._data[y][x-1]  += ch
-                    elif x>1:
-                        self._canvas._data[y][x-2]  += ch
-                x+=l
-
-            self._terminalCursor = (x,y)
-
-    def pushLine(self, line:str, irm:bool=False):
-        if not line: return
-        x,y = self._terminalCursor
-        w,h = self._w, self._h
-        st,sb = self._scrollingRegion
-
-        lines = line.split('\n')
-        for i,l in enumerate(lines):
-            if i:
-                y+=1
-                if y >= sb:
-                    self._CSI_S_SU(y-sb+1, None) # scroll up
-                    y=sb-1
-                self._terminalCursor = (x,y)
-            ls = l.split('\r')
-            for ii,ll in enumerate(ls):
-                if ii:
-                    self._terminalCursor = (x,y) = (0,y)
-                lls = ll.split('\b') # 0x08 = Backspace
-                for iii,lll in enumerate(lls):
-                    if iii:
-                        x,y = self._terminalCursor
-                        x = max(0,x-1)
-                        self._terminalCursor = (x,y)
-                    self._pushTxt(lll,irm)
-
-    def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
-        w,h = self._w, self._h
-        s = (0,0,w,h)
-        canvas.paintCanvas(self._canvas,s,s,s)
-        # TTkLog.debug("Paint")
-
+# Note:
+# This Class is supposed to be inherited by and only by
+# terminal_screen.py : _TTkTerminalScreen
+# Due to the huge amount of Escape commands required to be handled
+# I decided to split tham in multiple files
+class _TTkTerminalScreen_CSI():
     # CSI Ps @  Insert Ps (Blank) Character(s) (default = 1) (ICH).
     def _CSI___ICH(self, ps, _):
         x,y = self._terminalCursor
-        self._canvas.drawText(' '*ps,pos=(x,y))
+        w = self._w
+        self._canvas._data[y][x:x] = ['']*ps
+        self._canvas._colors[y][x:x] = [self._color]*ps
+        self._canvas._data[y] = self._canvas._data[y][:w]
+        self._canvas._colors[y] = self._canvas._colors[y][:w]
 
     # CSI Ps SP @   (SP = Space)
     #           Shift left Ps columns(s) (default = 1) (SL), ECMA-48.
-    def _CSI___SL( self, ps, _):
-        x,y = self._terminalCursor
-        self._canvas.drawText(' '*ps,pos=(x,y))
+    # def _CSI___SL( self, ps, _):
+    #     x,y = self._terminalCursor
+    #     self._canvas.drawText(' '*ps,pos=(x,y))
 
     # CSI Ps A  Cursor Up Ps Times (default = 1) (CUU).
     def _CSI_A_CUU(self, ps, _):
@@ -279,11 +133,11 @@ class _TTkTerminalAltScreen():
         x,y = self._terminalCursor
         w,h = self._w,self._h
         if ps == 0:
-            self._canvas.fill(char=' ', pos=(x,y),size=(w,1))
+            self._canvas.fill(char=' ', pos=(x,y),size=(w,1), color=self._color)
         elif ps == 1:
-            self._canvas.fill(char=' ', pos=(0,y),size=(x,1))
+            self._canvas.fill(char=' ', pos=(0,y),size=(x,1), color=self._color)
         elif ps == 2:
-            self._canvas.fill(char=' ', pos=(0,y),size=(w,1))
+            self._canvas.fill(char=' ', pos=(0,y),size=(w,1), color=self._color)
 
     # CSI ? Ps K
     #           Erase in Line (DECSEL), VT220.
@@ -300,7 +154,7 @@ class _TTkTerminalAltScreen():
         l = len(self._canvas._data)
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         bkData   = self._canvas._data[-bkl:]
         bkColors = self._canvas._colors[-bkl:]
         self._canvas._data[y:y]   = [baseData.copy() for _ in range(ps)]
@@ -317,7 +171,7 @@ class _TTkTerminalAltScreen():
         t=min(b,max(t,y))
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
@@ -346,7 +200,7 @@ class _TTkTerminalAltScreen():
         self._canvas._data[y][x:x+ps]   = []
         self._canvas._colors[y][x:x+ps] = []
         self._canvas._data[y]   += [' ']*ps
-        self._canvas._colors[y] += [TTkColor.RST]*ps
+        self._canvas._colors[y] += [self._color]*ps
 
     # CSI # P
     # CSI Pm # P
@@ -367,32 +221,52 @@ class _TTkTerminalAltScreen():
     #           XTPOPCOLOR (default = 0) (XTREPORTCOLORS), xterm.
 
     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
-    def _CSI_S_SU(self, ps, _):
+    def _CSI_S_SU(self, ps, _=None):
         t,b = self._scrollingRegion
         w,h = self._w, self._h
-        #TODO: Avoid this HACK
+        #TODO: Avoid this HACK... HAHAHHAHAHHAHA H HAHAHAHAH AHAHAHA HHAHA HA
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
+        topCNL = self._canvasNewLine[:t]
+        topCLS = self._canvasLineSize[:t]
         centerd = self._canvas._data[t:b]
         centerc = self._canvas._colors[t:b]
+        centerCNL = self._canvasNewLine[t:b]
+        centerCLS = self._canvasLineSize[t:b]
         bottomd = self._canvas._data[b:]
         bottomc = self._canvas._colors[b:]
-        # Copy the rotated lines in the buffer
-        for chars,colors in zip(centerd[:ps],centerd[:ps]):
-            oldString = TTkString._importString1("".join(chars), colors)
-            self._bufferedLines.append(oldString)
+        bottomCNL = self._canvasNewLine[b:]
+        bottomCLS = self._canvasLineSize[b:]
+        # Push the rotated slices to the buffer
+        for d,c,nl,sz in zip(
+                    centerd[:ps],
+                    centerc[:ps],
+                    centerCNL[:ps],
+                    centerCLS[:ps]):
+            if sz:
+                self._bufferedLines.append(TTkString._importString1(''.join(d[:sz]),c[:sz]))
+            else:
+                self._bufferedLines.append(TTkString())
+            # from TermTk.TTkCore.log import TTkLog
+            # TTkLog.debug(str(self._bufferedLines[-1])+f" - {sz=} {t=} {ps=} {self._canvasLineSize=}")
         # Rotate the center part
         centerd = centerd[ps:] + [baseData.copy() for _ in range(ps)  ]
         centerc = centerc[ps:] + [baseColors.copy() for _ in range(ps)]
         centerd = centerd[:b-t]
         centerc = centerc[:b-t]
+        centerCNL = centerCNL[ps:] + [True]*ps
+        centerCLS = centerCLS[ps:] + [0]*ps
+        centerCNL = centerCNL[:b-t]
+        centerCLS = centerCLS[:b-t]
         # assemble it back
         self._canvas._data   = topd + centerd + bottomd
         self._canvas._colors = topc + centerc + bottomc
-
+        self._canvasNewLine  = topCNL + centerCNL + bottomCNL
+        self._canvasLineSize = topCLS + centerCLS + bottomCLS
+        self.bufferedLinesChanged.emit()
 
     # CSI ? Pi ; Pa ; Pv S
     #           Set or request graphics attribute (XTSMGRAPHICS), xterm.  If
@@ -450,12 +324,12 @@ class _TTkTerminalAltScreen():
     #               rather than a failure.
 
     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
-    def _CSI_T_SD(self, ps, _):
+    def _CSI_T_SD(self, ps, _=None):
         t,b = self._scrollingRegion
         w,h = self._w, self._h
         #TODO: Avoid this HACK
         baseData = [' ']*w
-        baseColors = [TTkColor.RST]*w
+        baseColors = [self._color]*w
         # Split the content in 3 slices [top, center, bottom]
         topd = self._canvas._data[:t]
         topc = self._canvas._colors[:t]
@@ -492,7 +366,14 @@ class _TTkTerminalAltScreen():
     #           (See discussion of Title Modes).
 
     # CSI Ps X  Erase Ps Character(s) (default = 1) (ECH).
-    def _CSI_X_ECH(self, ps, _): pass
+    def _CSI_X_ECH(self, ps, _):
+        x,y = self._terminalCursor
+        w,h = self._w, self._h
+        ps = min(ps,w-x)
+        self._canvas._data[y][x:x+ps]   = [' ']*ps
+        self._canvas._colors[y][x:x+ps] = [self._color]*ps
+        self._canvas._data[y] = self._canvas._data[y][:w]
+        self._canvas._colors[y] = self._canvas._colors[y][:w]
 
     # CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
     def _CSI_Z_CBT(self, ps, _): pass
@@ -1652,7 +1533,7 @@ class _TTkTerminalAltScreen():
         'P': _CSI_P_DCH,    # CSI Ps P  Delete Ps Character(s) (default = 1) (DCH).
         'S': _CSI_S_SU,     # CSI Ps S  Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.
         'T': _CSI_T_SD,     # CSI Ps T  Scroll down Ps lines (default = 1) (SD), VT420.
-        # 'X': _CSI_X_ECH,
+        'X': _CSI_X_ECH,    # CSI Ps X  Erase Ps Character(s) (default = 1) (ECH).
         # 'Z': _CSI_Z_CBT,
         # '^': _CSI___SD,
         # '`': _CSI___HPA,
