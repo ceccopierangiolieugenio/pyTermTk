@@ -126,6 +126,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
+    def addTopLevelItems(self, items):
+        self._rootItem.addChildren(items)
+        for item in items:
+            item.setParent(self)
+        self._refreshCache()
+        self.viewChanged.emit()
+        self.update()
+
     def takeTopLevelItem(self, index):
         self._rootItem.takeChild(index)
         self._refreshCache()
