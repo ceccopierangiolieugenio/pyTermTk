@@ -161,6 +161,7 @@ class _TTkTerminal_CSI_DEC():
             self._screen_current = self._screen_alt
         else:
             self._screen_current = self._screen_normal
+        self._screen_current.resize(*(self.size()))
         self._screenChanged()
 
     # CSI ? Pm h

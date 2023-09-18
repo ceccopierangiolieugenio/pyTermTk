@@ -30,8 +30,6 @@ from dataclasses import dataclass
 import re
 from select import select
 from TermTk.TTkCore.canvas import TTkCanvas
-
-
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
@@ -91,7 +89,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         reportMove:  bool = False
         sgrMode:     bool = False
 
-    __slots__ = ('_shell', '_fd', '_inout', '_proc', '_quit_pipe', '_mode_normal'
+    __slots__ = ('_shell', '_fd', '_inout', '_proc',
+                 '_quit_pipe', '_resize_pipe',
+                 '_mode_normal'
                  '_clipboard',
                  '_buffer_lines', '_buffer_screen',
                  '_keyboard', '_mouse', '_terminal',
@@ -107,6 +107,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._proc = None
         self._mode_normal = True
         self._quit_pipe = None
+        self._resize_pipe = None
         self._terminal = TTkTerminalView._Terminal()
         self._keyboard = TTkTerminalView._Keyboard()
         self._mouse = TTkTerminalView._Mouse()
@@ -155,6 +156,10 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
+    def _resizeScreen(self):
+        w,h = self.size()
+        self._screen_current.resize(w,h)
+
     def resizeEvent(self, w: int, h: int):
         if self._fd:
             # s = struct.pack('HHHH', 0, 0, 0, 0)
@@ -162,10 +167,14 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             # print(struct.unpack('HHHH', t))
             s = struct.pack('HHHH', h, w, 0, 0)
             t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
-
             # termios.tcsetwinsize(self._fd,(h,w))
-        self._screen_alt.resize(w,h)
-        self._screen_normal.resize(w,h)
+
+        if self._resize_pipe:
+            os.write(self._resize_pipe[1], b'resize')
+
+        # self._screen_alt.resize(w,h)
+        # self._screen_normal.resize(w,h)
+
         _termLog.info(f"Resize Terminal: {w=} {h=}")
         return super().resizeEvent(w, h)
 
@@ -192,6 +201,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             _termLog.debug(f"{pid=} {self._fd=} {name}")
 
             self._quit_pipe = os.pipe()
+            self._resize_pipe = os.pipe()
 
             threading.Thread(target=self.loop,args=[self]).start()
             w,h = self.size()
@@ -222,9 +232,15 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             os.write(self._quit_pipe[1], b'quit')
 
     def _inputGenerator(self):
-        while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
+        while rs := select( [self._inout,self._quit_pipe[0],self._resize_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
                 return
+
+            if self._resize_pipe[0] in rs:
+                self._resizeScreen()
+
+            if self._inout not in rs:
+                continue
 
             # _termLog.debug(f"Select - {rs=}")
             for r in rs:

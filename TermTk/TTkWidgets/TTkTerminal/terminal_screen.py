@@ -82,14 +82,15 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
 
     def resize(self, w, h):
         ow, oh = self._w, self._h
-        self._w, self._h = w, h
-        st,sb = self._scrollingRegion
+        # st,sb = self._scrollingRegion
         # if oh <= h: # Terminal height decreasing
         #     sb = min(h,oh)
         # else:# Terminal height increasing
         #     sb = h-oh+sb
         # self._scrollingRegion = (st,sb)
         self._scrollingRegion = (0,h)
+        if w==ow and h==oh: return
+        self._w, self._h = w, h
         newCanvas = TTkCanvas(width=w, height=h)
         s = (0,0,w,h)
         newCanvas.paintCanvas(self._canvas,s,s,s)
@@ -101,7 +102,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
 
         self._canvas = newCanvas
         x,y = self._terminalCursor
-        self._terminalCursor = (min(x,w-1),min(y,h-1))
+        self._terminalCursor = (max(0,min(x,w-1)),max(0,min(y,h-1)))
 
     def _pushTxt(self, txt:str, irm:bool=False):
         x,y = self._terminalCursor
