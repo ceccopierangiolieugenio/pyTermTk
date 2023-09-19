@@ -760,7 +760,7 @@ class TTkCanvas:
         self._bufferedData, self._bufferedColors = data, colors
         self._data,         self._colors         = oldData, oldColors
 
-    def pushToTerminalBufferedOld(self, x, y, w, h):
+    def pushToTerminalBufferedNew(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
         data, colors = self._data, self._colors
         oldData, oldColors = self._bufferedData, self._bufferedColors

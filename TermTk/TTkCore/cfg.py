@@ -33,6 +33,7 @@ class TTkCfg:
     toolTipTime = 1
     maxFps = 65
     doubleBuffer = True
+    doubleBufferNew = False
 
     scrollDelta = 5
     theme = None
