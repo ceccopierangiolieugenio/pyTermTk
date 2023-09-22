@@ -113,6 +113,10 @@ class TTk(TTkContainer):
         w,h = TTkTerm.getTerminalSize()
         self.setGeometry(0,0,w,h)
 
+        if 'TERMTK_NEWRENDERER' in os.environ:
+            TTkCfg.doubleBuffer = False
+            TTkCfg.doubleBufferNew = True
+
         TTkHelper.registerRootWidget(self)
 
     frame = 0

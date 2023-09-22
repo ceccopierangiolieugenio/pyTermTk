@@ -599,7 +599,7 @@ class TTkTabWidget(TTkFrame):
         # forwarded Signals
         self.currentChanged    = self._tabBar.currentChanged
         self.tabBarClicked     = self._tabBar.tabBarClicked
-        self.tabCloseRequested = self._tabBar.tabCloseRequested
+        self.tabCloseRequested = pyTTkSignal(int)
 
         self.focusChanged.connect(self._focusChanged)
 
@@ -713,6 +713,7 @@ class TTkTabWidget(TTkFrame):
     @pyTTkSlot(int)
     def removeTab(self, index):
         '''removeTab'''
+        self.tabCloseRequested.emit(index)
         self.layout().removeWidget(self._tabWidgets[index])
         self._tabWidgets.pop(index)
         self._tabBar.removeTab(index)

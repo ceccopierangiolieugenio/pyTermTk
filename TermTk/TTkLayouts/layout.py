@@ -312,7 +312,7 @@ class TTkLayout(TTkLayoutItem):
         :param widgets: the widget to be removed
         :type widgets: list of :class:`~TermTk.TTkWidgets`
         '''
-        for item in self._items:
+        for item in reversed(self._items):
             if item._layoutItemType == TTkK.WidgetItem and \
                item.widget() in widgets:
                 self.removeItem(item)
@@ -366,13 +366,11 @@ class TTkLayout(TTkLayoutItem):
 
     def update(self, *args, **kwargs):
         ret = False
-        for i in self.children():
-            if i._layoutItemType == TTkK.WidgetItem and not i.isEmpty():
-                ret = ret or i.widget().update(*args, **kwargs)
-                # TODO: Have a look at this:
-                # i.getCanvas().top()
+        for i in self._items:
+            if i._layoutItemType == TTkK.WidgetItem and (_wid:=i._widget):
+                ret = ret or _wid.update(*args, **kwargs)
             elif i._layoutItemType == TTkK.LayoutItem:
-                ret= ret or i.update(*args, **kwargs)
+                ret = ret or i.update(*args, **kwargs)
         return ret
 
 class TTkWidgetItem(TTkLayoutItem):
