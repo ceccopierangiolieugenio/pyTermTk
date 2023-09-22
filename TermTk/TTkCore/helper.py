@@ -88,8 +88,9 @@ class TTkHelper:
     @staticmethod
     def addUpdateWidget(widget):
         # if not widget.isVisibleAndParent(): return
-        TTkHelper._updateWidget.add(widget)
-        TTkHelper.unlockPaint()
+        if widget not in TTkHelper._updateWidget:
+            TTkHelper._updateWidget.add(widget)
+            TTkHelper.unlockPaint()
 
     @staticmethod
     def addUpdateBuffer(canvas):

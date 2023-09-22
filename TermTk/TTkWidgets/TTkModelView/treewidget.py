@@ -109,7 +109,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def clear(self):
         # Remove all the widgets
         for ri in self._rootItem.children():
-            ri.setParent(None)
+            ri.setTreeItemParent(None)
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem = TTkTreeWidgetItem(expanded=True)
@@ -121,15 +121,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def addTopLevelItem(self, item):
         self._rootItem.addChild(item)
-        item.setParent(self)
+        item.setTreeItemParent(self)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
     def addTopLevelItems(self, items):
         self._rootItem.addChildren(items)
-        for item in items:
-            item.setParent(self)
+        self._rootItem.setTreeItemParent(self)
+        #for item in items:
+        #    item.setTreeItemParent(self)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()

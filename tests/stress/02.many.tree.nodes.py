@@ -72,7 +72,8 @@ ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk(layout=ttk.TTkGridLayout())
 
-root.layout().addWidget(btn:=ttk.TTkButton(text="Add Buttons",border=True,maxHeight=3),0,0)
+root.layout().addWidget(btnadd:=ttk.TTkButton(text="Add Nodes",border=True,maxHeight=3),0,0)
+root.layout().addWidget(btndel:=ttk.TTkButton(text="Clean",border=True,maxHeight=3),0,1)
 root.layout().addWidget(tw:=ttk.TTkTree(),1,0,1,2)
 root.layout().addWidget(ttk.TTkLogViewer(maxHeight=10),2,0,1,2)
 
@@ -83,7 +84,7 @@ types = ("Fatal", "Error", "Mil", "Warning", "Info", "Entry", "Exit")
 def _addMany():
     ttk.TTkLog.info("Start Stress!!!")
     items = []
-    for i in range(300):
+    for i in range(500):
         _item_elements = [f"n: {i=}", 'console']
         for _t in types:
             _btn_t = _OnOff(checkable=True, checked=(i%0x07==0))
@@ -94,6 +95,7 @@ def _addMany():
     tw.addTopLevelItems(items)
     ttk.TTkLog.info("End Stress!!!")
 
-btn.clicked.connect(_addMany)
+btnadd.clicked.connect(_addMany)
+btndel.clicked.connect(tw.clear)
 
 root.mainloop()
