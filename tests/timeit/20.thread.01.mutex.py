@@ -35,7 +35,8 @@ def test1():
     ret = 1
     mutex.acquire()
     for x in test:
-        ret = max(ret,x*x)
+        # ret = max(ret,x*x)
+        ret += x # max(ret,x*x)
     mutex.release()
     return ret
 
@@ -43,7 +44,8 @@ def test2():
     ret = 1
     for x in test:
         mutex.acquire()
-        ret = max(ret,x*x)
+        # ret = max(ret,x*x)
+        ret += x # max(ret,x*x)
         mutex.release()
     return ret
 

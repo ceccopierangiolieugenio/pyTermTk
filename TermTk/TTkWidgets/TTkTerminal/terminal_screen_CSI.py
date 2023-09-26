@@ -473,7 +473,8 @@ class _TTkTerminalScreen_CSI():
     # CSI Ps d  Line Position Absolute  [row] (default = [1,column]) (VPA).
     def _CSI_d_VPA(self, ps, _):
         x,y = self._terminalCursor
-        self._terminalCursor = (x,ps-1)
+        w,h = self._w, self._h
+        self._terminalCursor = (x,max(0,min(h-1,ps-1)))
 
     # CSI Ps e  Line Position Relative  [rows] (default = [row+1,column])
     #           (VPR).
