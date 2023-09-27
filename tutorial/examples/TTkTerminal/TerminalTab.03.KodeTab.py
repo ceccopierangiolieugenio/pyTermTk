@@ -36,6 +36,7 @@ import TermTk as ttk
 #   i.e. the mouse drag feature of vim
 root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 
+# The KodeTab allow to split the screen dragging the tab at the corner of the widget
 tab = ttk.TTkKodeTab(parent=root)
 
 menu = tab.addMenu("Add Terminal")
