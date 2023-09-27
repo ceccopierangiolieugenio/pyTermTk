@@ -93,6 +93,8 @@ TTkWidgetProperties = {
                 'get':  { 'cb':TTkWidget.toolTip,    'type':TTkString } ,
                 'set':  { 'cb':TTkWidget.setToolTip, 'type':TTkString } },
     },'signals' : {
+        'closed(TTkWidget)' :    {'name' : 'closed',       'type':TTkWidget},
+        'currentStyleChanged(style)' : {'name' : 'currentStyleChanged', 'type':dict},
         'focusChanged(bool)'   : {'name' : 'focusChanged', 'type':bool},
         'sizeChanged(int,int)' : {'name' : 'sizeChanged',  'type':(int, int)}
     },'slots' : {

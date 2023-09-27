@@ -105,13 +105,14 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_toolTip',
         '_widgetCursor', '_widgetCursorEnabled', '_widgetCursorType',
         #Signals
-        'focusChanged', 'sizeChanged', 'currentStyleChanged')
+        'focusChanged', 'sizeChanged', 'currentStyleChanged', 'closed')
 
     def __init__(self, *args, **kwargs):
         #Signals
         self.focusChanged = pyTTkSignal(bool)
         self.sizeChanged = pyTTkSignal(int,int)
         self.currentStyleChanged = pyTTkSignal(dict)
+        self.closed = pyTTkSignal(TTkWidget)
         # self.sizeChanged.connect(self.resizeEvent)
 
         self._widgetCursor = (0,0)
@@ -474,6 +475,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
         self.hide()
+        self.closed.emit(self)
 
     @pyTTkSlot(bool)
     def setVisible(self, visible: bool):
