@@ -42,9 +42,8 @@ tab = ttk.TTkKodeTab(parent=root)
 menu = tab.addMenu("Add Terminal")
 
 def _addTerminal():
-    num = tab.count() + 1
     terminal = ttk.TTkTerminal()
-    tab.addTab(terminal, f"Terminal {num}")
+    tab.addTab(terminal, "Terminal")
     terminal.runShell()
 
 menu.menuButtonClicked.connect(_addTerminal)
