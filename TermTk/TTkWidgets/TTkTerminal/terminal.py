@@ -48,7 +48,7 @@ class TTkTerminal(TTkAbstractScrollArea):
                  # Exported methods
                  'runShell',
                  # Exported Signals
-                 'titleChanged', 'bell')
+                 'titleChanged', 'bell', 'terminalClosed')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         if 'parent' in kwargs: kwargs.pop('parent')
@@ -62,4 +62,10 @@ class TTkTerminal(TTkAbstractScrollArea):
         # Export Signals
         self.titleChanged = self._terminalView.titleChanged
         self.bell = self._terminalView.bell
+        self.terminalClosed = pyTTkSignal(TTkTerminal)
+        self._terminalView.closed.connect(lambda : self.terminalClosed.emit(self))
+
+    def close(self):
+        self._terminalView.close()
+        return super().close()
 

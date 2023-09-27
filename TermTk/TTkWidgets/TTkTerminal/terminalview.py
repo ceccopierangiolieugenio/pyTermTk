@@ -89,7 +89,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         reportMove:  bool = False
         sgrMode:     bool = False
 
-    __slots__ = ('_shell', '_fd', '_inout', '_proc',
+    __slots__ = ('_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_resize_pipe',
                  '_mode_normal'
                  '_clipboard',
@@ -97,15 +97,16 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                  '_keyboard', '_mouse', '_terminal',
                  '_screen_current', '_screen_normal', '_screen_alt',
                  # Signals
-                 'titleChanged', 'bell')
+                 'titleChanged', 'bell', 'closed')
     def __init__(self, *args, **kwargs):
         self.bell = pyTTkSignal()
+        self.closed = pyTTkSignal()
         self.titleChanged = pyTTkSignal(str)
 
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
         self._inout = None
-        self._proc = None
+        self._pid = None
         self._mode_normal = True
         self._quit_pipe = None
         self._resize_pipe = None
@@ -157,6 +158,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
+    def close(self):
+        self._quit()
+
     def _resizeScreen(self):
         w,h = self.size()
         if w<=0 or h<=0: return
@@ -184,13 +188,14 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def runShell(self, program=None):
         self._shell = program if program else self._shell
 
-        pid, self._fd = pty.fork()
+        self._pid, self._fd = pty.fork()
 
-        if pid == 0:
+        if self._pid == 0:
             def _spawnTerminal(argv=[self._shell], env=os.environ):
                 os.execvpe(argv[0], argv, env)
             threading.Thread(target=_spawnTerminal).start()
             TTkHelper.quit()
+            # _spawnTerminal()
             import sys
             sys.exit()
             # os.execvpe(argv[0], argv, env)
@@ -201,12 +206,21 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         else:
             self._inout = os.fdopen(self._fd, "w+b", 0)
             name = os.ttyname(self._fd)
-            _termLog.debug(f"{pid=} {self._fd=} {name}")
+            _termLog.debug(f"{self._pid=} {self._fd=} {name}")
 
             self._quit_pipe = os.pipe()
             self._resize_pipe = os.pipe()
 
             threading.Thread(target=self.loop,args=[self]).start()
+
+            # def _wait(v, pid=self._pid):
+            #     TTkLog.debug(f"Wait Terminal {v=} {self._pid=}")
+            #     status = os.wait()
+            #     TTkLog.debug(f"In parent process- {status=} {self._pid=}")
+            #     TTkLog.debug(f"Terminated child's process id: {status[0]}")
+            #     TTkLog.debug(f"Signal number that killed the child process: {status[1]}")
+            # threading.Thread(target=_wait,args=[self]).start()
+
             w,h = self.size()
             self.resizeEvent(w,h)
 
@@ -231,6 +245,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     @pyTTkSlot()
     def _quit(self):
+        os.kill(self._pid,0)
         if self._quit_pipe:
             os.write(self._quit_pipe[1], b'quit')
 
@@ -259,6 +274,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                     fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl)
                 except Exception as e:
                     _termLog.error(f"Error: {e=}")
+                    self.closed.emit()
                     return
 
                 # out = out.decode('utf-8','ignore')
@@ -778,7 +794,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
             self.update()
             self.setWidgetCursor(pos=self._screen_current.getCursor())
-            _termLog.debug(f"wc:{self._screen_current.getCursor()} {self._proc=}")
+            _termLog.debug(f"wc:{self._screen_current.getCursor()}")
 
     def pasteEvent(self, txt:str):
         if self._terminal.bracketedMode:

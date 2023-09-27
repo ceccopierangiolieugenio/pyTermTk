@@ -29,7 +29,7 @@ from threading import Lock
 
 mutex = Lock()
 
-test = [x for x in range(1000)]
+test = [x for x in range(10000)]
 
 def test1():
     ret = 1
@@ -49,7 +49,25 @@ def test2():
         mutex.release()
     return ret
 
-loop = 10000
+def test3():
+    ret = 1
+    if not mutex.acquire(False): return 0
+    for x in test:
+        # ret = max(ret,x*x)
+        ret += x # max(ret,x*x)
+    mutex.release()
+    return ret
+
+def test4():
+    ret = 1
+    for x in test:
+        if not mutex.acquire(False): return 0
+        # ret = max(ret,x*x)
+        ret += x # max(ret,x*x)
+        mutex.release()
+    return ret
+
+loop = 1000
 
 a = {}
 
