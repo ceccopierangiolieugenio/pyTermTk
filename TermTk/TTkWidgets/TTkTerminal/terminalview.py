@@ -104,6 +104,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
+        self._inout = None
         self._proc = None
         self._mode_normal = True
         self._quit_pipe = None
@@ -782,12 +783,15 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def pasteEvent(self, txt:str):
         if self._terminal.bracketedMode:
             txt = "\033[200~"+txt+"\033[201~"
-        self._inout.write(txt.encode())
+        if self._inout:
+            self._inout.write(txt.encode())
         return True
 
     def keyEvent(self, evt):
         # _termLog.debug(f"Key: {evt.code=}")
         _termLog.debug(f"Key: {str(evt)=}")
+        if not self._inout:
+            return False
         if evt.type == TTkK.SpecialKey:
             if evt.mod == TTkK.ControlModifier and evt.key == TTkK.Key_V:
                 txt = self._clipboard.text()
@@ -800,10 +804,10 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                             TTkK.Key_Left:  b"\033OD"}.get(evt.key):
                     self._inout.write(code)
                     return True
-            if evt.key == TTkK.Key_Enter:
-                _termLog.debug(f"Key: Enter")
-                # self._inout.write(b'\n')
-                # self._inout.write(evt.code.encode())
+            # if evt.key == TTkK.Key_Enter:
+            #     _termLog.debug(f"Key: Enter")
+            #     # self._inout.write(b'\n')
+            #     # self._inout.write(evt.code.encode())
         else: # Input char
             _termLog.debug(f"Key: {evt.key=}")
             # self._inout.write(evt.key.encode())
@@ -884,7 +888,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     #           report position in pixels rather than character cells.
 
     def _sendMouse(self, evt):
-        if   not self._mouse.reportPress:
+        if not self._inout:
+            return False
+        if not self._mouse.reportPress:
             return False
         if ( not self._mouse.reportDrag and
             evt.evt in (TTkK.Drag, TTkK.Move)):
