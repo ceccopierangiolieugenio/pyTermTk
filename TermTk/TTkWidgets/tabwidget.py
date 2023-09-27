@@ -609,6 +609,9 @@ class TTkTabWidget(TTkFrame):
         else:
             self._tabBar.mergeStyle(_tabStyleNormal)
 
+    def count(self) -> int:
+        return len(self._tabWidgets)
+
     def widget(self, index):
         '''widget'''
         if 0 <= index < len(self._tabWidgets):
@@ -678,7 +681,7 @@ class TTkTabWidget(TTkFrame):
         TTkLog.debug(f"Drop -> pos={evt.pos()}")
         return True
 
-    def addMenu(self, text, position=TTkK.LEFT, data=None):
+    def addMenu(self, text, position=TTkK.LEFT, data=None) -> TTkMenuBarButton:
         '''addMenu'''
         button = _TTkTabMenuButton(text=text, data=data)
         self._tabBar.setSideEnd(self._tabBar.sideEnd() & ~position)
