@@ -158,6 +158,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     def _resizeScreen(self):
         w,h = self.size()
+        if w<=0 or h<=0: return
         self._screen_current.resize(w,h)
         if self._fd:
             # s = struct.pack('HHHH', 0, 0, 0, 0)
@@ -168,8 +169,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             # termios.tcsetwinsize(self._fd,(h,w))
 
     def resizeEvent(self, w: int, h: int):
-
-        if self._resize_pipe:
+        if ( self._resize_pipe and
+             self._screen_current._w != w and
+             self._screen_current._h != h ):
             os.write(self._resize_pipe[1], b'resize')
 
         # self._screen_alt.resize(w,h)
