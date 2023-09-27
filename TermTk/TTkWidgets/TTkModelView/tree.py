@@ -33,7 +33,7 @@ class TTkTree(TTkAbstractScrollArea):
         'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
         # Forwarded Methods
         'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem',
-        'addTopLevelItem', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
+        'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,6 +58,7 @@ class TTkTree(TTkAbstractScrollArea):
         #self.setColumnColors = self._treeView.setColumnColors
         #self.appendItem      = self._treeView.appendItem
         self.addTopLevelItem     = self._treeView.addTopLevelItem
+        self.addTopLevelItems    = self._treeView.addTopLevelItems
         self.takeTopLevelItem    = self._treeView.takeTopLevelItem
         self.topLevelItem        = self._treeView.topLevelItem
         self.indexOfTopLevelItem = self._treeView.indexOfTopLevelItem

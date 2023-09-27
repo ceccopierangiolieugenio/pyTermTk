@@ -88,8 +88,9 @@ class TTkHelper:
     @staticmethod
     def addUpdateWidget(widget):
         # if not widget.isVisibleAndParent(): return
-        TTkHelper._updateWidget.add(widget)
-        TTkHelper.unlockPaint()
+        if widget not in TTkHelper._updateWidget:
+            TTkHelper._updateWidget.add(widget)
+            TTkHelper.unlockPaint()
 
     @staticmethod
     def addUpdateBuffer(canvas):
@@ -329,6 +330,8 @@ class TTkHelper:
                 TTkTerm.Cursor.hide()
             if TTkCfg.doubleBuffer:
                 TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
+            elif TTkCfg.doubleBufferNew:
+                TTkHelper._rootCanvas.pushToTerminalBufferedNew(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             else:
                 TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
             if TTkHelper._cursor:

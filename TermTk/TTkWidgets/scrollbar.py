@@ -126,12 +126,11 @@ class TTkScrollBar(TTkWidget):
 
     def wheelEvent(self, evt):
         if evt.evt == TTkK.WHEEL_Up:
-            self._value -= self._pageStep
+            value = self._value-self._pageStep
         else:
-            self._value += self._pageStep
-        self._value = max(self._minimum,min(self._maximum,self._value))
+            value = self._value+self._pageStep
+        self.setValue(max(self._minimum,min(self._maximum,value)))
         self.sliderMoved.emit(self._value)
-        self.update()
         return True
 
     def mousePressEvent(self, evt):
@@ -143,21 +142,20 @@ class TTkScrollBar(TTkWidget):
             mouse = evt.x
 
         if mouse == 0: # left/up arrow pressed
-            self._value = self._value - self._singleStep
+            self.setValue(self._value - self._singleStep)
         elif mouse == size-1: # right/down arrow pressed
-            self._value = self._value + self._singleStep
+            self.setValue(self._value + self._singleStep)
         elif self._screenPgDown[0] <= mouse < self._screenPgDown[1]:
-            self._value = self._value - self._pageStep
+            self.setValue(self._value - self._pageStep)
         elif self._screenPgUp[0] <= mouse < self._screenPgUp[1]:
-            self._value = self._value + self._pageStep
+            self.setValue(self._value + self._pageStep)
         elif self._screenScroller[0] <= mouse < self._screenScroller[1]:
             self._mouseDelta = mouse-self._screenScroller[0]
             self._draggable = True
         else:
             return False
-        self._value = max(self._minimum,min(self._maximum,self._value))
+        self.setValue(max(self._minimum,min(self._maximum,self._value)))
         self.sliderMoved.emit(self._value)
-        self.update()
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}")
         return True
 
@@ -176,11 +174,9 @@ class TTkScrollBar(TTkWidget):
         asciiDrawingSize = size2 - asciiStep
 
         a =  aa * (self._maximum - self._minimum) // asciiDrawingSize
-        self._value = a + self._minimum
 
-        self._value = max(self._minimum,min(self._maximum,self._value))
+        self.setValue(max(self._minimum,min(self._maximum,a+self._minimum)))
         self.sliderMoved.emit(self._value)
-        self.update()
         # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, aa:{aa}")
         return True
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -20,26 +22,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkCfg', 'TTkGlbl']
+import sys, os
 
-from TermTk.TTkCore.constant import TTkK
+sys.path.append(os.path.join(sys.path[0],'..'))
+import TermTk as ttk
 
-class TTkCfg:
-    version="__VERSION__"
-    name="__NAME__"
+root = ttk.TTk()
 
-    color_depth: int = TTkK.DEP_24
+sb1 = ttk.TTkScrollBar(parent=root, pos=(10,2), size=(1,10))
+sb2 = ttk.TTkScrollBar(parent=root, pos=(12,2), size=(1,12))
+sb3 = ttk.TTkScrollBar(parent=root, pos=(14,2), size=(1,14))
+sb4 = ttk.TTkScrollBar(parent=root, pos=(16,2), size=(1,16))
+sb5 = ttk.TTkScrollBar(parent=root, pos=( 5,0), size=(30,1), orientation=ttk.TTkK.HORIZONTAL)
 
-    toolTipTime = 1
-    maxFps = 65
-    doubleBuffer = True
-    doubleBufferNew = False
-
-    scrollDelta = 5
-    theme = None
-
-class TTkGlbl:
-    term_w: int = 0
-    term_h: int = 0
+sb1.valueChanged.connect(sb2.setValue)
+sb2.valueChanged.connect(sb3.setValue)
+sb3.valueChanged.connect(sb4.setValue)
+sb4.valueChanged.connect(sb5.setValue)
+sb5.valueChanged.connect(sb1.setValue)
 
 
+root.mainloop()

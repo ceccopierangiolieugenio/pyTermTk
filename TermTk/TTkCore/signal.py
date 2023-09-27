@@ -59,6 +59,7 @@ __all__ = ['pyTTkSlot', 'pyTTkSignal']
 
 from inspect import getfullargspec
 from types import LambdaType
+from threading import Lock
 
 def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
@@ -72,7 +73,7 @@ def pyTTkSignal(*args, **kwargs):
 
 class _pyTTkSignal_obj():
     _signals = []
-    __slots__ = ('_types', '_name', '_revision', '_connected_slots')
+    __slots__ = ('_types', '_name', '_revision', '_connected_slots', '_mutex')
     def __init__(self, *args, **kwargs):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
 
@@ -90,6 +91,7 @@ class _pyTTkSignal_obj():
         self._name = kwargs.get('name', None)
         self._revision = kwargs.get('revision', 0)
         self._connected_slots = {}
+        self._mutex = Lock()
         _pyTTkSignal_obj._signals.append(self)
 
     def connect(self, slot):
@@ -133,11 +135,13 @@ class _pyTTkSignal_obj():
                 del self._connected_slots[slot]
 
     def emit(self, *args, **kwargs):
+        if not self._mutex.acquire(False): return
         if len(args) != len(self._types):
             error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
             raise TypeError(error)
         for slot,sl in self._connected_slots.copy().items():
             slot(*args[sl], **kwargs)
+        self._mutex.release()
 
     def clear(self):
         self._connected_slots = {}

@@ -81,33 +81,39 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         return self._terminalCursor
 
     def resize(self, w, h):
+        # I normalize the size to the default terminal
+        # to avoid negative or zerosized term
+        w = max(80,w)
+        h = max(24,h)
         ow, oh = self._w, self._h
-        self._w, self._h = w, h
-        st,sb = self._scrollingRegion
+        # st,sb = self._scrollingRegion
         # if oh <= h: # Terminal height decreasing
         #     sb = min(h,oh)
         # else:# Terminal height increasing
         #     sb = h-oh+sb
         # self._scrollingRegion = (st,sb)
         self._scrollingRegion = (0,h)
+        if w==ow and h==oh: return
+        self._w, self._h = w, h
         newCanvas = TTkCanvas(width=w, height=h)
         s = (0,0,w,h)
         newCanvas.paintCanvas(self._canvas,s,s,s)
+        self._canvas = newCanvas
 
         self._canvasNewLine  += [True]*h
         self._canvasLineSize += [0]*h
         self._canvasNewLine  = self._canvasNewLine[:h]
         self._canvasLineSize = self._canvasLineSize[:h]
 
-        self._canvas = newCanvas
         x,y = self._terminalCursor
-        self._terminalCursor = (min(x,w-1),min(y,h-1))
+        self._terminalCursor = (max(0,min(x,w-1)),max(0,min(y,h-1)))
 
     def _pushTxt(self, txt:str, irm:bool=False):
         x,y = self._terminalCursor
         w,h = self._w, self._h
         st,sb = self._scrollingRegion
         self._last = txt[-1] if txt else None
+        # TTkLog.error(f"P: {x=} {y=} {w=} {h=} {len(txt)=}")
 
         for bi, tout in enumerate(txt.split('\a')): # grab the bells
             if bi:

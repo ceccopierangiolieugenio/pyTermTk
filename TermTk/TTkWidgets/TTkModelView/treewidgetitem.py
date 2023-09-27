@@ -75,7 +75,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         widget.sizeChanged.connect(self._widgetSizeChanged)
         self._height = max(self._height,widget.height())
         if self._parentWidget:
-            widget.setParent(self._parentWidget)
+            widget.setTreeItemParent(self._parentWidget)
         if hasattr(widget, 'text'):
             ret = widget.text()
             if hasattr(widget,'textChanged'):
@@ -129,16 +129,40 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def height(self):
         return self._height
 
-    def setParent(self, parent):
-        self._parentWidget = parent
+    def _clearTreeItemParent(self):
+        widgets = []
         if self._hasWidgets:
-            for widget in [w for w in self._widgets if w]:
-                if parent:
-                    parent.layout().addWidget(widget)
-                elif pw := widget.parentWidget():
-                    pw.rootLayout().removeWidget(widget)
+            widgets += [w for w in self._widgets if w and w.parentWidget()]
+            # for widget in widgets:
+            #     if pw := widget.parentWidget():
+            #         pw.rootLayout().removeWidgets([w for w in self._widgets if w])
+            if self._parentWidget:
+                self._parentWidget.rootLayout().removeWidgets(widgets)
+        self._parentWidget = None
         for c in self._children:
-            c.setParent(parent)
+            widgets += c._clearTreeItemParent()
+        return widgets
+
+    def _setTreeItemParent(self, parent):
+        self._parentWidget = parent
+        widgets = []
+        if self._hasWidgets:
+            widgets += [w for w in self._widgets if w]
+            # parent.layout().addWidgets(widgets)
+        for c in self._children:
+            widgets += c._setTreeItemParent(parent)
+        return widgets
+
+    def setTreeItemParent(self, parent):
+        if parent:
+            widgets = self._setTreeItemParent(parent)
+            parent.rootLayout().addWidgets(widgets)
+        else:
+            # pw = self._parentWidget
+            widgets = self._clearTreeItemParent()
+            # pw.rootLayout().removeWidgets(widgets)
+
+
 
     def hasWidgets(self):
         return self._hasWidgets
@@ -166,7 +190,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._setDefaultIcon()
         self._sort(children=False)
         if self._parentWidget:
-            child.setParent(self._parentWidget)
+            child.setTreeItemParent(self._parentWidget)
         child.dataChanged.connect(self.emitDataChanged)
 
     def addChild(self, child):
@@ -187,7 +211,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             return None
         child = self._children.pop(index)
         child.dataChanged.disconnect(self.emitDataChanged)
-        child.setParent(None)
+        child.setTreeItemParent(None)
         self.dataChanged.emit()
         return child
 
@@ -195,7 +219,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         children = self._children
         for child in children:
             child.dataChanged.disconnect(self.emitDataChanged)
-            child.setParent(None)
+            child.setTreeItemParent(None)
         self._children = []
         self.dataChanged.emit()
         return children

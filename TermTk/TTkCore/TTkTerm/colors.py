@@ -61,7 +61,7 @@ class TTkTermColor():
         29: ~STRIKETROUGH } # Ps = 2 9  ⇒  Not crossed-out, ECMA-48 3rd.
 
     @staticmethod
-    def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, clean:bool=False):
+    def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, link:str='', clean:bool=False):
         ret = []
 
         if clean:

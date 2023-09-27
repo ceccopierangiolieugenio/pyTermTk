@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,26 +22,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkCfg', 'TTkGlbl']
 
-from TermTk.TTkCore.constant import TTkK
+# Those 2 lines are required to use the TermTk library straight from the main folder
+import sys, os
+sys.path.append(os.path.join(sys.path[0],'../../..'))
 
-class TTkCfg:
-    version="__VERSION__"
-    name="__NAME__"
+import TermTk as ttk
 
-    color_depth: int = TTkK.DEP_24
+# layout = GridLayout
+#   It is required to allow the tabWidget to be automatically resized to the "root" area
+# mouseTrack = True (optional)
+#   It is required if we want to forward the mouse over events to the terminals
+#   i.e. the mouse over feature of pytermTk or Textual
+root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 
-    toolTipTime = 1
-    maxFps = 65
-    doubleBuffer = True
-    doubleBufferNew = False
+tab = ttk.TTkTabWidget(parent=root)
 
-    scrollDelta = 5
-    theme = None
+menu = tab.addMenu("Add Terminal")
 
-class TTkGlbl:
-    term_w: int = 0
-    term_h: int = 0
+def _addTerminal():
+    num = tab.count() + 1
+    terminal = ttk.TTkTerminal()
+    tab.addTab(terminal, f"Terminal {num}")
+    terminal.runShell()
 
+menu.menuButtonClicked.connect(_addTerminal)
 
+root.mainloop()

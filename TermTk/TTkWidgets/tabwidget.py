@@ -599,7 +599,7 @@ class TTkTabWidget(TTkFrame):
         # forwarded Signals
         self.currentChanged    = self._tabBar.currentChanged
         self.tabBarClicked     = self._tabBar.tabBarClicked
-        self.tabCloseRequested = self._tabBar.tabCloseRequested
+        self.tabCloseRequested = pyTTkSignal(int)
 
         self.focusChanged.connect(self._focusChanged)
 
@@ -608,6 +608,9 @@ class TTkTabWidget(TTkFrame):
             self._tabBar.mergeStyle(_tabStyleFocussed)
         else:
             self._tabBar.mergeStyle(_tabStyleNormal)
+
+    def count(self) -> int:
+        return len(self._tabWidgets)
 
     def widget(self, index):
         '''widget'''
@@ -678,7 +681,7 @@ class TTkTabWidget(TTkFrame):
         TTkLog.debug(f"Drop -> pos={evt.pos()}")
         return True
 
-    def addMenu(self, text, position=TTkK.LEFT, data=None):
+    def addMenu(self, text, position=TTkK.LEFT, data=None) -> TTkMenuBarButton:
         '''addMenu'''
         button = _TTkTabMenuButton(text=text, data=data)
         self._tabBar.setSideEnd(self._tabBar.sideEnd() & ~position)
@@ -713,6 +716,7 @@ class TTkTabWidget(TTkFrame):
     @pyTTkSlot(int)
     def removeTab(self, index):
         '''removeTab'''
+        self.tabCloseRequested.emit(index)
         self.layout().removeWidget(self._tabWidgets[index])
         self._tabWidgets.pop(index)
         self._tabBar.removeTab(index)

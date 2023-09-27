@@ -9,6 +9,7 @@ __check(){
             -e "from dataclasses" \
             -e "signal.py:from inspect import getfullargspec" \
             -e "signal.py:from types import LambdaType" \
+            -e "signal.py:from threading import Lock" \
             -e "colors.py:from .colors_ansi_map" \
             -e "log.py:import inspect" \
             -e "log.py:import logging" \
