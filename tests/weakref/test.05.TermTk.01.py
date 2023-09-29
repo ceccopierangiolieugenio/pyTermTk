@@ -56,7 +56,7 @@ def _ref(o):
 
 print("\n############# Phase 1 ##################")
 # wid = ttk.TTkWidget()
-# wid = ttk.TTkButton()
+wid = ttk.TTkButton()
 # wid = ttk.TTkLabel()
 # wid = ttk.TTkGraph()
 # wid = ttk.TTkSpacer()
