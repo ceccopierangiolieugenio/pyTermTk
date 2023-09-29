@@ -36,21 +36,19 @@ class TTkCanvas:
     :param  height: the height of the Canvas
     '''
     __slots__ = (
-        '_widget',
         '_width', '_height', '_newWidth', '_newHeight',
         '_theme',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
-        self._widget = kwargs.get('widget', None)
         self._visible = True
         self._transparent = False
         self._doubleBuffer = False
         self._width = 0
         self._height = 0
-        self._data = [[0]]
-        self._colors = [[TTkColor.RST]]
+        self._data = [[]]
+        self._colors = [[]]
         self._newWidth = kwargs.get('width', 0 )
         self._newHeight = kwargs.get('height', 0 )
         self.updateSize()
@@ -62,8 +60,6 @@ class TTkCanvas:
 
     def setTransparent(self, tr):
         self._transparent = tr
-
-    def getWidget(self): return self._widget
 
     def enableDoubleBuffer(self):
         self._doubleBuffer = True
@@ -638,7 +634,7 @@ class TTkCanvas:
         if bx+bw<0 or by+bh<0 or bx>=cw or by>=ch: return
         if x+w<=bx or y+h<=by or bx+bw<=x or by+bh<=y: return
 
-        if (0,0,cw,ch)==geom==bound and (cw,ch)==canvas.size():
+        if (0,0,cw,ch)==geom==bound and (cw,ch)==canvas.size() and not canvas._transparent:
             # fast Copy
             # the canvas match exactly on top of the current one
             for y in range(h):
