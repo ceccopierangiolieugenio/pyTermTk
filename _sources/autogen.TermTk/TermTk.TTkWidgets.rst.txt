@@ -17,6 +17,7 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.button
   TermTk.TTkWidgets.checkbox
   TermTk.TTkWidgets.combobox
+  TermTk.TTkWidgets.container
   TermTk.TTkWidgets.frame
   TermTk.TTkWidgets.graph
   TermTk.TTkWidgets.image
@@ -27,7 +28,6 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.listwidget
   TermTk.TTkWidgets.menu
   TermTk.TTkWidgets.menubar
-  TermTk.TTkWidgets.progressbar
   TermTk.TTkWidgets.radiobutton
   TermTk.TTkWidgets.resizableframe
   TermTk.TTkWidgets.scrollarea

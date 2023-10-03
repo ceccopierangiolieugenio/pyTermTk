@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.window</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,6 +111,8 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkWindow&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
@@ -132,8 +132,26 @@
 
 <div class="viewcode-block" id="TTkWindow"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.window.html#TermTk.TTkWidgets.window.TTkWindow">[docs]</a><span class="k">class</span> <span class="nc">TTkWindow</span><span class="p">(</span><span class="n">TTkResizableFrame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;TTkWindow&#39;&#39;&#39;</span>
+
+    <span class="n">_windowStyleNormal</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;borderColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+        <span class="p">}</span>
+
+    <span class="n">_windowStyleFocussed</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;borderColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff55&quot;</span><span class="p">)},</span>
+        <span class="p">}</span>
+
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">,</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">),</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">)},</span>
+                <span class="s1">&#39;focus&#39;</span><span class="p">:</span>       <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span><span class="p">,</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff55&quot;</span><span class="p">)}</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s1">&#39;_title&#39;</span><span class="p">,</span> <span class="s1">&#39;_mouseDelta&#39;</span><span class="p">,</span> <span class="s1">&#39;_draggable&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_mouseDelta&#39;</span><span class="p">,</span> <span class="s1">&#39;_draggable&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_btnClose&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnMax&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnMin&#39;</span><span class="p">,</span> <span class="s1">&#39;_btnReduce&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_flags&#39;</span><span class="p">,</span> <span class="s1">&#39;_winTopLayout&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_maxBk&#39;</span><span class="p">,</span> <span class="s1">&#39;_redBk&#39;</span> <span class="p">)</span>
@@ -174,6 +192,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_winTopLayout</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlag</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WindowFlag</span><span class="o">.</span><span class="n">WindowCloseButtonHint</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_focusChanged</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_maximize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">pw</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()):</span> <span class="k">return</span>
@@ -232,17 +251,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_winTopLayout</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TTkWindow.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.window.html#TermTk.TTkWidgets.window.TTkWindow.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">windowBorderColorFocus</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">windowBorderColor</span>
-        <span class="n">canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">)</span>
-        <span class="n">canvas</span><span class="o">.</span><span class="n">drawGrid</span><span class="p">(</span>
-                    <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                    <span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span>
-                    <span class="n">hlines</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">grid</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="TTkWindow.mousePressEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.window.html#TermTk.TTkWidgets.window.TTkWindow.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mouseDelta</span> <span class="o">=</span> <span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span>
@@ -263,16 +271,35 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">TTkResizableFrame</span><span class="o">.</span><span class="n">mouseDragEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">focusInEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="o">.</span><span class="n">setBorderColor</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff55&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_focusChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">focus</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">focus</span><span class="p">:</span>
+            <span class="n">styleToMerge</span> <span class="o">=</span> <span class="n">TTkWindow</span><span class="o">.</span><span class="n">_windowStyleFocussed</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">styleToMerge</span> <span class="o">=</span> <span class="n">TTkWindow</span><span class="o">.</span><span class="n">_windowStyleNormal</span>
+
+        <span class="k">def</span> <span class="nf">_applyStyle</span><span class="p">(</span><span class="n">_mb</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_mb</span><span class="p">:</span> <span class="k">return</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_mb</span><span class="o">.</span><span class="n">_menus</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">):</span>   <span class="n">m</span><span class="o">.</span><span class="n">mergeStyle</span><span class="p">(</span><span class="n">styleToMerge</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_mb</span><span class="o">.</span><span class="n">_menus</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">RIGHT_ALIGN</span><span class="p">):</span>  <span class="n">m</span><span class="o">.</span><span class="n">mergeStyle</span><span class="p">(</span><span class="n">styleToMerge</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_mb</span><span class="o">.</span><span class="n">_menus</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">CENTER_ALIGN</span><span class="p">):</span> <span class="n">m</span><span class="o">.</span><span class="n">mergeStyle</span><span class="p">(</span><span class="n">styleToMerge</span><span class="p">)</span>
+
+        <span class="n">_applyStyle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">TOP</span><span class="p">))</span>
+        <span class="n">_applyStyle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">))</span>
+
 
     <span class="k">def</span> <span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="o">.</span><span class="n">setBorderColor</span><span class="p">(</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TTkWindow.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.window.html#TermTk.TTkWidgets.window.TTkWindow.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
+        <span class="n">borderColor</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;borderColor&#39;</span><span class="p">]</span>
+
+        <span class="n">canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">drawGrid</span><span class="p">(</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">,</span>
+                    <span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span>
+                    <span class="n">hlines</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">grid</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

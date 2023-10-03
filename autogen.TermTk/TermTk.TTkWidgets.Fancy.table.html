@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="TermTk.TTkWidgets.Fancy.tableview" href="TermTk.TTkWidgets.Fancy.tableview.html" />
-    <link rel="prev" title="TermTk.TTkWidgets.Fancy" href="TermTk.TTkWidgets.Fancy.html" /> 
+    <link rel="prev" title="TermTk.TTkWidgets.Fancy.progressbar" href="TermTk.TTkWidgets.Fancy.progressbar.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -64,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkUiTools.html">TermTk.TTkUiTools</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.html">TermTk.TTkWidgets.Fancy</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="TermTk.TTkWidgets.Fancy.progressbar.html">TermTk.TTkWidgets.Fancy.progressbar</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.Fancy.table</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ttkfancytable">TTkFancyTable</a></li>
 </ul>
@@ -81,6 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.container.html">TermTk.TTkWidgets.container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
@@ -91,7 +93,6 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menu.html">TermTk.TTkWidgets.menu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -148,7 +149,7 @@
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -572,7 +573,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -692,7 +693,7 @@ this need to be overridden in the widget.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="TermTk.TTkWidgets.Fancy.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.Fancy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkWidgets.Fancy.progressbar.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.Fancy.progressbar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="TermTk.TTkWidgets.Fancy.tableview.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.Fancy.tableview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

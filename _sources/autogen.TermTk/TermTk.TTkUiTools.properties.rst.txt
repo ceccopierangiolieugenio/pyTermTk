@@ -15,6 +15,7 @@ TermTk.TTkUiTools.properties
   TermTk.TTkUiTools.properties.checkbox
   TermTk.TTkUiTools.properties.colorpicker
   TermTk.TTkUiTools.properties.combobox
+  TermTk.TTkUiTools.properties.container
   TermTk.TTkUiTools.properties.filepicker
   TermTk.TTkUiTools.properties.frame
   TermTk.TTkUiTools.properties.graph

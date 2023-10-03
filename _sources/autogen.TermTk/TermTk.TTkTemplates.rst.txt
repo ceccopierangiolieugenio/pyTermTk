@@ -12,5 +12,4 @@ TermTk.TTkTemplates
 
   TermTk.TTkTemplates.dragevents
   TermTk.TTkTemplates.keyevents
-  TermTk.TTkTemplates.lookandfeel
   TermTk.TTkTemplates.mouseevents

@@ -70,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.container.html">TermTk.TTkWidgets.container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
@@ -80,7 +81,6 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menu.html">TermTk.TTkWidgets.menu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -134,14 +134,14 @@
 <h2>TTkTabButton<a class="headerlink" href="#ttktabbutton" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.addWidget">
 <span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.addWidget" title="Permalink to this definition"></a></dt>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -274,29 +274,6 @@
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.hide">
 <span class="sig-name descname"><span class="pre">hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.hide" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.isCheckable">
-<span class="sig-name descname"><span class="pre">isCheckable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.isCheckable" title="Permalink to this definition"></a></dt>
-<dd><p>This property holds whether the button is checkable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.isChecked">
-<span class="sig-name descname"><span class="pre">isChecked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.isChecked" title="Permalink to this definition"></a></dt>
-<dd><p>This property holds whether the button is checked</p>
-<p>Only checkable buttons can be checked. By default, the button is unchecked.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.keyEvent">
@@ -588,7 +565,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -614,28 +591,6 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.resizeEvent">
 <span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.resizeEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Event Callback triggered after a successful resize</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.setCheckable">
-<span class="sig-name descname"><span class="pre">setCheckable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.setCheckable" title="Permalink to this definition"></a></dt>
-<dd><p>Enable/Disable the checkable property</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ch</strong> (<em>bool</em>) – Checkable</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.setChecked">
-<span class="sig-name descname"><span class="pre">setChecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.setChecked" title="Permalink to this definition"></a></dt>
-<dd><p>Set the checked status</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ch</strong> (<em>bool</em>) – Checked</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -691,17 +646,6 @@ this need to be overridden in the widget.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.setText">
-<span class="sig-name descname"><span class="pre">setText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.setText" title="Permalink to this definition"></a></dt>
-<dd><p>This property holds the text shown on the button</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>text</strong> (<a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a>) – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.setVisible">
 <span class="sig-name descname"><span class="pre">setVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.setVisible" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -710,17 +654,6 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.show">
 <span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.show" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.text">
-<span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabButton.text" title="Permalink to this definition"></a></dt>
-<dd><p>This property holds the text shown on the button</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabButton.wheelEvent">
@@ -750,7 +683,7 @@ this need to be overridden in the widget.</p>
 <h2>TTkTabBar<a class="headerlink" href="#ttktabbar" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabBar.addTab">
 <span class="sig-name descname"><span class="pre">addTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabBar.addTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabBar.addTab" title="Permalink to this definition"></a></dt>
@@ -762,7 +695,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -1201,7 +1134,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -1344,10 +1277,10 @@ this need to be overridden in the widget.</p>
 <h2>TTkTabWidget<a class="headerlink" href="#ttktabwidget" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTabWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.addMenu">
-<span class="sig-name descname"><span class="pre">addMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.addMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.addMenu" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">addMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html#TermTk.TTkWidgets.menubar.TTkMenuBarButton" title="TermTk.TTkWidgets.menubar.TTkMenuBarButton"><span class="pre">TTkMenuBarButton</span></a></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/tabwidget.html#TTkTabWidget.addMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.addMenu" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1361,7 +1294,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -1774,6 +1707,22 @@ this need to be overridden in the widget.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.newMenubarTop">
+<span class="sig-name descname"><span class="pre">newMenubarTop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.newMenubarTop" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">setMenuBar</span></code> instead</p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">menuBar</span> <span class="o">=</span> <span class="n">TTkMenuBarLayout</span><span class="p">()</span>
+<span class="n">frame</span><span class="o">.</span><span class="n">setMenuBar</span><span class="p">(</span><span class="n">menuBar</span><span class="p">)</span>
+<span class="n">menuBar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.tabwidget.TTkTabWidget.paintChildCanvas">
 <span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.tabwidget.TTkTabWidget.paintChildCanvas" title="Permalink to this definition"></a></dt>
 <dd><div class="admonition caution">
@@ -1805,7 +1754,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>

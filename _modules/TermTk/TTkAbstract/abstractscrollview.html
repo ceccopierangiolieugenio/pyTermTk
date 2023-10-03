@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkAbstract.abstractscrollview</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,10 +111,13 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkAbstractScrollViewInterface&#39;</span><span class="p">,</span> <span class="s1">&#39;TTkAbstractScrollView&#39;</span><span class="p">,</span> <span class="s1">&#39;TTkAbstractScrollViewGridLayout&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.layout</span> <span class="kn">import</span> <span class="n">TTkLayout</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.gridlayout</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
 
 <span class="k">class</span> <span class="nc">TTkAbstractScrollViewInterface</span><span class="p">():</span>
@@ -135,7 +136,7 @@
     <span class="k">def</span> <span class="nf">getViewOffsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetY</span>
 
-<div class="viewcode-block" id="TTkAbstractScrollView"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollView">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollView</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">,</span> <span class="n">TTkAbstractScrollViewInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkAbstractScrollView"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollView">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollView</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">,</span> <span class="n">TTkAbstractScrollViewInterface</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_viewOffsetX&#39;</span><span class="p">,</span> <span class="s1">&#39;_viewOffsetY&#39;</span><span class="p">,</span>
         <span class="c1"># Signals</span>
@@ -146,9 +147,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">viewMovedTo</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="c1"># x, y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewSizeChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="c1"># w, h</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
-        <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetX</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetY</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">TTkContainer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">viewMoveTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -187,6 +188,38 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="p">,</span> <span class="n">updateLayout</span><span class="p">,</span> <span class="n">updateParent</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TTkAbstractScrollViewLayout"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollViewLayout</span><span class="p">(</span><span class="n">TTkLayout</span><span class="p">,</span> <span class="n">TTkAbstractScrollViewInterface</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;_viewOffsetX&#39;</span><span class="p">,</span> <span class="s1">&#39;_viewOffsetY&#39;</span><span class="p">,</span>
+        <span class="c1"># Signals</span>
+         <span class="s1">&#39;viewMovedTo&#39;</span><span class="p">,</span> <span class="s1">&#39;viewSizeChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;viewChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;_excludeEvent&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewMovedTo</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="c1"># x, y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewSizeChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="c1"># w, h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetX</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetY</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">TTkLayout</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">viewFullAreaSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullWidgetAreaGeometry</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span><span class="n">h</span>
+
+    <span class="k">def</span> <span class="nf">viewDisplayedSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span><span class="n">h</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">viewMoveTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setOffset</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="n">y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TTkAbstractScrollViewLayout.setGeometry"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setGeometry">[docs]</a>    <span class="k">def</span> <span class="nf">setGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+        <span class="n">TTkLayout</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div></div>
+
 <div class="viewcode-block" id="TTkAbstractScrollViewGridLayout"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollview.html#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewGridLayout">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollViewGridLayout</span><span class="p">(</span><span class="n">TTkGridLayout</span><span class="p">,</span> <span class="n">TTkAbstractScrollViewInterface</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_viewOffsetX&#39;</span><span class="p">,</span> <span class="s1">&#39;_viewOffsetY&#39;</span><span class="p">,</span>
@@ -198,10 +231,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">viewMovedTo</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="c1"># x, y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewSizeChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="c1"># w, h</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
-        <span class="n">TTkGridLayout</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetX</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetY</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">TTkGridLayout</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">viewMoveTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>

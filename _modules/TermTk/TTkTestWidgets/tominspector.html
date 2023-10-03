@@ -111,6 +111,8 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkTomInspector&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
@@ -128,7 +130,7 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.combobox</span> <span class="kn">import</span> <span class="n">TTkComboBox</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.checkbox</span> <span class="kn">import</span> <span class="n">TTkCheckbox</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.spinbox</span> <span class="kn">import</span> <span class="n">TTkSpinBox</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.splitter</span> <span class="kn">import</span> <span class="n">TTkSplitter</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.frame</span> <span class="kn">import</span> <span class="n">TTkFrame</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.button</span> <span class="kn">import</span> <span class="n">TTkButton</span>
@@ -233,7 +235,7 @@
     <span class="k">def</span> <span class="nf">domWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_domWidget</span>
 
-<div class="viewcode-block" id="TTkTomInspector"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.tominspector.html#TermTk.TTkTestWidgets.tominspector.TTkTomInspector">[docs]</a><span class="k">class</span> <span class="nc">TTkTomInspector</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkTomInspector"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkTestWidgets.tominspector.html#TermTk.TTkTestWidgets.tominspector.TTkTomInspector">[docs]</a><span class="k">class</span> <span class="nc">TTkTomInspector</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_domTree&#39;</span><span class="p">,</span><span class="s1">&#39;_detail&#39;</span><span class="p">,</span><span class="s1">&#39;_splitter&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

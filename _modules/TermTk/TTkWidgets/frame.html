@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.frame</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,11 +111,14 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkFrame&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="TTkFrame"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame">[docs]</a><span class="k">class</span> <span class="nc">TTkFrame</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
+
+<div class="viewcode-block" id="TTkFrame"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame">[docs]</a><span class="k">class</span> <span class="nc">TTkFrame</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="sd">    ::</span>
@@ -140,12 +141,18 @@
 <span class="sd">    :type border: bool, optional</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">),</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">),</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">)}</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;_border&#39;</span><span class="p">,</span><span class="s1">&#39;_title&#39;</span><span class="p">,</span> <span class="s1">&#39;_titleColor&#39;</span><span class="p">,</span> <span class="s1">&#39;_titleAlign&#39;</span><span class="p">,</span><span class="s1">&#39;_borderColor&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_border&#39;</span><span class="p">,</span><span class="s1">&#39;_title&#39;</span><span class="p">,</span> <span class="s1">&#39;_titleAlign&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_menubarTop&#39;</span><span class="p">,</span> <span class="s1">&#39;_menubarTopPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;_menubarBottom&#39;</span><span class="p">,</span> <span class="s1">&#39;_menubarBottomPosition&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;borderColor&#39;</span><span class="p">,</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frameBorderColor</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;titleColor&#39;</span><span class="p">,</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frameTitleColor</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_titleAlign</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;titleAlign&#39;</span> <span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">CENTER_ALIGN</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;title&#39;</span> <span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;border&#39;</span><span class="p">,</span> <span class="kc">True</span> <span class="p">)</span>
@@ -153,18 +160,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_menubarBottomPosition</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_menubarBottom</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setBorder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_border</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">newMenubarTop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkFrame.newMenubarTop"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame.newMenubarTop">[docs]</a>    <span class="k">def</span> <span class="nf">newMenubarTop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;newMenubarTop</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Method Deprecated,</span>
+
+<span class="sd">            use :class:`~TermTk.TTkWidgets.frame.setMenuBar` instead</span>
+
+<span class="sd">            i.e.</span>
+
+<span class="sd">            .. code:: python</span>
+
+<span class="sd">                menuBar = TTkMenuBarLayout()</span>
+<span class="sd">                frame.setMenuBar(menuBar)</span>
+<span class="sd">                menuBar.addMenu(&quot;File&quot;)</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.menubar</span> <span class="kn">import</span> <span class="n">TTkMenuBarLayout</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span> <span class="o">=</span> <span class="n">TTkMenuBarLayout</span><span class="p">(</span><span class="n">borderColor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span> <span class="o">=</span> <span class="n">TTkMenuBarLayout</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_menubarTopPosition</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setPadding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_menubarTopPosition</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span></div>
 
     <span class="k">def</span> <span class="nf">menuBar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">TOP</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TOP</span><span class="p">:</span>
@@ -237,29 +260,26 @@
         <span class="sd">&#39;&#39;&#39;border&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span></div>
 
-    <span class="k">def</span> <span class="nf">borderColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span>
-
-    <span class="k">def</span> <span class="nf">setBorderColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span> <span class="o">=</span> <span class="n">color</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-
 <div class="viewcode-block" id="TTkFrame.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.frame.html#TermTk.TTkWidgets.frame.TTkFrame.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
+        <span class="n">borderColor</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;borderColor&#39;</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span><span class="p">:</span>
-            <span class="n">canvas</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span><span class="p">)</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">canvas</span><span class="o">.</span><span class="n">drawBoxTitle</span><span class="p">(</span>
                                 <span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
                                 <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">),</span>
                                 <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">,</span>
                                 <span class="n">align</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_titleAlign</span><span class="p">,</span>
-                                <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span><span class="p">,</span>
-                                <span class="n">colorText</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span><span class="p">)</span>
+                                <span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">,</span>
+                                <span class="n">colorText</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarTop</span><span class="p">:</span>
-                <span class="n">canvas</span><span class="o">.</span><span class="n">drawMenuBarBg</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span><span class="p">)</span>
+                <span class="n">canvas</span><span class="o">.</span><span class="n">drawMenuBarBg</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menubarBottom</span><span class="p">:</span>
-                <span class="n">canvas</span><span class="o">.</span><span class="n">drawMenuBarBg</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span><span class="p">)</span></div></div>
+                <span class="n">canvas</span><span class="o">.</span><span class="n">drawMenuBarBg</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">borderColor</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

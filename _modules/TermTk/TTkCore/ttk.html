@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkCore.ttk</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,6 +111,8 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTk&#39;</span><span class="p">]</span>
+
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -133,8 +133,9 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkTheme.theme</span> <span class="kn">import</span> <span class="n">TTkTheme</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
 
-<div class="viewcode-block" id="TTk"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.ttk.html#TermTk.TTkCore.ttk.TTk">[docs]</a><span class="k">class</span> <span class="nc">TTk</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="TTk"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.ttk.html#TermTk.TTkCore.ttk.TTk">[docs]</a><span class="k">class</span> <span class="nc">TTk</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="k">class</span> <span class="nc">_mouseCursor</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
         <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_cursor&#39;</span><span class="p">,</span><span class="s1">&#39;_color&#39;</span><span class="p">)</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
@@ -170,19 +171,28 @@
         <span class="s1">&#39;_input&#39;</span><span class="p">,</span> <span class="s1">&#39;_termMouse&#39;</span><span class="p">,</span> <span class="s1">&#39;_termDirectMouse&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_title&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_showMouseCursor&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_sigmask&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_sigmask&#39;</span><span class="p">,</span> <span class="s1">&#39;_timer&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_drawMutex&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_paintEvent&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_lastMultiTap&#39;</span><span class="p">,</span>
         <span class="s1">&#39;paintExecuted&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># If the &quot;TERMTK_FILE_LOG&quot; env variable is defined</span>
+        <span class="c1"># logs are saved in the file identified by this variable</span>
+        <span class="c1"># i.e.</span>
+        <span class="c1">#      TERMTK_FILE_LOG=session.log   python3   demo/demo.py</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;TERMTK_FILE_LOG&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_logFile</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TERMTK_FILE_LOG&#39;</span><span class="p">])):</span>
+            <span class="n">TTkLog</span><span class="o">.</span><span class="n">use_default_file_logging</span><span class="p">(</span><span class="n">_logFile</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paintExecuted</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_termMouse</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_termDirectMouse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mouseTrack&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span> <span class="o">=</span> <span class="n">TTkInput</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">pasteEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processPaste</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span><span class="s1">&#39;TermTk&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sigmask</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sigmask&#39;</span><span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">NONE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_showMouseCursor</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;TTK_MOUSE&quot;</span><span class="p">,</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mouseCursor&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
@@ -193,6 +203,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
         <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">TTkTerm</span><span class="o">.</span><span class="n">getTerminalSize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;TERMTK_NEWRENDERER&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">TTkCfg</span><span class="o">.</span><span class="n">doubleBuffer</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">TTkCfg</span><span class="o">.</span><span class="n">doubleBufferNew</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">registerRootWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -261,6 +275,12 @@
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Emscripten&#39;</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_processPaste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">focusWidget</span> <span class="o">:=</span> <span class="n">TTkHelper</span><span class="o">.</span><span class="n">getFocus</span><span class="p">():</span>
+            <span class="k">while</span> <span class="n">focusWidget</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">focusWidget</span><span class="o">.</span><span class="n">pasteEvent</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+                <span class="n">focusWidget</span> <span class="o">=</span> <span class="n">focusWidget</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="n">TTkKeyEvent</span><span class="p">,</span> <span class="n">TTkMouseEvent</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_processInput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kevt</span><span class="p">,</span> <span class="n">mevt</span><span class="p">):</span>
@@ -373,13 +393,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_drawMutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resize: w:</span><span class="si">{</span><span class="n">TTkGlbl</span><span class="o">.</span><span class="n">term_w</span><span class="si">}</span><span class="s2">, h:</span><span class="si">{</span><span class="n">TTkGlbl</span><span class="o">.</span><span class="n">term_h</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="TTk.quit"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.ttk.html#TermTk.TTkCore.ttk.TTk.quit">[docs]</a>    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;quit TermTk</span>
 
-<div class="viewcode-block" id="TTk.quit"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.ttk.html#TermTk.TTkCore.ttk.TTk.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">        .. warning::</span>
+<span class="sd">            Method Deprecated,</span>
+
+<span class="sd">            use :class:`~TermTk.TTkCore.helper.TTkHelper` -&gt; :class:`~TermTk.TTkCore.helper.TTkHelper.quit` instead</span>
+
+<span class="sd">            i.e.</span>
+
+<span class="sd">            .. code:: python</span>
+
+<span class="sd">                buttonQuit = TTkButton(text=&quot;QUIT&quot;,border=True)</span>
+<span class="sd">                buttonQuit.clicked.connect(TTkHelper.quit)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></div>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Tells the application to exit with a return code.&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time_event</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="n">TTkTimer</span><span class="o">.</span><span class="n">quitAll</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_paintEvent</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_SIGSTOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset terminal settings and stop background input read before putting to sleep&quot;&quot;&quot;</span>
@@ -398,12 +437,21 @@
         <span class="c1"># TODO: Restart threads</span>
         <span class="c1"># TODO: Redraw the screen</span>
 
-    <span class="k">def</span> <span class="nf">_SIGINT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_SIGINT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">fraTERMTK_STACKTRACEme</span><span class="p">):</span>
+        <span class="c1"># If the &quot;TERMTK_STACKTRACE&quot; env variable is defined</span>
+        <span class="c1"># a stacktrace file is generated once CTRL+C is pressed</span>
+        <span class="c1"># i.e.</span>
+        <span class="c1">#      TERMTK_STACKTRACE=stacktracetxt   python3   demo/demo.py</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;TERMTK_STACKTRACE&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_stacktraceFile</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TERMTK_STACKTRACE&#39;</span><span class="p">])):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">_stacktraceFile</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">faulthandler</span>
+                <span class="n">faulthandler</span><span class="o">.</span><span class="n">dump_traceback</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Captured SIGINT &lt;CTRL-C&gt;&quot;</span><span class="p">)</span>
         <span class="c1"># Deregister the handler</span>
         <span class="c1"># so CTRL-C can be redirected to the default handler if the app does not exit</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span>  <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">isVisibleAndParent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span></div>

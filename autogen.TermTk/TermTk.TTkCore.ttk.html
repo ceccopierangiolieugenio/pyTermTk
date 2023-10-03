@@ -126,7 +126,7 @@
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -542,7 +542,17 @@ this need to be overridden in the widget.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkCore.ttk.TTk.quit">
 <span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/ttk.html#TTk.quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.ttk.TTk.quit" title="Permalink to this definition"></a></dt>
-<dd><p>Tells the application to exit with a return code.</p>
+<dd><p>quit TermTk</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Method Deprecated,</p>
+<p>use <a class="reference internal" href="TermTk.TTkCore.helper.html#TermTk.TTkCore.helper.TTkHelper" title="TermTk.TTkCore.helper.TTkHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkHelper</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.helper.html#TermTk.TTkCore.helper.TTkHelper.quit" title="TermTk.TTkCore.helper.TTkHelper.quit"><code class="xref py py-class docutils literal notranslate"><span class="pre">quit</span></code></a> instead</p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">buttonQuit</span> <span class="o">=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;QUIT&quot;</span><span class="p">,</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">buttonQuit</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -556,7 +566,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>

@@ -10,6 +10,7 @@ TermTk.TTkWidgets.Fancy
 .. autosummary::
   :toctree: ./
 
+  TermTk.TTkWidgets.Fancy.progressbar
   TermTk.TTkWidgets.Fancy.table
   TermTk.TTkWidgets.Fancy.tableview
   TermTk.TTkWidgets.Fancy.tree

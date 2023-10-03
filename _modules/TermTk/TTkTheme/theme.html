@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkTheme.theme</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,6 +111,8 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkTheme&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
 <span class="c1"># from TermTk.TTkCore.string import TTkString</span>
@@ -121,7 +121,6 @@
 <span class="kn">import</span> <span class="nn">TermTk.TTkTheme.fileicon_ascii</span> <span class="k">as</span> <span class="nn">fi_ascii</span>
 <span class="kn">import</span> <span class="nn">TermTk.TTkTheme.draw_utf8</span>      <span class="k">as</span> <span class="nn">draw_utf8</span>
 <span class="kn">import</span> <span class="nn">TermTk.TTkTheme.draw_ascii</span>     <span class="k">as</span> <span class="nn">draw_ascii</span>
-
 
 <div class="viewcode-block" id="TTkTheme"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkTheme.theme.html#TermTk.TTkTheme.theme.TTkTheme">[docs]</a><span class="k">class</span> <span class="nc">TTkTheme</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;Default Theme Class</span>
@@ -179,173 +178,8 @@
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">progressbarBlocks</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;draw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">TTkTheme</span><span class="o">.</span><span class="n">progressbarBlocks</span>
 
         <span class="n">TTkTheme</span><span class="o">.</span><span class="n">fileIcon</span>    <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">FileIcon</span>
-        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">updateAll</span><span class="p">()</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">updateAll</span><span class="p">()</span></div>
 
-
-
-    <span class="n">frameBorderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
-    <span class="n">frameTitleColor</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#222222&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">windowBorderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
-    <span class="n">windowBorderColorFocus</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff55&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff55&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">textColorDisabled</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">borderColorDisabled</span><span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">buttonBoxGrid</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="sd">&#39;&#39;&#39;Default to **1**&#39;&#39;&#39;</span>
-    <span class="n">buttonBoxGridClicked</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="sd">&#39;&#39;&#39;Default to **0**&#39;&#39;&#39;</span>
-    <span class="n">buttonBoxGridDisabled</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="sd">&#39;&#39;&#39;Default to **0**&#39;&#39;&#39;</span>
-    <span class="n">buttonBoxGridChecked</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="sd">&#39;&#39;&#39;Default to **0**&#39;&#39;&#39;</span>
-    <span class="n">buttonBoxGridUnchecked</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="sd">&#39;&#39;&#39;Default to **2**&#39;&#39;&#39;</span>
-
-    <span class="n">buttonTextColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
-
-    <span class="n">buttonTextColorClicked</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffdd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffdd&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColorClicked</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-
-    <span class="n">buttonTextColorFocus</span>     <span class="o">=</span> <span class="n">buttonTextColor</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor` **+** :class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColorFocus</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff00&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff00&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-
-    <span class="n">buttonTextColorHover</span>     <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000050&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#000066&quot;)+** :class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColorHover</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffcc&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-
-    <span class="n">buttonTextColorDisabled</span>  <span class="o">=</span> <span class="n">textColorDisabled</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`textColorDisabled`&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColorDisabled</span><span class="o">=</span> <span class="n">borderColorDisabled</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`borderColorDisabled`&#39;&#39;&#39;</span>
-
-    <span class="n">buttonTextColorChecked</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#004488&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#004488&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">buttonTextColorUnchecked</span>   <span class="o">=</span> <span class="n">buttonTextColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor`&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColorChecked</span><span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#FFFFFF&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">buttonBorderColorUnchecked</span><span class="o">=</span> <span class="n">buttonBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
-
-    <span class="n">menuButtonShortcutColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;) + TTkColor.UNDERLINE**&#39;&#39;&#39;</span>
-    <span class="n">menuButtonColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">menuButtonBorderColor</span> <span class="o">=</span> <span class="n">frameBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`frameBorderColor`&#39;&#39;&#39;</span>
-    <span class="n">menuButtonColorClicked</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">menuButtonBorderColorClicked</span> <span class="o">=</span> <span class="n">frameBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`frameBorderColor`&#39;&#39;&#39;</span>
-
-    <span class="n">listColor</span>            <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
-    <span class="n">listColorSelected</span>    <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffdd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffdd&quot;)+TTkColor.bg(&quot;#000044&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">listColorHighlighted</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000088&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.bg(&quot;#000088&quot;) + **:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-
-    <span class="n">lineEditTextColor</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#222222&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">lineEditTextColorFocus</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddddd&quot;)+TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">lineEditTextColorSelected</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#008844&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffff&quot;)+TTkColor.bg(&quot;#008844&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">comboboxContentColor</span>      <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#dddd88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">comboboxBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
-    <span class="n">comboboxContentColorFocus</span>      <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">comboboxBorderColorFocus</span>       <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColorFocus`&#39;&#39;&#39;</span>
-    <span class="n">comboboxContentColorDisabled</span>  <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">comboboxBorderColorDisabled</span><span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">checkboxContentColor</span>      <span class="o">=</span> <span class="n">buttonTextColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColor`&#39;&#39;&#39;</span>
-    <span class="n">checkboxBorderColor</span>       <span class="o">=</span> <span class="n">buttonBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColor`&#39;&#39;&#39;</span>
-    <span class="n">checkboxTextColor</span>         <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`~TermTk.TTkCore.color.TTkColor.RST`&#39;&#39;&#39;</span>
-    <span class="n">checkboxContentColorFocus</span> <span class="o">=</span> <span class="n">buttonTextColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonTextColorFocus`&#39;&#39;&#39;</span>
-    <span class="n">checkboxBorderColorFocus</span>  <span class="o">=</span> <span class="n">buttonBorderColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`buttonBorderColorFocus`&#39;&#39;&#39;</span>
-    <span class="n">checkboxTextColorFocus</span>    <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#111111&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#111111&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">radioButtonContentColor</span>      <span class="o">=</span> <span class="n">checkboxContentColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxContentColor`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonBorderColor</span>       <span class="o">=</span> <span class="n">checkboxBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxBorderColor`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonTextColor</span>       <span class="o">=</span> <span class="n">checkboxTextColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxTextColor`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonContentColorFocus</span> <span class="o">=</span> <span class="n">checkboxContentColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxContentColorFocus`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonBorderColorFocus</span>  <span class="o">=</span> <span class="n">checkboxBorderColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxBorderColorFocus`&#39;&#39;&#39;</span>
-    <span class="n">radioButtonTextColorFocus</span>  <span class="o">=</span> <span class="n">checkboxTextColorFocus</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`checkboxTextColorFocus`&#39;&#39;&#39;</span>
-
-    <span class="n">tabColor</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#aaaaaa&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">tabOffsetColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.RST**&#39;&#39;&#39;</span>
-    <span class="n">tabBorderColor</span> <span class="o">=</span> <span class="n">frameBorderColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`frameBorderColor`&#39;&#39;&#39;</span>
-    <span class="n">tabSelectColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">tabColorFocus</span>       <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#aaaaaa&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">tabOffsetColorFocus</span> <span class="o">=</span> <span class="n">tabOffsetColor</span>
-    <span class="sd">&#39;&#39;&#39;Default to :class:`tabOffsetColor`&#39;&#39;&#39;</span>
-    <span class="n">tabBorderColorFocus</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">tabSelectColorFocus</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-
-    <span class="n">treeHeaderColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffffff&quot;)+TTkColor.bg(&quot;#444444&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">treeSelectedColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000066&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#ffff88&quot;)+TTkColor.bg(&quot;#000066&quot;)+**:class:`~TermTk.TTkCore.color.TTkColor.BOLD`&#39;&#39;&#39;</span>
-    <span class="n">treeLineColor</span>     <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#444444&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">textEditLineNumberColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#88aaaa&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#333333&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)+TTkColor.bg(&quot;#333333&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">textEditLineNumberWrapcharColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#333333&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#aaaaaa&quot;)+TTkColor.bg(&quot;#333333&quot;)**&#39;&#39;&#39;</span>
-    <span class="n">textEditLineNumberSeparatorColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#444444&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">unicodeWideOverflowColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000088&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&quot;#888888&quot;)**+**TTkColor.bg(&quot;#000088&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">progresssBarColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#0000aa&#39;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&#39;#0000aa&#39;)**+**TTkColor.bg(&quot;#000044&quot;)**&#39;&#39;&#39;</span>
-
-    <span class="n">progressBarTextColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">)</span>
-    <span class="sd">&#39;&#39;&#39;Default to **TTkColor.fg(&#39;#ffffff&#39;)**&#39;&#39;&#39;</span></div>
 </pre></div>
 
            </div>

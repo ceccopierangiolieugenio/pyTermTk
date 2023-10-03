@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.menubar</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,17 +111,17 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkMenuBarButton&#39;</span><span class="p">,</span> <span class="s1">&#39;TTkMenuBarLayout&#39;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
+<span class="c1"># from TermTk.TTkCore.log import TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSignal</span><span class="p">,</span> <span class="n">pyTTkSlot</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.button</span> <span class="kn">import</span> <span class="n">TTkButton</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.listwidget</span> <span class="kn">import</span> <span class="n">TTkListWidget</span><span class="p">,</span> <span class="n">TTkAbstractListItem</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.layout</span> <span class="kn">import</span> <span class="n">TTkLayout</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.boxlayout</span> <span class="kn">import</span> <span class="n">TTkHBoxLayout</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.menu</span> <span class="kn">import</span> <span class="n">TTkMenu</span><span class="p">,</span> <span class="n">TTkMenuButton</span><span class="p">,</span> <span class="n">_TTkMenuSpacer</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.menu</span> <span class="kn">import</span> <span class="n">TTkMenuButton</span>
 
 <div class="viewcode-block" id="TTkMenuBarButton"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.menubar.html#TermTk.TTkWidgets.menubar.TTkMenuBarButton">[docs]</a><span class="k">class</span> <span class="nc">TTkMenuBarButton</span><span class="p">(</span><span class="n">TTkMenuButton</span><span class="p">):</span>
     <span class="n">classStyle</span> <span class="o">=</span> <span class="n">TTkMenuButton</span><span class="o">.</span><span class="n">classStyle</span> <span class="o">|</span> <span class="p">{</span>
@@ -156,11 +154,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumSize</span><span class="p">(</span><span class="n">txtlen</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">setBorderColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">()</span>
-        <span class="n">style</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span> <span class="o">|=</span> <span class="p">{</span><span class="s1">&#39;borderColor&#39;</span><span class="p">:</span><span class="n">color</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
-
 <div class="viewcode-block" id="TTkMenuBarButton.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.menubar.html#TermTk.TTkWidgets.menubar.TTkMenuBarButton.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
         <span class="n">borderColor</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;borderColor&#39;</span><span class="p">]</span>
@@ -184,11 +177,10 @@
 
 <div class="viewcode-block" id="TTkMenuBarLayout"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.menubar.html#TermTk.TTkWidgets.menubar.TTkMenuBarLayout">[docs]</a><span class="k">class</span> <span class="nc">TTkMenuBarLayout</span><span class="p">(</span><span class="n">TTkHBoxLayout</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;TTkMenuBarLayout&#39;&#39;&#39;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_borderColor&#39;</span><span class="p">,</span> <span class="s1">&#39;_itemsLeft&#39;</span><span class="p">,</span> <span class="s1">&#39;_itemsCenter&#39;</span><span class="p">,</span> <span class="s1">&#39;_itemsRight&#39;</span><span class="p">,</span> <span class="s1">&#39;_buttons&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_itemsLeft&#39;</span><span class="p">,</span> <span class="s1">&#39;_itemsCenter&#39;</span><span class="p">,</span> <span class="s1">&#39;_itemsRight&#39;</span><span class="p">,</span> <span class="s1">&#39;_buttons&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buttons</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">TTkHBoxLayout</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;borderColor&#39;</span><span class="p">,</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">frameBorderColor</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_itemsLeft</span>   <span class="o">=</span> <span class="n">TTkHBoxLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_itemsCenter</span> <span class="o">=</span> <span class="n">TTkHBoxLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_itemsRight</span>  <span class="o">=</span> <span class="n">TTkHBoxLayout</span><span class="p">()</span>
@@ -198,16 +190,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">TTkLayout</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_itemsRight</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">setBorderColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_borderColor</span> <span class="o">=</span> <span class="n">color</span>
-        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buttons</span><span class="p">:</span>
-            <span class="n">b</span><span class="o">.</span><span class="n">setBorderColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-
 <div class="viewcode-block" id="TTkMenuBarLayout.addMenu"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.menubar.html#TermTk.TTkWidgets.menubar.TTkMenuBarLayout.addMenu">[docs]</a>    <span class="k">def</span> <span class="nf">addMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">text</span><span class="p">:</span><span class="n">TTkString</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="nb">object</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkable</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">checked</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">TTkK</span><span class="o">.</span><span class="n">LEFT_ALIGN</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;addMenu&#39;&#39;&#39;</span>
         <span class="n">button</span> <span class="o">=</span> <span class="n">TTkMenuBarButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">checkable</span><span class="o">=</span><span class="n">checkable</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="n">checked</span><span class="p">)</span>
-        <span class="c1"># button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mbItems</span><span class="p">(</span><span class="n">alignment</span><span class="p">)</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buttons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>

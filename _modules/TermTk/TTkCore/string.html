@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkCore.string</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -112,6 +110,8 @@
 <span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkString&#39;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">unicodedata</span>
@@ -149,6 +149,8 @@
 <span class="sd">        # Combination of constructors (Highly Unrecommended)</span>
 <span class="sd">        str7 = TTkString(&quot;test 7&quot;, color=TTkColor.fg(&#39;#FF0000&#39;))</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">unicodeWideOverflowColor</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000088&quot;</span><span class="p">)</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_text&#39;</span><span class="p">,</span><span class="s1">&#39;_colors&#39;</span><span class="p">,</span><span class="s1">&#39;_baseColor&#39;</span><span class="p">,</span><span class="s1">&#39;_hasTab&#39;</span><span class="p">,</span><span class="s1">&#39;_hasSpecialWidth&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -162,6 +164,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
         <span class="c1"># raise AttributeError(f&quot;{type(text)} not supported in TTkString&quot;)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_importString1</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="n">colors</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_baseColor</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">text</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_parseAnsi</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">):</span>
@@ -439,7 +451,7 @@
                 <span class="k">elif</span> <span class="n">sz</span> <span class="o">&gt;</span> <span class="n">width</span><span class="p">:</span>
                     <span class="n">ret</span><span class="o">.</span><span class="n">_text</span>   <span class="o">=</span>  <span class="n">rt</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">unicodeWideOverflowCh</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">_text</span><span class="p">)]</span>
-                    <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">unicodeWideOverflowColor</span>
+                    <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">TTkString</span><span class="o">.</span><span class="n">unicodeWideOverflowColor</span>
                     <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Legacy, trim the string</span>

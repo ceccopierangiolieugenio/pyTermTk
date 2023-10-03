@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkWidgets.progressbar" href="TermTk.TTkWidgets.progressbar.html" />
+    <link rel="next" title="TermTk.TTkWidgets.radiobutton" href="TermTk.TTkWidgets.radiobutton.html" />
     <link rel="prev" title="TermTk.TTkWidgets.menu" href="TermTk.TTkWidgets.menu.html" /> 
 </head>
 
@@ -70,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.container.html">TermTk.TTkWidgets.container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
@@ -84,7 +85,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#ttkmenubarlayout">TTkMenuBarLayout</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -138,20 +138,6 @@
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.addMenu">
 <span class="sig-name descname"><span class="pre">addMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><span class="pre">TTkString</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.addMenu" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.addWidget">
-<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.addWidget" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
-<p>i.e.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.close">
@@ -270,17 +256,6 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.getPadding">
-<span class="sig-name descname"><span class="pre">getPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.getPadding" title="Permalink to this definition"></a></dt>
-<dd><p>Retrieve the widget padding sizes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>list[top, bottom, left, right]: the 4 padding sizes</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.hide">
 <span class="sig-name descname"><span class="pre">hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.hide" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -367,20 +342,6 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.layout">
-<span class="sig-name descname"><span class="pre">layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.layout" title="Permalink to this definition"></a></dt>
-<dd><p>Get the layout</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The layout used</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayout</span></code> or derived</p>
 </dd>
 </dl>
 </dd></dl>
@@ -572,15 +533,6 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.paintChildCanvas">
-<span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.paintChildCanvas" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>Don’t touch this!</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.paintEvent">
 <span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/menubar.html#TTkMenuBarButton.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
@@ -591,20 +543,6 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.raiseWidget">
 <span class="sig-name descname"><span class="pre">raiseWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raiseParent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.raiseWidget" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.removeWidget">
-<span class="sig-name descname"><span class="pre">removeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.removeWidget" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
-<p>i.e.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.resize">
@@ -694,22 +632,6 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.setName">
 <span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.setName" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.setPadding">
-<span class="sig-name descname"><span class="pre">setPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.menubar.TTkMenuBarButton.setPadding" title="Permalink to this definition"></a></dt>
-<dd><p>Set the padding of the widget</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>top</strong> (<em>int</em>) – top padding</p></li>
-<li><p><strong>bottom</strong> (<em>int</em>) – bottom padding</p></li>
-<li><p><strong>left</strong> (<em>int</em>) – left padding</p></li>
-<li><p><strong>right</strong> (<em>int</em>) – right padding</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.menubar.TTkMenuBarButton.setText">
@@ -965,7 +887,7 @@ this need to be overridden in the widget.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TermTk.TTkWidgets.menu.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.menu" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="TermTk.TTkWidgets.progressbar.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.progressbar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TermTk.TTkWidgets.radiobutton.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.radiobutton" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

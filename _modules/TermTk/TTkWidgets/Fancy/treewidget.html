@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.Fancy.treewidget</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,11 +111,14 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkFancyTreeWidget&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.checkbox</span> <span class="kn">import</span> <span class="n">TTkCheckbox</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.Fancy.tableview</span> <span class="kn">import</span> <span class="n">TTkFancyTableView</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.Fancy.treewidgetitem</span> <span class="kn">import</span> <span class="n">TTkFancyTreeWidgetItem</span>
@@ -134,7 +135,7 @@
             <span class="n">canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;▶&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_TTkDisplayedTreeItem</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_TTkDisplayedTreeItem</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_depth&#39;</span><span class="p">,</span> <span class="s1">&#39;_control&#39;</span><span class="p">,</span> <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="s1">&#39;_clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;_treeWidgetItem&#39;</span><span class="p">,</span> <span class="s1">&#39;_isLeaf&#39;</span> <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

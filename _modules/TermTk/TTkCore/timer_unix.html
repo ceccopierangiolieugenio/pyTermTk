@@ -114,9 +114,9 @@
 <span class="kn">import</span> <span class="nn">threading</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
 
 <div class="viewcode-block" id="TTkTimer"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.timer_unix.html#TermTk.TTkCore.timer_unix.TTkTimer">[docs]</a><span class="k">class</span> <span class="nc">TTkTimer</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-    <span class="n">_timers</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="s1">&#39;_delay&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_timer&#39;</span><span class="p">,</span> <span class="s1">&#39;_quit&#39;</span><span class="p">,</span> <span class="s1">&#39;_start&#39;</span><span class="p">)</span>
@@ -127,12 +127,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">quitAll</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">timer</span> <span class="ow">in</span> <span class="n">TTkTimer</span><span class="o">.</span><span class="n">_timers</span><span class="p">:</span>
-            <span class="n">timer</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">quitEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>

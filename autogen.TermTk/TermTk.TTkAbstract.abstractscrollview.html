@@ -57,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkAbstract.abstractscrollarea.html">TermTk.TTkAbstract.abstractscrollarea</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkAbstract.abstractscrollview</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ttkabstractscrollview">TTkAbstractScrollView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ttkabstractscrollviewlayout">TTkAbstractScrollViewLayout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ttkabstractscrollviewgridlayout">TTkAbstractScrollViewGridLayout</a></li>
 </ul>
 </li>
@@ -114,7 +115,7 @@
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -538,7 +539,7 @@ this need to be overridden in the widget.</p>
 <dd><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Method Deprecated,</p>
-<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
 <p>i.e.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
 </pre></div>
@@ -648,6 +649,118 @@ this need to be overridden in the widget.</p>
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="ttkabstractscrollviewlayout">
+<h2>TTkAbstractScrollViewLayout<a class="headerlink" href="#ttkabstractscrollviewlayout" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkAbstractScrollViewLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkAbstract/abstractscrollview.html#TTkAbstractScrollViewLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.addWidget">
+<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.addWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Add a widget to this Layout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>widget</strong> (<a class="reference internal" href="TermTk.TTkWidgets.html#module-TermTk.TTkWidgets" title="TermTk.TTkWidgets"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidgets</span></code></a>) – the widget to be added</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.addWidgets">
+<span class="sig-name descname"><span class="pre">addWidgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.addWidgets" title="Permalink to this definition"></a></dt>
+<dd><p>Add a list of widgets to this Layout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>widgets</strong> (list of <a class="reference internal" href="TermTk.TTkWidgets.html#module-TermTk.TTkWidgets" title="TermTk.TTkWidgets"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidgets</span></code></a>) – the widget to be added</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.insertWidget">
+<span class="sig-name descname"><span class="pre">insertWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.insertWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.insertWidgets">
+<span class="sig-name descname"><span class="pre">insertWidgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.insertWidgets" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.layer">
+<span class="sig-name descname"><span class="pre">layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.layer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.lowerWidget">
+<span class="sig-name descname"><span class="pre">lowerWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.lowerWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.parent" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.raiseWidget">
+<span class="sig-name descname"><span class="pre">raiseWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.raiseWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeItem">
+<span class="sig-name descname"><span class="pre">removeItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeItem" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeItems">
+<span class="sig-name descname"><span class="pre">removeItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeItems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeWidget">
+<span class="sig-name descname"><span class="pre">removeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a widget from this Layout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>widget</strong> (<a class="reference internal" href="TermTk.TTkWidgets.html#module-TermTk.TTkWidgets" title="TermTk.TTkWidgets"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidgets</span></code></a>) – the widget to be removed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeWidgets">
+<span class="sig-name descname"><span class="pre">removeWidgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.removeWidgets" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a list of widget from this Layout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>widgets</strong> (list of <a class="reference internal" href="TermTk.TTkWidgets.html#module-TermTk.TTkWidgets" title="TermTk.TTkWidgets"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidgets</span></code></a>) – the widget to be removed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setGeometry">
+<span class="sig-name descname"><span class="pre">setGeometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkAbstract/abstractscrollview.html#TTkAbstractScrollViewLayout.setGeometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setGeometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setLayer">
+<span class="sig-name descname"><span class="pre">setLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setLayer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setOffset">
+<span class="sig-name descname"><span class="pre">setOffset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setOffset" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setParent">
+<span class="sig-name descname"><span class="pre">setParent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkAbstract.abstractscrollview.TTkAbstractScrollViewLayout.setParent" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

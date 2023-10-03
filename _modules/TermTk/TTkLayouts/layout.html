@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkLayouts.layout</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -116,6 +114,8 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">**Layout** [`Tutorial &lt;https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout&gt;`__]</span>
 <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkLayoutItem&#39;</span><span class="p">,</span> <span class="s1">&#39;TTkLayout&#39;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 
@@ -304,8 +304,8 @@
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">onlyVisible</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span> <span class="k">continue</span>
                 <span class="k">yield</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
-                    <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">recurse</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cw</span><span class="o">:=</span><span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">(),</span><span class="s1">&#39;rootLayout&#39;</span><span class="p">):</span>
+                    <span class="k">yield from</span> <span class="n">cw</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span> <span class="ow">and</span> <span class="n">recurse</span><span class="p">:</span>
                 <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
 
@@ -403,7 +403,7 @@
 <span class="sd">        :param widgets: the widget to be removed</span>
 <span class="sd">        :type widgets: list of :class:`~TermTk.TTkWidgets`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> \
                <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -431,7 +431,7 @@
 <div class="viewcode-block" id="TTkLayout.lowerWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.lowerWidget">[docs]</a>    <span class="k">def</span> <span class="nf">lowerWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;lowerWidget&#39;&#39;&#39;</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findBranchWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">z</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">_z</span><span class="o">+=</span><span class="mi">1</span>
         <span class="n">item</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">_layer</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
             <span class="n">item</span><span class="o">.</span><span class="n">lowerWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
@@ -457,13 +457,11 @@
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="ow">or</span> <span class="n">i</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="c1"># TODO: Have a look at this:</span>
-                <span class="c1"># i.getCanvas().top()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> <span class="p">(</span><span class="n">_wid</span><span class="o">:=</span><span class="n">i</span><span class="o">.</span><span class="n">_widget</span><span class="p">):</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="ow">or</span> <span class="n">_wid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">i</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
-                <span class="n">ret</span><span class="o">=</span> <span class="n">ret</span> <span class="ow">or</span> <span class="n">i</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="ow">or</span> <span class="n">i</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="TTkWidgetItem"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkWidgetItem">[docs]</a><span class="k">class</span> <span class="nc">TTkWidgetItem</span><span class="p">(</span><span class="n">TTkLayoutItem</span><span class="p">):</span>

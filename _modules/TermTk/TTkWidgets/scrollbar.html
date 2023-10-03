@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.scrollbar</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,6 +111,8 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkScrollBar&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
@@ -123,11 +123,18 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <div class="viewcode-block" id="TTkScrollBar"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar">[docs]</a><span class="k">class</span> <span class="nc">TTkScrollBar</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;TTkScrollBar&#39;&#39;&#39;</span>
+
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">)},</span>
+                <span class="s1">&#39;focus&#39;</span><span class="p">:</span>       <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#cccc00&#39;</span><span class="p">)},</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_orientation&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_minimum&#39;</span><span class="p">,</span> <span class="s1">&#39;_maximum&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_singleStep&#39;</span><span class="p">,</span> <span class="s1">&#39;_pageStep&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;_value&#39;</span><span class="p">,</span> <span class="s1">&#39;_color&#39;</span><span class="p">,</span> <span class="s1">&#39;_focusColor&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_value&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_draggable&#39;</span><span class="p">,</span> <span class="s1">&#39;_mouseDelta&#39;</span><span class="p">,</span>
         <span class="c1"># Those Vars are required to handle the mouseclick</span>
         <span class="c1">#  |-----|           Screen Pg Down</span>
@@ -158,8 +165,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_singleStep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;singleStep&#39;</span> <span class="p">,</span> <span class="mi">1</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pageStep&#39;</span> <span class="p">,</span> <span class="mi">10</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span> <span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_focusColor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;focusColor&#39;</span><span class="p">,</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#cccc00&#39;</span><span class="p">)</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screenPgDown</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screenPgUp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screenScroller</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -182,15 +187,14 @@
 
 <span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="TTkScrollBar.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
+        <span class="n">color</span>   <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
             <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focusColor</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">:</span>
             <span class="c1"># Special case where no scroll is needed</span>
             <span class="n">aa</span><span class="o">=</span><span class="mi">0</span>
@@ -213,12 +217,11 @@
 
 <div class="viewcode-block" id="TTkScrollBar.wheelEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar.wheelEvent">[docs]</a>    <span class="k">def</span> <span class="nf">wheelEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WHEEL_Up</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="n">value</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sliderMoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="TTkScrollBar.mousePressEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
@@ -230,21 +233,20 @@
             <span class="n">mouse</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span>
 
         <span class="k">if</span> <span class="n">mouse</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># left/up arrow pressed</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleStep</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleStep</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">mouse</span> <span class="o">==</span> <span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># right/down arrow pressed</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleStep</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleStep</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screenPgDown</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">mouse</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screenPgDown</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screenPgUp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">mouse</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screenPgUp</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pageStep</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screenScroller</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">mouse</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screenScroller</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mouseDelta</span> <span class="o">=</span> <span class="n">mouse</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_screenScroller</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sliderMoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="c1"># TTkLog.debug(f&quot;m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}&quot;)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
@@ -263,11 +265,9 @@
         <span class="n">asciiDrawingSize</span> <span class="o">=</span> <span class="n">size2</span> <span class="o">-</span> <span class="n">asciiStep</span>
 
         <span class="n">a</span> <span class="o">=</span>  <span class="n">aa</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">)</span> <span class="o">//</span> <span class="n">asciiDrawingSize</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sliderMoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="c1"># TTkLog.debug(f&quot;m={mouse}, md:{self._mouseDelta}, aa:{aa}&quot;)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 

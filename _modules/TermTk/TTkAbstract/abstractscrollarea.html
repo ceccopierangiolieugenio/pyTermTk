@@ -111,15 +111,18 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkAbstractScrollArea&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="c1"># from TermTk.TTkCore.log import TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.scrollbar</span> <span class="kn">import</span> <span class="n">TTkScrollBar</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.gridlayout</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkAbstract.abstractscrollview</span> <span class="kn">import</span> <span class="n">TTkAbstractScrollViewInterface</span>
 
-<div class="viewcode-block" id="TTkAbstractScrollArea"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollarea.html#TermTk.TTkAbstract.abstractscrollarea.TTkAbstractScrollArea">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollArea</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkAbstractScrollArea"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkAbstract.abstractscrollarea.html#TermTk.TTkAbstract.abstractscrollarea.TTkAbstractScrollArea">[docs]</a><span class="k">class</span> <span class="nc">TTkAbstractScrollArea</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_processing&#39;</span><span class="p">,</span> <span class="c1"># this flag is required to avoid unnecessary loop on edge cases</span>
         <span class="s1">&#39;_viewport&#39;</span><span class="p">,</span>
@@ -214,7 +217,12 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;TTkAbstractScrollViewInterface is required in TTkAbstractScrollArea.setVewport(viewport)&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewportChanged</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">)</span>
+            <span class="c1"># TODO: Remove this check once</span>
+            <span class="c1">#  unified  &quot;addWidget&quot; and &quot;addItem&quot; in the TTKGridLayout</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">viewport</span><span class="p">,</span> <span class="n">TTkWidget</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span> <span class="o">=</span> <span class="n">viewport</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_viewport</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewportChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verticalScrollBar</span><span class="o">.</span><span class="n">sliderMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vscrollMoved</span><span class="p">)</span>

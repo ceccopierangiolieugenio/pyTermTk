@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.lineedit</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,15 +111,17 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkLineEdit&#39;</span><span class="p">]</span>
+
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
-
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">     Line Edit: |_________-___________|</span>
@@ -131,8 +131,17 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <div class="viewcode-block" id="TTkLineEdit"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit">[docs]</a><span class="k">class</span> <span class="nc">TTkLineEdit</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;TTkLineEdit&#39;&#39;&#39;</span>
+
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span>         <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">),</span>
+                                <span class="s1">&#39;selectedColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#008844&quot;</span><span class="p">)},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">),</span>
+                                <span class="s1">&#39;selectedColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#888888&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#444444&quot;</span><span class="p">)},</span>
+                <span class="s1">&#39;focus&#39;</span><span class="p">:</span>       <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span>         <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddddd&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)},</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_cursorPos&#39;</span><span class="p">,</span> <span class="s1">&#39;_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;_replace&#39;</span><span class="p">,</span> <span class="s1">&#39;_inputType&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionTo&#39;</span><span class="p">,</span> <span class="s1">&#39;_color&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_cursorPos&#39;</span><span class="p">,</span> <span class="s1">&#39;_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;_replace&#39;</span><span class="p">,</span> <span class="s1">&#39;_inputType&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;_selectionTo&#39;</span><span class="p">,</span>
         <span class="c1"># Signals</span>
         <span class="s1">&#39;returnPressed&#39;</span><span class="p">,</span> <span class="s1">&#39;textChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;textEdited&#39;</span>     <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -148,9 +157,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;text&#39;</span> <span class="p">,</span> <span class="s1">&#39;&#39;</span> <span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;inputType&#39;</span> <span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Text</span> <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span>\
-           <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColor</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span>
+             <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isFloat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
@@ -199,17 +208,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TTkLineEdit.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">textColorDisabled</span>
-            <span class="n">selectColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">textColorDisabled</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColorFocus</span>
-            <span class="n">selectColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColorSelected</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span>
-            <span class="n">selectColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColorSelected</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
+
+        <span class="n">color</span>         <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
+        <span class="n">selectColor</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;selectedColor&#39;</span><span class="p">]</span>
+
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span> <span class="o">+</span> <span class="n">color</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Password</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -268,6 +273,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_isFloat</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+
+    <span class="k">def</span> <span class="nf">pasteEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionTo</span><span class="p">:</span>
+            <span class="n">pre</span>  <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span><span class="p">)</span>
+            <span class="n">post</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">fr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selectionTo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selectionFrom</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pre</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace</span><span class="p">:</span>
+                <span class="n">post</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">fr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">post</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">fr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">pre</span> <span class="o">+</span> <span class="n">txt</span> <span class="o">+</span> <span class="n">post</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span>
+             <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isFloat</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="o">+</span><span class="n">txt</span><span class="o">.</span><span class="n">termWidth</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pushCursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textEdited</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
 <div class="viewcode-block" id="TTkLineEdit.keyEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.lineedit.html#TermTk.TTkWidgets.lineedit.TTkLineEdit.keyEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="n">baseText</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span><span class="p">:</span>
@@ -305,8 +345,8 @@
                    <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">prev</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">fr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="p">)</span>
                    <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span> <span class="o">=</span> <span class="n">prev</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span> \
-               <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span>
+                 <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isFloat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span> <span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_pushCursor</span><span class="p">()</span>
@@ -328,8 +368,8 @@
                     <span class="n">post</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">fr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="p">)</span>
 
             <span class="n">text</span> <span class="o">=</span> <span class="n">pre</span> <span class="o">+</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="n">post</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span> \
-               <span class="ow">not</span> <span class="n">text</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputType</span> <span class="o">&amp;</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Input_Number</span> <span class="ow">and</span>
+                 <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isFloat</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursorPos</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 

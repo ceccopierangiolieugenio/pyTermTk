@@ -70,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.container.html">TermTk.TTkWidgets.container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.frame.html">TermTk.TTkWidgets.frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.graph.html">TermTk.TTkWidgets.graph</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.image.html">TermTk.TTkWidgets.image</a></li>
@@ -80,7 +81,6 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.listwidget.html">TermTk.TTkWidgets.listwidget</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menu.html">TermTk.TTkWidgets.menu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.menubar.html">TermTk.TTkWidgets.menubar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.progressbar.html">TermTk.TTkWidgets.progressbar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.radiobutton.html">TermTk.TTkWidgets.radiobutton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
@@ -133,17 +133,17 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Widget Layout sizes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Terminal area (i.e. XTerm)
+<dd><p>Widget sizes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Terminal area (i.e. XTerm) = TTk
 ┌─────────────────────────────────────────┐
 │                                         │
 │    TTkWidget     width                  │
 │ (x,y)┌─────────────────────────┐        │
-│      │      padt (Top Padding) │        │
-│      │    ┌───────────────┐    │ height │
-│      │padl│ Layout/child  │padr│        │
-│      │    └───────────────┘    │        │
-│      │      padb (Bottom Pad.) │        │
+│      │                         │        │
+│      │                         │ height │
+│      │                         │        │
+│      │                         │        │
+│      │                         │        │
 │      └─────────────────────────┘        │
 └─────────────────────────────────────────┘
 </pre></div>
@@ -160,11 +160,6 @@
 <li><p><strong>width</strong> (<em>int</em>) – the width of the widget, defaults to 0</p></li>
 <li><p><strong>height</strong> (<em>int</em>) – the height of the widget, defaults to 0</p></li>
 <li><p><strong>size</strong> (<em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the size [width, height] of the widget (override the previously defined sizes), optional, default=[0,0]</p></li>
-<li><p><strong>padding</strong> (<em>int</em>) – the padding (top, bottom, left, right) of the widget, defaults to 0</p></li>
-<li><p><strong>paddingTop</strong> (<em>int</em>) – the Top padding, override Top padding if already defined, optional, default=padding</p></li>
-<li><p><strong>paddingBottom</strong> (<em>int</em>) – the Bottom padding, override Bottom padding if already defined, optional, default=padding</p></li>
-<li><p><strong>paddingLeft</strong> (<em>int</em>) – the Left padding, override Left padding if already defined, optional, default=padding</p></li>
-<li><p><strong>paddingRight</strong> (<em>int</em>) – the Right padding, override Right padding if already defined, optional, default=padding</p></li>
 <li><p><strong>maxWidth</strong> (<em>int</em>) – the maxWidth of the widget, optional, defaults to 0x10000</p></li>
 <li><p><strong>maxHeight</strong> (<em>int</em>) – the maxHeight of the widget, optional, defaults to 0x10000</p></li>
 <li><p><strong>maxSize</strong> (<em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the max [width,height] of the widget, optional</p></li>
@@ -172,27 +167,11 @@
 <li><p><strong>minHeight</strong> (<em>int</em>) – the minHeight of the widget, defaults to 0</p></li>
 <li><p><strong>minSize</strong> (<em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the minSize [width,height] of the widget, optional</p></li>
 <li><p><strong>toolTip</strong> (<a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a>) – This property holds the widget’s tooltip</p></li>
-<li><p><strong>lookAndFeel</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkTTkLookAndFeel</span></code>) – the style helper to be used for any customization</p></li>
 <li><p><strong>visible</strong> (<em>bool</em><em>,</em><em>optional</em>) – the visibility, optional, defaults to True</p></li>
 <li><p><strong>enabled</strong> (<em>bool</em><em>,</em><em>optional</em>) – the ability to handle input events, optional, defaults to True</p></li>
-<li><p><strong>layout</strong> (<a class="reference internal" href="TermTk.TTkLayouts.html#module-TermTk.TTkLayouts" title="TermTk.TTkLayouts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TermTk.TTkLayouts</span></code></a>) – the layout of this widget, optional, defaults to <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout" title="TermTk.TTkLayouts.layout.TTkLayout"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayout</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.addWidget">
-<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.addWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.addWidget" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Method Deprecated,</p>
-<p>use <a class="reference internal" href="#TermTk.TTkWidgets.widget.TTkWidget" title="TermTk.TTkWidgets.widget.TTkWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code></a> -&gt; <a class="reference internal" href="#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
-<p>i.e.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.close" title="Permalink to this definition"></a></dt>
@@ -304,17 +283,6 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.getPadding">
-<span class="sig-name descname"><span class="pre">getPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.getPadding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.getPadding" title="Permalink to this definition"></a></dt>
-<dd><p>Retrieve the widget padding sizes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>list[top, bottom, left, right]: the 4 padding sizes</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.hide">
 <span class="sig-name descname"><span class="pre">hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.hide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.hide" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -378,20 +346,6 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.layout">
-<span class="sig-name descname"><span class="pre">layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.layout" title="Permalink to this definition"></a></dt>
-<dd><p>Get the layout</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The layout used</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayout</span></code> or derived</p>
 </dd>
 </dl>
 </dd></dl>
@@ -583,15 +537,6 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas">
-<span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.paintChildCanvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.paintChildCanvas" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>Don’t touch this!</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.paintEvent">
 <span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkCore.canvas.html#TermTk.TTkCore.canvas.TTkCanvas" title="TermTk.TTkCore.canvas.TTkCanvas"><span class="pre">TTkCanvas</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Paint Event callback,
@@ -602,20 +547,6 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.raiseWidget">
 <span class="sig-name descname"><span class="pre">raiseWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raiseParent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.raiseWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.raiseWidget" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.removeWidget">
-<span class="sig-name descname"><span class="pre">removeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.removeWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.removeWidget" title="Permalink to this definition"></a></dt>
-<dd><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Method Deprecated,</p>
-<p>use <a class="reference internal" href="#TermTk.TTkWidgets.widget.TTkWidget" title="TermTk.TTkWidgets.widget.TTkWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code></a> -&gt; <a class="reference internal" href="#TermTk.TTkWidgets.widget.TTkWidget.layout" title="TermTk.TTkWidgets.widget.TTkWidget.layout"><code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
-<p>i.e.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.resize">
@@ -672,22 +603,6 @@ this need to be overridden in the widget.</p>
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.setName">
 <span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.setName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.setName" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.setPadding">
-<span class="sig-name descname"><span class="pre">setPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget.setPadding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget.setPadding" title="Permalink to this definition"></a></dt>
-<dd><p>Set the padding of the widget</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>top</strong> (<em>int</em>) – top padding</p></li>
-<li><p><strong>bottom</strong> (<em>int</em>) – bottom padding</p></li>
-<li><p><strong>left</strong> (<em>int</em>) – left padding</p></li>
-<li><p><strong>right</strong> (<em>int</em>) – right padding</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget.setVisible">

@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.combobox</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,19 +111,23 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkComboBox&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.gridlayout</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.list_</span> <span class="kn">import</span> <span class="n">TTkList</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.lineedit</span> <span class="kn">import</span> <span class="n">TTkLineEdit</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.resizableframe</span> <span class="kn">import</span> <span class="n">TTkResizableFrame</span>
 
-<div class="viewcode-block" id="TTkComboBox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox">[docs]</a><span class="k">class</span> <span class="nc">TTkComboBox</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkComboBox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox">[docs]</a><span class="k">class</span> <span class="nc">TTkComboBox</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; TTkComboBox:</span>
 
 <span class="sd">    Editable = False</span>
@@ -150,6 +152,16 @@
 <span class="sd">    :param editable: This property holds whether the combo box can be edited by the user, defaults to False</span>
 <span class="sd">    :type editable: bool, optional</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">),</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">),</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">)},</span>
+                <span class="s1">&#39;focus&#39;</span><span class="p">:</span>       <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#222222&quot;</span><span class="p">),</span>
+                                <span class="s1">&#39;borderColor&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#ffff00&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span><span class="p">},</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_list&#39;</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="s1">&#39;_lineEdit&#39;</span><span class="p">,</span> <span class="s1">&#39;_listw&#39;</span><span class="p">,</span> <span class="s1">&#39;_editable&#39;</span><span class="p">,</span> <span class="s1">&#39;_insertPolicy&#39;</span><span class="p">,</span> <span class="s1">&#39;_textAlign&#39;</span><span class="p">,</span> <span class="s1">&#39;_popupFrame&#39;</span><span class="p">,</span>
         <span class="c1">#signals</span>
         <span class="s1">&#39;currentIndexChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;currentTextChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;editTextChanged&#39;</span><span class="p">)</span>
@@ -158,7 +170,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">currentIndexChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">currentTextChanged</span>  <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">editTextChanged</span>     <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-        <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># self.checked = pyTTkSignal()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span> <span class="o">=</span> <span class="n">TTkLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_list</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="p">[]</span> <span class="p">)</span>
@@ -244,15 +256,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="n">h</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkComboBox.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.combobox.html#TermTk.TTkWidgets.combobox.TTkComboBox.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
-            <span class="n">borderColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxBorderColorDisabled</span>
-            <span class="n">color</span>       <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxContentColorDisabled</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">hasFocus</span><span class="p">():</span>
-            <span class="n">borderColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxBorderColorFocus</span>
-            <span class="n">color</span>       <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxContentColorFocus</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">borderColor</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxBorderColor</span>
-            <span class="n">color</span>       <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">comboboxContentColor</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
+
+        <span class="n">color</span>   <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
+        <span class="n">borderColor</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;borderColor&#39;</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;- select -&quot;</span>
         <span class="k">else</span><span class="p">:</span>

@@ -89,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for TermTk.TTkWidgets.spinbox</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1"># MIT License</span>
+<span></span><span class="c1"># MIT License</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright (c) 2021 Eugenio Parodi &lt;ceccopierangiolieugenio AT googlemail DOT com&gt;</span>
 <span class="c1">#</span>
@@ -113,17 +111,25 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkSpinBox&#39;</span><span class="p">]</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSlot</span><span class="p">,</span> <span class="n">pyTTkSignal</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.container</span> <span class="kn">import</span> <span class="n">TTkContainer</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.lineedit</span> <span class="kn">import</span> <span class="n">TTkLineEdit</span>
 
-
-<div class="viewcode-block" id="TTkSpinBox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox">[docs]</a><span class="k">class</span> <span class="nc">TTkSpinBox</span><span class="p">(</span><span class="n">TTkWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkSpinBox"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox">[docs]</a><span class="k">class</span> <span class="nc">TTkSpinBox</span><span class="p">(</span><span class="n">TTkContainer</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;TTkSpinBox&#39;&#39;&#39;</span>
+
+    <span class="n">classStyle</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;default&#39;</span><span class="p">:</span>     <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span><span class="p">},</span>
+                <span class="s1">&#39;disabled&#39;</span><span class="p">:</span>    <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s1">&#39;#888888&#39;</span><span class="p">)},</span>
+                <span class="s1">&#39;focus&#39;</span><span class="p">:</span>       <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fg</span><span class="p">(</span><span class="s2">&quot;#dddd88&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s2">&quot;#000044&quot;</span><span class="p">)</span><span class="o">+</span><span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span><span class="p">},</span>
+            <span class="p">}</span>
+
     <span class="vm">__slots__</span><span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_lineEdit&#39;</span><span class="p">,</span> <span class="s1">&#39;_value&#39;</span><span class="p">,</span> <span class="s1">&#39;_maximum&#39;</span><span class="p">,</span> <span class="s1">&#39;_minimum&#39;</span><span class="p">,</span>
         <span class="s1">&#39;_mouseDelta&#39;</span><span class="p">,</span> <span class="s1">&#39;_valueDelta&#39;</span><span class="p">,</span> <span class="s1">&#39;_draggable&#39;</span><span class="p">,</span>
@@ -132,7 +138,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">=</span><span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">TTkWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;maximum&quot;</span><span class="p">,</span><span class="mi">99</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minimum&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -234,21 +240,14 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TTkSpinBox.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.spinbox.html#TermTk.TTkWidgets.spinbox.TTkSpinBox.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
-            <span class="n">textColor</span>   <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">textColorDisabled</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">textColor</span>   <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentStyle</span><span class="p">()</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
-        <span class="n">canvas</span><span class="o">.</span><span class="n">drawChar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">char</span><span class="o">=</span><span class="s2">&quot;▲&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">textColor</span><span class="p">)</span>
-        <span class="n">canvas</span><span class="o">.</span><span class="n">drawChar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">char</span><span class="o">=</span><span class="s2">&quot;▼&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">textColor</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">focusInEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColorFocus</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">drawChar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">char</span><span class="o">=</span><span class="s2">&quot;▲&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">drawChar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">char</span><span class="o">=</span><span class="s2">&quot;▼&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">TTkCfg</span><span class="o">.</span><span class="n">theme</span><span class="o">.</span><span class="n">lineEditTextColor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">focusOutEvent</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lineEdit</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 </pre></div>

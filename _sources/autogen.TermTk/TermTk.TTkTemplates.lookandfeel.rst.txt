@@ -1,8 +1,0 @@
-
-TermTk.TTkTemplates.lookandfeel
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTemplates.lookandfeel
-
-.. currentmodule:: TermTk.TTkTemplates.lookandfeel
-
