@@ -198,10 +198,11 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                         self._terminalCursor = (x,y)
                     self._pushTxt(lll,irm)
 
-    def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
+    def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0, select:list=None) -> None:
         w,h = self._w, self._h
         ll = len(self._bufferedLines)
         for y in range(ll-oy):
             canvas.drawTTkString(pos=(0,y),text=self._bufferedLines[oy+y])
         s = (-ox,ll-oy,w,h)
         canvas.paintCanvas(self._canvas,s,s,s)
+        canvas.drawText(pos=(0,0),text=f"({select})")
