@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkWidgetProperties']
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -78,21 +80,6 @@ TTkWidgetProperties = {
                 'init': {'name':'maxHeight',    'type':int } ,
                 'get':  { 'cb':TTkWidget.maximumHeight,   'type':int } ,
                 'set':  { 'cb':TTkWidget.setMaximumHeight,'type':int } },
-        'Padding': {
-                'get':  { 'cb':TTkWidget.getPadding,    'type': [
-                                { 'name': 'top',    'type':int  } ,
-                                { 'name': 'bottom', 'type':int  } ,
-                                { 'name': 'left',   'type':int  } ,
-                                { 'name': 'right',  'type':int } ] },
-                'set':  { 'cb':TTkWidget.setPadding,   'type': [
-                                { 'name': 'top',    'type':int  } ,
-                                { 'name': 'bottom', 'type':int  } ,
-                                { 'name': 'left',   'type':int  } ,
-                                { 'name': 'right',  'type':int } ] } },
-        'Layout' : {
-                'init': {'name':'layout', 'type':TTkLayout} ,
-                'get':  { 'cb':TTkWidget.layout,    'type':TTkLayout} ,
-                'set':  { 'cb':TTkWidget.setLayout, 'type':TTkLayout} },
         'Visible' : {
                 'init': {'name':'visible', 'type':bool } ,
                 'get':  { 'cb':TTkWidget.isVisible,   'type':bool } ,
@@ -106,6 +93,8 @@ TTkWidgetProperties = {
                 'get':  { 'cb':TTkWidget.toolTip,    'type':TTkString } ,
                 'set':  { 'cb':TTkWidget.setToolTip, 'type':TTkString } },
     },'signals' : {
+        'closed(TTkWidget)' :    {'name' : 'closed',       'type':TTkWidget},
+        'currentStyleChanged(style)' : {'name' : 'currentStyleChanged', 'type':dict},
         'focusChanged(bool)'   : {'name' : 'focusChanged', 'type':bool},
         'sizeChanged(int,int)' : {'name' : 'sizeChanged',  'type':(int, int)}
     },'slots' : {

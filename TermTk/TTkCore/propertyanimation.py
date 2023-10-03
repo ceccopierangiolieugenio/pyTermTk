@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkPropertyAnimation', 'TTkEasingCurve']
+
 import time, math
 from inspect import getfullargspec
 from types import LambdaType

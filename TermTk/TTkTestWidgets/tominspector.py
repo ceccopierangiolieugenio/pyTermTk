@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTomInspector']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -37,7 +39,7 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.combobox import TTkComboBox
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.spinbox import TTkSpinBox
-from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkWidgets.button import TTkButton
@@ -142,7 +144,7 @@ class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     def domWidget(self):
         return self._domWidget
 
-class TTkTomInspector(TTkWidget):
+class TTkTomInspector(TTkContainer):
     __slots__ = ('_domTree','_detail','_splitter')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

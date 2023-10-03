@@ -29,7 +29,14 @@ class Mock_TTkInput():
     def cont(self): pass
     def get_key(self, callback=None): pass
     def start(self): pass
+
     class inputEvent():
+        def connect(*args):
+            pass
+        def clear():
+            pass
+
+    class pasteEvent():
         def connect(*args):
             pass
         def clear():

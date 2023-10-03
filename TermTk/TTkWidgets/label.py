@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkLabel']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
@@ -30,9 +30,14 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkLabel(TTkWidget):
     '''TTkLabel'''
-    __slots__ = ('_text','_color','_alignment')
+
+    classStyle = {
+                'default':  {'color': TTkColor.RST          },
+                'disabled': {'color': TTkColor.fg('#888888')},
+            }
+
+    __slots__ = ('_text', '_alignment')
     def __init__(self, *args, **kwargs):
-        self._color = kwargs.get('color', TTkColor.RST )
         text = kwargs.get('text', TTkString() )
         if issubclass(type(text), TTkString):
             self._text = text.split('\n')
@@ -56,13 +61,11 @@ class TTkLabel(TTkWidget):
 
     def color(self):
         '''color'''
-        return self._color
+        return self.style()['default']['color']
 
     def setColor(self, color):
         '''setColor'''
-        if self._color != color:
-            self._color = color
-            self.update()
+        self.mergeStyle({'default':{'color':color}})
 
     def text(self):
         '''text'''
@@ -79,11 +82,15 @@ class TTkLabel(TTkWidget):
         self._textUpdated()
 
     def paintEvent(self, canvas):
-        forceColor = self.color()!=TTkColor.RST
+        style = self.currentStyle()
+        color = style['color']
+
+        forceColor = color!=TTkColor.RST
+
         w = self.width()
         for y,text in enumerate(self._text):
-            canvas.drawText(pos=(0,y), text=' '*w, color=self.color(), forceColor=forceColor)
-            canvas.drawText(pos=(0,y), text=text, width=w, alignment=self._alignment, color=self.color(), forceColor=forceColor)
+            canvas.drawText(pos=(0,y), text=' '*w, color=color, forceColor=forceColor)
+            canvas.drawText(pos=(0,y), text=text, width=w, alignment=self._alignment, color=color, forceColor=forceColor)
 
     def _textUpdated(self):
         w, h = self.size()
@@ -93,5 +100,3 @@ class TTkLabel(TTkWidget):
         self.setMinimumSize(textWidth, 1)
         self.update()
 
-    def colorUpdated(self, color):
-        self.update()

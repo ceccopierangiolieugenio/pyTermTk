@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTestAbstractScrollWidget']
+
 from TermTk.TTkCore.signal import pyTTkSlot
-from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class TTkTestAbstractScrollWidget(TTkAbstractScrollView):

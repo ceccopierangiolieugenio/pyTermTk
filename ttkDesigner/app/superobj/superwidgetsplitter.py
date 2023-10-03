@@ -25,7 +25,7 @@ import ttkDesigner.app.superobj as so
 from .superobj import SuperObject
 
 
-class SuperWidgetSplitter(so.SuperWidget):
+class SuperWidgetSplitter(so.SuperWidgetContainer):
     def getSuperProperties(self):
         additions, exceptions, exclude = super().getSuperProperties()
         exclude += ['layout']

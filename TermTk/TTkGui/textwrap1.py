@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+__all__ = ['TTkTextWrap']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal
@@ -83,7 +83,7 @@ class TTkTextWrap():
             if not (w := self._wrapWidth):
                 return
 
-            def _process(i,l):
+            def _process(i,l:TTkString):
                 fr = 0
                 to = 0
                 if not len(l): # if the line is empty append it

@@ -20,9 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkKodeTab']
+
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import  TTkHelper
 from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor, TTkColorGradient
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -57,6 +60,23 @@ class _TTkKodeTab(TTkTabWidget):
         self.currentChanged.connect(   lambda i:self._baseWidget.currentChanged.emit(   self, i, self.widget(i), self.tabData(i)))
         self.tabCloseRequested.connect(lambda i:self._baseWidget.tabCloseRequested.emit(self, i))
         self.tabCloseRequested.connect(         self._kodeTabClosed)
+
+    def _hasMenu(self):
+        return True if (self._topLeftLayout or self._topRightLayout) else False
+
+    def _importMenu(self, kt):
+        kt._tabBarTopLayout.removeItem(ll := kt._topLeftLayout)
+        kt._tabBarTopLayout.removeItem(rl := kt._topRightLayout)
+        kt._topLeftLayout  = None
+        kt._topRightLayout = None
+        self._topLeftLayout  = ll
+        self._topRightLayout = rl
+        if ll:
+            self._tabBarTopLayout.addItem(ll, 1 if self.border() else 0,0)
+        if rl:
+            self._tabBarTopLayout.addItem(rl,1 if self.border() else 0,2)
+        self._tabBarTopLayout.update()
+        kt._tabBarTopLayout.update()
 
     def dragEnterEvent(self, evt) -> bool:
         TTkLog.debug(f"leave")
@@ -106,6 +126,7 @@ class _TTkKodeTab(TTkTabWidget):
             widget = tw._tabWidgets[index]
 
             def _processDrop(index, orientation, offset):
+                fwold = self._baseWidget._getFirstWidget()
                 tw.removeTab(index)
                 splitter = self.parentWidget()
                 index = splitter.indexOf(self)
@@ -115,6 +136,8 @@ class _TTkKodeTab(TTkTabWidget):
                     index=offset
                 splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), closable=self.tabsClosable()))
                 kt.addTab(widget,tb.text())
+                if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
+                    fwnew._importMenu(fwold)
             if x<w//4:
                 _processDrop(index, TTkK.HORIZONTAL, 0)
             elif x>w*3//4:
@@ -134,6 +157,7 @@ class _TTkKodeTab(TTkTabWidget):
     @pyTTkSlot()
     def _kodeTabClosed(self, widget=None):
         # Remove the widget and/or all the cascade empty splitters
+        fwold = self._baseWidget._getFirstWidget()
         widget = widget if type(widget) is _TTkKodeTab else self
         if not widget._tabWidgets:
             if splitter := widget.parentWidget():
@@ -143,6 +167,8 @@ class _TTkKodeTab(TTkTabWidget):
                 splitter.removeWidget(widget)
                 if splitter == self._baseWidget and splitter.count() == 0:
                     splitter.addWidget(self)
+        if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
+            fwnew._importMenu(fwold)
 
     # Stupid hack to paint on top of the child widgets
     def paintChildCanvas(self):
@@ -169,6 +195,12 @@ class TTkKodeTab(TTkSplitter):
         self._lastKodeTabWidget = _TTkKodeTab(baseWidget=self, **kwargs)
         self.addWidget(self._lastKodeTabWidget)
 
+    def _getFirstWidget(self):
+        kt = self
+        item = None
+        while type(item:=kt.widget(0)) != _TTkKodeTab: kt = item
+        return item if type(item)==_TTkKodeTab else None
+
     @pyTTkSlot(TTkWidget)
     def setCurrentWidget(self, *args, **kwargs):
         return self._lastKodeTabWidget.setCurrentWidget(*args, **kwargs)
@@ -181,3 +213,9 @@ class TTkKodeTab(TTkSplitter):
                     return self._lastKodeTabWidget.addTab(*args, **kwargs)
             raise Exception("No TTkKodeTab found to be used")
         return self._lastKodeTabWidget.addTab(*args, **kwargs)
+
+    # def addMenu(self, text, position=TTkK.LEFT, data=None):
+    def addMenu(self, text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, position=TTkK.LEFT):
+        '''addMenu'''
+        # return self._lastKodeTabWidget.addMenu(text=text, data=data, checkable=checkable, checked=checked, position=position)
+        return self._lastKodeTabWidget.addMenu(text=text, data=data, position=position)

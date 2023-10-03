@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTk']
+
 import os
 import signal
 import time
@@ -42,8 +42,9 @@ from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 
-class TTk(TTkWidget):
+class TTk(TTkContainer):
     class _mouseCursor(TTkWidget):
         __slots__ = ('_cursor','_color')
         def __init__(self, input):
@@ -79,7 +80,7 @@ class TTk(TTkWidget):
         '_input', '_termMouse', '_termDirectMouse',
         '_title',
         '_showMouseCursor',
-        '_sigmask',
+        '_sigmask', '_timer',
         '_drawMutex',
         '_paintEvent',
         '_lastMultiTap',
@@ -93,12 +94,14 @@ class TTk(TTkWidget):
         if ('TERMTK_FILE_LOG' in os.environ and (_logFile := os.environ['TERMTK_FILE_LOG'])):
             TTkLog.use_default_file_logging(_logFile)
 
+        self._timer = None
         self.paintExecuted = pyTTkSignal()
         super().__init__(*args, **kwargs)
         self._termMouse = True
         self._termDirectMouse = kwargs.get('mouseTrack',False)
         self._input = TTkInput()
         self._input.inputEvent.connect(self._processInput)
+        self._input.pasteEvent.connect(self._processPaste)
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
@@ -109,6 +112,10 @@ class TTk(TTkWidget):
         self.hide()
         w,h = TTkTerm.getTerminalSize()
         self.setGeometry(0,0,w,h)
+
+        if 'TERMTK_NEWRENDERER' in os.environ:
+            TTkCfg.doubleBuffer = False
+            TTkCfg.doubleBufferNew = True
 
         TTkHelper.registerRootWidget(self)
 
@@ -177,6 +184,12 @@ class TTk(TTkWidget):
         if platform.system() == 'Emscripten':
             return
         self._input.start()
+
+    @pyTTkSlot(str)
+    def _processPaste(self, txt:str):
+        if focusWidget := TTkHelper.getFocus():
+            while focusWidget and not focusWidget.pasteEvent(txt):
+                focusWidget = focusWidget.parentWidget()
 
     @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
     def _processInput(self, kevt, mevt):
@@ -289,11 +302,30 @@ class TTk(TTkWidget):
         self._drawMutex.release()
         TTkLog.info(f"Resize: w:{TTkGlbl.term_w}, h:{TTkGlbl.term_h}")
 
-
+    @pyTTkSlot()
     def quit(self):
+        '''quit TermTk
+
+        .. warning::
+            Method Deprecated,
+
+            use :class:`~TermTk.TTkCore.helper.TTkHelper` -> :class:`~TermTk.TTkCore.helper.TTkHelper.quit` instead
+
+            i.e.
+
+            .. code:: python
+
+                buttonQuit = TTkButton(text="QUIT",border=True)
+                buttonQuit.clicked.connect(TTkHelper.quit)
+        '''
+        TTkHelper.quit()
+
+    @pyTTkSlot()
+    def _quit(self):
         '''Tells the application to exit with a return code.'''
+        if self._timer:
+            self._timer.timeout.disconnect(self._time_event)
         self._input.inputEvent.clear()
-        TTkTimer.quitAll()
         self._paintEvent.set()
         self._input.close()
 
@@ -328,7 +360,7 @@ class TTk(TTkWidget):
         # Deregister the handler
         # so CTRL-C can be redirected to the default handler if the app does not exit
         signal.signal(signal.SIGINT,  signal.SIG_DFL)
-        self.quit()
+        TTkHelper.quit()
 
     def isVisibleAndParent(self):
         return self.isVisible()

@@ -54,10 +54,6 @@ class TTkTimer():
             TTkTimer._timers[tid].timeout.emit()
 
     @staticmethod
-    def quitAll():
-        pass
-
-    @staticmethod
     def pyodideQuit():
         for timer in TTkTimer._timers:
             TTkTimer._timers[timer].timeout.clearAll()

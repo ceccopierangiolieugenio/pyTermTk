@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+__all__ = ['TTkColor', 'TTkColorGradient', 'TTkLinearGradient']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -61,12 +61,13 @@ from TermTk.TTkCore.helper import TTkHelper
 # [49m          2.53      set background color to default (black)
 
 class _TTkColor:
-    __slots__ = ('_fg','_bg','_mod', '_colorMod', '_buffer', '_clean')
+    __slots__ = ('_fg','_bg','_mod', '_colorMod', '_link', '_buffer', '_clean')
     _fg: tuple; _bg: tuple; _mod: int
-    def __init__(self, fg:tuple=None, bg:tuple=None, mod:int=0, colorMod=None, clean=False):
+    def __init__(self, fg:tuple=None, bg:tuple=None, mod:int=0, colorMod=None, link:str='', clean=False):
         self._fg  = fg
         self._bg  = bg
         self._mod = mod
+        self._link = link
         self._clean = clean or not (fg or bg or mod)
         self._colorMod = colorMod
         self._buffer = None
@@ -181,15 +182,18 @@ class _TTkColor:
 
     def __str__(self):
         if not self._buffer:
-            self._buffer = TTkHelper.Color.rgb2ansi(self._fg,self._bg,self._mod,self._clean)
+            self._buffer = TTkHelper.Color.rgb2ansi(
+                                fg=self._fg, bg=self._bg, mod=self._mod,
+                                link=self._link, clean=self._clean)
         return self._buffer
 
     def __eq__(self, other):
         if other is None: return False
-        return \
-            self._fg  == other._fg and \
-            self._bg  == other._bg and \
-            self._mod == other._mod
+        return (
+            self._fg   == other._fg   and
+            self._bg   == other._bg   and
+            self._mod  == other._mod  and
+            self._link == other._link )
 
     # self | other
     def __or__(self, other):
@@ -200,8 +204,12 @@ class _TTkColor:
         fg:  str = self._fg or other._fg
         bg:  str = self._bg or other._bg
         mod: str = self._mod + other._mod
+        link:str = self._link or other._link
         colorMod = self._colorMod or other._colorMod
-        return TTkColor(fg,bg,mod,colorMod,clean)
+        return TTkColor(
+                    fg=fg, bg=bg, mod=mod,
+                    colorMod=colorMod, link=link,
+                    clean=clean)
 
     # self + other
     def __add__(self, other):
@@ -212,15 +220,20 @@ class _TTkColor:
         fg:  str = other._fg or self._fg
         bg:  str = other._bg or self._bg
         mod: str = self._mod + other._mod
+        link:str = self._link or other._link
         colorMod = other._colorMod or self._colorMod
-        return TTkColor(fg,bg,mod,colorMod,clean)
+        return TTkColor(
+                    fg=fg, bg=bg, mod=mod,
+                    colorMod=colorMod, link=link,
+                    clean=clean)
 
     def __sub__(self, other):
         # TTkLog.debug("__sub__")
         # if other is None: return str(self)
-        if ( None == self._bg  != other._bg  or
-             None == self._fg  != other._fg  or
-                     self._mod != other._mod ):
+        if ( None == self._bg   != other._bg   or
+             None == self._fg   != other._fg   or
+                     self._link != other._link or
+                     self._mod  != other._mod ):
             ret = self.copy()
             ret._clean = True
             return ret
@@ -241,6 +254,7 @@ class _TTkColor:
         ret._fg   = self._fg
         ret._bg   = self._bg
         ret._mod  = self._mod
+        ret._link = self._link
         ret._clean = self._clean
         if modifier and self._colorMod:
             ret._colorMod = self._colorMod.copy()
@@ -421,11 +435,12 @@ class TTkColor(_TTkColor):
         :type modifier: TTkColorModifier, optional
         '''
         mod = kwargs.get('modifier', None )
+        link = kwargs.get('link', '' )
         if len(args) > 0:
             color = args[0]
         else:
             color = kwargs.get('color', "" )
-        return TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod)
+        return TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
 
     @staticmethod
     def bg(*args, **kwargs):
@@ -445,8 +460,9 @@ class TTkColor(_TTkColor):
         :type modifier: TTkColorModifier, optional
         '''
         mod = kwargs.get('modifier', None )
+        link = kwargs.get('link', '' )
         if len(args) > 0:
             color = args[0]
         else:
             color = kwargs.get('color', "" )
-        return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
+        return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod, link=link)

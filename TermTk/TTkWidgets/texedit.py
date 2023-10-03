@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTextEditView', 'TTkTextEdit']
+
 from math import log10, floor
 
 from TermTk.TTkCore.color import TTkColor
@@ -39,6 +39,17 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
 class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
+    classStyle = {
+                'default':     {
+                    'color': TTkColor.fg("#88aaaa")+TTkColor.bg("#333333"),
+                    'wrapColor': TTkColor.fg("#888888")+TTkColor.bg("#333333"),
+                    'separatorColor': TTkColor.fg("#444444")},
+                'disabled':    {
+                    'color': TTkColor.fg('#888888'),
+                    'wrapColor': TTkColor.fg('#888888'),
+                    'separatorColor': TTkColor.fg("#888888")},
+            }
+
     __slots__ = ('_textWrap')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,24 +80,39 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         if not self._textWrap: return
         _, oy = self.getViewOffsets()
         w, h = self.size()
+
+        style = self.currentStyle()
+        color = style['color']
+        wrapColor = style['wrapColor']
+        separatorColor = style['separatorColor']
+
         if self._textWrap:
             for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
                 if fr:
-                    txt = "<"
-                    color = TTkCfg.theme.textEditLineNumberWrapcharColor
+                    canvas.drawText(pos=(0,i), text='<', width=w, color=wrapColor)
                 else:
-                    txt = f"{dt}"
-                    color = TTkCfg.theme.textEditLineNumberColor
-                canvas.drawText(pos=(0,i), text=txt, width=w, color=color)
-                canvas.drawChar(pos=(w-1,i), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
+                    canvas.drawText(pos=(0,i), text=f"{dt}", width=w, color=color)
+                canvas.drawChar(pos=(w-1,i), char='▌', color=separatorColor)
         else:
-            color = TTkCfg.theme.textEditLineNumberColor
             for y in range(h):
                 canvas.drawText(pos=(0,y), text=f"{y+oy}", width=w, color=color)
-                canvas.drawChar(pos=(w-1,y), char='▌', color=TTkCfg.theme.textEditLineNumberSeparatorColor)
+                canvas.drawChar(pos=(w-1,y), char='▌', color=separatorColor)
 
 class TTkTextEditView(TTkAbstractScrollView):
     '''TTkTextEditView'''
+
+    classStyle = {
+                'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
+                                'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008844"),
+                                'lineColor':     TTkColor.fg("#444444"),
+                                'wrapLineColor': TTkColor.fg("#888888")+TTkColor.bg("#333333")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'selectedColor': TTkColor.bg("#888888"),
+                                'lineColor':     TTkColor.fg("#888888"),
+                                'wrapLineColor': TTkColor.fg('#888888')},
+                'focus':       {'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008888")},
+            }
+
     __slots__ = (
             '_textDocument', '_hsize',
             '_textCursor', '_textColor', '_cursorParams',
@@ -289,9 +315,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     @pyTTkSlot()
     def paste(self):
         txt = self._clipboard.text()
-        if not self._multiLine:
-            txt = TTkString().join(txt.split('\n'))
-        self._textCursor.insertText(txt)
+        self.pasteEvent(txt)
 
     @pyTTkSlot()
     def _documentChanged(self):
@@ -421,6 +445,23 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
+    def pasteEvent(self, txt:str):
+        txt = TTkString(txt)
+        if not self._multiLine:
+            txt = TTkString().join(txt.split('\n'))
+        if self._replace:
+            self._textCursor.replaceText(txt, moveCursor=True)
+        else:
+            self._textCursor.insertText(txt, moveCursor=True)
+        # Scroll to align to the cursor
+        p = self._textCursor.position()
+        cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+        self._updateSize()
+        self._scrolToInclude(cx,cy)
+        self._pushCursor()
+        self.update()
+        return True
+
     def keyEvent(self, evt):
         if self._readOnly:
             return super().keyEvent(evt)
@@ -523,8 +564,7 @@ class TTkTextEditView(TTkAbstractScrollView):
                 self._textCursor.removeSelectedText()
             elif evt.key == TTkK.Key_Enter:
                 if self._multiLine:
-                    self._textCursor.insertText('\n')
-                self._textCursor.movePosition(TTkTextCursor.Right)
+                    self._textCursor.insertText('\n', moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
@@ -535,10 +575,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             return True
         else: # Input char
             if self._replace:
-                self._textCursor.replaceText(evt.key)
+                self._textCursor.replaceText(evt.key, moveCursor=True)
             else:
-                self._textCursor.insertText(evt.key)
-            self._textCursor.movePosition(TTkTextCursor.Right)
+                self._textCursor.insertText(evt.key, moveCursor=True)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
@@ -552,10 +591,11 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     def paintEvent(self, canvas):
         ox, oy = self.getViewOffsets()
-        if self.hasFocus():
-            selectColor = TTkCfg.theme.lineEditTextColorSelected
-        else:
-            selectColor = TTkCfg.theme.lineEditTextColorSelected
+
+        style = self.currentStyle()
+        color         = style['color']
+        selectColor = style['selectedColor']
+        lineColor = style['lineColor']
 
         h = self.height()
         subLines = self._textWrap._lines[oy:oy+h]
@@ -567,7 +607,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             canvas.drawTTkString(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
 
         if self._lineWrapMode == TTkK.FixedWidth:
-            canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=TTkCfg.theme.treeLineColor)
+            canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=lineColor)
 
 class TTkTextEdit(TTkAbstractScrollArea):
     '''TTkTextEdit

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTree']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
@@ -33,7 +33,7 @@ class TTkTree(TTkAbstractScrollArea):
         'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
         # Forwarded Methods
         'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem',
-        'addTopLevelItem', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
+        'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,6 +58,7 @@ class TTkTree(TTkAbstractScrollArea):
         #self.setColumnColors = self._treeView.setColumnColors
         #self.appendItem      = self._treeView.appendItem
         self.addTopLevelItem     = self._treeView.addTopLevelItem
+        self.addTopLevelItems    = self._treeView.addTopLevelItems
         self.takeTopLevelItem    = self._treeView.takeTopLevelItem
         self.topLevelItem        = self._treeView.topLevelItem
         self.indexOfTopLevelItem = self._treeView.indexOfTopLevelItem

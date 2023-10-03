@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTextPicker', 'TTkTextDialogPicker']
+
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
@@ -35,6 +37,7 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 from TermTk.TTkWidgets.texedit import TTkTextEditView, TTkTextEdit
 from TermTk.TTkWidgets.splitter import TTkSplitter
@@ -165,8 +168,7 @@ class TTkTextDialogPicker(TTkWindow):
         def _showEmojiPicker():
             ep = _emojiPicker(size=(40,10))
             def _addEmoji(e):
-                self._textEdit.textCursor().insertText(e)
-                self._textEdit.textCursor().movePosition(TTkTextCursor.Right)
+                self._textEdit.textCursor().insertText(e, moveCursor=True)
             ep.emojiClicked.connect(_addEmoji)
             TTkHelper.overlay(btn_emoji, ep, 0, 0)
 
@@ -255,7 +257,7 @@ class TTkTextDialogPicker(TTkWindow):
         return super().resize(w, th+t+b+4)
 
 
-class TTkTextPicker(TTkWidget):
+class TTkTextPicker(TTkContainer):
     '''TTkTextPicker
     .. note:: This is an early unstable prototype
               Do not use it unless you know what you are doing

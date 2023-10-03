@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
-# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +22,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+import sys, os
+import logging
 
-class TTkLookAndFeel():
-    __slots__ = ('modified')
-    def __init__(self, *args, **kwargs):
-        self.modified = pyTTkSignal()
+sys.path.append(os.path.join(sys.path[0],'..'))
+from TermTk import TTkLog, TTkK, TTkGridLayout, TTk, TTkLogViewer, TTkHelper
+
+def keyCallback(kevt=None, mevt=None):
+    if mevt is not None:
+        TTkLog.info(f"Mouse Event: {mevt}")
+    if kevt is not None:
+        if kevt.type == TTkK.Character:
+            TTkLog.info(f"Key Event: char '{kevt.key}' {kevt}")
+        else:
+            TTkLog.info(f"Key Event: Special '{kevt}'")
+        if kevt.key == "q":
+            input.close()
+            return False
+    return True
+
+def pasteCallback(txt:str):
+    TTkLog.info(f"PASTE:")
+    for s in txt.split('\n'):
+        TTkLog.info(f" | {s}")
+    return True
+
+root = TTk(layout=TTkGridLayout())
+
+TTkLogViewer(parent=root)
+
+TTkHelper._rootWidget._input.inputEvent.connect(keyCallback)
+TTkHelper._rootWidget._input.pasteEvent.connect(pasteCallback)
+
+root.mainloop()

@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkButtonProperties']
+
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.button import TTkButton
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkCanvas']
+
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -36,21 +36,19 @@ class TTkCanvas:
     :param  height: the height of the Canvas
     '''
     __slots__ = (
-        '_widget',
         '_width', '_height', '_newWidth', '_newHeight',
         '_theme',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
     def __init__(self, *args, **kwargs):
-        self._widget = kwargs.get('widget', None)
         self._visible = True
         self._transparent = False
         self._doubleBuffer = False
         self._width = 0
         self._height = 0
-        self._data = [[0]]
-        self._colors = [[TTkColor.RST]]
+        self._data = [[]]
+        self._colors = [[]]
         self._newWidth = kwargs.get('width', 0 )
         self._newHeight = kwargs.get('height', 0 )
         self.updateSize()
@@ -62,8 +60,6 @@ class TTkCanvas:
 
     def setTransparent(self, tr):
         self._transparent = tr
-
-    def getWidget(self): return self._widget
 
     def enableDoubleBuffer(self):
         self._doubleBuffer = True
@@ -140,25 +136,23 @@ class TTkCanvas:
         w,h = self.size()
         if not size:
             size=(w,h)
-        fx,fy = pos
+        fxa,fya = pos
         fw,fh = size
+        fxb,fyb = fxa+fw, fya+fh
         # the fill area is outside the boundaries
-        if fx >= w or fy>=h: return
-        if fx<0:
-            fw += fx
-            fx =  0
-        if fy<0:
-            fh += fy
-            fy =  0
-        if fw<=0 or fh<=0: return
-        fw = min(fw, w+fx)
-        fh = min(fh, h+fy)
+        if ( fxa >= w or fya >= h or
+             fxb <= 0 or fyb <= 0): return
+
+        fxa = max(0,fxa)
+        fya = max(0,fya)
+        fxb = min(w,fxb)
+        fyb = min(h,fyb)
 
         fillCh    = [char]*fw
         fillColor = [color]*fw
-        for iy in range(fy,fy+fh):
-            self._data[iy][fx:fx+fw]   = fillCh
-            self._colors[iy][fx:fx+fw] = fillColor
+        for iy in range(fya,fyb):
+            self._data[iy][fxa:fxb]   = fillCh
+            self._colors[iy][fxa:fxb] = fillColor
 
     def drawVLine(self, pos, size, color=TTkColor.RST):
         if size == 0: return
@@ -239,10 +233,10 @@ class TTkCanvas:
         # Check the full wide chars on the edge of the two canvasses
         if ((0 <= (x+a) < self._width) and self._data[y][x+a] == ''):
             self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
-            self._colors[y][x+a] = TTkCfg.theme.unicodeWideOverflowColor
+            self._colors[y][x+a] = TTkString.unicodeWideOverflowColor
         if ((0 <= (x+b-1) < self._width) and TTkString._isWideCharData(self._data[y][x+b-1])):
             self._data[y][x+b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
-            self._colors[y][x+b-1] = TTkCfg.theme.unicodeWideOverflowColor
+            self._colors[y][x+b-1] = TTkString.unicodeWideOverflowColor
 
     def drawText(self, text="", pos=(0,0), width=None, color=TTkColor.RST, alignment=TTkK.NONE, forceColor=False):
         '''
@@ -640,6 +634,14 @@ class TTkCanvas:
         if bx+bw<0 or by+bh<0 or bx>=cw or by>=ch: return
         if x+w<=bx or y+h<=by or bx+bw<=x or by+bh<=y: return
 
+        if (0,0,cw,ch)==geom==bound and (cw,ch)==canvas.size() and not canvas._transparent:
+            # fast Copy
+            # the canvas match exactly on top of the current one
+            for y in range(h):
+                self._data[y]   = canvas._data[y].copy()
+                self._colors[y] = canvas._colors[y].copy()
+            return
+
         x = min(x,cw-1)
         y = min(y,ch-1)
         w = min(w,cw-x)
@@ -672,16 +674,32 @@ class TTkCanvas:
             # Check the full wide chars on the edge of the two canvasses
             if ((0 <= a < cw) and self._data[y+iy][a]==''):
                 self._data[y+iy][a]   = TTkCfg.theme.unicodeWideOverflowCh[0]
-                self._colors[y+iy][a] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][a] = TTkString.unicodeWideOverflowColor
             if ((0 < b <= cw) and self._data[y+iy][b-1] and TTkString._isWideCharData(self._data[y+iy][b-1])):
                 self._data[y+iy][b-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
-                self._colors[y+iy][b-1] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][b-1] = TTkString.unicodeWideOverflowColor
             if ((0 < a <= cw) and self._data[y+iy][a-1] and TTkString._isWideCharData(self._data[y+iy][a-1])):
                 self._data[y+iy][a-1]   = TTkCfg.theme.unicodeWideOverflowCh[1]
-                self._colors[y+iy][a-1] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][a-1] = TTkString.unicodeWideOverflowColor
             if ((0 <= b < cw) and self._data[y+iy][b]==''):
                 self._data[y+iy][b]   = TTkCfg.theme.unicodeWideOverflowCh[0]
-                self._colors[y+iy][b] = TTkCfg.theme.unicodeWideOverflowColor
+                self._colors[y+iy][b] = TTkString.unicodeWideOverflowColor
+
+    def toAnsi(self):
+        # TTkLog.debug("pushToTerminal")
+        ret = ""
+        lastcolor = TTkColor.RST
+        for y in range(0, self._height):
+            ansi = str(TTkColor.RST)
+            for x in range(0, self._width):
+                ch = self._data[y][x]
+                color = self._colors[y][x]
+                if color != lastcolor:
+                    ansi += str(color-lastcolor)
+                    lastcolor = color
+                ansi+=ch
+            ret += ansi + '\n'
+        return ret
 
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
@@ -729,6 +747,56 @@ class TTkCanvas:
                     lastcolor = color
                 ansi+=ch
             if not empty:
+                TTkTerm.push(ansi)
+                empty=True
+        # Reset the color at the end
+        TTkTerm.push(TTkColor.RST)
+        # TTkTerm.flush()
+        # Switch the buffer
+        self._bufferedData, self._bufferedColors = data, colors
+        self._data,         self._colors         = oldData, oldColors
+
+    def pushToTerminalBufferedNew(self, x, y, w, h):
+        # TTkLog.debug("pushToTerminal")
+        data, colors = self._data, self._colors
+        oldData, oldColors = self._bufferedData, self._bufferedColors
+        lastcolor = TTkColor.RST
+        empty = True
+        ansi = ""
+        for y,(lda,ldb,lca,lcb) in enumerate(zip(data,oldData,colors,oldColors)):
+            count = 0
+            chBk = ''
+            for x,(da,db,ca,cb) in enumerate(zip(lda,ldb,lca,lcb)):
+                if da==db and ca==cb:
+                    if not empty:
+                        ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
+                        TTkTerm.push(ansi)
+                        count = 0
+                        chBk = ''
+                        empty=True
+                    continue
+                ch = da
+                color = ca
+                if empty:
+                    ansi = ("" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b") + TTkTerm.Cursor.moveTo(y+1,x+1)
+                    empty = False
+                    count = 0
+                    chBk = ''
+                if color != lastcolor:
+                    ansi += ("" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b") + str(color-lastcolor)
+                    lastcolor = color
+                    count = 0
+                    chBk = ''
+                # "Collect the consecutive characters"
+                if ch == chBk:
+                    count+=1
+                else:
+                    ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
+                    chBk = ch
+                    count=1
+                # ansi+=ch
+            if not empty:
+                ansi += "" if not chBk else chBk*count if count<=4 else f"{chBk}\033[{count-1}b"
                 TTkTerm.push(ansi)
                 empty=True
         # Reset the color at the end

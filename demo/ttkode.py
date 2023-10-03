@@ -85,6 +85,17 @@ def main():
     kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#888888", modifier=TTkColorGradient(increment=-6)), title="sette"),"sette")
     kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#444444", modifier=TTkColorGradient(increment= 3)), title="otto"),"otto")
 
+    m1 = kt.addMenu('Test1')
+    m2 = kt.addMenu('Test2')
+
+    m1.addMenu("Open",checkable=True)
+    m1.addMenu("Save",checkable=True,checked=True)
+    m1.addMenu("Save as").setDisabled()
+
+    m2.addMenu("m2 Open",checkable=True)
+    m2.addMenu("m2 Save",checkable=True,checked=True)
+    m2.addMenu("m2 Save as").setDisabled()
+
     fileTree.fileActivated.connect(lambda item:kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#888888", modifier=TTkColorGradient(increment=-6)), title=item.path()),"File")
 )
 

@@ -29,5 +29,6 @@ while read -r line; do
     sed "s,/home.*/TermTk/,TermTk/," |
     sed "s,^\(INFO:\),${Green}\1${_RST_}," |
     sed "s,^\(ERROR:\),${Red}\1${_RST_}," |
+    sed "s,^\(WARNING:\),${Magenta}\1${_RST_}," |
     sed "s,^\(DEBUG:\),${Blue}\1${_RST_},"
 done < <(tail -F session.log)

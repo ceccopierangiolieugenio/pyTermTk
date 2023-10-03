@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+__all__ = ['TTkInput']
 
 import re
 from time import time
@@ -46,12 +46,16 @@ class TTkInput:
             '_readInput',
             '_leftLastTime', '_midLastTime', '_rightLastTime',
             '_leftTap', '_midTap', '_rightTap',
+            '_pasteBuffer', '_bracketedPaste',
             # Signals
-            'inputEvent'
+            'inputEvent', 'pasteEvent'
             )
 
     def __init__(self):
         self.inputEvent = pyTTkSignal(TTkKeyEvent, TTkMouseEvent)
+        self.pasteEvent = pyTTkSignal(str)
+        self._pasteBuffer = ""
+        self._bracketedPaste = False
         self._readInput = None
         self._leftLastTime = 0
         self._midLastTime = 0
@@ -79,7 +83,20 @@ class TTkInput:
 
     mouse_re = re.compile(r"\033\[<(\d+);(\d+);(\d+)([mM])")
     def key_process(self, stdinRead):
+        if self._bracketedPaste:
+            if stdinRead.endswith("\033[201~"):
+                self._pasteBuffer += stdinRead[:-6]
+                self._bracketedPaste = False
+                # due to the CRNL methos (don't ask me why) the terminal
+                # is substituting all the \n with \r
+                self.pasteEvent.emit(self._pasteBuffer.replace('\r','\n'))
+                self._pasteBuffer = ""
+            else:
+                self._pasteBuffer += stdinRead
+            return
+
         mevt,kevt = None, None
+
         if not stdinRead.startswith("\033[<"):
             # Key Event
             kevt = TTkKeyEvent.parse(stdinRead)
@@ -153,12 +170,17 @@ class TTkInput:
                 evt = TTkMouseEvent.Move
 
             mevt = TTkMouseEvent(x, y, key, evt, mod, tap, m.group(0).replace("\033", "<ESC>"))
+        if kevt or mevt:
+            self.inputEvent.emit(kevt, mevt)
+            return
 
-        if kevt is None and mevt is None:
-            hex = [f"0x{ord(x):02x}" for x in stdinRead]
-            TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
+        if stdinRead.startswith("\033[200~"):
+            self._pasteBuffer = stdinRead[6:]
+            self._bracketedPaste = True
+            return
 
-        self.inputEvent.emit(kevt, mevt)
+        hex = [f"0x{ord(x):02x}" for x in stdinRead]
+        TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
 
 
 def main():

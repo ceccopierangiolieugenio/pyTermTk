@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+__all__ = ['TTkColorButtonPicker', 'TTkColorDialogPicker']
 
 import re
 
@@ -180,16 +180,19 @@ class _TTkColorButton(TTkButton):
         self._color = kwargs.get('color', TTkColor.RST )
         self._custom = kwargs.get('custom', False)
         self.clicked.connect(self._clicked)
-        self._textColorFocus = self._textColor
+        self.setColor(self._color)
 
     @pyTTkSlot(TTkColor)
     def setColor(self, color):
-        self._textColor = color
-        self._textColorFocus = color
-        self.update()
+        style = self.style()
+        self._color = color
+        for t in style:
+            if 'color' in style[t]:
+                style[t]['color'] = color
+        self.setStyle(style)
 
     def color(self):
-        return self._textColor
+        return self._color
 
     def isCustom(self):
         return self._custom
@@ -198,7 +201,7 @@ class _TTkColorButton(TTkButton):
     def _clicked(self):
         if self._custom:
             _TTkColorButton.lastClicked = self
-        self.colorClicked.emit(self._textColor)
+        self.colorClicked.emit(self._color)
 
 class TTkColorDialogPicker(TTkWindow):
     ''' Color Picker Layout sizes:
@@ -232,6 +235,19 @@ class TTkColorDialogPicker(TTkWindow):
         │└──────────────────────┘└──────────────────────┘│
         └────────────────────────────────────────────────┘
     '''
+
+    classStyle = {
+                'default':     {'color': TTkColor.RST,
+                                'borderColor': TTkColor.RST,
+                                'titleColor': TTkColor.fg("#dddddd")+TTkColor.bg("#222222")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'borderColor':TTkColor.fg('#888888'),
+                                'titleColor': TTkColor.fg('#888888')},
+                'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'borderColor': TTkColor.fg("#ffff55"),
+                                'titleColor': TTkColor.fg("#ffffdd")+TTkColor.bg("#222222")},
+            }
+
     customButtons = None
     __slots__ = (
         '_color',
@@ -419,10 +435,10 @@ class TTkColorDialogPicker(TTkWindow):
 
     def paintEvent(self, canvas):
         TTkWindow.paintEvent(self, canvas)
-        if self.hasFocus():
-            color = TTkCfg.theme.windowBorderColorFocus
-        else:
-            color = TTkCfg.theme.windowBorderColor
+        style = self.currentStyle()
+        color = style['borderColor']
+        titleColor = style['titleColor']
+
         canvas.drawGrid(
             pos=(0,2),size=(26,self._height-2),
             hlines=(10,15), vlines=(),
@@ -431,9 +447,9 @@ class TTkColorDialogPicker(TTkWindow):
         canvas.drawChar(pos=(0,2),  char=gg[0x08], color=color)
         canvas.drawChar(pos=(25,2), char=gg[0x02], color=color)
         canvas.drawChar(pos=(25,self._height-1), char=gg[0x0E], color=color)
-        canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=TTkString(" Basic colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
-        canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=TTkString(" Custom colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
-        canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=TTkString(" Conrols "), align=TTkK.CENTER_ALIGN, color=color, colorText=TTkCfg.theme.frameTitleColor)
+        canvas.drawBoxTitle(pos=(0,2) , size=(26,0), text=TTkString(" Basic colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=titleColor)
+        canvas.drawBoxTitle(pos=(0,12), size=(26,0), text=TTkString(" Custom colors "), align=TTkK.CENTER_ALIGN, color=color, colorText=titleColor)
+        canvas.drawBoxTitle(pos=(0,17), size=(26,0), text=TTkString(" Conrols "), align=TTkK.CENTER_ALIGN, color=color, colorText=titleColor)
 
 class TTkColorButtonPicker(_TTkColorButton):
     __slots__ = ('_type', 'colorSelected')
@@ -443,8 +459,8 @@ class TTkColorButtonPicker(_TTkColorButton):
         _TTkColorButton.__init__(self, *args, **kwargs)
         self._custom = False
         self.clicked.connect(self._colorClicked)
-        self._type = self._textColor.colorType()
-        hexColor =  self._textColor.getHex(self._type)
+        self._type = self.color().colorType()
+        hexColor =  self.color().getHex(self._type)
         self.setColor(TTkColor.bg(hexColor))
 
     @pyTTkSlot()
@@ -454,3 +470,13 @@ class TTkColorButtonPicker(_TTkColorButton):
         colorPicker.colorSelected.connect(self.colorSelected.emit)
         TTkHelper.overlay(self, colorPicker, -1,-1, True)
 
+    def setFocus(self):
+        lastFocus = TTkHelper.getFocus()
+        return super().setFocus()
+
+    def clearFocus(self):
+        lastFocus = TTkHelper.getFocus()
+        return super().clearFocus()
+
+    def paintEvent(self, canvas):
+        return super().paintEvent(canvas)

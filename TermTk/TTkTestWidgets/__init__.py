@@ -1,6 +1,6 @@
-from .logviewer  import TTkLogViewer
-from .testwidget import TTkTestWidget
-from .testwidgetsizes import TTkTestWidgetSizes
-from .testabstractscroll import TTkTestAbstractScrollWidget
-from .keypressview import TTkKeyPressView
-from .tominspector import TTkTomInspector
+from .logviewer          import *
+from .testwidget         import *
+from .testwidgetsizes    import *
+from .testabstractscroll import *
+from .keypressview       import *
+# from .tominspector import *

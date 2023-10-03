@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkToolTip']
+
 # from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.canvas    import TTkCanvas

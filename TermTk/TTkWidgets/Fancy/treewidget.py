@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,11 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkFancyTreeWidget']
+
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
@@ -43,7 +44,7 @@ class _TTkDisplayedTreeItemControl(TTkCheckbox):
             canvas.drawText(pos=(0,0), text="▶")
 
 
-class _TTkDisplayedTreeItem(TTkWidget):
+class _TTkDisplayedTreeItem(TTkContainer):
     __slots__ = ('_depth', '_control', '_text', '_id', '_clicked', '_treeWidgetItem', '_isLeaf' )
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

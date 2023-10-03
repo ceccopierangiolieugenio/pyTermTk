@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -25,6 +23,8 @@
 '''
 **Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`__]
 '''
+
+__all__ = ['TTkLayoutItem', 'TTkLayout']
 
 from TermTk.TTkCore.constant import TTkK
 
@@ -213,8 +213,8 @@ class TTkLayout(TTkLayoutItem):
             if child._layoutItemType == TTkK.WidgetItem:
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
-                if recurse:
-                    yield from child.widget().rootLayout().iterWidgets()
+                if recurse and hasattr(cw:=child.widget(),'rootLayout'):
+                    yield from cw.rootLayout().iterWidgets()
             if child._layoutItemType == TTkK.LayoutItem and recurse:
                 yield from child.iterWidgets()
 
@@ -312,7 +312,7 @@ class TTkLayout(TTkLayoutItem):
         :param widgets: the widget to be removed
         :type widgets: list of :class:`~TermTk.TTkWidgets`
         '''
-        for item in self._items:
+        for item in reversed(self._items):
             if item._layoutItemType == TTkK.WidgetItem and \
                item.widget() in widgets:
                 self.removeItem(item)
@@ -340,7 +340,7 @@ class TTkLayout(TTkLayoutItem):
     def lowerWidget(self, widget):
         '''lowerWidget'''
         item = self._findBranchWidget(widget)
-        for item in self._items: item.z+=1
+        for i in self._items: i._z+=1
         item._z = item._layer
         if item._layoutItemType == TTkK.LayoutItem:
             item.lowerWidget(widget)
@@ -366,13 +366,11 @@ class TTkLayout(TTkLayoutItem):
 
     def update(self, *args, **kwargs):
         ret = False
-        for i in self.children():
-            if i._layoutItemType == TTkK.WidgetItem and not i.isEmpty():
-                ret = ret or i.widget().update(*args, **kwargs)
-                # TODO: Have a look at this:
-                # i.getCanvas().top()
+        for i in self._items:
+            if i._layoutItemType == TTkK.WidgetItem and (_wid:=i._widget):
+                ret = ret or _wid.update(*args, **kwargs)
             elif i._layoutItemType == TTkK.LayoutItem:
-                ret= ret or i.update(*args, **kwargs)
+                ret = ret or i.update(*args, **kwargs)
         return ret
 
 class TTkWidgetItem(TTkLayoutItem):

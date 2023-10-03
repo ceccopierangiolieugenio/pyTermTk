@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -57,6 +55,9 @@ class ReadInput():
 
             # Split all the ansi sequences
             # or yield any separate input char
+            if stdinRead == '\033':
+                yield '\033'
+                continue
             for sr in rm.findall(stdinRead):
                 if '\033' == sr[0]:
                     yield sr

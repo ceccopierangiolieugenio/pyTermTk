@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
+__all__ = ['TTkUiProperties']
+
+from TermTk.TTkLayouts import *
 from TermTk.TTkWidgets import *
 from .properties import *
 
@@ -28,6 +30,7 @@ TTkUiProperties = {
     # Widgets
         TTkButton.__name__:         TTkButtonProperties,
         TTkCheckbox.__name__:       TTkCheckboxProperties,
+        TTkContainer.__name__:      TTkContainerProperties,
         TTkComboBox.__name__:       TTkComboBoxProperties,
         TTkFrame.__name__:          TTkFrameProperties,
         TTkLabel.__name__:          TTkLabelProperties,

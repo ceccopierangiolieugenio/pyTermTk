@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkMessageBox']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSignal,pyTTkSlot
 from TermTk.TTkCore.color import TTkColor

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTreeWidget']
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -33,9 +33,25 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from dataclasses import dataclass
 
 class TTkTreeWidget(TTkAbstractScrollView):
+    '''TTkTreeWidget'''
+
+    classStyle = {
+                'default':     {
+                    'color': TTkColor.RST,
+                    'lineColor': TTkColor.fg("#444444"),
+                    'headerColor': TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD,
+                    'selectedColor': TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD,
+                    'separatorColor': TTkColor.fg("#444444")},
+                'disabled':    {
+                    'color': TTkColor.fg("#888888"),
+                    'lineColor': TTkColor.fg("#888888"),
+                    'headerColor': TTkColor.fg("#888888"),
+                    'selectedColor': TTkColor.fg("#888888"),
+                    'separatorColor': TTkColor.fg("#888888")},
+            }
+
     __slots__ = ( '_rootItem', '_header', '_columnsPos', '_cache',
                   '_selectedId', '_selected', '_separatorSelected', '_mouseDelta',
-                  '_headerColor', '_selectedColor', '_lineColor',
                   '_sortColumn', '_sortOrder',
                   # Signals
                   'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
@@ -66,9 +82,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._cache = []
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
-        self._headerColor   = kwargs.get('headerColor',   TTkCfg.theme.treeHeaderColor)
-        self._selectedColor = kwargs.get('selectedColor', TTkCfg.theme.treeSelectedColor)
-        self._lineColor     = kwargs.get('lineColor',     TTkCfg.theme.treeLineColor)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
         self._rootItem = TTkTreeWidgetItem(expanded=True)
@@ -96,7 +109,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def clear(self):
         # Remove all the widgets
         for ri in self._rootItem.children():
-            ri.setParent(None)
+            ri.setTreeItemParent(None)
         if self._rootItem:
             self._rootItem.dataChanged.disconnect(self._refreshCache)
         self._rootItem = TTkTreeWidgetItem(expanded=True)
@@ -108,7 +121,16 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     def addTopLevelItem(self, item):
         self._rootItem.addChild(item)
-        item.setParent(self)
+        item.setTreeItemParent(self)
+        self._refreshCache()
+        self.viewChanged.emit()
+        self.update()
+
+    def addTopLevelItems(self, items):
+        self._rootItem.addChildren(items)
+        self._rootItem.setTreeItemParent(self)
+        #for item in items:
+        #    item.setTreeItemParent(self)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
@@ -334,6 +356,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
 
     def paintEvent(self, canvas):
+        style = self.currentStyle()
+
+        color= style['color']
+        lineColor= style['lineColor']
+        headerColor= style['headerColor']
+        selectedColor= style['selectedColor']
+        separatorColor= style['separatorColor']
+
         x,y = self.getViewOffsets()
         w,h = self.size()
         tt = TTkCfg.theme.tree
@@ -342,15 +372,15 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for i,l in enumerate(self._header):
             hx  = 0 if i==0 else self._columnsPos[i-1]+1
             hx1 = self._columnsPos[i]
-            canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=self._headerColor)
+            canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=headerColor)
             if i == self._sortColumn:
                 s = tt[6] if self._sortOrder == TTkK.AscendingOrder else tt[7]
-                canvas.drawText(pos=(hx1-x-1,0), text=s, color=self._headerColor)
+                canvas.drawText(pos=(hx1-x-1,0), text=s, color=headerColor)
         # Draw header separators
         for sx in self._columnsPos:
-            canvas.drawChar(pos=(sx-x,0), char=tt[5], color=self._headerColor)
+            canvas.drawChar(pos=(sx-x,0), char=tt[5], color=headerColor)
             for sy in range(1,h):
-                canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=self._lineColor)
+                canvas.drawChar(pos=(sx-x,sy), char=tt[4], color=lineColor)
 
         # Draw cache
         for i, c in enumerate(self._cache):
@@ -362,6 +392,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
                 text = c.data[il]
                 if item.isSelected():
-                    canvas.drawText(pos=(lx-x,i-y+1), text=text.completeColor(self._selectedColor), width=lx1-lx, alignment=item.textAlignment(il), color=self._selectedColor)
+                    canvas.drawText(pos=(lx-x,i-y+1), text=text.completeColor(selectedColor), width=lx1-lx, alignment=item.textAlignment(il), color=selectedColor)
                 else:
                     canvas.drawText(pos=(lx-x,i-y+1), text=text, width=lx1-lx, alignment=item.textAlignment(il))

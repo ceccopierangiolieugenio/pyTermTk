@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,15 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkLineEdit']
+
 import re
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
-
 
 '''
      Line Edit: |_________-___________|
@@ -40,8 +40,17 @@ from TermTk.TTkWidgets.widget import TTkWidget
 '''
 class TTkLineEdit(TTkWidget):
     '''TTkLineEdit'''
+
+    classStyle = {
+                'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
+                                'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008844")},
+                'disabled':    {'color': TTkColor.fg('#888888'),
+                                'selectedColor': TTkColor.fg("#888888")+TTkColor.bg("#444444")},
+                'focus':       {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#000044")},
+            }
+
     __slots__ = (
-        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo', '_color',
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, *args, **kwargs):
@@ -57,9 +66,9 @@ class TTkLineEdit(TTkWidget):
         self._text = TTkString(kwargs.get('text' , '' ))
         self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
         super().__init__(*args, **kwargs)
-        if self._inputType & TTkK.Input_Number and\
-           not self._text.lstrip('-').isdigit(): self._text = TTkString()
-        self._color = TTkCfg.theme.lineEditTextColor
+        if ( self._inputType & TTkK.Input_Number and
+             not self._isFloat(self._text)):
+            self._text = TTkString('0')
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -108,17 +117,13 @@ class TTkLineEdit(TTkWidget):
         self.update()
 
     def paintEvent(self, canvas):
-        if not self.isEnabled():
-            color = TTkCfg.theme.textColorDisabled
-            selectColor = TTkCfg.theme.textColorDisabled
-        elif self.hasFocus():
-            color = TTkCfg.theme.lineEditTextColorFocus
-            selectColor = TTkCfg.theme.lineEditTextColorSelected
-        else:
-            color = self._color
-            selectColor = TTkCfg.theme.lineEditTextColorSelected
+        style = self.currentStyle()
+
+        color         = style['color']
+        selectColor = style['selectedColor']
+
         w = self.width()
-        text = TTkString() + color
+        text = TTkString('', color)
         if self._inputType & TTkK.Input_Password:
             text += ("*"*(len(self._text)))
         else:
@@ -177,6 +182,41 @@ class TTkLineEdit(TTkWidget):
         self.update()
         return True
 
+    @staticmethod
+    def _isFloat(num):
+        try:
+            float(num)
+            return True
+        except:
+            return False
+
+
+    def pasteEvent(self, txt:str):
+        txt = TTkString().join(txt.split('\n'))
+
+        text = self._text
+
+        if self._selectionFrom < self._selectionTo:
+            pre  = text.substring(to=self._selectionFrom)
+            post = text.substring(fr=self._selectionTo)
+            self._cursorPos = self._selectionFrom
+        else:
+            pre = text.substring(to=self._cursorPos)
+            if self._replace:
+                post = text.substring(fr=self._cursorPos+1)
+            else:
+                post = text.substring(fr=self._cursorPos)
+
+        text = pre + txt + post
+        if ( self._inputType & TTkK.Input_Number and
+             not self._isFloat(text) ):
+            return True
+        self.setText(text, self._cursorPos+txt.termWidth())
+
+        self._pushCursor()
+        self.textEdited.emit(self._text)
+        return True
+
     def keyEvent(self, evt):
         baseText = self._text
         if evt.type == TTkK.SpecialKey:
@@ -214,8 +254,8 @@ class TTkLineEdit(TTkWidget):
                    self._text = self._text.substring(to=prev) + self._text.substring(fr=self._cursorPos)
                    self._cursorPos = prev
 
-            if self._inputType & TTkK.Input_Number and \
-               not self._text.lstrip('-').isdigit():
+            if ( self._inputType & TTkK.Input_Number and
+                 not self._isFloat(self._text) ):
                 self.setText('0', 1)
 
             self._pushCursor()
@@ -237,8 +277,8 @@ class TTkLineEdit(TTkWidget):
                     post = text.substring(fr=self._cursorPos)
 
             text = pre + evt.key + post
-            if self._inputType & TTkK.Input_Number and \
-               not text.lstrip('-').isdigit():
+            if ( self._inputType & TTkK.Input_Number and
+                 not self._isFloat(text) ):
                 return True
             self.setText(text, self._cursorPos+1)
 

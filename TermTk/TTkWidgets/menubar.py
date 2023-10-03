@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,17 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from TermTk.TTkCore.cfg import *
+__all__ = ['TTkMenuBarButton', 'TTkMenuBarLayout']
+
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
+# from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.button import TTkButton
-from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
-from TermTk.TTkWidgets.menu import TTkMenu, TTkMenuButton, _TTkMenuSpacer
+from TermTk.TTkWidgets.menu import TTkMenuButton
 
 class TTkMenuBarButton(TTkMenuButton):
     classStyle = TTkMenuButton.classStyle | {
@@ -65,11 +63,6 @@ class TTkMenuBarButton(TTkMenuButton):
             self.setMaximumSize(txtlen+2,1)
         return super().setCheckable(ch)
 
-    def setBorderColor(self, color):
-        style = self.style()
-        style['default'] |= {'borderColor':color}
-        self.setStyle(style)
-
     def paintEvent(self, canvas):
         style = self.currentStyle()
         borderColor = style['borderColor']
@@ -93,11 +86,10 @@ class TTkMenuBarButton(TTkMenuButton):
 
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''
-    __slots__ = ('_borderColor', '_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
+    __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
     def __init__(self, *args, **kwargs):
         self._buttons = []
         TTkHBoxLayout.__init__(self, *args, **kwargs)
-        self._borderColor = kwargs.get('borderColor', TTkCfg.theme.frameBorderColor )
         self._itemsLeft   = TTkHBoxLayout()
         self._itemsCenter = TTkHBoxLayout()
         self._itemsRight  = TTkHBoxLayout()
@@ -107,16 +99,9 @@ class TTkMenuBarLayout(TTkHBoxLayout):
         self.addItem(TTkLayout())
         self.addItem(self._itemsRight)
 
-    def setBorderColor(self, color):
-        self._borderColor = color
-        for b in self._buttons:
-            b.setBorderColor(color)
-        self.update()
-
     def addMenu(self,text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
         button = TTkMenuBarButton(text=text, data=data, checkable=checkable, checked=checked)
-        # button = TTkMenuButton(text=text, borderColor=self._borderColor, border=True)
         self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)
         self.update()

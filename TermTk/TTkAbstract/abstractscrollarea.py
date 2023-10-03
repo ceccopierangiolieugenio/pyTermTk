@@ -20,15 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkAbstractScrollArea']
+
 from TermTk.TTkCore.constant import TTkK
 # from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollViewInterface
 
-class TTkAbstractScrollArea(TTkWidget):
+class TTkAbstractScrollArea(TTkContainer):
     __slots__ = (
         '_processing', # this flag is required to avoid unnecessary loop on edge cases
         '_viewport',
@@ -123,7 +126,12 @@ class TTkAbstractScrollArea(TTkWidget):
             raise TypeError("TTkAbstractScrollViewInterface is required in TTkAbstractScrollArea.setVewport(viewport)")
         if self._viewport:
             self._viewport.viewChanged.disconnect(self._viewportChanged)
-            self.layout().removeWidget(self._viewport)
+            # TODO: Remove this check once
+            #  unified  "addWidget" and "addItem" in the TTKGridLayout
+            if isinstance(viewport, TTkWidget):
+                self.layout().removeWidget(self._viewport)
+            else:
+                self.layout().removeItem(self._viewport)
         self._viewport = viewport
         self._viewport.viewChanged.connect(self._viewportChanged)
         self._verticalScrollBar.sliderMoved.connect(self._vscrollMoved)

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -29,11 +27,14 @@ class TTkTermBase():
     ALT_SCREEN    = "\033[?1049h"                       #* Switch to alternate screen
     NORMAL_SCREEN = "\033[?1049l"                       #* Switch to normal screen
 
+    SET_BRACKETED_PM   = "\033[?2004h" # Ps = 2 0 0 4  ⇒  Set bracketed paste mode, xterm.
+    RESET_BRACKETED_PM = "\033[?2004l" # Ps = 2 0 0 4  ⇒  Reset bracketed paste mode, xterm.
+
     class Mouse():
-        ON         = "\033[?1002h\033[?1015h\033[?1006h" # Enable reporting of mouse position on click and release
-        OFF        = "\033[?1002l"                       # Disable mouse reporting
-        DIRECT_ON  = "\033[?1003h"                       # Enable reporting of mouse position at any movement
-        DIRECT_OFF = "\033[?1003l"                       # Disable direct mouse reporting
+        ON         = "\033[?1002h\033[?1006h" # Enable reporting of mouse position on click and release
+        OFF        = "\033[?1002l\033[?1006l" # Disable mouse reporting
+        DIRECT_ON  = "\033[?1003h"            # Enable reporting of mouse position at any movement
+        DIRECT_OFF = "\033[?1003l"            # Disable direct mouse reporting
 
     class Cursor():
         # from:
@@ -95,7 +96,10 @@ class TTkTermBase():
         TTkTermBase.mouse = mouse | directMouse
         TTkTermBase.directMouse = directMouse
         TTkTermBase.Cursor.hide()
-        TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
+        TTkTermBase.push(TTkTermBase.escTitle(TTkTermBase.title))
+        TTkTermBase.push(TTkTermBase.ALT_SCREEN)
+        TTkTermBase.push(TTkTermBase.SET_BRACKETED_PM)
+        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE)
         if TTkTermBase.mouse:
             TTkTermBase.push(TTkTermBase.Mouse.ON)
         if TTkTermBase.directMouse:
@@ -107,20 +111,20 @@ class TTkTermBase():
     @staticmethod
     def exit():
         TTkTermBase.push(TTkTermBase.Mouse.OFF + TTkTermBase.Mouse.DIRECT_OFF)
-        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
+        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.RESET_BRACKETED_PM + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
         TTkTermBase.setEcho(True)
         TTkTermBase.CRNL(True)
 
     @staticmethod
     def stop():
         TTkTermBase.push(TTkTermBase.Mouse.OFF + TTkTermBase.Mouse.DIRECT_OFF)
-        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
+        TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.RESET_BRACKETED_PM + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
         TTkTermBase.setEcho(True)
         TTkTermBase.CRNL(True)
 
     @staticmethod
     def cont():
-        TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
+        TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.SET_BRACKETED_PM + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
         if TTkTermBase.mouse:
             TTkTermBase.push(TTkTermBase.Mouse.ON)
         if TTkTermBase.directMouse:

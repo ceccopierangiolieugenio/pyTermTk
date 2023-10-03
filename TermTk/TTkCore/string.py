@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+__all__ = ['TTkString']
 
 import re
 import unicodedata
@@ -58,6 +58,8 @@ class TTkString():
         # Combination of constructors (Highly Unrecommended)
         str7 = TTkString("test 7", color=TTkColor.fg('#FF0000'))
     '''
+    unicodeWideOverflowColor = TTkColor.fg("#888888")+TTkColor.bg("#000088")
+
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
 
     def __init__(self, text="", color=None):
@@ -71,6 +73,16 @@ class TTkString():
         self._hasTab = '\t' in self._text
         self._checkWidth()
         # raise AttributeError(f"{type(text)} not supported in TTkString")
+
+    @staticmethod
+    def _importString1(text, colors):
+        ret = TTkString()
+        ret._text = text
+        ret._colors = colors
+        ret._baseColor = colors[-1]
+        ret._hasTab = '\t' in text
+        ret._checkWidth()
+        return ret
 
     @staticmethod
     def _parseAnsi(text, color = TTkColor.RST):
@@ -348,7 +360,7 @@ class TTkString():
                 elif sz > width:
                     ret._text   =  rt[:-1]+TTkCfg.theme.unicodeWideOverflowCh[1]
                     ret._colors =  self._colors[:len(ret._text)]
-                    ret._colors[-1] = TTkCfg.theme.unicodeWideOverflowColor
+                    ret._colors[-1] = TTkString.unicodeWideOverflowColor
                     break
         else:
             # Legacy, trim the string
