@@ -66,8 +66,9 @@ class TTkLineEdit(TTkWidget):
         self._text = TTkString(kwargs.get('text' , '' ))
         self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
         super().__init__(*args, **kwargs)
-        if self._inputType & TTkK.Input_Number and\
-           not self._text.lstrip('-').isdigit(): self._text = TTkString()
+        if ( self._inputType & TTkK.Input_Number and
+             not self._isFloat(self._text)):
+            self._text = TTkString('0')
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -181,6 +182,15 @@ class TTkLineEdit(TTkWidget):
         self.update()
         return True
 
+    @staticmethod
+    def _isFloat(num):
+        try:
+            float(num)
+            return True
+        except:
+            return False
+
+
     def pasteEvent(self, txt:str):
         txt = TTkString().join(txt.split('\n'))
 
@@ -198,8 +208,8 @@ class TTkLineEdit(TTkWidget):
                 post = text.substring(fr=self._cursorPos)
 
         text = pre + txt + post
-        if self._inputType & TTkK.Input_Number and \
-            not text.lstrip('-').isdigit():
+        if ( self._inputType & TTkK.Input_Number and
+             not self._isFloat(text) ):
             return True
         self.setText(text, self._cursorPos+txt.termWidth())
 
@@ -244,8 +254,8 @@ class TTkLineEdit(TTkWidget):
                    self._text = self._text.substring(to=prev) + self._text.substring(fr=self._cursorPos)
                    self._cursorPos = prev
 
-            if self._inputType & TTkK.Input_Number and \
-               not self._text.lstrip('-').isdigit():
+            if ( self._inputType & TTkK.Input_Number and
+                 not self._isFloat(self._text) ):
                 self.setText('0', 1)
 
             self._pushCursor()
@@ -267,8 +277,8 @@ class TTkLineEdit(TTkWidget):
                     post = text.substring(fr=self._cursorPos)
 
             text = pre + evt.key + post
-            if self._inputType & TTkK.Input_Number and \
-               not text.lstrip('-').isdigit():
+            if ( self._inputType & TTkK.Input_Number and
+                 not self._isFloat(text) ):
                 return True
             self.setText(text, self._cursorPos+1)
 

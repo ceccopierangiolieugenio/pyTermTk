@@ -153,7 +153,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._processStyleEvent(TTkWidget._S_DEFAULT)
 
         self._canvas = TTkCanvas(
-                            widget = self,
                             width  = self._width  ,
                             height = self._height )
 
@@ -166,8 +165,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 if self._parent.layout():
                     self._parent.layout().addWidget(self)
                     self._parent.update(repaint=True, updateLayout=True)
-
-        self.update(repaint=True, updateLayout=True)
 
     def __del__(self):
         ''' .. caution:: Don't touch this! '''
