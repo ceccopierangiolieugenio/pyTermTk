@@ -226,10 +226,15 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def removeItem(self, item):
         '''removeItem'''
-        self.removeWidget(item)
+        item.listItemClicked.disconnect(self._labelSelectedHandler)
+        item._setSelected(False)
+        item._setHighlighted(False)
+        self.layout().removeWidget(item)
         self._items.remove(item)
         if item in self._selectedItems:
             self._selectedItems.remove(item)
+        if item == self._highlighted:
+            self._highlighted = None
         self._placeItems()
 
     def removeAt(self, pos):
