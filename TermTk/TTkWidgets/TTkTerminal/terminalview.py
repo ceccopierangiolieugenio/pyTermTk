@@ -177,8 +177,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     def resizeEvent(self, w: int, h: int):
         if ( self._resize_pipe and
-             self._screen_current._w != w and
-             self._screen_current._h != h ):
+             ( self._screen_current._w != w or
+               self._screen_current._h != h ) ):
             os.write(self._resize_pipe[1], b'resize')
 
         # self._screen_alt.resize(w,h)
@@ -195,9 +195,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         if self._pid == 0:
             def _spawnTerminal(argv=[self._shell], env=os.environ):
                 os.execvpe(argv[0], argv, env)
-            threading.Thread(target=_spawnTerminal).start()
+            # threading.Thread(target=_spawnTerminal).start()
             TTkHelper.quit()
-            # _spawnTerminal()
+            _spawnTerminal()
             import sys
             sys.exit()
             # os.execvpe(argv[0], argv, env)
@@ -247,17 +247,23 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     @pyTTkSlot()
     def _quit(self):
-        os.kill(self._pid,0)
+        if self._pid:
+            os.kill(self._pid,0)
+            os.kill(self._pid,15)
         if self._quit_pipe:
-            os.write(self._quit_pipe[1], b'quit')
+            try:
+                os.write(self._quit_pipe[1], b'quit')
+            except:
+                pass
 
     def _inputGenerator(self):
         while rs := select( [self._inout,self._quit_pipe[0],self._resize_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
-                os.close(self._quit_pipe[0])
+                # os.close(self._quit_pipe[0])
                 os.close(self._quit_pipe[1])
-                os.close(self._resize_pipe[0])
+                # os.close(self._resize_pipe[0])
                 os.close(self._resize_pipe[1])
+                os.close(self._fd)
                 return
 
             if self._resize_pipe[0] in rs:

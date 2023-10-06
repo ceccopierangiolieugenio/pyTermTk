@@ -247,9 +247,13 @@ class _TTkTerminalScreen_CSI():
                     centerCNL[:ps],
                     centerCLS[:ps]):
             if sz:
-                self._bufferedLines.append(TTkString._importString1(''.join(d[:sz]),c[:sz]))
+                txt = TTkString._importString1(''.join(d[:sz]),c[:sz])
             else:
-                self._bufferedLines.append(TTkString())
+                txt = TTkString()
+            if nl:
+                self._bufferedLines[-1] += txt
+            else:
+                self._bufferedLines.append(txt)
             # from TermTk.TTkCore.log import TTkLog
             # TTkLog.debug(str(self._bufferedLines[-1])+f" - {sz=} {t=} {ps=} {self._canvasLineSize=}")
         # Rotate the center part
@@ -257,7 +261,7 @@ class _TTkTerminalScreen_CSI():
         centerc = centerc[ps:] + [baseColors.copy() for _ in range(ps)]
         centerd = centerd[:b-t]
         centerc = centerc[:b-t]
-        centerCNL = centerCNL[ps:] + [True]*ps
+        centerCNL = centerCNL[ps:] + [False]*ps
         centerCLS = centerCLS[ps:] + [0]*ps
         centerCNL = centerCNL[:b-t]
         centerCLS = centerCLS[:b-t]

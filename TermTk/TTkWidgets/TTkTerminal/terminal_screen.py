@@ -61,7 +61,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         self.bufferedLinesChanged = pyTTkSignal()
         self._w = w
         self._h = h
-        self._canvasNewLine  = [True]*h
+        self._canvasNewLine  = [False]*h
         self._canvasLineSize = [0]*h
         self._last = None
         self._bufferSize = bufferSize
@@ -83,8 +83,8 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
     def resize(self, w, h):
         # I normalize the size to the default terminal
         # to avoid negative or zerosized term
-        w = max(80,w)
-        h = max(24,h)
+        w = max(3,w)
+        h = max(1,h)
         ow, oh = self._w, self._h
         # st,sb = self._scrollingRegion
         # if oh <= h: # Terminal height decreasing
@@ -100,7 +100,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         newCanvas.paintCanvas(self._canvas,s,s,s)
         self._canvas = newCanvas
 
-        self._canvasNewLine  += [True]*h
+        self._canvasNewLine  += [False]*h
         self._canvasLineSize += [0]*h
         self._canvasNewLine  = self._canvasNewLine[:h]
         self._canvasLineSize = self._canvasLineSize[:h]
@@ -128,13 +128,13 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                 l = TTkString._getWidthText(ch)
                 # Scroll up if we are at the right border
                 if l+x > w:
-                    self._canvasNewLine[y] = False
                     x=0
                     y+=1
                     if y >= sb:
                         self._CSI_S_SU(y-sb+1, None) # scroll up
                         y=sb-1
                     self._terminalCursor = (x,y)
+                    self._canvasNewLine[y] = True
                 if l==1:   # push normal char
                     if irm:
                         self._canvas._data[y][x:x] = [ch]
