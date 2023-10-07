@@ -82,10 +82,10 @@ def _moveToLeft1():
 
 @ttk.pyTTkSlot()
 def _delSelected():
-    for i in listWidgetMulti.selectedItems().copy():
-        listWidgetMulti.removeItem(i)
-    for i in listWidgetSingle.selectedItems().copy():
-        listWidgetSingle.removeItem(i)
+    items = listWidgetMulti.selectedItems()
+    listWidgetMulti.removeItems(items)
+    items = listWidgetSingle.selectedItems()
+    listWidgetSingle.removeItems(items)
 
 
 btn_mv1.clicked.connect(_moveToRight2)
@@ -99,7 +99,7 @@ listWidgetMulti.textClicked.connect(_listCallback2)
 
 # populate the lists with random entries
 for i in range(10):
-    listWidgetSingle.addItem(f"{i}) {getWord()} {getWord()}")
-    listWidgetMulti.addItem(f"{getWord()} {getWord()}")
+    listWidgetSingle.addItem(f"S-{i}) {getWord()} {getWord()}")
+    listWidgetMulti.addItem(f"M-{i}) {getWord()} {getWord()}")
 
 root.mainloop()

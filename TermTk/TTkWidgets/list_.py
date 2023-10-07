@@ -31,7 +31,7 @@ class TTkList(TTkAbstractScrollArea):
         '_listView', 'itemClicked', 'textClicked',
         # Forwarded Methods
         'items', 'addItem', 'addItemAt', 'indexOf', 'itemAt',
-        'moveItem', 'removeAt', 'removeItem',
+        'moveItem', 'removeAt', 'removeItem', 'removeItems',
         'setSelectionMode', 'selectedItems', 'selectedLabels',
         'setCurrentRow', 'setCurrentItem',  )
 
@@ -51,6 +51,7 @@ class TTkList(TTkAbstractScrollArea):
         self.moveItem         = self._listView.moveItem
         self.removeAt         = self._listView.removeAt
         self.removeItem       = self._listView.removeItem
+        self.removeItems      = self._listView.removeItems
         self.addItem          = self._listView.addItem
         self.addItemAt        = self._listView.addItemAt
         self.setSelectionMode = self._listView.setSelectionMode
