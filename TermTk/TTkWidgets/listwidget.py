@@ -107,13 +107,17 @@ class TTkAbstractListItem(TTkWidget):
 
 class TTkListWidget(TTkAbstractScrollView):
     '''TTkListWidget'''
-    __slots__ = ('itemClicked', 'textClicked', '_selectedItems', '_selectionMode', '_highlighted', '_items')
+    __slots__ = ('itemClicked', 'textClicked',
+                 '_selectedItems', '_selectionMode',
+                 '_highlighted', '_items',
+                 '_dragPos')
     def __init__(self, *args, **kwargs):
         # Default Class Specific Values
         self._selectionMode = kwargs.get("selectionMode", TTkK.SingleSelection)
         self._selectedItems = []
         self._items = []
         self._highlighted = None
+        self._dragPos = None
         # Signals
         self.itemClicked = pyTTkSignal(TTkWidget)
         self.textClicked = pyTTkSignal(str)
@@ -290,8 +294,24 @@ class TTkListWidget(TTkAbstractScrollView):
         drag.exec()
         return True
 
+    def dragEnterEvent(self, evt):
+        return self.dragMoveEvent(evt)
+
+    def dragMoveEvent(self, evt):
+        offx,offy = self.getViewOffsets()
+        y=min(evt.y+offy,len(self._items))
+        self._dragPos = (offx+evt.x, y)
+        self.update()
+        return True
+
+    def dragLeaveEvent(self, evt):
+        self._dragPos = None
+        self.update()
+        return True
+
     def dropEvent(self, evt) -> bool:
         TTkLog.debug(f"Drop pos={evt.pos()}")
+        self._dragPos = None
         offx,offy = self.getViewOffsets()
         wid,items = evt.data()
         # check the correct wid type
@@ -351,3 +371,18 @@ class TTkListWidget(TTkAbstractScrollView):
     def focusOutEvent(self):
         if self._highlighted:
             self._highlighted._setHighlighted(False)
+        self._dragPos = None
+
+    # Stupid hack to paint on top of the child widgets
+    def paintChildCanvas(self):
+        super().paintChildCanvas()
+        if self._dragPos:
+            canvas = self.getCanvas()
+            x,y = self._dragPos
+            offx,offy = self.getViewOffsets()
+            p1 = (0,y-offy-1)
+            p2 = (0,y-offy)
+            canvas.drawText(pos=p1,text="╙─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
+            canvas.drawText(pos=p2,text="╓─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
+
+
