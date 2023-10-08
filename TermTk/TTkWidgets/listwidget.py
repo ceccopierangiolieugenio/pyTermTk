@@ -22,6 +22,8 @@
 
 __all__ = ['TTkAbstractListItem', 'TTkListWidget']
 
+from dataclasses import dataclass
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.log import TTkLog
@@ -106,6 +108,11 @@ class TTkAbstractListItem(TTkWidget):
         canvas.drawTTkString(pos=(0,0), width=w, color=style['color'] ,text=self._text)
 
 class TTkListWidget(TTkAbstractScrollView):
+    @dataclass(frozen=True)
+    class _DropListData:
+        widget: TTkAbstractScrollView
+        items: list
+
     '''TTkListWidget'''
     __slots__ = ('itemClicked', 'textClicked',
                  '_selectedItems', '_selectionMode',
@@ -277,7 +284,7 @@ class TTkListWidget(TTkAbstractScrollView):
         if not (items:=self._selectedItems.copy()):
             return True
         drag = TTkDrag()
-        data = (self,items)
+        data =TTkListWidget._DropListData(widget=self,items=items)
         h = min(3,ih:=len(items)) + 2 + (1 if ih>3 else 0)
         w = min(20,iw:=max([it.text().termWidth() for it in items[:3]])) + 2
         pm = TTkCanvas(width=w,height=h)
@@ -295,7 +302,9 @@ class TTkListWidget(TTkAbstractScrollView):
         return True
 
     def dragEnterEvent(self, evt):
-        return self.dragMoveEvent(evt)
+        if issubclass(type(evt.data()),TTkListWidget._DropListData):
+            return self.dragMoveEvent(evt)
+        return False
 
     def dragMoveEvent(self, evt):
         offx,offy = self.getViewOffsets()
@@ -312,9 +321,11 @@ class TTkListWidget(TTkAbstractScrollView):
     def dropEvent(self, evt) -> bool:
         TTkLog.debug(f"Drop pos={evt.pos()}")
         self._dragPos = None
+        if not issubclass(type(evt.data())  ,TTkListWidget._DropListData):
+            return False
         offx,offy = self.getViewOffsets()
-        wid,items = evt.data()
-        # check the correct wid type
+        wid   = evt.data().widget
+        items = evt.data().items
         if wid and items:
             wid.removeItems(items)
             for it in reversed(items):
@@ -384,5 +395,6 @@ class TTkListWidget(TTkAbstractScrollView):
             p2 = (0,y-offy)
             canvas.drawText(pos=p1,text="╙─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
             canvas.drawText(pos=p2,text="╓─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
+
 
 

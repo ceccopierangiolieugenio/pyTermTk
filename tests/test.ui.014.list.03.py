@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,16 @@ import sys, os, argparse, math, random
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
 
-words = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+zc1 = chr(0x07a6) # Zero width chars oަ
+zc2 = chr(0x20D7) # Zero width chars o⃗
+zc3 = chr(0x065f) # Zero width chars oٟ
+utfwords = [
+    f"--Zero{zc1}{zc2}{zc3}-1-", f"--Zero-2{zc1}{zc2}{zc3}-", f"--Ze{zc1}{zc2}{zc3}ro-3-", f"{zc1}{zc2}{zc3}--Zero-4-",
+    "d😮l😱r", "sit", "am😎t,", "c😱nsectetur", "t😜mpor", "inci😜di😜dunt", "u😜t", "l😜abore", "et", "d😜olore", "m😜a😜gna", "ali😜qua😜.", "Ut", "enim", "😜a😜d😜", "minim", "veniam,", "😜q😜uis", "😜nostrud", "exer😜c😜i😜tation", "ullamco", "labo😜ris", "n😜isi", "ut", "aliq😞ip", "e😜x😜", "ea", "comm😞do", "cons😿quat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "cul🙻a", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
+words    = ["Lorem", "ipsum", "dolor", "sit", "amet,", "consectetur", "adipiscing", "elit,", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", "commodo", "consequat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]
 def getWord():
-    return random.choice(words)
+    return random.choice(utfwords)
+    # return random.choice(words)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', help='Track Mouse', action='store_true')
