@@ -40,9 +40,9 @@ class TTkAbstractListItem(TTkWidget):
 
     classStyle = TTkWidget.classStyle | {
                 'default':     {'color': TTkColor.RST},
-                'highlighted': {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')+TTkColor.UNDERLINE},
-                'hover':       {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0088FF')},
-                'selected':    {'color': TTkColor.fg('#00FF00')+TTkColor.bg('#0055FF')},
+                'highlighted': {'color': TTkColor.bg('#008855')+TTkColor.UNDERLINE},
+                'hover':       {'color': TTkColor.bg('#0088FF')},
+                'selected':    {'color': TTkColor.bg('#0055FF')},
                 'clicked':     {'color': TTkColor.fg('#FFFF00')},
                 'disabled':    {'color': TTkColor.fg('#888888')},
             }
@@ -95,17 +95,17 @@ class TTkAbstractListItem(TTkWidget):
         self.update()
 
     def paintEvent(self, canvas):
-        style = self.currentStyle()
-        if style == self.classStyle['hover']:
-            pass
-        elif self._highlighted:
-            style = self.style()['highlighted']
-        elif self._selected:
-            style = self.style()['selected']
+        color = (style:=self.currentStyle())['color']
+        if self._highlighted:
+            color = color+self.style()['highlighted']['color']
+        if self._selected:
+            color = color+self.style()['selected']['color']
+        if style==self.style()['hover']:
+            color = color+self.style()['hover']['color']
 
         w = self.width()
 
-        canvas.drawTTkString(pos=(0,0), width=w, color=style['color'] ,text=self._text)
+        canvas.drawTTkString(pos=(0,0), width=w, color=color ,text=self._text)
 
 class TTkListWidget(TTkAbstractScrollView):
     @dataclass(frozen=True)
