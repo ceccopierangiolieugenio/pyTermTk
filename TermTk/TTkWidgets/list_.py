@@ -30,8 +30,10 @@ class TTkList(TTkAbstractScrollArea):
     __slots__ = (
         '_listView', 'itemClicked', 'textClicked',
         # Forwarded Methods
-        'items', 'addItem', 'addItemAt', 'indexOf', 'itemAt',
-        'moveItem', 'removeAt', 'removeItem', 'removeItems',
+        'items',
+        'addItem', 'addItemAt', 'addItems', 'addItemsAt',
+        'indexOf', 'itemAt', 'moveItem',
+        'removeAt', 'removeItem', 'removeItems',
         'setSelectionMode', 'selectedItems', 'selectedLabels',
         'setCurrentRow', 'setCurrentItem',  )
 
@@ -53,7 +55,9 @@ class TTkList(TTkAbstractScrollArea):
         self.removeItem       = self._listView.removeItem
         self.removeItems      = self._listView.removeItems
         self.addItem          = self._listView.addItem
+        self.addItems         = self._listView.addItems
         self.addItemAt        = self._listView.addItemAt
+        self.addItemsAt       = self._listView.addItemsAt
         self.setSelectionMode = self._listView.setSelectionMode
         self.selectedItems    = self._listView.selectedItems
         self.selectedLabels   = self._listView.selectedLabels

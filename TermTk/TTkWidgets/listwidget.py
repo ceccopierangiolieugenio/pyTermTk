@@ -198,6 +198,10 @@ class TTkListWidget(TTkAbstractScrollView):
         '''addItem'''
         self.addItemAt(item, len(self._items), data)
 
+    def addItems(self, items):
+        '''addItems'''
+        self.addItemAt(items, len(self._items))
+
     def _placeItems(self):
         minw = self.width()
         for item in self._items:
@@ -210,12 +214,19 @@ class TTkListWidget(TTkAbstractScrollView):
     def addItemAt(self, item, pos, data=None):
         '''addItemAt'''
         if isinstance(item, str) or isinstance(item, TTkString):
-            #label = TTkAbstractListItem(text=item, width=max(len(item),self.width()))
-            label = TTkAbstractListItem(text=item, data=data)
-            return self.addItemAt(label,pos)
-        item.listItemClicked.connect(self._labelSelectedHandler)
-        self._items.insert(pos,item)
-        self.layout().addWidget(item)
+            item = TTkAbstractListItem(text=item, data=data)
+        return self.addItemsAt([item],pos)
+
+    def addItemsAt(self, items, pos):
+        '''addItemsAt'''
+        for item in items:
+            if not issubclass(type(item),TTkAbstractListItem):
+                TTkLog.error(f"{item=} is not an TTkAbstractListItem")
+                return
+        for item in items:
+            item.listItemClicked.connect(self._labelSelectedHandler)
+        self._items[pos:pos] = items
+        self.layout().addWidgets(items)
         self._placeItems()
 
     def indexOf(self, item):
@@ -290,8 +301,10 @@ class TTkListWidget(TTkAbstractScrollView):
         pm = TTkCanvas(width=w,height=h)
         for y,it in enumerate(items[:3],1):
             txt = it.text()
-            pm.drawText(pos=(1,y), text=it.text())
-            if txt.termWidth() >= 20:
+            if txt.termWidth() < 20:
+                pm.drawText(pos=(1,y), text=it.text())
+            else:
+                pm.drawText(pos=(1,y), text=it.text(), width=17)
                 pm.drawText(pos=(18,y), text='...')
         if ih>3:
             pm.drawText(pos=(1,4), text='...')
@@ -328,9 +341,9 @@ class TTkListWidget(TTkAbstractScrollView):
         items = evt.data().items
         if wid and items:
             wid.removeItems(items)
-            for it in reversed(items):
+            for it in items:
                 it.setCurrentStyle(it.style()['default'])
-                self.addItemAt(it,offy+evt.y)
+            self.addItemsAt(items,offy+evt.y)
             return True
         return False
 
