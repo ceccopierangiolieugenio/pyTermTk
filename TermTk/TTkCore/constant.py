@@ -128,6 +128,18 @@ class TTkConstant:
         # InsertAlphabetically = 0x06
         # '''The string is inserted in the alphabetic order in the combobox.'''
 
+    class DragDropMode(int):
+        '''Specifies the Drag and Drop mode allowed by this widget'''
+        NoDragDrop = 0x00
+        '''No Drag and Drop is allowed'''
+        AllowDrag  = 0x01
+        '''Drag allowed'''
+        AllowDrop = 0x02
+        '''Drop allowed'''
+    NoDragDrop = DragDropMode.NoDragDrop
+    AllowDrag  = DragDropMode.AllowDrag
+    AllowDrop  = DragDropMode.AllowDrop
+
     class ChildIndicatorPolicy(int):
         ShowIndicator                  = 0x00 #The controls for expanding and collapsing will be shown for this item even if there are no children.
         DontShowIndicator              = 0x01 #The controls for expanding and collapsing will never be shown even if there are children. If the node is forced open the user will not be able to expand or collapse the item.

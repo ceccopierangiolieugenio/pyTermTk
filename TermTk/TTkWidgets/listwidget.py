@@ -117,7 +117,7 @@ class TTkListWidget(TTkAbstractScrollView):
     __slots__ = ('itemClicked', 'textClicked',
                  '_selectedItems', '_selectionMode',
                  '_highlighted', '_items',
-                 '_dragPos')
+                 '_dragPos', '_dndMode')
     def __init__(self, *args, **kwargs):
         # Default Class Specific Values
         self._selectionMode = kwargs.get("selectionMode", TTkK.SingleSelection)
@@ -125,6 +125,8 @@ class TTkListWidget(TTkAbstractScrollView):
         self._items = []
         self._highlighted = None
         self._dragPos = None
+        self._dndMode = kwargs.get("dragDropMode",
+                                TTkK.DragDropMode.AllowDrag | TTkK.DragDropMode.AllowDrop )
         # Signals
         self.itemClicked = pyTTkSignal(TTkWidget)
         self.textClicked = pyTTkSignal(str)
@@ -160,6 +162,14 @@ class TTkListWidget(TTkAbstractScrollView):
         self._highlighted = label
         self.itemClicked.emit(label)
         self.textClicked.emit(label.text())
+
+    def dragDropMode(self):
+        '''dragDropMode'''
+        return self._dndMode
+
+    def setDragDropMode(self, dndMode):
+        '''setDragDropMode'''
+        self._dndMode = dndMode
 
     def setSelectionMode(self, mode):
         '''setSelectionMode'''
@@ -291,7 +301,8 @@ class TTkListWidget(TTkAbstractScrollView):
             self.viewMoveTo(offx, index)
 
     def mouseDragEvent(self, evt) -> bool:
-        TTkLog.debug("Start DnD")
+        if not(self._dndMode & TTkK.DragDropMode.AllowDrag):
+            return False
         if not (items:=self._selectedItems.copy()):
             return True
         drag = TTkDrag()
@@ -315,6 +326,8 @@ class TTkListWidget(TTkAbstractScrollView):
         return True
 
     def dragEnterEvent(self, evt):
+        if not(self._dndMode & TTkK.DragDropMode.AllowDrop):
+            return False
         if issubclass(type(evt.data()),TTkListWidget._DropListData):
             return self.dragMoveEvent(evt)
         return False
@@ -332,7 +345,8 @@ class TTkListWidget(TTkAbstractScrollView):
         return True
 
     def dropEvent(self, evt) -> bool:
-        TTkLog.debug(f"Drop pos={evt.pos()}")
+        if not(self._dndMode & TTkK.DragDropMode.AllowDrop):
+            return False
         self._dragPos = None
         if not issubclass(type(evt.data())  ,TTkListWidget._DropListData):
             return False
