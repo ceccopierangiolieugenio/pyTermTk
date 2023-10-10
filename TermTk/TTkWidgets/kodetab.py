@@ -79,11 +79,11 @@ class _TTkKodeTab(TTkTabWidget):
         kt._tabBarTopLayout.update()
 
     def dragEnterEvent(self, evt) -> bool:
-        TTkLog.debug(f"leave")
+        TTkLog.debug(f"Drag Enter")
         return True
 
     def dragLeaveEvent(self, evt) -> bool:
-        TTkLog.debug(f"leave")
+        TTkLog.debug(f"Drag Leave")
         self._frameOverlay = None
         self.update()
         return True
