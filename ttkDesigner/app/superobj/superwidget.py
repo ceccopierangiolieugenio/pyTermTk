@@ -99,14 +99,17 @@ class SuperWidget(ttk.TTkContainer):
     def swFromWidget(wid:object, *args, **kwargs):
         swClass = so.SuperWidget
         for c, sc in {
-            ttk.TTkTextEdit:       so.SuperWidgetTextEdit,
+            # ttk.TTkTextEdit:       so.SuperWidgetTextEdit,
             ttk.TTkRadioButton:    so.SuperWidgetRadioButton,
             # ttk.TTkResizableFrame: so.SuperWidgetFrame,
             # ttk.TTkWindow:         so.SuperWidgetFrame,
             ttk.TTkSplitter:       so.SuperWidgetSplitter,
+            # ttk.TTkList:           so.SuperWidgetList,
             ttk.TTkMenuButton:     so.SuperWidgetMenuButton,
             ttk.TTkFrame:          so.SuperWidgetFrame,
+            ttk.TTkAbstractScrollArea: so.SuperWidgetAbstractScrollArea,
             ttk.TTkContainer:      so.SuperWidgetContainer,
+            ttk.TTkWidget:         so.SuperWidget,
                 }.items():
             if c in type(wid).mro():
                 swClass = sc

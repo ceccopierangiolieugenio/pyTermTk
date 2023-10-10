@@ -31,10 +31,11 @@ class TTkList(TTkAbstractScrollArea):
         '_listView', 'itemClicked', 'textClicked',
         # Forwarded Methods
         'items',
+        'dragDropMode', 'setDragDropMode',
         'addItem', 'addItemAt', 'addItems', 'addItemsAt',
         'indexOf', 'itemAt', 'moveItem',
         'removeAt', 'removeItem', 'removeItems',
-        'setSelectionMode', 'selectedItems', 'selectedLabels',
+        'selectionMode', 'setSelectionMode', 'selectedItems', 'selectedLabels',
         'setCurrentRow', 'setCurrentItem',  )
 
     def __init__(self, *args, **kwargs):
@@ -58,9 +59,12 @@ class TTkList(TTkAbstractScrollArea):
         self.addItems         = self._listView.addItems
         self.addItemAt        = self._listView.addItemAt
         self.addItemsAt       = self._listView.addItemsAt
+        self.selectionMode    = self._listView.selectionMode
         self.setSelectionMode = self._listView.setSelectionMode
         self.selectedItems    = self._listView.selectedItems
         self.selectedLabels   = self._listView.selectedLabels
         self.setCurrentRow    = self._listView.setCurrentRow
         self.setCurrentItem   = self._listView.setCurrentItem
+        self.dragDropMode     = self._listView.dragDropMode
+        self.setDragDropMode  = self._listView.setDragDropMode
 

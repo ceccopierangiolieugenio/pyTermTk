@@ -128,7 +128,7 @@ class TTkListWidget(TTkAbstractScrollView):
         self._dndMode = kwargs.get("dragDropMode",
                                 TTkK.DragDropMode.AllowDrag | TTkK.DragDropMode.AllowDrop )
         # Signals
-        self.itemClicked = pyTTkSignal(TTkWidget)
+        self.itemClicked = pyTTkSignal(TTkAbstractListItem)
         self.textClicked = pyTTkSignal(str)
         # Init Super
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
@@ -170,6 +170,10 @@ class TTkListWidget(TTkAbstractScrollView):
     def setDragDropMode(self, dndMode):
         '''setDragDropMode'''
         self._dndMode = dndMode
+
+    def selectionMode(self):
+        '''selectionMode'''
+        return self._selectionMode
 
     def setSelectionMode(self, mode):
         '''setSelectionMode'''

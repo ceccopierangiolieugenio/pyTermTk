@@ -33,7 +33,7 @@ from showcase._showcasehelper import getUtfWord
 
 def demoList(root= None):
     # Define the main Layout
-    retFrame = ttk.TTkFrame(parent=root, layout=(rootLayout:=ttk.TTkGridLayout()))
+    retFrame = ttk.TTkFrame(parent=root, border=False, layout=(rootLayout:=ttk.TTkGridLayout()))
 
     # Define the main Layout
     win1    = ttk.TTkWindow(title="Single List",      layout=ttk.TTkVBoxLayout())

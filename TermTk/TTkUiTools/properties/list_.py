@@ -22,4 +22,48 @@
 
 __all__ = ['TTkListProperties']
 
-TTkListProperties = {'properties' : {},'signals' : {},'slots' : {}}
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkWidgets.list_ import TTkList
+from TermTk.TTkWidgets.listwidget import TTkListWidget, TTkAbstractListItem
+
+
+TTkListProperties = {
+    'properties' : {
+        'Selection Mode' : {
+            'init': {'name':'selectionMode', 'type':'singleflag',
+                     'flags':{
+                         'Single Seelction' : TTkK.SingleSelection,
+                         'Multi Selection'  : TTkK.MultiSelection,
+                     }},
+            'get': {'cb':lambda w: w.selectionMode(), 'type':'singleflag',
+                     'flags':{
+                         'Single Seelction' : TTkK.SingleSelection,
+                         'Multi Selection'  : TTkK.MultiSelection,
+                     }},
+            'set': {'cb':lambda w,v: w.setSelectionMode(v), 'type':'singleflag',
+                     'flags':{
+                         'Single Seelction' : TTkK.SingleSelection,
+                         'Multi Selection'  : TTkK.MultiSelection,
+                     }}},
+        'DnD Mode' : {
+            'init': {'name':'dragDropMode', 'type':'multiflags',
+                     'flags':{
+                         'Allow Drag' : TTkK.DragDropMode.AllowDrag,
+                         'Allow Drop' : TTkK.DragDropMode.AllowDrop,
+                     }},
+            'get': {'cb':lambda w: w.dragDropMode(), 'type':'multiflags',
+                     'flags':{
+                         'Allow Drag' : TTkK.DragDropMode.AllowDrag,
+                         'Allow Drop' : TTkK.DragDropMode.AllowDrop,
+                     }},
+            'set': {'cb':lambda w,v: w.setDragDropMode(v), 'type':'multiflags',
+                     'flags':{
+                         'Allow Drag' : TTkK.DragDropMode.AllowDrag,
+                         'Allow Drop' : TTkK.DragDropMode.AllowDrop,
+                     }}},
+    },
+    'signals' : {
+        'itemClicked(TTkAbstractListItem)' : {'name': 'itemClicked', 'type' : TTkAbstractListItem},
+        'textClicked(str)' :                 {'name': 'textClicked', 'type' : str},
+    },
+    'slots' : {}}

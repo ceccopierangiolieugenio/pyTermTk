@@ -56,7 +56,8 @@ dWidgets = {
     },
     'Widgets':{
         "Label"           : { "class":ttk.TTkLabel,          "params":{'size':(20,1), 'text':'Label'}},
-        "List"            : { "class":ttk.TTkListWidget,     "params":{'size':(20,1)}, "disabled": True},
+        "List"            : { "class":ttk.TTkList,           "params":{'size':(20,5)}},
+        # "List Widget"     : { "class":ttk.TTkListWidget,     "params":{'size':(20,5)}},
         "Scroll Area"     : { "class":ttk.TTkScrollArea,     "params":{'size':(20,5)}, "disabled": True},
         "Spacer"          : { "class":ttk.TTkSpacer,         "params":{'size':(10,5)}},
         "Tab Widget"      : { "class":ttk.TTkTabWidget,      "params":{'size':(20,3)}, "disabled": True},

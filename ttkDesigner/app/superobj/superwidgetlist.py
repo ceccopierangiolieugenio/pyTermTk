@@ -1,4 +1,3 @@
-
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,19 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .supercontrol import SuperControlWidget
+import TermTk as ttk
+import ttkDesigner.app.superobj as so
+from .superobj import SuperObject
 
-from .superwidget            import SuperWidget
-from .superwidgetcontainer   import SuperWidgetContainer
-from .superwidgetabstractscrollarea import SuperWidgetAbstractScrollArea
-# from .superwidgettextedit    import SuperWidgetTextEdit
-from .superwidgetradiobutton import SuperWidgetRadioButton
-from .superwidgetframe       import SuperWidgetFrame
-from .superwidgetsplitter    import SuperWidgetSplitter
-# from .superwidgetlist        import SuperWidgetList
-from .superwidgetmenubutton  import SuperWidgetMenuButton
 
-from .superlayout     import SuperLayout
-from .superlayoutgrid import SuperLayoutGrid
-from .superlayoutvbox import SuperLayoutVBox
-from .superlayouthbox import SuperLayoutHBox
+class SuperWidgetList(so.SuperWidgetAbstractScrollArea):
+    pass
