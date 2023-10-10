@@ -37,7 +37,6 @@ class TTkCanvas:
     '''
     __slots__ = (
         '_width', '_height', '_newWidth', '_newHeight',
-        '_theme',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')

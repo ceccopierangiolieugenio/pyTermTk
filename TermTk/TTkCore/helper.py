@@ -414,7 +414,7 @@ class TTkHelper:
                 if w == widget:
                     widget=None
                 continue
-            if w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
+            if w.isEnabled() and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 w.setFocus()
                 w.update()
                 return
@@ -436,7 +436,7 @@ class TTkHelper:
                 widget=None
                 if prev:
                     break
-            if w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
+            if w.isEnabled() and w.focusPolicy() & TTkK.TabFocus == TTkK.TabFocus:
                 prev = w
         if prev:
             prev.setFocus()

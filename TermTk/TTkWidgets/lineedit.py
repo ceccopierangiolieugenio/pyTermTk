@@ -185,7 +185,7 @@ class TTkLineEdit(TTkWidget):
     @staticmethod
     def _isFloat(num):
         try:
-            float(num)
+            float(str(num))
             return True
         except:
             return False
@@ -220,12 +220,12 @@ class TTkLineEdit(TTkWidget):
     def keyEvent(self, evt):
         baseText = self._text
         if evt.type == TTkK.SpecialKey:
-            # Don't Handle the special tab key
-            if evt.key == TTkK.Key_Tab:
+            # Don't Handle the special focus switch key
+            if evt.key in (
+                TTkK.Key_Tab, TTkK.Key_Up, TTkK.Key_Down):
                 return False
-            if evt.key == TTkK.Key_Up: pass
-            elif evt.key == TTkK.Key_Down: pass
-            elif evt.key == TTkK.Key_Left:
+
+            if evt.key == TTkK.Key_Left:
                 if self._selectionFrom < self._selectionTo:
                     self._cursorPos = self._selectionTo
                 self._cursorPos = self._text.prevPos(self._cursorPos)
