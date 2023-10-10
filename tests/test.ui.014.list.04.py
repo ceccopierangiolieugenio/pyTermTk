@@ -46,9 +46,9 @@ mouseTrack = args.t
 root = ttk.TTk(title="pyTermTk List Demo", mouseTrack=mouseTrack)
 
 # Define the main Layout
-frame1 = ttk.TTkResizableFrame(parent=root, pos=( 0, 0), size=(30,30), title="Single List", border=0, layout=ttk.TTkVBoxLayout())
-frame2 = ttk.TTkResizableFrame(parent=root, pos=(30, 0), size=(30,30), title="Multi List", border=0, layout=ttk.TTkVBoxLayout())
-frame3 = ttk.TTkResizableFrame(parent=root, pos=(60, 0), size=(80,30), title="Log", border=0, layout=ttk.TTkVBoxLayout())
+frame1 = ttk.TTkWindow(parent=root, pos=( 0, 0), size=(30,30), title="Single List", border=0, layout=ttk.TTkVBoxLayout())
+frame2 = ttk.TTkWindow(parent=root, pos=(30, 0), size=(30,30), title="Multi List", border=0, layout=ttk.TTkVBoxLayout())
+frame3 = ttk.TTkWindow(parent=root, pos=(60, 0), size=(80,30), title="Log", border=0, layout=ttk.TTkVBoxLayout())
 
 # Single Selection List
 listWidgetSingle = ttk.TTkList(parent=frame1, maxWidth=40, minWidth=10)

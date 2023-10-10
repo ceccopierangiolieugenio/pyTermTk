@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 # MIT License
 #
@@ -21,19 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .supercontrol import SuperControlWidget
+# Those 2 lines are required to use the TermTk library straight from the main folder
+import sys, os
+sys.path.append(os.path.join(sys.path[0],'../../..'))
 
-from .superwidget            import SuperWidget
-from .superwidgetcontainer   import SuperWidgetContainer
-from .superwidgetabstractscrollarea import SuperWidgetAbstractScrollArea
-# from .superwidgettextedit    import SuperWidgetTextEdit
-from .superwidgetradiobutton import SuperWidgetRadioButton
-from .superwidgetframe       import SuperWidgetFrame
-from .superwidgetsplitter    import SuperWidgetSplitter
-# from .superwidgetlist        import SuperWidgetList
-from .superwidgetmenubutton  import SuperWidgetMenuButton
+import TermTk as ttk
 
-from .superlayout     import SuperLayout
-from .superlayoutgrid import SuperLayoutGrid
-from .superlayoutvbox import SuperLayoutVBox
-from .superlayouthbox import SuperLayoutHBox
+root=ttk.TTk()
+
+btn1 = ttk.TTkButton(parent=root, pos=(5,2), text='Button 1 - unfocussed')
+btn2 = ttk.TTkButton(parent=root, pos=(5,3), text='Button 2 - unfocussed')
+btn3 = ttk.TTkButton(parent=root, pos=(5,4), text='Button 3 - unfocussed')
+btn4 = ttk.TTkButton(parent=root, pos=(5,5), text='Button 4 - focussed')
+btn5 = ttk.TTkButton(parent=root, pos=(5,6), text='Button 5 - unfocussed')
+
+# Force the focus on the button 4
+btn4.setFocus()
+
+root.mainloop()
