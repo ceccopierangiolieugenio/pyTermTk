@@ -219,6 +219,18 @@
         <span class="c1"># InsertAlphabetically = 0x06</span>
         <span class="c1"># &#39;&#39;&#39;The string is inserted in the alphabetic order in the combobox.&#39;&#39;&#39;</span>
 
+<div class="viewcode-block" id="TTkConstant.DragDropMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.DragDropMode">[docs]</a>    <span class="k">class</span> <span class="nc">DragDropMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Specifies the Drag and Drop mode allowed by this widget&#39;&#39;&#39;</span>
+        <span class="n">NoDragDrop</span> <span class="o">=</span> <span class="mh">0x00</span>
+        <span class="sd">&#39;&#39;&#39;No Drag and Drop is allowed&#39;&#39;&#39;</span>
+        <span class="n">AllowDrag</span>  <span class="o">=</span> <span class="mh">0x01</span>
+        <span class="sd">&#39;&#39;&#39;Drag allowed&#39;&#39;&#39;</span>
+        <span class="n">AllowDrop</span> <span class="o">=</span> <span class="mh">0x02</span>
+        <span class="sd">&#39;&#39;&#39;Drop allowed&#39;&#39;&#39;</span></div>
+    <span class="n">NoDragDrop</span> <span class="o">=</span> <span class="n">DragDropMode</span><span class="o">.</span><span class="n">NoDragDrop</span>
+    <span class="n">AllowDrag</span>  <span class="o">=</span> <span class="n">DragDropMode</span><span class="o">.</span><span class="n">AllowDrag</span>
+    <span class="n">AllowDrop</span>  <span class="o">=</span> <span class="n">DragDropMode</span><span class="o">.</span><span class="n">AllowDrop</span>
+
 <div class="viewcode-block" id="TTkConstant.ChildIndicatorPolicy"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.ChildIndicatorPolicy">[docs]</a>    <span class="k">class</span> <span class="nc">ChildIndicatorPolicy</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
         <span class="n">ShowIndicator</span>                  <span class="o">=</span> <span class="mh">0x00</span> <span class="c1">#The controls for expanding and collapsing will be shown for this item even if there are no children.</span>
         <span class="n">DontShowIndicator</span>              <span class="o">=</span> <span class="mh">0x01</span> <span class="c1">#The controls for expanding and collapsing will never be shown even if there are children. If the node is forced open the user will not be able to expand or collapse the item.</span>
