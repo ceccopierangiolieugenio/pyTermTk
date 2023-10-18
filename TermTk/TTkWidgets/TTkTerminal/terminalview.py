@@ -93,7 +93,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                  '_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_resize_pipe',
                  '_mode_normal'
-                 '_clipboard',
+                 '_clipboard', '_selecting',
                  '_buffer_lines', '_buffer_screen',
                  '_keyboard', '_mouse', '_terminal',
                  '_screen_current', '_screen_normal', '_screen_alt',
@@ -111,7 +111,6 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._mode_normal = True
         self._quit_pipe = None
         self._resize_pipe = None
-        self._select = None
         self._terminal = TTkTerminalView._Terminal()
         self._keyboard = TTkTerminalView._Keyboard()
         self._mouse = TTkTerminalView._Mouse()
@@ -121,6 +120,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._screen_alt     = _TTkTerminalScreen()
         self._screen_current = self._screen_normal
         self._clipboard = TTkClipboard()
+        self._selecting = False
 
         # self._screen_normal.bell.connect(lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
         # self._screen_alt.bell.connect(   lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
@@ -967,28 +967,42 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     def mousePressEvent(self, evt):
         if self._mouse.reportPress:
-            self._select = None
+            self._screen_current.select(0,0)
             return self._sendMouse(evt) | True
+        self._selecting = True
         x,y = evt.x,evt.y
         ox,oy = self.getViewOffsets()
-        self._select = [(x+ox,y+oy)]
+        self._screen_current.select(x+ox,y+oy)
         self.update()
         return True
 
     def mouseDragEvent(self, evt):
         if self._mouse.reportPress:
-            self._select = None
+            self._screen_current.select(0,0)
             return self._sendMouse(evt)
-        if not self._select:
-            return True
         x,y = evt.x,evt.y
         ox,oy = self.getViewOffsets()
-        self._select[1:] = [(x+ox,y+oy)]
+        self._screen_current.select(x+ox,y+oy,moveAnchor=False)
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt): return self._sendMouse(evt)
-    def wheelEvent(self, evt):        return True if self._sendMouse(evt) else super().wheelEvent(evt)
+    def mouseReleaseEvent(self, evt):
+        self._selecting = False
+        selected = self._screen_current.getSelected()
+        self._clipboard.setText(selected)
+        return self._sendMouse(evt)
+
+    def wheelEvent(self, evt):
+        if self._sendMouse(evt):
+            return True
+        ret = super().wheelEvent(evt)
+        if self._selecting:
+            x,y = evt.x,evt.y
+            ox,oy = self.getViewOffsets()
+            self._screen_current.select(x+ox,y+oy,moveAnchor=False)
+            self.update()
+        return ret
+
     def mouseTapEvent(self, evt):     return self._sendMouse(evt)
     def mouseDoubleClickEvent(self, evt): return self._sendMouse(evt)
     def mouseMoveEvent(self, evt):
@@ -999,7 +1013,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
         ox,oy = self.getViewOffsets()
-        self._screen_current.paintEvent(canvas,w,h,ox,oy,self._select)
+        self._screen_current.paintEvent(canvas,w,h,ox,oy)
 
 
 

@@ -24,6 +24,7 @@ __all__ = ['']
 
 import collections
 import unicodedata
+from dataclasses import dataclass
 
 from TermTk.TTkCore.canvas import TTkCanvas
 
@@ -47,7 +48,49 @@ from .terminal_screen_CSI import _TTkTerminalScreen_CSI
 from .terminal_screen_C1  import _TTkTerminalScreen_C1
 
 class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
+
+    @dataclass(frozen=False)
+    class _SelectCursor:
+        @dataclass(frozen=False)
+        class _CP:
+            line: int = 0
+            pos:  int = 0
+            def setVal(self,x,y):
+                self.pos=x
+                self.line=y
+            def clear(self):
+                self.line = 0
+                self.pos = 0
+            def toNum(self):
+                return self.pos | self.line << 16
+        anchor:   _CP = _CP()
+        position: _CP = _CP()
+        def __str__(self) -> str:
+            return f"a:({self.anchor.pos},{self.anchor.line}) p:({self.position.pos},{self.position.line})"
+        def select(self, x, y, moveAnchor=True):
+            x=max(0,x)
+            y=max(0,y)
+            self.position.setVal(x,y)
+            if moveAnchor:
+                self.anchor.setVal(x,y)
+        def selectionStart(self):
+            if self.position.toNum() > self.anchor.toNum():
+                return self.anchor
+            else:
+                return self.position
+        def selectionEnd(self):
+            if self.position.toNum() >= self.anchor.toNum():
+                return self.position
+            else:
+                return self.anchor
+        def hasSelection(self):
+            return self.position!=self.anchor
+        def clear(self):
+            self.anchor.clear()
+            self.position.clear()
+
     __slots__ = ('_lines', '_terminalCursor',
+                 '_selectCursor',
                  '_scrollingRegion',
                  '_bufferSize', '_bufferedLines',
                  '_w', '_h', '_color', '_canvas',
@@ -68,6 +111,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         self._bufferedLines = collections.deque(maxlen=bufferSize)
         self._terminalCursor = (0,0)
         self._scrollingRegion = (0,h)
+        self._selectCursor = _TTkTerminalScreen._SelectCursor()
         self._color = color
         self._canvas = TTkCanvas(width=w, height=h)
 
@@ -94,6 +138,7 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         # self._scrollingRegion = (st,sb)
         self._scrollingRegion = (0,h)
         if w==ow and h==oh: return
+        self._selectCursor.clear()
         self._w, self._h = w, h
         newCanvas = TTkCanvas(width=w, height=h)
         s = (0,0,w,h)
@@ -176,6 +221,8 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         w,h = self._w, self._h
         st,sb = self._scrollingRegion
 
+        self._selectCursor.clear()
+
         lines = line.split('\n')
         for i,l in enumerate(lines):
             if i:
@@ -198,11 +245,70 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                         self._terminalCursor = (x,y)
                     self._pushTxt(lll,irm)
 
-    def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0, select:list=None) -> None:
+    def select(self, x, y, moveAnchor=True):
+        # line = getLineFromX(x)
+        # pos  = getPosFromX(linne,x)
+        # Convert x/y in line/pos
+        self._selectCursor.select(x,y,moveAnchor)
+
+    def getSelected(self):
+        ret = []
+
+        st = self._selectCursor.selectionStart()
+        en = self._selectCursor.selectionEnd()
+
+        lbl = len(self._bufferedLines)
+        for i in range(min(st.line,lbl),min(en.line,lbl)):
+            line = self._bufferedLines[i]
+            pa = 0 if st.line < i else st.pos
+            pb = len(line) if en.line > i else en.pos
+            ret.append(line.substring(fr=pa, to=pb))
+
         w,h = self._w, self._h
+        for y in range(max(0,min(st.line-lbl,h)),max(0,min(en.line-lbl+1,h))):
+            nl = self._canvasNewLine[y]
+            ls = self._canvasLineSize[y]
+            yyy = y+lbl
+            pa = 0 if st.line < yyy else st.pos
+            pb = ls if en.line > yyy else min(ls,en.pos)
+            data = self._canvas._data[y][pa:pb]
+            colors = self._canvas._colors[y][pa:pb]
+            line = TTkString._importString1("".join(data),colors)
+            if nl and ret:
+                ret[-1] += line
+            else:
+                ret.append(line)
+        return TTkString('\n').join(ret)
+
+
+    def paintEvent(self, canvas: TTkCanvas, w:int, h:int, ox:int=0, oy:int=0) -> None:
+        w,h = self._w, self._h
+        st = self._selectCursor.selectionStart()
+        en = self._selectCursor.selectionEnd()
+        # draw Buffered lines
         ll = len(self._bufferedLines)
-        for y in range(ll-oy):
-            canvas.drawTTkString(pos=(0,y),text=self._bufferedLines[oy+y])
+        color=TTkColor.fg("#ffffff")+TTkColor.bg("#008888")
+        for y in range(min(h,ll-oy)):
+            line = self._bufferedLines[oy+y]
+            if st.line <= (yyy:=(y+oy)) <= en.line:
+                pa = 0 if st.line < yyy else st.pos
+                pb = len(line) if en.line > yyy else en.pos
+                canvas.drawTTkString(pos=(0,y),text=line.setColor(posFrom=pa, posTo=pb,color=color))
+            else:
+                canvas.drawTTkString(pos=(0,y),text=line)
+        # draw the Canvas
         s = (-ox,ll-oy,w,h)
         canvas.paintCanvas(self._canvas,s,s,s)
-        canvas.drawText(pos=(0,0),text=f"({select})")
+        # canvas.drawText(pos=(0,0),text=f"({self._selectCursor})")
+        color=TTkColor.fg("#ffffff")+TTkColor.bg("#008844")
+        for y in range(max(st.line-oy,ll-oy),min(en.line-oy+1,h)):
+            did = y+oy-ll
+            data = self._canvas._data[did]
+            # colors = self._canvas._colors[did]
+            # nl = self._canvasNewLine[did]
+            ls = self._canvasLineSize[did]
+            yyy = y+oy
+            pa = 0 if st.line < yyy else st.pos
+            pb = ls if en.line > yyy else min(ls,en.pos)
+            canvas.drawText(pos=(pa,y), text="".join(data[pa:pb]), color=color)
+
