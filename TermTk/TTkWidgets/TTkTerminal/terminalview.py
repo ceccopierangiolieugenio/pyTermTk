@@ -988,8 +988,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     def mouseReleaseEvent(self, evt):
         self._selecting = False
-        selected = self._screen_current.getSelected()
-        self._clipboard.setText(selected)
+        if (selected := self._screen_current.getSelected()):
+            self._clipboard.setText(selected)
         return self._sendMouse(evt)
 
     def wheelEvent(self, evt):

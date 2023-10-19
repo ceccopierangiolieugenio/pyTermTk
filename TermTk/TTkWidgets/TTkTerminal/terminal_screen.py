@@ -252,6 +252,8 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
         self._selectCursor.select(x,y,moveAnchor)
 
     def getSelected(self):
+        if not self._selectCursor.hasSelection():
+            return ""
         ret = []
 
         st = self._selectCursor.selectionStart()
