@@ -33,7 +33,7 @@ if platform.system() == 'Linux':
 elif platform.system() == 'Darwin':
     from .readinputlinux import ReadInput
 elif platform.system() == 'Windows':
-    raise NotImplementedError('Windows OS not yet supported')
+    from .readinputwindows import ReadInput
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK

@@ -148,5 +148,5 @@ class TTkTermBase():
     flush      = lambda *args: None
     setEcho    = lambda *args: None
     CRNL       = lambda *args: None
-    getTerminalSize  = lambda *args: None
+    getTerminalSize  = lambda *args: (80,24)
     registerResizeCb = lambda *args: None

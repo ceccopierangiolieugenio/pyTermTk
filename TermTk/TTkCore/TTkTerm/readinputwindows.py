@@ -20,16 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTerm']
+class ReadInput():
+    def __init__(self):
+        pass
 
-import importlib.util
-import platform
+    def close(self):
+        pass
 
-if importlib.util.find_spec('pyodideProxy'):
-    from .term_pyodide import TTkTerm
-elif platform.system() == 'Linux':
-    from .term_unix import TTkTerm
-elif platform.system() == 'Darwin':
-    from .term_unix import TTkTerm
-elif platform.system() == 'Windows':
-    from .term_windows import TTkTerm
+    def cont(self):
+        pass
+
+    def read(self):
+        from time import sleep
+        sleep(5)
+        yield ""
