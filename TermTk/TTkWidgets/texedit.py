@@ -861,6 +861,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
         '''getLineNumber'''
         return self._lineNumberView.isVisible()
 
+    @pyTTkSlot(bool)
     def setLineNumber(self, ln):
         '''setLineNumber'''
         self._lineNumberView.setVisible(ln)
@@ -868,6 +869,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
     def lineNumberStarting(self):
         return self._lineNumberView._startingNumber
 
+    @pyTTkSlot(int)
     def setLineNumberStarting(self, starting):
         self._lineNumberView._startingNumber = starting
         self._lineNumberView._wrapChanged()
