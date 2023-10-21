@@ -40,7 +40,7 @@ __check(){
             -e "string.py:import unicodedata" \
             -e "progressbar.py:import math" \
             -e "uiloader.py:import json" \
-            -e "uiproperties.py:from .properties import *" \
+            -e "uiproperties.py:from .properties.* import" \
             -e "util.py:import zlib, pickle, base64" \
             -e "propertyanimation.py:from inspect import getfullargspec" \
             -e "propertyanimation.py:from types import LambdaType" \
