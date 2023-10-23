@@ -170,19 +170,20 @@ class INPUT_RECORD(Structure):
 def reset():
     # Reset
     sys.stdout.write("\033[?1000l")
-    sys.stdout.write("\033[?1002l")
+    # sys.stdout.write("\033[?1002l")
     sys.stdout.write("\033[?1003l")
-    sys.stdout.write("\033[?1015l")
     sys.stdout.write("\033[?1006l")
-    sys.stdout.write("\033[?1049l") # Switch to normal screen
-    sys.stdout.write("\033[?2004l") # Paste Bracketed mode
+    sys.stdout.write("\033[?1015l")
+    # sys.stdout.write("\033[?1049l") # Switch to normal screen
+    # sys.stdout.write("\033[?2004l") # Paste Bracketed mode
     sys.stdout.flush()
 
-sys.stdout.write("\x1b[?1000h")
-sys.stdout.write("\x1b[?1003h")
-sys.stdout.write("\x1b[?1015h")
-sys.stdout.write("\x1b[?1006h")
-sys.stdout.flush()
+def init():
+    sys.stdout.write("\x1b[?1000h")
+    sys.stdout.write("\x1b[?1003h")
+    sys.stdout.write("\x1b[?1006h")
+    sys.stdout.write("\x1b[?1015h")
+    sys.stdout.flush()
 
 # DWORD cNumRead, fdwMode, i;
 # INPUT_RECORD irInBuf[128];
@@ -190,8 +191,8 @@ sys.stdout.flush()
 
 # // Get the standard input handle.
 #
-# hStdin = GetStdHandle(STD_INPUT_HANDLE);
-# if (hStdin == INVALID_HANDLE_VALUE)
+# hStdIn = GetStdHandle(STD_INPUT_HANDLE);
+# if (hStdIn == INVALID_HANDLE_VALUE)
 #     ErrorExit("GetStdHandle");
 #
 # From:
@@ -205,13 +206,17 @@ GetStdHandle = windll.kernel32.GetStdHandle
 GetStdHandle.argtypes = [wintypes.DWORD]
 GetStdHandle.restype = wintypes.HANDLE
 
-hStdin = GetStdHandle(STD_INPUT_HANDLE)
-if hStdin == INVALID_HANDLE_VALUE:
+hStdIn = GetStdHandle(STD_INPUT_HANDLE)
+if hStdIn == INVALID_HANDLE_VALUE:
+   raise Exception("GetStdHandle")
+
+hStdOut = GetStdHandle(STD_OUTPUT_HANDLE)
+if hStdOut == INVALID_HANDLE_VALUE:
    raise Exception("GetStdHandle")
 
 # // Save the current input mode, to be restored on exit.
 #
-# if (! GetConsoleMode(hStdin, &fdwSaveOldMode) )
+# if (! GetConsoleMode(hStdIn, &fdwSaveOldModeIn) )
 #     ErrorExit("GetConsoleMode");
 #
 # From:
@@ -226,14 +231,21 @@ GetConsoleMode = windll.kernel32.GetConsoleMode
 GetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.LPDWORD]
 GetConsoleMode.restype = wintypes.BOOL
 
-fdwSaveOldMode = wintypes.DWORD()
-if not GetConsoleMode(hStdin, byref(fdwSaveOldMode)):
+fdwSaveOldModeIn = wintypes.DWORD()
+if not GetConsoleMode(hStdIn, byref(fdwSaveOldModeIn)):
    raise Exception("GetConsoleMode")
+
+fdwSaveOldModeOut = wintypes.DWORD()
+if not GetConsoleMode(hStdOut, byref(fdwSaveOldModeOut)):
+   raise Exception("GetConsoleMode")
+
+print(f"{fdwSaveOldModeIn.value=:02x}")
+print(f"{fdwSaveOldModeOut.value=:02x}")
 
 # // Enable the window and mouse input events.
 #
 # fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT;
-# if (! SetConsoleMode(hStdin, fdwMode) )
+# if (! SetConsoleMode(hStdIn, fdwMode) )
 #     ErrorExit("SetConsoleMode");
 #
 # From:
@@ -248,9 +260,20 @@ SetConsoleMode = windll.kernel32.SetConsoleMode
 SetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.DWORD]
 SetConsoleMode.restype = wintypes.BOOL
 
-fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT
-if not SetConsoleMode(hStdin, fdwMode):
+fdwModeIn = ENABLE_VIRTUAL_TERMINAL_INPUT
+# fdwModeIn = 0x0218
+if not SetConsoleMode(hStdIn, fdwModeIn):
    raise Exception("SetConsoleMode")
+
+fdwModeOut = fdwSaveOldModeOut.value | ENABLE_VIRTUAL_TERMINAL_PROCESSING
+# fdwModeIn = 0x0218
+if not SetConsoleMode(hStdOut, fdwModeOut):
+   raise Exception("SetConsoleMode")
+
+print(f"{fdwModeIn=:02x}")
+print(f"{fdwModeOut=:02x}")
+
+init()
 
 # From:
 #   https://learn.microsoft.com/en-us/windows/console/ReadConsoleInput
@@ -284,19 +307,19 @@ for _ in range(50):
 #     // Wait for the events.
 #
 #     if (! ReadConsoleInput(
-#             hStdin,      // input buffer handle
+#             hStdIn,      // input buffer handle
 #             irInBuf,     // buffer to read into
 #             128,         // size of read buffer
 #             &cNumRead) ) // number of records read
 #         ErrorExit("ReadConsoleInput");
     if not ReadConsoleInput(
-            hStdin,      # input buffer handle
+            hStdIn,      # input buffer handle
             byref(irInBuf),     # buffer to read into
             256,         # size of read buffer
             byref(cNumRead)): # number of records read
         raise Exception("ReadConsoleInput")
 
-    # print(f"{hStdin=} {irInBuf=} {cNumRead=}")
+    # print(f"{hStdIn=} {irInBuf=} {cNumRead=}")
     print(f"{cNumRead=}")
 
 #     // Dispatch the events to the appropriate handler.
@@ -356,8 +379,11 @@ for _ in range(50):
 
 # // Restore input mode on exit.
 #
-# SetConsoleMode(hStdin, fdwSaveOldMode);
-if not SetConsoleMode(hStdin, fdwSaveOldMode):
+# SetConsoleMode(hStdIn, fdwSaveOldModeIn);
+if not SetConsoleMode(hStdIn, fdwSaveOldModeIn):
+   raise Exception("SetConsoleMode")
+
+if not SetConsoleMode(hStdOut, fdwSaveOldModeOut):
    raise Exception("SetConsoleMode")
 
 # return 0;
