@@ -91,7 +91,7 @@ class TTkTermBase():
     _sigWinChCb = None
 
     @staticmethod
-    def init(title: str = "TermTk", sigmask=0):
+    def init(title: str = "TermTk", sigmask=0) -> None:
         TTkTermBase.title = title
         TTkTermBase.Cursor.hide()
         TTkTermBase.push(TTkTermBase.escTitle(TTkTermBase.title))
@@ -116,21 +116,21 @@ class TTkTermBase():
             TTkTermBase.push(TTkTermBase.Mouse.DIRECT_OFF)
 
     @staticmethod
-    def exit():
+    def exit() -> None:
         TTkTermBase.push(TTkTermBase.Mouse.OFF + TTkTermBase.Mouse.DIRECT_OFF)
         TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.RESET_BRACKETED_PM + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
         TTkTermBase.setEcho(True)
         TTkTermBase.CRNL(True)
 
     @staticmethod
-    def stop():
+    def stop() -> None:
         TTkTermBase.push(TTkTermBase.Mouse.OFF + TTkTermBase.Mouse.DIRECT_OFF)
         TTkTermBase.push(TTkTermBase.CLEAR + TTkTermBase.NORMAL_SCREEN + TTkTermBase.RESET_BRACKETED_PM + TTkTermBase.Cursor.SHOW + TTkTermBase.escTitle())
         TTkTermBase.setEcho(True)
         TTkTermBase.CRNL(True)
 
     @staticmethod
-    def cont():
+    def cont() -> None:
         TTkTermBase.push(TTkTermBase.ALT_SCREEN + TTkTermBase.SET_BRACKETED_PM + TTkTermBase.CLEAR + TTkTermBase.Cursor.HIDE + TTkTermBase.escTitle(TTkTermBase.title))
         TTkTermBase.setMouse(TTkTermBase.mouse, TTkTermBase.directMouse)
         TTkTermBase.setEcho(False)

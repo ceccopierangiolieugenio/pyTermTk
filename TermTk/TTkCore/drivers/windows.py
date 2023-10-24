@@ -20,15 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['']
+__all__ = ['TTkSignalDriver','TTkInputDriver']
 
-import sys
+import signal
 
 from ctypes import Structure, Union, byref, wintypes, windll
 
-from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 # Based on the example ported from:
 #   https://learn.microsoft.com/en-us/windows/console/reading-input-buffer-events
@@ -199,6 +199,7 @@ class INPUT_RECORD(Structure):
 
 
 class TTkInputDriver():
+    windowResized = pyTTkSignal(int,int)
     def __init__(self):
         self._run = True
         self._initTerminal()
@@ -337,8 +338,28 @@ class TTkInputDriver():
                     # everything is received as ANSI sequence
                     pass
                 elif bb.EventType == WINDOW_BUFFER_SIZE_EVENT:
-                    TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent=}")
-                    TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.X=}")
-                    TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.Y=}")
+                    # TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent=}")
+                    # TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.X=}")
+                    # TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.Y=}")
+                    TTkInputDriver.windowResized.emit(bb.Event.WindowBufferSizeEvent.dwSize.X, bb.Event.WindowBufferSizeEvent.dwSize.Y)
 
             yield saveKey
+
+class TTkSignalDriver():
+    sigStop = pyTTkSignal()
+    sigCont = pyTTkSignal()
+    sigInt  = pyTTkSignal()
+
+    @staticmethod
+    def init():
+        # Register events
+        # signal.signal(signal.SIGTSTP, TTkSignalDriver._SIGSTOP) # Ctrl-Z
+        # signal.signal(signal.SIGCONT, TTkSignalDriver._SIGCONT) # Resume
+        signal.signal(signal.SIGINT,  TTkSignalDriver._SIGINT)  # Ctrl-C
+
+    def exit():
+        signal.signal(signal.SIGINT,  signal.SIG_DFL)
+
+    def _SIGSTOP(signum, frame): TTkSignalDriver.sigStop.emit()
+    def _SIGCONT(signum, frame): TTkSignalDriver.sigCont.emit()
+    def _SIGINT( signum, frame): TTkSignalDriver.sigInt.emit()

@@ -20,15 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['']
+__all__ = ['TTkSignalDriver','TTkInputDriver']
 
 import sys, os, re
+import signal
 from select import select
 
 try: import fcntl, termios, tty
 except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
+
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 
 class TTkInputDriver():
@@ -66,3 +69,24 @@ class TTkInputDriver():
                 else:
                     for ch in sr:
                         yield ch
+
+
+
+class TTkSignalDriver():
+    sigStop = pyTTkSignal()
+    sigCont = pyTTkSignal()
+    sigInt  = pyTTkSignal()
+
+    @staticmethod
+    def init():
+        # Register events
+        signal.signal(signal.SIGTSTP, TTkSignalDriver._SIGSTOP) # Ctrl-Z
+        signal.signal(signal.SIGCONT, TTkSignalDriver._SIGCONT) # Resume
+        signal.signal(signal.SIGINT,  TTkSignalDriver._SIGINT)  # Ctrl-C
+
+    def exit():
+        signal.signal(signal.SIGINT,  signal.SIG_DFL)
+
+    def _SIGSTOP(signum, frame): TTkSignalDriver.sigStop.emit()
+    def _SIGCONT(signum, frame): TTkSignalDriver.sigCont.emit()
+    def _SIGINT( signum, frame): TTkSignalDriver.sigInt.emit()

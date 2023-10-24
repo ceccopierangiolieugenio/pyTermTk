@@ -20,13 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTerm']
+
 import sys, os, signal
 from threading import Thread, Lock
 
-from .term_base import TTkTermBase
+from ..TTkTerm.term_base import TTkTermBase
 from TermTk.TTkCore.log import TTkLog
+from .windows import *
 
 class TTkTerm(TTkTermBase):
+    # force directMouse onn Windows
+    # otherwise the mouse events are not received
+    @staticmethod
+    def setMouse(mouse:bool=False, directMouse:bool=False) -> None:
+        TTkTermBase.setMouse(mouse|directMouse, mouse|directMouse)
+
     @staticmethod
     def _push(*args):
         try:
@@ -51,23 +60,21 @@ class TTkTerm(TTkTermBase):
            print(f'ERROR: {e}')
     TTkTermBase.getTerminalSize = _getTerminalSize
 
-    @staticmethod
-    def _sigWinChThreaded():
-        if not TTkTerm._sigWinChMutex.acquire(blocking=False): return
-        while (TTkTerm.width, TTkTerm.height) != (wh:=TTkTerm.getTerminalSize()):
-            TTkTerm.width, TTkTerm.height = wh
-            if TTkTerm._sigWinChCb is not None:
-                TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
-        TTkTerm._sigWinChMutex.release()
+    _sigWinChMutex = Lock()
 
     @staticmethod
-    def _sigWinCh(signum, frame):
-        Thread(target=TTkTerm._sigWinChThreaded).start()
+    def _sigWinCh(w,h):
+        def _sigWinChThreaded():
+            if not TTkTerm._sigWinChMutex.acquire(blocking=False): return
+            while (TTkTerm.width, TTkTerm.height) != (wh:=TTkTerm.getTerminalSize()):
+                TTkTerm.width, TTkTerm.height = wh
+                if TTkTerm._sigWinChCb is not None:
+                    TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
+            TTkTerm._sigWinChMutex.release()
+        Thread(target=_sigWinChThreaded).start()
 
-    # @staticmethod
-    # def _registerResizeCb(callback):
-    #     TTkTerm._sigWinChCb = callback
-    #     # Dummy call to retrieve the terminal size
-    #     TTkTerm._sigWinCh(signal.SIGWINCH, None)
-    #     signal.signal(signal.SIGWINCH, TTkTerm._sigWinCh)
-    # TTkTermBase.registerResizeCb = _registerResizeCb
+    @staticmethod
+    def _registerResizeCb(callback):
+        TTkTerm._sigWinChCb = callback
+        TTkInputDriver.windowResized.connect(TTkTerm._sigWinCh)
+    TTkTermBase.registerResizeCb = _registerResizeCb

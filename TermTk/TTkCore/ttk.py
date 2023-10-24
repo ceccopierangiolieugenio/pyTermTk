@@ -29,6 +29,7 @@ import queue
 import threading
 import platform
 
+from TermTk.TTkCore.drivers import *
 from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
@@ -100,6 +101,9 @@ class TTk(TTkContainer):
         self._termDirectMouse = kwargs.get('mouseTrack',False)
         TTkInput.inputEvent.connect(self._processInput)
         TTkInput.pasteEvent.connect(self._processPaste)
+        TTkSignalDriver.sigStop.connect(self._SIGSTOP)
+        TTkSignalDriver.sigCont.connect(self._SIGCONT)
+        TTkSignalDriver.sigInt.connect( self._SIGINT)
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
@@ -146,9 +150,7 @@ class TTk(TTkContainer):
             TTkLog.debug(f"screen = ({TTkTerm.getTerminalSize()})")
 
             # Register events
-            signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
-            signal.signal(signal.SIGCONT, self._SIGCONT) # Resume
-            signal.signal(signal.SIGINT,  self._SIGINT)  # Ctrl-C
+            TTkSignalDriver.init()
 
             TTkLog.debug("Signal Event Registered")
 
@@ -176,7 +178,7 @@ class TTk(TTkContainer):
             self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
-                signal.signal(signal.SIGINT,  signal.SIG_DFL)
+                TTkSignalDriver.exit()
                 self.quit()
                 TTkTerm.exit()
 
@@ -329,7 +331,8 @@ class TTk(TTkContainer):
         self._paintEvent.set()
         TTkInput.close()
 
-    def _SIGSTOP(self, signum, frame):
+    @pyTTkSlot()
+    def _SIGSTOP(self):
         """Reset terminal settings and stop background input read before putting to sleep"""
         TTkLog.debug("Captured SIGSTOP <CTRL-z>")
         TTkTerm.stop()
@@ -337,7 +340,8 @@ class TTk(TTkContainer):
         # TODO: stop the threads
         os.kill(os.getpid(), signal.SIGSTOP)
 
-    def _SIGCONT(self, signum, frame):
+    @pyTTkSlot()
+    def _SIGCONT(self):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
         TTkTerm.cont()
@@ -346,7 +350,8 @@ class TTk(TTkContainer):
         # TODO: Restart threads
         # TODO: Redraw the screen
 
-    def _SIGINT(self, signum, fraTERMTK_STACKTRACEme):
+    @pyTTkSlot()
+    def _SIGINT(self):
         # If the "TERMTK_STACKTRACE" env variable is defined
         # a stacktrace file is generated once CTRL+C is pressed
         # i.e.

@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTerm']
+
 import pyodideProxy
 
-from .term_base import TTkTermBase
+from ..TTkTerm.term_base import TTkTermBase
 
 class TTkTerm(TTkTermBase):
     @staticmethod

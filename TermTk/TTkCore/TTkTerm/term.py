@@ -22,14 +22,4 @@
 
 __all__ = ['TTkTerm']
 
-import importlib.util
-import platform
-
-if importlib.util.find_spec('pyodideProxy'):
-    from .term_pyodide import TTkTerm
-elif platform.system() == 'Linux':
-    from .term_unix import TTkTerm
-elif platform.system() == 'Darwin':
-    from .term_unix import TTkTerm
-elif platform.system() == 'Windows':
-    from .term_windows import TTkTerm
+from ..drivers import *
