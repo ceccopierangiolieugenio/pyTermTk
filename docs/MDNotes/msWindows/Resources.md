@@ -12,6 +12,7 @@
 C:
 cd C:\users\one\AppData\Local\Programs\Python\Python310-32
 python.exe demo/demo.py
+python.exe tests/test.input.win.py
 ```
 
 # termios wrappers
@@ -20,6 +21,7 @@ python.exe demo/demo.py
 # Competitors with MS-Win support
 
 ### Textual -> https://github.com/Textualize/textual
+https://github.com/Textualize/textual/blob/main/src/textual/drivers/win32.py
 
 ### TheVTPyProject -> https://github.com/srccircumflex/TheVTPyProject
 

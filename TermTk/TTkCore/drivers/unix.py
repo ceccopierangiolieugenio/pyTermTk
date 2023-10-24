@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['']
+
 import sys, os, re
 from select import select
 
@@ -29,7 +31,7 @@ except Exception as e:
     exit(1)
 
 
-class ReadInput():
+class TTkInputDriver():
     __slots__ = ('_readPipe','_attr')
 
     def __init__(self):

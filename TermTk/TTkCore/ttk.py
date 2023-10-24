@@ -40,19 +40,18 @@ from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkTheme.theme import TTkTheme
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
 class TTk(TTkContainer):
     class _mouseCursor(TTkWidget):
         __slots__ = ('_cursor','_color')
-        def __init__(self, input):
+        def __init__(self):
             super().__init__(name='MouseCursor')
             self._cursor = '✠'
             self._color = TTkColor.RST
             self.resize(1,1)
-            input.inputEvent.connect(self._mouseInput)
+            TTkInput.inputEvent.connect(self._mouseInput)
         @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
         def _mouseInput(self, _, mevt):
             if mevt is not None:
@@ -99,9 +98,8 @@ class TTk(TTkContainer):
         super().__init__(*args, **kwargs)
         self._termMouse = True
         self._termDirectMouse = kwargs.get('mouseTrack',False)
-        self._input = TTkInput()
-        self._input.inputEvent.connect(self._processInput)
-        self._input.pasteEvent.connect(self._processPaste)
+        TTkInput.inputEvent.connect(self._processInput)
+        TTkInput.pasteEvent.connect(self._processPaste)
         self._title = kwargs.get('title','TermTk')
         self._sigmask = kwargs.get('sigmask', TTkK.NONE)
         self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
@@ -145,6 +143,7 @@ class TTk(TTkContainer):
             TTkLog.debug(f"  Version: {TTkCfg.version}" )
             TTkLog.debug( "" )
             TTkLog.debug( "Starting Main Loop..." )
+            TTkLog.debug(f"screen = ({TTkTerm.getTerminalSize()})")
 
             # Register events
             signal.signal(signal.SIGTSTP, self._SIGSTOP) # Ctrl-Z
@@ -162,15 +161,16 @@ class TTk(TTkContainer):
 
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
+            TTkInput.init(
+                mouse=self._termMouse,
+                directMouse=self._termDirectMouse)
             TTkTerm.init(
                 title=self._title,
-                sigmask=self._sigmask,
-                mouse=self._termMouse,
-                directMouse=self._termDirectMouse )
+                sigmask=self._sigmask)
 
             if self._showMouseCursor:
                 TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
-                m = TTk._mouseCursor(self._input)
+                m = TTk._mouseCursor()
                 self.rootLayout().addWidget(m)
 
             self._mainLoop()
@@ -183,7 +183,7 @@ class TTk(TTkContainer):
     def _mainLoop(self):
         if platform.system() == 'Emscripten':
             return
-        self._input.start()
+        TTkInput.start()
 
     @pyTTkSlot(str)
     def _processPaste(self, txt:str):
@@ -325,15 +325,15 @@ class TTk(TTkContainer):
         '''Tells the application to exit with a return code.'''
         if self._timer:
             self._timer.timeout.disconnect(self._time_event)
-        self._input.inputEvent.clear()
+        TTkInput.inputEvent.clear()
         self._paintEvent.set()
-        self._input.close()
+        TTkInput.close()
 
     def _SIGSTOP(self, signum, frame):
         """Reset terminal settings and stop background input read before putting to sleep"""
         TTkLog.debug("Captured SIGSTOP <CTRL-z>")
         TTkTerm.stop()
-        self._input.stop()
+        TTkInput.stop()
         # TODO: stop the threads
         os.kill(os.getpid(), signal.SIGSTOP)
 
@@ -341,7 +341,7 @@ class TTk(TTkContainer):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
         TTkTerm.cont()
-        self._input.cont()
+        TTkInput.cont()
         TTkHelper.rePaintAll()
         # TODO: Restart threads
         # TODO: Redraw the screen
