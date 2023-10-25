@@ -31,7 +31,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from showcase._showcasehelper import getUtfColoredSentence
+from showcase._showcasehelper import getUtfColoredSentence, zc1, zc2, zc3
 
 class superSimpleHorizontalLine(ttk.TTkWidget):
     def paintEvent(self, canvas):
@@ -74,10 +74,6 @@ def demoTextEdit(root=None, document=None):
     te.append( "           |.|.|.|.|.||.|.|.||.|.|.")
     te.append("")
 
-
-    zc1 = chr(0x07a6)
-    zc2 = chr(0x20D7)
-    zc3 = chr(0x065f)
     te.append( "           - |  |  |  |  | -")
     te.append(f"Zero Size: - o{zc1}  o{zc2}  o{zc3}  o{zc1}{zc2}  o{zc1}{zc2}{zc3} -")
     te.append( "           - |  |  |  |  | -")

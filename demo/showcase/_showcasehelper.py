@@ -21,13 +21,20 @@
 # SOFTWARE.
 
 import sys, os, random
+import platform
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-zc1 = chr(0x07a6) # Zero width chars oަ
-zc2 = chr(0x20D7) # Zero width chars o⃗
-zc3 = chr(0x065f) # Zero width chars oٟ
+if platform.system() == 'Windows':
+    # The windows terminals badly supports zero sized chars
+    zc1 = 'X'
+    zc2 = 'Y'
+    zc3 = 'Z'
+else:
+    zc1 = chr(0x07a6) # Zero width chars oަ
+    zc2 = chr(0x20D7) # Zero width chars o⃗
+    zc3 = chr(0x065f) # Zero width chars oٟ
 utfwords = [
     f"--Zero{zc1}{zc2}{zc3}-1-", f"--Zero-2{zc1}{zc2}{zc3}-", f"--Ze{zc1}{zc2}{zc3}ro-3-", f"{zc1}{zc2}{zc3}--Zero-4-",
     "Lorem", "i🙻sum", "d😮l😱r", "sit", "am😎t,", "c😱nsectetur", "adi🙻iscing", "elit,", "sed", "do", "eiusmod", "t😜mpor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua.", "Ut", "enim", "ad", "minim", "veniam,", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "ut", "aliq😞ip", "ex", "ea", "comm😞do", "cons😿quat.", "Duis", "aute", "irure", "dolor", "in", "reprehenderit", "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur.", "Excepteur", "sint", "occaecat", "cupidatat", "non", "proident,", "sunt", "in", "cul🙻a", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum."]

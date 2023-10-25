@@ -26,7 +26,8 @@ import sys, os
 import logging
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog, TTkK, TTkInput, TTkTerm
+from TermTk import TTkLog, TTkK, TTkTerm
+from TermTk.TTkCore.TTkTerm.input import TTkInput
 
 def message_handler(mode, context, message):
     log = logging.debug
@@ -54,7 +55,6 @@ def winCallback(width, height):
 
 TTkTerm.registerResizeCb(winCallback)
 
-input = TTkInput()
 
 def keyCallback(kevt=None, mevt=None):
     if mevt is not None:
@@ -65,7 +65,7 @@ def keyCallback(kevt=None, mevt=None):
         else:
             TTkLog.info(f"Key Event: Special '{kevt}'")
         if kevt.key == "q":
-            input.close()
+            TTkInput.close()
             return False
     return True
 
@@ -73,11 +73,12 @@ def pasteCallback(txt:str):
     TTkLog.info(f"PASTE = {txt}")
     return True
 
-input.inputEvent.connect(keyCallback)
-input.pasteEvent.connect(pasteCallback)
-
+TTkInput.inputEvent.connect(keyCallback)
+TTkInput.pasteEvent.connect(pasteCallback)
+TTkInput.init(mouse=True, directMouse=True)
+# TTkInput.init(mouse=True, directMouse=False)
 try:
-    input.start()
+    TTkInput.start()
 finally:
-    TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
+    TTkInput.close()
     TTkTerm.setEcho(True)

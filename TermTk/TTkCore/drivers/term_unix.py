@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTerm']
+
 import sys, os, signal
 from threading import Thread, Lock
 
@@ -28,7 +30,7 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-from .term_base import TTkTermBase
+from ..TTkTerm.term_base import TTkTermBase
 from TermTk.TTkCore.log import TTkLog
 
 class TTkTerm(TTkTermBase):
