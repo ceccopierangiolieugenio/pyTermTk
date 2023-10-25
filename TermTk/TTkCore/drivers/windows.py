@@ -345,8 +345,8 @@ class TTkInputDriver():
                     # TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.X=}")
                     # TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.Y=}")
                     TTkInputDriver.windowResized.emit(bb.Event.WindowBufferSizeEvent.dwSize.X, bb.Event.WindowBufferSizeEvent.dwSize.Y)
-
-            yield "".join(saveKeys).encode("utf-16", "surrogatepass").decode("utf-16")
+            if saveKeys:
+                yield "".join(saveKeys).encode("utf-16", "surrogatepass").decode("utf-16")
 
 class TTkSignalDriver():
     sigStop = pyTTkSignal()
