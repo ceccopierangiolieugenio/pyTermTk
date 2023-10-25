@@ -52,14 +52,14 @@ def demoList(root= None):
     rootLayout.addWidget(win5,2,4)
 
     # Single Selection List
-    listWidgetSingle = ttk.TTkList(parent=win1, maxWidth=40, minWidth=10)
+    listWidgetSingle = ttk.TTkList(parent=win1, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDragDrop)
 
     # Multi Selection List
-    listWidgetMulti = ttk.TTkList(parent=win2, maxWidth=40, minWidth=10, selectionMode=ttk.TTkK.MultiSelection)
+    listWidgetMulti = ttk.TTkList(parent=win2, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDragDrop, selectionMode=ttk.TTkK.MultiSelection)
 
     # Multi Selection List - Drag Allowed
-    listWidgetDrag = ttk.TTkList(parent=win4, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.DragDropMode.AllowDrag)
-    listWidgetDrop = ttk.TTkList(parent=win5, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.DragDropMode.AllowDrop)
+    listWidgetDrag = ttk.TTkList(parent=win4, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDrag)
+    listWidgetDrop = ttk.TTkList(parent=win5, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDrop)
 
     # Log Viewer
     label1 = ttk.TTkLabel(pos=(10,0), text="[ list1 ]",maxHeight=2)
