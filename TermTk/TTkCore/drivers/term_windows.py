@@ -30,12 +30,6 @@ from TermTk.TTkCore.log import TTkLog
 from .windows import *
 
 class TTkTerm(TTkTermBase):
-    # force directMouse onn Windows
-    # otherwise the mouse events are not received
-    @staticmethod
-    def setMouse(mouse:bool=False, directMouse:bool=False) -> None:
-        TTkTermBase.setMouse(mouse|directMouse, mouse|directMouse)
-
     @staticmethod
     def _push(*args):
         try:
