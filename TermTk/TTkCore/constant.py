@@ -136,9 +136,12 @@ class TTkConstant:
         '''Drag allowed'''
         AllowDrop = 0x02
         '''Drop allowed'''
-    NoDragDrop = DragDropMode.NoDragDrop
-    AllowDrag  = DragDropMode.AllowDrag
-    AllowDrop  = DragDropMode.AllowDrop
+        AllowDragDrop = 0x03
+        '''Drag and Drop allowed'''
+    NoDragDrop     = DragDropMode.NoDragDrop
+    AllowDrag      = DragDropMode.AllowDrag
+    AllowDrop      = DragDropMode.AllowDrop
+    AllowDragDrop  = DragDropMode.AllowDragDrop
 
     class ChildIndicatorPolicy(int):
         ShowIndicator                  = 0x00 #The controls for expanding and collapsing will be shown for this item even if there are no children.

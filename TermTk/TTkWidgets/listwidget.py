@@ -125,8 +125,7 @@ class TTkListWidget(TTkAbstractScrollView):
         self._items = []
         self._highlighted = None
         self._dragPos = None
-        self._dndMode = kwargs.get("dragDropMode",
-                                TTkK.DragDropMode.AllowDrag | TTkK.DragDropMode.AllowDrop )
+        self._dndMode = kwargs.get("dragDropMode", TTkK.DragDropMode.NoDragDrop)
         # Signals
         self.itemClicked = pyTTkSignal(TTkAbstractListItem)
         self.textClicked = pyTTkSignal(str)
