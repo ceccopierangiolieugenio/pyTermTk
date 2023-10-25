@@ -22,7 +22,7 @@
 
 __all__ = ['TTkTerm']
 
-import sys, os, signal
+import sys, os
 from threading import Thread, Lock
 
 from ..TTkTerm.term_base import TTkTermBase

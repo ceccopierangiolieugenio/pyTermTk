@@ -79,7 +79,7 @@ class Mock_TTkTerm():
     @staticmethod
     def exit(): pass
     @staticmethod
-    def init(title,sigmask,mouse,directMouse): pass
+    def init(title,sigmask): pass
     @staticmethod
     def getTerminalSize():
         return 250,70

@@ -22,7 +22,7 @@
 
 __all__ = ['TTkSignalDriver','TTkInputDriver']
 
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.signal import pyTTkSignal
 
 class TTkInputDriver():
     def close(self): pass
