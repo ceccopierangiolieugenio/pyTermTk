@@ -107,12 +107,12 @@ class TTkTermBase():
         TTkTermBase.mouse = mouse | directMouse
         TTkTermBase.directMouse = directMouse
         if TTkTermBase.mouse:
+            TTkTermBase.push(TTkTermBase.Mouse.DIRECT_OFF)
             TTkTermBase.push(TTkTermBase.Mouse.ON)
+            if TTkTermBase.directMouse:
+                TTkTermBase.push(TTkTermBase.Mouse.DIRECT_ON)
         else:
             TTkTermBase.push(TTkTermBase.Mouse.OFF)
-        if TTkTermBase.directMouse:
-            TTkTermBase.push(TTkTermBase.Mouse.DIRECT_ON)
-        else:
             TTkTermBase.push(TTkTermBase.Mouse.DIRECT_OFF)
 
     @staticmethod
