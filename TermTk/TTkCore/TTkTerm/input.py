@@ -27,12 +27,7 @@ from time import time
 
 import platform
 
-if platform.system() == 'Linux':
-    from ..drivers.unix import TTkInputDriver
-elif platform.system() == 'Darwin':
-    from ..drivers.unix import TTkInputDriver
-elif platform.system() == 'Windows':
-    from ..drivers.windows import TTkInputDriver
+from ..drivers import TTkInputDriver
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
