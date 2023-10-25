@@ -327,34 +327,14 @@ for _ in range(50):
 
     # Dispatch the events to the appropriate handler.
     lastMousePress = 0
-    saveKey = ""
+    saveKeyb = b""
+    saveKeys = b""
+    listKeys = []
     for bb in irInBuf[:cNumRead.value]:
         # if not bb.EventType: continue
-        print(f"{bb=} {bb.EventType=} {cNumRead.value=}")
+        # print(f"{bb=} {bb.EventType=} {cNumRead.value=}")
 
-        if bb.EventType == KEY_EVENT:
-            saveKey += bb.Event.KeyEvent.uChar.UnicodeChar
-            #continue
-            print(
-                # f" evt:{bb.Event.KeyEvent}" +
-                f" kd:{bb.Event.KeyEvent.bKeyDown}" +
-                f" rc:{bb.Event.KeyEvent.wRepeatCount}" +
-                f" VKC:{bb.Event.KeyEvent.wVirtualKeyCode}" +
-                f" VSC:{bb.Event.KeyEvent.wVirtualScanCode}" +
-                f" UC:{bb.Event.KeyEvent.uChar.UnicodeChar}" +
-                f" AC:{bb.Event.KeyEvent.uChar.AsciiChar}" +
-                f" CKS:{bb.Event.KeyEvent.dwControlKeyState} -> {saveKey=}"
-            )
-            # print(f"{bb.Event.KeyEvent=}")
-            # print(f"{bb.Event.KeyEvent.bKeyDown=}")
-            # print(f"{bb.Event.KeyEvent.wRepeatCount=}")
-            # print(f"{bb.Event.KeyEvent.wVirtualKeyCode=}")
-            # print(f"{bb.Event.KeyEvent.wVirtualScanCode=}")
-            # print(f"{bb.Event.KeyEvent.uChar.UnicodeChar=}")
-            # print(f"{bb.Event.KeyEvent.uChar.AsciiChar=}")
-            # print(f"{bb.Event.KeyEvent.dwControlKeyState=}")
-
-        elif bb.EventType == MOUSE_EVENT:
+        if bb.EventType == MOUSE_EVENT:
             x = bb.Event.MouseEvent.dwMousePosition.X
             y = bb.Event.MouseEvent.dwMousePosition.Y
             print(f"{bb.Event.MouseEvent.dwControlKeyState=}")
@@ -410,8 +390,37 @@ for _ in range(50):
             print(f"{bb.Event.WindowBufferSizeEvent=}")
             print(f"{bb.Event.WindowBufferSizeEvent.dwSize.X=}")
             print(f"{bb.Event.WindowBufferSizeEvent.dwSize.Y=}")
+        elif bb.EventType == KEY_EVENT:
+            # if not bb.Event.KeyEvent.bKeyDown:
+            #     saveKeys += bb.Event.KeyEvent.uChar.UnicodeChar
+            #     saveKeyb += bb.Event.KeyEvent.uChar.AsciiChar
+            #     listKeys.append()
+            key = bb.Event.KeyEvent.uChar.UnicodeChar
+            if bb.Event.KeyEvent.bKeyDown or key == "\x1b":
+                if (bb.Event.KeyEvent.dwControlKeyState
+                    and bb.Event.KeyEvent.wVirtualKeyCode ):
+                    continue
+                listKeys.append(key)
+            #continue
+            print(
+                # f" evt:{bb.Event.KeyEvent}" +
+                f"\tkd:{bb.Event.KeyEvent.bKeyDown}" +
+                f"\trc:{bb.Event.KeyEvent.wRepeatCount}" +
+                f"\tVKC:{bb.Event.KeyEvent.wVirtualKeyCode}" +
+                f"\tVSC:{bb.Event.KeyEvent.wVirtualScanCode}" +
+                f"\tUC:{ord(bb.Event.KeyEvent.uChar.UnicodeChar):x}" +
+                f"\tAC:{bb.Event.KeyEvent.uChar.AsciiChar}" +
+                f"\tCKS:{bb.Event.KeyEvent.dwControlKeyState} -> {listKeys=}"
+            )
 
-    print(f"{saveKey=}")
+    print(f"{listKeys=}")
+    kk = "".join(listKeys)
+    print(f"{kk=}")
+    kk = kk.encode("utf-16", "surrogatepass")
+    print(f"{kk=}")
+    kk = kk.decode("utf-16")
+    print(f"{kk=}")
+
 
 # Restore input mode on exit.
 if not SetConsoleMode(hStdIn, fdwSaveOldModeIn):

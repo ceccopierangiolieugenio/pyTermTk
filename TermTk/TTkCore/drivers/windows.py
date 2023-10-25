@@ -323,15 +323,18 @@ class TTkInputDriver():
             # TTkLog.debug(f"{cNumRead=}")
 
             # Dispatch the events to the appropriate handler.
-            saveKey = ""
+            saveKeys = []
             for bb in irInBuf[:cNumRead.value]:
                 # if not bb.EventType: continue
                 # TTkLog.debug(f"{bb=} {bb.EventType=} {cNumRead.value=}")
 
                 if bb.EventType == KEY_EVENT:
-                    if not bb.Event.KeyEvent.bKeyDown:
+                    ke = bb.Event.KeyEvent
+                    if ( not ke.bKeyDown or
+                         ke.dwControlKeyState or
+                         ke.wVirtualKeyCode ):
                         continue
-                    saveKey += bb.Event.KeyEvent.uChar.UnicodeChar
+                    saveKeys.append(ke.uChar.UnicodeChar)
                 elif bb.EventType == MOUSE_EVENT:
                     # It is not supposed to receive Mouse Events
                     # due to ENABLE_VIRTUAL_TERMINAL_PROCESSING
@@ -343,7 +346,7 @@ class TTkInputDriver():
                     # TTkLog.debug(f"{bb.Event.WindowBufferSizeEvent.dwSize.Y=}")
                     TTkInputDriver.windowResized.emit(bb.Event.WindowBufferSizeEvent.dwSize.X, bb.Event.WindowBufferSizeEvent.dwSize.Y)
 
-            yield saveKey
+            yield "".join(saveKeys).encode("utf-16", "surrogatepass").decode("utf-16")
 
 class TTkSignalDriver():
     sigStop = pyTTkSignal()
