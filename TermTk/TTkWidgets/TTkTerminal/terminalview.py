@@ -196,7 +196,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             def _spawnTerminal(argv=[self._shell], env=os.environ):
                 os.execvpe(argv[0], argv, env)
             # threading.Thread(target=_spawnTerminal).start()
-            TTkHelper.quit()
+            # TTkHelper.quit()
             _spawnTerminal()
             import sys
             sys.exit()
