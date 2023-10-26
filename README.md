@@ -19,12 +19,14 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 [pyTermTk.Showcase.002.webm](https://user-images.githubusercontent.com/8876552/206490679-2bbdc909-c9bc-41c1-9a50-339b06dabecd.webm)
 
 ## Features
-- Cross compatible: Linux, Mac, MS Windows, HTML5
+- Self Contained (no external lib required)
+- Cross compatible: [Linux](https://en.wikipedia.org/wiki/Linux), [MacOS](https://en.wikipedia.org/wiki/MacOS), [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows), [HTML5](https://en.wikipedia.org/wiki/HTML5)
 - Basic widgets for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
 - Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
 - True color support
 - Ful/Half/Zero sized Unicode characters 😎
+- I am pretty sure there is something else...
 
 ## Limitations
 - Only the key combinations forwarded by the terminal emulator used are detected (ALT,CTRL may not be handled)
@@ -70,12 +72,13 @@ python3 tests/test.input.py
 
 #### Demos
 ```bash
-# Press CTRL-C to exit
-# the logs are written to "session.log"
-# add "-f" option to run it in "fullscreen" :-D
+# Press CTRL-C to exit (CTRL-Break on Windows)
 
 # Showcase Demo
 python3 demo/demo.py -f
+
+# run the ttkDesigner
+python3 -m ttkDesigner
 
 # Paint demo
 python3 demo/paint.py
