@@ -14,18 +14,11 @@ __check(){
             -e "log.py:import inspect" \
             -e "log.py:import logging" \
             -e "log.py:from collections.abc import Callable, Set" \
-            -e "from time" -e "input.py:import platform" \
-            -e "readinputlinux.py:import sys, os" \
-            -e "readinputlinux.py:from select import select" \
-            -e "readinputlinux_thread.py:import sys, os" \
-            -e "readinputlinux_thread.py:from select import select" \
-            -e "readinputlinux_thread.py:import threading" \
-            -e "readinputlinux_thread.py:import queue" \
+            -e "input.py:import platform" \
+            -e "input.py:from time import time" \
             -e "term.py:import importlib.util" \
             -e "term.*.py:import sys, os, signal" \
             -e "term.*.py:from .term_base import TTkTermBase" \
-            -e "term_pyodide.py:import pyodideProxy" \
-            -e "term_unix.py:from threading import Thread, Lock" \
             -e "timer.py:import importlib" \
             -e "timer_unix.py:import threading" \
             -e "timer_pyodide.py:import pyodideProxy" \
@@ -40,12 +33,34 @@ __check(){
             -e "string.py:import unicodedata" \
             -e "progressbar.py:import math" \
             -e "uiloader.py:import json" \
-            -e "uiproperties.py:from .properties import *" \
+            -e "uiproperties.py:from .properties.* import" \
             -e "util.py:import zlib, pickle, base64" \
             -e "propertyanimation.py:from inspect import getfullargspec" \
             -e "propertyanimation.py:from types import LambdaType" \
             -e "propertyanimation.py:import time, math" \
-            -e "terminal.py:from select import select"
+            -e "terminal.py:from select import select" |
+        grep -v \
+            -e "TTkTerm/input.py:from ..drivers import TTkInputDriver" \
+            -e "TTkTerm/term.py:from ..drivers import *" \
+            -e "drivers/unix_thread.py:import sys, os" \
+            -e "drivers/unix_thread.py:from select import select" \
+            -e "drivers/unix_thread.py:import threading" \
+            -e "drivers/unix_thread.py:import queue" \
+            -e "drivers/unix.py:import sys, os, re" \
+            -e "drivers/unix.py:import signal" \
+            -e "drivers/unix.py:from select import select" \
+            -e "drivers/windows.py:import signal" \
+            -e "drivers/windows.py:from ctypes import Structure, Union, byref, wintypes, windll" \
+            -e "drivers/term_windows.py:import sys, os" \
+            -e "drivers/term_windows.py:from threading import Thread, Lock" \
+            -e "drivers/term_windows.py:from ..TTkTerm.term_base import TTkTermBase" \
+            -e "drivers/term_windows.py:from .windows import *" \
+            -e "drivers/term_unix.py:from ..TTkTerm.term_base import TTkTermBase" \
+            -e "drivers/term_unix.py:from threading import Thread, Lock" \
+            -e "drivers/term_pyodide.py:import pyodideProxy" \
+            -e "drivers/term_pyodide.py:from ..TTkTerm.term_base import TTkTermBase" \
+            -e "drivers/__init__.py:import importlib.util" \
+            -e "drivers/__init__.py:import platform"
 } ;
 
 if __check ;  then

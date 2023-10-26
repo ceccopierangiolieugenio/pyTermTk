@@ -22,9 +22,4 @@
 
 __all__ = ['TTkTerm']
 
-import importlib.util
-
-if importlib.util.find_spec('pyodideProxy'):
-    from .term_pyodide import TTkTerm
-else:
-    from .term_unix import TTkTerm
+from ..drivers import *

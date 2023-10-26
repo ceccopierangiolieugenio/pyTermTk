@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pyodideProxy
+import TermTk as ttk
+import ttkDesigner.app.superobj as so
+from .superobj import SuperObject
 
-from .term_base import TTkTermBase
 
-class TTkTerm(TTkTermBase):
-    @staticmethod
-    def _push(*args):
-        pyodideProxy.termPush(str(*args))
-    TTkTermBase.push = _push
-
-    @staticmethod
-    def _getTerminalSize():
-        return pyodideProxy.termSize()
-    TTkTermBase.getTerminalSize = _getTerminalSize
-
-    @staticmethod
-    def _registerResizeCb(callback):
-        TTkTerm._sigWinChCb = callback
-        # Dummy call to retrieve the terminal size
-        TTkTerm.width, TTkTerm.height = TTkTerm.getTerminalSize()
-        callback(TTkTerm.width, TTkTerm.height)
-    TTkTermBase.registerResizeCb = _registerResizeCb
+class SuperWidgetList(so.SuperWidgetAbstractScrollArea):
+    pass

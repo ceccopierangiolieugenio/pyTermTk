@@ -226,6 +226,9 @@ class TTkButton(TTkWidget):
     def keyEvent(self, evt):
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
+            if self._checkable:
+                self._checked = not self._checked
+                self.toggled.emit(self._checked)
             self.update()
             self.clicked.emit()
             return True
@@ -237,10 +240,13 @@ class TTkButton(TTkWidget):
                 style = self.style()['checked']
             else:
                 style = self.style()['unchecked']
+            if self.hasFocus():
+                borderColor = self.style()['focus']['borderColor']
+            else:
+                borderColor = style['borderColor']
         else:
             style = self.currentStyle()
-
-        borderColor = style['borderColor']
+            borderColor = style['borderColor']
         textColor   = style['color']
         grid = style['grid']
 

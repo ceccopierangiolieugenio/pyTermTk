@@ -33,23 +33,43 @@ from showcase._showcasehelper import getUtfWord
 
 def demoList(root= None):
     # Define the main Layout
-    splitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.HORIZONTAL)
-    frame2 = ttk.TTkFrame(parent=splitter, border=0, layout=ttk.TTkVBoxLayout())
-    frame1 = ttk.TTkFrame(parent=splitter, border=0, layout=ttk.TTkVBoxLayout())
-    frame3 = ttk.TTkFrame(parent=splitter, border=0, layout=ttk.TTkVBoxLayout())
+    retFrame = ttk.TTkFrame(parent=root, border=False, layout=(rootLayout:=ttk.TTkGridLayout()))
 
-    # Multi Selection List
-    ttk.TTkLabel(parent=frame1, text="[ MultiSelect ]",maxHeight=2)
-    listWidgetMulti = ttk.TTkList(parent=frame1, maxWidth=40, minWidth=10, selectionMode=ttk.TTkK.MultiSelection)
+    # Define the main Layout
+    win1    = ttk.TTkWindow(title="Single List",      layout=ttk.TTkVBoxLayout())
+    win2    = ttk.TTkWindow(title="Multi List",       layout=ttk.TTkVBoxLayout())
+    win3    = ttk.TTkWindow(title="Log",              layout=ttk.TTkVBoxLayout())
+    win4    = ttk.TTkWindow(title="Oly Drag Allowed", layout=ttk.TTkVBoxLayout())
+    win5    = ttk.TTkWindow(title="Oly Drop Allowed", layout=ttk.TTkVBoxLayout())
+    layout1 = ttk.TTkLayout()
+
+    # Place the widgets in the root layout
+    rootLayout.addWidget(win1,0,0,2,1)
+    rootLayout.addWidget(win2,0,1,2,1)
+    rootLayout.addWidget(win3,0,2,2,3)
+    rootLayout.addItem(layout1,2,0,1,3)
+    rootLayout.addWidget(win4,2,3)
+    rootLayout.addWidget(win5,2,4)
 
     # Single Selection List
-    ttk.TTkLabel(parent=frame2, text="[ SingleSelect ]",maxHeight=2)
-    listWidgetSingle = ttk.TTkList(parent=frame2, maxWidth=40, minWidth=10)
+    listWidgetSingle = ttk.TTkList(parent=win1, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDragDrop)
+
+    # Multi Selection List
+    listWidgetMulti = ttk.TTkList(parent=win2, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDragDrop, selectionMode=ttk.TTkK.MultiSelection)
+
+    # Multi Selection List - Drag Allowed
+    listWidgetDrag = ttk.TTkList(parent=win4, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDrag)
+    listWidgetDrop = ttk.TTkList(parent=win5, maxWidth=40, minWidth=10, dragDropMode=ttk.TTkK.AllowDrop)
 
     # Log Viewer
-    label1 = ttk.TTkLabel(parent=frame3, text="[ list1 ]",maxHeight=2)
-    label2 = ttk.TTkLabel(parent=frame3, text="[ list2 ]",maxHeight=2)
-    ttk.TTkLogViewer(parent=frame3)#, border=True)
+    label1 = ttk.TTkLabel(pos=(10,0), text="[ list1 ]",maxHeight=2)
+    label2 = ttk.TTkLabel(pos=(10,1), text="[ list2 ]",maxHeight=2)
+    ttk.TTkLogViewer(parent=win3)
+
+    btn_mv1 = ttk.TTkButton(pos=(0,0), text=" >> ")
+    btn_mv2 = ttk.TTkButton(pos=(0,1), text=" << ")
+    btn_del = ttk.TTkButton(pos=(0,2), text="Delete")
+    layout1.addWidgets([label1,label2,btn_mv1,btn_mv2,btn_del])
 
     @ttk.pyTTkSlot(str)
     def _listCallback1(label):
@@ -61,16 +81,42 @@ def demoList(root= None):
         ttk.TTkLog.info(f'Clicked label2: "{label}" - selected: {[str(s) for s in listWidgetMulti.selectedLabels()]}')
         label2.setText(f'[ list2 ] clicked "{label}" - {[str(s) for s in listWidgetMulti.selectedLabels()]}')
 
+    @ttk.pyTTkSlot()
+    def _moveToRight2():
+        for i in listWidgetSingle.selectedItems().copy():
+            listWidgetSingle.removeItem(i)
+            listWidgetMulti.addItemAt(i,0)
+
+    @ttk.pyTTkSlot()
+    def _moveToLeft1():
+        for i in listWidgetMulti.selectedItems().copy():
+            listWidgetMulti.removeItem(i)
+            listWidgetSingle.addItemAt(i,0)
+
+    @ttk.pyTTkSlot()
+    def _delSelected():
+        items = listWidgetMulti.selectedItems()
+        listWidgetMulti.removeItems(items)
+        items = listWidgetSingle.selectedItems()
+        listWidgetSingle.removeItems(items)
+
+
+    btn_mv1.clicked.connect(_moveToRight2)
+    btn_mv2.clicked.connect(_moveToLeft1)
+    btn_del.clicked.connect(_delSelected)
+
+
     # Connect the signals to the 2 slots defines
     listWidgetSingle.textClicked.connect(_listCallback1)
     listWidgetMulti.textClicked.connect(_listCallback2)
 
     # populate the lists with random entries
-    for i in range(100):
-        listWidgetSingle.addItem(f"{i}) {getUtfWord()} {getUtfWord()}")
-        listWidgetMulti.addItem(f"{getUtfWord()} {getUtfWord()}")
+    for i in range(50):
+        listWidgetSingle.addItem(f"S-{i}) {getUtfWord()} {getUtfWord()}")
+        listWidgetMulti.addItem( f"M-{i}){getUtfWord()} {getUtfWord()}")
+        listWidgetDrag.addItem( f"D-{i}){getUtfWord()} {getUtfWord()}")
 
-    return splitter
+    return retFrame
 
 def main():
     parser = argparse.ArgumentParser()

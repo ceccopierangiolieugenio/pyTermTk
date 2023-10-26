@@ -183,7 +183,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         # Color Fields
         def _processTTkColor(name, prop):
             getval = prop['get']['cb'](domw)
-            value = ttk.TTkWidget(layout=ttk.TTkHBoxLayout(), height=1)
+            value = ttk.TTkContainer(layout=ttk.TTkHBoxLayout(), height=1)
             value.layout().addWidget(_cb := ttk.TTkColorButtonPicker(color=getval, height=1))
             value.layout().addWidget(_rc := ttk.TTkButton(text=ttk.TTkString('x',ttk.TTkColor.fg('#FFAA00')),maxWidth=3))
             _cb.colorSelected.connect(_bound(prop['set']['cb'],domw,lambda v:v))

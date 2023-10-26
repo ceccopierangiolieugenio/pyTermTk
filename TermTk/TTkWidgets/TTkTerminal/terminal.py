@@ -63,7 +63,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         self.titleChanged = self._terminalView.titleChanged
         self.bell = self._terminalView.bell
         self.terminalClosed = pyTTkSignal(TTkTerminal)
-        self._terminalView.closed.connect(lambda : self.terminalClosed.emit(self))
+        self._terminalView.terminalClosed.connect(lambda : self.terminalClosed.emit(self))
 
     def close(self):
         self._terminalView.close()

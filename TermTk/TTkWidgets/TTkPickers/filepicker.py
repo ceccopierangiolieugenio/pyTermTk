@@ -362,7 +362,7 @@ class TTkFileDialogPicker(TTkWindow):
             path, e = os.path.split(path)
             if e:
                 ret.append(path)
-            if not path or path=='/':
+            if not path or path=='/' or path[1:]==":\\":
                 break
         return ret
 class TTkFileDialog:

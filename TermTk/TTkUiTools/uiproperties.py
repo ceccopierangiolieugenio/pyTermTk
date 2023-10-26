@@ -24,7 +24,40 @@ __all__ = ['TTkUiProperties']
 
 from TermTk.TTkLayouts import *
 from TermTk.TTkWidgets import *
-from .properties import *
+
+# from .properties.about import
+from .properties.button import *
+from .properties.checkbox import *
+from .properties.combobox import *
+from .properties.container import *
+from .properties.frame import *
+# from .properties.graph import
+# from .properties.image import
+from .properties.label import *
+from .properties.lineedit import *
+from .properties.list_ import *
+# from .properties.listwidget import
+# from .properties.menubar import
+from .properties.menu import *
+# from .properties.progressbar import
+from .properties.radiobutton import *
+from .properties.resizableframe import *
+# from .properties.scrollarea import
+from .properties.scrollbar import *
+# from .properties.spacer import
+from .properties.spinbox import *
+from .properties.splitter import *
+# from .properties.tabwidget import
+from .properties.texedit import *
+from .properties.widget import *
+from .properties.window import *
+
+# Pickers
+from .properties.colorpicker import *
+from .properties.filepicker import *
+
+# Layouts
+from .properties.layout import *
 
 TTkUiProperties = {
     # Widgets
@@ -45,7 +78,7 @@ TTkUiProperties = {
         TTkTextEdit.__name__:       TTkTextEditProperties,
         TTkWidget.__name__:         TTkWidgetProperties,
         TTkWindow.__name__:         TTkWindowProperties,
-        # Pickers
+    # Pickers
         TTkColorButtonPicker.__name__ : TTkColorButtonPickerProperties,
         TTkFileButtonPicker.__name__  : TTkFileButtonPickerProperties,
     # Layouts

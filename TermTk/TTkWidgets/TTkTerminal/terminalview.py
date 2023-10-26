@@ -89,18 +89,19 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         reportMove:  bool = False
         sgrMode:     bool = False
 
-    __slots__ = ('_shell', '_fd', '_inout', '_pid',
+    __slots__ = ('_selecct',
+                 '_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_resize_pipe',
                  '_mode_normal'
-                 '_clipboard',
+                 '_clipboard', '_selecting',
                  '_buffer_lines', '_buffer_screen',
                  '_keyboard', '_mouse', '_terminal',
                  '_screen_current', '_screen_normal', '_screen_alt',
                  # Signals
-                 'titleChanged', 'bell', 'closed')
+                 'titleChanged', 'bell', 'terminalClosed')
     def __init__(self, *args, **kwargs):
         self.bell = pyTTkSignal()
-        self.closed = pyTTkSignal()
+        self.terminalClosed = pyTTkSignal()
         self.titleChanged = pyTTkSignal(str)
 
         self._shell = os.environ.get('SHELL', 'sh')
@@ -119,6 +120,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self._screen_alt     = _TTkTerminalScreen()
         self._screen_current = self._screen_normal
         self._clipboard = TTkClipboard()
+        self._selecting = False
 
         # self._screen_normal.bell.connect(lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
         # self._screen_alt.bell.connect(   lambda : _termLog.debug("BELL!!! 🔔🔔🔔"))
@@ -175,8 +177,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     def resizeEvent(self, w: int, h: int):
         if ( self._resize_pipe and
-             self._screen_current._w != w and
-             self._screen_current._h != h ):
+             ( self._screen_current._w != w or
+               self._screen_current._h != h ) ):
             os.write(self._resize_pipe[1], b'resize')
 
         # self._screen_alt.resize(w,h)
@@ -193,9 +195,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         if self._pid == 0:
             def _spawnTerminal(argv=[self._shell], env=os.environ):
                 os.execvpe(argv[0], argv, env)
-            threading.Thread(target=_spawnTerminal).start()
+            # threading.Thread(target=_spawnTerminal).start()
             TTkHelper.quit()
-            # _spawnTerminal()
+            _spawnTerminal()
             import sys
             sys.exit()
             # os.execvpe(argv[0], argv, env)
@@ -245,17 +247,28 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     @pyTTkSlot()
     def _quit(self):
-        os.kill(self._pid,0)
+        if self._pid:
+            os.kill(self._pid,0)
+            os.kill(self._pid,15)
         if self._quit_pipe:
-            os.write(self._quit_pipe[1], b'quit')
+            try:
+                os.write(self._quit_pipe[1], b'quit')
+            except:
+                pass
 
     def _inputGenerator(self):
         while rs := select( [self._inout,self._quit_pipe[0],self._resize_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
+                # os.close(self._quit_pipe[0])
+                os.close(self._quit_pipe[1])
+                # os.close(self._resize_pipe[0])
+                os.close(self._resize_pipe[1])
+                os.close(self._fd)
                 return
 
             if self._resize_pipe[0] in rs:
                 self._resizeScreen()
+                os.read(self._resize_pipe[0],100)
 
             if self._inout not in rs:
                 continue
@@ -274,7 +287,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                     fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl)
                 except Exception as e:
                     _termLog.error(f"Error: {e=}")
-                    self.closed.emit()
+                    self.terminalClosed.emit()
                     return
 
                 # out = out.decode('utf-8','ignore')
@@ -952,10 +965,44 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             self._inout.write(bah)
         return True
 
-    def mousePressEvent(self, evt):   return self._sendMouse(evt) | True
-    def mouseReleaseEvent(self, evt): return self._sendMouse(evt)
-    def mouseDragEvent(self, evt):    return self._sendMouse(evt)
-    def wheelEvent(self, evt):        return True if self._sendMouse(evt) else super().wheelEvent(evt)
+    def mousePressEvent(self, evt):
+        if self._mouse.reportPress:
+            self._screen_current.select(0,0)
+            return self._sendMouse(evt) | True
+        self._selecting = True
+        x,y = evt.x,evt.y
+        ox,oy = self.getViewOffsets()
+        self._screen_current.select(x+ox,y+oy)
+        self.update()
+        return True
+
+    def mouseDragEvent(self, evt):
+        if self._mouse.reportPress:
+            self._screen_current.select(0,0)
+            return self._sendMouse(evt)
+        x,y = evt.x,evt.y
+        ox,oy = self.getViewOffsets()
+        self._screen_current.select(x+ox,y+oy,moveAnchor=False)
+        self.update()
+        return True
+
+    def mouseReleaseEvent(self, evt):
+        self._selecting = False
+        if (selected := self._screen_current.getSelected()):
+            self._clipboard.setText(selected)
+        return self._sendMouse(evt)
+
+    def wheelEvent(self, evt):
+        if self._sendMouse(evt):
+            return True
+        ret = super().wheelEvent(evt)
+        if self._selecting:
+            x,y = evt.x,evt.y
+            ox,oy = self.getViewOffsets()
+            self._screen_current.select(x+ox,y+oy,moveAnchor=False)
+            self.update()
+        return ret
+
     def mouseTapEvent(self, evt):     return self._sendMouse(evt)
     def mouseDoubleClickEvent(self, evt): return self._sendMouse(evt)
     def mouseMoveEvent(self, evt):

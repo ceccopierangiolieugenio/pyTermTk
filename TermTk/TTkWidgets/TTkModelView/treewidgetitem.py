@@ -156,7 +156,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
     def setTreeItemParent(self, parent):
         if parent:
             widgets = self._setTreeItemParent(parent)
-            parent.rootLayout().addWidgets(widgets)
+            parent.layout().addWidgets(widgets)
         else:
             # pw = self._parentWidget
             widgets = self._clearTreeItemParent()
