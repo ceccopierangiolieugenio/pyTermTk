@@ -27,11 +27,11 @@ import sys
 from mock_term  import Mock_TTkTerm
 from mock_input import Mock_TTkInput
 
-moduleTerm = type(sys)('TermTk.TTkCore.TTkTerm.term')
+moduleTerm = type(sys)('TermTk.TTkCore.drivers.term_unix')
 moduleTerm.TTkTerm = Mock_TTkTerm
 
 moduleInput = type(sys)('TermTk.TTkCore.TTkTerm.input')
 moduleInput.TTkInput = Mock_TTkInput
 
-sys.modules['TermTk.TTkCore.TTkTerm.term']  = moduleTerm
+sys.modules['TermTk.TTkCore.drivers.term_unix']  = moduleTerm
 sys.modules['TermTk.TTkCore.TTkTerm.input'] = moduleInput

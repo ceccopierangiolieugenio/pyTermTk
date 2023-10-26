@@ -49,7 +49,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
 
     def _processFilter(self, filter):
         if self.getType() == TTkFileTreeWidgetItem.FILE:
-            filterRe = "^"+filter.replace('.','\.').replace('*','.*')+"$"
+            filterRe = "^"+filter.replace('.',r'\.').replace('*','.*')+"$"
             if re.match(filterRe, self._raw[0]):
                 self.setHidden(False)
             else:

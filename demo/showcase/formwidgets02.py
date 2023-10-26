@@ -29,7 +29,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from showcase._showcasehelper import getUtfSentence
+from showcase._showcasehelper import getUtfSentence, zc1
 
 def demoFormWidgets(root=None):
     win_form1_grid_layout = ttk.TTkGridLayout(columnMinWidth=1)
@@ -72,7 +72,7 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='Line Edit Test 2 😎 -'),row,2)
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Test 3'),row,0)
-    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text='Line Edit Test 3 oަ -'),row,2)
+    win_form1_grid_layout.addWidget(_wid := ttk.TTkLineEdit(text=f'Line Edit Test 3 o{zc1}-'),row,2)
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True),row,3); _en_dis_cb.clicked.connect(_wid.setEnabled)
 
     row += 1; win_form1_grid_layout.addWidget(ttk.TTkLabel(text='Line Edit Input Number'),row,0)

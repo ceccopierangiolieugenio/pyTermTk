@@ -231,11 +231,11 @@
         pyodide.runPython(`
             import sys
             import TermTk as ttk
+            from TermTk.TTkCore.TTkTerm.input import TTkInput
             import pyodideProxy
 
             def ttk_input(val):
-              if ttk.TTkHelper._rootWidget and ttk.TTkHelper._rootWidget._input:
-                ttk.TTkHelper._rootWidget._input.key_process(val)
+              TTkInput.key_process(val)
 
             def ttk_resize(w,h):
               ttk.TTkLog.debug(f"Resize: {w=} {h=}")

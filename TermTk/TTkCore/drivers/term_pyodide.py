@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
-import logging
+__all__ = ['TTkTerm']
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkLog, TTkK, TTkGridLayout, TTk, TTkLogViewer, TTkHelper
+import pyodideProxy
 
-def keyCallback(kevt=None, mevt=None):
-    if mevt is not None:
-        TTkLog.info(f"Mouse Event: {mevt}")
-    if kevt is not None:
-        if kevt.type == TTkK.Character:
-            TTkLog.info(f"Key Event: char '{kevt.key}' {kevt}")
-        else:
-            TTkLog.info(f"Key Event: Special '{kevt}'")
-        if kevt.key == "q":
-            input.close()
-            return False
-    return True
+from ..TTkTerm.term_base import TTkTermBase
 
-def pasteCallback(txt:str):
-    TTkLog.info(f"PASTE:")
-    for s in txt.split('\n'):
-        TTkLog.info(f" | {s}")
-    return True
+class TTkTerm(TTkTermBase):
+    @staticmethod
+    def _push(*args):
+        pyodideProxy.termPush(str(*args))
+    TTkTermBase.push = _push
 
-root = TTk(layout=TTkGridLayout())
+    @staticmethod
+    def _getTerminalSize():
+        return pyodideProxy.termSize()
+    TTkTermBase.getTerminalSize = _getTerminalSize
 
-TTkLogViewer(parent=root)
-
-TTkHelper._rootWidget._input.inputEvent.connect(keyCallback)
-TTkHelper._rootWidget._input.pasteEvent.connect(pasteCallback)
-
-root.mainloop()
+    @staticmethod
+    def _registerResizeCb(callback):
+        TTkTerm._sigWinChCb = callback
+        # Dummy call to retrieve the terminal size
+        TTkTerm.width, TTkTerm.height = TTkTerm.getTerminalSize()
+        callback(TTkTerm.width, TTkTerm.height)
+    TTkTermBase.registerResizeCb = _registerResizeCb

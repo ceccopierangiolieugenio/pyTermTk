@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2022 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pyodideProxy
+__all__ = ['TTkSignalDriver','TTkInputDriver']
 
-from .term_base import TTkTermBase
+from pyodide import __version__ as pyodideVersion
 
-class TTkTerm(TTkTermBase):
+from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.log import TTkLog
+
+class TTkInputDriver():
+    def close(self): pass
+    def cont(self):  pass
+    def read(self):  pass
+
+
+class TTkSignalDriver():
+    sigStop = pyTTkSignal()
+    sigCont = pyTTkSignal()
+    sigInt  = pyTTkSignal()
+
     @staticmethod
-    def _push(*args):
-        pyodideProxy.termPush(str(*args))
-    TTkTermBase.push = _push
-
-    @staticmethod
-    def _getTerminalSize():
-        return pyodideProxy.termSize()
-    TTkTermBase.getTerminalSize = _getTerminalSize
-
-    @staticmethod
-    def _registerResizeCb(callback):
-        TTkTerm._sigWinChCb = callback
-        # Dummy call to retrieve the terminal size
-        TTkTerm.width, TTkTerm.height = TTkTerm.getTerminalSize()
-        callback(TTkTerm.width, TTkTerm.height)
-    TTkTermBase.registerResizeCb = _registerResizeCb
+    def init():
+        TTkLog.info(f"Pyodide Version:\033[38;5;11m{pyodideVersion}")
+    def exit(): pass

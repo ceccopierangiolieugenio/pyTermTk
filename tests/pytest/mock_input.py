@@ -23,12 +23,20 @@
 # Thanks to: https://stackoverflow.com/questions/43162722/mocking-a-module-import-in-pytest
 
 class Mock_TTkInput():
-    def __init__(self): pass
-    def close(self): pass
-    def stop(self): pass
-    def cont(self): pass
-    def get_key(self, callback=None): pass
-    def start(self): pass
+    @staticmethod
+    def init(mouse, directMouse):pass
+    @staticmethod
+    def setMouse(mouse, directMouse): pass
+    @staticmethod
+    def close(): pass
+    @staticmethod
+    def stop(): pass
+    @staticmethod
+    def cont(): pass
+    @staticmethod
+    def get_key( callback=None): pass
+    @staticmethod
+    def start(): pass
 
     class inputEvent():
         def connect(*args):

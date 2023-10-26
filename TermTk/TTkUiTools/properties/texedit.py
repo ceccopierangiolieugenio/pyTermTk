@@ -33,6 +33,10 @@ TTkTextEditProperties = {
                 'init': {'name':'lineNumber',            'type':bool } ,
                 'get':  {'cb':TTkTextEdit.getLineNumber, 'type':bool } ,
                 'set':  {'cb':TTkTextEdit.setLineNumber, 'type':bool } },
+        'Line Number Starting': {
+                'init': {'name':'lineNumberStarting',            'type':int } ,
+                'get':  {'cb':TTkTextEdit.lineNumberStarting,    'type':int } ,
+                'set':  {'cb':TTkTextEdit.setLineNumberStarting, 'type':int } },
         'Read Only' : {
                 'init': {'name':'readOnly',                'type':bool } ,
                 'get':  {'cb':lambda w:   w.isReadOnly(),  'type':bool } ,
@@ -47,7 +51,9 @@ TTkTextEditProperties = {
         'textChanged()' :       {'name': 'textChanged',   'type': None},
     },'slots' : {
         'setText(str)' : {'name':'setText', 'type':None},
-        'setColor(TTkColor)' : {'name':'setColor', 'type':TTkColor},
+        'setColor(TTkColor)'         : {'name':'setColor', 'type':TTkColor},
+        'setLineNumber(bool)'        : {'name':'setLineNumber',         'type':bool},
+        'setLineNumberStarting(int)' : {'name':'setLineNumberStarting', 'type':int},
         'append(str)' :  {'name':'append',  'type':None},
         'undo()' :       {'name':'undo',    'type':None},
         'redo()' :       {'name':'redo',    'type':None},
