@@ -52,6 +52,7 @@ class WorkBench(ttk.TTkContainer):
         self._barPosition = 0
         self._backLayout = ttk.TTkLayout()
         self._backLayout.setGeometry(0,0,0,0)
+        self._barSelected = False
         super().__init__(*args, **kwargs)
         self.setPadding(1,0,0,0)
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
