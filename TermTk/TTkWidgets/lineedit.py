@@ -157,7 +157,7 @@ class TTkLineEdit(TTkWidget):
         self._selectionFrom = len(before)
         self._selectionTo = len(before)
 
-        selectRE = '[^ \t\r\n\(\)\[\]\.\,\+\-\*\/]*'
+        selectRE = r'[^ \t\r\n()[\]\.\,\+\-\*\/]*'
 
         if m := before.search(selectRE+'$'):
             self._selectionFrom -= len(m.group(0))
