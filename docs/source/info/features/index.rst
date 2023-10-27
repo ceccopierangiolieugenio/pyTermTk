@@ -26,8 +26,8 @@ Wide variety of built in base widgets
 Specialised widgets
 ~~~~~~~~~~~~~~~~~~~
 
-Cross Compatibility/Exporters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:doc:`crosscompatible`
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. _features-alpha:
 
