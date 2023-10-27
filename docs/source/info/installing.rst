@@ -148,3 +148,8 @@ Showcase
     python3 demo/showcase/windowsflags.py
     # Demo - Tooltip
     python3 tests/test.ui.026.toolTip.py
+
+    # Text edit with "Pygments" highlight integrated
+    # it require pygments
+    #   pip install pygments
+    python3 tests/test.ui.018.TextEdit.Pygments.py README.md
