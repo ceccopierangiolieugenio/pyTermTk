@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkTestWidgets.keypressview &mdash; pyTermTk 0.2.0a documentation</title>
+  <title>TermTk.TTkTestWidgets.keypressview &mdash; pyTermTk 0.36.0-a
+ documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
+    <link rel="shortcut icon" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -46,6 +48,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/ttkDesigner/textEdit/README.html">ttkDesigner - Your first TextEditor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Stuff</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/features/index.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/features/crosscompatible.html">Cross Compatibility</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -113,6 +123,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkKeyPressView&#39;</span><span class="p">]</span>
 
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.input</span> <span class="kn">import</span> <span class="n">TTkInput</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.inputkey</span> <span class="kn">import</span> <span class="n">TTkKeyEvent</span><span class="p">,</span> <span class="n">mod2str</span><span class="p">,</span> <span class="n">key2str</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.inputmouse</span> <span class="kn">import</span> <span class="n">TTkMouseEvent</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
@@ -129,7 +140,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">_rootWidget</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
+        <span class="n">TTkInput</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fadeDuration</span> <span class="o">=</span> <span class="mf">2.5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_anim</span> <span class="o">=</span> <span class="n">TTkPropertyAnimation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_pushFade&#39;</span><span class="p">)</span>

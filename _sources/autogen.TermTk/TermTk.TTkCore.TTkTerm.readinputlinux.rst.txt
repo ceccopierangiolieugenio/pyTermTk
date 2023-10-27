@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.TTkTerm.readinputlinux
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.TTkTerm.readinputlinux
-
-.. currentmodule:: TermTk.TTkCore.TTkTerm.readinputlinux
-

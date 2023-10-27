@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.TTkTerm.term\_pyodide
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.TTkTerm.term_pyodide
-
-.. currentmodule:: TermTk.TTkCore.TTkTerm.term_pyodide
-

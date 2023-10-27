@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.listwidget &mdash; pyTermTk 0.2.0a documentation</title>
+  <title>TermTk.TTkWidgets.listwidget &mdash; pyTermTk 0.36.0-a
+ documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/ttk.css" type="text/css" />
+    <link rel="shortcut icon" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -46,6 +48,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/004-logging.html">pyTermTk - Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial/ttkDesigner/textEdit/README.html">ttkDesigner - Your first TextEditor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Stuff</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/features/index.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/features/crosscompatible.html">Cross Compatibility</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -216,8 +226,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_highlighted</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dragPos</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dndMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dragDropMode&quot;</span><span class="p">,</span>
-                                <span class="n">TTkK</span><span class="o">.</span><span class="n">DragDropMode</span><span class="o">.</span><span class="n">AllowDrag</span> <span class="o">|</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">DragDropMode</span><span class="o">.</span><span class="n">AllowDrop</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dndMode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dragDropMode&quot;</span><span class="p">,</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">DragDropMode</span><span class="o">.</span><span class="n">NoDragDrop</span><span class="p">)</span>
         <span class="c1"># Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">itemClicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="n">TTkAbstractListItem</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textClicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>

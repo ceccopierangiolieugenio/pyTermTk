@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.TTkTerm.term\_unix
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.TTkTerm.term_unix
-
-.. currentmodule:: TermTk.TTkCore.TTkTerm.term_unix
-

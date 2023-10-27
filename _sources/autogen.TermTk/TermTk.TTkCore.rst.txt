@@ -15,6 +15,7 @@ TermTk.TTkCore
   TermTk.TTkCore.cfg
   TermTk.TTkCore.color
   TermTk.TTkCore.constant
+  TermTk.TTkCore.drivers
   TermTk.TTkCore.filebuffer
   TermTk.TTkCore.helper
   TermTk.TTkCore.log

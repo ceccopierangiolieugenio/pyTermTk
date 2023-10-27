@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.drivers.term\_windows
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.drivers.term_windows
+
+.. currentmodule:: TermTk.TTkCore.drivers.term_windows
+
