@@ -27,6 +27,7 @@ doc: .venv
 	# rm -rf docs/html ; \
 	# pdoc --html TermTk -o docs/html ; \
 	. .venv/bin/activate ; \
+	tools/prepareBuild.sh doc ; \
 	rm -rf docs/build ; \
 	rm -rf docs/source/autogen.* ; \
 	# sphinx-apidoc -o docs/source/TermTk/ -e TermTk/ ; \
