@@ -41,7 +41,7 @@ Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) 
 
 ---
 
-## [the Tutorials](tutorial) and [the Examples](tutorial/000-examples.rst)
+## [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 Be inspired by [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 
 ## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk/)
