@@ -15,7 +15,7 @@ Windows
 MacOS
 -----
 
-Screenshot TBD
+.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/11d4cdd9-151a-4941-ae78-1f1a037b6077
 
 HTML5
 -----
