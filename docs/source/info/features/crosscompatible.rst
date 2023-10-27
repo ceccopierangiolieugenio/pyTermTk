@@ -15,9 +15,9 @@ Windows
 MacOS
 -----
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/11d4cdd9-151a-4941-ae78-1f1a037b6077
+.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/f734b70d-9596-43db-9b01-27303c36e772
 
-HTML5
------
+HTML5 (`Try <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html>`_)
+----------------------------------------------------------------------------------------
 
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/117bcbff-2394-4e04-8458-50eeb0f9a7eb
