@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; pyTermTk 0.36.0-a
+ documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
+    <link rel="shortcut icon" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Debug" href="debug.html" />
+    <link rel="prev" title="Features" href="features/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> pyTermTk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/000-examples.html">pyTermTk - &lt; <strong>the Examples</strong> &gt;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/ttkDesigner/textEdit/README.html">ttkDesigner - Your first TextEditor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Stuff</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features/index.html">Features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pypi">PyPi</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#user-install">User Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#venv-install">Venv Install</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#copy-termtk-folder">Copy TermTk folder</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#quickstart">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#demos">Demos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Demos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#showcase">Showcase</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/crosscompatible.html">Cross Compatibility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTheme.html">TermTk.TTkTheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkUiTools.html">TermTk.TTkUiTools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyTermTk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/info/installing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<span id="install-installation"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> is a self contained  library,
+it does not require extra libraries to be used
+and can be installed through <a class="reference internal" href="#install-pypi"><span class="std std-ref">PyPi</span></a>
+or just <a class="reference internal" href="#install-copy"><span class="std std-ref">copying the TermTk Folder</span></a> in the root folder of your project.</p>
+<section id="pypi">
+<span id="install-pypi"></span><h2>PyPi<a class="headerlink" href="#pypi" title="Permalink to this heading"></a></h2>
+<p>It is possible to install pyTermTk with PyPi also inside a venv environment</p>
+<section id="user-install">
+<h3>User Install<a class="headerlink" href="#user-install" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># User/Global Install</span>
+pip3 install --upgrade pyTermTk
+</pre></div>
+</div>
+</section>
+<section id="venv-install">
+<h3><a class="reference external" href="https://docs.python.org/3/library/venv.html">Venv</a> Install<a class="headerlink" href="#venv-install" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a venv environment in the &quot;.venv&quot; folder</span>
+python3 -m venv .venv
+. .venv/bin/activate
+
+<span class="c1"># Install inside the venv environment</span>
+pip3 install --upgrade pyTermTk
+
+<span class="c1"># ... Do you Stuff</span>
+
+<span class="c1"># Clear/Erase/GetRidOf the venv</span>
+rm -rf .venv
+</pre></div>
+</div>
+</section>
+</section>
+<section id="copy-termtk-folder">
+<span id="install-copy"></span><h2>Copy TermTk folder<a class="headerlink" href="#copy-termtk-folder" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ceccopierangiolieugenio/pyTermTk.git
+cp -a pyTermTk/TermTk  &lt;DEST_FOLDER&gt;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="quickstart">
+<span id="install-quickstart"></span><h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading"></a></h1>
+<p>There are a number of demo apps and examples that can be executed in the repository</p>
+<section id="demos">
+<h2>Demos<a class="headerlink" href="#demos" title="Permalink to this heading"></a></h2>
+<p>Inside the <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/demo">demo</a>
+and <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/demo/showcase">demo/showcase</a>
+folders there are a number of examples that can be executed out of the box.</p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h3>
+<p>Clone or <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/releases">Download</a> the <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> repo:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone and enter the folder</span>
+git clone https://github.com/ceccopierangiolieugenio/pyTermTk.git
+<span class="nb">cd</span> pyTermTk
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Demos<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Main demo        <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/demo.py">demo.py</a>   (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/demo.py">tryItOnline</a>)</p></li>
+<li><p>paint demo       <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/paint.py">paint.py</a>  (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/paint.py">tryItOnline</a>)</p></li>
+<li><p>ttkode prototype <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/ttkode.py">ttkode.py</a> (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/ttkode.py">tryItOnline</a>)</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the main demo</span>
+python3 demo/demo.py
+
+<span class="c1"># Run the paint demo</span>
+python3 demo/paint.py
+
+<span class="c1"># Run the ttkode demo</span>
+python3 demo/ttkode.py
+</pre></div>
+</div>
+</section>
+<section id="showcase">
+<h3>Showcase<a class="headerlink" href="#showcase" title="Permalink to this heading"></a></h3>
+<p><strong>Highlight:</strong></p>
+<ul class="simple">
+<li><p>Text Editor   <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py">textedit.py</a>       (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py">tryItOnline</a>)</p></li>
+<li><p>Animation     <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/animation.01.py">animation.01.py</a>   (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/animation.01.py">tryItOnline</a>)</p></li>
+<li><p>color picker  <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/colorpicker.py">colorpicker.py</a>    (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/colorpicker.py">tryItOnline</a>)</p></li>
+<li><p>file picker   <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py">filepicker.py</a>     (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py">tryItOnline</a>)</p></li>
+<li><p>drag &amp; drop   <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/dragndrop.py">dragndrop.py</a>      (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/dragndrop.py">tryItOnline</a>)</p></li>
+<li><p>d&amp;d with tabs <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/dndtabs.py">dndtabs.py</a>        (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/dndtabs.py">tryItOnline</a>)</p></li>
+<li><p>d&amp;d with list <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/list.py">list.py</a>           (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/list.py">tryItOnline</a>)</p></li>
+<li><p>base widgets  <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets02.py">formwidgets02.py</a>  (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/formwidgets02.py">tryItOnline</a>)</p></li>
+<li><p>messagebox    <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/messagebox.py">messagebox.py</a>     (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/messagebox.py">tryItOnline</a>)</p></li>
+<li><p>splitter      <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py">splitter.py</a>       (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/splitter.py">tryItOnline</a>)</p></li>
+<li><p>Windows       <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/windowsflags.py">windowsflags.py</a>   (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/windowsflags.py">tryItOnline</a>)</p></li>
+<li><p>Tooltip       <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.ui.026.toolTip.py">test.ui.026.toolTip.py</a>   (<a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tests/test.ui.026.toolTip.py">tryItOnline</a>)</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demo - Text Editor</span>
+python3 demo/showcase/textedit.py
+<span class="c1"># Demo - Animation</span>
+python3 demo/showcase/animation.01.py
+<span class="c1"># Demo - color picker</span>
+python3 demo/showcase/colorpicker.py
+<span class="c1"># Demo - file picker</span>
+python3 demo/showcase/filepicker.py
+<span class="c1"># Demo - drag &amp; drop</span>
+python3 demo/showcase/dragndrop.py
+<span class="c1"># Demo - d&amp;d with tabs</span>
+python3 demo/showcase/dndtabs.py
+<span class="c1"># Demo - d&amp;d with list</span>
+python3 demo/showcase/list.py
+<span class="c1"># Demo - base widgets</span>
+python3 demo/showcase/formwidgets02.py
+<span class="c1"># Demo - messagebox</span>
+python3 demo/showcase/messagebox.py
+<span class="c1"># Demo - splitter</span>
+python3 demo/showcase/splitter.py
+<span class="c1"># Demo - Windows</span>
+python3 demo/showcase/windowsflags.py
+<span class="c1"># Demo - Tooltip</span>
+python3 tests/test.ui.026.toolTip.py
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="features/index.html" class="btn btn-neutral float-left" title="Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="debug.html" class="btn btn-neutral float-right" title="Debug" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Eugenio Parodi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
