@@ -98,3 +98,11 @@ Check as reference:
 Pty Demo:
 
  - https://docs.python.org/3/library/pty.html#example
+
+## Screenshot editor (FREEEEEEEE)
+https://screenshotr.app/
+
+* presets:
+  Canvas W = 1000
+  Browser Width = 950
+  Browser Scale = 1

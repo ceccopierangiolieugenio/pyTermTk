@@ -30,7 +30,7 @@ User Install
     pip3 install --upgrade pyTermTk
 
 `Venv <https://docs.python.org/3/library/venv.html>`_ Install
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: bash
 
