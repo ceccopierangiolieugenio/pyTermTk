@@ -62,11 +62,11 @@ Intro
    :hidden:
 
    info/features/index
+   info/features/crosscompatible
 
    info/installing
    info/debug
 
-   info/features/crosscompatible
 
 .. toctree::
    :caption: API Reference
