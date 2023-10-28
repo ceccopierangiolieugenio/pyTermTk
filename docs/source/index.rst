@@ -57,12 +57,18 @@ Intro
 .. Hidden TOCs
 
 .. toctree::
-   :caption: Stuff
+   :caption: Features
    :maxdepth: 1
    :hidden:
 
    info/features/index
    info/features/crosscompatible
+   info/features/widgets
+
+.. toctree::
+   :caption: Dev
+   :maxdepth: 1
+   :hidden:
 
    info/installing
    info/debug

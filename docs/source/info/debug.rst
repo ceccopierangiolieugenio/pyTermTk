@@ -2,10 +2,6 @@
 Debug
 =====
 
-------------------------------
-Notes and tips about debugging
-------------------------------
-
 
 Env Variables
 =============

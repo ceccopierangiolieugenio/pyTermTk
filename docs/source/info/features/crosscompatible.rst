@@ -2,20 +2,28 @@
 Cross Compatibility
 ===================
 
+.. _cc-linux:
+
 Linux
 -----
 
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/303bc4cb-2ff9-421d-a399-64963f9421ac
+
+.. _cc-windows:
 
 Windows
 -------
 
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/c120d5dd-e5db-47a6-bd5b-2e886a37386a
 
+.. _cc-macos:
+
 MacOS
 -----
 
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/f734b70d-9596-43db-9b01-27303c36e772
+
+.. _cc-html5:
 
 HTML5 (`Try <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html>`_)
 ----------------------------------------------------------------------------------------
