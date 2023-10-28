@@ -1,9 +1,13 @@
+
 ========
 Features
 ========
 
 Main features
 -------------
+
+.. _pyTermTk:  https://github.com/ceccopierangiolieugenio/pyTermTk
+.. _TermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
 
 ..  From the README.md
     - Self Contained (no external lib required)
@@ -15,19 +19,18 @@ Main features
     - Ful/Half/Zero sized Unicode characters 😎
     - I am pretty sure there is something else...
 
-Self Contained
-~~~~~~~~~~~~~~
+Self Contained, :doc:`Cross Compatible <crosscompatible>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     | pyTermTk_ does not require external libraries (i.e. curses)
-    | It can be installed through PyPi or simply copy the TermTk folder inside the root path of any project
+    | It can be :ref:`installed through PyPi <install-pypi>` or simply :ref:`copy the TermTk folder <install-copy>` inside the root path of any project.
+    | Compatible with :ref:`cc-linux`, :ref:`cc-windows`, :ref:`cc-macos`, :ref:`HTML5 <cc-html5>`
 
-Wide variety of built in base widgets
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wide variety of built-in :ref:`widgets <widgets-base>`, :ref:`pickers <widgets-pickers>`, :ref:`layout helpers <widgets-layout>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Specialised widgets
-~~~~~~~~~~~~~~~~~~~
-
-:doc:`crosscompatible`
-~~~~~~~~~~~~~~~~~~~~~~
+Clipboard support
+~~~~~~~~~~~~~~~~~
 
 .. _features-alpha:
 

@@ -52,32 +52,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/ttkDesigner/textEdit/README.html">ttkDesigner - Your first TextEditor</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Stuff</span></p>
-<ul class="current">
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="features/index.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features/crosscompatible.html">Cross Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features/widgets.html">Widgets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Debug</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#notes-and-tips-about-debugging">Notes and tips about debugging</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#env-variables">Env Variables</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#termtk-file-log-log-to-a-file"><strong>TERMTK_FILE_LOG</strong> - Log to a file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#termtk-stacktrace-force-stacktrace-generation-with-ctrl-c"><strong>TERMTK_STACKTRACE</strong> - Force stacktrace generation with CTRL+C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#env-variables">Env Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#termtk-file-log-log-to-a-file"><strong>TERMTK_FILE_LOG</strong> - Log to a file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#termtk-stacktrace-force-stacktrace-generation-with-ctrl-c"><strong>TERMTK_STACKTRACE</strong> - Force stacktrace generation with CTRL+C</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#gui">Gui</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Visual Studio Code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">intellij IDEA</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3">PyCharm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gui">Gui</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Visual Studio Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">intellij IDEA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">PyCharm</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#profiling">Profiling</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id4">VizTracer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cprofile-cprofilev">cProfile, cProfilev</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id5">py-spy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pyroscope">pyroscope</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#profiling">Profiling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">VizTracer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cprofile-cprofilev">cProfile, cProfilev</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">py-spy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyroscope">pyroscope</a></li>
 </ul>
 </li>
 </ul>
@@ -126,20 +127,18 @@
              
   <section id="debug">
 <h1>Debug<a class="headerlink" href="#debug" title="Permalink to this heading"></a></h1>
-<section id="notes-and-tips-about-debugging">
-<h2>Notes and tips about debugging<a class="headerlink" href="#notes-and-tips-about-debugging" title="Permalink to this heading"></a></h2>
 <section id="env-variables">
-<h3>Env Variables<a class="headerlink" href="#env-variables" title="Permalink to this heading"></a></h3>
+<h2>Env Variables<a class="headerlink" href="#env-variables" title="Permalink to this heading"></a></h2>
 <p>There are few ENV Variables that can be used to force some debugging features;</p>
 <section id="termtk-file-log-log-to-a-file">
-<h4><strong>TERMTK_FILE_LOG</strong> - Log to a file<a class="headerlink" href="#termtk-file-log-log-to-a-file" title="Permalink to this heading"></a></h4>
+<h3><strong>TERMTK_FILE_LOG</strong> - Log to a file<a class="headerlink" href="#termtk-file-log-log-to-a-file" title="Permalink to this heading"></a></h3>
 <p>To force logging to a file (i.e. “<strong>session.log</strong>”)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">TERMTK_FILE_LOG</span><span class="o">=</span>session.log   python3   demo/demo.py
 </pre></div>
 </div>
 </section>
 <section id="termtk-stacktrace-force-stacktrace-generation-with-ctrl-c">
-<h4><strong>TERMTK_STACKTRACE</strong> - Force stacktrace generation with CTRL+C<a class="headerlink" href="#termtk-stacktrace-force-stacktrace-generation-with-ctrl-c" title="Permalink to this heading"></a></h4>
+<h3><strong>TERMTK_STACKTRACE</strong> - Force stacktrace generation with CTRL+C<a class="headerlink" href="#termtk-stacktrace-force-stacktrace-generation-with-ctrl-c" title="Permalink to this heading"></a></h3>
 <p>Use this env variable to force a stacktrace generation to the file defined (i.e. “<strong>stacktrace.txt</strong>”)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">TERMTK_STACKTRACE</span><span class="o">=</span>stacktrace.txt   python3   demo/demo.py
 </pre></div>
@@ -147,25 +146,25 @@
 </section>
 </section>
 <section id="gui">
-<h3>Gui<a class="headerlink" href="#gui" title="Permalink to this heading"></a></h3>
+<h2>Gui<a class="headerlink" href="#gui" title="Permalink to this heading"></a></h2>
 <section id="id1">
-<h4><a class="reference external" href="https://code.visualstudio.com">Visual Studio Code</a><a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
+<h3><a class="reference external" href="https://code.visualstudio.com">Visual Studio Code</a><a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <p>vsCode debug feature comes out of the box, it only require the default <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">**Python**</a> extension installed</p>
 <img alt="vsCode debug" src="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/00eab373-c347-45ab-8c40-0b023135946c" />
 </section>
 <section id="id2">
-<h4><a class="reference external" href="https://www.jetbrains.com/help/idea/python.html">intellij IDEA</a><a class="headerlink" href="#id2" title="Permalink to this heading"></a></h4>
+<h3><a class="reference external" href="https://www.jetbrains.com/help/idea/python.html">intellij IDEA</a><a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
 <p>I haven’t tried it recently since my vsCode experience is silk smooth but based on the results of the <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/issues/102">issue 102</a> I am pretty confident that intellij debug feature should work as well</p>
 </section>
 <section id="id3">
-<h4><a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a><a class="headerlink" href="#id3" title="Permalink to this heading"></a></h4>
+<h3><a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a><a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <p>Same for PyCharm, I mean, I tried both those IDEs at least once.</p>
 </section>
 </section>
 <section id="profiling">
-<h3>Profiling<a class="headerlink" href="#profiling" title="Permalink to this heading"></a></h3>
+<h2>Profiling<a class="headerlink" href="#profiling" title="Permalink to this heading"></a></h2>
 <section id="id4">
-<h4><a class="reference external" href="https://pypi.org/project/viztracer/">VizTracer</a><a class="headerlink" href="#id4" title="Permalink to this heading"></a></h4>
+<h3><a class="reference external" href="https://pypi.org/project/viztracer/">VizTracer</a><a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
 <img alt="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/34ff9b77-f01b-45bd-a57e-971c7b68c4a2" src="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/34ff9b77-f01b-45bd-a57e-971c7b68c4a2" />
 <p>this tool is able to generate a tracker file that can be viewed using <a class="reference external" href="https://perfetto.dev">Perfetto</a> (<a class="reference external" href="https://ui.perfetto.dev/">UI</a>)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># install cprofilev:</span>
@@ -180,7 +179,7 @@ vizviewer result.json
 </div>
 </section>
 <section id="cprofile-cprofilev">
-<h4><a class="reference external" href="https://docs.python.org/3/library/profile.html">cProfile</a>, <a class="reference external" href="https://github.com/ymichael/cprofilev">cProfilev</a><a class="headerlink" href="#cprofile-cprofilev" title="Permalink to this heading"></a></h4>
+<h3><a class="reference external" href="https://docs.python.org/3/library/profile.html">cProfile</a>, <a class="reference external" href="https://github.com/ymichael/cprofilev">cProfilev</a><a class="headerlink" href="#cprofile-cprofilev" title="Permalink to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m cProfile -o profiler.bin tests/test.ui.004.py
 
 <span class="c1"># install cprofilev:</span>
@@ -191,7 +190,7 @@ cprofilev -f profiler.bin
 </div>
 </section>
 <section id="id5">
-<h4><a class="reference external" href="https://github.com/benfred/py-spy">py-spy</a><a class="headerlink" href="#id5" title="Permalink to this heading"></a></h4>
+<h3><a class="reference external" href="https://github.com/benfred/py-spy">py-spy</a><a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># install</span>
 pip install py-spy
 
@@ -206,9 +205,8 @@ sudo env <span class="s2">&quot;PATH=</span><span class="nv">$PATH</span><span c
 </div>
 </section>
 <section id="pyroscope">
-<h4>pyroscope<a class="headerlink" href="#pyroscope" title="Permalink to this heading"></a></h4>
+<h3>pyroscope<a class="headerlink" href="#pyroscope" title="Permalink to this heading"></a></h3>
 <p><a class="reference external" href="https://pyroscope.io/">pyroscope</a> can be used as well (I guess) for profiling</p>
-</section>
 </section>
 </section>
 </section>
