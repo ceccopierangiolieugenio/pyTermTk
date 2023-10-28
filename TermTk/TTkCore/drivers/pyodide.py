@@ -22,7 +22,10 @@
 
 __all__ = ['TTkSignalDriver','TTkInputDriver']
 
+from pyodide import __version__ as pyodideVersion
+
 from TermTk.TTkCore.signal import pyTTkSignal
+from TermTk.TTkCore.log import TTkLog
 
 class TTkInputDriver():
     def close(self): pass
@@ -36,5 +39,6 @@ class TTkSignalDriver():
     sigInt  = pyTTkSignal()
 
     @staticmethod
-    def init(): pass
+    def init():
+        TTkLog.info(f"Pyodide Version:\033[38;5;11m{pyodideVersion}")
     def exit(): pass

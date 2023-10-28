@@ -3,14 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. _pyTermTk:  https://github.com/ceccopierangiolieugenio/pyTermTk
-.. _TermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
-.. _TUI:     https://en.wikipedia.org/wiki/Text-based_user_interface
-.. _pyCuT:   https://github.com/ceccopierangiolieugenio/pyCuT
-.. _Qt5:     https://www.riverbankcomputing.com/static/Docs/PyQt5/
-.. _GTK:     https://pygobject.readthedocs.io/en/latest/
-.. _tkinter: https://docs.python.org/3/library/tkinter.html
-
 Welcome to pyTermTk_'s documentation!
 =====================================
 
@@ -21,38 +13,85 @@ Intro
 | Evolved from the discontinued project pyCuT_ and inspired by
 | a mix of Qt5_, GTK_, and tkinter_ api definition with a touch of personal interpretation
 
+.. _pyTermTk:  https://github.com/ceccopierangiolieugenio/pyTermTk
+.. _TermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
+
+.. _TUI:     https://en.wikipedia.org/wiki/Text-based_user_interface
+.. _pyCuT:   https://github.com/ceccopierangiolieugenio/pyCuT
+.. _Qt5:     https://www.riverbankcomputing.com/static/Docs/PyQt5/
+.. _GTK:     https://pygobject.readthedocs.io/en/latest/
+.. _tkinter: https://docs.python.org/3/library/tkinter.html
+
+:doc:`info/features/index`
+   Main features of this library
+
+:ref:`features-alpha`
+   New Features available but being reviewed and prone of future changes that may break the compatibility with the previous releases
+
+:doc:`info/installing`
+   How to install,Quickstart,Use,Deliver pyTermTk_
+
+**Web Exporter**
+   TBD (sorry😭)
+
+:doc:`info/debug`
+   Notes on how to Debug/Profile
+
+.. :ref:`supported-dependencies`
+   Supported project dependencies, like Python and Sphinx.
 
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials
 
-   tutorial/000-examples.rst
+   tutorial/000-examples
 
-   tutorial/001-helloworld.rst
-   tutorial/002-layout.rst
-   tutorial/003-signalslots.rst
-   tutorial/004-logging.rst
-   tutorial/005-calculator.rst
+   tutorial/001-helloworld
+   tutorial/002-layout
+   tutorial/003-signalslots
+   tutorial/004-logging
+   tutorial/005-calculator
 
-   tutorial/ttkDesigner/textEdit/README.rst
+   tutorial/ttkDesigner/textEdit/README
+
+.. Hidden TOCs
 
 .. toctree::
+   :caption: Features
    :maxdepth: 1
-   :caption: API Reference
+   :hidden:
 
-   autogen.TermTk/TermTk.TTkAbstract.rst
-   autogen.TermTk/TermTk.TTkCore.rst
-   autogen.TermTk/TermTk.TTkCore.TTkTerm.rst
-   autogen.TermTk/TermTk.TTkGui.rst
-   autogen.TermTk/TermTk.TTkLayouts.rst
-   autogen.TermTk/TermTk.TTkTemplates.rst
-   autogen.TermTk/TermTk.TTkTestWidgets.rst
-   autogen.TermTk/TermTk.TTkTheme.rst
-   autogen.TermTk/TermTk.TTkTypes.rst
-   autogen.TermTk/TermTk.TTkUiTools.rst
-   autogen.TermTk/TermTk.TTkWidgets.rst
-   autogen.TermTk/TermTk.TTkWidgets.TTkModelView.rst
-   autogen.TermTk/TermTk.TTkWidgets.TTkPickers.rst
+   info/features/index
+   info/features/crosscompatible
+   info/features/widgets
+
+.. toctree::
+   :caption: Dev
+   :maxdepth: 1
+   :hidden:
+
+   info/installing
+   info/debug
+
+
+.. toctree::
+   :caption: API Reference
+   :maxdepth: 1
+   :hidden:
+
+   autogen.TermTk/TermTk.TTkAbstract
+   autogen.TermTk/TermTk.TTkCore
+   autogen.TermTk/TermTk.TTkCore.TTkTerm
+   autogen.TermTk/TermTk.TTkGui
+   autogen.TermTk/TermTk.TTkLayouts
+   autogen.TermTk/TermTk.TTkTemplates
+   autogen.TermTk/TermTk.TTkTestWidgets
+   autogen.TermTk/TermTk.TTkTheme
+   autogen.TermTk/TermTk.TTkTypes
+   autogen.TermTk/TermTk.TTkUiTools
+   autogen.TermTk/TermTk.TTkWidgets
+   autogen.TermTk/TermTk.TTkWidgets.TTkModelView
+   autogen.TermTk/TermTk.TTkWidgets.TTkPickers
 
 Indices and tables
 ==================
@@ -60,3 +99,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+
+

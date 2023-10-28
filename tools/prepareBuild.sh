@@ -34,6 +34,7 @@ _PATCH=$( git describe --tags | sed 's,[0-9]*\.[0-9]*\.\([0-9]*\)[^0-9].*,\1,' )
 _STAGE=$( git describe --tags | sed 's,[^-]*-a-\?\([0-9]*\).*,\1,'             )
 
 _VERSION="${_MAJOR}.${_MINOR}.${_PATCH}-a${_STAGE}"
+_DOCVERSION="${_MAJOR}.${_MINOR}.${_PATCH}-a"
 
 _tools_usage()
 {
@@ -76,6 +77,12 @@ case $1 in
                 _SETUP='setup.ttkDesigner.py'
                 _README='ttkDesigner/README.md'
                 _CFG='ttkDesigner/app/cfg.py'
+                ;;
+        doc)
+                rm -rf ${_TMP_PATH}
+                mkdir -p ${_TMP_PATH}
+                echo ${_DOCVERSION} > ${_TMP_PATH}/docversion.txt
+                exit 0
                 ;;
         *)
                 echo "Option \"$2\" not recognized"

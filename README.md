@@ -18,9 +18,9 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 
 [pyTermTk.Showcase.002.webm](https://user-images.githubusercontent.com/8876552/206490679-2bbdc909-c9bc-41c1-9a50-339b06dabecd.webm)
 
-## Features
+## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/index.html)
 - Self Contained (no external lib required)
-- Cross compatible: [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
+- [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
 - Basic widgets for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
 - Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
@@ -41,7 +41,7 @@ Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) 
 
 ---
 
-## [the Tutorials](tutorial) and [the Examples](tutorial/000-examples.rst)
+## [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 Be inspired by [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 
 ## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk/)
@@ -52,22 +52,18 @@ Smell deliciousness with the official [pyTermTk](https://github.com/ceccopierang
 
 ---
 
-## Install/Upgrade
+## [Install/Upgrade](https://ceccopierangiolieugenio.github.io/pyTermTk/info/installing.html)
 [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) is available on [PyPI](https://pypi.org/project/pyTermTk/)
 ```bash
 pip3 install --upgrade pyTermTk
 ```
+
 ## Quick Test/Try - no install required
 
 #### Clone
 ```bash
 git clone https://github.com/ceccopierangiolieugenio/pyTermTk.git
 cd pyTermTk
-```
-
-#### Run Basic (non ui) input test
-```bash
-python3 tests/test.input.py
 ```
 
 #### Demos
@@ -80,73 +76,11 @@ python3 demo/demo.py -f
 # run the ttkDesigner
 python3 -m ttkDesigner
 
-# Paint demo
-python3 demo/paint.py
-
-# VSCode like d'n d layout demo
-python3 demo/ttkode.py
-
-# early gittk demo
-python3 demo/gittk.py
-
 # Text edit with "Pygments" highlight integrated
 # it require pygments
 #   pip install pygments
 python3 tests/test.ui.018.TextEdit.Pygments.py README.md
 ```
-
-#### Debug
-There are few ENV Variables that can be used to force some debugging features;
-##### (TERMTK_FILE_LOG) - Log to a file
-To force logging to a file
-```bash
-TERMTK_FILE_LOG=session.log   python3   demo/demo.py
-```
-##### (TERMTK_STACKTRACE) - Force stacktrace generation with CTRL+C
-Use this env variable to force a stacktrace generation to the file defined (i.e. "**stacktrace.txt**")
-```bash
-TERMTK_STACKTRACE=stacktrace.txt   python3   demo/demo.py
-```
-
-#### Profiling
-
-##### [VizTracer](https://pypi.org/project/viztracer/)
-this tool is able to generate a tracker file that can be viewed using [Perfetto](https://perfetto.dev) ([UI](https://ui.perfetto.dev/))
-```bash
-# install cprofilev:
-#     pip3 install viztracer
-viztracer --tracer_entries 10000010 tests/test.ui.030.menu.01.py
-
-# View the results
-# loading the "result.json" in https://ui.perfetto.dev
-# or running
-vizviewer result.json
-```
-
-##### [cProfile](https://docs.python.org/3/library/profile.html), [cProfilev](https://github.com/ymichael/cprofilev)
-```bash
-python3 -m cProfile -o profiler.bin tests/test.ui.004.py
-
-# install cprofilev:
-#     pip3 install cprofilev
-cprofilev -f profiler.bin
-# open http://127.0.0.1:4000
-```
-##### py-spy
-```bash
-# install
-pip install py-spy
-
-# run the application
-python3 demo/demo.py
-
-# on another terminal run the py-spy
-sudo env "PATH=$PATH" \
-    py-spy top \
-       --pid  $(ps -A -o pid,cmd | grep demo.py | grep -v grep | sed 's,python.*,,')
-```
-##### pyroscope
-[pyroscope](https://pyroscope.io/) can be used as well for profiling
 
 ---
 

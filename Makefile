@@ -27,6 +27,7 @@ doc: .venv
 	# rm -rf docs/html ; \
 	# pdoc --html TermTk -o docs/html ; \
 	. .venv/bin/activate ; \
+	tools/prepareBuild.sh doc ; \
 	rm -rf docs/build ; \
 	rm -rf docs/source/autogen.* ; \
 	# sphinx-apidoc -o docs/source/TermTk/ -e TermTk/ ; \
@@ -83,9 +84,9 @@ deployDoc:
 	git checkout gh-pages
 
 	# Update the doc files
-	rm -rf *.inv *.html *.js _* autogen.* tutorial
+	rm -rf *.inv *.html *.js _* autogen.* tutorial info
 	cp -a docs/build/html/* .
-	find *.html *.inv *.js autogen.TermTk _* tutorial | xargs git add
+	find *.html *.inv *.js autogen.TermTk _* tutorial info | xargs git add
 
 	git commit -m "Doc Updated"
 	git push origin gh-pages

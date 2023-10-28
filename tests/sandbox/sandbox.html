@@ -215,10 +215,13 @@
         const queryString = window.location.search;
         console.log(queryString);
         const urlParams = new URLSearchParams(queryString);
-        fileUri = urlParams.get("fileUri")
+        fileUri  = urlParams.get("fileUri")
+        filePath = urlParams.get("filePath")
         if (fileUri != null){
           pyodide.FS.writeFile(pyodide.FS.currentPath+"/test_file.py", await (await fetch(fileUri)).text());
           loadFile(pyodide.FS.currentPath+"/test_file.py")
+        }else if (filePath != null){
+          loadFile(pyodide.FS.currentPath+"/"+filePath)
         }else{
           loadFile(pyodide.FS.currentPath+"/demo/demo.py")
         }
