@@ -45,21 +45,23 @@ Specialised Widgets
 Pickers
 -------
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/35de8317-1ee6-4dad-9c46-320d0692c393
-* Text Picker
+* Text Picker :class:`~TermTk.TTkWidgets.TTkPickers.textpicker.TTkTextPicker`
 
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/0388f4a0-1a93-4d57-9a77-c7e43422fedb
-* File Picker
+* File Picker :class:`~TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker`
 
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/9a61baf3-f151-49a6-bde0-ace02eb9008e
-* Color Picker
+* Color Picker :class:`~TermTk.TTkWidgets.TTkPickers.colorpicker.TTkColorButtonPicker`
+
+* Message Box :class:`~TermTk.TTkWidgets.TTkPickers.messagebox.TTkMessageBox`
 
 .. _widgets-layout:
 
 Layout
 ------
 
-* Frame
-* Resizable Frame
+* Frame :class:`~TermTk.TTkWidgets.frame.TTkFrame`
+* Resizable Frame :class:`~TermTk.TTkWidgets.resizableframe.TTkResizableFrame`
 * Window :class:`~TermTk.TTkWidgets.window.TTkWindow`
-* Splitter
-* Scroll Area
+* Splitter :class:`~TermTk.TTkWidgets.splitter.TTkSplitter`
+* Scroll Area :class::`~TermTk.TTkWidgets.scrollarea.TTkScrollArea`
