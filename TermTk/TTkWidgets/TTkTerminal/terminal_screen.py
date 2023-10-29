@@ -49,7 +49,6 @@ from .terminal_screen_C1  import _TTkTerminalScreen_C1
 
 class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
 
-    @dataclass(frozen=False)
     class _SelectCursor:
         @dataclass(frozen=False)
         class _CP:
@@ -63,8 +62,11 @@ class _TTkTerminalScreen(_TTkTerminalScreen_CSI, _TTkTerminalScreen_C1):
                 self.pos = 0
             def toNum(self):
                 return self.pos | self.line << 16
-        anchor:   _CP = _CP()
-        position: _CP = _CP()
+        __slots__ = ('anchor','position')
+        def __init__(self):
+            self.anchor   = _TTkTerminalScreen._SelectCursor._CP()
+            self.position = _TTkTerminalScreen._SelectCursor._CP()
+
         def __str__(self) -> str:
             return f"a:({self.anchor.pos},{self.anchor.line}) p:({self.position.pos},{self.position.line})"
         def select(self, x, y, moveAnchor=True):
