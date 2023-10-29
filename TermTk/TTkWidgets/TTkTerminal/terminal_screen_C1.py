@@ -20,7 +20,7 @@
     # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     # SOFTWARE.
 
-__all__ = ['']
+__all__ = []
 
 # Note:
 # This Class is supposed to be inherited by and only by
