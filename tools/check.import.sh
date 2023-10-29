@@ -37,7 +37,8 @@ __check(){
             -e "util.py:import zlib, pickle, base64" \
             -e "propertyanimation.py:from inspect import getfullargspec" \
             -e "propertyanimation.py:from types import LambdaType" \
-            -e "propertyanimation.py:import time, math" |
+            -e "propertyanimation.py:import time, math" \
+            -e "terminal.py:from select import select" |
         grep -v \
             -e "TTkTerm/input.py:from ..drivers import TTkInputDriver" \
             -e "TTkTerm/term.py:from ..drivers import *" \

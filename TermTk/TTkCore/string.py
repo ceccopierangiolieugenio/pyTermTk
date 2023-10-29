@@ -77,11 +77,12 @@ class TTkString():
     @staticmethod
     def _importString1(text, colors):
         ret = TTkString()
-        ret._text = text
-        ret._colors = colors
-        ret._baseColor = colors[-1]
-        ret._hasTab = '\t' in text
-        ret._checkWidth()
+        if text and colors:
+            ret._text = text
+            ret._colors = colors
+            ret._baseColor = colors[-1] if colors else TTkColor.RST
+            ret._hasTab = '\t' in text
+            ret._checkWidth()
         return ret
 
     @staticmethod

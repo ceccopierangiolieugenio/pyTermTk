@@ -31,4 +31,6 @@ from .kodetab         import *
 from .texedit         import *
 from .TTkModelView    import *
 from .TTkPickers      import *
+from .TTkTerminal     import *
+
 from .Fancy           import *
