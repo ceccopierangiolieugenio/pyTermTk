@@ -1,0 +1,16 @@
+
+TermTk.TTkWidgets.TTkTerminal.debugterminal
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkTerminal.debugterminal
+
+.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.debugterminal
+
+
+
+DebugTTkTerminal
+================
+
+.. autoclass:: DebugTTkTerminal
+   :members:
+   :inherited-members:

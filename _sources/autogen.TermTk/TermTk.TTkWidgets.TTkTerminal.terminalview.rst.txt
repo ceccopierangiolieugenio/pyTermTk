@@ -1,0 +1,16 @@
+
+TermTk.TTkWidgets.TTkTerminal.terminalview
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkTerminal.terminalview
+
+.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.terminalview
+
+
+
+TTkTerminalView
+===============
+
+.. autoclass:: TTkTerminalView
+   :members:
+   :inherited-members:

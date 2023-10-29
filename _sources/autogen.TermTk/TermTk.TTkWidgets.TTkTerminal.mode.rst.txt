@@ -1,0 +1,16 @@
+
+TermTk.TTkWidgets.TTkTerminal.mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkTerminal.mode
+
+.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.mode
+
+
+
+TTkTerminalModes
+================
+
+.. autoclass:: TTkTerminalModes
+   :members:
+   :inherited-members:

@@ -13,6 +13,7 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.Fancy
   TermTk.TTkWidgets.TTkModelView
   TermTk.TTkWidgets.TTkPickers
+  TermTk.TTkWidgets.TTkTerminal
   TermTk.TTkWidgets.about
   TermTk.TTkWidgets.button
   TermTk.TTkWidgets.checkbox

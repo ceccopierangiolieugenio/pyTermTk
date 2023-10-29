@@ -1,0 +1,8 @@
+
+TermTk.TTkWidgets.TTkTerminal.terminalview\_CSI\_DEC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkTerminal.terminalview_CSI_DEC
+
+.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.terminalview_CSI_DEC
+

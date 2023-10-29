@@ -76,6 +76,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkTerminal.html">TermTk.TTkWidgets.TTkTerminal</a></li>
 </ul>
 
         </div>
@@ -134,6 +135,7 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSignal</span><span class="p">,</span> <span class="n">pyTTkSlot</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.input</span> <span class="kn">import</span> <span class="n">TTkInput</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.inputkey</span> <span class="kn">import</span> <span class="n">TTkKeyEvent</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.inputmouse</span> <span class="kn">import</span> <span class="n">TTkMouseEvent</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.layout</span> <span class="kn">import</span> <span class="n">TTkLayout</span>
@@ -314,8 +316,8 @@
         <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">kevt</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mevt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mevt</span><span class="o">.</span><span class="n">evt</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span><span class="p">:</span>
             <span class="c1"># TTkHelper._rootWidget.setEnabled(True)</span>
-            <span class="c1"># TTkHelper._rootWidget._input.inputEvent.connect(TTkHelper._rootWidget._processInput)</span>
-            <span class="n">TTkHelper</span><span class="o">.</span><span class="n">_rootWidget</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
+            <span class="c1"># TTkInput.inputEvent.connect(TTkHelper._rootWidget._processInput)</span>
+            <span class="n">TTkInput</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
             <span class="n">widget</span> <span class="o">=</span> <span class="n">TTkTomInspector</span><span class="o">.</span><span class="n">_findWidget</span><span class="p">(</span><span class="n">mevt</span><span class="p">,</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">_rootWidget</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">())</span>
             <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">widget</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">widget</span><span class="p">:</span>
@@ -328,8 +330,8 @@
     <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">_btnPickCb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TTkHelper._rootWidget.setEnabled(True)</span>
-        <span class="c1"># TTkHelper._rootWidget._input.inputEvent.disconnect(TTkHelper._rootWidget._processInput)</span>
-        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">_rootWidget</span><span class="o">.</span><span class="n">_input</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
+        <span class="c1"># TTkInput.inputEvent.disconnect(TTkHelper._rootWidget._processInput)</span>
+        <span class="n">TTkInput</span><span class="o">.</span><span class="n">inputEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processInput</span><span class="p">)</span>
 
     <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

@@ -76,6 +76,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autogen.TermTk/TermTk.TTkWidgets.TTkTerminal.html">TermTk.TTkWidgets.TTkTerminal</a></li>
 </ul>
 
         </div>
@@ -182,11 +183,12 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_importString1</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">TTkString</span><span class="p">()</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="n">colors</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_baseColor</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">text</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">and</span> <span class="n">colors</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_colors</span> <span class="o">=</span> <span class="n">colors</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_baseColor</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">colors</span> <span class="k">else</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RST</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_hasTab</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">text</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_checkWidth</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@staticmethod</span>
