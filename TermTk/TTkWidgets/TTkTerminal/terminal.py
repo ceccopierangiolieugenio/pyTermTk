@@ -44,11 +44,12 @@ from TermTk.TTkWidgets.TTkTerminal.terminalview import TTkTerminalView
 from .terminalview_CSI_DEC import _TTkTerminal_CSI_DEC
 
 class TTkTerminal(TTkAbstractScrollArea):
+    '''TTkTerminal'''
     __slots__ = ('_terminalView',
                  # Exported methods
                  'runShell',
                  # Exported Signals
-                 'titleChanged', 'bell', 'terminalClosed')
+                 'titleChanged', 'bell', 'terminalClosed', 'textSelected')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollArea.__init__(self, *args, **kwargs)
         if 'parent' in kwargs: kwargs.pop('parent')
@@ -62,6 +63,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         # Export Signals
         self.titleChanged = self._terminalView.titleChanged
         self.bell = self._terminalView.bell
+        self.textSelected = self._terminalView.textSelected
         self.terminalClosed = pyTTkSignal(TTkTerminal)
         self._terminalView.terminalClosed.connect(lambda : self.terminalClosed.emit(self))
 

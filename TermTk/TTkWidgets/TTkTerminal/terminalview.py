@@ -89,8 +89,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         reportMove:  bool = False
         sgrMode:     bool = False
 
-    __slots__ = ('_selecct',
-                 '_shell', '_fd', '_inout', '_pid',
+    __slots__ = ('_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_resize_pipe',
                  '_mode_normal'
                  '_clipboard', '_selecting',
@@ -98,11 +97,12 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                  '_keyboard', '_mouse', '_terminal',
                  '_screen_current', '_screen_normal', '_screen_alt',
                  # Signals
-                 'titleChanged', 'bell', 'terminalClosed')
+                 'titleChanged', 'bell', 'terminalClosed', 'textSelected')
     def __init__(self, *args, **kwargs):
         self.bell = pyTTkSignal()
         self.terminalClosed = pyTTkSignal()
         self.titleChanged = pyTTkSignal(str)
+        self.textSelected = pyTTkSignal(str)
 
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
@@ -989,7 +989,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def mouseReleaseEvent(self, evt):
         self._selecting = False
         if (selected := self._screen_current.getSelected()):
-            self._clipboard.setText(selected)
+            # self._clipboard.setText(selected)
+            self.textSelected.emit(selected)
         return self._sendMouse(evt)
 
     def wheelEvent(self, evt):
