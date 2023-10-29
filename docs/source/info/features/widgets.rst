@@ -38,7 +38,8 @@ Specialised Widgets
 .. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/3f4f7306-fb6c-4892-8960-3d42780a34de
 * KodeTab :class:`~TermTk.TTkWidgets.kodetab.TTkKodeTab`
 
-* Terminal TBD
+.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/9a71e6c7-b891-4744-8289-c59e1a6bdf45
+* Terminal :class:`~TermTk.TTkWidgets.TTkTerminal.terminal.TTkTerminal`
 
 .. _widgets-pickers:
 
