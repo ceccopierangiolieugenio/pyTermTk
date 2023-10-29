@@ -51,6 +51,7 @@ __check(){
             -e "drivers/unix.py:from select import select" \
             -e "drivers/windows.py:import signal" \
             -e "drivers/windows.py:from ctypes import Structure, Union, byref, wintypes, windll" \
+            -e "drivers/pyodide.py:from pyodide import __version__ as pyodideVersion" \
             -e "drivers/term_windows.py:import sys, os" \
             -e "drivers/term_windows.py:from threading import Thread, Lock" \
             -e "drivers/term_windows.py:from ..TTkTerm.term_base import TTkTermBase" \

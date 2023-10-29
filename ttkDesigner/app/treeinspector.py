@@ -72,8 +72,8 @@ class TreeInspector(ttk.TTkGridLayout):
     #    ttk.TTkLog.debug(f"{kevt} {mevt}")
     #    if mevt.evt == TTkK.Press:
     #        # TTkHelper._rootWidget.setEnabled(True)
-    #        # TTkHelper._rootWidget._input.inputEvent.connect(TTkHelper._rootWidget._processInput)
-    #        ttk.TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
+    #        # TTkInput.inputEvent.connect(TTkHelper._rootWidget._processInput)
+    #        ttk.TTkInput.inputEvent.disconnect(self._processInput)
     #        thing = TTkTomInspector._findWidget(mevt,ttk.TTkHelper._rootWidget.rootLayout())
     #        ttk.TTkLog.debug(f"{thing=}")
     #        if thing:
@@ -85,7 +85,7 @@ class TreeInspector(ttk.TTkGridLayout):
 
     @ttk.pyTTkSlot()
     def _btnPickCb(self):
-        # ttk.TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
+        # ttk.TTkInput.inputEvent.connect(self._processInput)
         pass
 
     @ttk.pyTTkSlot()

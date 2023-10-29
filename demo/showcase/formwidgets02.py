@@ -35,10 +35,10 @@ def demoFormWidgets(root=None):
     win_form1_grid_layout = ttk.TTkGridLayout(columnMinWidth=1)
     frame = ttk.TTkFrame(parent=root, layout=win_form1_grid_layout, border=0)
 
-    win_form1_grid_layout.addWidget(_b1 := ttk.TTkButton(text='Button 1'),0,0)
-    win_form1_grid_layout.addWidget(_b2 := ttk.TTkButton(text='Button 2', border=True),1,0)
-    win_form1_grid_layout.addWidget(_b3 := ttk.TTkButton(text='Checkable 1', checkable=True, maxHeight=3),0,2)
-    win_form1_grid_layout.addWidget(_b4 := ttk.TTkButton(text='Checkable 2', checkable=True, border=True, maxHeight=3),1,2)
+    win_form1_grid_layout.addWidget(_b1 := ttk.TTkButton(text='Button 1', border=True, maxHeight=3),0,0)
+    win_form1_grid_layout.addWidget(_b2 := ttk.TTkButton(text='Button 2'),1,0)
+    win_form1_grid_layout.addWidget(_b3 := ttk.TTkButton(text='Checkable 1', checkable=True, border=True),0,2)
+    win_form1_grid_layout.addWidget(_b4 := ttk.TTkButton(text='Checkable 2', checkable=True),1,2)
 
     win_form1_grid_layout.addWidget(_en_dis_cb := ttk.TTkCheckbox(text=" en/dis", checked=True, maxWidth=11),1,3)
     _en_dis_cb.clicked.connect(_b1.setEnabled)
