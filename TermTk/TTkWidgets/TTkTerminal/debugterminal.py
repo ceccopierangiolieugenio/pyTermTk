@@ -46,8 +46,6 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
-from TermTk.TTkWidgets.TTkTerminal.terminal_alt    import _TTkTerminalAltScreen
-from TermTk.TTkWidgets.TTkTerminal.terminal_normal import _TTkTerminalNormalScreen
 from TermTk.TTkWidgets.TTkTerminal.mode            import TTkTerminalModes
 
 from TermTk.TTkWidgets.TTkTerminal.vt102 import TTkVT102

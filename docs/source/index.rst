@@ -6,7 +6,7 @@
 Welcome to pyTermTk_'s documentation!
 =====================================
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/ae488a8d-295e-4608-9580-372a8355d72b
+.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/ae488a8d-295e-4608-9580-372a8355d72b
 
 Intro
 -----
@@ -94,6 +94,7 @@ Intro
    autogen.TermTk/TermTk.TTkWidgets
    autogen.TermTk/TermTk.TTkWidgets.TTkModelView
    autogen.TermTk/TermTk.TTkWidgets.TTkPickers
+   autogen.TermTk/TermTk.TTkWidgets.TTkTerminal
 
 Indices and tables
 ==================

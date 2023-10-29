@@ -22,29 +22,20 @@
 
 __all__ = ['TTkTerminal']
 
-import os, pty, threading
-import struct, fcntl, termios
-
-from dataclasses import dataclass
-
-import re
-from select import select
-from TermTk.TTkCore.canvas import TTkCanvas
-
-
-from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import TTkCfg
-from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkWidgets.TTkTerminal.terminalview import TTkTerminalView
 
-from .terminalview_CSI_DEC import _TTkTerminal_CSI_DEC
-
 class TTkTerminal(TTkAbstractScrollArea):
-    '''TTkTerminal'''
+    '''TTkTerminal
+
+    This is a terminal emulator fot TermTk
+
+    .. warning::
+        This is an Alpha feature, it is not optimized and the API definition may change in the future
+
+    '''
     __slots__ = ('_terminalView',
                  # Exported methods
                  'runShell',
