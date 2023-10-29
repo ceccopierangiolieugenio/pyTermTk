@@ -122,8 +122,11 @@ root.rootLayout().addWidget(wbl)
 
 wb = WorkBench(parent=root)
 
+clipboard = ttk.TTkClipboard()
+
 ttk.pyTTkSlot()
 def _openTerminal(term=[]):
+    global clipboard
     _x,_y = 15,5
     while (_x,_y) in [_t['pos'] for _t in term]:
         _x += 4
@@ -135,6 +138,7 @@ def _openTerminal(term=[]):
     _term.runShell()
     _term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
     _term.titleChanged.connect(_win.setTitle)
+    _term.textSelected.connect(clipboard.setText)
     term.append({'pos':(_x,_y),'term':_term,'win':_win})
     _win.raiseWidget()
 
