@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os
+def yieldFunc1():
+    for i in range(10):
+        print(f"V {i}")
+        yield f"{i=}"
+        print(f"^ {i}")
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-import TermTk as ttk
+for v in ( k:=yieldFunc1()):
+    print(f"{v=} {k=}")
+    for vv in k:
+        print(f"{vv=}")
+        break
 
-ttk.TTkLog.use_default_file_logging()
+print(f"----- {v=} {vv=}")
 
-root = ttk.TTk()
-ttk.TTkFrame(parent=root, x=5, y=3, width=20, height=15, border=True)
-# ttk.Button(root, text="Hello World").grid()
-root.mainloop()
+# Example adapted from:
+#   https://www.pythonforbeginners.com/basics/create-generator-from-a-list-in-python
+myList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+mygen = (i for i in myList)
+
+for v in mygen:
+    print(f"{v=} {k=}")
+    for vv in mygen:
+        print(f"{vv=}")
+        break
+
+print(f"----- {v=} {vv=}")
+

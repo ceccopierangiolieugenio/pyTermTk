@@ -37,7 +37,8 @@ __check(){
             -e "util.py:import zlib, pickle, base64" \
             -e "propertyanimation.py:from inspect import getfullargspec" \
             -e "propertyanimation.py:from types import LambdaType" \
-            -e "propertyanimation.py:import time, math" |
+            -e "propertyanimation.py:import time, math" \
+            -e "terminal.py:from select import select" |
         grep -v \
             -e "TTkTerm/input.py:from ..drivers import TTkInputDriver" \
             -e "TTkTerm/term.py:from ..drivers import *" \
@@ -60,7 +61,19 @@ __check(){
             -e "drivers/term_pyodide.py:import pyodideProxy" \
             -e "drivers/term_pyodide.py:from ..TTkTerm.term_base import TTkTermBase" \
             -e "drivers/__init__.py:import importlib.util" \
-            -e "drivers/__init__.py:import platform"
+            -e "drivers/__init__.py:import platform" |
+        grep -v \
+            -e "TTkTerminal/debugterminal.py:import struct, fcntl, termios" \
+            -e "TTkTerminal/terminalview.py:import struct, fcntl, termios" \
+            -e "TTkTerminal/terminalview.py:from select import select" \
+            -e "TTkTerminal/terminalview.py:from .terminalview_CSI_DEC import _TTkTerminal_CSI_DEC" \
+            -e "TTkTerminal/terminal.py:import struct, fcntl, termios" \
+            -e "TTkTerminal/terminal.py:from .terminalview_CSI_DEC import _TTkTerminal_CSI_DEC" \
+            -e "TTkTerminal/terminal_screen.py:import collections" \
+            -e "TTkTerminal/terminal_screen.py:import unicodedata" \
+            -e "TTkTerminal/terminal_screen.py:from .terminal_screen_CSI import _TTkTerminalScreen_CSI" \
+            -e "TTkTerminal/terminal_screen.py:from .terminal_screen_C1  import _TTkTerminalScreen_C1"
+
 } ;
 
 if __check ;  then

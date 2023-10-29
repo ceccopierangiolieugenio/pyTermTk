@@ -6,6 +6,8 @@
 Welcome to pyTermTk_'s documentation!
 =====================================
 
+.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/ae488a8d-295e-4608-9580-372a8355d72b
+
 Intro
 -----
 

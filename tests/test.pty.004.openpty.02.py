@@ -23,10 +23,6 @@
 # SOFTWARE.
 
 # This test is based on:
-#   pyte - In memory VTXXX-compatible terminal emulator.
-#          Terminal Emulator Example
-#   https://github.com/selectel/pyte/blob/master/examples/terminal_emulator.py
-#
 #   pty — Pseudo-terminal utilities¶
 #   https://docs.python.org/3/library/pty.html#example
 #
@@ -39,7 +35,10 @@
 
 import os
 import pty
+import tty
 import sys
+import time
+import subprocess
 import threading
 from select import select
 
@@ -50,40 +49,43 @@ import TermTk as ttk
 class TermThread(threading.Thread):
     def __init__(self):
         super().__init__()
-        self._shell = os.environ.get('SHELL', 'sh')
+        self.shell = os.environ.get('SHELL', 'sh')
+        self.master, self.slave = pty.openpty()
+        pty.spawn(self.shell, self.read_pty)
+        # self.p = subprocess.Popen(
+        #     [self.shell],
+        #     shell=True,
+        #     # preexec_fn=os.setsid,
+        #     # universal_newlines=True,
+        #     stdin=self.slave,
+        #     stdout=self.slave,
+        #     stderr=self.slave)
+        self.pin = os.fdopen(self.master, 'w')
 
-        # This slice is loosely inspired by:
-        # https://github.com/selectel/pyte/blob/b40cf6261fdf7a05a7d7fd04ea7d9b0ea1743269/examples/terminal_emulator.py#L109-L115
-        pid, self._fd = pty.fork()
-        if pid == 0:
-            argv = [self._shell]
-            env = dict(TERM="screen", DISPLAY=":1")
-            os.execvpe(argv[0], argv, env)
+        name = os.ttyname(self.master)
+        ttk.TTkLog.debug(f"{self.master=} {name}")
 
-        self._inout = os.fdopen(self._fd, "w+b", 0)
+        name = os.ttyname(self.slave)
+        ttk.TTkLog.debug(f"{self.slave=} {name}")
 
-        name = os.ttyname(self._fd)
-        ttk.TTkLog.debug(f"{self._fd=} {name}")
+    def read_pty(self, fds):
+        pass
 
     def setTextEdit(self, te):
         self.textEdit = te
 
     def run(self):
-        while rs := select( [self._inout], [], [])[0]:
+        while self.p.poll() is None:
+            rs, ws, es = select([self.master], [], [])
             ttk.TTkLog.debug(f"Select - {rs=}")
             for r in rs:
-                if r is self._inout:
-                    try:
-                        o = self._inout.read(10240)
-                    except Exception as e:
-                        ttk.TTkLog.error(f"Error: {e=}")
-                        return
+                if r is self.master:
+                    o = os.read(self.master, 10240)
                     if o:
-                        ttk.TTkLog.debug(f'Eugenio->{o}')
+                        # ttk.TTkLog.debug(f'Eugenio->{o}')
                         # self.textEdit.append(o.decode('utf-8').replace('\r','').replace('\033[?2004h','').replace('\033[?2004l',''))
                         cursor = self.textEdit.textCursor()
                         cursor.insertText(o.decode('utf-8').replace('\r','').replace('\033[?2004h','').replace('\033[?2004l',''))
-                        # cursor.insertText(o.decode('utf-8').replace('\r','<-r->').replace('\033','<-ESC->'))
                         cursor.movePosition(ttk.TTkTextCursor.End)
                         self.textEdit.textEditView()._updateSize()
                         self.textEdit.textEditView().viewMoveTo(0, cursor.position().line)
@@ -103,18 +105,14 @@ class TerminalView(ttk.TTkTextEditView):
         if evt.type == ttk.TTkK.SpecialKey:
             if evt.key == ttk.TTkK.Key_Enter:
                 ttk.TTkLog.debug(f"Key: {evt}")
-                self.termThread._inout.write(b'\n')
+                self.termThread.pin.write('\n')
         else: # Input char
             ttk.TTkLog.debug(f"Key: {evt.key}")
-            self.termThread._inout.write(evt.key.encode())
+            self.termThread.pin.write(evt.key)
         return True
 
 ttk.TTkLog.use_default_file_logging()
 root = ttk.TTk()
-
-wlog = ttk.TTkWindow(parent=root,pos = (32,12), size=(90,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
-wlog.setLayout(ttk.TTkHBoxLayout())
-ttk.TTkLogViewer(parent=wlog, follow=True )
 
 win1 = ttk.TTkWindow(parent=root, pos=(1,1), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 tt1 = TermThread()
@@ -130,5 +128,8 @@ win2.layout().addWidget(te2)
 tt2.setTextEdit(te2)
 tt2.start()
 
+wlog = ttk.TTkWindow(parent=root,pos = (32,12), size=(90,20), title="Log Window", flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+wlog.setLayout(ttk.TTkHBoxLayout())
+ttk.TTkLogViewer(parent=wlog, follow=True )
 
 root.mainloop()
