@@ -22,7 +22,11 @@ copyright = '2021, Eugenio Parodi'
 author = 'Eugenio Parodi'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0a'
+if os.path.exists(versionFile:=os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../tmp/docversion.txt')):
+    with open(versionFile) as f:
+        release = f.read()
+else:
+    release = 'X.XX.X-a'
 
 # -- General configuration ---------------------------------------------------
 
@@ -68,7 +72,7 @@ html_theme_options = {
     'collapse_navigation': True,
     'sticky_navigation': True,
     #'navigation_depth': 4,
-    'includehidden': False,
+    'includehidden': True,
     #'titles_only': False
 }
 
@@ -82,6 +86,8 @@ html_css_files = [
     'theme_overrides.css',  # override wide tables in RTD theme
     'ttk.css'
 ]
+
+html_favicon = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"
 
 # html_theme = 'bizstyle'
 
@@ -142,7 +148,10 @@ autodoc_default_options = {}
 
 # Mock pyodide to avoid autogen failure
 class pyodideProxy(): pass
-moduleInput = type(sys)('pyodideProxy')
-moduleInput.pyodideProxy = pyodideProxy
+sys.modules['pyodideProxy'] = pyodideProxy
 
-sys.modules['pyodideProxy']  = moduleInput
+class pyodide(): __version__ = "NA"
+sys.modules['pyodide'] = pyodide
+
+class windll(): pass
+sys.modules['ctypes.windll'] = windll

@@ -68,12 +68,12 @@ class _SuperExpandButton(ttk.TTkButton):
         return True
 
     def show(self):
-        ttk.TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
+        ttk.TTkInput.inputEvent.connect(self._processInput)
         return super().show()
 
     def hide(self):
         self.superExpandButtonHidden.emit()
-        ttk.TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
+        ttk.TTkInput.inputEvent.disconnect(self._processInput)
         return super().hide()
 
     def paintEvent(self, canvas):

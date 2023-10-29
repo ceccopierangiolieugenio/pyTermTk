@@ -29,6 +29,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts.layout import TTkLayout
@@ -209,8 +210,8 @@ class TTkTomInspector(TTkContainer):
         TTkLog.debug(f"{kevt} {mevt}")
         if mevt.evt == TTkK.Press:
             # TTkHelper._rootWidget.setEnabled(True)
-            # TTkHelper._rootWidget._input.inputEvent.connect(TTkHelper._rootWidget._processInput)
-            TTkHelper._rootWidget._input.inputEvent.disconnect(self._processInput)
+            # TTkInput.inputEvent.connect(TTkHelper._rootWidget._processInput)
+            TTkInput.inputEvent.disconnect(self._processInput)
             widget = TTkTomInspector._findWidget(mevt,TTkHelper._rootWidget.rootLayout())
             TTkLog.debug(f"{widget=}")
             if widget:
@@ -223,8 +224,8 @@ class TTkTomInspector(TTkContainer):
     @pyTTkSlot()
     def _btnPickCb(self):
         # TTkHelper._rootWidget.setEnabled(True)
-        # TTkHelper._rootWidget._input.inputEvent.disconnect(TTkHelper._rootWidget._processInput)
-        TTkHelper._rootWidget._input.inputEvent.connect(self._processInput)
+        # TTkInput.inputEvent.disconnect(TTkHelper._rootWidget._processInput)
+        TTkInput.inputEvent.connect(self._processInput)
 
     @pyTTkSlot()
     def _refresh(self, widget=None):
