@@ -10,7 +10,7 @@ Installation
 pyTermTk_ is a self contained  library,
 it does not require extra libraries to be used
 and can be installed through :ref:`install-pypi`
-or just :ref:`copying the TermTk Folder<install-copy>` in the root folder of your project.
+or just :ref:`copying the TermTk folder<install-copy>` in the root folder of your project.
 
 
 

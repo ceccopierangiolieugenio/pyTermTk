@@ -21,8 +21,8 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 ## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/index.html)
 - Self Contained (no external lib required)
 - [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
-- Basic widgets for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
-- Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
+- [Basic widgets](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/widgets.html#base-widgets) for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
+- [Specialized widgets](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/widgets.html#specialised-widgets) to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
 - True color support
 - Ful/Half/Zero sized Unicode characters 😎
