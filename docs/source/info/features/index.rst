@@ -21,35 +21,38 @@ Main features
     - Ful/Half/Zero sized Unicode characters 😎
     - I am pretty sure there is something else...
 
-Self Contained, :doc:`Cross Compatible <crosscompatible>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Self Contained, :doc:`Cross Compatible <crosscompatible>`
 
-    | pyTermTk_ does not require external libraries (i.e. curses)
-    | It can be :ref:`installed through PyPi <install-pypi>` or simply :ref:`copy the TermTk folder <install-copy>` inside the root path of any project.
-    | Compatible with :ref:`cc-linux`, :ref:`cc-windows`, :ref:`cc-macos`, :ref:`HTML5 <cc-html5>`
+  | pyTermTk_ does not require external libraries (i.e. curses)
+  | It can be :ref:`installed through PyPi <install-pypi>` or simply :ref:`copy the TermTk folder <install-copy>` inside the root path of any project.
+  | Compatible with :ref:`cc-linux`, :ref:`cc-windows`, :ref:`cc-macos`, :ref:`HTML5 <cc-html5>`
 
-Wide variety of built-in :ref:`widgets <widgets-base>`, :ref:`pickers <widgets-pickers>`, :ref:`layout helpers <widgets-layout>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Wide variety of built-in :ref:`widgets <widgets-base>`, :ref:`pickers <widgets-pickers>`, :doc:`Layout helpers <../../tutorial/002-layout>`
 
-Clipboard support
-~~~~~~~~~~~~~~~~~
+* Input/Mouse/Paste Event handling
+
+* Drag and Drop
+
+* Clipboard support
+
+* Drawing primitives
+
+* True color support
+
+* Ful/Half/Zero sized Unicode characters 😎
 
 .. _features-alpha:
 
 Alpha Features
 --------------
-    Those are the feature/poc that are not being extensively tested and can be prone to unexpected behaviour.
-    Their APIs may change before the final release to address bugs or improving the overall design implementation.
 
-Text Editor
-~~~~~~~~~~~
+  | Those are the feature/poc that are not being extensively tested and can be prone to unexpected behaviour.
+  | Their APIs may change before the final release to address bugs or improving the overall design implementation.
 
-Terminal Emulator
-~~~~~~~~~~~~~~~~~
+* Text Editor
 
-Terminal Multiplexer
-~~~~~~~~~~~~~~~~~~~~
+* Terminal Emulator
 
-ttkDesigner
-~~~~~~~~~~~
+* Terminal Multiplexer
 
+* ttkDesigner
