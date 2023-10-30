@@ -8,7 +8,7 @@ Widgets
 Base Widgets
 ------------
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/f930f010-79ce-4b9a-8b2b-796af6d1542c
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Base.gif
 
 * Label :class:`~TermTk.TTkWidgets.label.TTkLabel`
 * Button :class:`~TermTk.TTkWidgets.button.TTkButton`
@@ -19,41 +19,42 @@ Base Widgets
 * Radio Button :class:`~TermTk.TTkWidgets.radiobutton.TTkRadiobutton`
 * Scrollbar :class:`~TermTk.TTkWidgets.scrollbar.TTkScrollBar`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/22f507ce-d4c9-4910-8019-29362b3a71f7
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.List.gif
 * List :class:`~TermTk.TTkWidgets.list_.TTkList`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/9c8e257e-90b0-4de6-a4dc-f7126ac73785
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Menu.gif
 * Menu :class:`~TermTk.TTkWidgets.menu.TTkMenu`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/b024ae12-57d8-4e69-8b3f-71623fae4ce7
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Tab.gif
 * Tab :class:`~TermTk.TTkWidgets.tabwidget.TTkTabWidget`
 
 
 Specialised Widgets
 -------------------
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/ebc52793-484d-4fee-9ccd-8d8cc2e810fe
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TextEdit.gif
 * TextEdit :class:`~TermTk.TTkWidgets.texedit.TTkTextEdit`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/3f4f7306-fb6c-4892-8960-3d42780a34de
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.KodeTab.gif
 * KodeTab :class:`~TermTk.TTkWidgets.kodetab.TTkKodeTab`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/9a71e6c7-b891-4744-8289-c59e1a6bdf45
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Terminal.gif
 * Terminal :class:`~TermTk.TTkWidgets.TTkTerminal.terminal.TTkTerminal`
 
 .. _widgets-pickers:
 
 Pickers
 -------
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/35de8317-1ee6-4dad-9c46-320d0692c393
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TextPicker.gif
 * Text Picker :class:`~TermTk.TTkWidgets.TTkPickers.textpicker.TTkTextPicker`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/0388f4a0-1a93-4d57-9a77-c7e43422fedb
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.FilePicker.gif
 * File Picker :class:`~TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker`
 
-.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/9a61baf3-f151-49a6-bde0-ace02eb9008e
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.ColorPicker.gif
 * Color Picker :class:`~TermTk.TTkWidgets.TTkPickers.colorpicker.TTkColorButtonPicker`
 
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.MessageBox.gif
 * Message Box :class:`~TermTk.TTkWidgets.TTkPickers.messagebox.TTkMessageBox`
 
 .. _widgets-layout:
@@ -65,4 +66,4 @@ Layout
 * Resizable Frame :class:`~TermTk.TTkWidgets.resizableframe.TTkResizableFrame`
 * Window :class:`~TermTk.TTkWidgets.window.TTkWindow`
 * Splitter :class:`~TermTk.TTkWidgets.splitter.TTkSplitter`
-* Scroll Area :class::`~TermTk.TTkWidgets.scrollarea.TTkScrollArea`
+* Scroll Area :class:`~TermTk.TTkWidgets.scrollarea.TTkScrollArea`

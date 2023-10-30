@@ -23,7 +23,8 @@ Examples
 Example 1
 ---------
 
-Following is the code to execute `helloworld.001.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/helloworld/helloworld.001.py>`_ in pyTermTk_:
+Following is the code to execute `helloworld.001.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/helloworld/helloworld.001.py>`_
+in pyTermTk_ (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/helloworld/helloworld.001.py>`_):
 
 .. code:: python
 
@@ -42,7 +43,8 @@ The above code produces the following output
 Example 2 - Your first Window
 -----------------------------
 
-Following is the code to execute `helloworld.002.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/helloworld/helloworld.002.py>`_ in pyTermTk_:
+Following is the code to execute `helloworld.002.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/helloworld/helloworld.002.py>`_
+in pyTermTk_ (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/helloworld/helloworld.002.py>`_):
 
 .. code:: python
 

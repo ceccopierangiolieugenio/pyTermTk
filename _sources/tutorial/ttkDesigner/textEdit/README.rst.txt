@@ -166,7 +166,7 @@ Preview and Quick Export
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 Exported: `texteditor.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.01.py>`_
-(`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/ttkDesigner/textEdit/texteditor.01.py>`__)
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.01.py>`_):
 
 .. code:: bash
 
@@ -187,7 +187,7 @@ Option 1) Include the Open/Save routine and link them to the widget
 Once (quick)exported the code, we need to define the appropriate routines and link them to the file(open/save) pickers `signals <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.filePicked>`__
 
 `texteditor.02.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.02.py>`_
-(`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/ttkDesigner/textEdit/texteditor.02.py>`__)
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.02.py>`_):
 
 .. code:: bash
 
@@ -228,7 +228,7 @@ Option 2) Extend a custom widget including the open/save methods
 ----------------------------------------------------------------
 
 `texteditor.03.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.03.py>`_
-(`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tutorial/ttkDesigner/textEdit/texteditor.03.py>`__)
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.03.py>`_):
 
 .. code:: bash
 

@@ -14,6 +14,13 @@
 .. _Nested Layouts Example: https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example5.nested.layouts.py
 .. _`row/colspan Example`:  https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example6.grid.span.py
 
+.. _web-LayoutEx: https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/layout/example1.simple.layout.py
+.. _web-VBoxEx:   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/layout/example2.simple.vbox.py
+.. _web-HBoxEx:   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/layout/example3.simple.hbox.py
+.. _web-GridEx:   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/layout/example4.simple.grid.py
+.. _web-NestedEx: https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/layout/example5.nested.layouts.py
+.. _web-SpanEx:   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/layout/example6.grid.span.py
+
 =============================================================================
 pyTermTk_ - Layouts
 =============================================================================
@@ -111,7 +118,7 @@ Examples
 1 - Simple TTkLayout_
 ---------------------
 
-Following is the code to execute `Layout Example`_ in pyTermTk_
+Following is the code to execute `Layout Example`_ in pyTermTk_ (`tryItOnline <web-LayoutEx_>`_)
 
 .. code:: python
 
@@ -146,7 +153,7 @@ The above code produces the following output:
 2 - Simple TTkVBoxLayout_
 -------------------------
 
-Following is the code to execute `VBox Example`_ in pyTermTk_
+Following is the code to execute `VBox Example`_ in pyTermTk_ (`tryItOnline <web-VBoxEx_>`_)
 
 .. code:: python
 
@@ -192,7 +199,7 @@ The above code produces the following output:
 3 - Simple TTkHBoxLayout_
 -------------------------
 
-Following is the code to execute `HBox Example`_ in pyTermTk_
+Following is the code to execute `HBox Example`_ in pyTermTk_ (`tryItOnline <web-HBoxEx_>`_)
 
 .. code:: python
 
@@ -239,7 +246,7 @@ The above code produces the following output
 4 - Simple TTkGridLayout_
 -------------------------
 
-Following is the code to execute `HBox Example`_ in pyTermTk_
+Following is the code to execute `Grid Example`_ in pyTermTk_ (`tryItOnline <web-GridEx_>`_)
 
 
 .. code:: python
@@ -284,7 +291,7 @@ The above code produces the following output
 5 - Nested Layouts
 ------------------
 
-Following is the code to execute `Nested Layouts Example`_ in pyTermTk_
+Following is the code to execute `Nested Layouts Example`_ in pyTermTk_ (`tryItOnline <web-NestedEx_>`_)
 
 .. code:: python
 
@@ -339,7 +346,7 @@ The above code produces the following output
 6 - Rowspan/Colspan in Grid Layout
 ----------------------------------
 
-Following is the code to execute `row/colspan Example`_ in pyTermTk_
+Following is the code to execute `row/colspan Example`_ in pyTermTk_ (`tryItOnline <web-SpanEx_>`_)
 
 
 .. code:: python
