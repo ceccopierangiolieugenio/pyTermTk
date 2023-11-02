@@ -30,34 +30,45 @@ except Exception as e:
     print(f'ERROR: {e}')
     exit(1)
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTkTerm
-
 print("Retrieve Keyboard, Mouse press/drag/wheel Events")
 print("Press q or <ESC> to exit")
 
+def termPush(*args):
+    try:
+        sys.stdout.write(str(*args))
+        sys.stdout.flush()
+    except BlockingIOError as e:
+        print(f"{e=} {e.characters_written=}")
+    except Exception as e:
+        print(e)
+
 def reset():
     # Reset
-    TTkTerm.push("\033[?1000l")
-    TTkTerm.push("\033[?1002l")
-    TTkTerm.push("\033[?1003l")
-    TTkTerm.push("\033[?1015l")
-    TTkTerm.push("\033[?1006l")
-    TTkTerm.push("\033[?1049l") # Switch to normal screen
-    TTkTerm.push("\033[?2004l") # Paste Bracketed mode
+    termPush("\033[?1000l")
+    termPush("\033[?1002l")
+    termPush("\033[?1003l")
+    termPush("\033[?1005l")
+    termPush("\033[?1006l")
+    termPush("\033[?1015l")
+    termPush("\033[?1049l") # Switch to normal screen
+    termPush("\033[?2004l") # Paste Bracketed mode
 
 reset()
 
-TTkTerm.push("\033[?2004h") # Paste Bracketed mode
-# TTkTerm.push("\033[?1000h")
-TTkTerm.push("\033[?1002h")
-# TTkTerm.push("\033[?1003h")
-TTkTerm.push("\033[?1006h")
-# TTkTerm.push("\033[?1015h")
-# TTkTerm.push("\033[?1049h") # Switch to alternate screen
-# TTkTerm.push(TTkTerm.Mouse.ON)
-# TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
-TTkTerm.setEcho(False)
+# termPush("\033[?2004h") # Paste Bracketed mode
+
+# termPush("\033[?1000h") # Send Mouse X & Y on button press and release.
+# termPush("\033[?1002h") # Use Cell Motion Mouse Tracking, xterm.
+termPush("\033[?1003h") # Use All Motion Mouse Tracking, xterm.
+
+termPush("\033[?1005h") # Enable UTF-8 Mouse Mode, xterm.
+# termPush("\033[?1006h") # Enable SGR Mouse Mode, xterm.
+# termPush("\033[?1015h") # Enable urxvt Mouse Mode.
+
+# termPush("\033[?1049h") # Switch to alternate screen
+# termPush(TTkTerm.Mouse.ON)
+# termPush(TTkTerm.Mouse.DIRECT_ON)
+# TTkTerm.setEcho(False)
 
 # Init
 _attr = termios.tcgetattr(sys.stdin)
@@ -104,7 +115,7 @@ def read_new():
         else:
             for ch in stdinRead:
                 yield ch
-# print("--->\033[?1h<---")
+
 try:
     for stdinRead in read_new():
         print(f"{stdinRead=}")
@@ -112,5 +123,3 @@ finally:
     # Reset
     reset()
     termios.tcsetattr(sys.stdin, termios.TCSANOW, _attr)
-    TTkTerm.push(TTkTerm.Mouse.OFF + TTkTerm.Mouse.DIRECT_OFF)
-    TTkTerm.setEcho(True)
