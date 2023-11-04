@@ -41,6 +41,8 @@ Main features
 
 * Ful/Half/Zero sized Unicode characters 😎
 
+* Image rasteriser
+
 .. _features-alpha:
 
 Alpha Features
