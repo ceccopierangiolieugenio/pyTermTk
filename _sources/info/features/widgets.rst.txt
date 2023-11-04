@@ -41,7 +41,20 @@ Specialised Widgets
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Terminal.gif
 * Terminal :class:`~TermTk.TTkWidgets.TTkTerminal.terminal.TTkTerminal`
 
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TTkImage.gif
+* Image :class:`~TermTk.TTkWidgets.image.TTkImage`
+
 .. _widgets-pickers:
+
+Model View
+----------
+
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TreeWidget.Demo.gif
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TreeWidget.ttkDesigner.gif
+* Tree Widget :class:`~TermTk.TTkWidgets.TTkModelView.tree.TTkTree`
+
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.FileTree.gif
+* File Tree   :class:`~TermTk.TTkWidgets.TTkModelView.filetree.TTkFileTree`
 
 Pickers
 -------
