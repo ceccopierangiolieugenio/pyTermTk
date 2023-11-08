@@ -227,8 +227,9 @@ resizeFrame.layout().addWidget(b_height := ttk.TTkSpinBox(maximum=0x1000),1,1)
 resizeFrame.layout().addWidget(ttk.TTkLabel(text='Resample:'),2,0)
 resizeFrame.layout().addWidget(cb_resample := ttk.TTkComboBox(),2,1)
 
-resizeFrame.layout().addWidget(b_ttkAR  := ttk.TTkButton(text='TermTk A/R', border=True),0,2,3,1)
-resizeFrame.layout().addWidget(b_resize := ttk.TTkButton(text='Resize', border=True),    0,3,3,1)
+resizeFrame.layout().addWidget(b_quadAR := ttk.TTkButton(text='Quad A/R', border=True),0,2,3,1)
+resizeFrame.layout().addWidget(b_sexAR  := ttk.TTkButton(text='Sex A/R', border=True), 0,3,3,1)
+resizeFrame.layout().addWidget(b_resize := ttk.TTkButton(text='Resize', border=True),  0,4,3,1)
 
 cb_resample.addItems(['NEAREST','BOX','BILINEAR','HAMMING','BICUBIC','LANCZOS'])
 cb_resample.setCurrentIndex(0)
@@ -240,7 +241,7 @@ propertiesFrame.layout().addWidget(b_color  := ttk.TTkColorButtonPicker(color=tt
 propertiesFrame.layout().addWidget(b_export := ttk.TTkButton(text="Export"),2,0,1,2)
 # propertiesFrame.layout().addItem(ttk.TTkLayout(),3,0,1,2)
 
-cb_resolution.addItems(['FULLBLOCK','HALFBLOCK','QUADBLOCK'])
+cb_resolution.addItems(['FULLBLOCK','HALFBLOCK','QUADBLOCK','SEXBLOCK'])
 cb_resolution.setCurrentIndex(2)
 
 # te.setLineWrapMode(ttk.TTkK.WidgetWidth)
@@ -280,20 +281,30 @@ def _resolutionChanged(res):
     newRes = {
         'FULLBLOCK' : ttk.TTkImage.FULLBLOCK,
         'HALFBLOCK' : ttk.TTkImage.HALFBLOCK,
-        'QUADBLOCK' : ttk.TTkImage.QUADBLOCK
+        'QUADBLOCK' : ttk.TTkImage.QUADBLOCK,
+        'SEXBLOCK'  : ttk.TTkImage.SEXBLOCK
             }.get(res, ttk.TTkImage.QUADBLOCK)
     ttkImage.setRasteriser(newRes)
 
 cb_resolution.currentTextChanged.connect(_resolutionChanged)
 
 
-def _ttkAR():
+def _quadAR():
     if not pilImage: return
     width, height = pilImage.size
     b_width.setValue(width)
     b_height.setValue(height//2)
 
-b_ttkAR.clicked.connect(_ttkAR)
+b_quadAR.clicked.connect(_quadAR)
+
+def _sexAR():
+    if not pilImage: return
+    width, height = pilImage.size
+    # w/h = 4/3
+    b_width.setValue(width)
+    b_height.setValue(height*3//4)
+
+b_sexAR.clicked.connect(_sexAR)
 
 oldImages = []
 def _resize():
