@@ -75,15 +75,24 @@ def _addTerminal():
     tnum+=1
     win  = ttk.TTkWindow(pos=(12,0), size=(100,30), title=f"Terminallo n.{tnum}", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint|ttk.TTkK.WindowFlag.WindowCloseButtonHint)
     term = ttk.TTkTerminal(parent=win)
+
+    th = ttk.TTkTerminalHelper()
+    th.dataOut.connect(term.termWrite)
+    term.termData.connect(th.push)
+    term.termResized.connect(th.resize)
+
     term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
     term.titleChanged.connect(win.setTitle)
-    term.runShell()
+
     term.terminalClosed.connect(win.close)
     term.textSelected.connect(clipboard.setText)
     term.textSelected.connect(_textSelected)
     win.closed.connect(term.close)
     top.addWidget(win)
     term.setFocus()
+    term.raiseWidget()
+
+    th.runShell()
 
 addBtn = ttk.TTkButton(pos=(0,7), text="New Term.", border=True)
 addBtn.clicked.connect(_addTerminal)

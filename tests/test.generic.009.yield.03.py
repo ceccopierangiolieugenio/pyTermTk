@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+class testWrite():
+    def __init__(self) -> None:
+        self.loopGenerator = self._loop()
+
+    def _loop(self):
+        while True:
+            var = yield
+            print(f"Loop1: {var=}")
+            yield
+            print(f"Done {var=}")
+            if not var: return
+
+            if var == 123:
+                # Test entering a second loop
+                while True:
+                    var = yield
+                    yield
+                    print(f" * Loop2: {var=}")
+                    if not var: return
+                    if var == 123: break
+
+    def write(self, data):
+        print(f"Writing {data=}")
+        try:
+            n = next(self.loopGenerator)
+            print(f"{n=}")
+            self.loopGenerator.send(data)
+        except StopIteration as si:
+            print(f"{si=}")
+        except Exception as e:
+            print(f"{e=}")
+
+
+tw = testWrite()
+tw.write(123)
+tw.write(345)
+tw.write(567)
+tw.write(123)
+tw.write(45)
+tw.write(67)
+tw.write(89)
+tw.write(None)
+tw.write(890)
+
+
