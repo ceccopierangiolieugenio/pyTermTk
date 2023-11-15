@@ -25,16 +25,13 @@ __all__ = ['TTkTerminalView']
 import re
 
 from dataclasses import dataclass
-from threading import Lock
 
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-from TermTk.TTkCore.helper import TTkHelper
 
 from TermTk.TTkGui.clipboard import TTkClipboard
 

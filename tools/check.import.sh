@@ -72,8 +72,11 @@ __check(){
             -e "TTkTerminal/terminal_screen.py:import collections" \
             -e "TTkTerminal/terminal_screen.py:import unicodedata" \
             -e "TTkTerminal/terminal_screen.py:from .terminal_screen_CSI import _TTkTerminalScreen_CSI" \
-            -e "TTkTerminal/terminal_screen.py:from .terminal_screen_C1  import _TTkTerminalScreen_C1"
-
+            -e "TTkTerminal/terminal_screen.py:from .terminal_screen_C1  import _TTkTerminalScreen_C1" \
+            -e "TTkTerminal/terminalhelper.py:import struct, fcntl, termios" \
+            -e "TTkTerminal/terminalhelper.py:from select import select" \
+            -e "TTkTerminal/__init__.py:import importlib.util" \
+            -e "TTkTerminal/__init__.py:import platform"
 } ;
 
 if __check ;  then
