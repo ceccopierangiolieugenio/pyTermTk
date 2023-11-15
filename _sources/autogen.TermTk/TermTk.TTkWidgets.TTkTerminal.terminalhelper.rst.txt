@@ -1,0 +1,8 @@
+
+TermTk.TTkWidgets.TTkTerminal.terminalhelper
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkTerminal.terminalhelper
+
+.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.terminalhelper
+

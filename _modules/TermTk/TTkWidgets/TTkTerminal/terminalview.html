@@ -128,34 +128,23 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkTerminalView&#39;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">pty</span><span class="o">,</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">struct</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">termios</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">select</span> <span class="kn">import</span> <span class="n">select</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.canvas</span> <span class="kn">import</span> <span class="n">TTkCanvas</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.color</span> <span class="kn">import</span> <span class="n">TTkColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.log</span> <span class="kn">import</span> <span class="n">TTkLog</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.constant</span> <span class="kn">import</span> <span class="n">TTkK</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.cfg</span> <span class="kn">import</span> <span class="n">TTkCfg</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.string</span> <span class="kn">import</span> <span class="n">TTkString</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.signal</span> <span class="kn">import</span> <span class="n">pyTTkSignal</span><span class="p">,</span> <span class="n">pyTTkSlot</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkCore.helper</span> <span class="kn">import</span> <span class="n">TTkHelper</span>
+
 <span class="kn">from</span> <span class="nn">TermTk.TTkGui.clipboard</span> <span class="kn">import</span> <span class="n">TTkClipboard</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkGui.textwrap1</span> <span class="kn">import</span> <span class="n">TTkTextWrap</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkGui.textcursor</span> <span class="kn">import</span> <span class="n">TTkTextCursor</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkGui.textdocument</span> <span class="kn">import</span> <span class="n">TTkTextDocument</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkLayouts.gridlayout</span> <span class="kn">import</span> <span class="n">TTkGridLayout</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkAbstract.abstractscrollarea</span> <span class="kn">import</span> <span class="n">TTkAbstractScrollArea</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkAbstract.abstractscrollview</span> <span class="kn">import</span> <span class="n">TTkAbstractScrollView</span><span class="p">,</span> <span class="n">TTkAbstractScrollViewGridLayout</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.widget</span> <span class="kn">import</span> <span class="n">TTkWidget</span>
+
+<span class="kn">from</span> <span class="nn">TermTk.TTkAbstract.abstractscrollview</span> <span class="kn">import</span> <span class="n">TTkAbstractScrollView</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.TTkTerminal.terminal_screen</span>  <span class="kn">import</span> <span class="n">_TTkTerminalScreen</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.TTkTerminal.mode</span>             <span class="kn">import</span> <span class="n">TTkTerminalModes</span>
-
-<span class="kn">from</span> <span class="nn">TermTk.TTkWidgets.TTkTerminal.vt102</span> <span class="kn">import</span> <span class="n">TTkVT102</span>
 
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.colors</span> <span class="kn">import</span> <span class="n">TTkTermColor</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkCore.TTkTerm.colors_ansi_map</span> <span class="kn">import</span> <span class="n">ansiMap16</span><span class="p">,</span> <span class="n">ansiMap256</span>
@@ -195,48 +184,43 @@
         <span class="n">reportMove</span><span class="p">:</span>  <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">sgrMode</span><span class="p">:</span>     <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_shell&#39;</span><span class="p">,</span> <span class="s1">&#39;_fd&#39;</span><span class="p">,</span> <span class="s1">&#39;_inout&#39;</span><span class="p">,</span> <span class="s1">&#39;_pid&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_quit_pipe&#39;</span><span class="p">,</span> <span class="s1">&#39;_resize_pipe&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_mode_normal&#39;</span>
-                 <span class="s1">&#39;_clipboard&#39;</span><span class="p">,</span> <span class="s1">&#39;_selecting&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_buffer_lines&#39;</span><span class="p">,</span> <span class="s1">&#39;_buffer_screen&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_keyboard&#39;</span><span class="p">,</span> <span class="s1">&#39;_mouse&#39;</span><span class="p">,</span> <span class="s1">&#39;_terminal&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_screen_current&#39;</span><span class="p">,</span> <span class="s1">&#39;_screen_normal&#39;</span><span class="p">,</span> <span class="s1">&#39;_screen_alt&#39;</span><span class="p">,</span>
-                 <span class="c1"># Signals</span>
-                 <span class="s1">&#39;titleChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;bell&#39;</span><span class="p">,</span> <span class="s1">&#39;terminalClosed&#39;</span><span class="p">,</span> <span class="s1">&#39;textSelected&#39;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;_termLoop&#39;</span><span class="p">,</span> <span class="s1">&#39;_newSize&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_clipboard&#39;</span><span class="p">,</span> <span class="s1">&#39;_selecting&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_buffer_lines&#39;</span><span class="p">,</span> <span class="s1">&#39;_buffer_screen&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_keyboard&#39;</span><span class="p">,</span> <span class="s1">&#39;_mouse&#39;</span><span class="p">,</span> <span class="s1">&#39;_terminal&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_screen_current&#39;</span><span class="p">,</span> <span class="s1">&#39;_screen_normal&#39;</span><span class="p">,</span> <span class="s1">&#39;_screen_alt&#39;</span><span class="p">,</span>
+            <span class="c1"># Signals</span>
+            <span class="s1">&#39;bell&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;titleChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;terminalClosed&#39;</span><span class="p">,</span> <span class="s1">&#39;textSelected&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;termData&#39;</span><span class="p">,</span><span class="s1">&#39;termResized&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bell</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">terminalClosed</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">titleChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">textSelected</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SHELL&#39;</span><span class="p">,</span> <span class="s1">&#39;sh&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mode_normal</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termData</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termResized</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_terminal</span> <span class="o">=</span> <span class="n">TTkTerminalView</span><span class="o">.</span><span class="n">_Terminal</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keyboard</span> <span class="o">=</span> <span class="n">TTkTerminalView</span><span class="o">.</span><span class="n">_Keyboard</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mouse</span> <span class="o">=</span> <span class="n">TTkTerminalView</span><span class="o">.</span><span class="n">_Mouse</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buffer_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">TTkString</span><span class="p">()]</span>
-        <span class="c1"># self._screen_normal  = _TTkTerminalNormalScreen()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_normal</span>  <span class="o">=</span> <span class="n">_TTkTerminalScreen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_alt</span>     <span class="o">=</span> <span class="n">_TTkTerminalScreen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screen_normal</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clipboard</span> <span class="o">=</span> <span class="n">TTkClipboard</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_selecting</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># self._screen_normal.bell.connect(lambda : _termLog.debug(&quot;BELL!!! 🔔🔔🔔&quot;))</span>
-        <span class="c1"># self._screen_alt.bell.connect(   lambda : _termLog.debug(&quot;BELL!!! 🔔🔔🔔&quot;))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_normal</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_alt</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>   <span class="bp">self</span><span class="o">.</span><span class="n">bell</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_termLoop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loopGenerator</span><span class="p">()</span>
+        <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_termLoop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_termLoop</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-        <span class="c1"># self._screen_alt._CSI_MAP     |= self._CSI_MAP</span>
-        <span class="c1"># self._screen_current._CSI_MAP |= self._CSI_MAP</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_alt</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
@@ -244,7 +228,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span> <span class="o">+</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">TabFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">enableWidgetCursor</span><span class="p">()</span>
-        <span class="n">TTkHelper</span><span class="o">.</span><span class="n">quitEvent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewChangedHandler</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_normal</span><span class="o">.</span><span class="n">bufferedLinesChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_screenChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_screen_alt</span><span class="o">.</span><span class="n">bufferedLinesChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_screenChanged</span><span class="p">)</span>
@@ -269,149 +252,54 @@
 <div class="viewcode-block" id="TTkTerminalView.close"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkTerminal.terminalview.html#TermTk.TTkWidgets.TTkTerminal.terminalview.TTkTerminalView.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_resizeScreen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">w</span><span class="o">&lt;=</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">h</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span> <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_screen_current</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="p">:</span>
-            <span class="c1"># s = struct.pack(&#39;HHHH&#39;, 0, 0, 0, 0)</span>
-            <span class="c1"># t = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, s)</span>
-            <span class="c1"># print(struct.unpack(&#39;HHHH&#39;, t))</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;HHHH&#39;</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">ioctl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TIOCSWINSZ</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-            <span class="c1"># termios.tcsetwinsize(self._fd,(h,w))</span>
-
 <div class="viewcode-block" id="TTkTerminalView.resizeEvent"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkTerminal.terminalview.html#TermTk.TTkWidgets.TTkTerminal.terminalview.TTkTerminalView.resizeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span> <span class="ow">and</span>
-             <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screen_current</span><span class="o">.</span><span class="n">_w</span> <span class="o">!=</span> <span class="n">w</span> <span class="ow">or</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">_screen_current</span><span class="o">.</span><span class="n">_h</span> <span class="o">!=</span> <span class="n">h</span> <span class="p">)</span> <span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">b</span><span class="s1">&#39;resize&#39;</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
         <span class="c1"># self._screen_alt.resize(w,h)</span>
         <span class="c1"># self._screen_normal.resize(w,h)</span>
-
-        <span class="n">_termLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resize Terminal: </span><span class="si">{</span><span class="n">w</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">h</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termResized</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">runShell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shell</span> <span class="o">=</span> <span class="n">program</span> <span class="k">if</span> <span class="n">program</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shell</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span> <span class="o">=</span> <span class="n">pty</span><span class="o">.</span><span class="n">fork</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">_spawnTerminal</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_shell</span><span class="p">],</span> <span class="n">env</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">execvpe</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argv</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
-            <span class="c1"># threading.Thread(target=_spawnTerminal).start()</span>
-            <span class="c1"># TTkHelper.quit()</span>
-            <span class="n">_spawnTerminal</span><span class="p">()</span>
-            <span class="kn">import</span> <span class="nn">sys</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-            <span class="c1"># os.execvpe(argv[0], argv, env)</span>
-            <span class="c1"># os.execvpe(argv[0], argv, env)</span>
-            <span class="c1"># self._proc = subprocess.Popen(self._shell)</span>
-            <span class="c1"># _termLog.debug(f&quot;Terminal PID={self._proc.pid=}&quot;)</span>
-            <span class="c1"># self._proc.wait()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fdopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="p">,</span> <span class="s2">&quot;w+b&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">ttyname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="p">)</span>
-            <span class="n">_termLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">pipe</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">pipe</span><span class="p">()</span>
-
-            <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">])</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-
-            <span class="c1"># def _wait(v, pid=self._pid):</span>
-            <span class="c1">#     TTkLog.debug(f&quot;Wait Terminal {v=} {self._pid=}&quot;)</span>
-            <span class="c1">#     status = os.wait()</span>
-            <span class="c1">#     TTkLog.debug(f&quot;In parent process- {status=} {self._pid=}&quot;)</span>
-            <span class="c1">#     TTkLog.debug(f&quot;Terminated child&#39;s process id: {status[0]}&quot;)</span>
-            <span class="c1">#     TTkLog.debug(f&quot;Signal number that killed the child process: {status[1]}&quot;)</span>
-            <span class="c1"># threading.Thread(target=_wait,args=[self]).start()</span>
-
-            <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
 
     <span class="c1"># xterm escape sequences from:</span>
     <span class="c1"># https://invisible-island.net/xterm/ctlseqs/ctlseqs.html</span>
     <span class="c1"># https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_</span>
-    <span class="n">re_CURSOR</span>      <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^\[((\d*)(;(\d*))*)([@^`A-Za-z])&#39;</span><span class="p">)</span>
+    <span class="n">re_CURSOR</span>      <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[((\d*)(;(\d*))*)([@^`A-Za-z])&#39;</span><span class="p">)</span>
     <span class="c1"># https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Functions-using-CSI-_-ordered-by-the-final-character_s_</span>
     <span class="c1"># Basic Re for CSI Ps matches:</span>
     <span class="c1">#   CSI : Control Sequence Introducer &quot;&lt;ESC&gt;[&quot; = &#39;\033[&#39;</span>
     <span class="c1">#   Ps  : A single (usually optional) numeric parameter, composed of one or more digits.</span>
     <span class="c1">#   fn  : the single char defining the function</span>
-    <span class="n">re_CSI_Ps_fu</span>    <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])&#39;</span><span class="p">)</span>
-    <span class="n">re_CSI_Ps_Ps_fu</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^\[(\d*);(\d*)([Hf])&#39;</span><span class="p">)</span>
+    <span class="n">re_CSI_Ps_fu</span>    <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])&#39;</span><span class="p">)</span>
+    <span class="n">re_CSI_Ps_Ps_fu</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\d*);(\d*)([Hf])&#39;</span><span class="p">)</span>
 
-    <span class="n">re_DEC_SET_RST</span>  <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^\[(\??)(\d+)([lh])&#39;</span><span class="p">)</span>
+    <span class="n">re_DEC_SET_RST</span>  <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\??)(\d+)([lh])&#39;</span><span class="p">)</span>
     <span class="c1"># re_CURSOR_1    = re.compile(r&#39;^(\d+)([ABCDEFGIJKLMPSTXZHf])&#39;)</span>
 
-    <span class="n">re_OSC_ps_Pt</span>    <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^(\d*);(.*)$&#39;</span><span class="p">)</span>
+    <span class="n">re_OSC_ps_Pt</span>    <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(\d*);(.*)$&#39;</span><span class="p">)</span>
 
-    <span class="n">re_XTWINOPS</span>     <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
+    <span class="n">re_XTWINOPS</span>     <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
 
-    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span><span class="mi">15</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">b</span><span class="s1">&#39;quit&#39;</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">termWrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_termLoop</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_inputGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">while</span> <span class="n">rs</span> <span class="o">:=</span> <span class="n">select</span><span class="p">(</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[],</span> <span class="p">[])[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
-                <span class="c1"># os.close(self._quit_pipe[0])</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quit_pipe</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="c1"># os.close(self._resize_pipe[0])</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="p">)</span>
-                <span class="k">return</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_resizeScreen</span><span class="p">()</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resize_pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">100</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="c1"># _termLog.debug(f&quot;Select - {rs=}&quot;)</span>
-            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">:</span>
-                    <span class="k">continue</span>
-
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">_fl</span> <span class="o">=</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">fcntl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">F_GETFL</span><span class="p">)</span>
-                    <span class="n">fcntl</span><span class="o">.</span><span class="n">fcntl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">F_SETFL</span><span class="p">,</span> <span class="n">_fl</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">O_NONBLOCK</span><span class="p">)</span> <span class="c1"># Set the input as NONBLOCK to read the full sequence</span>
-                    <span class="n">out</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
-                    <span class="k">while</span> <span class="n">_out</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
-                        <span class="n">out</span> <span class="o">+=</span> <span class="n">_out</span>
-                    <span class="n">fcntl</span><span class="o">.</span><span class="n">fcntl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">F_SETFL</span><span class="p">,</span> <span class="n">_fl</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">_termLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">terminalClosed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
-                    <span class="k">return</span>
-
-                <span class="c1"># out = out.decode(&#39;utf-8&#39;,&#39;ignore&#39;)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">_termLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">_termLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to decode </span><span class="si">{</span><span class="n">out</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-
-                <span class="k">yield</span> <span class="n">out</span>
-
-    <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_loopGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_checkSize</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span><span class="p">:</span>
+                <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_screen_alt</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_screen_normal</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_newSize</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">yield</span>
         <span class="n">SGR_SET</span> <span class="o">=</span> <span class="n">TTkTermColor</span><span class="o">.</span><span class="n">SGR_SET</span> <span class="c1"># Precacing those variables to</span>
         <span class="n">SGR_RST</span> <span class="o">=</span> <span class="n">TTkTermColor</span><span class="o">.</span><span class="n">SGR_RST</span> <span class="c1"># speedup the search</span>
-        <span class="n">inputgenerator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputGenerator</span><span class="p">()</span>
         <span class="n">leftUnhandled</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">inputgenerator</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">_checkSize</span><span class="p">()</span>
+            <span class="c1"># Entry Point 1</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="k">yield</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="p">:</span> <span class="k">return</span>
+            <span class="n">_checkSize</span><span class="p">()</span>
+
             <span class="n">sout</span> <span class="o">=</span> <span class="p">(</span><span class="n">leftUnhandled</span><span class="o">+</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">_termLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">leftUnhandled</span><span class="si">=}</span><span class="s2"> - </span><span class="si">{</span><span class="n">sout</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -582,23 +470,23 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">_terminal</span><span class="o">.</span><span class="n">DCSstring</span> <span class="o">+=</span> <span class="n">dcs</span>
                         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
 
-                    <span class="k">def</span> <span class="nf">__processDCSInputGenerator</span><span class="p">(</span><span class="nb">slice</span><span class="p">):</span>
+                    <span class="n">ret</span><span class="p">,</span> <span class="nb">slice</span> <span class="o">=</span>  <span class="n">__processDCSEscapeGenerator</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                         <span class="c1"># If the terminator is not in the current escaped slices</span>
                         <span class="c1"># I need to fetch from the input until I got all of them</span>
                         <span class="c1"># This is not the nicest thing but it save a bunch of extra</span>
                         <span class="c1"># hcecks at any input just to find if we are in DCS mode or not</span>
-                        <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">inputgenerator</span><span class="p">:</span>
+                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="c1"># Entry Point 2</span>
+                            <span class="n">out</span> <span class="o">=</span> <span class="k">yield</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="p">:</span> <span class="k">return</span> <span class="p">(),</span> <span class="s2">&quot;&quot;</span>
+
                             <span class="n">sout</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">&#39;</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_terminal</span><span class="o">.</span><span class="n">DCSstring</span> <span class="o">+=</span> <span class="n">sout</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                             <span class="n">escapeGenerator</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sout</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
                             <span class="n">ret</span><span class="p">,</span> <span class="nb">slice</span> <span class="o">=</span>  <span class="n">__processDCSEscapeGenerator</span><span class="p">()</span>
-                            <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
-                                <span class="k">return</span> <span class="n">escapeGenerator</span><span class="p">,</span> <span class="nb">slice</span>
-
-                    <span class="n">ret</span><span class="p">,</span> <span class="nb">slice</span> <span class="o">=</span>  <span class="n">__processDCSEscapeGenerator</span><span class="p">()</span>
-
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
-                        <span class="n">escapeGenerator</span><span class="p">,</span> <span class="nb">slice</span> <span class="o">=</span> <span class="n">__processDCSInputGenerator</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">ret</span><span class="p">:</span> <span class="k">break</span>
 
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">slice</span><span class="p">:</span>
                         <span class="k">continue</span>
@@ -850,26 +738,26 @@
                                 <span class="k">return</span> <span class="n">ret</span><span class="p">,</span> <span class="n">_slice</span><span class="p">,</span> <span class="n">__oscString</span>
                         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">__oscString</span>
 
-                    <span class="k">def</span> <span class="nf">__processOSCInputGenerator</span><span class="p">(</span><span class="n">__oscString</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
-                        <span class="c1"># If the terminator is not in the current escaped slices</span>
-                        <span class="c1"># I need to fetch from the input until I got all of them</span>
-                        <span class="c1"># This is not the nicest thing but it save a bunch of extra</span>
-                        <span class="c1"># hcecks at any input just to find if we are in OSC mode or not</span>
-                        <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">inputgenerator</span><span class="p">:</span>
-                            <span class="n">sout</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">&#39;</span><span class="p">)</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_terminal</span><span class="o">.</span><span class="n">DCSstring</span> <span class="o">+=</span> <span class="n">sout</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                            <span class="n">escapeGenerator</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sout</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-                            <span class="n">ret</span><span class="p">,</span> <span class="n">_slice</span><span class="p">,</span> <span class="n">__oscString</span> <span class="o">=</span>  <span class="n">__processOSCEscapeGenerator</span><span class="p">(</span><span class="n">__oscString</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
-                                <span class="k">return</span> <span class="n">escapeGenerator</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">__oscString</span>
-
                     <span class="n">ret</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">oscString</span> <span class="o">=</span> <span class="n">__checkOSCBell</span><span class="p">(</span><span class="nb">slice</span><span class="p">,</span><span class="n">oscString</span><span class="p">)</span>
 
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                         <span class="n">ret</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">oscString</span> <span class="o">=</span> <span class="n">__processOSCEscapeGenerator</span><span class="p">(</span><span class="n">oscString</span><span class="p">)</span>
 
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
-                        <span class="n">escapeGenerator</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">oscString</span> <span class="o">=</span> <span class="n">__processOSCInputGenerator</span><span class="p">(</span><span class="n">oscString</span><span class="p">)</span>
+                        <span class="c1"># If the terminator is not in the current escaped slices</span>
+                        <span class="c1"># I need to fetch from the input until I got all of them</span>
+                        <span class="c1"># This is not the nicest thing but it save a bunch of extra</span>
+                        <span class="c1"># hcecks at any input just to find if we are in OSC mode or not</span>
+                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="c1"># Entry Point 3</span>
+                            <span class="n">out</span> <span class="o">=</span> <span class="k">yield</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="p">:</span> <span class="k">return</span> <span class="p">(),</span> <span class="s2">&quot;&quot;</span>
+
+                            <span class="n">sout</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">&#39;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_terminal</span><span class="o">.</span><span class="n">DCSstring</span> <span class="o">+=</span> <span class="n">sout</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">escapeGenerator</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sout</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                            <span class="n">ret</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">oscString</span> <span class="o">=</span>  <span class="n">__processOSCEscapeGenerator</span><span class="p">(</span><span class="n">oscString</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">ret</span><span class="p">:</span> <span class="k">break</span>
 
                     <span class="n">_termLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OSC: </span><span class="si">{</span><span class="n">oscString</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -918,15 +806,12 @@
     <span class="k">def</span> <span class="nf">pasteEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terminal</span><span class="o">.</span><span class="n">bracketedMode</span><span class="p">:</span>
             <span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[200~&quot;</span><span class="o">+</span><span class="n">txt</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[201~&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
         <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="TTkTerminalView.keyEvent"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkTerminal.terminalview.html#TermTk.TTkWidgets.TTkTerminal.terminalview.TTkTerminalView.keyEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="c1"># _termLog.debug(f&quot;Key: {evt.code=}&quot;)</span>
         <span class="n">_termLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Key: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">mod</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">ControlModifier</span> <span class="ow">and</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_V</span><span class="p">:</span>
                 <span class="n">txt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clipboard</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
@@ -937,16 +822,16 @@
                             <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">:</span>  <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">OB&quot;</span><span class="p">,</span>
                             <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Right</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">OC&quot;</span><span class="p">,</span>
                             <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Left</span><span class="p">:</span>  <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">OD&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">key</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
                     <span class="k">return</span> <span class="kc">True</span>
             <span class="c1"># if evt.key == TTkK.Key_Enter:</span>
             <span class="c1">#     _termLog.debug(f&quot;Key: Enter&quot;)</span>
-            <span class="c1">#     # self._inout.write(b&#39;\n&#39;)</span>
-            <span class="c1">#     # self._inout.write(evt.code.encode())</span>
+            <span class="c1">#     # self.termData.emit(b&#39;\n&#39;)</span>
+            <span class="c1">#     # self.termData.emit(evt.code.encode())</span>
         <span class="k">else</span><span class="p">:</span> <span class="c1"># Input char</span>
             <span class="n">_termLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Key: </span><span class="si">{</span><span class="n">evt</span><span class="o">.</span><span class="n">key</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="c1"># self._inout.write(evt.key.encode())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="c1"># self.termData.emit(evt.key.encode())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
     <span class="c1"># Extended coordinates</span>
@@ -1023,8 +908,6 @@
     <span class="c1">#           report position in pixels rather than character cells.</span>
 
     <span class="k">def</span> <span class="nf">_sendMouse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mouse</span><span class="o">.</span><span class="n">reportPress</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="p">(</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mouse</span><span class="o">.</span><span class="n">reportDrag</span> <span class="ow">and</span>
@@ -1053,7 +936,7 @@
                 <span class="n">TTkK</span><span class="o">.</span><span class="n">WHEEL_Down</span><span class="p">:(</span><span class="n">k</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">)}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                     <span class="n">evt</span><span class="o">.</span><span class="n">evt</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">))</span>
             <span class="c1"># _termLog.mouse(f&#39;Mouse: &lt;ESC&gt;[&lt;{k+km};{x};{y}{pr}&#39;)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[&lt;</span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="n">km</span><span class="si">}</span><span class="s1">;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">;</span><span class="si">{</span><span class="n">y</span><span class="si">}{</span><span class="n">pr</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[&lt;</span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="n">km</span><span class="si">}</span><span class="s1">;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">;</span><span class="si">{</span><span class="n">y</span><span class="si">}{</span><span class="n">pr</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">head</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="n">TTkK</span><span class="o">.</span><span class="n">Press</span><span class="p">:</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[M &#39;</span><span class="p">,</span>
@@ -1068,7 +951,7 @@
             <span class="n">bah</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mi">32</span><span class="p">)</span><span class="o">%</span><span class="mh">0xff</span><span class="p">)</span>
             <span class="n">bah</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">32</span><span class="p">)</span><span class="o">%</span><span class="mh">0xff</span><span class="p">)</span>
             <span class="c1"># _termLog.mouse(f&#39;Mouse: &#39;+bah.decode().replace(&#39;\033&#39;,&#39;&lt;ESC&gt;&#39;))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bah</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">bah</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="TTkTerminalView.mousePressEvent"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.TTkTerminal.terminalview.html#TermTk.TTkWidgets.TTkTerminal.terminalview.TTkTerminalView.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
@@ -1156,9 +1039,9 @@
     <span class="k">def</span> <span class="nf">_CSI_n_DSR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screen_current</span><span class="o">.</span><span class="n">getCursor</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">ps</span><span class="o">==</span><span class="mi">6</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[</span><span class="si">{</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">;</span><span class="si">{</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">R&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[</span><span class="si">{</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">;</span><span class="si">{</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">R&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">ps</span><span class="o">==</span><span class="mi">5</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0n&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">termData</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0n&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
 
     <span class="c1"># CSI Ps ; Ps ; Ps t</span>
     <span class="c1">#           Window manipulation (XTWINOPS), dtterm, extended by xterm.</span>
