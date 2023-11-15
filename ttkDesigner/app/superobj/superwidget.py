@@ -213,8 +213,10 @@ class SuperWidget(ttk.TTkContainer):
         ttk.TTkHelper.overlay(self, scw, -1,-1, forceBoundaries=False)
 
     def mouseReleaseEvent(self, evt) -> bool:
-        self.pushSuperControlWidget()
-        self._designer.thingSelected.emit(self._wid,self)
+        w,h = self.size()
+        if 0<=evt.x<w and 0<=evt.y<h:
+            self.pushSuperControlWidget()
+            self._designer.thingSelected.emit(self._wid,self)
         return True
 
     def mouseDragEvent(self, evt) -> bool:
