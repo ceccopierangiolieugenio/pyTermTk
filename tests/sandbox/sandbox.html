@@ -238,7 +238,11 @@
             import pyodideProxy
 
             def ttk_input(val):
-              TTkInput.key_process(val)
+              kevt,mevt,paste = TTkInput.key_process(val)
+              if kevt or mevt:
+                TTkInput.inputEvent.emit(kevt, mevt)
+              if paste:
+                TTkInput.pasteEvent.emit(paste)
 
             def ttk_resize(w,h):
               ttk.TTkLog.debug(f"Resize: {w=} {h=}")
