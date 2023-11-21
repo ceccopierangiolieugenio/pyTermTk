@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os, pty, threading, time
+import os, pty, threading
 import struct, fcntl, termios
 from select import select
 
