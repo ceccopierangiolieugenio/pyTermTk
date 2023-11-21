@@ -14,8 +14,6 @@ __check(){
             -e "log.py:import inspect" \
             -e "log.py:import logging" \
             -e "log.py:from collections.abc import Callable, Set" \
-            -e "input.py:import platform" \
-            -e "input.py:from time import time" \
             -e "term.py:import importlib.util" \
             -e "term.*.py:import sys, os, signal" \
             -e "term.*.py:from .term_base import TTkTermBase" \
@@ -40,7 +38,14 @@ __check(){
             -e "propertyanimation.py:import time, math" \
             -e "terminal.py:from select import select" |
         grep -v \
-            -e "TTkTerm/input.py:from ..drivers import TTkInputDriver" \
+            -e "TTkTerm/input_mono.py:from time import time" \
+            -e "TTkTerm/input_mono.py:import platform" \
+            -e "TTkTerm/input_mono.py:from ..drivers import TTkInputDriver" \
+            -e "TTkTerm/input_thread.py:from time import time" \
+            -e "TTkTerm/input_thread.py:import threading, queue" \
+            -e "TTkTerm/input_thread.py:from ..drivers import TTkInputDriver" \
+            -e "TTkTerm/input.py:from .input_thread import *" |
+        grep -v \
             -e "TTkTerm/term.py:from ..drivers import *" \
             -e "drivers/unix_thread.py:import sys, os" \
             -e "drivers/unix_thread.py:from select import select" \
@@ -77,6 +82,7 @@ __check(){
             -e "TTkTerminal/terminalhelper.py:from select import select" \
             -e "TTkTerminal/__init__.py:import importlib.util" \
             -e "TTkTerminal/__init__.py:import platform"
+
 } ;
 
 if __check ;  then

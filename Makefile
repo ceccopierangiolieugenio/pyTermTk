@@ -97,6 +97,7 @@ deploySandbox:
 
 	git checkout gh-pages
 	cp tmp/sandbox/*.html sandbox
+	cp -r tmp/sandbox/js  sandbox
 
 	git submodule foreach git pull
 	git add sandbox
