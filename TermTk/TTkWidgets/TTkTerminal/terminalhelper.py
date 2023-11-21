@@ -33,7 +33,7 @@ class TTkTerminalHelper():
                  '_quit_pipe', '_size',
                  #Signals
                  'dataOut')
-    def __init__(self) -> None:
+    def __init__(self, term=None) -> None:
         self.dataOut = pyTTkSignal(str)
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
@@ -42,6 +42,13 @@ class TTkTerminalHelper():
         self._quit_pipe = None
         self._size = (80,24)
         TTkHelper.quitEvent.connect(self._quit)
+        if term:
+            self.attachTTkTerminal(term)
+
+    def attachTTkTerminal(self, term):
+        self.dataOut.connect(term.termWrite)
+        term.termData.connect(self.push)
+        term.termResized.connect(self.resize)
 
     def runShell(self, program=None):
         self._shell = program if program else self._shell

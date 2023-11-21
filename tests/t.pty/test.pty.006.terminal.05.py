@@ -59,7 +59,8 @@ win  = ttk.TTkWindow(pos=(10,0), size=(100,30), title="Terminallo n.2", border=T
 term = ttk.TTkTerminal(parent=win)
 term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
 term.titleChanged.connect(win.setTitle)
-term.runShell()
+th = ttk.TTkTerminalHelper(term=term)
+th.runShell()
 term.terminalClosed.connect(win.close)
 win.closed.connect(term.close)
 

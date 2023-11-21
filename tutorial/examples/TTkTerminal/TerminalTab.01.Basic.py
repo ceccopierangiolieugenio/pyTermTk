@@ -38,10 +38,11 @@ root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 
 tab = ttk.TTkTabWidget(parent=root)
 
-terminal = ttk.TTkTerminal()
+term = ttk.TTkTerminal()
+th = ttk.TTkTerminalHelper(term=term)
+th.runShell()
 
-tab.addTab(terminal, "Terminal")
+tab.addTab(term, "Terminal")
 
-terminal.runShell()
 
 root.mainloop()

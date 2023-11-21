@@ -56,11 +56,12 @@ ttk.TTkLogViewer(parent=wlog, follow=False )
 
 win1  = ttk.TTkWindow(parent=root, pos=(1,1), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term1 = ttk.TTkTerminal(parent=win1)
-term1.runShell()
+th1 = ttk.TTkTerminalHelper(term=term1)
+th1.runShell()
 
 win2  = ttk.TTkWindow(parent=root, pos=(10,5), size=(70,15), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term2 = ttk.TTkTerminal(parent=win2)
-term2.runShell()
-
+th2 = ttk.TTkTerminalHelper(term=term2)
+th2.runShell()
 
 root.mainloop()
