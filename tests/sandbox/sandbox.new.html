@@ -156,15 +156,14 @@
         fileUri  = urlParams.get("fileUri")
         filePath = urlParams.get("filePath")
         if (fileUri != null){
-          ttkProxy.loadFile(fileUri, ttkProxy.currentPath()+"/test_file.py");
-          loadFile(ttkProxy.currentPath()+"/test_file.py")
+          ttkProxy.loadFile(fileUri, "test_file.py");
+          loadFile("test_file.py")
         }else if (filePath != null){
-          loadFile(ttkProxy.currentPath()+"/"+filePath)
+          loadFile(filePath)
         }else{
-          loadFile(ttkProxy.currentPath()+"/demo/demo.py")
+          loadFile("demo/demo.py")
         }
-        //loadFile("/home/pyodide/tutorial/calculator/calculator.005.py")
-        w2ui.sidebar.select(ttkProxy.currentPath()+"/demo/demo.py")
+        w2ui.sidebar.select("demo/demo.py")
 
         term.write('Starting Demo...\n\r')
 
