@@ -135,7 +135,8 @@ def _openTerminal(term=[]):
                     whiteBg=False,
                     title=f"Terminallo n.{len(term)+1}",layout=ttk.TTkVBoxLayout())
     _win.setViewport(_term := ttk.TTkTerminalView())
-    _term.runShell()
+    _th4 = ttk.TTkTerminalHelper(term=_term)
+    _th4.runShell()
     _term.bell.connect(lambda : ttk.TTkLog.debug("BELL!!! 🔔🔔🔔"))
     _term.titleChanged.connect(_win.setTitle)
     _term.textSelected.connect(clipboard.setText)

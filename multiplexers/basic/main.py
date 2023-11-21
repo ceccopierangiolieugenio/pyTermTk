@@ -61,19 +61,23 @@ cb_q.stateChanged.connect(lambda x: ttk.TTkTerm.setSigmask(ttk.TTkTerm.Sigmask.C
 
 win1  = ttk.TTkWindow(pos=(90,5), size=(70,15), title="Terminallo n.1", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term1 = ttk.TTkTerminal(parent=win1)
-term1.runShell()
+th1 = ttk.TTkTerminalHelper(term=term1)
+th1.runShell()
 
 win2  = ttk.TTkWindow(pos=(0,0), size=(150,30), title="Terminallo n.2", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term2 = ttk.TTkTerminal(parent=win2)
-term2.runShell()
+th2 = ttk.TTkTerminalHelper(term=term2)
+th2.runShell()
 
 win3  = ttk.TTkWindow(pos=(92,8), size=(70,15), title="Terminallo n.3", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term3 = ttk.TTkTerminal(parent=win3)
-term3.runShell()
+th3 = ttk.TTkTerminalHelper(term=term3)
+th3.runShell()
 
 win4  = ttk.TTkWindow(pos=(94,11), size=(70,15), title="Terminallo n.4", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 term4 = ttk.TTkTerminal(parent=win4)
-term4.runShell()
+th4 = ttk.TTkTerminalHelper(term=term4)
+th4.runShell()
 
 top.addWidgets([quitBtn, cb_c, cb_s, cb_z, cb_q, win1, win2, win3, win4])
 
