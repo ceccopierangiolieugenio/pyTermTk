@@ -22,6 +22,7 @@
     <script src="www/codemirror/codemirror.js"></script>
     <script src="www/codemirror/modes/python.js"></script>
 
+    <script src="js/ttkproxy.js"></script>
     <style>
       .CodeMirror { height: 100%; }
     </style>
@@ -113,87 +114,24 @@
 
 
       /* pyodide demo */
-      var pyodide = null
-      var run = null
-      var namespace = null
       async function main(){
-        pyodide = await loadPyodide();
+        ttkProxy = new TTkProxy(term)
+        await ttkProxy.init()
 
-        let pyodideProxy = {
-          consoleLog: function(m){
-            console.log("TTk:",m)
-          },
-          termPush: function (s) {
-            term.write(s);
-          },
-          termSize: function () {
-            return [term.cols, term.rows]
-          },
-          setTimeout: function(t, i) {
-            // console.log("TIME (Start)",i,t)
-            return setTimeout(() => ttk_timer(i), t)
-          },
-          stopTimeout: function(t) {
-            // console.log("TIME (Stop)",t)
-            clearTimeout(t)
-          },
-          clearTimeout: function(){
-            let highestTimeoutId = setTimeout(";");
-            for (let i = 0 ; i < highestTimeoutId ; i++) {
-              clearTimeout(i);
-            }
-          },
-          setInterval: function(t, i) {
-            setTinterval(() => console.log('WIP -> Interval' + i), t)
-          }
-        };
-
-        term.write('Pyodide ('+pyodide.version+') - Loaded\n\r')
-
-        pyodide.registerJsModule("pyodideProxy", pyodideProxy);
-
-        term.write('Pyodide Proxy - Loaded\n\r')
-
-        let zipResponse = await fetch("bin/TermTk.tgz");
-        let zipBinary = await zipResponse.arrayBuffer();
-        pyodide.unpackArchive(zipBinary, ".tar.gz");
-
+        await ttkProxy.loadLib("bin/TermTk.tgz");
         term.write('TermTk - Loaded\n\r')
 
-        zipResponse = await fetch("bin/demo.tgz");
-        zipBinary = await zipResponse.arrayBuffer();
-        pyodide.unpackArchive(zipBinary, ".tar.gz");
-
+        await ttkProxy.loadLib("bin/demo.tgz");
         term.write('Demos - Loaded\n\r')
 
-        zipResponse = await fetch("bin/tutorial.tgz");
-        zipBinary = await zipResponse.arrayBuffer();
-        pyodide.unpackArchive(zipBinary, ".tar.gz");
-
+        await ttkProxy.loadLib("bin/tutorial.tgz");
         term.write('Tutorials - Loaded\n\r')
 
         /* Sidebar
           Fetch all the files in the pyodide.FS
           And push them in the sidebar
         */
-        let getAllFiles = function(p){
-          let ls = pyodide.FS.readdir(p)
-          let ret = []
-          for(let i=0 ; i<ls.length; i++){
-            let n = p+"/"+ls[i]
-            if(ls[i]=='.' || ls[i]=='..' || n==(pyodide.FS.currentPath+"/TermTk")) continue;
-            if( pyodide.FS.isDir(pyodide.FS.lstat(n).mode)){
-              ret.push({id:n, text:ls[i], expanded: true, nodes:getAllFiles(n)})
-            }else{
-              if(n.endsWith('.py')){
-                ret.push({id:n, text:ls[i]})
-              }
-            }
-          }
-          return ret
-        }
-        let files = getAllFiles(pyodide.FS.currentPath)
-
+        let files = ttkProxy.getAllFiles(ttkProxy.currentPath())
         new w2sidebar({
           box: '#sidebar',
           name: 'sidebar',
@@ -205,7 +143,7 @@
         });
 
         var loadFile = function(f){
-          let content = pyodide.FS.readFile(f, {encoding:'utf8'})
+          let content = ttkProxy.readFile(f)
           setCode(content)
           document.getElementById("codeUri").value = f
         }
@@ -218,112 +156,23 @@
         fileUri  = urlParams.get("fileUri")
         filePath = urlParams.get("filePath")
         if (fileUri != null){
-          pyodide.FS.writeFile(pyodide.FS.currentPath+"/test_file.py", await (await fetch(fileUri)).text());
-          loadFile(pyodide.FS.currentPath+"/test_file.py")
+          ttkProxy.loadFile(fileUri, "test_file.py");
+          loadFile("test_file.py")
         }else if (filePath != null){
-          loadFile(pyodide.FS.currentPath+"/"+filePath)
+          loadFile(filePath)
         }else{
-          loadFile(pyodide.FS.currentPath+"/demo/demo.py")
+          loadFile("demo/demo.py")
         }
-        //loadFile("/home/pyodide/tutorial/calculator/calculator.005.py")
-        w2ui.sidebar.select(pyodide.FS.currentPath+"/demo/demo.py")
+        w2ui.sidebar.select("demo/demo.py")
 
         term.write('Starting Demo...\n\r')
 
-        namespace = pyodide.globals.get("dict")();
-        pyodide.runPython(`
-            import sys
-            import TermTk as ttk
-            from TermTk.TTkCore.TTkTerm.input import TTkInput
-            import pyodideProxy
-
-            def ttk_input(val):
-              TTkInput.key_process(val)
-
-            def ttk_resize(w,h):
-              ttk.TTkLog.debug(f"Resize: {w=} {h=}")
-              if ttk.TTkHelper._rootWidget:
-                ttk.TTkHelper._rootWidget._win_resize_cb(w,h)
-                ttk.TTkHelper.rePaintAll()
-              ttk.TTkTerm.cont()
-
-            def ttk_timer(tid):
-              ttk.TTkTimer.triggerTimerId(tid)
-
-            def ttk_log(val):
-              # hex = [f"0x{ord(x):02x}" for x in val]
-              ttk.TTkLog.debug("---> "+val.replace("\\033","<ESC>") + " - ")
-              ttk.TTkHelper.paintAll()
-
-            def ttk_clean():
-              if ttk.TTkHelper._rootWidget:
-                ttk.TTkTimer.pyodideQuit()
-                ttk.TTkHelper._rootWidget.quit()
-                ttk.TTkHelper._focusWidget = None
-                ttk.TTkHelper._rootCanvas = None
-                ttk.TTkHelper._rootWidget = None
-                ttk.TTkHelper._updateBuffer = set()
-                ttk.TTkHelper._updateWidget = set()
-                ttk.TTkHelper._overlay = []
-                ttk.TTkHelper._shortcut = []
-                ttk.TTkLog._messageHandler = [message_handler]
-
-            def ttk_init():
-              ttk.TTkToolTip.toolTipTimer = ttk.TTkTimer()
-              ttk.TTkToolTip.toolTipTimer.timeout.connect(ttk.TTkToolTip._toolTipShow)
-
-            def message_handler(mode, context, message):
-                msgType = "DEBUG"
-                if mode == ttk.TTkLog.InfoMsg:       msgType = "[INFO]"
-                elif mode == ttk.TTkLog.WarningMsg:  msgType = "[WARNING]"
-                elif mode == ttk.TTkLog.CriticalMsg: msgType = "[CRITICAL]"
-                elif mode == ttk.TTkLog.FatalMsg:    msgType = "[FATAL]"
-                elif mode == ttk.TTkLog.ErrorMsg:    msgType = "[ERROR]"
-                pyodideProxy.consoleLog(f"{msgType} {context.file} {message}")
-            # Register the callback to the message handler
-            ttk.TTkLog.installMessageHandler(message_handler)
-        `,{ globals: namespace }
-        );
-
-        let ttk_log    = namespace.get("ttk_log");
-        let ttk_input  = namespace.get("ttk_input");
-        let ttk_timer  = namespace.get("ttk_timer");
-        let ttk_resize = namespace.get("ttk_resize");
-        let ttk_clean  = namespace.get("ttk_clean");
-        let ttk_init   = namespace.get("ttk_init");
-
-        term.onResize( (obj) => {
-          term.reset()
-          ttk_resize(obj.cols, obj.rows)
-        });
-        term.onData((d, evt) => { ttk_input(d) })
-
-        pyodide.runPython(`
-          import sys,os
-          sys.path.append(os.path.join(sys.path[0],'demo'))
-          __name__ = "__main__"
-        `,{ globals: namespace }
-        );
+        ttkProxy.preRun()
 
         run = function(){
-          ttk_clean()
-          console.log("Run App")
-
           let filename = document.getElementById("codeUri").value
           let fps = document.getElementById("fpsCap").value
-          let pwd = pyodide.PATH.dirname(filename)
-
-          pyodide.runPython(`
-            __file__='`+filename+`'
-            os.chdir('`+pwd+`')
-            ttk.TTkCfg.maxFps = `+fps,{ globals: namespace })
-
-          ttk_init()
-
-          let content = getCode()
-          pyodide.runPython(content,{ globals: namespace });
-
-          ttk_log(filename + " - LOADED")
+          ttkProxy.run(getCode(), filename,fps)
         };
         run()
       }
