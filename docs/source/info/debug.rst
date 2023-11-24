@@ -27,6 +27,14 @@ Use this env variable to force a stacktrace generation to the file defined (i.e.
 
     TERMTK_STACKTRACE=stacktrace.txt   python3   demo/demo.py
 
+**TERMTK_FORCESERIAL** - Force some workaround to pickup the terminal size from the serial console
+--------------------------------------------------------------
+
+Use this env variable if pyTermTk is running on a serial console
+
+.. code:: bash
+
+    TERMTK_FORCESERIAL=1   python3   demo/demo.py
 
 Gui
 ===
