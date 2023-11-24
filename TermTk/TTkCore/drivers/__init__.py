@@ -6,7 +6,11 @@ if importlib.util.find_spec('pyodideProxy'):
     from .term_pyodide import *
 elif platform.system() == 'Linux':
     from .unix import *
-    from .term_unix import *
+    import os
+    if os.environ.get("TERMTK_FORCESERIAL",False):
+        from .term_unix_serial import *
+    else:
+       from .term_unix import *
 elif platform.system() == 'Darwin':
     from .unix import *
     from .term_unix import *
