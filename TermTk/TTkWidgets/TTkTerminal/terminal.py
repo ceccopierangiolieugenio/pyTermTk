@@ -38,7 +38,7 @@ class TTkTerminal(TTkAbstractScrollArea):
     '''
     __slots__ = ('_terminalView',
                  # Exported methods
-                 'termWrite',
+                 'termWrite', 'termSize',
                  # Exported Signals
                  'titleChanged', 'bell', 'terminalClosed', 'textSelected',
                  'termData', 'termResized')
@@ -50,6 +50,7 @@ class TTkTerminal(TTkAbstractScrollArea):
         self.setViewport(self._terminalView)
 
         # Export Methods
+        self.termSize  = self._terminalView.termSize
         self.termWrite = self._terminalView.termWrite
 
         # Export Signals

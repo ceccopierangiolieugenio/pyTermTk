@@ -146,6 +146,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def close(self):
         self._quit()
 
+    def termSize(self):
+        return self.size()
+
     def resizeEvent(self, w: int, h: int):
         self._newSize = (w,h)
         # self._screen_alt.resize(w,h)

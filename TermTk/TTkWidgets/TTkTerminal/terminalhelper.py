@@ -30,7 +30,7 @@ from TermTk.TTkCore.helper import TTkHelper
 
 class TTkTerminalHelper():
     __slots__ = ('_shell', '_fd', '_inout', '_pid',
-                 '_quit_pipe', '_size',
+                 '_quit_pipe', '_size', '_term',
                  #Signals
                  'dataOut')
     def __init__(self, term=None) -> None:
@@ -40,12 +40,14 @@ class TTkTerminalHelper():
         self._inout = None
         self._pid = None
         self._quit_pipe = None
+        self._term = None
         self._size = (80,24)
         TTkHelper.quitEvent.connect(self._quit)
         if term:
             self.attachTTkTerminal(term)
 
     def attachTTkTerminal(self, term):
+        self._term = term
         self.dataOut.connect(term.termWrite)
         term.termData.connect(self.push)
         term.termResized.connect(self.resize)
@@ -71,6 +73,9 @@ class TTkTerminalHelper():
             self._quit_pipe = os.pipe()
 
             threading.Thread(target=self.loop,args=[self]).start()
+            if self._term:
+                self.resize(*self._term.termSize())
+                self._term = None
 
     @pyTTkSlot(int, int)
     def resize(self, w: int, h: int):
