@@ -119,6 +119,3 @@ ttk.TTkHelper.overlay(None, winParams, 2, 2, toolWindow=True)
 winParams.resize(30,20)
 
 root.mainloop()
-winParams = WinParams(breakout, title="Params")
-ttk.TTkHelper.overlay(None, winParams, 2, 2, toolWindow=True)
-winParams.resize(30,20)

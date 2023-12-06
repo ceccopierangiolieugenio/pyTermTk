@@ -155,7 +155,7 @@ class BreakOutDisplay(ttk.TTkWidget):
             for bx in range(wallCols):
                 if self._blocks[by][bx]:
                     canvas.drawText(pos=(bx*bricksize,by+blocksOffset),
-                        text='_'*(bricksize-1),
+                        text='▁'*(bricksize-1),
                         color=colors[by*numColors//wallRows])
 
         canvas.drawText(

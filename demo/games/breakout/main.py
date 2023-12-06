@@ -145,7 +145,7 @@ class BreakOutDisplay(ttk.TTkWidget):
             for bx in range(lineBlocks):
                 if self._blocks[by][bx]:
                     canvas.drawText(pos=(bx*8,by+blocksOffset),
-                        text='_'*7,
+                        text='▁'*7,
                         color=colors['lines'][by])
 
         canvas.drawText(
