@@ -15,6 +15,7 @@ docs/html
 experiments
 sandbox
 !tests/sandbox
+node_modules
 
 # VizTracker default file
 result.json
