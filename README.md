@@ -87,6 +87,7 @@ python3 tests/test.ui.018.TextEdit.Pygments.py README.md
 - [ttkode](https://github.com/ceccopierangiolieugenio/ttkode) - TerminalToolKit (Studio) Code (editor)
 - [pytest-fold](https://github.com/jeffwright13/pytest-fold) - A Pytest plugin to make console output more manageable when there are multiple failed tests
 - [pytest-tui](https://github.com/jeffwright13/pytest-tui) - A Text User Interface (TUI) for Pytest, automatically launched after your test run is finished
+- [breakoutRL](https://ceccopierangiolieugenio.itch.io/breakoutrl) - Breakout the Roguelike
 
 ## Related Projects
 - Honourable mention
