@@ -32,14 +32,14 @@ import TermTk as ttk
 class BreakOutParams():
     colors = {
         'lines': [
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#FF0000"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#FF0000"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#FF8800"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#FF8800"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#00FF00"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#00FF00"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#FFFF00"),
-            ttk.TTkColor.fg("#000000")+ttk.TTkColor.bg("#FFFF00")],
+            ttk.TTkColor.fg("#FF0000"),
+            ttk.TTkColor.fg("#FF0000"),
+            ttk.TTkColor.fg("#FF8800"),
+            ttk.TTkColor.fg("#FF8800"),
+            ttk.TTkColor.fg("#00FF00"),
+            ttk.TTkColor.fg("#00FF00"),
+            ttk.TTkColor.fg("#FFFF00"),
+            ttk.TTkColor.fg("#FFFF00")],
         'bar'  : ttk.TTkColor.fg("#0088FF"),
     }
     delay: float = 0.05
@@ -145,7 +145,7 @@ class BreakOutDisplay(ttk.TTkWidget):
             for bx in range(lineBlocks):
                 if self._blocks[by][bx]:
                     canvas.drawText(pos=(bx*8,by+blocksOffset),
-                        text='▁'*7,
+                        text='▇'*7,
                         color=colors['lines'][by])
 
         canvas.drawText(

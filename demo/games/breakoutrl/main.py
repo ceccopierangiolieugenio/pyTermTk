@@ -114,7 +114,9 @@ root.layout().addItem(ttk.TTkLayout(),2,0)
 root.layout().addItem(ttk.TTkLayout(),0,2)
 root.layout().addItem(ttk.TTkLayout(),2,2)
 
-winParams = WinParams(breakout, title="Params")
+winParams = WinParams(breakout,
+                      title="Params",
+                      flags = ttk.TTkK.WindowFlag.WindowReduceButtonHint | ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint)
 ttk.TTkHelper.overlay(None, winParams, 2, 2, toolWindow=True)
 winParams.resize(30,20)
 
