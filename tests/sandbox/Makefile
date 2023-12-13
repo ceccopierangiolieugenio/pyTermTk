@@ -36,6 +36,22 @@ www:
 
 	wget  -P www/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/favicon.ico
 
+updateXterm: www
+	rm -rf node_modules package.json package-lock.json
+	npm install xterm
+	npm install xterm-addon-fit
+	npm install xterm-addon-unicode11
+	cp node_modules/xterm/css/xterm.css \
+	   node_modules/xterm/lib/xterm.js \
+	   node_modules/xterm/lib/xterm.js.map \
+	   www/xterm/
+	cp node_modules/xterm-addon-unicode11/lib/xterm-addon-unicode11.js \
+	   node_modules/xterm-addon-unicode11/lib/xterm-addon-unicode11.js.map \
+	   www/xterm-addon-unicode11/
+	cp node_modules/xterm-addon-fit/lib/xterm-addon-fit.js \
+	   node_modules/xterm-addon-fit/lib/xterm-addon-fit.js.map \
+	   www/xterm-addon-fit/
+	rm -rf node_modules package.json package-lock.json
 
 buildSandbox: www
 	rm -rf bin

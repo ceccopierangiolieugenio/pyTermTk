@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>Mr. pyTermTk Sandbox</title>
     <link rel="icon" type="image/x-icon" href="www/favicon.ico">
 
@@ -89,13 +90,11 @@
 
       term.open(document.getElementById('terminal'));
 
+      // start observing the terminal for resize
+      const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
+      resize_ob.observe(document.querySelector("#terminal"));
+
       term.write('xterm.js - Loaded\n\r')
-
-      fitAddon.fit()
-
-      w2ui.layout_pyTermTk_sandbox.on('resize', (event) => {
-            setTimeout(()=>{fitAddon.fit()},0.5)
-      });
 
       /* Code Mirror */
       let myCodeMirror = CodeMirror(document.getElementById('codeArea'), {
@@ -175,6 +174,7 @@
           ttkProxy.run(getCode(), filename,fps)
         };
         run()
+        fitAddon.fit()
       }
       main()
     </script>

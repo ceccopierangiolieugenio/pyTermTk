@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <script src="www/pyodide/pyodide.js"></script>
     <!--
       <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js"></script>
@@ -8,11 +9,8 @@
 
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
-    <!--
-      <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
-    -->
-    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
 
+    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
     <!--
       <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
       <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
@@ -24,9 +22,6 @@
     <div id="terminal" style="float: left"></div>
 
     <script type="text/javascript">
-      /* xterm.js demo */
-      /* https://www.npmjs.com/package/xterm-addon-fit */
-      // const fitAddon = new FitAddon.FitAddon();
       /* https://www.npmjs.com/package/xterm-addon-unicode11 */
       const unicode11Addon = new Unicode11Addon.Unicode11Addon();
 
@@ -39,8 +34,6 @@
       term.open(document.getElementById('terminal'));
 
       term.write('xterm.js - Loaded\n\r')
-
-      // fitAddon.fit()
 
       /* pyodide demo */
       async function main(){
