@@ -96,9 +96,12 @@ deploySandbox:
 	cp -a tests/sandbox tmp/
 
 	git checkout gh-pages
+	git pull
 	cp tmp/sandbox/*.html sandbox
 	cp -r tmp/sandbox/js  sandbox
 
+	git submodule update --init
+	git submodule foreach git checkout gh-pages
 	git submodule foreach git pull
 	git add sandbox
 
