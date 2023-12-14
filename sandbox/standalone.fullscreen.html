@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <script src="www/pyodide/pyodide.js"></script>
     <!--
       <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js"></script>
@@ -11,8 +12,6 @@
     <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
     <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
 
-    <link href="www/fontawesome/fontawesome.min.css" rel="stylesheet">
-    <link href="www/fontawesome/regular.min.css" rel="stylesheet">
     <!--
       <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
       <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
@@ -24,7 +23,7 @@
     <div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
 
     <script type="text/javascript">
-      /* xterm.js demo */
+      /* xterm.js */
       /* https://www.npmjs.com/package/xterm-addon-fit */
       const fitAddon = new FitAddon.FitAddon();
       /* https://www.npmjs.com/package/xterm-addon-unicode11 */
@@ -38,9 +37,11 @@
 
       term.open(document.getElementById('terminal'));
 
-      term.write('xterm.js - Loaded\n\r')
+      // start observing the terminal for resize
+      const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
+      resize_ob.observe(document.querySelector("#terminal"));
 
-      fitAddon.fit()
+      term.write('xterm.js - Loaded\n\r')
 
       /* pyodide demo */
       async function main(){
@@ -61,6 +62,7 @@
         let content = ttkProxy.readFile(file)
 
         ttkProxy.run(content, file, 60)
+        fitAddon.fit()
       }
       main()
     </script>

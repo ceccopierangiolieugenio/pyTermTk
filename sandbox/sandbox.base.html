@@ -26,17 +26,10 @@
     <script src="js/ttkproxy.js"></script>
     <style>
       .CodeMirror { height: 100%; }
-      /*
-      @font-face {
-        font-family: "NerdFont";
-        src: url(www/nerdfonts/HurmitNerdFontMono-Regular.otf) format("opentype");
-        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
-        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
-      }
-      */
     </style>
   </head>
   <body>
+
     <div id="layout" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
 
     <script type="text/javascript">
@@ -83,29 +76,46 @@
     </script>
 
     <script type="text/javascript">
-      // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
-      const font = new FontFace("NerdFont", "url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
-      document.fonts.add(font);
-      font.load();
-      document.fonts.ready.then(() => {main()});
+      /* xterm.js demo */
+      /* https://www.npmjs.com/package/xterm-addon-fit */
+      const fitAddon = new FitAddon.FitAddon();
+      /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+      const unicode11Addon = new Unicode11Addon.Unicode11Addon();
 
-        /* Code Mirror */
-        let myCodeMirror = CodeMirror(document.getElementById('codeArea'), {
-            mode:  "python",
-            lineNumbers: true,
-            styleActiveLine: true,
-            matchBrackets: true
-        });
-        myCodeMirror.setOption("theme", "mbo");
-        let getCode = function(){
-          return myCodeMirror.getValue()
-        }
-        let setCode = function(txt){
-          myCodeMirror.setValue(txt)
-        }
+      var term = new Terminal({allowProposedApi: true});
+      term.loadAddon(fitAddon);
+      term.loadAddon(unicode11Addon);
+
+      term.unicode.activeVersion = '11';
+
+      term.open(document.getElementById('terminal'));
+
+      fitAddon.fit()
+
+      // start observing the terminal for resize
+      const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
+      resize_ob.observe(document.querySelector("#terminal"));
+
+      term.write('xterm.js - Loaded\n\r')
+
+      /* Code Mirror */
+      let myCodeMirror = CodeMirror(document.getElementById('codeArea'), {
+          mode:  "python",
+          lineNumbers: true,
+          styleActiveLine: true,
+          matchBrackets: true
+      });
+      myCodeMirror.setOption("theme", "mbo");
+      let getCode = function(){
+        return myCodeMirror.getValue()
+      }
+      let setCode = function(txt){
+        myCodeMirror.setValue(txt)
+      }
+
 
       /* pyodide demo */
-      async function mainTTK(term){
+      async function main(){
         ttkProxy = new TTkProxy(term)
         await ttkProxy.init()
 
@@ -167,35 +177,7 @@
         };
         run()
       }
-
-      function main(){
-        /* xterm.js */
-        var term = new Terminal({
-              allowProposedApi: true,
-              fontFamily: 'NerdFont'});
-
-        /* https://www.npmjs.com/package/xterm-addon-fit */
-        const fitAddon = new FitAddon.FitAddon();
-        /* https://www.npmjs.com/package/xterm-addon-unicode11 */
-        const unicode11Addon = new Unicode11Addon.Unicode11Addon();
-
-        term.loadAddon(fitAddon);
-        term.loadAddon(unicode11Addon);
-
-        term.unicode.activeVersion = '11';
-
-        term.open(document.getElementById('terminal'));
-
-        fitAddon.fit()
-
-        // start observing the terminal for resize
-        const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
-        resize_ob.observe(document.querySelector("#terminal"));
-
-        term.write('xterm.js - Loaded\n\r')
-
-        mainTTK(term)
-      }
+      main()
     </script>
 
   </body>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="www/favicon.ico">
+
+    <script src="www/pyodide/pyodide.js"></script>
+    <!--
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js"></script>
+    -->
+
+    <link  href="www/xterm/xterm.css" rel="stylesheet" />
+    <script src="www/xterm/xterm.js"></script>
+    <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
+    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
+
+    <!--
+      <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
+      <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
+    -->
+    <script src="js/ttkproxy.js"></script>
+    <style>
+      /*
+      @font-face {
+        font-family: "NerdFont";
+        src: url(www/nerdfonts/HurmitNerdFontMono-Regular.otf) format("opentype");
+        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
+        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
+      }
+      */
+    </style>
+  </head>
+  <body>
+
+    <div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
+
+    <script type="text/javascript">
+      // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
+      const font = new FontFace("NerdFont", "url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
+      document.fonts.add(font);
+      font.load();
+      document.fonts.ready.then(() => {main()});
+
+      /* pyodide demo */
+      async function mainTTk(term){
+        ttkProxy = new TTkProxy(term)
+        await ttkProxy.init()
+
+        await ttkProxy.loadLib("bin/TermTk.tgz");
+        term.write('TermTk - Loaded\n\r')
+
+        await ttkProxy.loadLib("bin/demo.tgz");
+        term.write('Demos - Loaded\n\r')
+
+        term.write('Starting Demo...\n\r')
+
+        ttkProxy.preRun()
+
+        let file = "demo/demo.py"
+        let content = ttkProxy.readFile(file)
+
+        ttkProxy.run(content, file, 60)
+      }
+
+      function main(){
+        /* xterm.js */
+        var term = new Terminal({
+            allowProposedApi: true,
+            fontFamily: 'NerdFont'});
+
+        /* https://www.npmjs.com/package/xterm-addon-fit */
+        const fitAddon = new FitAddon.FitAddon();
+        /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+        const unicode11Addon = new Unicode11Addon.Unicode11Addon();
+
+        term.loadAddon(fitAddon);
+        term.loadAddon(unicode11Addon);
+
+        term.unicode.activeVersion = '11';
+
+        term.open(document.getElementById('terminal'));
+
+        fitAddon.fit()
+
+        // start observing the terminal for resize
+        const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
+        resize_ob.observe(document.querySelector("#terminal"));
+
+        term.write('xterm.js - Loaded\n\r')
+        mainTTk(term)
+      }
+    </script>
+
+  </body>
+</html>
