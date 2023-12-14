@@ -189,10 +189,11 @@ class TTkProxy {
         this.ttk_clean()
         console.log("Run App")
 
-        let pwd = this.pyodide.PATH.dirname(filename)
+        let pwd  = this.pyodide.PATH.dirname(filename)
+        let file = this.pyodide.PATH.basename(filename)
 
         this.pyodide.runPython(`
-          __file__='`+filename+`'
+          __file__='`+file+`'
           os.chdir('`+pwd+`')
           ttk.TTkCfg.maxFps = `+fps,{ globals: this.namespace })
 
