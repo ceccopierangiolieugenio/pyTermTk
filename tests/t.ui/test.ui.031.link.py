@@ -30,11 +30,12 @@ import TermTk as ttk
 
 class WidLink1(ttk.TTkWidget):
     def paintEvent(self, canvas: ttk.TTkCanvas):
-        canvas.drawText(pos=(0,0),text=ttk.TTkString('Link1abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#FFFF00', link="http://www.google.com")))
-        canvas.drawText(pos=(0,1),text=ttk.TTkString('Link2abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#00FFFF', link="http://www.reddit.com")))
-        canvas.drawText(pos=(0,2),text=ttk.TTkString('Link3abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#FF00FF', link="http://www.github.com")))
-        canvas.drawText(pos=(0,3),text=ttk.TTkString('Link4abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#FF0000', link="http://www.example.com")))
-        canvas.drawText(pos=(0,4),text=ttk.TTkString('Link5abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#00FF00', link="file:///home/")))
+        canvas.drawText(pos=( 0,0),text=ttk.TTkString('Link1abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#FFFF00', link="http://www.google.com")))
+        canvas.drawText(pos=( 0,1),text=ttk.TTkString('Link2abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#00FFFF', link="http://www.reddit.com")))
+        canvas.drawText(pos=( 0,2),text=ttk.TTkString('Link3abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#FF00FF', link="http://www.github.com")))
+        canvas.drawText(pos=( 0,3),text=ttk.TTkString('Link4abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#FF0000', link="http://www.example.com")))
+        canvas.drawText(pos=( 0,4),text=ttk.TTkString('Link5abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',ttk.TTkColor.fg('#00FF00', link="file:///home/")))
+        canvas.drawText(pos=(20,3),text=ttk.TTkString('<XXXXXXXXX>',ttk.TTkColor.fg('#0000FF', link="http:///www.python.com/")))
         return super().paintEvent(canvas)
 
 root = ttk.TTk()
