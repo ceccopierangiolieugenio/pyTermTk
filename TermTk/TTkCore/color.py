@@ -61,14 +61,15 @@ from TermTk.TTkCore.helper import TTkHelper
 # [49m          2.53      set background color to default (black)
 
 class _TTkColor:
-    __slots__ = ('_fg','_bg','_mod', '_colorMod', '_link', '_buffer', '_clean')
+    __slots__ = ('_fg','_bg','_mod', '_colorMod', '_link', '_buffer', '_clean', '_cleanLink')
     _fg: tuple; _bg: tuple; _mod: int
-    def __init__(self, fg:tuple=None, bg:tuple=None, mod:int=0, colorMod=None, link:str='', clean=False):
+    def __init__(self, fg:tuple=None, bg:tuple=None, mod:int=0, colorMod=None, link:str='', clean=False, cleanLink=False):
         self._fg  = fg
         self._bg  = bg
         self._mod = mod
         self._link = link
         self._clean = clean or not (fg or bg or mod)
+        self._cleanLink = cleanLink
         self._colorMod = colorMod
         self._buffer = None
 
@@ -184,7 +185,7 @@ class _TTkColor:
         if not self._buffer:
             self._buffer = TTkHelper.Color.rgb2ansi(
                                 fg=self._fg, bg=self._bg, mod=self._mod,
-                                link=self._link, clean=self._clean)
+                                link=self._link, clean=self._clean, cleanLink=self._cleanLink)
         return self._buffer
 
     def __eq__(self, other):
@@ -198,25 +199,17 @@ class _TTkColor:
     # self | other
     def __or__(self, other):
         # TTkLog.debug("__add__")
-        if other._clean:
-            return other.copy()
-        clean = self._clean
-        fg:  str = self._fg or other._fg
-        bg:  str = self._bg or other._bg
-        mod: str = self._mod + other._mod
-        link:str = self._link or other._link
-        colorMod = self._colorMod or other._colorMod
-        return TTkColor(
-                    fg=fg, bg=bg, mod=mod,
-                    colorMod=colorMod, link=link,
-                    clean=clean)
+        return self + other
 
     # self + other
     def __add__(self, other):
         # TTkLog.debug("__add__")
         if other._clean:
-            return other.copy()
+            ret =  other.copy()
+            ret._cleanLink |= self._cleanLink
+            return ret
         clean = self._clean
+        cleanLink = self._cleanLink
         fg:  str = other._fg or self._fg
         bg:  str = other._bg or self._bg
         mod: str = self._mod + other._mod
@@ -225,7 +218,7 @@ class _TTkColor:
         return TTkColor(
                     fg=fg, bg=bg, mod=mod,
                     colorMod=colorMod, link=link,
-                    clean=clean)
+                    clean=clean, cleanLink=cleanLink)
 
     def __sub__(self, other):
         # TTkLog.debug("__sub__")
@@ -236,6 +229,7 @@ class _TTkColor:
                      self._mod  != other._mod ):
             ret = self.copy()
             ret._clean = True
+            ret._cleanLink = self._link != other._link
             return ret
         return self
 
@@ -256,6 +250,7 @@ class _TTkColor:
         ret._mod  = self._mod
         ret._link = self._link
         ret._clean = self._clean
+        ret._cleanLink = self._cleanLink
         if modifier and self._colorMod:
             ret._colorMod = self._colorMod.copy()
         return ret
