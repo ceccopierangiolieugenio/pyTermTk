@@ -32,9 +32,10 @@ class TTkTerminalHelper():
     __slots__ = ('_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_size', '_term',
                  #Signals
-                 'dataOut')
+                 'terminalClosed', 'dataOut')
     def __init__(self, term=None) -> None:
         self.dataOut = pyTTkSignal(str)
+        self.terminalClosed = pyTTkSignal()
         self._shell = os.environ.get('SHELL', 'sh')
         self._fd = None
         self._inout = None
@@ -51,6 +52,7 @@ class TTkTerminalHelper():
         self.dataOut.connect(term.termWrite)
         term.termData.connect(self.push)
         term.termResized.connect(self.resize)
+        term.closed.connect(self._quit)
 
     def runShell(self, program=None):
         self._shell = program if program else self._shell
@@ -72,7 +74,9 @@ class TTkTerminalHelper():
 
             self._quit_pipe = os.pipe()
 
-            threading.Thread(target=self.loop,args=[self]).start()
+            threading.Thread(target=self.loop).start()
+            threading.Thread(target=lambda pid=self._pid:os.waitpid(pid,0)).start()
+
             if self._term:
                 self.resize(*self._term.termSize())
                 self._term = None
@@ -95,16 +99,20 @@ class TTkTerminalHelper():
 
     @pyTTkSlot()
     def _quit(self):
-        if self._pid:
-            os.kill(self._pid,0)
-            os.kill(self._pid,15)
+        if pid := self._pid:
+            try:
+                os.kill(pid,0)
+                os.kill(pid,15)
+                # os.kill(pid,9)
+            except:
+                pass
         if self._quit_pipe:
             try:
                 os.write(self._quit_pipe[1], b'quit')
             except:
                 pass
 
-    def loop(self, _):
+    def loop(self):
         while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
                 # os.close(self._quit_pipe[0])
@@ -130,6 +138,7 @@ class TTkTerminalHelper():
                     fcntl.fcntl(self._inout, fcntl.F_SETFL, _fl)
                 except Exception as e:
                     TTkLog.error(f"Error: {e=}")
+                    self._quit()
                     self.terminalClosed.emit()
                     return
 

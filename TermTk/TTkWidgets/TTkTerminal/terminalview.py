@@ -143,9 +143,6 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def viewDisplayedSize(self) -> (int, int):
         return self.size()
 
-    def close(self):
-        self._quit()
-
     def termSize(self):
         return self.size()
 
