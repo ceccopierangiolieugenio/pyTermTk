@@ -147,7 +147,7 @@
         fileUri  = urlParams.get("fileUri")
         filePath = urlParams.get("filePath")
         if (fileUri != null){
-          ttkProxy.loadFile(fileUri, "/test_file.py");
+          await ttkProxy.loadFile(fileUri, "/test_file.py");
           loadFile("/test_file.py")
         }else if (filePath != null){
           loadFile(filePath)
