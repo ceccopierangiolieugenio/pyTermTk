@@ -73,7 +73,7 @@ class TTkProxy {
     }
 
     async loadFile(fileUri,file){
-        this.pyodide.FS.writeFile(this.pyodide.FS.currentPath+file, await (await fetch(fileUri)).text());
+        this.pyodide.FS.writeFile(this.pyodide.FS.currentPath+'/'+file, await (await fetch(fileUri)).text());
     }
 
     readFile(file){
