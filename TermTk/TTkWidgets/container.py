@@ -80,6 +80,7 @@ class TTkContainer(TTkWidget):
         super().__init__(**kwargs)
 
         self._layout.setParent(self)
+        self.update(updateLayout=True)
 
     def addWidget(self, widget):
         '''
