@@ -263,10 +263,15 @@ class TTkDesigner(TTkGridLayout):
     @pyTTkSlot()
     def new(self):
         newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/newWindow.tui.json"))
-        newWindow.getWidgetByName("BtnWindow").clicked.connect(self._windowEditor.newWindow)
-        newWindow.getWidgetByName("BtnWidget").clicked.connect(self._windowEditor.newWidget)
-        newWindow.getWidgetByName("BtnWindow").clicked.connect(self.weModified.emit)
-        newWindow.getWidgetByName("BtnWidget").clicked.connect(self.weModified.emit)
+        newWindow.getWidgetByName("BtnWindow"   ).clicked.connect(self._windowEditor.newWindow)
+        newWindow.getWidgetByName("BtnContainer").clicked.connect(self._windowEditor.newContainer)
+        newWindow.getWidgetByName("BtnFrame"    ).clicked.connect(self._windowEditor.newFrame)
+        newWindow.getWidgetByName("BtnResFrame" ).clicked.connect(self._windowEditor.newResFrame)
+
+        newWindow.getWidgetByName("BtnWindow"   ).clicked.connect(self.weModified.emit)
+        newWindow.getWidgetByName("BtnContainer").clicked.connect(self.weModified.emit)
+        newWindow.getWidgetByName("BtnFrame"    ).clicked.connect(self.weModified.emit)
+        newWindow.getWidgetByName("BtnResFrame" ).clicked.connect(self.weModified.emit)
         TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
 
     def _openFile(self, fileName):
