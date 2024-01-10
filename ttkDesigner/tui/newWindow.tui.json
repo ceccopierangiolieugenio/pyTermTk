@@ -339,14 +339,14 @@
        18,
        7
       ],
-      "Min Width": 7,
-      "Min Height": 3,
+      "Min Width": 13,
+      "Min Height": 5,
       "Max Width": 65536,
       "Max Height": 65536,
       "Visible": true,
       "Enabled": true,
       "ToolTip": "",
-      "Text": "Frame",
+      "Text": "\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502  Frame  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
       "Border": true,
       "Checkable": false,
       "Checked": false
@@ -397,6 +397,18 @@
   },
   {
    "sender": "BtnContainer",
+   "receiver": "NewWindow",
+   "signal": "clicked()",
+   "slot": "close()"
+  },
+  {
+   "sender": "BtnResFrame",
+   "receiver": "NewWindow",
+   "signal": "clicked()",
+   "slot": "close()"
+  },
+  {
+   "sender": "BtnFrame",
    "receiver": "NewWindow",
    "signal": "clicked()",
    "slot": "close()"
