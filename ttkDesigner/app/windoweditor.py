@@ -32,15 +32,14 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         super().__init__(*args, **kwargs)
         self._ttk = None
         self.viewChanged.connect(self._viewChangedHandler)
-        self.newWidget()
+        self.newContainer()
 
-    @ttk.pyTTkSlot()
-    def newWindow(self):
+    def newThing(self, thing):
         if self._ttk:
             self._ttk.superResized.disconnect(self._superChanged)
             self._ttk.superMoved.disconnect(self._superChanged)
             self.layout().removeWidget(self._ttk)
-        self._ttk = SuperWidget.swFromWidget(wid=ttk.TTkWindow(name = 'MainWindow'), designer=self._designer, pos=(4,2), superRootWidget=True)
+        self._ttk = SuperWidget.swFromWidget(wid=thing(name = 'MainWindow'), designer=self._designer, pos=(4,2), superRootWidget=True)
         self._ttk.resize(self.width()-8,self.height()-4)
         self._snapRootWidget = True
         self.layout().addWidget(self._ttk)
@@ -48,17 +47,13 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
         self._ttk.superMoved.connect(self._superChanged)
 
     @ttk.pyTTkSlot()
-    def newWidget(self):
-        if self._ttk:
-            self._ttk.superResized.disconnect(self._superChanged)
-            self._ttk.superMoved.disconnect(self._superChanged)
-            self.layout().removeWidget(self._ttk)
-        self._ttk = SuperWidget.swFromWidget(wid=ttk.TTkContainer(name = 'MainWidget'), designer=self._designer, pos=(4,2), superRootWidget=True)
-        self._ttk.resize(self.width()-8,self.height()-4)
-        self._snapRootWidget = True
-        self.layout().addWidget(self._ttk)
-        self._ttk.superResized.connect(self._superChanged)
-        self._ttk.superMoved.connect(self._superChanged)
+    def newWindow(self):    return self.newThing(ttk.TTkWindow)
+    @ttk.pyTTkSlot()
+    def newContainer(self): return self.newThing(ttk.TTkContainer)
+    @ttk.pyTTkSlot()
+    def newFrame(self):     return self.newThing(ttk.TTkFrame)
+    @ttk.pyTTkSlot()
+    def newResFrame(self):  return self.newThing(ttk.TTkResizableFrame)
 
     def importSuperWidget(self, sw):
         if self._ttk:
@@ -109,7 +104,7 @@ class WindowEditorView(ttk.TTkAbstractScrollView):
 class WindowEditor(ttk.TTkAbstractScrollArea):
     __slots__ = ('getTTk', 'dumpDict', 'importSuperWidget',
                  # Forwarded slots
-                 'newWindow', 'newWidget')
+                 'newWindow', 'newWidget', 'newFrame', 'newResFrame')
     def __init__(self, designer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setViewport(wev := WindowEditorView(designer))
@@ -118,4 +113,6 @@ class WindowEditor(ttk.TTkAbstractScrollArea):
         self.dumpDict          = wev.dumpDict
         self.importSuperWidget = wev.importSuperWidget
         self.newWindow         = wev.newWindow
-        self.newWidget         = wev.newWidget
+        self.newContainer      = wev.newContainer
+        self.newFrame          = wev.newFrame
+        self.newResFrame       = wev.newResFrame

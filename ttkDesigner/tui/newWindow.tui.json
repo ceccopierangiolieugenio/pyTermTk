@@ -1,5 +1,5 @@
 {
- "version": "1.0.0",
+ "version": "2.0.0",
  "tui": {
   "class": "TTkWindow",
   "params": {
@@ -9,13 +9,16 @@
     2
    ],
    "Size": [
-    70,
+    74,
     18
    ],
    "Min Width": 2,
    "Min Height": 4,
    "Max Width": 4096,
    "Max Height": 4096,
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "",
    "Padding": [
     3,
     1,
@@ -23,9 +26,6 @@
     1
    ],
    "Layout": "TTkGridLayout",
-   "Visible": true,
-   "Enabled": true,
-   "ToolTip": "",
    "Border": true,
    "Title": "New Form - TTk Designer \ud83d\ude0e",
    "Window Flags": 134250496
@@ -36,7 +36,7 @@
     "Geometry": [
      0,
      0,
-     68,
+     72,
      14
     ]
    },
@@ -46,24 +46,17 @@
      "params": {
       "Name": "BtnLayout",
       "Position": [
-       22,
+       18,
        1
       ],
       "Size": [
-       23,
+       18,
        4
       ],
       "Min Width": 8,
       "Min Height": 3,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": false,
       "ToolTip": "",
@@ -71,18 +64,6 @@
       "Border": true,
       "Checkable": false,
       "Checked": false
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        4
-       ]
-      },
-      "children": []
      },
      "row": 2,
      "col": 2,
@@ -94,24 +75,17 @@
      "params": {
       "Name": "BtnWindow",
       "Position": [
-       45,
+       36,
        1
       ],
       "Size": [
-       23,
+       18,
        13
       ],
       "Min Width": 15,
       "Min Height": 7,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
       "ToolTip": "",
@@ -119,18 +93,6 @@
       "Border": true,
       "Checkable": false,
       "Checked": false
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        13
-       ]
-      },
-      "children": []
      },
      "row": 2,
      "col": 3,
@@ -140,45 +102,26 @@
     {
      "class": "TTkButton",
      "params": {
-      "Name": "BtnWidget",
+      "Name": "BtnContainer",
       "Position": [
        0,
        1
       ],
       "Size": [
-       22,
+       18,
        13
       ],
-      "Min Width": 8,
+      "Min Width": 11,
       "Min Height": 3,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
       "ToolTip": "",
-      "Text": "Widget",
+      "Text": "Container",
       "Border": true,
       "Checkable": false,
       "Checked": false
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        22,
-        13
-       ]
-      },
-      "children": []
      },
      "row": 2,
      "col": 1,
@@ -190,24 +133,17 @@
      "params": {
       "Name": "BtnGridLayout",
       "Position": [
-       22,
+       18,
        5
       ],
       "Size": [
-       23,
+       18,
        3
       ],
       "Min Width": 13,
       "Min Height": 3,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": false,
       "ToolTip": "",
@@ -215,18 +151,6 @@
       "Border": true,
       "Checkable": false,
       "Checked": false
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        3
-       ]
-      },
-      "children": []
      },
      "row": 3,
      "col": 2,
@@ -238,24 +162,17 @@
      "params": {
       "Name": "BtnVBoxLayout",
       "Position": [
-       22,
+       18,
        8
       ],
       "Size": [
-       23,
+       18,
        3
       ],
       "Min Width": 13,
       "Min Height": 3,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": false,
       "ToolTip": "",
@@ -263,18 +180,6 @@
       "Border": true,
       "Checkable": false,
       "Checked": false
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        3
-       ]
-      },
-      "children": []
      },
      "row": 4,
      "col": 2,
@@ -286,24 +191,17 @@
      "params": {
       "Name": "BtnHBoxLayout",
       "Position": [
-       22,
+       18,
        11
       ],
       "Size": [
-       23,
+       18,
        3
       ],
       "Min Width": 13,
       "Min Height": 3,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": false,
       "ToolTip": "",
@@ -311,18 +209,6 @@
       "Border": true,
       "Checkable": false,
       "Checked": false
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        3
-       ]
-      },
-      "children": []
      },
      "row": 5,
      "col": 2,
@@ -332,44 +218,25 @@
     {
      "class": "TTkLabel",
      "params": {
-      "Name": "LabelWidget",
+      "Name": "LabelContainer",
       "Position": [
        0,
        0
       ],
       "Size": [
-       22,
+       18,
        1
       ],
-      "Min Width": 10,
+      "Min Width": 13,
       "Min Height": 1,
       "Max Width": 65536,
       "Max Height": 1,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
       "ToolTip": "",
-      "Text": "New Widget",
+      "Text": "New Container",
       "Color": "\u001b[0m",
       "Alignment": 4
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        22,
-        1
-       ]
-      },
-      "children": []
      },
      "row": 1,
      "col": 1,
@@ -381,42 +248,23 @@
      "params": {
       "Name": "LabelLayout",
       "Position": [
-       22,
+       18,
        0
       ],
       "Size": [
-       23,
+       18,
        1
       ],
       "Min Width": 10,
       "Min Height": 1,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
       "ToolTip": "",
       "Text": "New Layout",
       "Color": "\u001b[0m",
       "Alignment": 4
-     },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        1
-       ]
-      },
-      "children": []
      },
      "row": 1,
      "col": 2,
@@ -428,24 +276,17 @@
      "params": {
       "Name": "LabelWindow",
       "Position": [
-       45,
+       36,
        0
       ],
       "Size": [
-       23,
+       18,
        1
       ],
       "Min Width": 10,
       "Min Height": 1,
       "Max Width": 65536,
       "Max Height": 65536,
-      "Padding": [
-       0,
-       0,
-       0,
-       0
-      ],
-      "Layout": "TTkLayout",
       "Visible": true,
       "Enabled": true,
       "ToolTip": "",
@@ -453,21 +294,95 @@
       "Color": "\u001b[0m",
       "Alignment": 4
      },
-     "layout": {
-      "class": "TTkLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        23,
-        1
-       ]
-      },
-      "children": []
-     },
      "row": 1,
      "col": 3,
      "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "LabelFrame",
+      "Position": [
+       54,
+       0
+      ],
+      "Size": [
+       18,
+       1
+      ],
+      "Min Width": 9,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "New Frame",
+      "Color": "\u001b[0m",
+      "Alignment": 4
+     },
+     "row": 1,
+     "col": 4,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnFrame",
+      "Position": [
+       54,
+       1
+      ],
+      "Size": [
+       18,
+       7
+      ],
+      "Min Width": 13,
+      "Min Height": 5,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502  Frame  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 2,
+     "col": 4,
+     "rowspan": 2,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnResFrame",
+      "Position": [
+       54,
+       8
+      ],
+      "Size": [
+       18,
+       6
+      ],
+      "Min Width": 11,
+      "Min Height": 4,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Resizable\nFrame",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 4,
+     "col": 4,
+     "rowspan": 2,
      "colspan": 1
     }
    ]
@@ -481,7 +396,19 @@
    "slot": "close()"
   },
   {
-   "sender": "BtnWidget",
+   "sender": "BtnContainer",
+   "receiver": "NewWindow",
+   "signal": "clicked()",
+   "slot": "close()"
+  },
+  {
+   "sender": "BtnResFrame",
+   "receiver": "NewWindow",
+   "signal": "clicked()",
+   "slot": "close()"
+  },
+  {
+   "sender": "BtnFrame",
    "receiver": "NewWindow",
    "signal": "clicked()",
    "slot": "close()"
