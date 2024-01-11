@@ -135,8 +135,10 @@ class TTkDesigner(TTkGridLayout):
         fileMenu = topMenuFrame.newMenubarTop().addMenu("&File")
         fileMenu.addMenu("New").menuButtonClicked.connect(self.new)
         fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
+        fileMenu.addMenu("Import").menuButtonClicked.connect(self.importDictWin)
         fileMenu.addMenu("Save").menuButtonClicked.connect(self.save)
         fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
+        fileMenu.addSpacer()
         fileMenu.addMenu("Exit").menuButtonClicked.connect(TTkHelper.quit)
 
         extraMenu = topMenuFrame.newMenubarTop().addMenu("E&xtra")
@@ -272,6 +274,48 @@ class TTkDesigner(TTkGridLayout):
         newWindow.getWidgetByName("BtnContainer").clicked.connect(self.weModified.emit)
         newWindow.getWidgetByName("BtnFrame"    ).clicked.connect(self.weModified.emit)
         newWindow.getWidgetByName("BtnResFrame" ).clicked.connect(self.weModified.emit)
+        TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
+
+    @pyTTkSlot()
+    def importDictWin(self):
+        def _probeCompressedText(_text):
+            import re
+            ret = ""
+            for _t in _text.split('\n'):
+                if m := re.match(r'^ *["\']([A-Za-z0-9+/]+[=]{0,2})["\' +]*$',_t):
+                    ret += m.group(1)
+                elif not re.match(r'^ *$',_t): # exclude empty lines
+                    return ""
+            return ret
+        newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/quickImport.tui.json"))
+        te = newWindow.getWidgetByName("TextEdit")
+        def _importDict(te=te):
+            text = te.toPlainText()
+            if compressed := _probeCompressedText(text):
+                dd = TTkUtil.base64_deflate_2_obj(compressed)
+            else:
+                try:
+                    dd = eval(text)
+                except Exception as e:
+                    TTkLog.error(str(e))
+                    messageBox = TTkMessageBox(text= str(e),icon=TTkMessageBox.Icon.Warning)
+                    TTkHelper.overlay(None, messageBox, 5, 5, True)
+                    return
+
+            if type(dd) not in (str,dict):
+                messageBox = TTkMessageBox(text= f"Input is {type(dd)}\nImport data must be a dict or \ncompressed String definition",icon=TTkMessageBox.Icon.Warning)
+                TTkHelper.overlay(None, messageBox, 5, 5, True)
+                return
+
+            dd = TTkUiLoader.normalise(dd)
+            sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), dd['tui'])
+
+            self._windowEditor.importSuperWidget(sw)
+            self._sigslotEditor.importConnections(dd['connections'])
+            self._treeInspector.refresh()
+            newWindow.close()
+
+        newWindow.getWidgetByName("BtnDict"   ).clicked.connect(_importDict)
         TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
 
     def _openFile(self, fileName):
