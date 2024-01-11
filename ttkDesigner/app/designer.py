@@ -135,9 +135,11 @@ class TTkDesigner(TTkGridLayout):
         fileMenu = topMenuFrame.newMenubarTop().addMenu("&File")
         fileMenu.addMenu("New").menuButtonClicked.connect(self.new)
         fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
-        fileMenu.addMenu("Import").menuButtonClicked.connect(self.importDictWin)
         fileMenu.addMenu("Save").menuButtonClicked.connect(self.save)
         fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
+        fileMenu.addSpacer()
+        fileMenu.addMenu("Import 🎁").menuButtonClicked.connect(self.importDictWin)
+        fileMenu.addMenu("Export 📦").menuButtonClicked.connect(self.quickExport)
         fileMenu.addSpacer()
         fileMenu.addMenu("Exit").menuButtonClicked.connect(TTkHelper.quit)
 
