@@ -169,7 +169,8 @@ class TTkHelper:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
-    def overlay(caller, widget, x, y, modal=False, forceBoundaries=True, toolWindow=False):
+    def overlay(caller, widget, x:int, y:int, modal:bool=False, forceBoundaries:bool=True, toolWindow:bool=False):
+        '''overlay'''
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)

@@ -26,4 +26,5 @@ For this reason games like MarioBros are not technically possible on a terminal 
 * Whac-A-Mole
 * Dungeon Master
 * Flappy Bird
-* 
+* Pacman (Does not require long keypresses)
+* Nibbles (Does not require long keypresses)

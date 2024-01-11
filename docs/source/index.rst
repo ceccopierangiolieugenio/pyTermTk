@@ -74,6 +74,7 @@ Intro
 
    info/installing
    info/debug
+   info/resources/index
 
 
 .. toctree::
