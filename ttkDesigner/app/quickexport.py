@@ -34,7 +34,7 @@ def QuickExport(data):
         te.setText('from TermTk import TTkUtil, TTkUiLoader, TTk\n')
         te.append(f'# Data generated using ttkDesigner')
         te.append('widget = TTkUiLoader.loadDict(')
-        te.append(str(data)+ '")')
+        te.append(str(data)+ ')')
         te.append('\nroot=TTk()\nroot.layout().addWidget(widget)\nroot.mainloop()\n')
 
     ttk.pyTTkSlot()
