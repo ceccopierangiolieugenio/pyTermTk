@@ -291,7 +291,7 @@ class TTkLineEdit(TTkWidget):
 
             text = pre + evt.key + post
             if ( self._inputType & TTkK.Input_Number and
-                 not self._isFloat(text) ):
+                 ( evt.key in (' ') or not self._isFloat(text) )):
                 return True
             self.setText(text, self._cursorPos+1)
 
