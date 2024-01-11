@@ -29,16 +29,37 @@ from TermTk.TTkWidgets.lineedit import TTkLineEdit
 TTkLineEditProperties = {
     'properties' : {
         'Input Type' : {
-                'init': {'name':'inputType', 'type':'multiflags',
+                'init': {'name':'inputType', 'type':'singleflag',
                     'flags': {
-                        'Text'    : TTkK.Input_Text     ,
-                        'Number'  : TTkK.Input_Number   ,
-                        'Password': TTkK.Input_Password } },
-                'get': {'cb':TTkLineEdit.inputType,      'type':'multiflags',
+                        'Text'    : TTkK.Input_Text   ,
+                        'Number'  : TTkK.Input_Number } },
+                'get': {'cb':TTkLineEdit.inputType,      'type':'singleflag',
                     'flags': {
-                        'Text'    : TTkK.Input_Text     ,
-                        'Number'  : TTkK.Input_Number   ,
-                        'Password': TTkK.Input_Password } } },
+                        'Text'    : TTkK.Input_Text   ,
+                        'Number'  : TTkK.Input_Number } },
+                'set': {'cb':TTkLineEdit.setInputType,   'type':'singleflag',
+                    'flags': {
+                        'Text'    : TTkK.Input_Text   ,
+                        'Number'  : TTkK.Input_Number } } },
+        'Echo Mode' : {
+                'init': {'name':'echoMode', 'type':'singleflag',
+                    'flags': {
+                        'Normal'      : TTkLineEdit.EchoMode.Normal ,
+                        'No Echo'     : TTkLineEdit.EchoMode.NoEcho ,
+                        'Password'    : TTkLineEdit.EchoMode.Password ,
+                        'Password, Echo on Edit' : TTkLineEdit.EchoMode.PasswordEchoOnEdit } },
+                'get': {'cb':TTkLineEdit.echoMode,      'type':'singleflag',
+                    'flags': {
+                        'Normal'      : TTkLineEdit.EchoMode.Normal ,
+                        'No Echo'     : TTkLineEdit.EchoMode.NoEcho ,
+                        'Password'    : TTkLineEdit.EchoMode.Password ,
+                        'Password, Echo on Edit' : TTkLineEdit.EchoMode.PasswordEchoOnEdit } },
+                'set': {'cb':TTkLineEdit.setEchoMode,   'type':'singleflag',
+                    'flags': {
+                        'Normal'      : TTkLineEdit.EchoMode.Normal ,
+                        'No Echo'     : TTkLineEdit.EchoMode.NoEcho ,
+                        'Password'    : TTkLineEdit.EchoMode.Password ,
+                        'Password, Echo on Edit' : TTkLineEdit.EchoMode.PasswordEchoOnEdit } } },
         'Text' : {
                 'init': {'name':'text', 'type':'singleLineTTkString',  } ,
                 'get':  {'cb':TTkLineEdit.text,     'type':'singleLineTTkString' } ,

@@ -25,6 +25,7 @@ __all__ = ['TTkLineEdit']
 import re
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
@@ -41,6 +42,12 @@ from TermTk.TTkWidgets.widget import TTkWidget
 class TTkLineEdit(TTkWidget):
     '''TTkLineEdit'''
 
+    class EchoMode(int):
+        Normal             = 0x00 # Display characters as they are entered. This is the default.
+        NoEcho             = 0x01 # Do not display anything. This may be appropriate for passwords where even the length of the password should be kept secret.
+        Password           = 0x02 # Display asterisks instead of the characters actually entered.
+        PasswordEchoOnEdit = 0x03 # Display characters as they are entered while editing otherwise display asterisks.
+
     classStyle = {
                 'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
                                 'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008844")},
@@ -50,10 +57,10 @@ class TTkLineEdit(TTkWidget):
             }
 
     __slots__ = (
-        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_selectionFrom', '_selectionTo',
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_echoMode', '_selectionFrom', '_selectionTo',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, text:str|TTkString='', inputType:int=TTkK.Input_Text, echoMode:EchoMode=EchoMode.Normal, **kwargs):
         # Signals
         self.returnPressed = pyTTkSignal()
         self.textChanged =  pyTTkSignal(str)
@@ -63,12 +70,11 @@ class TTkLineEdit(TTkWidget):
         self._selectionFrom = 0
         self._selectionTo   = 0
         self._replace=False
-        self._text = TTkString(kwargs.get('text' , '' ))
-        self._inputType = kwargs.get('inputType' , TTkK.Input_Text )
-        super().__init__(*args, **kwargs)
-        if ( self._inputType & TTkK.Input_Number and
-             not self._isFloat(self._text)):
-            self._text = TTkString('0')
+        self._text = TTkString(text)
+        self._inputType = inputType
+        self._echoMode = echoMode
+        super().__init__(**kwargs)
+        self.setInputType(inputType)
         self.setMaximumHeight(1)
         self.setMinimumSize(1,1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
@@ -90,6 +96,30 @@ class TTkLineEdit(TTkWidget):
     def inputType(self):
         '''inputType'''
         return self._inputType
+
+    def setInputType(self, inputType):
+        '''inputType'''
+        if bool(inputType & TTkK.Input_Text) and bool(inputType & TTkK.Input_Number):
+            return
+        # Kept here for retrocompatibility
+        if inputType & TTkK.Input_Password:
+            TTkLog.warn("TTkK.Input_Password is deprecated, use the EchoMode instead")
+            self._echoMode = TTkLineEdit.EchoMode.Password
+            inputType &= ~TTkK.Input_Password
+        if inputType & ~(TTkK.Input_Text|TTkK.Input_Number):
+            return
+        self._inputType = inputType & (TTkK.Input_Text|TTkK.Input_Number) if inputType else TTkK.Input_Text
+        if ( self._inputType == TTkK.Input_Number and
+             not self._isFloat(self._text)):
+            self._text = TTkString('0')
+        self.update()
+
+    def echoMode(self) -> EchoMode:
+        return self._echoMode
+
+    def setEchoMode(self, echoMode:EchoMode):
+        self._echoMode = echoMode
+        self.update()
 
     def resizeEvent(self, w: int, h: int):
         self._pushCursor()
@@ -115,23 +145,6 @@ class TTkLineEdit(TTkWidget):
             self.setWidgetCursor(pos=(cursorPos-self._offset, 0), type=TTkK.Cursor_Blinking_Bar)
 
         self.update()
-
-    def paintEvent(self, canvas):
-        style = self.currentStyle()
-
-        color         = style['color']
-        selectColor = style['selectedColor']
-
-        w = self.width()
-        text = TTkString('', color)
-        if self._inputType & TTkK.Input_Password:
-            text += ("*"*(len(self._text)))
-        else:
-            text += self._text
-        if self._selectionFrom < self._selectionTo:
-            text = text.setColor(color=selectColor, posFrom=self._selectionFrom, posTo=self._selectionTo)
-        text = text.substring(self._offset)
-        canvas.drawText(pos=(0,0), text=text, color=color, width=w)
 
     def mousePressEvent(self, evt):
         txtPos = self._text.tabCharPos(evt.x+self._offset)
@@ -296,3 +309,23 @@ class TTkLineEdit(TTkWidget):
         self._selectionTo   = 0
         TTkHelper.hideCursor()
         self.update()
+
+    def paintEvent(self, canvas):
+        style = self.currentStyle()
+
+        color         = style['color']
+        selectColor = style['selectedColor']
+
+        w = self.width()
+        text = TTkString('', color)
+        if self._echoMode != TTkLineEdit.EchoMode.NoEcho:
+            if ( self._echoMode == TTkLineEdit.EchoMode.Password or
+                 ( self._echoMode == TTkLineEdit.EchoMode.PasswordEchoOnEdit and
+                   not self.hasFocus() )):
+                text += ("*"*(len(self._text)))
+            else:
+                text += self._text
+        if self._selectionFrom < self._selectionTo:
+            text = text.setColor(color=selectColor, posFrom=self._selectionFrom, posTo=self._selectionTo)
+        text = text.substring(self._offset)
+        canvas.drawText(pos=(0,0), text=text, color=color, width=w)
