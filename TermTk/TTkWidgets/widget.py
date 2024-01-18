@@ -98,7 +98,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_maxw', '_maxh', '_minw', '_minh',
         '_focus','_focus_policy',
         '_canvas', '_widgetItem',
-        '_visible', '_transparent',
+        '_visible',
         '_pendingMouseRelease',
         '_enabled',
         '_style', '_currentStyle',

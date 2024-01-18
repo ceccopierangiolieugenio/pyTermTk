@@ -77,7 +77,7 @@ class TTk(TTkContainer):
             #canvas.drawChar((0,0),'✜')
 
     __slots__ = (
-        '_input', '_termMouse', '_termDirectMouse',
+        '_termMouse', '_termDirectMouse',
         '_title',
         '_showMouseCursor',
         '_sigmask', '_timer',
