@@ -31,6 +31,6 @@ ttk.TTkLog.use_default_file_logging()
 
 root = ttk.TTk()
 
-win = ttk.TTkAbout(parent=root, pos=(1,1))
+ttk.TTkAbout(parent=root, pos=(1,1))
 
 root.mainloop()
