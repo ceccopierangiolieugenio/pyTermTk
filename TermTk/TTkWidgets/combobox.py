@@ -71,7 +71,7 @@ class TTkComboBox(TTkContainer):
                                 'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD},
             }
 
-    __slots__ = ('_list', '_id', '_lineEdit', '_listw', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
+    __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
     def __init__(self, *args, **kwargs):

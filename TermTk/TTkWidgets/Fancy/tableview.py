@@ -366,21 +366,24 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 colors = [c.modParam(val=-val) for c in self._columnColors]
                 canvas.drawTableLine(pos=(0,y), items=item, sizes=sizes, colors=colors, alignments=self._alignments)
 
-class TTkFancyTableView(TTkAbstractScrollViewGridLayout):
+class TTkFancyTableView(TTkAbstractScrollView):
     __slots__ = (
-        '_header', '_tableView', '_showHeader', 'activated',
+        '_header', '_tableView', '_showHeader', 'activated', '_excludeEvent',
         # Forwarded Methods
         'setHeader', 'setColumnColors', 'appendItem', 'itemAt', 'dataAt', 'indexOf', 'insertItem',
         'removeItem', 'removeItemAt', 'removeItemsFrom', 'doubleClicked')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        self._excludeEvent = False
+        super().__init__(**(kwargs|{'layout':TTkGridLayout()}))
         if 'parent' in kwargs: kwargs.pop('parent')
         self._showHeader = kwargs.get('showHeader', True)
-        self._tableView = _TTkFancyTableView(*args, **kwargs)
-        self._header = _TTkFancyTableViewHeader(*args, **kwargs)
-        self.addWidget(self._header,0,0)
-        self.addWidget(self._tableView,1,0)
+        self._tableView = _TTkFancyTableView(**kwargs)
+        self._header = _TTkFancyTableViewHeader(**kwargs)
+        self.layout().addWidget(self._header,0,0)
+        self.layout().addWidget(self._tableView,1,0)
+        self._tableView.viewChanged.connect(self._viewChanged)
+        self._tableView.viewMovedTo.connect(self._viewMovedTo)
         # Forward the tableSignals
         self.activated       = self._tableView.activated
         self.doubleClicked   = self._tableView.doubleClicked
@@ -399,9 +402,38 @@ class TTkFancyTableView(TTkAbstractScrollViewGridLayout):
         self.removeItemAt    = self._tableView.removeItemAt
         self.removeItemsFrom = self._tableView.removeItemsFrom
 
+    @pyTTkSlot()
+    def _viewChanged(self):
+        if self._excludeEvent: return
+        self.viewChanged.emit()
+
+    @pyTTkSlot(int,int)
+    def _viewMovedTo(self, x, y):
+        if self._excludeEvent: return
+        self.viewMoveTo(x, y)
+
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
-        self._tableView.viewMoveTo(x, y)
+        fw, fh = self.viewFullAreaSize()
+        dw, dh = self.viewDisplayedSize()
+        rangex = fw - dw
+        rangey = fh - dh
+        # TTkLog.debug(f"x:{x},y:{y}, full:{fw,fh}, display:{dw,dh}, range:{rangex,rangey}")
+        x = max(0,min(rangex,x))
+        y = max(0,min(rangey,y))
+        # TTkLog.debug(f"x:{x},y:{y}, wo:{self._viewOffsetX,self._viewOffsetY}")
+        if self._viewOffsetX == x and \
+           self._viewOffsetY == y: # Nothong to do
+            return
+        self._excludeEvent = True
+        for widget in self.layout().iterWidgets(recurse=False):
+            widget.viewMoveTo(x,y)
+        self._excludeEvent = False
+        self._viewOffsetX = x
+        self._viewOffsetY = y
+        self.viewMovedTo.emit(x,y)
+        self.viewChanged.emit()
+        self.update()
 
     def getViewOffsets(self):
         return self._tableView.getViewOffsets()

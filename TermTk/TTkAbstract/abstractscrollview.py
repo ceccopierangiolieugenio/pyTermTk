@@ -172,10 +172,12 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         TTkGridLayout.setGeometry(self, x, y, w, h)
         self.viewChanged.emit()
 
+    @pyTTkSlot()
     def _viewChanged(self):
         if self._excludeEvent: return
         self.viewChanged.emit()
 
+    @pyTTkSlot(int,int)
     def _viewMovedTo(self, x, y):
         if self._excludeEvent: return
         self.viewMoveTo(x, y)

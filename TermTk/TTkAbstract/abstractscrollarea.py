@@ -159,5 +159,5 @@ class TTkAbstractScrollArea(TTkContainer):
 
     def update(self, repaint=True, updateLayout=False, updateParent=False):
         if self._viewport:
-            self._viewport.update(repaint, updateLayout, updateParent)
+            self._viewport.update(repaint, updateLayout, updateParent=False)
         return super().update(repaint, updateLayout, updateParent)

@@ -75,7 +75,7 @@ class TTkRadioButton(TTkWidget):
 
     _radioLists = {}
     __slots__ = (
-        '_checked', '_text', '_radiogroup'
+        '_checked', '_text', '_radiogroup',
         # Signals
         'clicked'
         )

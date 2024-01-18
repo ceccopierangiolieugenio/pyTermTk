@@ -32,7 +32,7 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkLogViewer(TTkAbstractScrollView):
-    __slots__ = ('_color', '_text', '_messages', '_cwd', '_follow')
+    __slots__ = ('_messages', '_cwd', '_follow')
     def __init__(self, *args, **kwargs):
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self._messages = [TTkString()]

@@ -214,9 +214,9 @@ class TTkLayout(TTkLayoutItem):
                 if onlyVisible and not child.widget().isVisible(): continue
                 yield child.widget()
                 if recurse and hasattr(cw:=child.widget(),'rootLayout'):
-                    yield from cw.rootLayout().iterWidgets()
+                    yield from cw.rootLayout().iterWidgets(onlyVisible, recurse)
             if child._layoutItemType == TTkK.LayoutItem and recurse:
-                yield from child.iterWidgets()
+                yield from child.iterWidgets(onlyVisible, recurse)
 
     def _zSortItems(self):
         self._zSortedItems = sorted(self._items, key=lambda item: item._z)
@@ -313,9 +313,9 @@ class TTkLayout(TTkLayoutItem):
         :type widgets: list of :class:`~TermTk.TTkWidgets`
         '''
         for item in reversed(self._items):
-            if item._layoutItemType == TTkK.WidgetItem and \
-               item.widget() in widgets:
-                self.removeItem(item)
+            if item._layoutItemType == TTkK.WidgetItem:
+               if item.widget() in widgets:
+                    self.removeItem(item)
             elif item._layoutItemType == TTkK.LayoutItem:
                 item.removeWidgets(widgets)
 

@@ -252,7 +252,7 @@ class TTkColorDialogPicker(TTkWindow):
     __slots__ = (
         '_color',
         '_colorCanvas', '_hueCanvas',
-        '_redLE', '_greenLE', '_blueRE', '_htmlLE',
+        # '_redLE', '_greenLE', '_blueRE', '_htmlLE',
         # Signals
         'colorSelected'
         )

@@ -51,7 +51,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             }
 
     __slots__ = ( '_rootItem', '_header', '_columnsPos', '_cache',
-                  '_selectedId', '_selected', '_separatorSelected', '_mouseDelta',
+                  '_selectedId', '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder',
                   # Signals
                   'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
@@ -209,7 +209,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         x += ox
 
         self._separatorSelected = None
-        self._mouseDelta = (evt.x, evt.y)
 
         # Handle Header Events
         if y == 0:

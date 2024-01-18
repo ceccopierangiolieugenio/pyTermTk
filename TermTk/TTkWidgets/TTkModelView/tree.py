@@ -32,7 +32,8 @@ class TTkTree(TTkAbstractScrollArea):
         # Forwarded Signals
         'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
         # Forwarded Methods
-        'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem',
+        'setHeaderLabels',
+        # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
         'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
     def __init__(self, *args, **kwargs):

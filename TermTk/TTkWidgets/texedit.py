@@ -118,12 +118,12 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     __slots__ = (
             '_textDocument', '_hsize',
-            '_textCursor', '_textColor', '_cursorParams',
+            '_textCursor', '_cursorParams',
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
             '_replace',
             '_readOnly', '_multiCursor',
             '_clipboard',
-            '_preview', '_previewWidth',
+            # '_preview', '_previewWidth',
             '_multiLine',
             # # Forwarded Methods
             # 'wrapWidth',    'setWrapWidth',
@@ -799,7 +799,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'toAnsi', 'toRawText', 'toPlainText', # 'toHtml', 'toMarkdown',
             # Signals
             'focusChanged', 'currentColorChanged',
-            'undoAvilable', 'redoAvailable',
+            'undoAvailable', 'redoAvailable',
             'textChanged'
         )
     def __init__(self, textEditView=None, lineNumber=False, lineNumberStarting=0, **kwargs):
