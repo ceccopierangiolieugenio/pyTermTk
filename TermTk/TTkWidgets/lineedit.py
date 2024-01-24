@@ -31,6 +31,7 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkWidgets.widget import TTkWidget
 
 '''
@@ -57,7 +58,9 @@ class TTkLineEdit(TTkWidget):
             }
 
     __slots__ = (
-        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_echoMode', '_selectionFrom', '_selectionTo',
+        '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_echoMode',
+        '_selectionFrom', '_selectionTo',
+        '_clipboard',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, text='', inputType:int=TTkK.Input_Text, echoMode:EchoMode=EchoMode.Normal, **kwargs):
@@ -73,6 +76,7 @@ class TTkLineEdit(TTkWidget):
         self._text = TTkString(text)
         self._inputType = inputType
         self._echoMode = echoMode
+        self._clipboard = TTkClipboard()
         super().__init__(**kwargs)
         self.setInputType(inputType)
         self.setMaximumHeight(1)
@@ -161,6 +165,7 @@ class TTkLineEdit(TTkWidget):
         if self._selectionFrom < self._selectionTo:
             TTkHelper.hideCursor()
         self.update()
+        self.copy()
         return True
 
     def mouseDoubleClickEvent(self, evt) -> bool:
@@ -185,6 +190,7 @@ class TTkLineEdit(TTkWidget):
             TTkHelper.hideCursor()
 
         self.update()
+        self.copy()
         return True
 
     def mouseTapEvent(self, evt) -> bool:
@@ -193,6 +199,7 @@ class TTkLineEdit(TTkWidget):
         if self._selectionFrom < self._selectionTo:
             TTkHelper.hideCursor()
         self.update()
+        self.copy()
         return True
 
     @staticmethod
@@ -203,6 +210,23 @@ class TTkLineEdit(TTkWidget):
         except:
             return False
 
+    @pyTTkSlot()
+    def copy(self):
+        if self._selectionFrom >= self._selectionTo: return
+        txt = self._text.substring(fr=self._selectionFrom,to=self._selectionTo)
+        self._clipboard.setText(txt)
+
+    @pyTTkSlot()
+    def cut(self):
+        self.copy()
+        self._text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
+        self._cursorPos = self._selectionFrom
+        self.update()
+
+    @pyTTkSlot()
+    def paste(self):
+        txt = self._clipboard.text()
+        self.pasteEvent(txt)
 
     def pasteEvent(self, txt:str):
         txt = TTkString().join(txt.split('\n'))
@@ -237,6 +261,18 @@ class TTkLineEdit(TTkWidget):
             if evt.key in (
                 TTkK.Key_Tab, TTkK.Key_Up, TTkK.Key_Down):
                 return False
+
+            # CTRL Pressed
+            if evt.mod==TTkK.ControlModifier:
+                if   evt.key == TTkK.Key_C:
+                    self.copy()
+                elif evt.key == TTkK.Key_V:
+                    self.paste()
+                elif evt.key == TTkK.Key_X:
+                    self.cut()
+                else:
+                    return False
+                return True
 
             if evt.key == TTkK.Key_Left:
                 if self._selectionFrom < self._selectionTo:
