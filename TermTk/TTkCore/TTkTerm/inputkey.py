@@ -65,9 +65,20 @@ class TTkKeyEvent:
         self.key = key
         self.mod = mod
         self.code = code
+
     def __str__(self):
         code = self.code.replace('\033','<ESC>')
         return f"KeyEvent: {self.key} {key2str(self.key)} {mod2str(self.mod)} {code}"
+
+    def __eq__(self, other):
+        if other is None: return False
+        return (
+            self.type == other.type and
+            self.key  == other.key  and
+            self.mod  == other.mod  )
+
+    def __hash__(self) -> int:
+        return hash((self.type,self.key,self.mod))
 
     @staticmethod
     def parse(input_key):  # from: Space           except "DEL"
@@ -79,8 +90,7 @@ class TTkKeyEvent:
                 return TTkKeyEvent(TTkK.SpecialKey, key, input_key, mod)
         return None
 
-def _translate_key(key):
-    return {
+_translate_key_list = {
         "\177"      : ( TTkK.Key_Backspace , TTkK.NoModifier ) ,
         "\t"        : ( TTkK.Key_Tab       , TTkK.NoModifier ) ,
         "\033[Z"    : ( TTkK.Key_Tab       , TTkK.ShiftModifier ) ,
@@ -243,6 +253,87 @@ def _translate_key(key):
         '\x19':       ( TTkK.Key_Y         , TTkK.ControlModifier ),
         '\x1a':       ( TTkK.Key_Z         , TTkK.ControlModifier ),
 
+        '\033\x61':  ( TTkK.Key_A         , TTkK.AltModifier ),
+        '\033\x62':  ( TTkK.Key_B         , TTkK.AltModifier ),
+        '\033\x63':  ( TTkK.Key_C         , TTkK.AltModifier ),
+        '\033\x64':  ( TTkK.Key_D         , TTkK.AltModifier ),
+        '\033\x65':  ( TTkK.Key_E         , TTkK.AltModifier ),
+        '\033\x66':  ( TTkK.Key_F         , TTkK.AltModifier ),
+        '\033\x67':  ( TTkK.Key_G         , TTkK.AltModifier ),
+        '\033\x68':  ( TTkK.Key_H         , TTkK.AltModifier ),
+        '\033\x69':  ( TTkK.Key_I         , TTkK.AltModifier ),
+        '\033\x6a':  ( TTkK.Key_J         , TTkK.AltModifier ),
+        '\033\x6b':  ( TTkK.Key_K         , TTkK.AltModifier ),
+        '\033\x6c':  ( TTkK.Key_L         , TTkK.AltModifier ),
+        '\033\x6d':  ( TTkK.Key_M         , TTkK.AltModifier ),
+        '\033\x6e':  ( TTkK.Key_N         , TTkK.AltModifier ),
+        '\033\x6f':  ( TTkK.Key_O         , TTkK.AltModifier ),
+        '\033\x70':  ( TTkK.Key_P         , TTkK.AltModifier ),
+        '\033\x71':  ( TTkK.Key_Q         , TTkK.AltModifier ),
+        '\033\x72':  ( TTkK.Key_R         , TTkK.AltModifier ),
+        '\033\x73':  ( TTkK.Key_S         , TTkK.AltModifier ),
+        '\033\x74':  ( TTkK.Key_T         , TTkK.AltModifier ),
+        '\033\x75':  ( TTkK.Key_U         , TTkK.AltModifier ),
+        '\033\x76':  ( TTkK.Key_V         , TTkK.AltModifier ),
+        '\033\x77':  ( TTkK.Key_W         , TTkK.AltModifier ),
+        '\033\x78':  ( TTkK.Key_X         , TTkK.AltModifier ),
+        '\033\x79':  ( TTkK.Key_Y         , TTkK.AltModifier ),
+        '\033\x7a':  ( TTkK.Key_Z         , TTkK.AltModifier ),
+
+        '\033\x41':  ( TTkK.Key_A         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x42':  ( TTkK.Key_B         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x43':  ( TTkK.Key_C         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x44':  ( TTkK.Key_D         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x45':  ( TTkK.Key_E         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x46':  ( TTkK.Key_F         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x47':  ( TTkK.Key_G         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x48':  ( TTkK.Key_H         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x49':  ( TTkK.Key_I         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x4a':  ( TTkK.Key_J         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x4b':  ( TTkK.Key_K         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x4c':  ( TTkK.Key_L         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x4d':  ( TTkK.Key_M         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x4e':  ( TTkK.Key_N         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x4f':  ( TTkK.Key_O         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x50':  ( TTkK.Key_P         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x51':  ( TTkK.Key_Q         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x52':  ( TTkK.Key_R         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x53':  ( TTkK.Key_S         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x54':  ( TTkK.Key_T         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x55':  ( TTkK.Key_U         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x56':  ( TTkK.Key_V         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x57':  ( TTkK.Key_W         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x58':  ( TTkK.Key_X         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x59':  ( TTkK.Key_Y         , TTkK.AltModifier | TTkK.ShiftModifier ),
+        '\033\x5a':  ( TTkK.Key_Z         , TTkK.AltModifier | TTkK.ShiftModifier ),
+
+        '\033\x01':  ( TTkK.Key_A         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x02':  ( TTkK.Key_B         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x03':  ( TTkK.Key_C         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x04':  ( TTkK.Key_D         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x05':  ( TTkK.Key_E         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x06':  ( TTkK.Key_F         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x07':  ( TTkK.Key_G         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x08':  ( TTkK.Key_H         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x09':  ( TTkK.Key_I         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x0a':  ( TTkK.Key_J         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x0b':  ( TTkK.Key_K         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x0c':  ( TTkK.Key_L         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x0d':  ( TTkK.Key_M         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x0e':  ( TTkK.Key_N         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x0f':  ( TTkK.Key_O         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x10':  ( TTkK.Key_P         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x11':  ( TTkK.Key_Q         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x12':  ( TTkK.Key_R         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x13':  ( TTkK.Key_S         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x14':  ( TTkK.Key_T         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x15':  ( TTkK.Key_U         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x16':  ( TTkK.Key_V         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x17':  ( TTkK.Key_W         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x18':  ( TTkK.Key_X         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x19':  ( TTkK.Key_Y         , TTkK.ControlModifier | TTkK.AltModifier ),
+        '\033\x1a':  ( TTkK.Key_Z         , TTkK.ControlModifier | TTkK.AltModifier ),
+
         # # "\033": return( ey_Tab ) ,
         # if True: return None
         # "\033": return( ey_Backtab ) ,
@@ -295,7 +386,10 @@ def _translate_key(key):
         # "\033": return( ey_Space ) ,
         # "\033": return( ey_Any ) ,
         # return TTkK.NONE
-    }.get(key,(None, None))
+    }
+
+def _translate_key(key):
+    return _translate_key_list.get(key,(None, None))
 
 def mod2str(k):
     if k == TTkK.NoModifier         : return ""
