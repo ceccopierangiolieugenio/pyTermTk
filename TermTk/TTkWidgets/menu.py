@@ -74,12 +74,6 @@ class TTkMenuButton(TTkWidget):
         self._checkable = checkable
         self._shortcuts = []
         self._highlighted = False
-        while self._text.find('&') != -1:
-            index = self.text().find('&')
-            shortcut = self.text().charAt(index+1)
-            TTkHelper.addShortcut(self, shortcut)
-            self._shortcuts.append(index)
-            self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
         super().__init__(**kwargs)
         width = self._text.termWidth() + (3 if self._checkable else 1)
         self.setMinimumWidth(width)
@@ -161,6 +155,7 @@ class TTkMenuButton(TTkWidget):
         self.textChanged.emit(self._text)
         self.update()
 
+    @pyTTkSlot()
     def shortcutEvent(self):
         self._triggerButton()
 
@@ -213,7 +208,10 @@ class TTkMenuButton(TTkWidget):
 
     def addMenu(self, text:TTkString, data:object=None, checkable:bool=False, checked:bool=False):
         '''addMenu'''
+        text = text if issubclass(type(text),TTkString) else TTkString(text)
+        text, shortcuts = text.extractShortcuts()
         button = TTkMenuButton(text=text, data=data, checkable=checkable, checked=checked)
+        button._shortcuts = shortcuts
         self._submenu.append(button)
         return button
 
@@ -235,8 +233,6 @@ class TTkMenuButton(TTkWidget):
         if self._submenu:
             canvas._set(0, w-1, '▶', style['color'])
         off = 0
-        for i in self._shortcuts:
-            canvas._set(0,i+off, self._text.charAt(i), TTkColor.UNDERLINE)
 
 class _TTkMenuAreaWidget(TTkAbstractScrollView):
     __slots__ = ('_submenu','_minWith','_caller')
@@ -269,9 +265,9 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
 
     def keyEvent(self, evt) -> bool:
         if not self._submenu: return False
+        btns = [b for b in self._submenu if type(b)==TTkMenuButton]
         if evt.type == TTkK.SpecialKey:
             # Retrieve the current highlighted button
-            btns = [b for b in self._submenu if type(b)==TTkMenuButton]
             curBtn = _b[0] if (_b := [b for b in btns if b._highlighted]) else None
             if evt.key == TTkK.Key_Up:
                 self._cleanHighlight()
@@ -300,6 +296,13 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if curBtn:
                     curBtn._triggerSubmenu()
                 return True
+        else:
+            # Handle shortcuts
+            ch = evt.key
+            for btn in btns:
+                if ch in btn._shortcuts:
+                    btn.shortcutEvent()
+                    return True
         return super().keyEvent(evt)
 
     def resizeEvent(self, w, h):

@@ -28,6 +28,7 @@ from TermTk.TTkCore.color import TTkColor
 # from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.menu import TTkMenuButton
@@ -42,13 +43,6 @@ class TTkMenuBarButton(TTkMenuButton):
     def __init__(self, *, text=..., data=None, checkable=False, checked=False, **kwargs):
         self._shortcut = []
         super().__init__(text=text, data=data, checkable=checkable, checked=checked, **kwargs)
-        while self.text().find('&') != -1:
-            index = self.text().find('&')
-            shortcut = self.text().charAt(index+1)
-            TTkHelper.addShortcut(self, shortcut)
-            self._shortcut.append(index)
-            self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
-        txtlen = self.text().termWidth()
         self.setCheckable(self.isCheckable())
 
     def setCheckable(self, ch):
@@ -101,7 +95,12 @@ class TTkMenuBarLayout(TTkHBoxLayout):
 
     def addMenu(self,text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
+        text = text if issubclass(type(text),TTkString) else TTkString(text)
+        text, shortcuts = text.extractShortcuts()
         button = TTkMenuBarButton(text=text, data=data, checkable=checkable, checked=checked)
+        for ch in shortcuts:
+            shortcut = TTkShortcut(key=TTkK.ALT | ord(ch.upper()))
+            shortcut.activated.connect(button.shortcutEvent)
         self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)
         self.update()
