@@ -53,26 +53,6 @@ class TTkHelper:
             widget.move(x,y)
     _overlay = []
 
-    class _Shortcut():
-        __slots__ = ('_letter','_widget')
-        def __init__(self, letter, widget):
-            self._letter = letter.lower()
-            self._widget = widget
-    _shortcut = []
-
-    @staticmethod
-    def addShortcut(widget, letter):
-        TTkHelper._shortcut.append(TTkHelper._Shortcut(letter, widget))
-
-    @staticmethod
-    def execShortcut(letter, widget=None):
-        if not isinstance(letter, str): return
-        for sc in TTkHelper._shortcut:
-            if sc._letter == letter.lower() and sc._widget.isVisibleAndParent():
-                if not widget or TTkHelper.isParent(widget, sc._widget):
-                    sc._widget.shortcutEvent()
-                    return
-
     @staticmethod
     def updateAll():
         if TTkHelper._rootWidget:
@@ -292,8 +272,8 @@ class TTkHelper:
         # Build a list of buffers to be repainted
         updateWidgetsBk = TTkHelper._updateWidget.copy()
         updateBuffers = TTkHelper._updateBuffer.copy()
-        TTkHelper._updateWidget = set()
-        TTkHelper._updateBuffer = set()
+        TTkHelper._updateWidget.clear()
+        TTkHelper._updateBuffer.clear()
         updateWidgets = set()
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")

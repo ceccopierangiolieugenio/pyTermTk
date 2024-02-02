@@ -41,6 +41,7 @@ from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
@@ -257,10 +258,9 @@ class TTk(TTkContainer):
         focusWidget = TTkHelper.getFocus()
         # TTkLog.debug(f"{focusWidget}")
         if focusWidget is not None:
-            TTkHelper.execShortcut(kevt.key,focusWidget)
             keyHandled = focusWidget.keyEvent(kevt)
-        else:
-            TTkHelper.execShortcut(kevt.key)
+        if not keyHandled:
+            TTkShortcut.processKey(kevt, focusWidget)
         # Handle Next Focus Key Binding
         if not keyHandled and \
            ((kevt.key == TTkK.Key_Tab and kevt.mod == TTkK.NoModifier) or
