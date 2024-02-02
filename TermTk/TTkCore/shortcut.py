@@ -22,6 +22,7 @@
 
 __all__ = ['TTkShortcut']
 
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -41,6 +42,12 @@ class TTkKeySequence():
         key &= ~(TTkK.CTRL|TTkK.ALT|TTkK.SHIFT|TTkK.META)
         t = TTkK.SpecialKey if mod else TTkK.Character
         self._key = TTkKeyEvent(type=t, key=key, mod=mod, code="")
+        if mod:
+            self._key = TTkKeyEvent(mod=mod, code="", type=TTkK.SpecialKey, key=key )
+        else:
+            self._key = TTkKeyEvent(mod=mod, code="", type=TTkK.Character,  key=chr(key) )
+
+
 
     def __hash__(self) -> int:
         return self._key.__hash__()
@@ -70,8 +77,15 @@ class TTkShortcut():
 
     @staticmethod
     def processKey(key, focusWidget):
+        # TTkLog.debug(f"{str(key)=}")
+        # for k in TTkShortcut._shortcuts:
+        #     TTkLog.debug(f"{str(k)=} - {key==k=}")
         if key in TTkShortcut._shortcuts:
             for sc in TTkShortcut._shortcuts[key]:
+                # if sc._parent:
+                #     TTkLog.debug(f"{focusWidget=} {sc._parent=} {sc._parent._parent=}")
+                # else:
+                #     TTkLog.debug(f"{focusWidget=} {sc._parent=}")
                 if ( (   sc._shortcutContext == TTkK.WidgetShortcut
                        and focusWidget == sc._parent )
                   or ( sc._shortcutContext == TTkK.WidgetWithChildrenShortcut

@@ -373,6 +373,23 @@ class TTkString():
 
         return ret
 
+    def extractShortcuts(self):
+        def _chGenerator():
+            for ch,color in zip(self._text,self._colors):
+                yield ch,color
+        _newText   = ""
+        _newColors = []
+        _ret = []
+        _gen = _chGenerator()
+        for ch,color in _gen:
+            if ch == '&':
+                ch,color = next(_gen)
+                _ret.append(ch)
+                color += TTkColor.UNDERLINE
+            _newText += ch
+            _newColors.append(color)
+        return TTkString._importString1(_newText,_newColors), _ret
+
     def replace(self, *args, **kwargs):
         ''' **replace** (*old*, *new*, *count*)
 
