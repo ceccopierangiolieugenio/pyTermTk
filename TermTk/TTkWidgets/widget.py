@@ -467,10 +467,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     @pyTTkSlot()
     def close(self):
         '''close'''
-        self._dispose()
+        self.dispose()
         self.closed.emit(self)
 
-    def _dispose(self):
+    def dispose(self):
+        '''dispose'''
         refSig = type(pyTTkSignal())
         for p in dir(self):
             if type(pr:=getattr(self,p)) != types.MethodType:
@@ -490,10 +491,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         # self._widgetItem._widget = None
         # self._widgetItem = None
         # self._canvas = None
-
-    def dispose(self):
-        '''dispose'''
-        self._dispose()
 
     @pyTTkSlot(bool)
     def setVisible(self, visible: bool):
