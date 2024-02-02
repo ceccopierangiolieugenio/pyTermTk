@@ -62,7 +62,7 @@ class TTkShortcut():
         # Signals
         'activated')
     def __init__(self,
-                 key:int|TTkKeySequence, parent=None,
+                 key:int, parent=None,
                  shortcutContext: TTkK.ShortcutContext = TTkK.ShortcutContext.WindowShortcut):
         if type(key) == int:
             key = TTkKeySequence(key)._key
