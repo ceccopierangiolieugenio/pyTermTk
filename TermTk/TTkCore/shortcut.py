@@ -25,12 +25,28 @@ __all__ = ['TTkShortcut']
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 
 class TTkStandardKey():
     pass
 
 class TTkKeySequence():
-    pass
+    __slots__ = ('_key')
+    def __init__(self, key:int):
+        self._key = key
+        mod = (
+            ( TTkK.ControlModifier if key & TTkK.CTRL  else 0 ) |
+            ( TTkK.AltModifier     if key & TTkK.ALT   else 0 ) |
+            ( TTkK.ShiftModifier   if key & TTkK.SHIFT else 0 ) )
+        key &= ~(TTkK.CTRL|TTkK.ALT|TTkK.SHIFT|TTkK.META)
+        t = TTkK.SpecialKey if mod else TTkK.Character
+        self._key = TTkKeyEvent(type=t, key=key, mod=mod, code="")
+
+    def __hash__(self) -> int:
+        return self._key.__hash__()
+
+    def __eq__(self, __value: object) -> bool:
+        pass
 
 class TTkShortcut():
     _shortcuts = {}
@@ -39,8 +55,10 @@ class TTkShortcut():
         # Signals
         'activated')
     def __init__(self,
-                 key, parent=None,
+                 key:int|TTkKeySequence, parent=None,
                  shortcutContext: TTkK.ShortcutContext = TTkK.ShortcutContext.WindowShortcut):
+        if type(key) == int:
+            key = TTkKeySequence(key)._key
         self._key = key
         self._parent = parent
         self._shortcutContext = shortcutContext

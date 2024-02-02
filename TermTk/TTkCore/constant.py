@@ -384,6 +384,15 @@ class TTkConstant:
         GroupSwitchModifier = 0x40000000
         '''X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.'''
 
+        SHIFT = ShiftModifier
+        '''The Shift keys provided on all standard keyboards.'''
+        META  = MetaModifier
+        '''The Meta keys.'''
+        CTRL  = ControlModifier
+        '''The Ctrl keys.'''
+        ALT   = AltModifier
+        '''The normal Alt keys, but not keys like AltGr.'''
+
     NoModifier          = KeyModifier.NoModifier
     ShiftModifier       = KeyModifier.ShiftModifier
     ControlModifier     = KeyModifier.ControlModifier
@@ -392,6 +401,28 @@ class TTkConstant:
     KeypadModifier      = KeyModifier.KeypadModifier
     GroupSwitchModifier = KeyModifier.GroupSwitchModifier
 
+    SHIFT = KeyModifier.SHIFT
+    META  = KeyModifier.META
+    CTRL  = KeyModifier.CTRL
+    ALT   = KeyModifier.ALT
+
+    class ShortcutContext(int):
+        '''For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,
+           the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
+           The possible contexts are these:'''
+        WidgetShortcut             = 0x00
+        '''The shortcut is active when its parent widget has focus.'''
+        WidgetWithChildrenShortcut = 0x03
+        '''The shortcut is active when its parent widget, or any of its children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.'''
+        WindowShortcut             = 0x01
+        '''The shortcut is active when its parent widget is a logical subwidget of the active top-level window.'''
+        ApplicationShortcut        = 0x02
+        '''The shortcut is active when one of the applications windows are active.'''
+
+    WidgetShortcut             = ShortcutContext.WidgetShortcut
+    WidgetWithChildrenShortcut = ShortcutContext.WidgetWithChildrenShortcut
+    WindowShortcut             = ShortcutContext.WindowShortcut
+    ApplicationShortcut        = ShortcutContext.ApplicationShortcut
 
     Key_Escape                  = 0x01000000
     Key_Tab                     = 0x01000001
