@@ -42,7 +42,7 @@ class TTkMenuBarButton(TTkMenuButton):
     __slots__=('_shortcut')
     def __init__(self, *, text=..., data=None, checkable=False, checked=False, **kwargs):
         self._shortcut = []
-        super().__init__(text=text, data=data, checkable=checkable, checked=checked, shortcutPrefix=TTkK.ALT, **kwargs)
+        super().__init__(text=text, data=data, checkable=checkable, checked=checked, **kwargs)
         self.setCheckable(self.isCheckable())
 
     def setCheckable(self, ch):
