@@ -80,9 +80,10 @@ class TTkMenuBarButton(TTkMenuButton):
 
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''
-    __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
+    __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons', '_shortcuts')
     def __init__(self, *args, **kwargs):
         self._buttons = []
+        self._shortcuts = []
         TTkHBoxLayout.__init__(self, *args, **kwargs)
         self._itemsLeft   = TTkHBoxLayout()
         self._itemsCenter = TTkHBoxLayout()
@@ -101,6 +102,7 @@ class TTkMenuBarLayout(TTkHBoxLayout):
         for ch in shortcuts:
             shortcut = TTkShortcut(key=TTkK.ALT | ord(ch.upper()))
             shortcut.activated.connect(button.shortcutEvent)
+            self._shortcuts.append(shortcut)
         self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)
         self.update()
@@ -121,3 +123,9 @@ class TTkMenuBarLayout(TTkHBoxLayout):
         self._itemsLeft.removeItems(self._itemsLeft.children())
         self._itemsCenter.removeItems(self._itemsCenter.children())
         self._itemsRight.removeItems(self._itemsRight.children())
+
+    def dispose(self):
+        for sc in self._shortcuts:
+            sc.dispose()
+        self._shortcuts = []
+
