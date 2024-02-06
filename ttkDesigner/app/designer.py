@@ -391,11 +391,14 @@ class TTkDesigner(TTkGridLayout):
         newWindow.getWidgetByName("BtnDict"   ).clicked.connect(_importDict)
         TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
 
+    def _updateFileName(self, fullPath):
+        self._currentPath =  os.path.dirname(os.path.abspath(fullPath))
+        self._fileName =  os.path.basename(os.path.abspath(fullPath))
+        self._fileNameLabel.setText(f"( {self._fileName} )")
+
     def _openFile(self, fileName):
         TTkLog.info(f"Open: {fileName}")
-        self._currentPath =  os.path.dirname(os.path.abspath(fileName))
-        self._fileName =  os.path.basename(os.path.abspath(fileName))
-        self._fileNameLabel.setText(f"( {self._fileName} )")
+        self._updateFileName(fileName)
 
         with open(fileName) as fp:
             dd = json.load(fp)
@@ -417,6 +420,7 @@ class TTkDesigner(TTkGridLayout):
 
     def _saveToFile(self, fileName):
         TTkLog.info(f"Saving to: {fileName}")
+        self._updateFileName(fileName)
 
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
