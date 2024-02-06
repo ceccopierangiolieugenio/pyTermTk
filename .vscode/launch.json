@@ -33,7 +33,7 @@
             "module": "ttkDesigner",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["experiments/MenuBar.03.tui.json"]
+            "args": ["ttkDesigner/tui/newWindow.tui.json"]
         },{
             "name": "Python: Demo",
             "type": "python",
