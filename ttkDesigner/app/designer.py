@@ -138,20 +138,23 @@ class TTkDesigner(TTkGridLayout):
         self.weModified.connect(self._takeSnapshot)
 
         fileMenu = topMenuFrame.newMenubarTop().addMenu("&File")
-        fileMenu.addMenu("New").menuButtonClicked.connect(self.new)
-        fileMenu.addMenu("Open").menuButtonClicked.connect(self.open)
-        fileMenu.addMenu("Save").menuButtonClicked.connect(self.save)
-        fileMenu.addMenu("Save As...").menuButtonClicked.connect(self.saveAs)
+        fileMenu.addMenu("&New").menuButtonClicked.connect(self.new)
+        fileMenu.addMenu("&Open").menuButtonClicked.connect(self.open)
+        fileMenu.addMenu("&Save").menuButtonClicked.connect(self.save)
+        fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self.saveAs)
         fileMenu.addSpacer()
-        fileMenu.addMenu("Import 🎁").menuButtonClicked.connect(self.importDictWin)
-        fileMenu.addMenu("Export 📦").menuButtonClicked.connect(self.quickExport)
+        fileMenu.addMenu("&Import 🎁").menuButtonClicked.connect(self.importDictWin)
+        fileMenu.addMenu("&Export 📦").menuButtonClicked.connect(self.quickExport)
         fileMenu.addSpacer()
-        fileMenu.addMenu("Exit").menuButtonClicked.connect(TTkHelper.quit)
+        fileMenu.addMenu("E&xit").menuButtonClicked.connect(TTkHelper.quit)
 
-        extraMenu = topMenuFrame.newMenubarTop().addMenu("E&xtra")
-        extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
+        extraMenu = topMenuFrame.newMenubarTop().addMenu("E&dit")
+        extraMenu.addMenu("&Undo (CTRL+Z)").menuButtonClicked.connect(self.undo)
+        extraMenu.addMenu("&Redo (CTRL+Y)").menuButtonClicked.connect(self.redo)
         extraMenu.addSpacer()
-        extraMenu.addMenu("Preview...").menuButtonClicked.connect(self.preview)
+        extraMenu.addMenu("&Scratchpad 📝").menuButtonClicked.connect(self.scratchpad)
+        extraMenu.addSpacer()
+        extraMenu.addMenu("&Preview...").menuButtonClicked.connect(self.preview)
 
         def _showAbout(btn):
             TTkHelper.overlay(None, About(), 30,10)
@@ -182,10 +185,30 @@ class TTkDesigner(TTkGridLayout):
         self._toolBar.addWidget(self._fileNameLabel)
 
         TTkShortcut(TTkK.CTRL | TTkK.Key_Z).activated.connect(self.undo)
+        TTkShortcut(TTkK.CTRL | TTkK.Key_Y).activated.connect(self.redo)
         self._takeSnapshot()
 
         if fileName:
             self._openFile(fileName)
+
+    # Snapshot Logic:
+    #   _snapshots = [ s0 , s1 , s2 , s3 , s4 , s5 , s6 ]
+    #   _snapId = 3                   ^
+    #
+    # Undo:
+    #   _snapId-- = 2            ^ = s2
+    #   load s2
+    #
+    # Redo:
+    #   _snapId++ = 4                      ^ = s4
+    #   load s4
+    #
+    # Take Snapshot:
+    #   Remove the forward Snapshots:
+    #   _snapshots = [ s0 , s1 , s2 , s3 ]
+    #   Append The new one and update snapId
+    #   _snapshots = [ s0 , s1 , s2 , s3 , s4+ ]
+    #   _snapId++ = 4
 
     @pyTTkSlot()
     def _takeSnapshot(self):
@@ -196,21 +219,36 @@ class TTkDesigner(TTkGridLayout):
             'tui':tui,
             'connections':connections}
         TTkLog.debug(f"{len(pickle.dumps(data))=} {len(self._snapshot)=}")
-        self._snapId += 1
-        self._snapshot = self._snapshot[:self._snapId]+[data]
+        if ( self._snapshot and
+             0 <= self._snapId < len(self._snapshot) and
+             data == self._snapshot[self._snapId]): return
+        self._snapshot = self._snapshot[:self._snapId+1]+[data]
+        self._snapId = len(self._snapshot)-1
 
-    def undo(self):
-        TTkLog.debug(f"Undo: {len(self._snapshot)=}")
-        if not self._snapshot: return
-        if self._snapId <= 0: return
+    def _loadSnapshot(self):
         self.weModified.disconnect(self._takeSnapshot)
-        self._snapId -= 1
         data = self._snapshot[self._snapId]
         sw = SuperWidget.loadDict(self, self._windowEditor.viewport(), data['tui'])
         self._windowEditor.importSuperWidget(sw)
         self._sigslotEditor.importConnections(data['connections'])
         self._treeInspector.refresh()
         self.weModified.connect(self._takeSnapshot)
+
+    @pyTTkSlot()
+    def undo(self):
+        TTkLog.debug(f"Undo: {len(self._snapshot)=}")
+        if not self._snapshot: return
+        if self._snapId <= 0: return
+        self._snapId -= 1
+        self._loadSnapshot()
+
+    @pyTTkSlot()
+    def redo(self):
+        TTkLog.debug(f"Undo: {len(self._snapshot)=}")
+        if not self._snapshot: return
+        if self._snapId >= len(self._snapshot)-1: return
+        self._snapId += 1
+        self._loadSnapshot()
 
     def getWidgets(self):
         widgets = set()
@@ -270,7 +308,7 @@ class TTkDesigner(TTkGridLayout):
     @pyTTkSlot()
     def scratchpad(self):
         win = TTkWindow(
-                title="Mr Scratchpad",
+                title="Mr Scratchpad 📝",
                 size=(80,30),
                 layout=self._notepad,
                 flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
