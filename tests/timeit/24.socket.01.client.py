@@ -37,7 +37,6 @@ def test1():
     sock.sendall(bytes(data + "\n", "utf-8"))
     received = str(sock.recv(1024), "utf-8")
     return len(received)
-https://github.com/ceccopierangiolieugenio/pyTermTk/issues/210
 
 a = {}
 
