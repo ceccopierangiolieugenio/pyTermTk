@@ -22,13 +22,11 @@
 
 __all__ = ['TTkUiLoader']
 
-# Yaml is not included by default
-# import yaml
-import os, json
+import json
 
 from TermTk import TTkLog
-from TermTk import TTkCfg, TTkColor
-from TermTk.TTkLayouts import TTkLayout, TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
+from TermTk import TTkCfg, TTkK, TTkColor
+from TermTk.TTkLayouts import TTkLayout, TTkGridLayout
 from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
