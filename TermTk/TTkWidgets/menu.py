@@ -211,7 +211,7 @@ class TTkMenuButton(TTkWidget):
         text = text if issubclass(type(text),TTkString) else TTkString(text)
         text, shortcuts = text.extractShortcuts()
         button = TTkMenuButton(text=text, data=data, checkable=checkable, checked=checked)
-        button._shortcuts = shortcuts
+        button._shortcuts = [ch.upper() for ch in shortcuts]
         self._submenu.append(button)
         return button
 
@@ -298,7 +298,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 return True
         else:
             # Handle shortcuts
-            ch = evt.key
+            ch = evt.key.upper()
             for btn in btns:
                 if ch in btn._shortcuts:
                     btn.shortcutEvent()
