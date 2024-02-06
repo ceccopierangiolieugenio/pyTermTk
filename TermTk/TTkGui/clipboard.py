@@ -23,6 +23,7 @@
 __all__ = ['TTkClipboard']
 
 import importlib.util
+from TermTk.TTkCore.log import TTkLog
 
 class TTkClipboard():
     _clipboard = ''
@@ -48,7 +49,12 @@ class TTkClipboard():
     def setText(self, text):
         TTkClipboard._clipboard = text
         if self._setText:
-            self._setText(str(text))
+            try:
+                self._setText(str(text))
+            except Exception as e:
+                TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
+                for line in str(e).split("\n"):
+                    TTkLog.error(line)
 
     def text(self):
         if self._text:
