@@ -296,8 +296,17 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if curBtn:
                     curBtn._triggerSubmenu()
                 return True
+            elif evt.key == TTkK.Key_Enter:
+                if curBtn:
+                    curBtn.shortcutEvent()
+                    return True
         else:
             # Handle shortcuts
+            if evt.key == " ":
+                curBtn = _b[0] if (_b := [b for b in btns if b._highlighted]) else None
+                if curBtn:
+                    curBtn.shortcutEvent()
+                    return True
             ch = evt.key.upper()
             for btn in btns:
                 if ch in btn._shortcuts:

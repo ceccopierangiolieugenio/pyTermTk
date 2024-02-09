@@ -22,17 +22,17 @@
 
 import argparse
 
-from TermTk import TTk, TTkLog, TTkTheme, TTkTerm
+from TermTk import TTk, TTkTheme, TTkTerm
+from TermTk import TTkVBoxLayout, TTkKeyPressView
 
 from .designer import TTkDesigner
 
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('-c', help=f'config folder (default: "{TTKodeCfg.pathCfg}")', default=TTKodeCfg.pathCfg)
     parser.add_argument('filename', type=str, nargs='?', help='the file to open')
+    parser.add_argument('-k', '--showkeys', action='store_true', help='display the keypresses and mouse interactions')
     args = parser.parse_args()
 
-    # TTkLog.use_default_file_logging()
     TTkTheme.loadTheme( TTkTheme.NERD )
 
     root = TTk(
@@ -43,5 +43,12 @@ def main():
                 TTkTerm.Sigmask.CTRL_Q |
                 TTkTerm.Sigmask.CTRL_S |
                 TTkTerm.Sigmask.CTRL_Z ))
-    root.setLayout(TTkDesigner(fileName=args.filename))
+
+    if args.showkeys:
+        root.setLayout(_l:=TTkVBoxLayout())
+        _l.addItem(TTkDesigner(fileName=args.filename))
+        _l.addWidget(TTkKeyPressView(maxHeight=3))
+    else:
+        root.setLayout(TTkDesigner(fileName=args.filename))
+
     root.mainloop()

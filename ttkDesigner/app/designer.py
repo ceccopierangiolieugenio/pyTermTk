@@ -31,9 +31,9 @@ from TermTk import TTkWidget, TTkFrame, TTkButton, TTkLabel, TTkMenuButton
 from TermTk import TTkTabWidget
 from TermTk import TTkFileDialogPicker, TTkMessageBox
 
-from TermTk import  TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
+from TermTk import TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter
-from TermTk import TTkLogViewer
+from TermTk import TTkLogViewer, TTkKeyPressView
 from TermTk import TTkUiLoader, TTkUtil
 
 from .cfg  import *
@@ -77,22 +77,22 @@ import pickle
 #
 
 class TTkDesigner(TTkGridLayout):
-    __slots__ = ('_main', '_toolBar', '_fileNameLabel',
+    __slots__ = ('_main', '_toolBar', '_fileNameLabel', '_modified',
                  '_sigslotEditor', '_treeInspector', '_windowEditor', '_notepad',
                  '_fileName', '_currentPath',
-                 '_snapshot', '_snapId',
+                 '_snapshot', '_snapId', '_snapSaved',
                  # Signals
                  'weModified', 'thingSelected', 'widgetNameChanged'
                  )
     def __init__(self, fileName=None, *args, **kwargs):
-        self._snapshot = []
-        self._snapId = -1
         self._fileName = "untitled.tui.json"
         self._currentPath = self._currentPath =  os.path.abspath('.')
 
         self.weModified = pyTTkSignal()
         self.thingSelected = pyTTkSignal(TTkWidget, TTkWidget)
         self.widgetNameChanged = pyTTkSignal(str, str)
+
+        self.resetSnapshot()
 
         super().__init__(*args, **kwargs)
 
@@ -146,13 +146,14 @@ class TTkDesigner(TTkGridLayout):
         fileMenu.addMenu("&Import 🎁").menuButtonClicked.connect(self.importDictWin)
         fileMenu.addMenu("&Export 📦").menuButtonClicked.connect(self.quickExport)
         fileMenu.addSpacer()
-        fileMenu.addMenu("E&xit").menuButtonClicked.connect(TTkHelper.quit)
+        fileMenu.addMenu("E&xit").menuButtonClicked.connect(self.quit)
 
         extraMenu = topMenuFrame.newMenubarTop().addMenu("E&dit")
         extraMenu.addMenu("&Undo (CTRL+Z)").menuButtonClicked.connect(self.undo)
         extraMenu.addMenu("&Redo (CTRL+Y)").menuButtonClicked.connect(self.redo)
         extraMenu.addSpacer()
         extraMenu.addMenu("&Scratchpad 📝").menuButtonClicked.connect(self.scratchpad)
+        extraMenu.addMenu("&KeypressView").menuButtonClicked.connect(self.keypressview)
         extraMenu.addSpacer()
         extraMenu.addMenu("&Preview...").menuButtonClicked.connect(self.preview)
 
@@ -186,10 +187,21 @@ class TTkDesigner(TTkGridLayout):
 
         TTkShortcut(TTkK.CTRL | TTkK.Key_Z).activated.connect(self.undo)
         TTkShortcut(TTkK.CTRL | TTkK.Key_Y).activated.connect(self.redo)
-        self._takeSnapshot()
 
         if fileName:
             self._openFile(fileName)
+
+    def modified(self):
+        return self._modified
+
+    def setModified(self, modified):
+        # if self._modified == modified: return
+        self._modified = modified
+        if modified:
+            self._fileNameLabel.setText(f"( ● {self._fileName} )")
+        else:
+            self._fileNameLabel.setText(f"( {self._fileName} )")
+            self._snapSaved = self._snapId
 
     # Snapshot Logic:
     #   _snapshots = [ s0 , s1 , s2 , s3 , s4 , s5 , s6 ]
@@ -211,6 +223,13 @@ class TTkDesigner(TTkGridLayout):
     #   _snapId++ = 4
 
     @pyTTkSlot()
+    def resetSnapshot(self):
+        self._snapshot = []
+        self._snapId = -1
+        self._snapSaved = -1
+        self._modified = False
+
+    @pyTTkSlot()
     def _takeSnapshot(self):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
@@ -224,6 +243,7 @@ class TTkDesigner(TTkGridLayout):
              data == self._snapshot[self._snapId]): return
         self._snapshot = self._snapshot[:self._snapId+1]+[data]
         self._snapId = len(self._snapshot)-1
+        self.setModified(True)
 
     def _loadSnapshot(self):
         self.weModified.disconnect(self._takeSnapshot)
@@ -315,6 +335,16 @@ class TTkDesigner(TTkGridLayout):
         TTkHelper.overlay(None, win, 2, 2, toolWindow=True)
 
     @pyTTkSlot()
+    def keypressview(self):
+        win = TTkWindow(
+                title="Mr Keypress 🔑🐁",
+                size=(70,7),
+                layout=(_l:=TTkGridLayout()),
+                flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
+        _l.addWidget(TTkKeyPressView(maxHeight=3))
+        TTkHelper.overlay(None, win, 2, 2, toolWindow=True)
+
+    @pyTTkSlot()
     def preview(self):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
@@ -336,17 +366,27 @@ class TTkDesigner(TTkGridLayout):
         TTkHelper.overlay(None, win, 2, 2, modal=True)
 
     @pyTTkSlot()
-    def new(self):
-        newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/newWindow.tui.json"))
-        newWindow.getWidgetByName("BtnWindow"   ).clicked.connect(self._windowEditor.newWindow)
-        newWindow.getWidgetByName("BtnContainer").clicked.connect(self._windowEditor.newContainer)
-        newWindow.getWidgetByName("BtnFrame"    ).clicked.connect(self._windowEditor.newFrame)
-        newWindow.getWidgetByName("BtnResFrame" ).clicked.connect(self._windowEditor.newResFrame)
+    def new(self, firstRun=False):
+        def _newCB(cb=None):
+            @pyTTkSlot()
+            def _ret(cb=cb):
+                def _newCB():
+                    self.resetSnapshot()
+                    self.weModified.emit()
+                    self.setModified(False)
+                    cb()
+                if self.modified():
+                    self.askToSave(TTkString( f'The current document has been modified, do you want to save it?\nIf you don\'t save, your changes will be lost.', TTkColor.BOLD),
+                    cb=_newCB)
+                else:
+                    _newCB()
+            return _ret
 
-        newWindow.getWidgetByName("BtnWindow"   ).clicked.connect(self.weModified.emit)
-        newWindow.getWidgetByName("BtnContainer").clicked.connect(self.weModified.emit)
-        newWindow.getWidgetByName("BtnFrame"    ).clicked.connect(self.weModified.emit)
-        newWindow.getWidgetByName("BtnResFrame" ).clicked.connect(self.weModified.emit)
+        newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/newWindow.tui.json"))
+        newWindow.getWidgetByName("BtnWindow"   ).clicked.connect(_newCB(cb=self._windowEditor.newWindow))
+        newWindow.getWidgetByName("BtnContainer").clicked.connect(_newCB(cb=self._windowEditor.newContainer))
+        newWindow.getWidgetByName("BtnFrame"    ).clicked.connect(_newCB(cb=self._windowEditor.newFrame))
+        newWindow.getWidgetByName("BtnResFrame" ).clicked.connect(_newCB(cb=self._windowEditor.newResFrame))
         TTkHelper.overlay(self._windowEditor, newWindow, 10, 4, modal=True)
 
     @pyTTkSlot()
@@ -434,19 +474,53 @@ class TTkDesigner(TTkGridLayout):
             fp.write(jj)
 
     @pyTTkSlot()
-    def saveAs(self):
+    def saveAs(self, cb=None):
         def _approveFile(fileName):
             if os.path.exists(fileName):
+                @pyTTkSlot(TTkMessageBox.StandardButton)
+                def _cb(btn):
+                    if btn == TTkMessageBox.StandardButton.Save:
+                        self._saveToFile(fileName)
+                    elif btn == TTkMessageBox.StandardButton.Cancel:
+                        return
+                    if cb:
+                        cb()
                 messageBox = TTkMessageBox(
                     text= (
                         TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', TTkColor.BOLD) +
                         TTkString( f'\n\nReplacing it will overwrite its contents.') ),
                     icon=TTkMessageBox.Icon.Warning,
                     standardButtons=TTkMessageBox.StandardButton.Discard|TTkMessageBox.StandardButton.Save|TTkMessageBox.StandardButton.Cancel)
-                messageBox.buttonSelected.connect(lambda btn : self._saveToFile(fileName) if btn == TTkMessageBox.StandardButton.Save else None)
+                messageBox.buttonSelected.connect(_cb)
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
                 self._saveToFile(fileName)
         filePicker = TTkFileDialogPicker(pos = (3,3), size=(80,30), acceptMode=TTkK.AcceptMode.AcceptSave, caption="Save As...", path=os.path.join(self._currentPath,self._fileName), fileMode=TTkK.FileMode.AnyFile ,filter="TTk Tui Files (*.tui.json);;Json Files (*.json);;All Files (*)")
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
+
+    @pyTTkSlot()
+    def askToSave(self, text="", cb=None):
+        messageBox = TTkMessageBox(
+            text=text,
+            icon=TTkMessageBox.Icon.Warning,
+            standardButtons=TTkMessageBox.StandardButton.Discard|TTkMessageBox.StandardButton.Save|TTkMessageBox.StandardButton.Cancel)
+        @pyTTkSlot(TTkMessageBox.StandardButton)
+        def _cb(btn):
+            if btn == TTkMessageBox.StandardButton.Save:
+                self.saveAs(cb=cb)
+            elif btn == TTkMessageBox.StandardButton.Cancel:
+                return
+            elif cb:
+                cb()
+            messageBox.buttonSelected.clear()
+        messageBox.buttonSelected.connect(_cb)
+        TTkHelper.overlay(None, messageBox, 5, 5, True)
+
+    def quit(self):
+        if self.modified():
+            self.askToSave(
+                TTkString( f'Do you want to save the changes to this document before closing?\nIf you don\'t save, your changes will be lost.', TTkColor.BOLD),
+                cb=TTkHelper.quit)
+        else:
+            TTkHelper.quit()
