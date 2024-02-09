@@ -31,9 +31,9 @@ from TermTk import TTkWidget, TTkFrame, TTkButton, TTkLabel, TTkMenuButton
 from TermTk import TTkTabWidget
 from TermTk import TTkFileDialogPicker, TTkMessageBox
 
-from TermTk import  TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
+from TermTk import TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter
-from TermTk import TTkLogViewer
+from TermTk import TTkLogViewer, TTkKeyPressView
 from TermTk import TTkUiLoader, TTkUtil
 
 from .cfg  import *
@@ -153,6 +153,7 @@ class TTkDesigner(TTkGridLayout):
         extraMenu.addMenu("&Redo (CTRL+Y)").menuButtonClicked.connect(self.redo)
         extraMenu.addSpacer()
         extraMenu.addMenu("&Scratchpad 📝").menuButtonClicked.connect(self.scratchpad)
+        extraMenu.addMenu("&KeypressView").menuButtonClicked.connect(self.keypressview)
         extraMenu.addSpacer()
         extraMenu.addMenu("&Preview...").menuButtonClicked.connect(self.preview)
 
@@ -334,6 +335,16 @@ class TTkDesigner(TTkGridLayout):
         TTkHelper.overlay(None, win, 2, 2, toolWindow=True)
 
     @pyTTkSlot()
+    def keypressview(self):
+        win = TTkWindow(
+                title="Mr Keypress 🔑🐁",
+                size=(70,7),
+                layout=(_l:=TTkGridLayout()),
+                flags=TTkK.WindowFlag.WindowMaximizeButtonHint|TTkK.WindowFlag.WindowCloseButtonHint)
+        _l.addWidget(TTkKeyPressView(maxHeight=3))
+        TTkHelper.overlay(None, win, 2, 2, toolWindow=True)
+
+    @pyTTkSlot()
     def preview(self):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
@@ -497,7 +508,7 @@ class TTkDesigner(TTkGridLayout):
         @pyTTkSlot(TTkMessageBox.StandardButton)
         def _cb(btn):
             if btn == TTkMessageBox.StandardButton.Save:
-                self.saveAs(quit=True)
+                self.saveAs(cb=cb)
             elif btn == TTkMessageBox.StandardButton.Cancel:
                 return
             elif cb:
