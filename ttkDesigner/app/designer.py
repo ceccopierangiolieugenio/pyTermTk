@@ -359,12 +359,16 @@ class TTkDesigner(TTkGridLayout):
         def _newCB(cb=None):
             @pyTTkSlot()
             def _ret(cb=cb):
+                def _newCB():
+                    self.resetSnapshot()
+                    self.weModified.emit()
+                    self.setModified(False)
+                    cb()
                 if self.modified():
-                    self.askToSave(TTkString( f'The current document has been modified, do you want to save it?\nIf you don\'t save, your changes will be lost.', TTkColor.BOLD))
-                cb()
-                self.resetSnapshot()
-                self.weModified.emit()
-                self.setModified(False)
+                    self.askToSave(TTkString( f'The current document has been modified, do you want to save it?\nIf you don\'t save, your changes will be lost.', TTkColor.BOLD),
+                    cb=_newCB)
+                else:
+                    _newCB()
             return _ret
 
         newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/newWindow.tui.json"))
@@ -459,15 +463,17 @@ class TTkDesigner(TTkGridLayout):
             fp.write(jj)
 
     @pyTTkSlot()
-    def saveAs(self, quit=False):
+    def saveAs(self, cb=None):
         def _approveFile(fileName):
             if os.path.exists(fileName):
                 @pyTTkSlot(TTkMessageBox.StandardButton)
                 def _cb(btn):
                     if btn == TTkMessageBox.StandardButton.Save:
                         self._saveToFile(fileName)
-                    if quit:
-                        TTkHelper.quit()
+                    elif btn == TTkMessageBox.StandardButton.Cancel:
+                        return
+                    if cb:
+                        cb()
                 messageBox = TTkMessageBox(
                     text= (
                         TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', TTkColor.BOLD) +
@@ -483,7 +489,7 @@ class TTkDesigner(TTkGridLayout):
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 
     @pyTTkSlot()
-    def askToSave(self, text="", quit=False):
+    def askToSave(self, text="", cb=None):
         messageBox = TTkMessageBox(
             text=text,
             icon=TTkMessageBox.Icon.Warning,
@@ -492,8 +498,10 @@ class TTkDesigner(TTkGridLayout):
         def _cb(btn):
             if btn == TTkMessageBox.StandardButton.Save:
                 self.saveAs(quit=True)
-            elif quit:
-                TTkHelper.quit()
+            elif btn == TTkMessageBox.StandardButton.Cancel:
+                return
+            elif cb:
+                cb()
             messageBox.buttonSelected.clear()
         messageBox.buttonSelected.connect(_cb)
         TTkHelper.overlay(None, messageBox, 5, 5, True)
@@ -502,6 +510,6 @@ class TTkDesigner(TTkGridLayout):
         if self.modified():
             self.askToSave(
                 TTkString( f'Do you want to save the changes to this document before closing?\nIf you don\'t save, your changes will be lost.', TTkColor.BOLD),
-                quit=True)
+                cb=TTkHelper.quit)
         else:
             TTkHelper.quit()
