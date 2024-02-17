@@ -40,12 +40,6 @@ class TTkAppTemplate(TTkContainer):
     FOOTER = TTkK.FOOTER
 
     @dataclass(frozen=False)
-    class _Border:
-        pos = 0
-        visible = False
-        fixed = False
-
-    @dataclass(frozen=False)
     class _Panel:
         # It's either item or widget
         item   = None
@@ -88,7 +82,6 @@ class TTkAppTemplate(TTkContainer):
             return 0x10000
 
     __slots__ = ('_panels',
-                 '_ba','_bb','_bc','_bd','_be','_bf'
                  #Signals
                  )
     def __init__(self, **kwargs):
@@ -100,12 +93,6 @@ class TTkAppTemplate(TTkContainer):
             TTkAppTemplate.RIGHT  : None ,
             TTkAppTemplate.HEADER : None ,
             TTkAppTemplate.FOOTER : None }
-        self._ba=TTkAppTemplate._Border()
-        self._bb=TTkAppTemplate._Border()
-        self._bc=TTkAppTemplate._Border()
-        self._bd=TTkAppTemplate._Border()
-        self._be=TTkAppTemplate._Border()
-        self._bf=TTkAppTemplate._Border()
         super().__init__( **kwargs)
         self.layout().addItem(self._panels[TTkAppTemplate.MAIN].item)
         self._updateGeometries()
@@ -129,22 +116,7 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries()
 
     def minimumWidth(self):
-        # ┌─────────────────────────────────┐
-        # │         Header                  │
-        # ├─────────┬──────────────┬────────┤
-        # │         A   Top        B        │
-        # │         ├──────────────┤        │
-        # │         │              │        │
-        # │  Right  C   Main       D  Left  │
-        # │         │   Center     │        │
-        # │         │              │        │
-        # │         ├──────────────┤        │
-        # │         E   Bottom     F        │
-        # ├─────────┴──────────────┴────────┤
-        # │         Footer                  │
-        # └─────────────────────────────────┘
         pns = self._panels
-        A=B=C=D=E=F=0
 
         # Header and Footer sizes
         mh=mf=0
@@ -155,53 +127,24 @@ class TTkAppTemplate(TTkContainer):
 
         # Center Right,Left sizes
         mcr=mcl=0
-        pr,pl=0
         if p:=pns[TTkAppTemplate.RIGHT]:
-            pr=1
-            if p.border: A=C=E=1
-            mcr = p.minimumWidth()
+            mcr = p.minimumWidth() + ( 1 if p.border else 0 )
         if p:=pns[TTkAppTemplate.LEFT]:
-            pl=1
-            if p.border: B=D=F=1
-            mcl = p.minimumWidth()
+            mcl = p.minimumWidth() + ( 1 if p.border else 0 )
 
         # Center Top,Bottom sizes
-        mct=mcb=0x10000
+        mct=mcb=0
         if p:=pns[TTkAppTemplate.TOP]:
-            if p.border:
-                A=pr
-                B=pl
             mct = p.minimumWidth()
         if p:=pns[TTkAppTemplate.BOTTOM]:
-            if p.border:
-                E=pr
-                F=pl
             mcb = p.minimumWidth()
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).minimumWidth()
-        if p.border:
-            C=pr
-            D=pl
 
-        return max(mh, mf, mcr+mcl+max(mct+A+B, mcb+E+F, mcm+C+D) )
+        return max(mh, mf, mcr+mcl+max(mct, mcb, mcm)) + (2 if p.border else 0)
 
     def maximumWidth(self):
-        # ┌─────────────────────────────────┐
-        # │         Header                  │
-        # ├─────────┬──────────────┬────────┤
-        # │         A   Top        B        │
-        # │         ├──────────────┤        │
-        # │         │              │        │
-        # │  Right  C   Main       D  Left  │
-        # │         │   Center     │        │
-        # │         │              │        │
-        # │         ├──────────────┤        │
-        # │         E   Bottom     F        │
-        # ├─────────┴──────────────┴────────┤
-        # │         Footer                  │
-        # └─────────────────────────────────┘
         pns = self._panels
-        A=B=C=D=E=F=0
 
         # Header and Footer sizes
         mh=mf=0
@@ -212,171 +155,79 @@ class TTkAppTemplate(TTkContainer):
 
         # Center Right,Left sizes
         mcr=mcl=0
-        pr,pl=0
         if p:=pns[TTkAppTemplate.RIGHT]:
-            pr=1
-            if p.border: A=C=E=1
-            mcr = p.maximumWidth()
+            mcr = p.maximumWidth() + ( 1 if p.border else 0 )
         if p:=pns[TTkAppTemplate.LEFT]:
-            pl=1
-            if p.border: B=D=F=1
-            mcl = p.maximumWidth()
+            mcl = p.maximumWidth() + ( 1 if p.border else 0 )
 
         # Center Top,Bottom sizes
         mct=mcb=0x10000
         if p:=pns[TTkAppTemplate.TOP]:
-            if p.border:
-                A=pr
-                B=pl
             mct = p.maximumWidth()
         if p:=pns[TTkAppTemplate.BOTTOM]:
-            if p.border:
-                E=pr
-                F=pl
             mcb = p.maximumWidth()
 
-        mcm = (p:=pns[TTkAppTemplate.MAIN]).maximumWidth()
-        if p.border:
-            C=pr
-            D=pl
+        mcm = (p:=pns[TTkAppTemplate.MAIN]).minimumWidth()
 
-        return min(mh, mf, mcr+mcl+min(mct+A+B, mcb+E+F, mcm+C+D) )
+        return min(mh, mf, mcr+mcl+min(mct, mcb, mcm)) + (2 if p.border else 0)
 
     def minimumHeight(self):
-        # ┌─────────────────────────────────┐
-        # │         Header                  │
-        # ├── A ────┬──── B ───────┬── C ───┤
-        # │         │   Top        │        │
-        # │         ├──── D ───────┤        │
-        # │         │              │        │
-        # │  Right  │   Main       │  Left  │
-        # │         │   Center     │        │
-        # │         │              │        │
-        # │         ├──── E ───────┤        │
-        # │         │   Bottom     │        │
-        # ├── F ────┴──── G ───────┴── H ───┤
-        # │         Footer                  │
-        # └─────────────────────────────────┘
         pns = self._panels
-        A=B=C=D=E=F=G=0 # 0 or 1 if the border is defined
 
         # Header and Footer border and minHeight
         mh=mf=0
-        ph=pf=0
-
         # Header Footer
         if p:=pns[TTkAppTemplate.HEADER]:
-            ph=1
-            if p.border: A=B=C=1
-            mh = p.minimumHeight()
+            mh = p.minimumHeight() + ( 1 if p.border else 0 )
         if p:=pns[TTkAppTemplate.FOOTER]:
-            pf=1
-            if p.border: F=G=H=1
-            mf = p.minimumHeight()
+            mf = p.minimumHeight() + ( 1 if p.border else 0 )
 
         # Center Left,Right:
-        mcr=mcl=0x10000
+        mcr=mcl=0
         if p:=pns[TTkAppTemplate.LEFT]:
-            if p.border:
-                C = ph
-                H = pf
             mcl = p.minimumHeight()
         if p:=pns[TTkAppTemplate.RIGHT]:
-            if p.border:
-                A = ph
-                F = pf
             mcr = p.minimumHeight()
 
         # Center Top,Bottom
         mct=mcb=0
-        pct=pcb=0
         if p:=pns[TTkAppTemplate.TOP]:
-            pct=1
-            if p.border:
-                B=ph
-                D=1
-            mct = p.minimumHeight()
+            mct = p.minimumHeight() + ( 1 if p.border else 0 )
         if p:=pns[TTkAppTemplate.BOTTOM]:
-            pcb=1
-            if p.border:
-                G=pf
-                E=1
-            mcb = p.minimumHeight()
+            mcb = p.minimumHeight() + ( 1 if p.border else 0 )
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).minimumHeight()
-        if p.border:
-            D=pct
-            E=pcb
 
-        return mh+mf+max( mcr+A+F ,mcl+C+H, mcm+mct+mcb+B+D+E+G )
+        return mh+mf+max(mcr ,mcl, mcm+mct+mcb ) + ( 2 if p.border else 0 )
 
     def maximumHeight(self):
-        # ┌─────────────────────────────────┐
-        # │         Header                  │
-        # ├── A ────┬──── B ───────┬── C ───┤
-        # │         │   Top        │        │
-        # │         ├──── D ───────┤        │
-        # │         │              │        │
-        # │  Right  │   Main       │  Left  │
-        # │         │   Center     │        │
-        # │         │              │        │
-        # │         ├──── E ───────┤        │
-        # │         │   Bottom     │        │
-        # ├── F ────┴──── G ───────┴── H ───┤
-        # │         Footer                  │
-        # └─────────────────────────────────┘
         pns = self._panels
-        A=B=C=D=E=F=G=0 # 0 or 1 if the border is defined
 
         # Header and Footer border and minHeight
         mh=mf=0
-        ph=pf=0
-
         # Header Footer
         if p:=pns[TTkAppTemplate.HEADER]:
-            ph=1
-            if p.border: A=B=C=1
-            mh = p.maximumHeight()
+            mh = p.maximumHeight() + ( 1 if p.border else 0 )
         if p:=pns[TTkAppTemplate.FOOTER]:
-            pf=1
-            if p.border: F=G=H=1
-            mf = p.maximumHeight()
+            mf = p.maximumHeight() + ( 1 if p.border else 0 )
 
         # Center Left,Right:
         mcr=mcl=0x10000
         if p:=pns[TTkAppTemplate.LEFT]:
-            if p.border:
-                C = ph
-                H = pf
             mcl = p.maximumHeight()
         if p:=pns[TTkAppTemplate.RIGHT]:
-            if p.border:
-                A = ph
-                F = pf
             mcr = p.maximumHeight()
 
         # Center Top,Bottom
         mct=mcb=0
-        pct=pcb=0
         if p:=pns[TTkAppTemplate.TOP]:
-            pct=1
-            if p.border:
-                B=ph
-                D=1
-            mct = p.maximumHeight()
+            mct = p.maximumHeight() + ( 1 if p.border else 0 )
         if p:=pns[TTkAppTemplate.BOTTOM]:
-            pcb=1
-            if p.border:
-                G=pf
-                E=1
-            mcb = p.maximumHeight()
+            mcb = p.maximumHeight() + ( 1 if p.border else 0 )
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).maximumHeight()
-        if p.border:
-            D=pct
-            E=pcb
 
-        return mh+mf+min( mcr+A+F ,mcl+C+H, mcm+mct+mcb+B+D+E+G )
+        return mh+mf+min(mcr ,mcl, mcm+mct+mcb ) + ( 2 if p.border else 0 )
 
 
 
