@@ -15,7 +15,7 @@ class TTkAppTemplate(TTkContainer):
         App Template Layout
         ┌─────────────────────────────────┐
         │         Header                  │
-        ├─────────┬──────────────┬────────┤ A
+        ├─────────┬──────────────┬────────┤ A (1,2,3)
         │         │   Top        │        │
         │         ├──────────────┤        │ B
         │         │              │        │
@@ -24,7 +24,7 @@ class TTkAppTemplate(TTkContainer):
         │         │              │        │
         │         ├──────────────┤        │ C
         │         │   Bottom     │        │
-        ├─────────┴──────────────┴────────┤ D
+        ├─────────┴──────────────┴────────┤ D (1,2,3)
         │         Footer                  │
         └─────────────────────────────────┘
                   E              F
@@ -40,6 +40,12 @@ class TTkAppTemplate(TTkContainer):
     FOOTER = TTkK.FOOTER
 
     @dataclass(frozen=False)
+    class _Border:
+        pos = 0
+        visible = False
+        fixed = False
+
+    @dataclass(frozen=False)
     class _Panel:
         # It's either item or widget
         item   = None
@@ -47,6 +53,11 @@ class TTkAppTemplate(TTkContainer):
         size   = 0
         border = True
         fixed  = False
+
+        def isVisible(self):
+            if self.widget:
+                return self.widget.isVisible()
+            return True
 
         def minimumWidth(self):
             if it := self.item:
@@ -78,7 +89,8 @@ class TTkAppTemplate(TTkContainer):
 
     __slots__ = ('_panels',
                  '_ba','_bb','_bc','_bd','_be','_bf'
-                 #Signals )
+                 #Signals
+                 )
     def __init__(self, **kwargs):
         self._panels = {
             TTkAppTemplate.MAIN   : TTkAppTemplate._Panel(item=TTkLayout()) ,
@@ -88,7 +100,12 @@ class TTkAppTemplate(TTkContainer):
             TTkAppTemplate.RIGHT  : None ,
             TTkAppTemplate.HEADER : None ,
             TTkAppTemplate.FOOTER : None }
-        self._ba=self._bb=self._bc=self._bd=self._be=self._bf=0
+        self._ba=TTkAppTemplate._Border()
+        self._bb=TTkAppTemplate._Border()
+        self._bc=TTkAppTemplate._Border()
+        self._bd=TTkAppTemplate._Border()
+        self._be=TTkAppTemplate._Border()
+        self._bf=TTkAppTemplate._Border()
         super().__init__( **kwargs)
         self.layout().addItem(self._panels[TTkAppTemplate.MAIN].item)
         self._updateGeometries()
@@ -365,20 +382,20 @@ class TTkAppTemplate(TTkContainer):
 
 
     def _updateGeometries(self):
-        # ┌─────────────────────────────────┐
-        # │         Header                  │
-        # ├── A1────┬──── A2 ──────┬── A3 ──┤
-        # │         E1   Top       F1       │
-        # │         ├──── B ───────┤        │
-        # │         │              │        │
-        # │  Right  │   Main       │  Left  │
-        # │         E2  Center     F2       │
-        # │         │              │        │
-        # │         ├──── C ───────┤        │
-        # │         E3  Bottom     F3       │
-        # ├── D1 ───┴──── D2 ──────┴── D3 ──┤
-        # │         Footer                  │
-        # └─────────────────────────────────┘
+        w,h = self.size()
+        pns = self._panels
+
+        # E,F Splitters
+        p = pns[TTkAppTemplate.RIGHT]
+        if ( not p or not p.isVisible() ):
+            pass
+        p = pns[TTkAppTemplate.LEFT]
+        if ( not p or not p.isVisible() ):
+            pass
+
+
+
+
 
         self.update()
 
