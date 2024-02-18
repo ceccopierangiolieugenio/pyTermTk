@@ -56,6 +56,8 @@ class TTkConstant:
     LEFT   = 0x0004
     RIGHT  = 0x0008
     CENTER = 0x0010
+    HEADER = 0x0020
+    FOOTER = 0x0040
 
     # SelectionMode
     NoSelection         = 0x00

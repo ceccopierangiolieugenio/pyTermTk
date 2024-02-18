@@ -32,13 +32,19 @@ class TTkTestWidgetSizes(TTkFrame):
         TTkTestWidgetSizes.ID+=1
 
     def paintEvent(self, canvas):
-        TTkFrame.paintEvent(self, canvas)
         t,_,l,_ = self.getPadding()
-        canvas.drawText(pos=(l,t+0), text=f"Test Widget [{self._name}]")
-        canvas.drawText(pos=(l,t+1), text=f"x,y ({self._x},{self._y})")
-        canvas.drawText(pos=(l,t+2), text=f"w,h ({self._width},{self._height})")
-        canvas.drawText(pos=(l,t+3), text=f"max w,h ({self._maxw},{self._maxh})")
-        canvas.drawText(pos=(l,t+4), text=f"min w,h ({self._minw},{self._minh})")
+        w,h = self.size()
+        style = self.currentStyle()
+        color = style['color']
+        if color.background():
+            canvas.fill(pos=(0,0), size=(w,h), color=color)
+        borderColor = style['borderColor']
+        canvas.drawText(pos=(l,t+0), color=color, text=f"Test Widget [{self._name}]")
+        canvas.drawText(pos=(l,t+1), color=color, text=f"x,y ({self._x},{self._y})")
+        canvas.drawText(pos=(l,t+2), color=color, text=f"w,h ({self._width},{self._height})")
+        canvas.drawText(pos=(l,t+3), color=color, text=f"max w,h ({self._maxw},{self._maxh})")
+        canvas.drawText(pos=(l,t+4), color=color, text=f"min w,h ({self._minw},{self._minh})")
+        TTkFrame.paintEvent(self, canvas)
 
     def mousePressEvent(self, evt): return True
     def mouseReleaseEvent(self, evt): return True
