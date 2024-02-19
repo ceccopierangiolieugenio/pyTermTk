@@ -156,24 +156,18 @@ class TTkAppTemplate(TTkContainer):
 
         # Header and Footer sizes
         mh=mf=0
-        if p:=pns[TTkAppTemplate.HEADER]:
-            mh = p.minimumWidth()
-        if p:=pns[TTkAppTemplate.FOOTER]:
-            mf = p.minimumWidth()
+        if (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible(): mh = p.minimumWidth()
+        if (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible(): mf = p.minimumWidth()
 
         # Center Right,Left sizes
         mcr=mcl=0
-        if p:=pns[TTkAppTemplate.RIGHT]:
-            mcr = p.minimumWidth() + ( 1 if p.border else 0 )
-        if p:=pns[TTkAppTemplate.LEFT]:
-            mcl = p.minimumWidth() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible():  mcr = p.minimumWidth() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.LEFT ]) and p.isVisible():  mcl = p.minimumWidth() + ( 1 if p.border else 0 )
 
         # Center Top,Bottom sizes
         mct=mcb=0
-        if p:=pns[TTkAppTemplate.TOP]:
-            mct = p.minimumWidth()
-        if p:=pns[TTkAppTemplate.BOTTOM]:
-            mcb = p.minimumWidth()
+        if (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible(): mct = p.minimumWidth()
+        if (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible(): mcb = p.minimumWidth()
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).minimumWidth()
 
@@ -184,24 +178,18 @@ class TTkAppTemplate(TTkContainer):
 
         # Header and Footer sizes
         mh=mf=0x10000
-        if p:=pns[TTkAppTemplate.HEADER]:
-            mh = p.maximumWidth()
-        if p:=pns[TTkAppTemplate.FOOTER]:
-            mf = p.maximumWidth()
+        if (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible(): mh = p.maximumWidth()
+        if (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible(): mf = p.maximumWidth()
 
         # Center Right,Left sizes
         mcr=mcl=0
-        if p:=pns[TTkAppTemplate.RIGHT]:
-            mcr = p.maximumWidth() + ( 1 if p.border else 0 )
-        if p:=pns[TTkAppTemplate.LEFT]:
-            mcl = p.maximumWidth() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible():  mcr = p.maximumWidth() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.LEFT ]) and p.isVisible():  mcl = p.maximumWidth() + ( 1 if p.border else 0 )
 
         # Center Top,Bottom sizes
         mct=mcb=0x10000
-        if p:=pns[TTkAppTemplate.TOP]:
-            mct = p.maximumWidth()
-        if p:=pns[TTkAppTemplate.BOTTOM]:
-            mcb = p.maximumWidth()
+        if (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible(): mct = p.maximumWidth()
+        if (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible(): mcb = p.maximumWidth()
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).maximumWidth()
 
@@ -213,24 +201,18 @@ class TTkAppTemplate(TTkContainer):
         # Header and Footer border and minHeight
         mh=mf=0
         # Header Footer
-        if p:=pns[TTkAppTemplate.HEADER]:
-            mh = p.minimumHeight() + ( 1 if p.border else 0 )
-        if p:=pns[TTkAppTemplate.FOOTER]:
-            mf = p.minimumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible(): mh = p.minimumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible(): mf = p.minimumHeight() + ( 1 if p.border else 0 )
 
         # Center Left,Right:
         mcr=mcl=0
-        if p:=pns[TTkAppTemplate.LEFT]:
-            mcl = p.minimumHeight()
-        if p:=pns[TTkAppTemplate.RIGHT]:
-            mcr = p.minimumHeight()
+        if (p:=pns[TTkAppTemplate.LEFT ]) and p.isVisible():  mcl = p.minimumHeight()
+        if (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible():  mcr = p.minimumHeight()
 
         # Center Top,Bottom
         mct=mcb=0
-        if p:=pns[TTkAppTemplate.TOP]:
-            mct = p.minimumHeight() + ( 1 if p.border else 0 )
-        if p:=pns[TTkAppTemplate.BOTTOM]:
-            mcb = p.minimumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible(): mct = p.minimumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible(): mcb = p.minimumHeight() + ( 1 if p.border else 0 )
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).minimumHeight()
 
@@ -242,24 +224,18 @@ class TTkAppTemplate(TTkContainer):
         # Header and Footer border and minHeight
         mh=mf=0
         # Header Footer
-        if p:=pns[TTkAppTemplate.HEADER]:
-            mh = p.maximumHeight() + ( 1 if p.border else 0 )
-        if p:=pns[TTkAppTemplate.FOOTER]:
-            mf = p.maximumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible(): mh = p.maximumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible(): mf = p.maximumHeight() + ( 1 if p.border else 0 )
 
         # Center Left,Right:
         mcr=mcl=0x10000
-        if p:=pns[TTkAppTemplate.LEFT]:
-            mcl = p.maximumHeight()
-        if p:=pns[TTkAppTemplate.RIGHT]:
-            mcr = p.maximumHeight()
+        if (p:=pns[TTkAppTemplate.LEFT ]) and p.isVisible():  mcl = p.maximumHeight()
+        if (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible():  mcr = p.maximumHeight()
 
         # Center Top,Bottom
         mct=mcb=0
-        if p:=pns[TTkAppTemplate.TOP]:
-            mct = p.maximumHeight() + ( 1 if p.border else 0 )
-        if p:=pns[TTkAppTemplate.BOTTOM]:
-            mcb = p.maximumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible(): mct = p.maximumHeight() + ( 1 if p.border else 0 )
+        if (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible(): mcb = p.maximumHeight() + ( 1 if p.border else 0 )
 
         mcm = (p:=pns[TTkAppTemplate.MAIN]).maximumHeight()
 
@@ -274,14 +250,14 @@ class TTkAppTemplate(TTkContainer):
         bm=bl=br=bt=bb=bh=bf=0
         # A,B,C,D HSplitters
         pt=pb=ph=pf=None
-        if ( (p:=pns[TTkAppTemplate.TOP])    and p.isVisible() ): pt=p ; st=p.size ; bt=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible() ): pb=p ; sb=p.size ; bb=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible() ): ph=p ; sh=p.size ; bh=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible() ): pf=p ; sf=p.size ; bf=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible() ): pt=p ; ptmin=p.minimumHeight() ; ptmax=p.maximumHeight() ; st=min(max(p.size,ptmin),ptmax) ; bt=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible() ): pb=p ; pbmin=p.minimumHeight() ; pbmax=p.maximumHeight() ; sb=min(max(p.size,pbmin),pbmax) ; bb=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible() ): ph=p ; phmin=p.minimumHeight() ; phmax=p.maximumHeight() ; sh=min(max(p.size,phmin),phmax) ; bh=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible() ): pf=p ; pfmin=p.minimumHeight() ; pfmax=p.maximumHeight() ; sf=min(max(p.size,pfmin),pfmax) ; bf=1 if p.border else 0
         # E,F     VSplitters
         pl=pr=None
-        if ( (p:=pns[TTkAppTemplate.LEFT])  and p.isVisible() ):  pl=p ; sl=p.size ; bl=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible() ):  pr=p ; sr=p.size ; br=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.LEFT  ]) and p.isVisible() ):  pl=p ; plmin=p.minimumWidth() ; plmax=p.maximumWidth() ; sl=min(max(p.size,plmin),plmax) ; bl=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.RIGHT ]) and p.isVisible() ):  pr=p ; prmin=p.minimumWidth() ; prmax=p.maximumWidth() ; sr=min(max(p.size,prmin),prmax) ; br=1 if p.border else 0
 
         # Main Boundaries
         pm=pns[TTkAppTemplate.MAIN]
@@ -293,7 +269,6 @@ class TTkAppTemplate(TTkContainer):
         w-=(bm<<1)+bl+br
         h-=(bm<<1)+bt+bb+bh+bf
 
-
         # check horizontal sizes
         if not (mminw <= (newszw:=(w-sl-sr)) <= mmaxw):
             # the main width does not fit
@@ -303,25 +278,25 @@ class TTkAppTemplate(TTkContainer):
             #   and adjust the left one to allows the
             #   main panel to fit again
             if newszw < mminw:
-                if pr:                    pr.size = sr = max(pr.minimumWidth(), w-mminw-sl) ; newszw=w-sl-sr
-                if newszw < mminw and pl: pl.size = sl = max(pl.minimumWidth(), w-mminw-sr) ; newszw=w-sl-sr
+                if pr:                    pr.size = sr = max(prmin, w-mminw-sl) ; newszw=w-sl-sr
+                if newszw < mminw and pl: pl.size = sl = max(plmin, w-mminw-sr) ; newszw=w-sl-sr
             else:
-                if pr:                    pr.size = sr = min(pr.maximumWidth(), w-mmaxw-sl) ; newszw=w-sl-sr
-                if newszw > mmaxw and pl: pl.size = sl = min(pl.maximumWidth(), w-mmaxw-sr) ; newszw=w-sl-sr
+                if pr:                    pr.size = sr = min(prmax, w-mmaxw-sl) ; newszw=w-sl-sr
+                if newszw > mmaxw and pl: pl.size = sl = min(plmax, w-mmaxw-sr) ; newszw=w-sl-sr
 
         # check vertical sizes
         if not (mminh <= (newszh:=(h-st-sb-sh-sf)) <= mmaxh):
             # almost same as before except that there are 4 panels to be considered instead of 2
             if newszh < mminh:
-                if pf:                    pf.size = sf = max(pf.minimumHeight(), h-mminh-sb-st-sh) ; newszh=h-st-sb-sh-sf
-                if newszh < mminh and pb: pb.size = sb = max(pb.minimumHeight(), h-mminh-sf-st-sh) ; newszh=h-st-sb-sh-sf
-                if newszh < mminh and pt: pt.size = st = max(pt.minimumHeight(), h-mminh-sf-sb-sh) ; newszh=h-st-sb-sh-sf
-                if newszh < mminh and ph: ph.size = sh = max(ph.minimumHeight(), h-mminh-sf-sb-st) ; newszh=h-st-sb-sh-sf
+                if pf:                    pf.size = sf = max(pfmin, h-mminh-sb-st-sh) ; newszh=h-st-sb-sh-sf
+                if newszh < mminh and pb: pb.size = sb = max(pbmin, h-mminh-sf-st-sh) ; newszh=h-st-sb-sh-sf
+                if newszh < mminh and pt: pt.size = st = max(ptmin, h-mminh-sf-sb-sh) ; newszh=h-st-sb-sh-sf
+                if newszh < mminh and ph: ph.size = sh = max(phmin, h-mminh-sf-sb-st) ; newszh=h-st-sb-sh-sf
             else:
-                if pf:                    pf.size = sf = min(pf.maximumHeight(), h-mmaxh-sb-st-sh) ; newszh=h-st-sb-sh-sf
-                if newszh > mmaxh and pb: pb.size = sb = min(pb.maximumHeight(), h-mmaxh-sf-st-sh) ; newszh=h-st-sb-sh-sf
-                if newszh > mmaxh and pt: pt.size = st = min(pt.maximumHeight(), h-mmaxh-sf-sb-sh) ; newszh=h-st-sb-sh-sf
-                if newszh > mmaxh and ph: ph.size = sh = min(ph.maximumHeight(), h-mmaxh-sf-sb-st) ; newszh=h-st-sb-sh-sf
+                if pf:                    pf.size = sf = min(pfmax, h-mmaxh-sb-st-sh) ; newszh=h-st-sb-sh-sf
+                if newszh > mmaxh and pb: pb.size = sb = min(pbmax, h-mmaxh-sf-st-sh) ; newszh=h-st-sb-sh-sf
+                if newszh > mmaxh and pt: pt.size = st = min(ptmax, h-mmaxh-sf-sb-sh) ; newszh=h-st-sb-sh-sf
+                if newszh > mmaxh and ph: ph.size = sh = min(phmax, h-mmaxh-sf-sb-st) ; newszh=h-st-sb-sh-sf
 
         # check vertical sizes
         w+=bl+br
