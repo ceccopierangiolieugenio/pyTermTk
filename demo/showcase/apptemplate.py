@@ -54,6 +54,7 @@ class AppTestWidget(ttk.TTkContainer):
             self.layout().addWidget(cbf:=ttk.TTkCheckbox(pos=(3,y),size=(3,1), checked=False))
             cbw.clicked.connect(wid.setVisible)
             cbb.clicked.connect(lambda b,loc=wids[wn]['loc']: at.setBorder(b,loc))
+            cbf.clicked.connect(lambda b,loc=wids[wn]['loc']: at.setFixed(b,loc))
 
 def demoAppTemplate(root=None):
     at = ttk.TTkAppTemplate(parent=root)

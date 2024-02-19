@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from TermTk.TTkCore.canvas import TTkCanvas
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout
 from TermTk.TTkWidgets.container import TTkWidget, TTkContainer
 
@@ -60,6 +61,13 @@ class TTkAppTemplate(TTkContainer):
                 return self.widget.isVisible()
             return True
 
+        def geometry(self):
+            if it := self.item:
+                return it.geometry()
+            if wid := self.widget:
+                return wid.geometry()
+            return (0,0,0,0)
+
         def getSize(self):
             if it := self.item:
                 return it.size()
@@ -95,7 +103,7 @@ class TTkAppTemplate(TTkContainer):
                 return wid.maximumHeight()
             return 0x10000
 
-    __slots__ = ('_panels', '_splitters',
+    __slots__ = ('_panels', '_splitters', '_selected'
                  #Signals
                  )
     def __init__(self, **kwargs):
@@ -114,10 +122,12 @@ class TTkAppTemplate(TTkContainer):
             TTkAppTemplate.RIGHT  : None ,
             TTkAppTemplate.HEADER : None ,
             TTkAppTemplate.FOOTER : None }
+        self._selected = None
 
         super().__init__( **kwargs)
         self.layout().addItem(self._panels[TTkAppTemplate.MAIN].item)
         self._updateGeometries()
+        self.setFocusPolicy(TTkK.ClickFocus)
 
     def setWidget(self, widget, location):
         if not self._panels[location]:
@@ -148,8 +158,52 @@ class TTkAppTemplate(TTkContainer):
         self._panels[location].border = border
         self._updateGeometries()
 
+    def setFixed(self, fixed=False, location=MAIN):
+        if not self._panels[location]:
+            self._panels[location] = TTkAppTemplate._Panel()
+        self._panels[location].fixed = fixed
+        self._updateGeometries()
+
     def resizeEvent(self, w, h):
         self._updateGeometries()
+
+    def focusOutEvent(self):
+        self._selected = None
+        self.update()
+
+    def mouseReleaseEvent(self, evt):
+        self._selected = None
+        self.update()
+        return True
+
+    def mousePressEvent(self, evt):
+        self._selected = []
+        self._updateGeometries()
+        spl = self._splitters
+        pns = self._panels
+        for loc in (TTkAppTemplate.TOP, TTkAppTemplate.BOTTOM, TTkAppTemplate.HEADER, TTkAppTemplate.FOOTER):
+            if (s:=spl[loc]) and not pns[loc].fixed and (p:=s['pos'])[1]==evt.y and p[0] <= evt.x <=p[0]+s['size']:
+                self._selected.append(loc)
+        for loc in (TTkAppTemplate.LEFT, TTkAppTemplate.RIGHT):
+            if (s:=spl[loc]) and not pns[loc].fixed and (p:=s['pos'])[0]==evt.x and p[1] <= evt.y <=p[1]+s['size']:
+                self._selected.append(loc)
+        return True
+
+    def mouseDragEvent(self, evt):
+        if not self._selected: return False
+        pns = self._panels
+        for loc in self._selected:
+            x,y,w,h = (p:=pns[loc]).geometry()
+            if   loc == TTkAppTemplate.LEFT:
+                p.size = evt.x-x
+            elif loc == TTkAppTemplate.RIGHT:
+                p.size = w+x-evt.x
+            elif loc in (TTkAppTemplate.HEADER, TTkAppTemplate.TOP):
+                p.size = evt.y-y
+            else:
+                p.size = h+y-evt.y
+        self._updateGeometries()
+        return True
 
     def minimumWidth(self):
         pns = self._panels
@@ -250,14 +304,14 @@ class TTkAppTemplate(TTkContainer):
         bm=bl=br=bt=bb=bh=bf=0
         # A,B,C,D HSplitters
         pt=pb=ph=pf=None
-        if ( (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible() ): pt=p ; ptmin=p.minimumHeight() ; ptmax=p.maximumHeight() ; st=min(max(p.size,ptmin),ptmax) ; bt=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible() ): pb=p ; pbmin=p.minimumHeight() ; pbmax=p.maximumHeight() ; sb=min(max(p.size,pbmin),pbmax) ; bb=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible() ): ph=p ; phmin=p.minimumHeight() ; phmax=p.maximumHeight() ; sh=min(max(p.size,phmin),phmax) ; bh=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible() ): pf=p ; pfmin=p.minimumHeight() ; pfmax=p.maximumHeight() ; sf=min(max(p.size,pfmin),pfmax) ; bf=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible() ): pt=p ; ptmin=p.minimumHeight() ; ptmax=p.maximumHeight() ; st=min(max(p.size,ptmin),ptmax) ; ft=p.fixed ; bt=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible() ): pb=p ; pbmin=p.minimumHeight() ; pbmax=p.maximumHeight() ; sb=min(max(p.size,pbmin),pbmax) ; fb=p.fixed ; bb=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible() ): ph=p ; phmin=p.minimumHeight() ; phmax=p.maximumHeight() ; sh=min(max(p.size,phmin),phmax) ; fh=p.fixed ; bh=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible() ): pf=p ; pfmin=p.minimumHeight() ; pfmax=p.maximumHeight() ; sf=min(max(p.size,pfmin),pfmax) ; ff=p.fixed ; bf=1 if p.border else 0
         # E,F     VSplitters
         pl=pr=None
-        if ( (p:=pns[TTkAppTemplate.LEFT  ]) and p.isVisible() ):  pl=p ; plmin=p.minimumWidth() ; plmax=p.maximumWidth() ; sl=min(max(p.size,plmin),plmax) ; bl=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.RIGHT ]) and p.isVisible() ):  pr=p ; prmin=p.minimumWidth() ; prmax=p.maximumWidth() ; sr=min(max(p.size,prmin),prmax) ; br=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.LEFT  ]) and p.isVisible() ): pl=p ; plmin=p.minimumWidth()  ; plmax=p.maximumWidth()  ; sl=min(max(p.size,plmin),plmax) ; fl=p.fixed ; bl=1 if p.border else 0
+        if ( (p:=pns[TTkAppTemplate.RIGHT ]) and p.isVisible() ): pr=p ; prmin=p.minimumWidth()  ; prmax=p.maximumWidth()  ; sr=min(max(p.size,prmin),prmax) ; fr=p.fixed ; br=1 if p.border else 0
 
         # Main Boundaries
         pm=pns[TTkAppTemplate.MAIN]
@@ -313,18 +367,18 @@ class TTkAppTemplate(TTkContainer):
 
         # Define Splitter geometries
         w,h = self.size()
-        spl[TTkAppTemplate.HEADER] = None if not bh else {'pos':(0   , bm+sh                      ) ,'size':w }
-        spl[TTkAppTemplate.FOOTER] = None if not bf else {'pos':(0   , bm+sh+bh+st+bt+newszh+bb+sb) ,'size':w }
+        spl[loc:=TTkAppTemplate.HEADER] = None if not bh else {'pos':(0   , bm+sh                      ) ,'size':w     , 'fixed':fh  }
+        spl[loc:=TTkAppTemplate.FOOTER] = None if not bf else {'pos':(0   , bm+sh+bh+st+bt+newszh+bb+sb) ,'size':w     , 'fixed':ff  }
 
         ca = sh                          + (bm if ph else 0 )
         cb = bm+sh+bh+st+bt+newszh+bb+sb + (bf if pf else bm)
-        spl[TTkAppTemplate.LEFT]   = None if not bl else {'pos':(bm+sl           , ca             ) ,'size':cb-ca }
-        spl[TTkAppTemplate.RIGHT]  = None if not br else {'pos':(bm+sl+bl+newszw , ca             ) ,'size':cb-ca }
+        spl[loc:=TTkAppTemplate.LEFT]   = None if not bl else {'pos':(bm+sl           , ca             ) ,'size':cb-ca , 'fixed':fl  }
+        spl[loc:=TTkAppTemplate.RIGHT]  = None if not br else {'pos':(bm+sl+bl+newszw , ca             ) ,'size':cb-ca , 'fixed':fr  }
 
         ca = sl              + (bm if pl else 0 )
         cb = bm+sl+bl+newszw + (br if pr else bm)
-        spl[TTkAppTemplate.TOP]    = None if not bt else {'pos':(ca        , bm+sh+bh+st          ) ,'size':cb-ca }
-        spl[TTkAppTemplate.BOTTOM] = None if not bb else {'pos':(ca        , bm+sh+bh+st+bt+newszh) ,'size':cb-ca }
+        spl[loc:=TTkAppTemplate.TOP]    = None if not bt else {'pos':(ca        , bm+sh+bh+st          ) ,'size':cb-ca , 'fixed':ft }
+        spl[loc:=TTkAppTemplate.BOTTOM] = None if not bb else {'pos':(ca        , bm+sh+bh+st+bt+newszh) ,'size':cb-ca , 'fixed':fb }
 
         self.update()
 
@@ -339,54 +393,58 @@ class TTkAppTemplate(TTkContainer):
     #def setLayout(self, layout):
     #    self._panels[TTkAppTemplate.MAIN].item = layout
 
-    def paintEventOld(self, canvas: TTkCanvas):
-        w,h = self.size()
-        pns = self._panels
-
-        sl=sr=st=sb=sh=sf=0
-        bl=br=bt=bb=bh=bf=0
-
-        bm = 1 if pns[TTkAppTemplate.MAIN].border else 0
-        smw,smh = pns[TTkAppTemplate.MAIN].getSize()
-        # A,B,C,D HSplitters
-        pt=pb=ph=pf=None
-        if ( (p:=pns[TTkAppTemplate.TOP])    and p.isVisible() ): pt=p ; st=p.size ; bt=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible() ): pb=p ; sb=p.size ; bb=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible() ): ph=p ; sh=p.size ; bh=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible() ): pf=p ; sf=p.size ; bf=1 if p.border else 0
-        # E,F     VSplitters
-        pl=pr=None
-        if ( (p:=pns[TTkAppTemplate.LEFT])  and p.isVisible() ):  pl=p ; sl=p.size ; bl=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible() ):  pr=p ; sr=p.size ; br=1 if p.border else 0
-
-        if bm: canvas.drawBox(  pos= (0            , 0)                        , size= (w,h) )
-        if bh: canvas.drawHLine(pos= (0            , bm+sh)                    , size= w )
-        if bf: canvas.drawHLine(pos= (0            , bm+sh+bh+st+bt+smh+bb+sb) , size= w )
-
-        ca = sh                       + (bm if ph else 0 )
-        cb = bm+sh+bh+st+bt+smh+bb+sb + (bf if pf else bm)
-        if bl: canvas.drawVLine(pos= (bm+sl        , ca)                    , size= cb-ca )
-        if br: canvas.drawVLine(pos= (bm+sl+bl+smw , ca)                    , size= cb-ca )
-        ca = sl           + (bm if pl else 0 )
-        cb = bm+sl+bl+smw + (br if pr else bm)
-        if bt: canvas.drawHLine(pos= (ca    , bm+sh+bh+st)              , size= cb-ca )
-        if bb: canvas.drawHLine(pos= (ca    , bm+sh+bh+st+bt+smh)       , size= cb-ca )
-
-        return super().paintEvent(canvas)
-
     def paintEvent(self, canvas: TTkCanvas):
         w,h = self.size()
         pns = self._panels
         spl = self._splitters
 
-        if pns[TTkAppTemplate.MAIN].border:
+        if b:=pns[TTkAppTemplate.MAIN].border:
             canvas.drawBox(pos=(0,0), size=(w,h))
 
-        if (sp:=spl[TTkAppTemplate.HEADER]) : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
-        if (sp:=spl[TTkAppTemplate.FOOTER]) : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
-        if (sp:=spl[TTkAppTemplate.LEFT])   : canvas.drawVLine(pos=sp['pos'],size=sp['size'])
-        if (sp:=spl[TTkAppTemplate.RIGHT])  : canvas.drawVLine(pos=sp['pos'],size=sp['size'])
-        if (sp:=spl[TTkAppTemplate.TOP])    : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
-        if (sp:=spl[TTkAppTemplate.BOTTOM]) : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
+        selectColor = TTkColor.fg('#88FF00')
+
+        # hline = ('╞','═','╡')
+        # vline = ('╥','║','╨')
+
+        def drawVLine(sp, color=TTkColor.RST):
+            _x,_y = sp['pos']
+            _w,_h = 1,sp['size']
+            chs = ('│','┬','┴','╿','╽') if sp['fixed'] else ('║','╥','╨','┇','┇')
+            canvas.fill(pos=(_x,_y), size=(_w,_h), color=color, char=chs[0] )
+            canvas.drawChar(pos=(_x,_y),           color=color, char=chs[1]if b and _y==0    else chs[3])
+            canvas.drawChar(pos=(_x,_y+_h-1),      color=color, char=chs[2]if b and _y+_h==h else chs[4])
+        def drawHLine(sp, color=TTkColor.RST):
+            _x,_y = sp['pos']
+            _w,_h = sp['size'],1
+            chs = ('─','├','┤','╾','╼') if sp['fixed'] else ('═','╞','╡','╍','╍')
+            canvas.fill(pos=(_x,_y), size=(_w,_h), color=color, char=chs[0] )
+            canvas.drawChar(pos=(_x,_y),           color=color, char=chs[1]if b and _x==0    else chs[3])
+            canvas.drawChar(pos=(_x+_w-1,_y),      color=color, char=chs[2]if b and _x+_w==w else chs[4])
+
+        # Draw the 4 splittters
+        if (sp:=spl[loc:=TTkAppTemplate.HEADER]) : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+        if (sp:=spl[loc:=TTkAppTemplate.FOOTER]) : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+        if (sp:=spl[loc:=TTkAppTemplate.LEFT])   : drawVLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+        if (sp:=spl[loc:=TTkAppTemplate.RIGHT])  : drawVLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+        if (sp:=spl[loc:=TTkAppTemplate.TOP])    : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+        if (sp:=spl[loc:=TTkAppTemplate.BOTTOM]) : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+
+        # Draw the 12 intersect
+        def drawIntersect(sph,spv,chs):
+            if sph and spv:
+                x = spv['pos'][0]
+                y = sph['pos'][1]
+                ch = chs[( 0 if sph['fixed'] else 0x01 ) | ( 0 if spv['fixed'] else 0x02 )]
+                canvas.drawChar(pos=(x,y), char=ch)
+
+        drawIntersect(spl[TTkAppTemplate.HEADER], spl[TTkAppTemplate.LEFT] , ('┬','╤','╥','╦'))
+        drawIntersect(spl[TTkAppTemplate.HEADER], spl[TTkAppTemplate.RIGHT], ('┬','╤','╥','╦'))
+        drawIntersect(spl[TTkAppTemplate.FOOTER], spl[TTkAppTemplate.LEFT] , ('┴','╧','╨','╩'))
+        drawIntersect(spl[TTkAppTemplate.FOOTER], spl[TTkAppTemplate.RIGHT], ('┴','╧','╨','╩'))
+        drawIntersect(spl[TTkAppTemplate.TOP   ], spl[TTkAppTemplate.LEFT] , ('├','╞','╟','╠'))
+        drawIntersect(spl[TTkAppTemplate.TOP   ], spl[TTkAppTemplate.RIGHT], ('┤','╡','╢','╣'))
+        drawIntersect(spl[TTkAppTemplate.BOTTOM], spl[TTkAppTemplate.LEFT] , ('├','╞','╟','╠'))
+        drawIntersect(spl[TTkAppTemplate.BOTTOM], spl[TTkAppTemplate.RIGHT], ('┤','╡','╢','╣'))
+
 
         return super().paintEvent(canvas)
