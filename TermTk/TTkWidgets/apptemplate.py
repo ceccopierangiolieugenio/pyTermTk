@@ -95,7 +95,7 @@ class TTkAppTemplate(TTkContainer):
                 return wid.maximumHeight()
             return 0x10000
 
-    __slots__ = ('_panels',
+    __slots__ = ('_panels', '_splitters',
                  #Signals
                  )
     def __init__(self, **kwargs):
@@ -107,6 +107,14 @@ class TTkAppTemplate(TTkContainer):
             TTkAppTemplate.RIGHT  : None ,
             TTkAppTemplate.HEADER : None ,
             TTkAppTemplate.FOOTER : None }
+        self._splitters = {
+            TTkAppTemplate.TOP    : None ,
+            TTkAppTemplate.BOTTOM : None ,
+            TTkAppTemplate.LEFT   : None ,
+            TTkAppTemplate.RIGHT  : None ,
+            TTkAppTemplate.HEADER : None ,
+            TTkAppTemplate.FOOTER : None }
+
         super().__init__( **kwargs)
         self.layout().addItem(self._panels[TTkAppTemplate.MAIN].item)
         self._updateGeometries()
@@ -260,6 +268,7 @@ class TTkAppTemplate(TTkContainer):
     def _updateGeometries(self):
         w,h = self.size()
         pns = self._panels
+        spl = self._splitters
 
         sl=sr=st=sb=sh=sf=0
         bm=bl=br=bt=bb=bh=bf=0
@@ -327,6 +336,21 @@ class TTkAppTemplate(TTkContainer):
         if pb: pb.setGeometry( bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb )
         if pf: pf.setGeometry( bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf )
 
+        # Define Splitter geometries
+        w,h = self.size()
+        spl[TTkAppTemplate.HEADER] = None if not bh else {'pos':(0   , bm+sh                      ) ,'size':w }
+        spl[TTkAppTemplate.FOOTER] = None if not bf else {'pos':(0   , bm+sh+bh+st+bt+newszh+bb+sb) ,'size':w }
+
+        ca = sh                          + (bm if ph else 0 )
+        cb = bm+sh+bh+st+bt+newszh+bb+sb + (bf if pf else bm)
+        spl[TTkAppTemplate.LEFT]   = None if not bl else {'pos':(bm+sl           , ca             ) ,'size':cb-ca }
+        spl[TTkAppTemplate.RIGHT]  = None if not br else {'pos':(bm+sl+bl+newszw , ca             ) ,'size':cb-ca }
+
+        ca = sl              + (bm if pl else 0 )
+        cb = bm+sl+bl+newszw + (br if pr else bm)
+        spl[TTkAppTemplate.TOP]    = None if not bt else {'pos':(ca        , bm+sh+bh+st          ) ,'size':cb-ca }
+        spl[TTkAppTemplate.BOTTOM] = None if not bb else {'pos':(ca        , bm+sh+bh+st+bt+newszh) ,'size':cb-ca }
+
         self.update()
 
     def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
@@ -340,7 +364,7 @@ class TTkAppTemplate(TTkContainer):
     #def setLayout(self, layout):
     #    self._panels[TTkAppTemplate.MAIN].item = layout
 
-    def paintEvent(self, canvas: TTkCanvas):
+    def paintEventOld(self, canvas: TTkCanvas):
         w,h = self.size()
         pns = self._panels
 
@@ -372,5 +396,22 @@ class TTkAppTemplate(TTkContainer):
         cb = bm+sl+bl+smw + (br if pr else bm)
         if bt: canvas.drawHLine(pos= (ca    , bm+sh+bh+st)              , size= cb-ca )
         if bb: canvas.drawHLine(pos= (ca    , bm+sh+bh+st+bt+smh)       , size= cb-ca )
+
+        return super().paintEvent(canvas)
+
+    def paintEvent(self, canvas: TTkCanvas):
+        w,h = self.size()
+        pns = self._panels
+        spl = self._splitters
+
+        if pns[TTkAppTemplate.MAIN].border:
+            canvas.drawBox(pos=(0,0), size=(w,h))
+
+        if (sp:=spl[TTkAppTemplate.HEADER]) : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
+        if (sp:=spl[TTkAppTemplate.FOOTER]) : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
+        if (sp:=spl[TTkAppTemplate.LEFT])   : canvas.drawVLine(pos=sp['pos'],size=sp['size'])
+        if (sp:=spl[TTkAppTemplate.RIGHT])  : canvas.drawVLine(pos=sp['pos'],size=sp['size'])
+        if (sp:=spl[TTkAppTemplate.TOP])    : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
+        if (sp:=spl[TTkAppTemplate.BOTTOM]) : canvas.drawHLine(pos=sp['pos'],size=sp['size'])
 
         return super().paintEvent(canvas)
