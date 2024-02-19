@@ -443,12 +443,12 @@ class TTkAppTemplate(TTkContainer):
             canvas.drawChar(pos=(_x+_w-1,_y),      color=color, char=chs[2]if b and _x+_w==w else chs[4])
 
         # Draw the 4 splittters
-        if (sp:=spl[loc:=TTkAppTemplate.HEADER]) : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
-        if (sp:=spl[loc:=TTkAppTemplate.FOOTER]) : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
-        if (sp:=spl[loc:=TTkAppTemplate.LEFT])   : drawVLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
-        if (sp:=spl[loc:=TTkAppTemplate.RIGHT])  : drawVLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
-        if (sp:=spl[loc:=TTkAppTemplate.TOP])    : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
-        if (sp:=spl[loc:=TTkAppTemplate.BOTTOM]) : drawHLine(sp, color=selectColor if self._selected and loc in self._selected else TTkColor.RST)
+        if (sp:=spl[TTkAppTemplate.HEADER]) : drawHLine(sp, color=selectColor if self._selected and TTkAppTemplate.HEADER in self._selected else TTkColor.RST)
+        if (sp:=spl[TTkAppTemplate.FOOTER]) : drawHLine(sp, color=selectColor if self._selected and TTkAppTemplate.FOOTER in self._selected else TTkColor.RST)
+        if (sp:=spl[TTkAppTemplate.LEFT])   : drawVLine(sp, color=selectColor if self._selected and TTkAppTemplate.LEFT   in self._selected else TTkColor.RST)
+        if (sp:=spl[TTkAppTemplate.RIGHT])  : drawVLine(sp, color=selectColor if self._selected and TTkAppTemplate.RIGHT  in self._selected else TTkColor.RST)
+        if (sp:=spl[TTkAppTemplate.TOP])    : drawHLine(sp, color=selectColor if self._selected and TTkAppTemplate.TOP    in self._selected else TTkColor.RST)
+        if (sp:=spl[TTkAppTemplate.BOTTOM]) : drawHLine(sp, color=selectColor if self._selected and TTkAppTemplate.BOTTOM in self._selected else TTkColor.RST)
 
         # Draw the 12 intersect
         def drawIntersect(sph,spv,chs):
