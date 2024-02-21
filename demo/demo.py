@@ -52,6 +52,7 @@ from  showcase.textedit      import demoTextEdit
 from  showcase.dragndrop     import demoDnD
 from  showcase.dndtabs       import demoDnDTabs
 from  showcase.sigmask       import demoSigmask
+from  showcase.apptemplate   import demoAppTemplate
 
 def stupidPythonHighlighter(txt):
     def _colorize(regex, txt, color):
@@ -157,6 +158,7 @@ def demoShowcase(root=None, border=True):
     tabLayouts.addTab(demoLayoutNested()," Nested Layout Test ", 'showcase/layout_nested.py')
     tabLayouts.addTab(demoLayoutSpan(),  " Layout Span Test ",   'showcase/layout_span.py')
     tabLayouts.addTab(demoSplitter(),    " Splitter Test ",      'showcase/splitter.py')
+    tabLayouts.addTab(demoAppTemplate(), " App Template ",       'showcase/apptemplate.py')
     tabLayouts.addMenu("sources", ttk.TTkK.RIGHT, tabLayouts).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"MenuBar")

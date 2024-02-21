@@ -7,6 +7,7 @@ from .frame           import *
 from .resizableframe  import *
 from .window          import *
 from .splitter        import *
+from .apptemplate     import *
 
 # Everything else
 from .about           import *
