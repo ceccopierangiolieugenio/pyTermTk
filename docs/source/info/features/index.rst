@@ -48,7 +48,7 @@ Main features
 Alpha Features
 --------------
 
-  | Those are the feature/poc that are not being extensively tested and can be prone to unexpected behaviour.
+  | Those are the features/poc that are not being extensively tested and can be prone to unexpected behaviour.
   | Their APIs may change before the final release to address bugs or improving the overall design implementation.
 
 * Text Editor

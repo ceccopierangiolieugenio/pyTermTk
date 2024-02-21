@@ -31,14 +31,14 @@ from TermTk.TTkLayouts import TTkLayout, TTkGridLayout
 from TermTk.TTkWidgets.container import TTkWidget, TTkContainer
 
 class TTkAppTemplate(TTkContainer):
-    ''' TTkAppTemplate Layout sizes:
+    ''' TTkAppTemplate Layout:
 
     ::
 
         App Template Layout
         ┌─────────────────────────────────┐
         │         Header                  │
-        ├─────────┬──────────────┬────────┤ H (1,2,3)
+        ├─────────┬──────────────┬────────┤ H
         │         │   Top        │        │
         │         ├──────────────┤        │ T
         │         │              │        │
@@ -47,7 +47,7 @@ class TTkAppTemplate(TTkContainer):
         │         │              │        │
         │         ├──────────────┤        │ B
         │         │   Bottom     │        │
-        ├─────────┴──────────────┴────────┤ F (1,2,3)
+        ├─────────┴──────────────┴────────┤ F
         │         Footer                  │
         └─────────────────────────────────┘
                   R              L
@@ -373,7 +373,7 @@ class TTkAppTemplate(TTkContainer):
                 if newszh > mmaxh and pt: pt.size = st = min(ptmax, h-mmaxh-sf-sb-sh) ; newszh=h-st-sb-sh-sf
                 if newszh > mmaxh and ph: ph.size = sh = min(phmax, h-mmaxh-sf-sb-st) ; newszh=h-st-sb-sh-sf
 
-        # check vertical sizes
+        # Resize any panel to the proper dimension
         w+=bl+br
         h+=bt+bb+bh+bf
         pm.setGeometry(        bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh )

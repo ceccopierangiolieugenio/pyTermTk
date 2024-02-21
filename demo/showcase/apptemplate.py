@@ -59,12 +59,12 @@ class AppTestWidget(ttk.TTkContainer):
 def demoAppTemplate(root=None):
     at = ttk.TTkAppTemplate(parent=root)
 
-    twl = ttk.TTkTestWidgetSizes(border=False, name="Left",   minSize=( 15,  5), maxSize=( 50, 25))
-    twr = ttk.TTkTestWidgetSizes(border=False, name="Right",  minSize=( 15,  5), maxSize=( 50, 25))
-    twh = ttk.TTkTestWidgetSizes(border=False, name="Header", minSize=( 15,  3), maxSize=(160,  7))
-    twt = ttk.TTkTestWidgetSizes(border=False, name="Top",    minSize=( 15,  3), maxSize=(100,  7))
-    twb = ttk.TTkTestWidgetSizes(border=False, name="Bottom", minSize=( 15,  3), maxSize=(100,  7))
-    twf = ttk.TTkTestWidgetSizes(border=False, name="Footer", minSize=( 15,  3), maxSize=(160,  7))
+    twl = ttk.TTkTestWidgetSizes(border=False, name="Left",   minSize=( 15,  5), maxSize=( 50, 0x1000))
+    twr = ttk.TTkTestWidgetSizes(border=False, name="Right",  minSize=( 15,  5), maxSize=( 50, 0x1000))
+    twh = ttk.TTkTestWidgetSizes(border=False, name="Header", minSize=( 15,  3), maxSize=(0x1000,  10))
+    twt = ttk.TTkTestWidgetSizes(border=False, name="Top",    minSize=( 15,  3), maxSize=(0x1000,  10))
+    twb = ttk.TTkTestWidgetSizes(border=False, name="Bottom", minSize=( 15,  3), maxSize=(0x1000,  10))
+    twf = ttk.TTkTestWidgetSizes(border=False, name="Footer", minSize=( 15,  3), maxSize=(0x1000,  10))
 
     twm = AppTestWidget(
             at = at,
@@ -75,7 +75,7 @@ def demoAppTemplate(root=None):
                 "Bottom" : {'wid': twb, 'loc':at.BOTTOM},
                 "Right"  : {'wid': twr, 'loc':at.RIGHT},
                 "Left"   : {'wid': twl, 'loc':at.LEFT}},
-            minSize=( 15,  5), maxSize=( 50, 10))
+            minSize=( 15,  5), maxSize=( 0x1000, 0x1000))
 
     at.setWidget(twm, at.MAIN)
     at.setWidget(twl, at.LEFT)
