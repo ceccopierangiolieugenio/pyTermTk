@@ -15,6 +15,7 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.TTkPickers
   TermTk.TTkWidgets.TTkTerminal
   TermTk.TTkWidgets.about
+  TermTk.TTkWidgets.apptemplate
   TermTk.TTkWidgets.button
   TermTk.TTkWidgets.checkbox
   TermTk.TTkWidgets.combobox

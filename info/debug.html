@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debug &mdash; pyTermTk 0.36.0-a
+  <title>Debug &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="TermTk.TTkAbstract" href="../autogen.TermTk/TermTk.TTkAbstract.html" />
+    <link rel="next" title="Resources" href="resources/index.html" />
     <link rel="prev" title="Installation" href="installing.html" /> 
 </head>
 
@@ -66,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#env-variables">Env Variables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#termtk-file-log-log-to-a-file"><strong>TERMTK_FILE_LOG</strong> - Log to a file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#termtk-stacktrace-force-stacktrace-generation-with-ctrl-c"><strong>TERMTK_STACKTRACE</strong> - Force stacktrace generation with CTRL+C</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#termtk-forceserial-force-some-workaround-to-pickup-the-terminal-size-from-the-serial-console"><strong>TERMTK_FORCESERIAL</strong> - Force some workaround to pickup the terminal size from the serial console</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#gui">Gui</a><ul>
@@ -83,6 +84,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -142,6 +144,13 @@
 <h3><strong>TERMTK_STACKTRACE</strong> - Force stacktrace generation with CTRL+C<a class="headerlink" href="#termtk-stacktrace-force-stacktrace-generation-with-ctrl-c" title="Permalink to this heading"></a></h3>
 <p>Use this env variable to force a stacktrace generation to the file defined (i.e. “<strong>stacktrace.txt</strong>”)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">TERMTK_STACKTRACE</span><span class="o">=</span>stacktrace.txt   python3   demo/demo.py
+</pre></div>
+</div>
+</section>
+<section id="termtk-forceserial-force-some-workaround-to-pickup-the-terminal-size-from-the-serial-console">
+<h3><strong>TERMTK_FORCESERIAL</strong> - Force some workaround to pickup the terminal size from the serial console<a class="headerlink" href="#termtk-forceserial-force-some-workaround-to-pickup-the-terminal-size-from-the-serial-console" title="Permalink to this heading"></a></h3>
+<p>Use this env variable if pyTermTk is running on a serial console</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">TERMTK_FORCESERIAL</span><span class="o">=</span><span class="m">1</span>   python3   demo/demo.py
 </pre></div>
 </div>
 </section>
@@ -217,7 +226,7 @@ sudo env <span class="s2">&quot;PATH=</span><span class="nv">$PATH</span><span c
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="installing.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../autogen.TermTk/TermTk.TTkAbstract.html" class="btn btn-neutral float-right" title="TermTk.TTkAbstract" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="resources/index.html" class="btn btn-neutral float-right" title="Resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -20,6 +20,7 @@ TermTk.TTkCore
   TermTk.TTkCore.helper
   TermTk.TTkCore.log
   TermTk.TTkCore.propertyanimation
+  TermTk.TTkCore.shortcut
   TermTk.TTkCore.signal
   TermTk.TTkCore.string
   TermTk.TTkCore.timer

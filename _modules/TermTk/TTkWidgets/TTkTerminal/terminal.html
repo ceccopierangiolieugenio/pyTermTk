@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.TTkTerminal.terminal &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkWidgets.TTkTerminal.terminal &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -144,7 +145,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_terminalView&#39;</span><span class="p">,</span>
                  <span class="c1"># Exported methods</span>
-                 <span class="s1">&#39;termWrite&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;termWrite&#39;</span><span class="p">,</span> <span class="s1">&#39;termSize&#39;</span><span class="p">,</span>
                  <span class="c1"># Exported Signals</span>
                  <span class="s1">&#39;titleChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;bell&#39;</span><span class="p">,</span> <span class="s1">&#39;terminalClosed&#39;</span><span class="p">,</span> <span class="s1">&#39;textSelected&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;termData&#39;</span><span class="p">,</span> <span class="s1">&#39;termResized&#39;</span><span class="p">)</span>
@@ -156,6 +157,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setViewport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_terminalView</span><span class="p">)</span>
 
         <span class="c1"># Export Methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termSize</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terminalView</span><span class="o">.</span><span class="n">termSize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">termWrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terminalView</span><span class="o">.</span><span class="n">termWrite</span>
 
         <span class="c1"># Export Signals</span>

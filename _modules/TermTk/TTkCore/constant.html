@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -162,6 +163,8 @@
     <span class="n">LEFT</span>   <span class="o">=</span> <span class="mh">0x0004</span>
     <span class="n">RIGHT</span>  <span class="o">=</span> <span class="mh">0x0008</span>
     <span class="n">CENTER</span> <span class="o">=</span> <span class="mh">0x0010</span>
+    <span class="n">HEADER</span> <span class="o">=</span> <span class="mh">0x0020</span>
+    <span class="n">FOOTER</span> <span class="o">=</span> <span class="mh">0x0040</span>
 
     <span class="c1"># SelectionMode</span>
     <span class="n">NoSelection</span>         <span class="o">=</span> <span class="mh">0x00</span>
@@ -488,7 +491,16 @@
         <span class="n">KeypadModifier</span>      <span class="o">=</span> <span class="mh">0x20000000</span>
         <span class="sd">&#39;&#39;&#39;A keypad button is pressed.&#39;&#39;&#39;</span>
         <span class="n">GroupSwitchModifier</span> <span class="o">=</span> <span class="mh">0x40000000</span>
-        <span class="sd">&#39;&#39;&#39;X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.&#39;&#39;&#39;</span></div>
+        <span class="sd">&#39;&#39;&#39;X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.&#39;&#39;&#39;</span>
+
+        <span class="n">SHIFT</span> <span class="o">=</span> <span class="n">ShiftModifier</span>
+        <span class="sd">&#39;&#39;&#39;The Shift keys provided on all standard keyboards.&#39;&#39;&#39;</span>
+        <span class="n">META</span>  <span class="o">=</span> <span class="n">MetaModifier</span>
+        <span class="sd">&#39;&#39;&#39;The Meta keys.&#39;&#39;&#39;</span>
+        <span class="n">CTRL</span>  <span class="o">=</span> <span class="n">ControlModifier</span>
+        <span class="sd">&#39;&#39;&#39;The Ctrl keys.&#39;&#39;&#39;</span>
+        <span class="n">ALT</span>   <span class="o">=</span> <span class="n">AltModifier</span>
+        <span class="sd">&#39;&#39;&#39;The normal Alt keys, but not keys like AltGr.&#39;&#39;&#39;</span></div>
 
     <span class="n">NoModifier</span>          <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">NoModifier</span>
     <span class="n">ShiftModifier</span>       <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">ShiftModifier</span>
@@ -498,6 +510,28 @@
     <span class="n">KeypadModifier</span>      <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">KeypadModifier</span>
     <span class="n">GroupSwitchModifier</span> <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">GroupSwitchModifier</span>
 
+    <span class="n">SHIFT</span> <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">SHIFT</span>
+    <span class="n">META</span>  <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">META</span>
+    <span class="n">CTRL</span>  <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">CTRL</span>
+    <span class="n">ALT</span>   <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">ALT</span>
+
+<div class="viewcode-block" id="TTkConstant.ShortcutContext"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.ShortcutContext">[docs]</a>    <span class="k">class</span> <span class="nc">ShortcutContext</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,</span>
+<span class="sd">           the shortcut&#39;s key sequence must be entered by the user in a context where the shortcut is active.</span>
+<span class="sd">           The possible contexts are these:&#39;&#39;&#39;</span>
+        <span class="n">WidgetShortcut</span>             <span class="o">=</span> <span class="mh">0x00</span>
+        <span class="sd">&#39;&#39;&#39;The shortcut is active when its parent widget has focus.&#39;&#39;&#39;</span>
+        <span class="n">WidgetWithChildrenShortcut</span> <span class="o">=</span> <span class="mh">0x03</span>
+        <span class="sd">&#39;&#39;&#39;The shortcut is active when its parent widget, or any of its children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.&#39;&#39;&#39;</span>
+        <span class="n">WindowShortcut</span>             <span class="o">=</span> <span class="mh">0x01</span>
+        <span class="sd">&#39;&#39;&#39;The shortcut is active when its parent widget is a logical subwidget of the active top-level window.&#39;&#39;&#39;</span>
+        <span class="n">ApplicationShortcut</span>        <span class="o">=</span> <span class="mh">0x02</span>
+        <span class="sd">&#39;&#39;&#39;The shortcut is active when one of the applications windows are active.&#39;&#39;&#39;</span></div>
+
+    <span class="n">WidgetShortcut</span>             <span class="o">=</span> <span class="n">ShortcutContext</span><span class="o">.</span><span class="n">WidgetShortcut</span>
+    <span class="n">WidgetWithChildrenShortcut</span> <span class="o">=</span> <span class="n">ShortcutContext</span><span class="o">.</span><span class="n">WidgetWithChildrenShortcut</span>
+    <span class="n">WindowShortcut</span>             <span class="o">=</span> <span class="n">ShortcutContext</span><span class="o">.</span><span class="n">WindowShortcut</span>
+    <span class="n">ApplicationShortcut</span>        <span class="o">=</span> <span class="n">ShortcutContext</span><span class="o">.</span><span class="n">ApplicationShortcut</span>
 
     <span class="n">Key_Escape</span>                  <span class="o">=</span> <span class="mh">0x01000000</span>
     <span class="n">Key_Tab</span>                     <span class="o">=</span> <span class="mh">0x01000001</span>

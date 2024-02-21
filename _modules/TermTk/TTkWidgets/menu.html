@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.menu &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkWidgets.menu &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -180,12 +181,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_checkable</span> <span class="o">=</span> <span class="n">checkable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shortcuts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_highlighted</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">)</span>
-            <span class="n">shortcut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">charAt</span><span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">TTkHelper</span><span class="o">.</span><span class="n">addShortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shortcut</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shortcuts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">index</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">fr</span><span class="o">=</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">termWidth</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="mi">3</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkable</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
@@ -267,6 +262,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
+    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">shortcutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_triggerButton</span><span class="p">()</span>
 
@@ -319,7 +315,10 @@
 
 <div class="viewcode-block" id="TTkMenuButton.addMenu"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.menu.html#TermTk.TTkWidgets.menu.TTkMenuButton.addMenu">[docs]</a>    <span class="k">def</span> <span class="nf">addMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span><span class="n">TTkString</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="nb">object</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkable</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">checked</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;addMenu&#39;&#39;&#39;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span> <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">text</span><span class="p">),</span><span class="n">TTkString</span><span class="p">)</span> <span class="k">else</span> <span class="n">TTkString</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span><span class="p">,</span> <span class="n">shortcuts</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">extractShortcuts</span><span class="p">()</span>
         <span class="n">button</span> <span class="o">=</span> <span class="n">TTkMenuButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">checkable</span><span class="o">=</span><span class="n">checkable</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="n">checked</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">_shortcuts</span> <span class="o">=</span> <span class="p">[</span><span class="n">ch</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">shortcuts</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submenu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">button</span></div>
 
@@ -340,9 +339,7 @@
             <span class="n">canvas</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_submenu</span><span class="p">:</span>
             <span class="n">canvas</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;▶&#39;</span><span class="p">,</span> <span class="n">style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">])</span>
-        <span class="n">off</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shortcuts</span><span class="p">:</span>
-            <span class="n">canvas</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">off</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">charAt</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span><span class="p">)</span></div></div>
+        <span class="n">off</span> <span class="o">=</span> <span class="mi">0</span></div></div>
 
 <span class="k">class</span> <span class="nc">_TTkMenuAreaWidget</span><span class="p">(</span><span class="n">TTkAbstractScrollView</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_submenu&#39;</span><span class="p">,</span><span class="s1">&#39;_minWith&#39;</span><span class="p">,</span><span class="s1">&#39;_caller&#39;</span><span class="p">)</span>
@@ -375,9 +372,9 @@
 
     <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_submenu</span><span class="p">:</span> <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">btns</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_submenu</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="n">TTkMenuButton</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">SpecialKey</span><span class="p">:</span>
             <span class="c1"># Retrieve the current highlighted button</span>
-            <span class="n">btns</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_submenu</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="n">TTkMenuButton</span><span class="p">]</span>
             <span class="n">curBtn</span> <span class="o">=</span> <span class="n">_b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">_b</span> <span class="o">:=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">btns</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">_highlighted</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Up</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cleanHighlight</span><span class="p">()</span>
@@ -406,6 +403,22 @@
                 <span class="k">if</span> <span class="n">curBtn</span><span class="p">:</span>
                     <span class="n">curBtn</span><span class="o">.</span><span class="n">_triggerSubmenu</span><span class="p">()</span>
                 <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Enter</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">curBtn</span><span class="p">:</span>
+                    <span class="n">curBtn</span><span class="o">.</span><span class="n">shortcutEvent</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Handle shortcuts</span>
+            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
+                <span class="n">curBtn</span> <span class="o">=</span> <span class="n">_b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">_b</span> <span class="o">:=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">btns</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">_highlighted</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">curBtn</span><span class="p">:</span>
+                    <span class="n">curBtn</span><span class="o">.</span><span class="n">shortcutEvent</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">btn</span> <span class="ow">in</span> <span class="n">btns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">btn</span><span class="o">.</span><span class="n">_shortcuts</span><span class="p">:</span>
+                    <span class="n">btn</span><span class="o">.</span><span class="n">shortcutEvent</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">keyEvent</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>

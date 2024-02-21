@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.Fancy.tableview &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkWidgets.Fancy.tableview &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -472,21 +473,24 @@
                 <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">modParam</span><span class="p">(</span><span class="n">val</span><span class="o">=-</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columnColors</span><span class="p">]</span>
                 <span class="n">canvas</span><span class="o">.</span><span class="n">drawTableLine</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="n">items</span><span class="o">=</span><span class="n">item</span><span class="p">,</span> <span class="n">sizes</span><span class="o">=</span><span class="n">sizes</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">alignments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_alignments</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TTkFancyTableView"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.Fancy.tableview.html#TermTk.TTkWidgets.Fancy.tableview.TTkFancyTableView">[docs]</a><span class="k">class</span> <span class="nc">TTkFancyTableView</span><span class="p">(</span><span class="n">TTkAbstractScrollViewGridLayout</span><span class="p">):</span>
+<div class="viewcode-block" id="TTkFancyTableView"><a class="viewcode-back" href="../../../../autogen.TermTk/TermTk.TTkWidgets.Fancy.tableview.html#TermTk.TTkWidgets.Fancy.tableview.TTkFancyTableView">[docs]</a><span class="k">class</span> <span class="nc">TTkFancyTableView</span><span class="p">(</span><span class="n">TTkAbstractScrollView</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s1">&#39;_header&#39;</span><span class="p">,</span> <span class="s1">&#39;_tableView&#39;</span><span class="p">,</span> <span class="s1">&#39;_showHeader&#39;</span><span class="p">,</span> <span class="s1">&#39;activated&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_header&#39;</span><span class="p">,</span> <span class="s1">&#39;_tableView&#39;</span><span class="p">,</span> <span class="s1">&#39;_showHeader&#39;</span><span class="p">,</span> <span class="s1">&#39;activated&#39;</span><span class="p">,</span> <span class="s1">&#39;_excludeEvent&#39;</span><span class="p">,</span>
         <span class="c1"># Forwarded Methods</span>
         <span class="s1">&#39;setHeader&#39;</span><span class="p">,</span> <span class="s1">&#39;setColumnColors&#39;</span><span class="p">,</span> <span class="s1">&#39;appendItem&#39;</span><span class="p">,</span> <span class="s1">&#39;itemAt&#39;</span><span class="p">,</span> <span class="s1">&#39;dataAt&#39;</span><span class="p">,</span> <span class="s1">&#39;indexOf&#39;</span><span class="p">,</span> <span class="s1">&#39;insertItem&#39;</span><span class="p">,</span>
         <span class="s1">&#39;removeItem&#39;</span><span class="p">,</span> <span class="s1">&#39;removeItemAt&#39;</span><span class="p">,</span> <span class="s1">&#39;removeItemsFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;doubleClicked&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="p">(</span><span class="n">kwargs</span><span class="o">|</span><span class="p">{</span><span class="s1">&#39;layout&#39;</span><span class="p">:</span><span class="n">TTkGridLayout</span><span class="p">()}))</span>
         <span class="k">if</span> <span class="s1">&#39;parent&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_showHeader</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;showHeader&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span> <span class="o">=</span> <span class="n">_TTkFancyTableView</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">_TTkFancyTableViewHeader</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span> <span class="o">=</span> <span class="n">_TTkFancyTableView</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">_TTkFancyTableViewHeader</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewChanged</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">viewMovedTo</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_viewMovedTo</span><span class="p">)</span>
         <span class="c1"># Forward the tableSignals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">activated</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">activated</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doubleClicked</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">doubleClicked</span>
@@ -505,9 +509,38 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">removeItemAt</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">removeItemAt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">removeItemsFrom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">removeItemsFrom</span>
 
+    <span class="nd">@pyTTkSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_viewChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span><span class="p">:</span> <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_viewMovedTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span><span class="p">:</span> <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewMoveTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
     <span class="nd">@pyTTkSlot</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">viewMoveTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">viewMoveTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">fw</span><span class="p">,</span> <span class="n">fh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewFullAreaSize</span><span class="p">()</span>
+        <span class="n">dw</span><span class="p">,</span> <span class="n">dh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewDisplayedSize</span><span class="p">()</span>
+        <span class="n">rangex</span> <span class="o">=</span> <span class="n">fw</span> <span class="o">-</span> <span class="n">dw</span>
+        <span class="n">rangey</span> <span class="o">=</span> <span class="n">fh</span> <span class="o">-</span> <span class="n">dh</span>
+        <span class="c1"># TTkLog.debug(f&quot;x:{x},y:{y}, full:{fw,fh}, display:{dw,dh}, range:{rangex,rangey}&quot;)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">rangex</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">rangey</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+        <span class="c1"># TTkLog.debug(f&quot;x:{x},y:{y}, wo:{self._viewOffsetX,self._viewOffsetY}&quot;)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetX</span> <span class="o">==</span> <span class="n">x</span> <span class="ow">and</span> \
+           <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetY</span> <span class="o">==</span> <span class="n">y</span><span class="p">:</span> <span class="c1"># Nothong to do</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">viewMoveTo</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excludeEvent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetX</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewOffsetY</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewMovedTo</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">getViewOffsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tableView</span><span class="o">.</span><span class="n">getViewOffsets</span><span class="p">()</span>

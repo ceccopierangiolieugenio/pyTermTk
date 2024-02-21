@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.Fancy.treewidget &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkWidgets.Fancy.treewidget &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -63,6 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -94,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkTerminal.html">TermTk.TTkWidgets.TTkTerminal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.about.html">TermTk.TTkWidgets.about</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.apptemplate.html">TermTk.TTkWidgets.apptemplate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.button.html">TermTk.TTkWidgets.button</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.checkbox.html">TermTk.TTkWidgets.checkbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.combobox.html">TermTk.TTkWidgets.combobox</a></li>
@@ -160,182 +162,545 @@
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkFancyTreeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/Fancy/treewidget.html#TTkFancyTreeWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItem">
-<span class="sig-name descname"><span class="pre">addItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItem" title="Permalink to this definition"></a></dt>
-<dd><p>Add the item to this <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkGridLayout</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>item</strong> (<a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayoutItem" title="TermTk.TTkLayouts.layout.TTkLayoutItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayoutItem</span></code></a>) – the item to be added</p></li>
-<li><p><strong>row</strong> (<em>int</em>) – the row of the grid, optional, defaults to None</p></li>
-<li><p><strong>col</strong> (<em>int</em>) – the col of the grid, optional, defaults to None</p></li>
-<li><p><strong>rowspan</strong> (<em>int</em>) – the rows used by the item, optional, defaults to 1</p></li>
-<li><p><strong>colspan</strong> (<em>int</em>) – the cols used by the item, optional, defaults to 1</p></li>
-<li><p><strong>direction</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction" title="TermTk.TTkCore.constant.TTkConstant.Direction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Direction</span></code></a>) – The direction the new item will be added if row/col are not specified, defaults to defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL" title="TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL"><code class="xref py py-class docutils literal notranslate"><span class="pre">HORIZONTAL</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItems">
-<span class="sig-name descname"><span class="pre">addItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItems" title="Permalink to this definition"></a></dt>
-<dd><p>Add the items to this <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkGridLayout</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>items</strong> (list of <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayoutItem" title="TermTk.TTkLayouts.layout.TTkLayoutItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayoutItem</span></code></a>) – the items to be added</p></li>
-<li><p><strong>row</strong> (<em>int</em>) – the row of the grid, optional, defaults to None</p></li>
-<li><p><strong>col</strong> (<em>int</em>) – the col of the grid, optional, defaults to None</p></li>
-<li><p><strong>rowspan</strong> (<em>int</em>) – the rows used by the item, optional, defaults to 1</p></li>
-<li><p><strong>colspan</strong> (<em>int</em>) – the cols used by the item, optional, defaults to 1</p></li>
-<li><p><strong>direction</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction" title="TermTk.TTkCore.constant.TTkConstant.Direction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Direction</span></code></a>) – The direction the new items will be added if row/col are not specified, defaults to defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL" title="TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL"><code class="xref py py-class docutils literal notranslate"><span class="pre">HORIZONTAL</span></code></a></p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addWidget">
-<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Add the widget to this <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkGridLayout</span></code>, this function uses <a class="reference internal" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItem" title="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addItem()</span></code></a></p>
+<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addWidget" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.close" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dragEnterEvent">
+<span class="sig-name descname"><span class="pre">dragEnterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dragEnterEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>widget</strong> (<a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget" title="TermTk.TTkWidgets.widget.TTkWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code></a>) – the widget to be added</p></li>
-<li><p><strong>row</strong> (<em>int</em>) – the row of the grid, optional, defaults to None</p></li>
-<li><p><strong>col</strong> (<em>int</em>) – the col of the grid, optional, defaults to None</p></li>
-<li><p><strong>rowspan</strong> (<em>int</em>) – the rows used by the widget, optional, defaults to 1</p></li>
-<li><p><strong>colspan</strong> (<em>int</em>) – the cols used by the widget, optional, defaults to 1</p></li>
-<li><p><strong>direction</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction" title="TermTk.TTkCore.constant.TTkConstant.Direction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Direction</span></code></a>) – The direction the new item will be added if row/col are not specified, defaults to defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL" title="TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL"><code class="xref py py-class docutils literal notranslate"><span class="pre">HORIZONTAL</span></code></a></p></li>
-</ul>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addWidgets">
-<span class="sig-name descname"><span class="pre">addWidgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colspan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addWidgets" title="Permalink to this definition"></a></dt>
-<dd><p>Add the widgets to this <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkGridLayout</span></code>, this function uses <a class="reference internal" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItem" title="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.addItem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addItem()</span></code></a></p>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dragLeaveEvent">
+<span class="sig-name descname"><span class="pre">dragLeaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dragLeaveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>widgets</strong> (list of <a class="reference internal" href="TermTk.TTkWidgets.widget.html#TermTk.TTkWidgets.widget.TTkWidget" title="TermTk.TTkWidgets.widget.TTkWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code></a>) – the widgets to be added</p></li>
-<li><p><strong>row</strong> (<em>int</em>) – the row of the grid, optional, defaults to None</p></li>
-<li><p><strong>col</strong> (<em>int</em>) – the col of the grid, optional, defaults to None</p></li>
-<li><p><strong>rowspan</strong> (<em>int</em>) – the rows used by the widget, optional, defaults to 1</p></li>
-<li><p><strong>colspan</strong> (<em>int</em>) – the cols used by the widget, optional, defaults to 1</p></li>
-<li><p><strong>direction</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction" title="TermTk.TTkCore.constant.TTkConstant.Direction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Direction</span></code></a>) – The direction the new items will be added if row/col are not specified, defaults to defaults to <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL" title="TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL"><code class="xref py py-class docutils literal notranslate"><span class="pre">HORIZONTAL</span></code></a></p></li>
-</ul>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.insertWidget">
-<span class="sig-name descname"><span class="pre">insertWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.insertWidget" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dragMoveEvent">
+<span class="sig-name descname"><span class="pre">dragMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dragMoveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dropEvent">
+<span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.dropEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.enterEvent">
+<span class="sig-name descname"><span class="pre">enterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.enterEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse enter events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.getPadding">
+<span class="sig-name descname"><span class="pre">getPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.getPadding" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve the widget padding sizes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list[top, bottom, left, right]: the 4 padding sizes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.hide">
+<span class="sig-name descname"><span class="pre">hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.hide" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.insertWidgets">
-<span class="sig-name descname"><span class="pre">insertWidgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.insertWidgets" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.keyEvent">
+<span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.keyEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.layer">
-<span class="sig-name descname"><span class="pre">layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.layer" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.keyPressEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key press events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.keyReleaseEvent">
+<span class="sig-name descname"><span class="pre">keyReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.keyReleaseEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key release events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.layout">
+<span class="sig-name descname"><span class="pre">layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.layout" title="Permalink to this definition"></a></dt>
+<dd><p>Get the layout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The layout used</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayout</span></code> or derived</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.leaveEvent">
+<span class="sig-name descname"><span class="pre">leaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.leaveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse leave events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.lowerWidget">
-<span class="sig-name descname"><span class="pre">lowerWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.lowerWidget" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">lowerWidget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.lowerWidget" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.maximumHeight">
-<span class="sig-name descname"><span class="pre">maximumHeight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.maximumHeight" title="Permalink to this definition"></a></dt>
-<dd><p>process the widgets and get the min size</p>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseDoubleClickEvent">
+<span class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseDoubleClickEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.maximumWidth">
-<span class="sig-name descname"><span class="pre">maximumWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.maximumWidth" title="Permalink to this definition"></a></dt>
-<dd><p>process the widgets and get the min size</p>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseDragEvent">
+<span class="sig-name descname"><span class="pre">mouseDragEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseDragEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.minimumHeight">
-<span class="sig-name descname"><span class="pre">minimumHeight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.minimumHeight" title="Permalink to this definition"></a></dt>
-<dd><p>process the widgets and get the min size</p>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseEvent">
+<span class="sig-name descname"><span class="pre">mouseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseEvent" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Don’t touch this!</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.minimumWidth">
-<span class="sig-name descname"><span class="pre">minimumWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.minimumWidth" title="Permalink to this definition"></a></dt>
-<dd><p>process the widgets and get the min size</p>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseMoveEvent">
+<span class="sig-name descname"><span class="pre">mouseMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseMoveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse move events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.parent">
-<span class="sig-name descname"><span class="pre">parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.parent" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mousePressEvent">
+<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mousePressEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseReleaseEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse release events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseTapEvent">
+<span class="sig-name descname"><span class="pre">mouseTapEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.mouseTapEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.move" title="Permalink to this definition"></a></dt>
+<dd><p>Move the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>int</em>) – x position</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – y position</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.moveEvent">
+<span class="sig-name descname"><span class="pre">moveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.moveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Event Callback triggered after a successful move</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.paintChildCanvas">
+<span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.paintChildCanvas" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Don’t touch this!</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkCore.canvas.html#TermTk.TTkCore.canvas.TTkCanvas" title="TermTk.TTkCore.canvas.TTkCanvas"><span class="pre">TTkCanvas</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.paintEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Paint Event callback,
+this need to be overridden in the widget.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.raiseWidget">
-<span class="sig-name descname"><span class="pre">raiseWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.raiseWidget" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeItem">
-<span class="sig-name descname"><span class="pre">removeItem</span></span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeItem" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeItems">
-<span class="sig-name descname"><span class="pre">removeItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeItems" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">raiseWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raiseParent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.raiseWidget" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeWidget">
 <span class="sig-name descname"><span class="pre">removeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Remove a widget from this Layout</p>
+<dd><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.resize">
+<span class="sig-name descname"><span class="pre">resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.resize" title="Permalink to this definition"></a></dt>
+<dd><p>Resize the widget</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>widget</strong> (<a class="reference internal" href="TermTk.TTkWidgets.html#module-TermTk.TTkWidgets" title="TermTk.TTkWidgets"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidgets</span></code></a>) – the widget to be removed</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> (<em>int</em>) – the new width</p></li>
+<li><p><strong>h</strong> (<em>int</em>) – the new height</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeWidgets">
-<span class="sig-name descname"><span class="pre">removeWidgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.removeWidgets" title="Permalink to this definition"></a></dt>
-<dd><p>Remove a list of widget from this Layout</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>widgets</strong> (list of <a class="reference internal" href="TermTk.TTkWidgets.html#module-TermTk.TTkWidgets" title="TermTk.TTkWidgets"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidgets</span></code></a>) – the widget to be removed</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.resizeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Event Callback triggered after a successful resize</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setDisabled">
+<span class="sig-name descname"><span class="pre">setDisabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setDisabled" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setEnabled" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setFocus">
+<span class="sig-name descname"><span class="pre">setFocus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setFocus" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setGeometry">
-<span class="sig-name descname"><span class="pre">setGeometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setGeometry" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setGeometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setGeometry" title="Permalink to this definition"></a></dt>
+<dd><p>Resize and move the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>int</em>) – x position</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – y position</p></li>
+<li><p><strong>w</strong> (<em>int</em>) – the new width</p></li>
+<li><p><strong>h</strong> (<em>int</em>) – the new height</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setName" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setLayer">
-<span class="sig-name descname"><span class="pre">setLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setLayer" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setPadding">
+<span class="sig-name descname"><span class="pre">setPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setPadding" title="Permalink to this definition"></a></dt>
+<dd><p>Set the padding of the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top</strong> (<em>int</em>) – top padding</p></li>
+<li><p><strong>bottom</strong> (<em>int</em>) – bottom padding</p></li>
+<li><p><strong>left</strong> (<em>int</em>) – left padding</p></li>
+<li><p><strong>right</strong> (<em>int</em>) – right padding</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setVisible">
+<span class="sig-name descname"><span class="pre">setVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setVisible" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setOffset">
-<span class="sig-name descname"><span class="pre">setOffset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setOffset" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.show" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setParent">
-<span class="sig-name descname"><span class="pre">setParent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.setParent" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.wheelEvent">
+<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.Fancy.treewidget.TTkFancyTreeWidget.wheelEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse wheel events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

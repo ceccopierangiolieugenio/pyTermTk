@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.texedit &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkWidgets.texedit &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -224,12 +225,12 @@
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s1">&#39;_textDocument&#39;</span><span class="p">,</span> <span class="s1">&#39;_hsize&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;_textCursor&#39;</span><span class="p">,</span> <span class="s1">&#39;_textColor&#39;</span><span class="p">,</span> <span class="s1">&#39;_cursorParams&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;_textCursor&#39;</span><span class="p">,</span> <span class="s1">&#39;_cursorParams&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_textWrap&#39;</span><span class="p">,</span> <span class="s1">&#39;_lineWrapMode&#39;</span><span class="p">,</span> <span class="s1">&#39;_lastWrapUsed&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_replace&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_readOnly&#39;</span><span class="p">,</span> <span class="s1">&#39;_multiCursor&#39;</span><span class="p">,</span>
             <span class="s1">&#39;_clipboard&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;_preview&#39;</span><span class="p">,</span> <span class="s1">&#39;_previewWidth&#39;</span><span class="p">,</span>
+            <span class="c1"># &#39;_preview&#39;, &#39;_previewWidth&#39;,</span>
             <span class="s1">&#39;_multiLine&#39;</span><span class="p">,</span>
             <span class="c1"># # Forwarded Methods</span>
             <span class="c1"># &#39;wrapWidth&#39;,    &#39;setWrapWidth&#39;,</span>
@@ -905,7 +906,7 @@
             <span class="s1">&#39;toAnsi&#39;</span><span class="p">,</span> <span class="s1">&#39;toRawText&#39;</span><span class="p">,</span> <span class="s1">&#39;toPlainText&#39;</span><span class="p">,</span> <span class="c1"># &#39;toHtml&#39;, &#39;toMarkdown&#39;,</span>
             <span class="c1"># Signals</span>
             <span class="s1">&#39;focusChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;currentColorChanged&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;undoAvilable&#39;</span><span class="p">,</span> <span class="s1">&#39;redoAvailable&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;undoAvailable&#39;</span><span class="p">,</span> <span class="s1">&#39;redoAvailable&#39;</span><span class="p">,</span>
             <span class="s1">&#39;textChanged&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">textEditView</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lineNumber</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lineNumberStarting</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

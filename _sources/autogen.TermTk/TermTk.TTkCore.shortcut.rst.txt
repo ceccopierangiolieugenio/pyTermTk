@@ -1,0 +1,8 @@
+
+TermTk.TTkCore.shortcut
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkCore.shortcut
+
+.. currentmodule:: TermTk.TTkCore.shortcut
+

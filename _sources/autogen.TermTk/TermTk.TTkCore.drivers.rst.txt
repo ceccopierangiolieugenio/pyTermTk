@@ -13,6 +13,7 @@ TermTk.TTkCore.drivers
   TermTk.TTkCore.drivers.pyodide
   TermTk.TTkCore.drivers.term_pyodide
   TermTk.TTkCore.drivers.term_unix
+  TermTk.TTkCore.drivers.term_unix_serial
   TermTk.TTkCore.drivers.term_windows
   TermTk.TTkCore.drivers.unix
   TermTk.TTkCore.drivers.unix_thread

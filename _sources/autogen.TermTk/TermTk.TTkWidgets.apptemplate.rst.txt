@@ -1,0 +1,16 @@
+
+TermTk.TTkWidgets.apptemplate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.apptemplate
+
+.. currentmodule:: TermTk.TTkWidgets.apptemplate
+
+
+
+TTkAppTemplate
+==============
+
+.. autoclass:: TTkAppTemplate
+   :members:
+   :inherited-members:

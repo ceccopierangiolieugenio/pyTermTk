@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkUiTools.uiloader &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkUiTools.uiloader &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -128,13 +129,11 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkUiLoader&#39;</span><span class="p">]</span>
 
-<span class="c1"># Yaml is not included by default</span>
-<span class="c1"># import yaml</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
 <span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkLog</span>
-<span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkCfg</span><span class="p">,</span> <span class="n">TTkColor</span>
-<span class="kn">from</span> <span class="nn">TermTk.TTkLayouts</span> <span class="kn">import</span> <span class="n">TTkLayout</span><span class="p">,</span> <span class="n">TTkGridLayout</span><span class="p">,</span> <span class="n">TTkVBoxLayout</span><span class="p">,</span> <span class="n">TTkHBoxLayout</span>
+<span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkCfg</span><span class="p">,</span> <span class="n">TTkK</span><span class="p">,</span> <span class="n">TTkColor</span>
+<span class="kn">from</span> <span class="nn">TermTk.TTkLayouts</span> <span class="kn">import</span> <span class="n">TTkLayout</span><span class="p">,</span> <span class="n">TTkGridLayout</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkWidgets</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkTestWidgets</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkUiTools.uiproperties</span> <span class="kn">import</span> <span class="n">TTkUiProperties</span>

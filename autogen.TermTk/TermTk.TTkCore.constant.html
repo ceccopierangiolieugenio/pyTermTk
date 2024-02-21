@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -63,6 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -82,6 +83,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.helper.html">TermTk.TTkCore.helper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.log.html">TermTk.TTkCore.log</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.propertyanimation.html">TermTk.TTkCore.propertyanimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.shortcut.html">TermTk.TTkCore.shortcut</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.signal.html">TermTk.TTkCore.signal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.string.html">TermTk.TTkCore.string</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkCore.timer.html">TermTk.TTkCore.timer</a></li>
@@ -1365,9 +1367,21 @@ is raised.</p>
 <dd><p>Input <a class="reference internal" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecialKey</span></code></a> modifiers</p>
 <p>Modifier reported by <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod"><code class="xref py py-class docutils literal notranslate"><span class="pre">mod</span></code></a></p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.ALT">
+<span class="sig-name descname"><span class="pre">ALT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.ALT" title="Permalink to this definition"></a></dt>
+<dd><p>The normal Alt keys, but not keys like AltGr.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier">
 <span class="sig-name descname"><span class="pre">AltModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.AltModifier" title="Permalink to this definition"></a></dt>
 <dd><p>An Alt key on the keyboard is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.CTRL">
+<span class="sig-name descname"><span class="pre">CTRL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67108864</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.CTRL" title="Permalink to this definition"></a></dt>
+<dd><p>The Ctrl keys.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1389,6 +1403,12 @@ is raised.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.META">
+<span class="sig-name descname"><span class="pre">META</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.META" title="Permalink to this definition"></a></dt>
+<dd><p>The Meta keys.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier">
 <span class="sig-name descname"><span class="pre">MetaModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.MetaModifier" title="Permalink to this definition"></a></dt>
 <dd><p>A Meta key on the keyboard is pressed.</p>
@@ -1398,6 +1418,12 @@ is raised.</p>
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier">
 <span class="sig-name descname"><span class="pre">NoModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier" title="Permalink to this definition"></a></dt>
 <dd><p>No modifier key is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.KeyModifier.SHIFT">
+<span class="sig-name descname"><span class="pre">SHIFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33554432</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.KeyModifier.SHIFT" title="Permalink to this definition"></a></dt>
+<dd><p>The Shift keys provided on all standard keyboards.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2303,6 +2329,151 @@ is raised.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ShortcutContext</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.ShortcutContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext" title="Permalink to this definition"></a></dt>
+<dd><p>For a <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkShortcut</span></code> event to occur,
+the shortcut’s key sequence must be entered by the user in a context where the shortcut is active.
+The possible contexts are these:</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.ApplicationShortcut">
+<span class="sig-name descname"><span class="pre">ApplicationShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.ApplicationShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when one of the applications windows are active.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.WidgetShortcut">
+<span class="sig-name descname"><span class="pre">WidgetShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.WidgetShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when its parent widget has focus.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.WidgetWithChildrenShortcut">
+<span class="sig-name descname"><span class="pre">WidgetWithChildrenShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.WidgetWithChildrenShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when its parent widget, or any of its children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.WindowShortcut">
+<span class="sig-name descname"><span class="pre">WindowShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.WindowShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when its parent widget is a logical subwidget of the active top-level window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.as_integer_ratio">
+<span class="sig-name descname"><span class="pre">as_integer_ratio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.as_integer_ratio" title="Permalink to this definition"></a></dt>
+<dd><p>Return integer ratio.</p>
+<p>Return a pair of integers, whose ratio is exactly equal to the original int
+and with a positive denominator.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="go">(10, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="go">(-10, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="go">(0, 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.bit_count">
+<span class="sig-name descname"><span class="pre">bit_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.bit_count" title="Permalink to this definition"></a></dt>
+<dd><p>Number of ones in the binary representation of the absolute value of self.</p>
+<p>Also known as the population count.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">bin</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="go">&#39;0b1101&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="o">.</span><span class="n">bit_count</span><span class="p">()</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.bit_length">
+<span class="sig-name descname"><span class="pre">bit_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.bit_length" title="Permalink to this definition"></a></dt>
+<dd><p>Number of bits necessary to represent self in binary.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">bin</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span>
+<span class="go">&#39;0b100101&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">37</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.conjugate">
+<span class="sig-name descname"><span class="pre">conjugate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.conjugate" title="Permalink to this definition"></a></dt>
+<dd><p>Returns self, the complex conjugate of any int.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.denominator">
+<span class="sig-name descname"><span class="pre">denominator</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.denominator" title="Permalink to this definition"></a></dt>
+<dd><p>the denominator of a rational number in lowest terms</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.from_bytes">
+<span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byteorder</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.from_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Return the integer represented by the given array of bytes.</p>
+<dl class="simple">
+<dt>bytes</dt><dd><p>Holds the array of bytes to convert.  The argument must either
+support the buffer protocol or be an iterable object producing bytes.
+Bytes and bytearray are examples of built-in objects that support the
+buffer protocol.</p>
+</dd>
+<dt>byteorder</dt><dd><p>The byte order used to represent the integer.  If byteorder is ‘big’,
+the most significant byte is at the beginning of the byte array.  If
+byteorder is ‘little’, the most significant byte is at the end of the
+byte array.  To request the native byte order of the host system, use
+<a href="#id65"><span class="problematic" id="id66">`</span></a>sys.byteorder’ as the byte order value.</p>
+</dd>
+<dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.imag">
+<span class="sig-name descname"><span class="pre">imag</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.imag" title="Permalink to this definition"></a></dt>
+<dd><p>the imaginary part of a complex number</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.numerator">
+<span class="sig-name descname"><span class="pre">numerator</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.numerator" title="Permalink to this definition"></a></dt>
+<dd><p>the numerator of a rational number in lowest terms</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.real">
+<span class="sig-name descname"><span class="pre">real</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.real" title="Permalink to this definition"></a></dt>
+<dd><p>the real part of a complex number</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.ShortcutContext.to_bytes">
+<span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byteorder</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.ShortcutContext.to_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Return an array of bytes representing an integer.</p>
+<dl class="simple">
+<dt>length</dt><dd><p>Length of bytes object to use.  An OverflowError is raised if the
+integer is not representable with the given number of bytes.</p>
+</dd>
+<dt>byteorder</dt><dd><p>The byte order used to represent the integer.  If byteorder is ‘big’,
+the most significant byte is at the beginning of the byte array.  If
+byteorder is ‘little’, the most significant byte is at the end of the
+byte array.  To request the native byte order of the host system, use
+<a href="#id67"><span class="problematic" id="id68">`</span></a>sys.byteorder’ as the byte order value.</p>
+</dd>
+<dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
+If signed is False and a negative integer is given, an OverflowError
+is raised.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkConstant.SortOrder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SortOrder</span></span><a class="reference internal" href="../_modules/TermTk/TTkCore/constant.html#TTkConstant.SortOrder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.constant.TTkConstant.SortOrder" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
@@ -2372,7 +2543,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id65"><span class="problematic" id="id66">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id69"><span class="problematic" id="id70">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -2409,7 +2580,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id67"><span class="problematic" id="id68">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id71"><span class="problematic" id="id72">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -2520,7 +2691,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id69"><span class="problematic" id="id70">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id73"><span class="problematic" id="id74">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -2557,7 +2728,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id71"><span class="problematic" id="id72">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id75"><span class="problematic" id="id76">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -2657,7 +2828,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id73"><span class="problematic" id="id74">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id77"><span class="problematic" id="id78">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -2694,7 +2865,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id75"><span class="problematic" id="id76">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id79"><span class="problematic" id="id80">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -2795,7 +2966,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id77"><span class="problematic" id="id78">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id81"><span class="problematic" id="id82">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -2832,7 +3003,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id79"><span class="problematic" id="id80">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id83"><span class="problematic" id="id84">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -2967,7 +3138,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id81"><span class="problematic" id="id82">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id85"><span class="problematic" id="id86">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3004,7 +3175,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id83"><span class="problematic" id="id84">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id87"><span class="problematic" id="id88">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3103,7 +3274,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id85"><span class="problematic" id="id86">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id89"><span class="problematic" id="id90">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3140,7 +3311,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id87"><span class="problematic" id="id88">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id91"><span class="problematic" id="id92">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3221,7 +3392,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id89"><span class="problematic" id="id90">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id93"><span class="problematic" id="id94">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3258,7 +3429,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id91"><span class="problematic" id="id92">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id95"><span class="problematic" id="id96">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3339,7 +3510,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id93"><span class="problematic" id="id94">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id97"><span class="problematic" id="id98">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3376,7 +3547,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id95"><span class="problematic" id="id96">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id99"><span class="problematic" id="id100">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3470,7 +3641,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id97"><span class="problematic" id="id98">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id101"><span class="problematic" id="id102">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3507,7 +3678,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id99"><span class="problematic" id="id100">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id103"><span class="problematic" id="id104">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3613,7 +3784,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id101"><span class="problematic" id="id102">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id105"><span class="problematic" id="id106">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3650,7 +3821,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id103"><span class="problematic" id="id104">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id107"><span class="problematic" id="id108">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3749,7 +3920,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id105"><span class="problematic" id="id106">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id109"><span class="problematic" id="id110">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3786,7 +3957,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id107"><span class="problematic" id="id108">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id111"><span class="problematic" id="id112">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3886,7 +4057,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id109"><span class="problematic" id="id110">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id113"><span class="problematic" id="id114">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -3923,7 +4094,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id111"><span class="problematic" id="id112">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id115"><span class="problematic" id="id116">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -3940,9 +4111,21 @@ is raised.</p>
 <dd><p>Input <a class="reference internal" href="#TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey" title="TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpecialKey</span></code></a> modifiers</p>
 <p>Modifier reported by <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a> -&gt; <a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod"><code class="xref py py-class docutils literal notranslate"><span class="pre">mod</span></code></a></p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.ALT">
+<span class="sig-name descname"><span class="pre">ALT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.ALT" title="Permalink to this definition"></a></dt>
+<dd><p>The normal Alt keys, but not keys like AltGr.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.AltModifier">
 <span class="sig-name descname"><span class="pre">AltModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217728</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.AltModifier" title="Permalink to this definition"></a></dt>
 <dd><p>An Alt key on the keyboard is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.CTRL">
+<span class="sig-name descname"><span class="pre">CTRL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67108864</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.CTRL" title="Permalink to this definition"></a></dt>
+<dd><p>The Ctrl keys.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -3964,6 +4147,12 @@ is raised.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.META">
+<span class="sig-name descname"><span class="pre">META</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.META" title="Permalink to this definition"></a></dt>
+<dd><p>The Meta keys.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.MetaModifier">
 <span class="sig-name descname"><span class="pre">MetaModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">268435456</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.MetaModifier" title="Permalink to this definition"></a></dt>
 <dd><p>A Meta key on the keyboard is pressed.</p>
@@ -3973,6 +4162,12 @@ is raised.</p>
 <dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.NoModifier">
 <span class="sig-name descname"><span class="pre">NoModifier</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.NoModifier" title="Permalink to this definition"></a></dt>
 <dd><p>No modifier key is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.KeyModifier.SHIFT">
+<span class="sig-name descname"><span class="pre">SHIFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33554432</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.KeyModifier.SHIFT" title="Permalink to this definition"></a></dt>
+<dd><p>The Shift keys provided on all standard keyboards.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -4048,7 +4243,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id113"><span class="problematic" id="id114">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id117"><span class="problematic" id="id118">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4085,7 +4280,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id115"><span class="problematic" id="id116">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id119"><span class="problematic" id="id120">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4180,7 +4375,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id117"><span class="problematic" id="id118">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id121"><span class="problematic" id="id122">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4217,7 +4412,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id119"><span class="problematic" id="id120">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id123"><span class="problematic" id="id124">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4311,7 +4506,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id121"><span class="problematic" id="id122">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id125"><span class="problematic" id="id126">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4348,7 +4543,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id123"><span class="problematic" id="id124">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id127"><span class="problematic" id="id128">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4429,7 +4624,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id125"><span class="problematic" id="id126">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id129"><span class="problematic" id="id130">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4466,7 +4661,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id127"><span class="problematic" id="id128">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id131"><span class="problematic" id="id132">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4549,7 +4744,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id129"><span class="problematic" id="id130">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id133"><span class="problematic" id="id134">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4586,7 +4781,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id131"><span class="problematic" id="id132">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id135"><span class="problematic" id="id136">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4711,7 +4906,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id133"><span class="problematic" id="id134">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id137"><span class="problematic" id="id138">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4748,7 +4943,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id135"><span class="problematic" id="id136">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id139"><span class="problematic" id="id140">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4829,7 +5024,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id137"><span class="problematic" id="id138">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id141"><span class="problematic" id="id142">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4866,7 +5061,152 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id139"><span class="problematic" id="id140">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id143"><span class="problematic" id="id144">`</span></a>sys.byteorder’ as the byte order value.</p>
+</dd>
+<dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
+If signed is False and a negative integer is given, an OverflowError
+is raised.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ShortcutContext</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext" title="Permalink to this definition"></a></dt>
+<dd><p>For a <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkShortcut</span></code> event to occur,
+the shortcut’s key sequence must be entered by the user in a context where the shortcut is active.
+The possible contexts are these:</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.ApplicationShortcut">
+<span class="sig-name descname"><span class="pre">ApplicationShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.ApplicationShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when one of the applications windows are active.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.WidgetShortcut">
+<span class="sig-name descname"><span class="pre">WidgetShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.WidgetShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when its parent widget has focus.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.WidgetWithChildrenShortcut">
+<span class="sig-name descname"><span class="pre">WidgetWithChildrenShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.WidgetWithChildrenShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when its parent widget, or any of its children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.WindowShortcut">
+<span class="sig-name descname"><span class="pre">WindowShortcut</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.WindowShortcut" title="Permalink to this definition"></a></dt>
+<dd><p>The shortcut is active when its parent widget is a logical subwidget of the active top-level window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.as_integer_ratio">
+<span class="sig-name descname"><span class="pre">as_integer_ratio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.as_integer_ratio" title="Permalink to this definition"></a></dt>
+<dd><p>Return integer ratio.</p>
+<p>Return a pair of integers, whose ratio is exactly equal to the original int
+and with a positive denominator.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="go">(10, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="go">(-10, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">as_integer_ratio</span><span class="p">()</span>
+<span class="go">(0, 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.bit_count">
+<span class="sig-name descname"><span class="pre">bit_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.bit_count" title="Permalink to this definition"></a></dt>
+<dd><p>Number of ones in the binary representation of the absolute value of self.</p>
+<p>Also known as the population count.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">bin</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="go">&#39;0b1101&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="o">.</span><span class="n">bit_count</span><span class="p">()</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.bit_length">
+<span class="sig-name descname"><span class="pre">bit_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.bit_length" title="Permalink to this definition"></a></dt>
+<dd><p>Number of bits necessary to represent self in binary.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">bin</span><span class="p">(</span><span class="mi">37</span><span class="p">)</span>
+<span class="go">&#39;0b100101&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="mi">37</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.conjugate">
+<span class="sig-name descname"><span class="pre">conjugate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.conjugate" title="Permalink to this definition"></a></dt>
+<dd><p>Returns self, the complex conjugate of any int.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.denominator">
+<span class="sig-name descname"><span class="pre">denominator</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.denominator" title="Permalink to this definition"></a></dt>
+<dd><p>the denominator of a rational number in lowest terms</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.from_bytes">
+<span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">byteorder</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.from_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Return the integer represented by the given array of bytes.</p>
+<dl class="simple">
+<dt>bytes</dt><dd><p>Holds the array of bytes to convert.  The argument must either
+support the buffer protocol or be an iterable object producing bytes.
+Bytes and bytearray are examples of built-in objects that support the
+buffer protocol.</p>
+</dd>
+<dt>byteorder</dt><dd><p>The byte order used to represent the integer.  If byteorder is ‘big’,
+the most significant byte is at the beginning of the byte array.  If
+byteorder is ‘little’, the most significant byte is at the end of the
+byte array.  To request the native byte order of the host system, use
+<a href="#id145"><span class="problematic" id="id146">`</span></a>sys.byteorder’ as the byte order value.</p>
+</dd>
+<dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.imag">
+<span class="sig-name descname"><span class="pre">imag</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.imag" title="Permalink to this definition"></a></dt>
+<dd><p>the imaginary part of a complex number</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.numerator">
+<span class="sig-name descname"><span class="pre">numerator</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.numerator" title="Permalink to this definition"></a></dt>
+<dd><p>the numerator of a rational number in lowest terms</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.real">
+<span class="sig-name descname"><span class="pre">real</span></span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.real" title="Permalink to this definition"></a></dt>
+<dd><p>the real part of a complex number</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.constant.TTkK.ShortcutContext.to_bytes">
+<span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byteorder</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkCore.constant.TTkK.ShortcutContext.to_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Return an array of bytes representing an integer.</p>
+<dl class="simple">
+<dt>length</dt><dd><p>Length of bytes object to use.  An OverflowError is raised if the
+integer is not representable with the given number of bytes.</p>
+</dd>
+<dt>byteorder</dt><dd><p>The byte order used to represent the integer.  If byteorder is ‘big’,
+the most significant byte is at the beginning of the byte array.  If
+byteorder is ‘little’, the most significant byte is at the end of the
+byte array.  To request the native byte order of the host system, use
+<a href="#id147"><span class="problematic" id="id148">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -4947,7 +5287,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id141"><span class="problematic" id="id142">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id149"><span class="problematic" id="id150">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -4984,7 +5324,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id143"><span class="problematic" id="id144">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id151"><span class="problematic" id="id152">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -5095,7 +5435,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id145"><span class="problematic" id="id146">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id153"><span class="problematic" id="id154">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -5132,7 +5472,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id147"><span class="problematic" id="id148">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id155"><span class="problematic" id="id156">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError
@@ -5232,7 +5572,7 @@ buffer protocol.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id149"><span class="problematic" id="id150">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id157"><span class="problematic" id="id158">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Indicates whether two’s complement is used to represent the integer.</p>
 </dd>
@@ -5269,7 +5609,7 @@ integer is not representable with the given number of bytes.</p>
 the most significant byte is at the beginning of the byte array.  If
 byteorder is ‘little’, the most significant byte is at the end of the
 byte array.  To request the native byte order of the host system, use
-<a href="#id151"><span class="problematic" id="id152">`</span></a>sys.byteorder’ as the byte order value.</p>
+<a href="#id159"><span class="problematic" id="id160">`</span></a>sys.byteorder’ as the byte order value.</p>
 </dd>
 <dt>signed</dt><dd><p>Determines whether two’s complement is used to represent the integer.
 If signed is False and a negative integer is given, an OverflowError

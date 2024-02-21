@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkLayouts.layout &mdash; pyTermTk 0.36.0-a
+  <title>TermTk.TTkLayouts.layout &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -60,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../info/resources/index.html">Resources</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -320,9 +321,9 @@
                 <span class="k">if</span> <span class="n">onlyVisible</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span> <span class="k">continue</span>
                 <span class="k">yield</span> <span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">recurse</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cw</span><span class="o">:=</span><span class="n">child</span><span class="o">.</span><span class="n">widget</span><span class="p">(),</span><span class="s1">&#39;rootLayout&#39;</span><span class="p">):</span>
-                    <span class="k">yield from</span> <span class="n">cw</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
+                    <span class="k">yield from</span> <span class="n">cw</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">(</span><span class="n">onlyVisible</span><span class="p">,</span> <span class="n">recurse</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span> <span class="ow">and</span> <span class="n">recurse</span><span class="p">:</span>
-                <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">()</span>
+                <span class="k">yield from</span> <span class="n">child</span><span class="o">.</span><span class="n">iterWidgets</span><span class="p">(</span><span class="n">onlyVisible</span><span class="p">,</span> <span class="n">recurse</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_zSortItems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zSortedItems</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span>
@@ -419,9 +420,9 @@
 <span class="sd">        :type widgets: list of :class:`~TermTk.TTkWidgets`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span> <span class="ow">and</span> \
-               <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">WidgetItem</span><span class="p">:</span>
+               <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">_layoutItemType</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">LayoutItem</span><span class="p">:</span>
                 <span class="n">item</span><span class="o">.</span><span class="n">removeWidgets</span><span class="p">(</span><span class="n">widgets</span><span class="p">)</span></div>
 

@@ -13,6 +13,8 @@ TermTk.TTkCore.TTkTerm
   TermTk.TTkCore.TTkTerm.colors
   TermTk.TTkCore.TTkTerm.colors_ansi_map
   TermTk.TTkCore.TTkTerm.input
+  TermTk.TTkCore.TTkTerm.input_mono
+  TermTk.TTkCore.TTkTerm.input_thread
   TermTk.TTkCore.TTkTerm.inputkey
   TermTk.TTkCore.TTkTerm.inputmouse
   TermTk.TTkCore.TTkTerm.term
