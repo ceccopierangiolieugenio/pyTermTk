@@ -81,5 +81,5 @@ Layout
 * Splitter :class:`~TermTk.TTkWidgets.splitter.TTkSplitter`
 * Scroll Area :class:`~TermTk.TTkWidgets.scrollarea.TTkScrollArea`
 
-.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Apptemplate.gif
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.AppTemplate.gif
 * App Template :class:`~TermTk.TTkWidgets.apptemplate.TTkAppTemplate`
