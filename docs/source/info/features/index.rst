@@ -31,9 +31,9 @@ Main features
 
 * Input/Mouse/Paste Event handling
 
-* Drag and Drop
+* :ref:`Drag and Drop <DnD>`
 
-* Clipboard support
+* :ref:`Clipboard` support
 
 * Drawing primitives
 

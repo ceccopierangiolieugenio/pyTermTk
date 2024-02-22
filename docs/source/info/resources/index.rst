@@ -6,4 +6,6 @@ Resources
    :maxdepth: 1
    :hidden:
 
+   clipboard
    modal
+   dragdrop

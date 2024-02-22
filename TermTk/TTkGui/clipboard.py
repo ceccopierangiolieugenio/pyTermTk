@@ -26,41 +26,96 @@ import importlib.util
 from TermTk.TTkCore.log import TTkLog
 
 class TTkClipboard():
-    _clipboard = ''
-    __slots__ = ('_setText', '_text')
+    '''TTkClipboard
+
+    :ref:`Clipboard`
+
+    Example:
+
+    .. code:: python
+
+        from TermTk import TTkClipboard
+
+        # Initialize the clipboard manager
+        clipboard = TTkClipboard()
+
+        # Push some text to the clipboard
+        clipboard.setText("Example")
+
+        # Get the text from the clipboard
+        text = clipboard.text()
+
+
+    '''
+    _clipboard = ""
+    _manager = None
+    _setText = None
+    _text = None
 
     def __init__(self) -> None:
-        if importlib.util.find_spec('pyperclip'):
-            import pyperclip as _c
-            self._setText = _c.copy
-            self._text = _c.paste
-        elif importlib.util.find_spec('pyperclip3'):
-            import pyperclip3 as _c
-            self._setText = _c.copy
-            self._text = _c.paste
-        elif importlib.util.find_spec('clipboard'):
-            import clipboard as _c
-            self._setText = _c.copy
-            self._text = _c.paste
-        else:
-            self._setText = None
-            self._text = None
+        if not TTkClipboard._manager:
+            TTkClipboard._loadClipboardManager()
 
-    def setText(self, text):
+    @staticmethod
+    def _loadClipboardManager():
+        try:
+            if importlib.util.find_spec('copykitten'):
+                TTkLog.info("Using 'copykitten' as clipboard manager")
+                import copykitten as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
+            elif importlib.util.find_spec('pyperclip'):
+                TTkLog.info("Using 'pyperclip' as clipboard manager")
+                import pyperclip as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
+            elif importlib.util.find_spec('pyperclip3'):
+                TTkLog.info("Using 'pyperclip3' as clipboard manager")
+                import pyperclip3 as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
+            elif importlib.util.find_spec('pyclip'):
+                TTkLog.info("Using 'pyclip' as clipboard manager")
+                import pyclip as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
+            elif importlib.util.find_spec('clipboard'):
+                TTkLog.info("Using 'clipboard' as clipboard manager")
+                import clipboard as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
+            else:
+                TTkLog.info("No clipboard manager found")
+                TTkClipboard._manager = "Not Found"
+        except Exception as e:
+           TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
+           for line in str(e).split("\n"):
+               TTkLog.error(line)
+
+    @staticmethod
+    def setText(text):
+        '''setText'''
         TTkClipboard._clipboard = text
-        if self._setText:
+        if TTkClipboard._setText:
             try:
-                self._setText(str(text))
+                TTkClipboard._setText(str(text))
             except Exception as e:
                 TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
                 for line in str(e).split("\n"):
                     TTkLog.error(line)
 
-    def text(self):
-        if self._text:
-            txt = self._text()
+    @staticmethod
+    def text():
+        '''text'''
+        if TTkClipboard._text:
+            txt = TTkClipboard._text()
             if txt == str(TTkClipboard._clipboard):
                 return TTkClipboard._clipboard
             else:
-                return self._text()
+                return TTkClipboard._text()
         return TTkClipboard._clipboard
