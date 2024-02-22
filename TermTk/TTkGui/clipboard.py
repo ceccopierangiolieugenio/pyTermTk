@@ -30,21 +30,33 @@ class TTkClipboard():
     __slots__ = ('_setText', '_text')
 
     def __init__(self) -> None:
-        if importlib.util.find_spec('pyperclip'):
-            import pyperclip as _c
-            self._setText = _c.copy
-            self._text = _c.paste
-        elif importlib.util.find_spec('pyperclip3'):
-            import pyperclip3 as _c
-            self._setText = _c.copy
-            self._text = _c.paste
-        elif importlib.util.find_spec('clipboard'):
-            import clipboard as _c
-            self._setText = _c.copy
-            self._text = _c.paste
-        else:
-            self._setText = None
-            self._text = None
+        self._setText = None
+        self._text = None
+        try:
+            if importlib.util.find_spec('copykitten'):
+                TTkLog.info("Using 'copykitten' as clipboard manager")
+                import copykitten as _c
+                self._setText = _c.copy
+                self._text = _c.paste
+            elif importlib.util.find_spec('pyperclip'):
+                TTkLog.info("Using 'pyperclip' as clipboard manager")
+                import pyperclip as _c
+                self._setText = _c.copy
+                self._text = _c.paste
+            elif importlib.util.find_spec('pyperclip3'):
+                TTkLog.info("Using 'pyperclip3' as clipboard manager")
+                import pyperclip3 as _c
+                self._setText = _c.copy
+                self._text = _c.paste
+            elif importlib.util.find_spec('clipboard'):
+                TTkLog.info("Using 'clipboard' as clipboard manager")
+                import clipboard as _c
+                self._setText = _c.copy
+                self._text = _c.paste
+        except Exception as e:
+           TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
+           for line in str(e).split("\n"):
+               TTkLog.error(line)
 
     def setText(self, text):
         TTkClipboard._clipboard = text
