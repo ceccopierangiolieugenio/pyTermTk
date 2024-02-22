@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clipboard &mdash; pyTermTk 0.38.0-a
+  <title>Clipboard &mdash; pyTermTk 0.39.0-a
  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -66,6 +66,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Resources</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Clipboard</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clipboard-over-ssh">Clipboard over ssh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#terminal-linux-osx">Terminal (Linux,osx)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#putty">putty</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modal.html">Overlay Widgets (Windows)</a></li>
@@ -148,8 +153,7 @@ python3 demo/showcase/textedit.py
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
 <p>Once initialized the clipboard manager, 2 apis are provided that can be used to access the clipboard (<a class="reference internal" href="../../autogen.TermTk/TermTk.TTkGui.clipboard.html#TermTk.TTkGui.clipboard.TTkClipboard.setText" title="TermTk.TTkGui.clipboard.TTkClipboard.setText"><code class="xref py py-class docutils literal notranslate"><span class="pre">setText</span></code></a>, <a class="reference internal" href="../../autogen.TermTk/TermTk.TTkGui.clipboard.html#TermTk.TTkGui.clipboard.TTkClipboard.text" title="TermTk.TTkGui.clipboard.TTkClipboard.text"><code class="xref py py-class docutils literal notranslate"><span class="pre">text</span></code></a>)</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkClipboard</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkClipboard</span>
 
 <span class="c1"># Initialize the clipboard manager</span>
 <span class="n">clipboard</span> <span class="o">=</span> <span class="n">TTkClipboard</span><span class="p">()</span>
@@ -161,7 +165,28 @@ python3 demo/showcase/textedit.py
 <span class="n">text</span> <span class="o">=</span> <span class="n">clipboard</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
 </pre></div>
 </div>
-</div></blockquote>
+</section>
+<section id="clipboard-over-ssh">
+<h2>Clipboard over ssh<a class="headerlink" href="#clipboard-over-ssh" title="Permalink to this heading"></a></h2>
+<p>As reported in <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk/issues/234#issuecomment-1930919647">234#</a>, it is possible to share the clipboard enabling the X11 forwarding.</p>
+<section id="terminal-linux-osx">
+<h3>Terminal (Linux,osx)<a class="headerlink" href="#terminal-linux-osx" title="Permalink to this heading"></a></h3>
+<p>You can forward X11 using <a class="reference external" href="https://www.man7.org/linux/man-pages/man1/ssh.1.html">ssh</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable X11 forwarding</span>
+ssh -X &lt;IP&gt;
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable trusted X11 forwarding</span>
+ssh -Y &lt;IP&gt;
+</pre></div>
+</div>
+</section>
+<section id="putty">
+<h3>putty<a class="headerlink" href="#putty" title="Permalink to this heading"></a></h3>
+<p>It is possible to forward X11 via putty through these settings</p>
+<img alt="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/1b7fea21-74f2-4351-9a9c-548aaa1581ca" src="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/1b7fea21-74f2-4351-9a9c-548aaa1581ca" />
+</section>
 </section>
 </section>
 

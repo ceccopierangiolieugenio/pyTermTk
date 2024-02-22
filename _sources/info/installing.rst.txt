@@ -120,6 +120,7 @@ Showcase
 * messagebox    `messagebox.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/messagebox.py>`_     (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/messagebox.py>`_)
 * splitter      `splitter.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_       (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/splitter.py>`_)
 * Windows       `windowsflags.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/windowsflags.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/windowsflags.py>`_)
+* AppTemplate   `apptemplate.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/apptemplate.py>`_    (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/apptemplate.py>`_)
 * Tooltip       `test.ui.026.toolTip.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.026.toolTip.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tests/t.ui/test.ui.026.toolTip.py>`_)
 
 .. code:: bash
@@ -146,6 +147,8 @@ Showcase
     python3 demo/showcase/splitter.py
     # Demo - Windows
     python3 demo/showcase/windowsflags.py
+    # Demo - AppTemplate
+    python3 demo/showcase/apptemplate.py
     # Demo - Tooltip
     python3 tests/t.ui/test.ui.026.toolTip.py
 
