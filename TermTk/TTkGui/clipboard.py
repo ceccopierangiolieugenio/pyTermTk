@@ -26,6 +26,28 @@ import importlib.util
 from TermTk.TTkCore.log import TTkLog
 
 class TTkClipboard():
+    '''TTkClipboard
+
+    :ref:`Clipboard`
+
+    Example:
+
+    .. code:: python
+
+        from TermTk import TTkClipboard
+
+        # Initialize the clipboard manager
+        clipboard = TTkClipboard()
+
+        # Push some text to the clipboard
+        clipboard.setText("Example")
+
+        # Get the text from the clipboard
+        text = clipboard.text()
+
+
+    '''
+    _clipboard = ""
     _manager = None
     _setText = None
     _text = None
@@ -55,6 +77,12 @@ class TTkClipboard():
                 TTkClipboard._manager = _c
                 TTkClipboard._setText = _c.copy
                 TTkClipboard._text = _c.paste
+            elif importlib.util.find_spec('pyclip'):
+                TTkLog.info("Using 'pyclip' as clipboard manager")
+                import pyclip as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
             elif importlib.util.find_spec('clipboard'):
                 TTkLog.info("Using 'clipboard' as clipboard manager")
                 import clipboard as _c
@@ -71,6 +99,7 @@ class TTkClipboard():
 
     @staticmethod
     def setText(text):
+        '''setText'''
         TTkClipboard._clipboard = text
         if TTkClipboard._setText:
             try:
@@ -82,6 +111,7 @@ class TTkClipboard():
 
     @staticmethod
     def text():
+        '''text'''
         if TTkClipboard._text:
             txt = TTkClipboard._text()
             if txt == str(TTkClipboard._clipboard):
