@@ -99,7 +99,10 @@ def main():
         rootAppTemplate = root
         root.setLayout(ttk.TTkGridLayout())
     else:
-        rootAppTemplate = ttk.TTkWindow(parent=root,pos = (0,0), size=(100,40), title="Test AppTemplate", border=True, layout=ttk.TTkGridLayout())
+        rootAppTemplate = ttk.TTkWindow(
+                parent=root,pos = (0,0), size=(100,40),
+                flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint | ttk.TTkK.WindowFlag.WindowCloseButtonHint,
+                title="Test AppTemplate", border=True, layout=ttk.TTkGridLayout())
     demoAppTemplate(rootAppTemplate)
     root.mainloop()
 

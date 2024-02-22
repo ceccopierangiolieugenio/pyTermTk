@@ -48,15 +48,46 @@ Usage
 
 Once initialized the clipboard manager, 2 apis are provided that can be used to access the clipboard (:class:`~TermTk.TTkGui.clipboard.TTkClipboard.setText`, :class:`~TermTk.TTkGui.clipboard.TTkClipboard.text`)
 
-    .. code:: python
+.. code:: python
 
-        from TermTk import TTkClipboard
+    from TermTk import TTkClipboard
 
-        # Initialize the clipboard manager
-        clipboard = TTkClipboard()
+    # Initialize the clipboard manager
+    clipboard = TTkClipboard()
 
-        # Push some text to the clipboard
-        clipboard.setText("Example")
+    # Push some text to the clipboard
+    clipboard.setText("Example")
 
-        # Get the text from the clipboard
-        text = clipboard.text()
+    # Get the text from the clipboard
+    text = clipboard.text()
+
+------------------
+Clipboard over ssh
+------------------
+
+As reported in `234# <https://github.com/ceccopierangiolieugenio/pyTermTk/issues/234#issuecomment-1930919647>`_, it is possible to share the clipboard enabling the X11 forwarding.
+
+
+Terminal (Linux,osx)
+~~~~~~~~~~~~~~~~~~~~
+
+You can forward X11 using `ssh <https://www.man7.org/linux/man-pages/man1/ssh.1.html>`_
+
+.. code:: bash
+
+    # Enable X11 forwarding
+    ssh -X <IP>
+
+or
+
+.. code:: bash
+
+    # Enable trusted X11 forwarding
+    ssh -Y <IP>
+
+putty
+~~~~~
+
+It is possible to forward X11 via putty through these settings
+
+.. image:: https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/1b7fea21-74f2-4351-9a9c-548aaa1581ca
