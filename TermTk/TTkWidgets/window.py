@@ -104,13 +104,13 @@ class TTkWindow(TTkResizableFrame):
         self.focusChanged.connect(self._focusChanged)
 
     def _maximize(self):
-        if not (pw := self.parentWidget()): return
+        if not (pl := self.widgetItem().parent()): return
         if self._maxBk:
             self.setGeometry(*self._maxBk)
             self._maxBk = None
         else:
             bk = self.geometry()
-            maxw,maxh = pw.layout().size()
+            maxw,maxh = pl.size()
             self.setGeometry(0,0,maxw,maxh)
             self._maxBk = bk
 
@@ -124,20 +124,19 @@ class TTkWindow(TTkResizableFrame):
             self._redBk = bk
 
     def _minimize(self):
-        if not (pw := self.parentWidget()): return
+        if not (pl := self.widgetItem().parent()): return
         stack = []
-        for li in pw.rootLayout().children():
+        for li in pl.children():
             if li.layoutItemType() == TTkK.WidgetItem and issubclass(type(w:=li.widget()),_MinimizedButton):
                 stack.append(w.y())
         stack = sorted(stack)
-        lx,ly = pw.layout().pos()
-        pos = ly
+        pos = 0
         for v in stack:
             if (pos+2) < v or (v+2) < pos:
                 break
             pos += 3
-        mb = _MinimizedButton(windowWidget=self,text=self._title,border=True,pos=(lx,pos),size=(15,3))
-        pw.rootLayout().addWidget(mb)
+        mb = _MinimizedButton(windowWidget=self,text=self._title,border=True,pos=(0,pos),size=(15,3))
+        pl.addWidget(mb)
         self.hide()
 
     def windowFlag(self):
