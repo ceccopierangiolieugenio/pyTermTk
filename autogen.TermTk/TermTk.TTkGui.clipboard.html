@@ -71,7 +71,10 @@
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkGui.clipboard</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkGui.clipboard</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttkclipboard">TTkClipboard</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.drag.html">TermTk.TTkGui.drag</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textcursor.html">TermTk.TTkGui.textcursor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkGui.textdocument.html">TermTk.TTkGui.textdocument</a></li>
@@ -118,6 +121,38 @@
              
   <section id="module-TermTk.TTkGui.clipboard">
 <span id="termtk-ttkgui-clipboard"></span><h1>TermTk.TTkGui.clipboard<a class="headerlink" href="#module-TermTk.TTkGui.clipboard" title="Permalink to this heading"></a></h1>
+<section id="ttkclipboard">
+<h2>TTkClipboard<a class="headerlink" href="#ttkclipboard" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkGui.clipboard.TTkClipboard">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkClipboard</span></span><a class="reference internal" href="../_modules/TermTk/TTkGui/clipboard.html#TTkClipboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkGui.clipboard.TTkClipboard" title="Permalink to this definition"></a></dt>
+<dd><p><a class="reference internal" href="../info/resources/clipboard.html#clipboard"><span class="std std-ref">Clipboard</span></a></p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkClipboard</span>
+
+<span class="c1"># Initialize the clipboard manager</span>
+<span class="n">clipboard</span> <span class="o">=</span> <span class="n">TTkClipboard</span><span class="p">()</span>
+
+<span class="c1"># Push some text to the clipboard</span>
+<span class="n">clipboard</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Example&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get the text from the clipboard</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">clipboard</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkGui.clipboard.TTkClipboard.setText">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkGui/clipboard.html#TTkClipboard.setText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkGui.clipboard.TTkClipboard.setText" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkGui.clipboard.TTkClipboard.text">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkGui/clipboard.html#TTkClipboard.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkGui.clipboard.TTkClipboard.text" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 

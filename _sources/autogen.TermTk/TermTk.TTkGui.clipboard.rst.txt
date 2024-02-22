@@ -6,3 +6,11 @@ TermTk.TTkGui.clipboard
 
 .. currentmodule:: TermTk.TTkGui.clipboard
 
+
+
+TTkClipboard
+============
+
+.. autoclass:: TTkClipboard
+   :members:
+   :inherited-members:

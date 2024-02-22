@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; pyTermTk 0.38.0-a
+  <title>Clipboard &mdash; pyTermTk 0.38.0-a
  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -22,7 +22,9 @@
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Overlay Widgets (Windows)" href="modal.html" />
+    <link rel="prev" title="Resources" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,11 +59,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../features/widgets.html">Widgets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installing.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing.html#quickstart">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../debug.html">Debug</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Resources</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Resources</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Clipboard</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modal.html">Overlay Widgets (Windows)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dragdrop.html">Drag and Drop</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -95,7 +105,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>&lt;no title&gt;</li>
+          <li><a href="index.html">Resources</a> &raquo;</li>
+      <li>Clipboard</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/info/resources/clipboard.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -105,12 +116,62 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>TBD</p>
+  <section id="clipboard">
+<span id="id1"></span><h1>Clipboard<a class="headerlink" href="#clipboard" title="Permalink to this heading"></a></h1>
+<p><a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> include a clipboard wrapper <a class="reference internal" href="../../autogen.TermTk/TermTk.TTkGui.clipboard.html#TermTk.TTkGui.clipboard.TTkClipboard" title="TermTk.TTkGui.clipboard.TTkClipboard"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkClipboard</span></code></a>, around any of the following libraries:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/klavionik/copykitten">copykitten</a> - Robust, dependency-free way to use the system clipboard in Python.</p></li>
+<li><p><a class="reference external" href="https://github.com/asweigart/pyperclip">pyperclip</a> - Python module for cross-platform clipboard functions.</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/pyperclip3">pyperclip3</a> / <a class="reference external" href="https://github.com/spyoungtech/pyclip">pyclip</a>  - Cross-platform Clipboard module for Python with binary support.</p></li>
+<li><p><a class="reference external" href="https://github.com/terryyin/clipboard">clipboard</a>  - A cross platform clipboard operation library of Python. Works for Windows, Mac and Linux.</p></li>
+</ul>
+<video width="800"
+    src="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/55978bef-be18-4912-a4f1-4b26845325fa"
+    data-canonical-src="https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/55978bef-be18-4912-a4f1-4b26845325fa"
+    controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video><p>The basic <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> does not include any of those clipboard managers.
+An internal implementation whitin the scope of the app itself is still available.</p>
+<p>If any of the previous listed clipboard managers are installed, <a class="reference external" href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> is able to automatically detect and use them.</p>
+<p>i.e.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Assuming no clipboard managers are installed</span>
+<span class="c1"># you can still copy/paste between editors in this session</span>
+<span class="c1"># but no text is copied to/from the system clipboard</span>
+python3 demo/showcase/textedit.py
+
+<span class="c1"># if pyperclip is installed,</span>
+<span class="c1"># pyTermTk defaults the clipboard manager to this tool</span>
+<span class="c1"># any copy/paste is synced with the system clipboard</span>
+<span class="c1"># it is possible to copy/paste from/to an external editor</span>
+pip install pyperclip
+python3 demo/showcase/textedit.py
+</pre></div>
+</div>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<p>Once initialized the clipboard manager, 2 apis are provided that can be used to access the clipboard (<a class="reference internal" href="../../autogen.TermTk/TermTk.TTkGui.clipboard.html#TermTk.TTkGui.clipboard.TTkClipboard.setText" title="TermTk.TTkGui.clipboard.TTkClipboard.setText"><code class="xref py py-class docutils literal notranslate"><span class="pre">setText</span></code></a>, <a class="reference internal" href="../../autogen.TermTk/TermTk.TTkGui.clipboard.html#TermTk.TTkGui.clipboard.TTkClipboard.text" title="TermTk.TTkGui.clipboard.TTkClipboard.text"><code class="xref py py-class docutils literal notranslate"><span class="pre">text</span></code></a>)</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">TermTk</span> <span class="kn">import</span> <span class="n">TTkClipboard</span>
+
+<span class="c1"># Initialize the clipboard manager</span>
+<span class="n">clipboard</span> <span class="o">=</span> <span class="n">TTkClipboard</span><span class="p">()</span>
+
+<span class="c1"># Push some text to the clipboard</span>
+<span class="n">clipboard</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Example&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get the text from the clipboard</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">clipboard</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modal.html" class="btn btn-neutral float-right" title="Overlay Widgets (Windows)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
