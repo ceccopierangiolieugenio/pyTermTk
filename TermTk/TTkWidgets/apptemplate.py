@@ -128,7 +128,7 @@ class TTkAppTemplate(TTkContainer):
                 return wid.maximumHeight()
             return 0x10000
 
-    __slots__ = ('_panels', '_splitters', '_selected'
+    __slots__ = ('_panels', '_splitters', '_menubarLines', '_selected'
                  #Signals
                  )
     def __init__(self, border=False, **kwargs):
@@ -141,6 +141,14 @@ class TTkAppTemplate(TTkContainer):
             TTkAppTemplate.HEADER : None ,
             TTkAppTemplate.FOOTER : None }
         self._splitters = {
+            TTkAppTemplate.TOP    : None ,
+            TTkAppTemplate.BOTTOM : None ,
+            TTkAppTemplate.LEFT   : None ,
+            TTkAppTemplate.RIGHT  : None ,
+            TTkAppTemplate.HEADER : None ,
+            TTkAppTemplate.FOOTER : None }
+        self._menubarLines = {
+            TTkAppTemplate.MAIN   : None ,
             TTkAppTemplate.TOP    : None ,
             TTkAppTemplate.BOTTOM : None ,
             TTkAppTemplate.LEFT   : None ,
@@ -305,68 +313,81 @@ class TTkAppTemplate(TTkContainer):
     def minimumHeight(self):
         pns = self._panels
 
-        # Header and Footer border and minHeight
-        mh=mf=0
-        # Header Footer
-        if (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible(): mh = p.minimumHeight() + ( 1 if p.border else 0 )
-        if (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible(): mf = p.minimumHeight() + ( 1 if p.border else 0 )
+        # Retrieve all the panels parameters and hide the menubar if required
+        def _processPanel(_loc):
+            _p = pns[_loc]
+            if not (_p and _p.isVisible()):
+                return None, 0, False, False
+            return _p, _p.minimumHeight(), _p.border, _p.menubar
 
-        # Center Left,Right:
-        mcr=mcl=0
-        if (p:=pns[TTkAppTemplate.LEFT ]) and p.isVisible():  mcl = p.minimumHeight()
-        if (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible():  mcr = p.minimumHeight()
+        ph,mh,bh,menh = _processPanel(TTkAppTemplate.HEADER)
+        pl,ml,bl,menl = _processPanel(TTkAppTemplate.LEFT)
+        pr,mr,br,menr = _processPanel(TTkAppTemplate.RIGHT)
+        pt,mt,bt,ment = _processPanel(TTkAppTemplate.TOP)
+        pm,mm,bm,menm = _processPanel(TTkAppTemplate.MAIN)
+        pb,mb,bb,menb = _processPanel(TTkAppTemplate.BOTTOM)
+        pf,mf,bf,menf = _processPanel(TTkAppTemplate.FOOTER)
 
-        # Center Top,Bottom
-        mct=mcb=0
-        if (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible(): mct = p.minimumHeight() + ( 1 if p.border else 0 )
-        if (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible(): mcb = p.minimumHeight() + ( 1 if p.border else 0 )
+        # Adjust the sizes based on the menubar and the borders
+        if menh and not (bm): mh += 1
+        if menl and not (bh or (bm and ph==None)): ml += 1
+        if menr and not (bh or (bm and ph==None)): mr += 1
+        if ment and not (bh or (bm and ph==None)): mt += 1
+        if menm and not (bt or (bh and pt==None) or (bm and pt==ph==None)): mm += 1
+        if menb and not (bb): mb += 1
+        if menf and not (bf): mf += 1
 
-        mcm = (p:=pns[TTkAppTemplate.MAIN]).minimumHeight()
-
-        return mh+mf+max(mcr ,mcl, mcm+mct+mcb ) + ( 2 if p.border else 0 )
+        return mh+mf+max(mr ,ml, mm+mt+mb ) + ( 2 if bm else 0 )
 
     def maximumHeight(self):
         pns = self._panels
 
-        # Header and Footer border and minHeight
-        mh=mf=0
-        # Header Footer
-        if (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible(): mh = p.maximumHeight() + ( 1 if p.border else 0 )
-        if (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible(): mf = p.maximumHeight() + ( 1 if p.border else 0 )
+        # Retrieve all the panels parameters and hide the menubar if required
+        def _processPanel(_loc):
+            _p = pns[_loc]
+            if not (_p and _p.isVisible()):
+                return None, 0, False, False
+            return _p, _p.maximumHeight(), _p.border, _p.menubar
 
-        # Center Left,Right:
-        mcr=mcl=0x10000
-        if (p:=pns[TTkAppTemplate.LEFT ]) and p.isVisible():  mcl = p.maximumHeight()
-        if (p:=pns[TTkAppTemplate.RIGHT]) and p.isVisible():  mcr = p.maximumHeight()
+        ph,mh,bh,menh = _processPanel(TTkAppTemplate.HEADER)
+        pl,ml,bl,menl = _processPanel(TTkAppTemplate.LEFT)
+        pr,mr,br,menr = _processPanel(TTkAppTemplate.RIGHT)
+        pt,mt,bt,ment = _processPanel(TTkAppTemplate.TOP)
+        pm,mm,bm,menm = _processPanel(TTkAppTemplate.MAIN)
+        pb,mb,bb,menb = _processPanel(TTkAppTemplate.BOTTOM)
+        pf,mf,bf,menf = _processPanel(TTkAppTemplate.FOOTER)
 
-        # Center Top,Bottom
-        mct=mcb=0
-        if (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible(): mct = p.maximumHeight() + ( 1 if p.border else 0 )
-        if (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible(): mcb = p.maximumHeight() + ( 1 if p.border else 0 )
+        # Adjust the sizes based on the menubar and the borders
+        if menh and not (bm): mh += 1
+        if menl and not (bh or (bm and ph==None)): ml += 1
+        if menr and not (bh or (bm and ph==None)): mr += 1
+        if ment and not (bh or (bm and ph==None)): mt += 1
+        if menm and not (bt or (bh and pt==None) or (bm and pt==ph==None)): mm += 1
+        if menb and not (bb): mb += 1
+        if menf and not (bf): mf += 1
 
-        mcm = (p:=pns[TTkAppTemplate.MAIN]).maximumHeight()
-
-        return mh+mf+min(mcr ,mcl, mcm+mct+mcb ) + ( 2 if p.border else 0 )
+        return mh+mf+min(mr ,ml, mm+mt+mb ) + ( 2 if bm else 0 )
 
     def _updateGeometries(self):
         w,h = self.size()
         if w<=0 or h<=0 or not self.isVisibleAndParent(): return
         pns = self._panels
         spl = self._splitters
+        mbl = self._menubarLines
 
         # Retrieve all the panels parameters and hide the menubar if required
         def _processPanel(_loc):
             _p = pns[_loc]
-            _menu = _p.menubar
             if not (_p and _p.isVisible()):
-                if _menu: _menu.setGeometry(-1,-1,0,0)
+                if _p and (_menu:=_p.menubar):
+                    _menu.setGeometry(-1,-1,0,0)
                 return None, 0, 0x1000, 0, True, 0, None
             _min    = _p.minimumHeight()
             _max    = _p.maximumHeight()
             _size   = min(max(_p.size,_min),_max)
             _fixed  = _p.fixed
             _border = 1 if _p.border else 0
-            return _p, _min, _max, _size, _fixed, _border, _menu
+            return _p, _min, _max, _size, _fixed, _border, _p.menubar
 
         pt,ptmin,ptmax,st,ft,bt,mt = _processPanel(TTkAppTemplate.TOP)
         pb,pbmin,pbmax,sb,fb,bb,mb = _processPanel(TTkAppTemplate.BOTTOM)
@@ -417,22 +438,26 @@ class TTkAppTemplate(TTkContainer):
         # Resize any panel to the proper dimension
         w+=bl+br
         h+=bt+bb+bh+bf
-        def _setGeometries(_p, _x,_y,_w,_h,_bbar):
+        def _setGeometries(_loc, _p, _x,_y,_w,_h,_bbar):
             off = 0
             if _mb:=_p.menubar:
+                if _bbar:
+                    off = 0
+                    mbl[_loc] = None
+                else:
+                    off = 1
+                    mbl[_loc] = {'pos':(_x,_y-1+off),'text':f"┄{'─'*(_w-2)}┄"}
                 off = 0 if _bbar else 1
-                _mb.setGeometry(_x,_y-1+off,_w,1)
+                _mb.setGeometry(_x+1,_y-1+off,_w-2,1)
             _p.setGeometry(_x,_y+off,_w,_h-off)
 
-        _setGeometries(       pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , bt | ( bh and pt==None ) | ( bm and ph==pt==None))
-
-        if pl: _setGeometries(pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
-        if pr: _setGeometries(pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
-
-        if ph: _setGeometries(ph, bm                 , bm                             , w      , sh            , bm)
-        if pt: _setGeometries(pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , bh | ( bm and ph==None))
-        if pb: _setGeometries(pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , bb)
-        if pf: _setGeometries(pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , bf)
+        _setGeometries(       TTkAppTemplate.MAIN   , pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , bt | ( bh and pt==None ) | ( bm and ph==pt==None))
+        if pl: _setGeometries(TTkAppTemplate.LEFT   , pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
+        if pr: _setGeometries(TTkAppTemplate.RIGHT  , pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
+        if ph: _setGeometries(TTkAppTemplate.HEADER , ph, bm                 , bm                             , w      , sh            , bm)
+        if pt: _setGeometries(TTkAppTemplate.TOP    , pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , bh | ( bm and ph==None))
+        if pb: _setGeometries(TTkAppTemplate.BOTTOM , pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , bb)
+        if pf: _setGeometries(TTkAppTemplate.FOOTER , pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , bf)
 
         # Define Splitter geometries
         w,h = self.size()
@@ -466,6 +491,7 @@ class TTkAppTemplate(TTkContainer):
         w,h = self.size()
         pns = self._panels
         spl = self._splitters
+        mbl = self._menubarLines
 
         if b:=pns[TTkAppTemplate.MAIN].border:
             canvas.drawBox(pos=(0,0), size=(w,h))
@@ -521,5 +547,9 @@ class TTkAppTemplate(TTkContainer):
         drawIntersect(spl[TTkAppTemplate.BOTTOM], spl[TTkAppTemplate.LEFT] , ('├','╞','╟','╠'))
         drawIntersect(spl[TTkAppTemplate.BOTTOM], spl[TTkAppTemplate.RIGHT], ('┤','╡','╢','╣'))
 
+        # Draw extra MenuBar Lines if there is no border to place them
+        for l in mbl:
+            if mb:=mbl[l]:
+                canvas.drawText(pos=mb['pos'],text=mb['text'])
 
         return super().paintEvent(canvas)
