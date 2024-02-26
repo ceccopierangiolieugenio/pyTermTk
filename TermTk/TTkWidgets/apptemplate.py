@@ -27,8 +27,10 @@ from TermTk.TTkCore.canvas import TTkCanvas
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout
 from TermTk.TTkWidgets.container import TTkWidget, TTkContainer
+from TermTk.TTkWidgets.menubar import TTkMenuBarLayout
 
 class TTkAppTemplate(TTkContainer):
     ''' TTkAppTemplate Layout:
@@ -65,11 +67,13 @@ class TTkAppTemplate(TTkContainer):
     @dataclass(frozen=False)
     class _Panel:
         # It's either item or widget
-        item:   TTkLayout = None
-        widget: TTkWidget = None
-        size   = 0
-        border = True
-        fixed  = False
+        item:    TTkLayout = None
+        widget:  TTkWidget = None
+        title:   TTkString = None
+        menubar: TTkMenuBarLayout = None
+        size:    int  = 0
+        border:  bool = True
+        fixed:   bool = False
 
         def setGeometry(self,x,y,w,h):
             if it := self.item:
@@ -127,9 +131,9 @@ class TTkAppTemplate(TTkContainer):
     __slots__ = ('_panels', '_splitters', '_selected'
                  #Signals
                  )
-    def __init__(self, **kwargs):
+    def __init__(self, border=False, **kwargs):
         self._panels = {
-            TTkAppTemplate.MAIN   : TTkAppTemplate._Panel(item=TTkLayout()) ,
+            TTkAppTemplate.MAIN   : TTkAppTemplate._Panel(item=TTkLayout(), border=border) ,
             TTkAppTemplate.TOP    : None ,
             TTkAppTemplate.BOTTOM : None ,
             TTkAppTemplate.LEFT   : None ,
@@ -150,39 +154,67 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries()
         self.setFocusPolicy(TTkK.ClickFocus)
 
-    def setWidget(self, widget, location):
-        if not self._panels[location]:
-            self._panels[location] = TTkAppTemplate._Panel()
-        self._panels[location].widget = widget
-        if it:=self._panels[location].item:
+    def setWidget(self, widget, poosition=MAIN, size=None, title=""):
+        if not self._panels[poosition]:
+            self._panels[poosition] = TTkAppTemplate._Panel()
+        if wid:=self._panels[poosition].widget:
+            self.layout().removeWidget(wid)
+            self._panels[poosition].widget = None
+        if it:=self._panels[poosition].item:
             self.layout().removeItem(it)
-            self._panels[location].item = None
+            self._panels[poosition].item = None
         if widget:
+            self._panels[poosition].widget = widget
             self.layout().addWidget(widget)
-            self._panels[location].size = widget.minimumWidth() if location in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else widget.maximumWidth()
+            self._panels[poosition].title = TTkString(title)
+            self._panels[poosition].size = ( size if size is not None else
+                                            widget.minimumWidth() if poosition in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else
+                                            widget.minimumHeight() )
         self._updateGeometries()
 
-    def setItem(self, item, location):
-        if not self._panels[location]:
-            self._panels[location] = TTkAppTemplate._Panel()
-        self._panels[location].item = item
-        if wid:=self._panels[location].widget:
-            self.layout().removeWdget(wid)
-            self._panels[location].widget = None
+    def setItem(self, item, poosition=MAIN, size=None, title=""):
+        if not self._panels[poosition]:
+            self._panels[poosition] = TTkAppTemplate._Panel()
+        if wid:=self._panels[poosition].widget:
+            self.layout().removeWidget(wid)
+            self._panels[poosition].widget = None
+        if it:=self._panels[poosition].item:
+            self.layout().removeItem(it)
+            self._panels[poosition].item = None
         if item:
+            self._panels[poosition].item = item
             self.layout().addItem(item)
+            self._panels[poosition].title = TTkString(title)
+            self._panels[poosition].size = ( size if size is not None else
+                                            item.minimumWidth() if poosition in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else
+                                            item.minimumHeight() )
         self._updateGeometries()
 
-    def setBorder(self, border=True, location=MAIN):
-        if not self._panels[location]:
-            self._panels[location] = TTkAppTemplate._Panel()
-        self._panels[location].border = border
+    def menuBar(self, position=MAIN):
+        return None if not self._panels[position] else self._panels[position].menubar
+
+    def setMenuBar(self, menuBar, position=MAIN):
+        if not self._panels[position]:
+            self._panels[position] = TTkAppTemplate._Panel()
+        p = self._panels[position]
+        if p.menubar:
+            self.rootLayout().removeItem(p.menubar)
+            # TODO: Dispose the menubar
+        p.menubar = menuBar
+        if menuBar:
+            self.rootLayout().addItem(p.menubar)
         self._updateGeometries()
 
-    def setFixed(self, fixed=False, location=MAIN):
-        if not self._panels[location]:
-            self._panels[location] = TTkAppTemplate._Panel()
-        self._panels[location].fixed = fixed
+    def setBorder(self, border=True, poosition=MAIN):
+        if not self._panels[poosition]:
+            self._panels[poosition] = TTkAppTemplate._Panel()
+        self._panels[poosition].border = border
+        self._updateGeometries()
+
+    def setFixed(self, fixed=False, poosition=MAIN):
+        if not self._panels[poosition]:
+            self._panels[poosition] = TTkAppTemplate._Panel()
+        self._panels[poosition].fixed = fixed
         self._updateGeometries()
 
     def resizeEvent(self, w, h):
@@ -318,21 +350,30 @@ class TTkAppTemplate(TTkContainer):
 
     def _updateGeometries(self):
         w,h = self.size()
+        if w<=0 or h<=0 or not self.isVisibleAndParent(): return
         pns = self._panels
         spl = self._splitters
 
-        sl=sr=st=sb=sh=sf=0
-        bm=bl=br=bt=bb=bh=bf=0
-        # A,B,C,D HSplitters
-        pt=pb=ph=pf=None
-        if ( (p:=pns[TTkAppTemplate.TOP   ]) and p.isVisible() ): pt=p ; ptmin=p.minimumHeight() ; ptmax=p.maximumHeight() ; st=min(max(p.size,ptmin),ptmax) ; ft=p.fixed ; bt=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.BOTTOM]) and p.isVisible() ): pb=p ; pbmin=p.minimumHeight() ; pbmax=p.maximumHeight() ; sb=min(max(p.size,pbmin),pbmax) ; fb=p.fixed ; bb=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.HEADER]) and p.isVisible() ): ph=p ; phmin=p.minimumHeight() ; phmax=p.maximumHeight() ; sh=min(max(p.size,phmin),phmax) ; fh=p.fixed ; bh=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.FOOTER]) and p.isVisible() ): pf=p ; pfmin=p.minimumHeight() ; pfmax=p.maximumHeight() ; sf=min(max(p.size,pfmin),pfmax) ; ff=p.fixed ; bf=1 if p.border else 0
-        # E,F     VSplitters
-        pl=pr=None
-        if ( (p:=pns[TTkAppTemplate.LEFT  ]) and p.isVisible() ): pl=p ; plmin=p.minimumWidth()  ; plmax=p.maximumWidth()  ; sl=min(max(p.size,plmin),plmax) ; fl=p.fixed ; bl=1 if p.border else 0
-        if ( (p:=pns[TTkAppTemplate.RIGHT ]) and p.isVisible() ): pr=p ; prmin=p.minimumWidth()  ; prmax=p.maximumWidth()  ; sr=min(max(p.size,prmin),prmax) ; fr=p.fixed ; br=1 if p.border else 0
+        # Retrieve all the panels parameters and hide the menubar if required
+        def _processPanel(_loc):
+            _p = pns[_loc]
+            _menu = _p.menubar
+            if not (_p and _p.isVisible()):
+                if _menu: _menu.setGeometry(-1,-1,0,0)
+                return None, 0, 0x1000, 0, True, 0, None
+            _min    = _p.minimumHeight()
+            _max    = _p.maximumHeight()
+            _size   = min(max(_p.size,_min),_max)
+            _fixed  = _p.fixed
+            _border = 1 if _p.border else 0
+            return _p, _min, _max, _size, _fixed, _border, _menu
+
+        pt,ptmin,ptmax,st,ft,bt,mt = _processPanel(TTkAppTemplate.TOP)
+        pb,pbmin,pbmax,sb,fb,bb,mb = _processPanel(TTkAppTemplate.BOTTOM)
+        ph,phmin,phmax,sh,fh,bh,mh = _processPanel(TTkAppTemplate.HEADER)
+        pf,pfmin,pfmax,sf,ff,bf,mf = _processPanel(TTkAppTemplate.FOOTER)
+        pl,plmin,plmax,sl,fl,bl,ml = _processPanel(TTkAppTemplate.LEFT)
+        pr,prmin,prmax,sr,fr,br,mr = _processPanel(TTkAppTemplate.RIGHT)
 
         # Main Boundaries
         pm=pns[TTkAppTemplate.MAIN]
@@ -347,7 +388,7 @@ class TTkAppTemplate(TTkContainer):
         # check horizontal sizes
         if not (mminw <= (newszw:=(w-sl-sr)) <= mmaxw):
             # the main width does not fit
-            # we need to move the (E,F) splitters
+            # we need to move the (R,L) splitters
             # * to avoid extra complexity,
             #   Let's resize the right panel first
             #   and adjust the left one to allows the
@@ -376,30 +417,37 @@ class TTkAppTemplate(TTkContainer):
         # Resize any panel to the proper dimension
         w+=bl+br
         h+=bt+bb+bh+bf
-        pm.setGeometry(        bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh )
+        def _setGeometries(_p, _x,_y,_w,_h,_bbar):
+            off = 0
+            if _mb:=_p.menubar:
+                off = 0 if _bbar else 1
+                _mb.setGeometry(_x,_y-1+off,_w,1)
+            _p.setGeometry(_x,_y+off,_w,_h-off)
 
-        if pl: pl.setGeometry( bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf )
-        if pr: pr.setGeometry( bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf )
+        _setGeometries(       pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , bt | ( bh and pt==None ) | ( bm and ph==pt==None))
 
-        if ph: ph.setGeometry( bm                 , bm                             , w      , sh )
-        if pt: pt.setGeometry( bm+sl+bl           , bm+sh+bh                       , newszw , st )
-        if pb: pb.setGeometry( bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb )
-        if pf: pf.setGeometry( bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf )
+        if pl: _setGeometries(pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
+        if pr: _setGeometries(pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
+
+        if ph: _setGeometries(ph, bm                 , bm                             , w      , sh            , bm)
+        if pt: _setGeometries(pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , bh | ( bm and ph==None))
+        if pb: _setGeometries(pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , bb)
+        if pf: _setGeometries(pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , bf)
 
         # Define Splitter geometries
         w,h = self.size()
-        spl[TTkAppTemplate.HEADER] = None if not bh else {'pos':(0   , bm+sh                      ) ,'size':w     , 'fixed':fh  }
-        spl[TTkAppTemplate.FOOTER] = None if not bf else {'pos':(0   , bm+sh+bh+st+bt+newszh+bb+sb) ,'size':w     , 'fixed':ff  }
+        spl[TTkAppTemplate.HEADER] = None if not bh else {'pos':(0   , bm+sh                      ) ,'size':w     , 'fixed':fh , 'panel': ph }
+        spl[TTkAppTemplate.FOOTER] = None if not bf else {'pos':(0   , bm+sh+bh+st+bt+newszh+bb+sb) ,'size':w     , 'fixed':ff , 'panel': pf }
 
         ca = sh                          + (bm if ph else 0 )
         cb = bm+sh+bh+st+bt+newszh+bb+sb + (bf if pf else bm)
-        spl[TTkAppTemplate.LEFT]   = None if not bl else {'pos':(bm+sl           , ca             ) ,'size':cb-ca , 'fixed':fl  }
-        spl[TTkAppTemplate.RIGHT]  = None if not br else {'pos':(bm+sl+bl+newszw , ca             ) ,'size':cb-ca , 'fixed':fr  }
+        spl[TTkAppTemplate.LEFT]   = None if not bl else {'pos':(bm+sl           , ca             ) ,'size':cb-ca , 'fixed':fl , 'panel': pl }
+        spl[TTkAppTemplate.RIGHT]  = None if not br else {'pos':(bm+sl+bl+newszw , ca             ) ,'size':cb-ca , 'fixed':fr , 'panel': pr }
 
         ca = sl              + (bm if pl else 0 )
         cb = bm+sl+bl+newszw + (br if pr else bm)
-        spl[TTkAppTemplate.TOP]    = None if not bt else {'pos':(ca        , bm+sh+bh+st          ) ,'size':cb-ca , 'fixed':ft }
-        spl[TTkAppTemplate.BOTTOM] = None if not bb else {'pos':(ca        , bm+sh+bh+st+bt+newszh) ,'size':cb-ca , 'fixed':fb }
+        spl[TTkAppTemplate.TOP]    = None if not bt else {'pos':(ca        , bm+sh+bh+st          ) ,'size':cb-ca , 'fixed':ft , 'panel': pt }
+        spl[TTkAppTemplate.BOTTOM] = None if not bb else {'pos':(ca        , bm+sh+bh+st+bt+newszh) ,'size':cb-ca , 'fixed':fb , 'panel': pb }
 
         self.update()
 
@@ -441,6 +489,12 @@ class TTkAppTemplate(TTkContainer):
             canvas.fill(pos=(_x,_y), size=(_w,_h), color=color, char=chs[0] )
             canvas.drawChar(pos=(_x,_y),           color=color, char=chs[1]if b and _x==0    else chs[3])
             canvas.drawChar(pos=(_x+_w-1,_y),      color=color, char=chs[2]if b and _x+_w==w else chs[4])
+            if _title:=sp['panel'].title:
+                _l = min(w-2,_title.termWidth())
+                _tx = (_w-_l)//2
+                canvas.drawChar(pos=(_x+_tx,_y),     color=color, char=chs[2])
+                canvas.drawChar(pos=(_x+_tx+_l+1,_y),color=color, char=chs[1])
+                canvas.drawTTkString(pos=(_x+_tx+1,_y),text=_title,width=_l)
 
         # Draw the 4 splittters
         if (sp:=spl[TTkAppTemplate.HEADER]) : drawHLine(sp, color=selectColor if self._selected and TTkAppTemplate.HEADER in self._selected else TTkColor.RST)

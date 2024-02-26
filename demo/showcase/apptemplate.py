@@ -57,7 +57,7 @@ class AppTestWidget(ttk.TTkContainer):
             cbf.clicked.connect(lambda b,loc=wids[wn]['loc']: at.setFixed(b,loc))
 
 def demoAppTemplate(root=None):
-    at = ttk.TTkAppTemplate(parent=root)
+    at = ttk.TTkAppTemplate(parent=root, border=True)
 
     twl = ttk.TTkTestWidgetSizes(border=False, name="Left",   minSize=( 15,  5), maxSize=( 50, 0x1000))
     twr = ttk.TTkTestWidgetSizes(border=False, name="Right",  minSize=( 15,  5), maxSize=( 50, 0x1000))
@@ -84,6 +84,23 @@ def demoAppTemplate(root=None):
     at.setWidget(twt, at.TOP)
     at.setWidget(twb, at.BOTTOM)
     at.setWidget(twf, at.FOOTER)
+
+
+    def _createMenuBar(position, text):
+        _mb = ttk.TTkMenuBarLayout()
+        at.setMenuBar(_mb, position)
+        _fileMenu = _mb.addMenu(text)
+        _fileMenu.addMenu("Open")
+        _fileMenu.addMenu("Close")
+        _fileMenu.addMenu("Exit")
+        _helpMenu = _mb.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
+        _helpMenu.addMenu("About...")
+
+    _createMenuBar(at.MAIN,   "&File")
+    _createMenuBar(at.TOP ,   "F&ile")
+    _createMenuBar(at.BOTTOM, "Fi&le")
+    _createMenuBar(at.LEFT,   "Fil&e")
+
 
     return at
 
