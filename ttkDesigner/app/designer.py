@@ -32,7 +32,7 @@ from TermTk import TTkTabWidget
 from TermTk import TTkFileDialogPicker, TTkMessageBox
 
 from TermTk import TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
-from TermTk import TTkSplitter
+from TermTk import TTkSplitter, TTkAppTemplate, TTkMenuBarLayout
 from TermTk import TTkLogViewer, TTkKeyPressView
 from TermTk import TTkUiLoader, TTkUtil
 
@@ -96,13 +96,7 @@ class TTkDesigner(TTkGridLayout):
 
         super().__init__(*args, **kwargs)
 
-        self.addWidget(mainSplit := TTkSplitter())
-        mainSplit.addItem(widgetBoxLayout := TTkVBoxLayout())
-        #mainSplit.addWidget(TTkButton(text='A',border=True))
-
-        # mainSplit.addWidget(sa := TTkScrollArea())
-        # sa.viewport().setLayout(TTkGridLayout())
-        # sa.viewport().layout().addWidget(WindowEditor())
+        self.addWidget(appTemplate := TTkAppTemplate())
 
         self._notepad = NotePad()
         self._main = TTkVBoxLayout()
@@ -112,20 +106,18 @@ class TTkDesigner(TTkGridLayout):
         self._treeInspector = TreeInspector(self, self._windowEditor.viewport())
         self._fileNameLabel = TTkLabel(text=f"( {self._fileName} )", alignment=TTkK.CENTER_ALIGN)
 
-        widgetBoxLayout.addWidget(topMenuFrame := TTkFrame(minHeight=1,maxHeight=1,border=False))
-        widgetBoxLayout.addWidget(WidgetBoxScrollArea(self))
+        appTemplate.setWidget(WidgetBoxScrollArea(self), TTkAppTemplate.LEFT, 25)
 
         self._main.addItem(self._toolBar)
         self._main.addWidget(self._windowEditor)
 
-        mainSplit.addWidget(centralSplit := TTkSplitter(orientation=TTkK.VERTICAL))
-        centralSplit.addWidget(self._main)
-        centralSplit.addWidget(bottonTabWidget := TTkTabWidget(border=False))
+        appTemplate.setItem(self._main, TTkAppTemplate.MAIN)
+        appTemplate.setWidget(bottonTabWidget := TTkTabWidget(border=False), TTkAppTemplate.BOTTOM, 8)
         # centralSplit.addWidget(TTkLogViewer())
         bottonTabWidget.addTab(self._sigslotEditor,'Signal/Slot Editor')
         bottonTabWidget.addTab(TTkLogViewer(),'Logs')
 
-        mainSplit.addWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL))
+        appTemplate.setWidget(rightSplit := TTkSplitter(orientation=TTkK.VERTICAL), TTkAppTemplate.RIGHT, 42)
 
         rightSplit.addItem(self._treeInspector)
         rightSplit.addItem(propertyEditor := PropertyEditor(), title="Property Editor")
@@ -137,7 +129,8 @@ class TTkDesigner(TTkGridLayout):
         self.weModified.connect(self._treeInspector.refresh)
         self.weModified.connect(self._takeSnapshot)
 
-        fileMenu = topMenuFrame.newMenubarTop().addMenu("&File")
+        appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.LEFT)
+        fileMenu = appMenuBar.addMenu("&File")
         fileMenu.addMenu("&New").menuButtonClicked.connect(self.new)
         fileMenu.addMenu("&Open").menuButtonClicked.connect(self.open)
         fileMenu.addMenu("&Save").menuButtonClicked.connect(self.save)
@@ -148,7 +141,7 @@ class TTkDesigner(TTkGridLayout):
         fileMenu.addSpacer()
         fileMenu.addMenu("E&xit").menuButtonClicked.connect(self.quit)
 
-        extraMenu = topMenuFrame.newMenubarTop().addMenu("E&dit")
+        extraMenu = appMenuBar.addMenu("E&dit")
         extraMenu.addMenu("&Undo (CTRL+Z)").menuButtonClicked.connect(self.undo)
         extraMenu.addMenu("&Redo (CTRL+Y)").menuButtonClicked.connect(self.redo)
         extraMenu.addSpacer()
@@ -162,13 +155,9 @@ class TTkDesigner(TTkGridLayout):
         def _showAboutTTk(btn):
             TTkHelper.overlay(None, TTkAbout(), 30,10)
 
-        helpMenu = topMenuFrame.newMenubarTop().addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
+        helpMenu = appMenuBar.addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
-
-        w,_ = self.size()
-        mainSplit.setSizes([25,None,42])
-        centralSplit.setSizes([None,8])
 
         self._toolBar.addWidget(btnPreview := TTkButton(maxWidth=12, text='Preview...'))
         self._toolBar.addWidget(btnExport := TTkButton(maxWidth=17, text='Quick Export 📦'))
