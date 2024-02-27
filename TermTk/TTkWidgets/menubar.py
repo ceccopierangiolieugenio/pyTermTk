@@ -35,8 +35,11 @@ from TermTk.TTkWidgets.menu import TTkMenuButton
 
 class TTkMenuBarButton(TTkMenuButton):
     classStyle = TTkMenuButton.classStyle | {
-                'default': TTkMenuButton.classStyle['default'] | {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE},
-                'clicked': TTkMenuButton.classStyle['clicked'] | {'color': TTkColor.fg("#ffff88")},
+                'default': TTkMenuButton.classStyle['default'] |
+                           {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE,
+                            'glyphs':('├','─','┤','┄','┄','▶')},
+                'clicked': TTkMenuButton.classStyle['clicked'] |
+                           {'color': TTkColor.fg("#ffff88")},
             }
 
     __slots__=('_shortcut')
@@ -60,23 +63,20 @@ class TTkMenuBarButton(TTkMenuButton):
     def paintEvent(self, canvas):
         style = self.currentStyle()
         borderColor = style['borderColor']
+        glyphs      = style['glyphs']
         textColor   = style['color']
         scColor     = style['shortcutColor']
         if self._checkable:
             text = ('▣ ' if self._checked else '□ ') + self.text()
-            width = self.width()+2
         else:
             text = self.text()
-            width = self.width()
-        canvas.drawMenuBarButton(
-                        pos=(0,0),text=text,
-                        width=width,
-                        shortcuts=self._shortcut,
-                        border=True,
-                        submenu=len(self._submenu)>0,
-                        color=textColor,
-                        borderColor=borderColor,
-                        shortcutColor=scColor )
+
+        canvas.drawText(pos=(0,0), color=borderColor ,text=glyphs[2])
+        canvas.drawText(pos=(1+text.termWidth(),0), color=borderColor ,text=glyphs[0])
+        canvas.drawText(pos=(1,0), color=textColor ,text=text)
+
+        for sc in self._shortcut:
+            canvas.drawChar(pos=(0,sc+1), char=text.charAt(sc), color=scColor)
 
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''

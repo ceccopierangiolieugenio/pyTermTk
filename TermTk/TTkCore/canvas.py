@@ -190,7 +190,7 @@ class TTkCanvas:
             color = colors[i]
             align = alignments[i]
             if w > 0:
-                self.drawTTkString(pos=(x,y), text=txt, width=w, color=color, alignment=align)
+                self.drawText(pos=(x,y), text=txt, width=w, color=color, alignment=align)
                 x += w + 1
 
     def drawChar(self, pos, char, color=TTkColor.RST):
@@ -589,22 +589,6 @@ class TTkCanvas:
     def drawMenuBarBg(self, pos, size, color=TTkColor.RST ):
         mb = TTkCfg.theme.menuBar
         self.drawText(pos=pos, text=f"{mb[3]}{mb[1]*(size-2)}{mb[4]}", color=color)
-
-    def drawMenuBarButton(self, width, text, pos=(0,0), border=True, submenu=False, shortcuts=[], color=TTkColor.RST, borderColor=TTkColor.RST, shortcutColor=TTkColor.UNDERLINE ):
-        mb = TTkCfg.theme.menuBar
-        x,y = pos
-        if border:
-            self.drawText(pos=(x,y), color=borderColor ,text=mb[2])
-            self.drawText(pos=(x+1+len(text),y), color=borderColor ,text=mb[0])
-            self.drawText(pos=(x+1,y), color=color ,text=text)
-            off = 1
-        else:
-            self.drawText(pos=(x,y), width=width, color=color ,text=text)
-            if submenu:
-                self._set(y,x+width-1, mb[5], color)
-            off = 0
-        for i in shortcuts:
-            self._set(y,x+i+off, text.charAt(i), shortcutColor)
 
     def execPaint(self, winw, winh):
         pass

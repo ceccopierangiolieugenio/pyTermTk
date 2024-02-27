@@ -444,20 +444,28 @@ class TTkAppTemplate(TTkContainer):
                 if _bbar:
                     off = 0
                     mbl[_loc] = None
+                    if _bbar[1]: # Fixed
+                        styleToMerge = {'default':{'glyphs':('├','─','┤','┄','┄','▶')}}
+                    else:
+                        styleToMerge = {'default':{'glyphs':('╞','═','╡','┄','┄','▶')}}
                 else:
                     off = 1
                     mbl[_loc] = {'pos':(_x,_y-1+off),'text':f"┄{'─'*(_w-2)}┄"}
+                    styleToMerge = {'default':{'glyphs':('├','─','┤','┄','┄','▶')}}
+                for m in _mb._menus(TTkK.LEFT_ALIGN):   m.mergeStyle(styleToMerge)
+                for m in _mb._menus(TTkK.RIGHT_ALIGN):  m.mergeStyle(styleToMerge)
+                for m in _mb._menus(TTkK.CENTER_ALIGN): m.mergeStyle(styleToMerge)
                 off = 0 if _bbar else 1
                 _mb.setGeometry(_x+1,_y-1+off,_w-2,1)
             _p.setGeometry(_x,_y+off,_w,_h-off)
 
-        _setGeometries(       TTkAppTemplate.MAIN   , pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , bt | ( bh and pt==None ) | ( bm and ph==pt==None))
-        if pl: _setGeometries(TTkAppTemplate.LEFT   , pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
-        if pr: _setGeometries(TTkAppTemplate.RIGHT  , pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , bh | ( bm and ph==None))
-        if ph: _setGeometries(TTkAppTemplate.HEADER , ph, bm                 , bm                             , w      , sh            , bm)
-        if pt: _setGeometries(TTkAppTemplate.TOP    , pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , bh | ( bm and ph==None))
-        if pb: _setGeometries(TTkAppTemplate.BOTTOM , pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , bb)
-        if pf: _setGeometries(TTkAppTemplate.FOOTER , pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , bf)
+        _setGeometries(       TTkAppTemplate.MAIN   , pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , (bt and (1,ft)) or (pt==None and (bh and (1,fh))) or (ph==pt==None and (bm and (1, 1))))
+        if pl: _setGeometries(TTkAppTemplate.LEFT   , pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , (bh and (1,fh)) or (ph==None and (bm and (1, 1))))
+        if pr: _setGeometries(TTkAppTemplate.RIGHT  , pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , (bh and (1,fh)) or (ph==None and (bm and (1, 1))))
+        if ph: _setGeometries(TTkAppTemplate.HEADER , ph, bm                 , bm                             , w      , sh            , (bm and (1, 1)))
+        if pt: _setGeometries(TTkAppTemplate.TOP    , pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , (bh and (1,fh)) or (ph==None and (bm and (1, 1))))
+        if pb: _setGeometries(TTkAppTemplate.BOTTOM , pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , (bb and (1,fb)))
+        if pf: _setGeometries(TTkAppTemplate.FOOTER , pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , (bf and (1,ff)))
 
         # Define Splitter geometries
         w,h = self.size()
