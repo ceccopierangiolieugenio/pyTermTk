@@ -23,7 +23,7 @@
 import argparse
 
 from TermTk import TTk, TTkTheme, TTkTerm
-from TermTk import TTkVBoxLayout, TTkKeyPressView
+from TermTk import TTkGridLayout, TTkKeyPressView
 
 from .designer import TTkDesigner
 
@@ -38,17 +38,17 @@ def main():
     root = TTk(
             title="TTk Designer",
             mouseTrack=True,
+            layout=TTkGridLayout(),
             sigmask=(
                 TTkTerm.Sigmask.CTRL_C |
                 TTkTerm.Sigmask.CTRL_Q |
                 TTkTerm.Sigmask.CTRL_S |
                 TTkTerm.Sigmask.CTRL_Z ))
 
+    root.layout().addWidget(_d:=TTkDesigner(fileName=args.filename))
+
     if args.showkeys:
-        root.setLayout(_l:=TTkVBoxLayout())
-        _l.addItem(TTkDesigner(fileName=args.filename))
-        _l.addWidget(TTkKeyPressView(maxHeight=3))
-    else:
-        root.setLayout(TTkDesigner(fileName=args.filename))
+        _d.setWidget(widget=TTkKeyPressView(maxHeight=3), position=_d.FOOTER, size=3)
+        _d.setFixed(fixed=True, position=_d.FOOTER)
 
     root.mainloop()

@@ -76,7 +76,7 @@ import pickle
 #      └─────────────────────╨───────────────────────────────╨───────────────────┘
 #
 
-class TTkDesigner(TTkGridLayout):
+class TTkDesigner(TTkAppTemplate):
     __slots__ = ('_main', '_toolBar', '_fileNameLabel', '_modified',
                  '_sigslotEditor', '_treeInspector', '_windowEditor', '_notepad',
                  '_fileName', '_currentPath',
@@ -96,7 +96,7 @@ class TTkDesigner(TTkGridLayout):
 
         super().__init__(*args, **kwargs)
 
-        self.addWidget(appTemplate := TTkAppTemplate())
+        appTemplate = self
 
         self._notepad = NotePad()
         self._main = TTkVBoxLayout()
