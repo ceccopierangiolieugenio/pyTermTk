@@ -147,8 +147,8 @@ class TTkCanvas:
         fxb = min(w,fxb)
         fyb = min(h,fyb)
 
-        fillCh    = [char]*fw
-        fillColor = [color]*fw
+        fillCh    = [char]*(fxb-fxa)
+        fillColor = [color]*(fxb-fxa)
         for iy in range(fya,fyb):
             self._data[iy][fxa:fxb]   = fillCh
             self._colors[iy][fxa:fxb] = fillColor
