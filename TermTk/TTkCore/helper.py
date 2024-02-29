@@ -168,12 +168,12 @@ class TTkHelper:
             wx += x
             wy += y
 
+        wi = widget.widgetItem()
+        wi.setLayer(wi.LAYER1)
         if  toolWindow:
             # Forcing the layer to:
             # TTkLayoutItem.LAYER1    =  0x40000000
             widget.move(wx,wy)
-            wi = widget.widgetItem()
-            wi.setLayer(wi.LAYER1)
         else:
             TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
