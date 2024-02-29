@@ -227,7 +227,8 @@ class TTkMessageBox(TTkWindow):
             self._widBtnLayout.addWidget(_btn := TTkButton(border=True, text="Yes"))
             _btn.clicked.connect(_genClickedSlot(sb))
 
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        # _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        w,h = self.layout().minimumSize()
         self.resize(w+2,h+4)
 
     # def setText(self, text):pass
