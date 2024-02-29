@@ -230,6 +230,17 @@ class TTkTextCursor():
         for p in self._properties:
             p.anchor.line,p.anchor.pos = p.position.line,p.position.pos
 
+    def positionChar(self, cID=-1):
+        cID = self._cID if cID==-1 else cID
+        p = self._properties[cID].position
+        l = self._document._dataLines[p.line]
+        pos = max(0,p.pos-1)
+        if pos < len(l):
+            ch = l.charAt(pos)
+        else:
+            ch = ' '
+        return ch
+
     def positionColor(self, cID=-1):
         cID = self._cID if cID==-1 else cID
         p = self._properties[cID].position
