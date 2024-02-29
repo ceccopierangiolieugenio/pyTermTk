@@ -125,15 +125,15 @@ class NotePad(ttk.TTkGridLayout):
             cursor.setColor(color)
             te.setFocus()
 
-        cb_fg.stateChanged.connect(lambda x: btn_fgColor.setEnabled(x==ttk.TTkK.Checked))
-        cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==ttk.TTkK.Checked))
-        cb_fg.clicked.connect(lambda _: _setStyle())
-        cb_bg.clicked.connect(lambda _: _setStyle())
+        cb_fg.toggled.connect(btn_fgColor.setEnabled)
+        cb_bg.toggled.connect(btn_bgColor.setEnabled)
+        cb_fg.clicked.connect(_setStyle)
+        cb_bg.clicked.connect(_setStyle)
 
-        cb_linenumber.stateChanged.connect(lambda x: te.setLineNumber(x==ttk.TTkK.Checked))
+        cb_linenumber.toggled.connect(te.setLineNumber)
 
-        btn_fgColor.colorSelected.connect(lambda _: _setStyle())
-        btn_bgColor.colorSelected.connect(lambda _: _setStyle())
+        btn_fgColor.colorSelected.connect(_setStyle)
+        btn_bgColor.colorSelected.connect(_setStyle)
 
         btn_bold.clicked.connect(_setStyle)
         btn_italic.clicked.connect(_setStyle)
