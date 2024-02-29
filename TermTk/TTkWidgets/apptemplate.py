@@ -162,7 +162,7 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries()
         self.setFocusPolicy(TTkK.ClickFocus)
 
-    def setWidget(self, widget, position=MAIN, size=None, title=""):
+    def setWidget(self, widget, position=MAIN, size=None, title="", border=None, fixed=None):
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         if wid:=self._panels[position].widget:
@@ -174,13 +174,17 @@ class TTkAppTemplate(TTkContainer):
         if widget:
             self._panels[position].widget = widget
             self.layout().addWidget(widget)
+            if border!=None:
+                self._panels[position].border = border
+            if fixed != None:
+               self._panels[position].fixed = fixed
             self._panels[position].title = TTkString(title)
             self._panels[position].size = ( size if size is not None else
                                             widget.minimumWidth() if position in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else
                                             widget.minimumHeight() )
         self._updateGeometries()
 
-    def setItem(self, item, position=MAIN, size=None, title=""):
+    def setItem(self, item, position=MAIN, size=None, title="", border=None, fixed=None):
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         if wid:=self._panels[position].widget:
@@ -192,6 +196,10 @@ class TTkAppTemplate(TTkContainer):
         if item:
             self._panels[position].item = item
             self.layout().addItem(item)
+            if border!=None:
+                self._panels[position].border = border
+            if fixed != None:
+               self._panels[position].fixed = fixed
             self._panels[position].title = TTkString(title)
             self._panels[position].size = ( size if size is not None else
                                             item.minimumWidth() if position in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else
