@@ -32,7 +32,8 @@ TTkColorButtonPickerProperties = {
                 'get':  {'cb':TTkColorButtonPicker.color,    'type':TTkColor } ,
                 'set':  {'cb':TTkColorButtonPicker.setColor, 'type':TTkColor } },    },
     'signals' : {
-        'colorSelected(TTkColor)' : {'name': 'colorSelected', 'type' : TTkColor},
+        'colorSelected(TTkColor)'   : {'name': 'colorSelected',   'type' : TTkColor},
+        'colorSelectedBG(TTkColor)' : {'name': 'colorSelectedBG', 'type' : TTkColor},
     },
     'slots' : {
         'setColor(TTkColor)' : {'name': 'setColor', 'type' : TTkColor},
