@@ -77,11 +77,12 @@ class TTkRadioButton(TTkWidget):
     __slots__ = (
         '_checked', '_text', '_radiogroup',
         # Signals
-        'clicked'
+        'clicked', 'toggled'
         )
     def __init__(self, *args, **kwargs):
         # Define Signals
         self.clicked = pyTTkSignal()
+        self.toggled = pyTTkSignal(bool)
         # use name if radiogroup is not available for retrocompatibility
         self._radiogroup = kwargs.get('name', 'DefaultGroup' )
         self._radiogroup = kwargs.get('radiogroup', self._radiogroup )
@@ -155,6 +156,7 @@ class TTkRadioButton(TTkWidget):
             self._checked = False
         else:
             self._checkEvent()
+        self.toggled.emit(self._checked)
         self.update()
 
     def paintEvent(self, canvas):
@@ -175,9 +177,8 @@ class TTkRadioButton(TTkWidget):
         # Uncheck the radio already checked;
         for radio in TTkRadioButton._radioLists[self._radiogroup]:
             if self != radio != None:
-                if radio._checked:
-                    radio._checked = False
-                    radio.update()
+                if radio.isChecked():
+                    radio.setCheckState(TTkK.Unchecked)
         self._checked = True
 
     def _pressEvent(self):
@@ -186,7 +187,7 @@ class TTkRadioButton(TTkWidget):
         self.update()
 
     def mousePressEvent(self, evt):
-        self._pressEvent()
+        self.setCheckState(TTkK.Checked)
         return True
 
     def keyEvent(self, evt):
