@@ -96,7 +96,7 @@ class TextArea(ttk.TTkGridLayout):
 
         self.addItem(wrapLayout := ttk.TTkGridLayout(), 0,0)
         self.addItem(fontLayout := ttk.TTkGridLayout(columnMinWidth=1), 1,0)
-        self.addWidget(self._te,2,0,1,2)
+        self.addWidget(self._te,2,0)
 
         wrapLayout.addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
         wrapLayout.addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth'], maxWidth=20),0,1)
@@ -110,9 +110,9 @@ class TextArea(ttk.TTkGridLayout):
         #           1       3                    8                11
         #    0       2       4    5    6    7     9       10       12
         # 0  [ ] FG  [ ] BG  [ ] LineNumber
-        # 1  ┌─────┐ ┌─────┐ ╒═══╕╒═══╕╒═══╕╒═══╕ ┌──────┐┌──────┐
-        # 2  │     │ │     │ │ a ││ a ││ a ││ a │ │ UNDO ││ REDO │
-        # 3  └─────┘ └─────┘ └───┘└───┘└───┘└───┘ ╘══════╛└──────┘ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
+        # 1  ┌─────┐ ┌─────┐ ┌──────┐┌──────┐
+        # 2  │     │ │     │ │ UNDO ││ REDO │
+        # 3  └─────┘ └─────┘ ╘══════╛└──────┘ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙
 
         # Char Fg/Bg buttons
         fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
@@ -123,15 +123,9 @@ class TextArea(ttk.TTkGridLayout):
 
         fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
 
-        # Char style buttons
-        fontLayout.addWidget(btn_bold          := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.BOLD)        ),1,4)
-        fontLayout.addWidget(btn_italic        := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString( 'a' , ttk.TTkColor.ITALIC)      ),1,5)
-        fontLayout.addWidget(btn_underline     := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.UNDERLINE)   ),1,6)
-        fontLayout.addWidget(btn_strikethrough := ttk.TTkButton(border=True, maxSize=(5,3), checkable=True, text=ttk.TTkString(' a ', ttk.TTkColor.STRIKETROUGH)),1,7)
-
         # Undo/Redo buttons
-        fontLayout.addWidget(btn_undo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=self._te.isUndoAvailable(), text=' UNDO '),1,9 )
-        fontLayout.addWidget(btn_redo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=self._te.isRedoAvailable(), text=' REDO '),1,10)
+        fontLayout.addWidget(btn_undo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=self._te.isUndoAvailable(), text=' UNDO '),1,4)
+        fontLayout.addWidget(btn_redo := ttk.TTkButton(border=True, maxSize=(8,3), enabled=self._te.isRedoAvailable(), text=' REDO '),1,5)
         # Undo/Redo events
         self._te.undoAvailable.connect(btn_undo.setEnabled)
         self._te.redoAvailable.connect(btn_redo.setEnabled)
@@ -156,12 +150,6 @@ class TextArea(ttk.TTkGridLayout):
                 cb_bg.setCheckState(ttk.TTkK.Unchecked)
                 btn_bgColor.setDisabled()
 
-            btn_bold.setChecked(format.bold())
-            btn_italic.setChecked(format.italic())
-            btn_underline.setChecked(format.underline())
-            btn_strikethrough.setChecked(format.strikethrough())
-            # ttk.TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
-
         self._te.currentColorChanged.connect(_currentColorChangedCB)
 
         def _setStyle():
@@ -170,14 +158,6 @@ class TextArea(ttk.TTkGridLayout):
                 color += btn_fgColor.color().invertFgBg()
             if cb_bg.checkState() == ttk.TTkK.Checked:
                 color += btn_bgColor.color()
-            if btn_bold.isChecked():
-                color += ttk.TTkColor.BOLD
-            if btn_italic.isChecked():
-                color += ttk.TTkColor.ITALIC
-            if btn_underline.isChecked():
-                color += ttk.TTkColor.UNDERLINE
-            if btn_strikethrough.isChecked():
-                color += ttk.TTkColor.STRIKETROUGH
             cursor = self._te.textCursor()
             cursor.applyColor(color)
             cursor.setColor(color)
@@ -192,11 +172,6 @@ class TextArea(ttk.TTkGridLayout):
 
         btn_fgColor.colorSelected.connect(_setStyle)
         btn_bgColor.colorSelected.connect(_setStyle)
-
-        btn_bold.clicked.connect(_setStyle)
-        btn_italic.clicked.connect(_setStyle)
-        btn_underline.clicked.connect(_setStyle)
-        btn_strikethrough.clicked.connect(_setStyle)
 
         lineWrap.setCurrentIndex(0)
         wordWrap.setCurrentIndex(1)
