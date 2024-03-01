@@ -31,19 +31,102 @@ from dumb_paint_lib import *
 
 ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
 
+class LeftPanel(ttk.TTkVBoxLayout):
+    __slots__ = ('_palette',
+                 # Signals
+                 'toolSelected')
+    def __init__(self, *args, **kwargs):
+        self.toolSelected = ttk.pyTTkSignal(PaintArea.Tool)
+        super().__init__(*args, **kwargs)
+        self._palette  = Palette(maxHeight=12)
+        self.addWidget(self._palette)
+
+        # Layout for the toggle buttons
+        lToggleFgBg = ttk.TTkHBoxLayout()
+        cb_p_fg = ttk.TTkCheckbox(text="-FG-", checked=ttk.TTkK.Checked)
+        cb_p_bg = ttk.TTkCheckbox(text="-BG-", checked=ttk.TTkK.Checked)
+        lToggleFgBg.addWidgets([cb_p_fg,cb_p_bg])
+        lToggleFgBg.addItem(ttk.TTkLayout())
+        cb_p_fg.toggled.connect(self._palette.enableFg)
+        cb_p_bg.toggled.connect(self._palette.enableBg)
+        self.addItem(lToggleFgBg)
+
+        # Toolset
+        lTools = ttk.TTkGridLayout()
+        ra_brush  = ttk.TTkRadioButton(radiogroup="tools", text="Brush", checked=True)
+        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line", enabled=False)
+        ra_rect   = ttk.TTkRadioButton(radiogroup="tools", text="Rect")
+        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval", enabled=False)
+
+        ra_rect_f = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Fill" , enabled=False, checked=True)
+        ra_rect_e = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Empty", enabled=False)
+
+        @ttk.pyTTkSlot(bool)
+        def _emitTool(checked):
+            if not checked: return
+            tool = PaintArea.Tool.BRUSH
+            if ra_brush.isChecked():
+                tool = PaintArea.Tool.BRUSH
+            elif ra_rect.isChecked():
+                if ra_rect_e.isChecked():
+                    tool = PaintArea.Tool.RECTEMPTY
+                else:
+                    tool = PaintArea.Tool.RECTFILL
+            self.toolSelected.emit(tool)
+
+        ra_rect.toggled.connect(ra_rect_f.setEnabled)
+        ra_rect.toggled.connect(ra_rect_e.setEnabled)
+
+        ra_brush.toggled.connect(  _emitTool)
+        ra_line.toggled.connect(   _emitTool)
+        ra_rect.toggled.connect(   _emitTool)
+        ra_rect_f.toggled.connect( _emitTool)
+        ra_rect_e.toggled.connect( _emitTool)
+        ra_oval.toggled.connect(   _emitTool)
+
+        lTools.addWidget(ra_brush,0,0)
+        lTools.addWidget(ra_line,1,0)
+        lTools.addWidget(ra_rect,2,0)
+        lTools.addWidget(ra_rect_f,2,1)
+        lTools.addWidget(ra_rect_e,2,2)
+        lTools.addWidget(ra_oval,3,0)
+        self.addItem(lTools)
+
+        # brush
+        # line
+        # rettangle [empty,fill]
+        # oval [empty,fill]
+        self.addItem(ttk.TTkLayout())
+
+
+
+    def palette(self):
+        return self._palette
+
+
 class PaintTemplate(ttk.TTkAppTemplate):
     def __init__(self, border=False, **kwargs):
         super().__init__(border, **kwargs)
+        parea    = PaintArea()
+        ptoolkit = PaintToolKit()
+        tarea    = TextArea()
 
-        self.setWidget(pa:=PaintArea()   , self.MAIN)
-        self.setItem( ptk:=PaintToolKit(), self.TOP,   size=3, fixed=True)
-        self.setItem(  ta:=TextArea()    , self.RIGHT, size=50)
+        leftPanel = LeftPanel()
+        palette = leftPanel.palette()
+
+        self.setItem(leftPanel , self.LEFT,  size=16*2)
+        self.setWidget(parea   , self.MAIN)
+        self.setItem(ptoolkit  , self.TOP,   size=3, fixed=True)
+        self.setItem(tarea     , self.RIGHT, size=50)
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
         buttonOpen    = fileMenu.addMenu("&Open")
         buttonClose   = fileMenu.addMenu("&Save")
         buttonClose   = fileMenu.addMenu("Save &As...")
+        fileMenu.addSpacer()
+        fileMenu.addMenu("Load Palette")
+        fileMenu.addMenu("Save Palette")
         fileMenu.addSpacer()
         buttonExit    = fileMenu.addMenu("E&xit")
         buttonExit.menuButtonClicked.connect(ttk.TTkHelper.quit)
@@ -56,10 +139,15 @@ class PaintTemplate(ttk.TTkAppTemplate):
         helpMenu.addMenu("About ...").menuButtonClicked
         helpMenu.addMenu("About tlogg").menuButtonClicked
 
-        ptk.updatedColor.connect(pa.setGlyphColor)
-        ta.charSelected.connect(ptk.glyphFromString)
-        ta.charSelected.connect(pa.glyphFromString)
+        palette.colorSelected.connect(parea.setGlyphColor)
+        palette.colorSelected.connect(ptoolkit.setColor)
+        ptoolkit.updatedColor.connect(parea.setGlyphColor)
+        tarea.charSelected.connect(ptoolkit.glyphFromString)
+        tarea.charSelected.connect(parea.glyphFromString)
+        leftPanel.toolSelected.connect(parea.setTool)
 
+        parea.setGlyphColor(palette.color())
+        ptoolkit.setColor(palette.color())
 
 
 root = ttk.TTk(

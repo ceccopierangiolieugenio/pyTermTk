@@ -29,6 +29,8 @@ import TermTk as ttk
 
 
 class PaintToolKit(ttk.TTkGridLayout):
+
+
     __slots__ = ('_rSelect', '_rPaint', '_lgliph', '_cbFg', '_cbBg', '_bpFg', '_bpBg',
                  '_glyph',
                  #Signals
@@ -63,6 +65,8 @@ class PaintToolKit(ttk.TTkGridLayout):
 
         self._refreshColor(emit=False)
 
+
+
     @ttk.pyTTkSlot()
     def _refreshColor(self, emit=True):
         color =self.color()
@@ -78,7 +82,8 @@ class PaintToolKit(ttk.TTkGridLayout):
     def glyphFromString(self, ch:ttk.TTkString):
         if len(ch)<=0: return
         self._glyph = ch.charAt(0)
-        self.setColor(ch.colorAt(0))
+        self._refreshColor()
+        # self.setColor(ch.colorAt(0))
 
     def color(self):
         color = ttk.TTkColor()
@@ -88,6 +93,7 @@ class PaintToolKit(ttk.TTkGridLayout):
            color += self._bpBg.color()
         return color
 
+    @ttk.pyTTkSlot(ttk.TTkColor)
     def setColor(self, color:ttk.TTkColor):
         if fg := color.foreground():
             self._cbFg.setCheckState(ttk.TTkK.Checked)
@@ -107,10 +113,14 @@ class PaintToolKit(ttk.TTkGridLayout):
         self._refreshColor(emit=False)
 
 class PaintArea(ttk.TTkWidget):
+    class Tool(int):
+        BRUSH = 0x01
+        RECTFILL  = 0x02
+        RECTEMPTY = 0x03
 
     __slots__ = ('_canvasArea', '_canvasSize',
                  '_transparentColor',
-                 '_mouseMove',
+                 '_mouseMove', '_mouseFill', '_tool',
                  '_glyph', '_glyphColor')
 
     def __init__(self, *args, **kwargs):
@@ -118,8 +128,10 @@ class PaintArea(ttk.TTkWidget):
         self._canvasSize = (0,0)
         self._canvasArea = {'data':[],'colors':[]}
         self._glyph = 'X'
-        self._glyphColor = ttk.TTkColor.fg("#0000FF")
+        self._glyphColor = ttk.TTkColor.RST
         self._mouseMove = None
+        self._mouseFill = None
+        self._tool = self.Tool.BRUSH
         super().__init__(*args, **kwargs)
         self.resizeCanvas(80,25)
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
@@ -133,7 +145,18 @@ class PaintArea(ttk.TTkWidget):
             self._canvasArea['colors'][i] = (self._canvasArea['colors'][i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
         self.update()
 
+    def leaveEvent(self, evt):
+        self._mouseMove = None
+        self.update()
+        return super().leaveEvent(evt)
+
+    @ttk.pyTTkSlot(Tool)
+    def setTool(self, tool):
+        self._tool = tool
+        self.update()
+
     def mouseMoveEvent(self, evt) -> bool:
+        # self._mouseFill = None
         x,y = evt.x, evt.y
         w,h = self._canvasSize
         if 0<=x<w and 0<=y<h:
@@ -145,20 +168,42 @@ class PaintArea(ttk.TTkWidget):
         return super().mouseMoveEvent(evt)
 
     def mouseDragEvent(self, evt) -> bool:
-        if self._placeGlyph(evt.x, evt.y):
+        x,y = evt.x,evt.y
+        if self._tool == self.Tool.BRUSH:
+            if self._placeGlyph(evt.x, evt.y):
+                return True
+        if self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL) and self._mouseFill:
+            mx,my = self._mouseFill[:2]
+            self._mouseFill = [mx,my,x,y]
+            self.update()
             return True
         return super().mouseDragEvent(evt)
 
     def mousePressEvent(self, evt) -> bool:
-        if self._placeGlyph(evt.x, evt.y):
+        x,y = evt.x,evt.y
+        if self._tool == self.Tool.BRUSH:
+            if self._placeGlyph(x,y):
+                return True
+        if self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL):
+            self._mouseFill = [x,y,x,y]
+            self.update()
             return True
+        return super().mousePressEvent(evt)
+
+    def mouseReleaseEvent(self, evt) -> bool:
+        x,y = evt.x,evt.y
+        if self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL):
+            self._placeFill()
+            self.update()
+            return True
+        self._mouseFill = None
         return super().mousePressEvent(evt)
 
     @ttk.pyTTkSlot(ttk.TTkString)
     def glyphFromString(self, ch:ttk.TTkString):
         if len(ch)<=0: return
         self._glyph = ch.charAt(0)
-        self._glyphColor = ch.colorAt(0)
+        # self._glyphColor = ch.colorAt(0)
 
     def glyph(self):
         return self._glyph
@@ -174,6 +219,42 @@ class PaintArea(ttk.TTkWidget):
         return self._glyphColor
     def setGlyphColor(self, color):
         self._glyphColor = color
+
+    def _placeFill(self):
+        if not self._mouseFill: return False
+        w,h = self._canvasSize
+        ax,ay,bx,by = self._mouseFill
+        ax = max(0,min(w-1,ax))
+        ay = max(0,min(h-1,ay))
+        bx = max(0,min(w-1,bx))
+        by = max(0,min(h-1,by))
+        fax,fay = min(ax,bx), min(ay,by)
+        fbx,fby = max(ax,bx), max(ay,by)
+
+        self._mouseFill = None
+        self._mouseMove = None
+
+        data   = self._canvasArea['data']
+        colors = self._canvasArea['colors']
+        glyph = self._glyph
+        color = self._glyphColor
+
+        if self._tool == self.Tool.RECTFILL:
+            for row in data[fay:fby+1]:
+                row[fax:fbx+1] = [glyph]*(fbx-fax+1)
+            for row in colors[fay:fby+1]:
+                row[fax:fbx+1] = [color]*(fbx-fax+1)
+        if self._tool == self.Tool.RECTEMPTY:
+            data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
+            data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
+            colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
+            colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
+            for row in data[fay:fby]:
+                row[fax]=row[fbx]=glyph
+            for row in colors[fay:fby]:
+                row[fax]=row[fbx]=color
+        self.update()
+        return True
 
     def _placeGlyph(self,x,y):
         self._mouseMove = None
@@ -205,3 +286,15 @@ class PaintArea(ttk.TTkWidget):
             gc = self._glyphColor
             canvas._data[y][x] = self._glyph
             canvas._colors[y][x] = gc if gc._bg else gc+tc
+        if self._mouseFill:
+            ax,ay,bx,by = self._mouseFill
+            ax = max(0,min(w-1,ax))
+            ay = max(0,min(h-1,ay))
+            bx = max(0,min(w-1,bx))
+            by = max(0,min(h-1,by))
+            x,y = min(ax,bx),     min(ay,by)
+            w,h = max(ax-x,bx-x)+1, max(ay-y,by-y)+1
+            gc = self._glyphColor
+            canvas.fill(pos=(x,y), size=(w,h),
+                        color=gc if gc._bg else gc+tc,
+                        char=self._glyph)

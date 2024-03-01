@@ -27,14 +27,6 @@ import sys, os
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-
-
-
-
-
-
-
-
 _StartingText = '''Ansi Editor:
 
 ─ ┌─┬┐  ┏━┳┓  ┎─┰┒  ┍━┯┑  ┏┭┲━┱┮┓
@@ -56,8 +48,8 @@ _StartingText = '''Ansi Editor:
 ═ └───────────────────┘▓    ╯ ╰─────╯
 ║  ░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓█    ╰  ╱ ╲ ╳
 
-▄ ▀ █ - Half,Full
-▁ ▂ ▃ ▄ ▅ ▆ ▇ █
+▄ ▀ █ <- Half,Full
+▁ ▂ ▃ ▄ ▅ ▆ ▇ █     Spaces: "    "
 
 █ Full █ ▌ ▐ ▏ ▕  ▔ ▁
 ▉        ░ ▒ ▓ █
