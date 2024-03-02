@@ -31,14 +31,17 @@ import TermTk as ttk
 class PaintToolKit(ttk.TTkGridLayout):
 
 
-    __slots__ = ('_rSelect', '_rPaint', '_lgliph', '_cbFg', '_cbBg', '_bpFg', '_bpBg',
+    __slots__ = ('_rSelect', '_rPaint', '_lgliph',
+                 '_cbFg', '_cbBg',
+                 '_bpFg', '_bpBg', '_bpDef',
                  '_glyph',
                  #Signals
-                 'updatedColor')
+                 'updatedColor', 'updatedTrans')
     def __init__(self, *args, **kwargs):
         self._glyph = 'X'
-        super().__init__(*args, **kwargs)
         self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
+        self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
+        super().__init__(*args, **kwargs)
         self._rSelect = ttk.TTkRadioButton(text='Select '     , maxWidth=10)
         self._rPaint  = ttk.TTkRadioButton(text='Paint  '            )
         self._lgliph   = ttk.TTkLabel(text=""                 , maxWidth=8)
@@ -46,6 +49,7 @@ class PaintToolKit(ttk.TTkGridLayout):
         self._cbBg    = ttk.TTkCheckbox(text="Bg"                    )
         self._bpFg    = ttk.TTkColorButtonPicker(enabled=False, maxWidth= 6)
         self._bpBg    = ttk.TTkColorButtonPicker(enabled=False,            )
+        self._bpDef   = ttk.TTkColorButtonPicker(color=ttk.TTkColor.bg('#FF00FF'), maxWidth=6)
         self.addWidget(self._rSelect ,0,0)
         self.addWidget(self._rPaint  ,1,0)
         self.addWidget(self._lgliph  ,0,1,2,1)
@@ -53,7 +57,10 @@ class PaintToolKit(ttk.TTkGridLayout):
         self.addWidget(self._cbBg    ,1,2)
         self.addWidget(self._bpFg    ,0,3)
         self.addWidget(self._bpBg    ,1,3)
-        self.addItem(ttk.TTkLayout() ,0,4,3,1)
+
+        self.addWidget(ttk.TTkLabel(text=" Trans:", maxWidth=7) ,1,4)
+        self.addWidget(self._bpDef          ,1,5)
+        self.addItem(ttk.TTkLayout() ,0,6,3,1)
 
         self._cbFg.toggled.connect(self._bpFg.setEnabled)
         self._cbBg.toggled.connect(self._bpBg.setEnabled)
@@ -62,10 +69,9 @@ class PaintToolKit(ttk.TTkGridLayout):
 
         self._bpFg.colorSelected.connect(self._refreshColor)
         self._bpBg.colorSelected.connect(self._refreshColor)
+        self._bpDef.colorSelected.connect(self.updatedTrans.emit)
 
         self._refreshColor(emit=False)
-
-
 
     @ttk.pyTTkSlot()
     def _refreshColor(self, emit=True):
@@ -145,6 +151,37 @@ class PaintArea(ttk.TTkWidget):
             self._canvasArea['colors'][i] = (self._canvasArea['colors'][i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
         self.update()
 
+    def clean(self):
+        w,h = self._canvasSize
+        for i in range(h):
+            self._canvasArea['data'][i]   = [' ']*w
+            self._canvasArea['colors'][i] = [ttk.TTkColor.RST]*w
+
+    def importLayer(self, dd):
+        w,h = self._canvasSize
+        w = len(dd['data'][0]) + 10
+        h = len(dd['data']) + 4
+        x,y=5,2
+
+        self.resizeCanvas(w,h)
+        self.clean()
+
+        for i,rd in enumerate(dd['data']):
+            for ii,cd in enumerate(rd):
+                self._canvasArea['data'][i+y][ii+x] = cd
+        for i,rd in enumerate(dd['colors']):
+            for ii,cd in enumerate(rd):
+                fg,bg = cd
+                if fg and bg:
+                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
+                elif fg:
+                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.fg(fg)
+                elif bg:
+                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.bg(bg)
+                else:
+                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.RST
+        self.update()
+
     def leaveEvent(self, evt):
         self._mouseMove = None
         self.update()
@@ -219,6 +256,11 @@ class PaintArea(ttk.TTkWidget):
         return self._glyphColor
     def setGlyphColor(self, color):
         self._glyphColor = color
+
+    @ttk.pyTTkSlot(ttk.TTkColor)
+    def setTrans(self, color):
+        self._transparentColor = color
+        self.update()
 
     def _placeFill(self):
         if not self._mouseFill: return False

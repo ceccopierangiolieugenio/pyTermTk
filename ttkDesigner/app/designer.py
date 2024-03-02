@@ -391,6 +391,7 @@ class TTkDesigner(TTkAppTemplate):
             return ret
         newWindow = TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/quickImport.tui.json"))
         te = newWindow.getWidgetByName("TextEdit")
+        @pyTTkSlot()
         def _importDict(te=te):
             text = te.toPlainText()
             if compressed := _probeCompressedText(text):
