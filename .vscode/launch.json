@@ -35,8 +35,15 @@
             "justMyCode": true,
             "args": ["ttkDesigner/tui/newWindow.tui.json"]
         },{
+            "name": "Python: DumbPaintTool",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "tools/dumb.paint.tool.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },{
             "name": "Python: Demo",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "demo/demo.py",
             "console": "integratedTerminal",
