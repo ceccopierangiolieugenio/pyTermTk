@@ -411,13 +411,27 @@ class TTkAppTemplate(TTkContainer):
 
         # Main Boundaries
         pm=pns[TTkAppTemplate.MAIN]
+        mm=pm.menubar
         mmaxw = pm.maximumWidth()
         mminw = pm.minimumWidth()
         mmaxh = pm.maximumHeight()
         mminh = pm.minimumHeight()
-        bm = 1 if pns[TTkAppTemplate.MAIN].border else 0
+        bm = 1 if pm.border else 0
         w-=(bm<<1)+bl+br
         h-=(bm<<1)+bt+bb+bh+bf
+
+        adjm =adjt =adjb =adjh =adjf =adjl =adjr =0 # Adjustment if we need extra space for the menubar
+        adjtf=adjbf=adjhf=adjff=adjlf=adjrf=adjmf=0 # 1 if the menu is on a single line bar
+        # Retune the max/min sizes and adjustment based on the menubar,border and visible widgets
+        #                                                           Check if there is a splitter to be used for the menubar
+        #                               Fix bar status if the menu is on the closest splitter
+        if pt and mt: adjt,adjtf = ( 0, fh if _phbh else True ) if (_phbh:=(ph and bh)) or (not ph and bm) else (1,True) ; st+=adjt ; ptmin+=adjt ; ptmax+=adjt
+        if pb and mb: adjb,adjbf = ( 0, fb                    ) if  bb                                     else (1,True) ; sb+=adjb ; pbmin+=adjb ; pbmax+=adjb
+        if ph and mh: adjh,adjhf = ( 0,  0                    ) if  bm                                     else (1,True) ; sh+=adjh ; phmin+=adjh ; phmax+=adjh
+        if pf and mf: adjf,adjff = ( 0, ff                    ) if  bf                                     else (1,True) ; sf+=adjf ; pfmin+=adjf ; pfmax+=adjf
+        if pl and ml: adjl,adjlf = ( 0, fh if _phbh else True ) if (_phbh:=(ph and bh)) or (not ph and bm) else (1,True)            ; plmin+=adjl ; plmax+=adjl
+        if pr and mr: adjr,adjrf = ( 0, fh if _phbh else True ) if (_phbh:=(ph and bh)) or (not ph and bm) else (1,True)            ; prmin+=adjr ; prmax+=adjr
+        if        mm: adjm,adjmf = ( 0, ft if (pt and bt) else fh if _phbh else True) if (_phbh:=(ph and bh)) or (not pt and ph and bh) or (not pt and not ph and bm) else (1,True) ; mminh+=adjm ; mmaxh+=adjm
 
         # check horizontal sizes
         if not (mminw <= (newszw:=(w-sl-sr)) <= mmaxw):
@@ -451,34 +465,31 @@ class TTkAppTemplate(TTkContainer):
         # Resize any panel to the proper dimension
         w+=bl+br
         h+=bt+bb+bh+bf
-        def _setGeometries(_loc, _p, _x,_y,_w,_h,_bbar):
-            off = 0
-            if _mb:=_p.menubar:
-                if _bbar:
-                    off = 0
-                    mbl[_loc] = None
-                    if _bbar[1]: # Fixed
-                        styleToMerge = {'default':{'glyphs':('├','─','┤','┄','┄','▶')}}
-                    else:
-                        styleToMerge = {'default':{'glyphs':('╞','═','╡','┄','┄','▶')}}
-                else:
-                    off = 1
-                    mbl[_loc] = {'pos':(_x,_y-1+off),'text':f"┄{'─'*(_w-2)}┄"}
+        def _setGeometries(_loc, _p, _x,_y,_w,_h,_mb,_adj,_fix):
+            if _mb:
+                if _fix: # Fixed
                     styleToMerge = {'default':{'glyphs':('├','─','┤','┄','┄','▶')}}
+                else:
+                    styleToMerge = {'default':{'glyphs':('╞','═','╡','┄','┄','▶')}}
+                if not _adj:
+                    mbl[_loc] = None
+                else:
+                    mbl[_loc] = {'pos':(_x,_y),'text':f"┄{'─'*(_w-2)}┄"}
                 for m in _mb._menus(TTkK.LEFT_ALIGN):   m.mergeStyle(styleToMerge)
                 for m in _mb._menus(TTkK.RIGHT_ALIGN):  m.mergeStyle(styleToMerge)
                 for m in _mb._menus(TTkK.CENTER_ALIGN): m.mergeStyle(styleToMerge)
-                off = 0 if _bbar else 1
-                _mb.setGeometry(_x+1,_y-1+off,_w-2,1)
-            _p.setGeometry(_x,_y+off,_w,_h-off)
+                _moff = 0 if _adj else -1
+                _mb.setGeometry(_x+1,_y+_moff,_w-2,1)
+            _p.setGeometry(_x,_y+_adj,_w,_h-_adj)
 
-        _setGeometries(       TTkAppTemplate.MAIN   , pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , (bt and (1,ft)) or (pt==None and (bh and (1,fh))) or (ph==pt==None and (bm and (1, 1))))
-        if pl: _setGeometries(TTkAppTemplate.LEFT   , pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , (bh and (1,fh)) or (ph==None and (bm and (1, 1))))
-        if pr: _setGeometries(TTkAppTemplate.RIGHT  , pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , (bh and (1,fh)) or (ph==None and (bm and (1, 1))))
-        if ph: _setGeometries(TTkAppTemplate.HEADER , ph, bm                 , bm                             , w      , sh            , (bm and (1, 1)))
-        if pt: _setGeometries(TTkAppTemplate.TOP    , pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , (bh and (1,fh)) or (ph==None and (bm and (1, 1))))
-        if pb: _setGeometries(TTkAppTemplate.BOTTOM , pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , (bb and (1,fb)))
-        if pf: _setGeometries(TTkAppTemplate.FOOTER , pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , (bf and (1,ff)))
+        #                                                 x                    y                                w        h              _mb _adj   _fix
+        _setGeometries(       TTkAppTemplate.MAIN   , pm, bm+sl+bl           , bm+sh+bh+st+bt                 , newszw , newszh        , mm, adjm, adjmf)
+        if pl: _setGeometries(TTkAppTemplate.LEFT   , pl, bm                 , bm+sh+bh                       , sl     , h-sh-bh-sf-bf , ml, adjl, adjlf)
+        if pr: _setGeometries(TTkAppTemplate.RIGHT  , pr, bm+sl+bl+newszw+br , bm+sh+bh                       , sr     , h-sh-bh-sf-bf , mr, adjr, adjrf)
+        if ph: _setGeometries(TTkAppTemplate.HEADER , ph, bm                 , bm                             , w      , sh            , mh, adjh, adjhf)
+        if pt: _setGeometries(TTkAppTemplate.TOP    , pt, bm+sl+bl           , bm+sh+bh                       , newszw , st            , mt, adjt, adjtf)
+        if pb: _setGeometries(TTkAppTemplate.BOTTOM , pb, bm+sl+bl           , bm+sh+bh+st+bt+newszh+bb       , newszw , sb            , mb, adjb, adjbf)
+        if pf: _setGeometries(TTkAppTemplate.FOOTER , pf, bm                 , bm+sh+bh+st+bt+newszh+bb+sb+bf , w      , sf            , mf, adjf, adjff)
 
         # Define Splitter geometries
         w,h = self.size()
