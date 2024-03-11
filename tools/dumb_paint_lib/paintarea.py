@@ -60,7 +60,7 @@ class PaintToolKit(ttk.TTkGridLayout):
 
         self.addWidget(ttk.TTkLabel(text=" Trans:", maxWidth=7) ,1,4)
         self.addWidget(self._bpDef          ,1,5)
-        self.addItem(ttk.TTkLayout() ,0,6,3,1)
+        self.addItem(ttk.TTkLayout() ,0,6,2,1)
 
         self._cbFg.toggled.connect(self._bpFg.setEnabled)
         self._cbBg.toggled.connect(self._bpBg.setEnabled)

@@ -167,6 +167,16 @@ class ExportArea(ttk.TTkGridLayout):
 
 
 
+
+# Layout:
+#
+#  Palette                           Brushes
+#                Drawing Area        (Chars/Glyphs)
+#  Tools
+#
+#                                    Layouts
+#                 Export
+#
 class PaintTemplate(ttk.TTkAppTemplate):
     def __init__(self, border=False, **kwargs):
         super().__init__(border, **kwargs)
@@ -180,13 +190,15 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         rightPanel = ttk.TTkSplitter(orientation=ttk.TTkK.VERTICAL)
         rightPanel.addWidget(tarea)
-        rightPanel.addItem(expArea, title="Export")
-        rightPanel.setSizes([None,5])
+        # rightPanel.addItem(expArea, title="Export")
+        # rightPanel.setSizes([None,5])
 
-        self.setItem(leftPanel  , self.LEFT,  size=16*2)
-        self.setWidget(self._parea    , self.MAIN)
-        self.setItem(ptoolkit   , self.TOP,   size=3, fixed=True)
-        self.setItem(rightPanel , self.RIGHT, size=50)
+        self.setItem(expArea, self.BOTTOM, title="Export")
+
+        self.setItem(leftPanel     , self.LEFT,  size=16*2)
+        self.setWidget(self._parea , self.MAIN)
+        self.setItem(ptoolkit      , self.TOP,   fixed=True)
+        self.setItem(rightPanel    , self.RIGHT, size=50)
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
