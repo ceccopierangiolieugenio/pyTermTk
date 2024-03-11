@@ -303,8 +303,11 @@ class TTkEasingCurve():
 class TTkPropertyAnimation():
     __slots__ = ('_target', '_propertyName', '_parent', '_cb', '_cast',
                  '_duration', '_startValue', '_endValue',
-                 '_easingCurve', '_baseTime')
+                 '_easingCurve', '_baseTime',
+                 # Signals
+                 'finished')
     def __init__(self, target, propertyName, parent=None):
+        self.finished = pyTTkSignal()
         self._target = target
         self._propertyName = propertyName
         self._parent = parent
@@ -355,6 +358,7 @@ class TTkPropertyAnimation():
                 self._cb(*self._cast(*self._endValue))
             else:
                 self._cb(*self._cast(self._endValue))
+            self.finished.emit()
         else:
             v = diff/self._duration
             if type(self._startValue) in (list,tuple):
