@@ -227,6 +227,8 @@ class TTkCanvas:
             self._data[y][x+i] = txt[i]
             if colors[i] == TTkColor.RST != color:
                 self._colors[y][x+i] =  color.mod(x+i,y)
+            elif (not colors[i].background()) and color.background():
+                self._colors[y][x+i] = (color + colors[i]).mod(x+i,y)
             else:
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)
         # Check the full wide chars on the edge of the two canvasses
