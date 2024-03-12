@@ -327,6 +327,7 @@ class TTk(TTkContainer):
         '''Tells the application to exit with a return code.'''
         if self._timer:
             self._timer.timeout.disconnect(self._time_event)
+        self.dispose(children=True)
         TTkInput.inputEvent.clear()
         self._paintEvent.set()
         TTkInput.close()

@@ -65,6 +65,7 @@ def pyTTkSlot(*args, **kwargs):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function
         func._TTkslot_attr = args
+        func._TTkslot_sigList = []
         return func
     return pyTTkSlot_d
 
@@ -72,7 +73,6 @@ def pyTTkSignal(*args, **kwargs):
     return _pyTTkSignal_obj(*args, **kwargs)
 
 class _pyTTkSignal_obj():
-    _signals = []
     __slots__ = ('_types', '_name', '_revision', '_connected_slots', '_mutex')
     def __init__(self, *args, **kwargs):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
@@ -92,7 +92,6 @@ class _pyTTkSignal_obj():
         self._revision = kwargs.get('revision', 0)
         self._connected_slots = {}
         self._mutex = Lock()
-        _pyTTkSignal_obj._signals.append(self)
 
     def connect(self, slot):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
@@ -126,6 +125,9 @@ class _pyTTkSignal_obj():
                 if not issubclass(a,b):
                     error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                     raise TypeError(error)
+        if hasattr(slot, '_TTkslot_sigList'):
+            if self not in slot._TTkslot_sigList:
+                slot._TTkslot_sigList.append(self)
         if slot not in self._connected_slots:
             self._connected_slots[slot]=slice(nargs)
 
@@ -133,6 +135,9 @@ class _pyTTkSignal_obj():
         for slot in args:
             if slot in self._connected_slots:
                 del self._connected_slots[slot]
+                if hasattr(slot, '_TTkslot_sigList'):
+                    if self in slot._TTkslot_sigList:
+                        slot._TTkslot_sigList.remove(self)
 
     def emit(self, *args, **kwargs):
         if not self._mutex.acquire(False): return
@@ -147,9 +152,8 @@ class _pyTTkSignal_obj():
         self._connected_slots = {}
 
     @staticmethod
-    def clearAll():
-        for s in _pyTTkSignal_obj._signals:
-            s.clear()
+    def clearAll(self):
+        pass
 
     def forward(self):
         def _ret(*args, **kwargs):

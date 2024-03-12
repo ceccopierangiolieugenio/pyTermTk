@@ -72,6 +72,15 @@ class TTkFrame(TTkContainer):
         super().__init__(*args, **kwargs)
         self.setBorder(self._border)
 
+    def dispose(self):
+        if self._menubarTop:
+            self._menubarTop.dispose()
+        if self._menubarBottom:
+            self._menubarBottom.dispose()
+        self._menubarTop = None
+        self._menubarBottom = None
+        super().dispose()
+
     def newMenubarTop(self):
         '''newMenubarTop
 

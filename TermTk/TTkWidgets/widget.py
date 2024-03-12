@@ -22,6 +22,8 @@
 
 __all__ = ['TTkWidget']
 
+import types
+
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
@@ -168,7 +170,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     def __del__(self):
         ''' .. caution:: Don't touch this! '''
-        # TTkLog.debug("DESTRUCTOR")
+        # TTkLog.debug(f"DESTRUCTOR -> {self._name}")
 
         # clean all the signals, slots
         #for an in dir(self):
@@ -465,6 +467,20 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     @pyTTkSlot()
     def close(self):
         '''close'''
+        self.dispose()
+        self.closed.emit(self)
+
+    def dispose(self):
+        '''dispose'''
+        refSig = type(pyTTkSignal())
+        for p in dir(self):
+            if type(pr:=getattr(self,p)) != types.MethodType:
+                continue
+            if hasattr(pr, '_TTkslot_sigList'):
+                for sig in pr._TTkslot_sigList.copy():
+                    sig.disconnect(pr)
+            if type(pr) is refSig:
+                pr.clear()
         if _p := self._parent:
             if _rl := _p.rootLayout():
                 _rl.removeWidget(self)
@@ -472,7 +488,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         TTkHelper.removeOverlayAndChild(self)
         self._parent = None
         self.hide()
-        self.closed.emit(self)
+        # self._widgetItem._widget = None
+        # self._widgetItem = None
+        # self._canvas = None
 
     @pyTTkSlot(bool)
     def setVisible(self, visible: bool):
