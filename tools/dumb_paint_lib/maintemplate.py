@@ -68,7 +68,9 @@ class LeftPanel(ttk.TTkVBoxLayout):
         def _emitTool(checked):
             if not checked: return
             tool = PaintArea.Tool.BRUSH
-            if ra_brush.isChecked():
+            if ra_move.isChecked():
+                tool = PaintArea.Tool.MOVE
+            elif ra_brush.isChecked():
                 tool = PaintArea.Tool.BRUSH
             elif ra_rect.isChecked():
                 if ra_rect_e.isChecked():
@@ -80,6 +82,8 @@ class LeftPanel(ttk.TTkVBoxLayout):
         ra_rect.toggled.connect(ra_rect_f.setEnabled)
         ra_rect.toggled.connect(ra_rect_e.setEnabled)
 
+        ra_move.toggled.connect(  _emitTool)
+        ra_select.toggled.connect(  _emitTool)
         ra_brush.toggled.connect(  _emitTool)
         ra_line.toggled.connect(   _emitTool)
         ra_rect.toggled.connect(   _emitTool)
