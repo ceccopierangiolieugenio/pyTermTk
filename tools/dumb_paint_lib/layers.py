@@ -20,20 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['Layers','Layer']
+__all__ = ['Layers','LayerData']
 
 import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-class Layer():
+class LayerData():
     __slots__ = ('_name','_data')
     def __init__(self,name:ttk.TTkString=ttk.TTkString('New'),data=None) -> None:
-        self._name:ttk.TTkString = name
+        self._name:ttk.TTkString = ttk.TTkString(name) if type(name)==str else name
         self._data = data
     def name(self):
         return self._name
+    def setName(self,name):
+        self._name = name
+    def data(self):
+        return self._data
+    def setData(self,data):
+        self._data = data
 
 class _layerButton(ttk.TTkWidget):
     classStyle = {
@@ -60,13 +66,13 @@ class _layerButton(ttk.TTkWidget):
                                 'grid':1},
             }
 
-    __slots = ('_layer','_first', '_isSelected',
+    __slots__ = ('_layer','_first', '_isSelected',
                # signals
                'clicked'
                )
-    def __init__(self, layer:Layer, **kwargs):
+    def __init__(self, layer:LayerData, **kwargs):
         self.clicked = ttk.pyTTkSignal(_layerButton)
-        self._layer:Layer = layer
+        self._layer:LayerData = layer
         self._isSelected = False
         self._first = True
         super().__init__(**kwargs)
@@ -108,36 +114,20 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
                  # Signals
                  'layerSelected','layerAdded','layerDeleted')
     def __init__(self, **kwargs):
-        self.layerSelected = ttk.pyTTkSignal(Layer)
-        self.layerAdded = ttk.pyTTkSignal(Layer)
-        self.layerDeleted = ttk.pyTTkSignal(Layer)
-        firstLayer:_layerButton  = _layerButton(layer=Layer(name=ttk.TTkString('Background')))
-        self._selected = firstLayer
-        firstLayer._isSelected = True
-        firstLayer.clicked.connect(self._clickedLayer)
-        self._layers:list[_layerButton] = [firstLayer]
+        self.layerSelected = ttk.pyTTkSignal(LayerData)
+        self.layerAdded = ttk.pyTTkSignal(LayerData)
+        self.layerDeleted = ttk.pyTTkSignal(LayerData)
+        self._selected = None
+        self._layers:list[_layerButton] = []
         super().__init__(**kwargs)
         self.viewChanged.connect(self._placeTheButtons)
-        self.layout().addWidget(firstLayer)
-        self._placeTheButtons()
-        self.layerAdded.emit(firstLayer)
 
     def viewFullAreaSize(self) -> tuple:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        # w,_ = self.size()
-        # h = 3*len(self._layers)
         return w,h
 
     def viewDisplayedSize(self) -> tuple:
         return self.size()
-
-    # def mouseMoveEvent(self, evt) -> bool:
-    #     offx,offy = self.getViewOffsets()
-    #     y = evt.y-offy
-    #     llen = len(self._layers)
-    #     if y==0: self._mouseMoved = self._layers[-1]
-    #     elifse:  self._mouseMoved = self._layers[y]
-    #     return super().mouseMoveEvent(evt)
 
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
@@ -145,26 +135,28 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
     def minimumHeight(self):  return 0
 
     @ttk.pyTTkSlot(_layerButton)
-    def _clickedLayer(self, layerButton):
+    def _clickedLayer(self, layerButton:_layerButton):
         if sel:=self._selected:
             sel._isSelected = False
             sel.update()
         self._selected = layerButton
         layerButton._isSelected = True
+        self.layerSelected.emit(layerButton._layer)
         self.update()
 
     @ttk.pyTTkSlot()
-    def addLayer(self):
-        _l=Layer()
-        newLayer:_layerButton  = _layerButton(parent=self,layer=_l)
-        self._layers.insert(0,newLayer)
+    def addLayer(self,name=None):
+        name = name if name else f"Layer #{len(self._layers)}"
+        _l=LayerData(name=name)
+        newLayerBtn:_layerButton  = _layerButton(parent=self,layer=_l)
+        self._layers.insert(0,newLayerBtn)
         if sel:=self._selected: sel._isSelected = False
-        self._selected = newLayer
-        newLayer._isSelected = True
-        newLayer.clicked.connect(self._clickedLayer)
+        self._selected = newLayerBtn
+        newLayerBtn._isSelected = True
+        newLayerBtn.clicked.connect(self._clickedLayer)
         self.viewChanged.emit()
         self._placeTheButtons()
-        self.layerAdded.emit(newLayer)
+        self.layerAdded.emit(newLayerBtn._layer)
         return _l
 
     def _placeTheButtons(self):
@@ -175,31 +167,9 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
             l.lowerWidget()
         self.update()
 
-
-
     @ttk.pyTTkSlot()
     def delLayer(self):
         self._layers.remove()
-
-    # def paintEvent(self, canvas: ttk.TTkCanvas):
-    #     w,h = self.size()
-    #     offx,offy = self.getViewOffsets()
-    #     llen = len(self._layers)
-    #     color = ttk.TTkColor.RST
-    #     colorSelected   = ttk.TTkColor.fg('#FFFF66')
-    #     colorMouseMoved = ttk.TTkColor.bg('#003333')
-    #     colorHidden     = ttk.TTkColor.bg('#003333')
-    #     for i,l in enumerate(self._layers):
-    #         # drawing from the bottom
-    #         py = 2*(llen-1)-i*2
-    #         canvas.drawText(    pos=(0,py  ),text=f"     ┏{'━'*(w-7)}┓")
-    #         canvas.drawText(    pos=(0,py+2),text=f"     ┗{'━'*(w-7)}┛")
-    #         if i<llen-1:
-    #             canvas.drawText(pos=(0,py+1),text=f" □ ▣ ╽{' '*(w-7)}╽")
-    #         else:
-    #             canvas.drawText(pos=(0,py+1),text=f" □ ▣ ┃{' '*(w-7)}┃")
-    #         canvas.drawTTkString(pos=(7,py+1),text=l.name())
-    #     return super().paintEvent(canvas)
 
 class Layers(ttk.TTkGridLayout):
     __slots__ = ('_scrollWidget',

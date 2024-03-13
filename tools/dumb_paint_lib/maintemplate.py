@@ -30,7 +30,7 @@ import TermTk as ttk
 from .paintarea import PaintArea, PaintToolKit
 from .palette   import Palette
 from .textarea  import TextArea
-from .layers    import Layers
+from .layers    import Layers,LayerData
 
 class LeftPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
@@ -195,7 +195,7 @@ class ExportArea(ttk.TTkGridLayout):
 class PaintTemplate(ttk.TTkAppTemplate):
     def __init__(self, border=False, **kwargs):
         super().__init__(border, **kwargs)
-        self._parea    = PaintArea()
+        self._parea = parea = PaintArea()
         ptoolkit = PaintToolKit()
         tarea    = TextArea()
         layers   = Layers()
@@ -250,6 +250,20 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         self._parea.setGlyphColor(palette.color())
         ptoolkit.setColor(palette.color())
+
+        # Connect and handle Layers event
+        @ttk.pyTTkSlot(LayerData)
+        def _layerAdded(l:LayerData):
+            nl = parea.newLayer()
+            l.setData(nl)
+
+        @ttk.pyTTkSlot(LayerData)
+        def _layerSelected(l:LayerData):
+            parea.setCurrentLayer(l.data())
+
+        layers.layerAdded.connect(_layerAdded)
+        layers.layerSelected.connect(_layerSelected)
+        layers.addLayer(name="Background")
 
     @ttk.pyTTkSlot()
     def importDictWin(self):
