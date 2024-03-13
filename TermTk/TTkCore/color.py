@@ -388,9 +388,66 @@ class TTkColor(_TTkColor):
         color_1 = color_fg_red + color_bg_blue
         color_2 = color_fg_red + TTkColor.bg('#FFFF00')
         color_3 = color_2 + TTkColor.UNDERLINE + TTkColor.BOLD
+
+        # Use presets
+        color_4 = TTkColor.RED
+        color_5 = TTkColor.BG_YELLOW + color_4
+        color_6 = color_5 + TTkColor.UNDERLINE + TTkColor.BOLD
+
     '''
     RST = _TTkColor()
     '''Reset to the default terminal color and modifiers'''
+
+    BLACK   = _TTkColor(fg=(  0,  0,  0))
+    '''(fg) #000000 - Black'''
+    WHITE   = _TTkColor(fg=(255,255,255))
+    '''(fg) #FFFFFF - White'''
+    RED     = _TTkColor(fg=(255,  0,  0))
+    '''(fg) #FF0000 - Red'''
+    GREEN   = _TTkColor(fg=(  0,255,  0))
+    '''(fg) #00FF00 - Green'''
+    BLUE    = _TTkColor(fg=(  0,  0,255))
+    '''(fg) #0000FF - Blue'''
+    CYAN    = _TTkColor(fg=(  0,255,255))
+    '''(fg) #00FFFF - Cyan'''
+    MAGENTA = _TTkColor(fg=(255,  0,255))
+    '''(fg) #FF00FF - Magenta'''
+    YELLOW  = _TTkColor(fg=(255,255,  0))
+    '''(fg) #FFFF00 - Yellow'''
+
+    FG_BLACK   = BLACK
+    '''(fg) #000000 - Black'''
+    FG_WHITE   = WHITE
+    '''(fg) #FFFFFF - White'''
+    FG_RED     = RED
+    '''(fg) #FF0000 - Red'''
+    FG_GREEN   = GREEN
+    '''(fg) #00FF00 - Green'''
+    FG_BLUE    = BLUE
+    '''(fg) #0000FF - Blue'''
+    FG_CYAN    = CYAN
+    '''(fg) #00FFFF - Cyan'''
+    FG_MAGENTA = MAGENTA
+    '''(fg) #FF00FF - Magenta'''
+    FG_YELLOW  = YELLOW
+    '''(fg) #FFFF00 - Yellow'''
+
+    BG_BLACK   = BLACK.invertFgBg()
+    '''(bg) #000000 - Black'''
+    BG_WHITE   = WHITE.invertFgBg()
+    '''(bg) #FFFFFF - White'''
+    BG_RED     = RED.invertFgBg()
+    '''(bg) #FF0000 - Red'''
+    BG_GREEN   = GREEN.invertFgBg()
+    '''(bg) #00FF00 - Green'''
+    BG_BLUE    = BLUE.invertFgBg()
+    '''(bg) #0000FF - Blue'''
+    BG_CYAN    = CYAN.invertFgBg()
+    '''(bg) #00FFFF - Cyan'''
+    BG_MAGENTA = MAGENTA.invertFgBg()
+    '''(bg) #FF00FF - Magenta'''
+    BG_YELLOW  = YELLOW.invertFgBg()
+    '''(bg) #FFFF00 - Yellow'''
 
     # Modifiers:
     BOLD         = _TTkColor(mod=TTkHelper.Color.BOLD)

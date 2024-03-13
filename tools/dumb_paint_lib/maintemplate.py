@@ -30,6 +30,7 @@ import TermTk as ttk
 from .paintarea import PaintArea, PaintToolKit
 from .palette   import Palette
 from .textarea  import TextArea
+from .layers    import Layers
 
 class LeftPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
@@ -53,10 +54,12 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
         # Toolset
         lTools = ttk.TTkGridLayout()
+        ra_move   = ttk.TTkRadioButton(radiogroup="tools", text="Move",  enabled=True)
+        ra_select = ttk.TTkRadioButton(radiogroup="tools", text="Select",enabled=False)
         ra_brush  = ttk.TTkRadioButton(radiogroup="tools", text="Brush", checked=True)
-        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line", enabled=False)
+        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line",  enabled=False)
         ra_rect   = ttk.TTkRadioButton(radiogroup="tools", text="Rect")
-        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval", enabled=False)
+        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval",  enabled=False)
 
         ra_rect_f = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Fill" , enabled=False, checked=True)
         ra_rect_e = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Empty", enabled=False)
@@ -84,12 +87,14 @@ class LeftPanel(ttk.TTkVBoxLayout):
         ra_rect_e.toggled.connect( _emitTool)
         ra_oval.toggled.connect(   _emitTool)
 
-        lTools.addWidget(ra_brush,0,0)
-        lTools.addWidget(ra_line,1,0)
-        lTools.addWidget(ra_rect,2,0)
-        lTools.addWidget(ra_rect_f,2,1)
-        lTools.addWidget(ra_rect_e,2,2)
-        lTools.addWidget(ra_oval,3,0)
+        lTools.addWidget(ra_move  ,0,0)
+        lTools.addWidget(ra_select,1,0)
+        lTools.addWidget(ra_brush ,2,0)
+        lTools.addWidget(ra_line  ,3,0)
+        lTools.addWidget(ra_rect  ,4,0)
+        lTools.addWidget(ra_rect_f,4,1)
+        lTools.addWidget(ra_rect_e,4,2)
+        lTools.addWidget(ra_oval  ,5,0)
         self.addItem(lTools)
 
         # brush
@@ -109,14 +114,20 @@ class ExportArea(ttk.TTkGridLayout):
         self._paintArea = paintArea
         super().__init__(**kwargs)
         self._te = ttk.TTkTextEdit(lineNumber=True, readOnly=False)
-        btn_ex   = ttk.TTkButton(text="Export")
-        self.addWidget(btn_ex  ,0,0)
-        self.addWidget(self._te,1,0,1,3)
+        btn_exIm   = ttk.TTkButton(text="Export Image")
+        btn_exLa   = ttk.TTkButton(text="Export Layer")
+        btn_exPr   = ttk.TTkButton(text="Export Document")
+        btn_cbCrop = ttk.TTkCheckbox(text="Crop",checked=True)
+        self.addWidget(btn_exLa  ,0,0)
+        self.addWidget(btn_exIm  ,0,1)
+        self.addWidget(btn_exPr  ,0,2)
+        self.addWidget(btn_cbCrop,0,3)
+        self.addWidget(self._te,1,0,1,5)
 
-        btn_ex.clicked.connect(self._export)
+        btn_exLa.clicked.connect(self._exportLayer)
 
     @ttk.pyTTkSlot()
-    def _export(self):
+    def _exportLayer(self):
         # Don't try this at home
         pw,ph  = self._paintArea._canvasSize
         data   = self._paintArea._canvasArea['data']
@@ -183,6 +194,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self._parea    = PaintArea()
         ptoolkit = PaintToolKit()
         tarea    = TextArea()
+        layers   = Layers()
         expArea  = ExportArea(self._parea)
 
         leftPanel = LeftPanel()
@@ -192,6 +204,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         rightPanel.addWidget(tarea)
         # rightPanel.addItem(expArea, title="Export")
         # rightPanel.setSizes([None,5])
+        rightPanel.addItem(layers, title='Layers')
+        rightPanel.setSizes([None,9])
 
         self.setItem(expArea, self.BOTTOM, title="Export")
 

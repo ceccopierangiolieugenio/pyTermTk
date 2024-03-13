@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['PaintArea','PaintToolKit']
+__all__ = ['PaintArea','PaintToolKit','CanvasLayer']
 
 import sys, os
 
@@ -42,8 +42,8 @@ class PaintToolKit(ttk.TTkGridLayout):
         self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
         self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
         super().__init__(*args, **kwargs)
-        self._rSelect = ttk.TTkRadioButton(text='Select '     , maxWidth=10)
-        self._rPaint  = ttk.TTkRadioButton(text='Paint  '            )
+        self._rSelect = ttk.TTkRadioButton(text='Select '     , maxWidth=10, enabled=False)
+        self._rPaint  = ttk.TTkRadioButton(text='Paint  '     ,              enabled=False)
         self._lgliph   = ttk.TTkLabel(text=""                 , maxWidth=8)
         self._cbFg    = ttk.TTkCheckbox(text="Fg"             , maxWidth= 6)
         self._cbBg    = ttk.TTkCheckbox(text="Bg"                    )
@@ -118,21 +118,126 @@ class PaintToolKit(ttk.TTkGridLayout):
             self._bpBg.setDisabled()
         self._refreshColor(emit=False)
 
+class CanvasLayer():
+    __slot_ = ('_size','_data','_colors')
+    def __init__(self) -> None:
+        self._size = (0,0)
+        self._data = []
+        self._colors = []
+
+    def resize(self,w,h):
+        self._size = (w,h)
+        self._data   = (self._data   + [[] for _ in range(h)])[:h]
+        self._colors = (self._colors + [[] for _ in range(h)])[:h]
+        for i in range(h):
+            self._data[i]   = (self._data[i]   + [' '              for _ in range(w)])[:w]
+            self._colors[i] = (self._colors[i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
+
+    def copy(self):
+        w,h = self._size
+        ret = CanvasLayer()
+        ret._size   = (w,h)
+        ret._data   = [d.copy() for d in self._data]
+        ret._colors = [c.copy() for c in self._colors]
+
+    def clean(self):
+        w,h = self._size
+        for i in range(h):
+            self._data[i]   = [' ']*w
+            self._colors[i] = [ttk.TTkColor.RST]*w
+
+    def importLayer(self, dd):
+        w,h = self._size
+        w = len(dd['data'][0]) + 10
+        h = len(dd['data']) + 4
+        x,y=5,2
+
+        self.resizeCanvas(w,h)
+        self.clean()
+
+        for i,rd in enumerate(dd['data']):
+            for ii,cd in enumerate(rd):
+                self._data[i+y][ii+x] = cd
+        for i,rd in enumerate(dd['colors']):
+            for ii,cd in enumerate(rd):
+                fg,bg = cd
+                if fg and bg:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
+                elif fg:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)
+                elif bg:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.bg(bg)
+                else:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.RST
+
+    def placeFill(self,geometry,tool,glyph,color):
+        w,h = self._size
+        ax,ay,bx,by = geometry
+        ax = max(0,min(w-1,ax))
+        ay = max(0,min(h-1,ay))
+        bx = max(0,min(w-1,bx))
+        by = max(0,min(h-1,by))
+        fax,fay = min(ax,bx), min(ay,by)
+        fbx,fby = max(ax,bx), max(ay,by)
+
+        data   = self._data
+        colors = self._colors
+
+        if tool == PaintArea.Tool.RECTFILL:
+            for row in data[fay:fby+1]:
+                row[fax:fbx+1] = [glyph]*(fbx-fax+1)
+            for row in colors[fay:fby+1]:
+                row[fax:fbx+1] = [color]*(fbx-fax+1)
+        if tool == PaintArea.Tool.RECTEMPTY:
+            data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
+            data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
+            colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
+            colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
+            for row in data[fay:fby]:
+                row[fax]=row[fbx]=glyph
+            for row in colors[fay:fby]:
+                row[fax]=row[fbx]=color
+        return True
+
+    def placeGlyph(self,x,y,glyph,color):
+        w,h = self._size
+        data = self._data
+        colors = self._colors
+        if 0<=x<w and 0<=y<h:
+            data[y][x]   = glyph
+            colors[y][x] = color
+            return True
+        return False
+
+    def drawInCanvas(self, pos, canvas:ttk.TTkCanvas):
+        px,py = pos
+        pw,ph = self._size
+        cw,ch = canvas.size()
+        w=min(cw,pw)
+        h=min(ch,ph)
+        data   = self._data
+        colors = self._colors
+        for y in range(h):
+            canvas._data[y][0:w] = data[y][0:w]
+            for x in range(w):
+                c = colors[y][x]
+                canvas._colors[y][x] = c if c._bg else c+canvas._colors[y][x].background()
+
 class PaintArea(ttk.TTkWidget):
     class Tool(int):
         BRUSH = 0x01
         RECTFILL  = 0x02
         RECTEMPTY = 0x03
 
-    __slots__ = ('_canvasArea', '_canvasSize',
+    __slots__ = ('_canvasLayers', '_currentLayer',
                  '_transparentColor',
                  '_mouseMove', '_mouseFill', '_tool',
                  '_glyph', '_glyphColor')
 
     def __init__(self, *args, **kwargs):
         self._transparentColor = ttk.TTkColor.bg('#FF00FF')
-        self._canvasSize = (0,0)
-        self._canvasArea = {'data':[],'colors':[]}
+        self._currentLayer:CanvasLayer       = CanvasLayer()
+        self._canvasLayers:list[CanvasLayer] = [self._currentLayer]
         self._glyph = 'X'
         self._glyphColor = ttk.TTkColor.RST
         self._mouseMove = None
@@ -143,43 +248,12 @@ class PaintArea(ttk.TTkWidget):
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
 
     def resizeCanvas(self, w, h):
+        self._currentLayer.resize(w,h)
         self._canvasSize = (w,h)
-        self._canvasArea['data']   = (self._canvasArea['data']   + [[] for _ in range(h)])[:h]
-        self._canvasArea['colors'] = (self._canvasArea['colors'] + [[] for _ in range(h)])[:h]
-        for i in range(h):
-            self._canvasArea['data'][i]   = (self._canvasArea['data'][i]   + [' '              for _ in range(w)])[:w]
-            self._canvasArea['colors'][i] = (self._canvasArea['colors'][i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
         self.update()
 
-    def clean(self):
-        w,h = self._canvasSize
-        for i in range(h):
-            self._canvasArea['data'][i]   = [' ']*w
-            self._canvasArea['colors'][i] = [ttk.TTkColor.RST]*w
-
     def importLayer(self, dd):
-        w,h = self._canvasSize
-        w = len(dd['data'][0]) + 10
-        h = len(dd['data']) + 4
-        x,y=5,2
-
-        self.resizeCanvas(w,h)
-        self.clean()
-
-        for i,rd in enumerate(dd['data']):
-            for ii,cd in enumerate(rd):
-                self._canvasArea['data'][i+y][ii+x] = cd
-        for i,rd in enumerate(dd['colors']):
-            for ii,cd in enumerate(rd):
-                fg,bg = cd
-                if fg and bg:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
-                elif fg:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.fg(fg)
-                elif bg:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.bg(bg)
-                else:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.RST
+        self._currentLayer.importLayer(dd)
         self.update()
 
     def leaveEvent(self, evt):
@@ -264,65 +338,35 @@ class PaintArea(ttk.TTkWidget):
 
     def _placeFill(self):
         if not self._mouseFill: return False
-        w,h = self._canvasSize
-        ax,ay,bx,by = self._mouseFill
-        ax = max(0,min(w-1,ax))
-        ay = max(0,min(h-1,ay))
-        bx = max(0,min(w-1,bx))
-        by = max(0,min(h-1,by))
-        fax,fay = min(ax,bx), min(ay,by)
-        fbx,fby = max(ax,bx), max(ay,by)
-
+        mfill = self._mouseFill
         self._mouseFill = None
         self._mouseMove = None
-
-        data   = self._canvasArea['data']
-        colors = self._canvasArea['colors']
-        glyph = self._glyph
-        color = self._glyphColor
-
-        if self._tool == self.Tool.RECTFILL:
-            for row in data[fay:fby+1]:
-                row[fax:fbx+1] = [glyph]*(fbx-fax+1)
-            for row in colors[fay:fby+1]:
-                row[fax:fbx+1] = [color]*(fbx-fax+1)
-        if self._tool == self.Tool.RECTEMPTY:
-            data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-            data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-            colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
-            colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
-            for row in data[fay:fby]:
-                row[fax]=row[fbx]=glyph
-            for row in colors[fay:fby]:
-                row[fax]=row[fbx]=color
+        ret = self._currentLayer.placeFill(mfill,self._tool,self._glyph,self._glyphColor)
         self.update()
-        return True
+        return ret
 
     def _placeGlyph(self,x,y):
         self._mouseMove = None
-        w,h = self._canvasSize
-        data = self._canvasArea['data']
-        colors = self._canvasArea['colors']
-        if 0<=x<w and 0<=y<h:
-            data[y][x] = self._glyph
-            colors[y][x] = self._glyphColor
-            self.update()
-            return True
-        return False
+        ret = self._currentLayer.placeGlyph(x,y,self._glyph,self._glyphColor)
+        self.update()
+        return ret
 
-    def paintEvent(self, canvas: ttk.TTkCanvas):
+    def paintEvent(self, canvas:ttk.TTkCanvas):
         pw,ph = self._canvasSize
         cw,ch = canvas.size()
         w=min(cw,pw)
         h=min(ch,ph)
-        data = self._canvasArea['data']
-        colors = self._canvasArea['colors']
+        # data = self._canvasArea['data']
+        # colors = self._canvasArea['colors']
         tc = self._transparentColor
-        for y in range(h):
-            canvas._data[y][0:w] = data[y][0:w]
-            for x in range(w):
-                c = colors[y][x]
-                canvas._colors[y][x] = c if c._bg else c+tc
+        canvas.fill(pos=(0,0),size=(pw,ph),color=tc)
+        for l in self._canvasLayers:
+            l.drawInCanvas(pos=(0,0),canvas=canvas)
+        # for y in range(h):
+        #     canvas._data[y][0:w] = data[y][0:w]
+        #     for x in range(w):
+        #         c = colors[y][x]
+        #         canvas._colors[y][x] = c if c._bg else c+tc
         if self._mouseMove:
             x,y = self._mouseMove
             gc = self._glyphColor
@@ -336,7 +380,15 @@ class PaintArea(ttk.TTkWidget):
             by = max(0,min(h-1,by))
             x,y = min(ax,bx),     min(ay,by)
             w,h = max(ax-x,bx-x)+1, max(ay-y,by-y)+1
+            gl = self._glyph
             gc = self._glyphColor
-            canvas.fill(pos=(x,y), size=(w,h),
-                        color=gc if gc._bg else gc+tc,
-                        char=self._glyph)
+            if self._tool == PaintArea.Tool.RECTFILL:
+                canvas.fill(pos=(x,y), size=(w,h),
+                            color=gc if gc._bg else gc+tc,
+                            char=gl)
+            if self._tool == PaintArea.Tool.RECTEMPTY:
+                canvas.drawText(pos=(x,y    ),text=gl*w,color=gc)
+                canvas.drawText(pos=(x,y+h-1),text=gl*w,color=gc)
+                for y in range(y+1,y+h-1):
+                    canvas.drawChar(pos=(x    ,y),char=gl,color=gc)
+                    canvas.drawChar(pos=(x+w-1,y),char=gl,color=gc)
