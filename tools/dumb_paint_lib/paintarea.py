@@ -119,10 +119,11 @@ class PaintToolKit(ttk.TTkGridLayout):
         self._refreshColor(emit=False)
 
 class CanvasLayer():
-    __slot__ = ('_pos','_size','_data','_colors')
+    __slot__ = ('_pos','_name','_size','_data','_colors')
     def __init__(self) -> None:
         self._pos  = (0,0)
         self._size = (0,0)
+        self._name = ""
         self._data:  list[list[str         ]] = []
         self._colors:list[list[ttk.TTkColor]] = []
 
@@ -130,6 +131,11 @@ class CanvasLayer():
         return self._pos
     def size(self):
         return self._size
+
+    def name(self):
+        return self._name
+    def setName(self, name):
+        self._name = name
 
     def move(self,x,y):
         self._pos=(x,y)
@@ -156,29 +162,94 @@ class CanvasLayer():
             self._data[i]   = [' ']*w
             self._colors[i] = [ttk.TTkColor.RST]*w
 
-    def importLayer(self, dd):
-        w,h = self._size
-        w = len(dd['data'][0]) + 10
-        h = len(dd['data']) + 4
-        x,y=5,2
+    def exportLayer(self):
+        # Don't try this at home
+        px,py  = self.pos()
+        pw,ph  = self.size()
+        data   = self._data
+        colors = self._colors
+        # get the bounding box
+        xa,xb,ya,yb = pw,0,ph,0
+        for y,row in enumerate(data):
+            for x,d in enumerate(row):
+                c = colors[y][x]
+                if d != ' ' or c.background():
+                    xa = min(x,xa)
+                    xb = max(x,xb)
+                    ya = min(y,ya)
+                    yb = max(y,yb)
 
-        self.resizeCanvas(w,h)
+        if (xa,xb,ya,yb) == (pw,0,ph,0):
+            xa=xb=ya=yb=0
+
+
+        #if xa>xb or ya>yb:
+        #    return {}
+
+        outData  = {
+            'version':'1.0.0',
+            'size':[xb-xa+1,yb-ya+1],
+            'pos': (px+xa,py+ya),
+            'name':str(self.name()),
+            'data':[], 'colors':[], 'palette':[]}
+
+        palette=outData['palette']
+        for row in colors:
+            for c in row:
+                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
+                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                if (pc:=(fg,bg)) not in palette:
+                    palette.append(pc)
+
+        for row in data[ya:yb+1]:
+            outData['data'].append(row[xa:xb+1])
+        for row in colors[ya:yb+1]:
+            outData['colors'].append([])
+            for c in row[xa:xb+1]:
+                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
+                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                outData['colors'][-1].append(palette.index((fg,bg)))
+        return outData
+
+    def importLayer(self, dd):
         self.clean()
 
-        for i,rd in enumerate(dd['data']):
-            for ii,cd in enumerate(rd):
-                self._data[i+y][ii+x] = cd
-        for i,rd in enumerate(dd['colors']):
-            for ii,cd in enumerate(rd):
+        if 'version' in dd and dd['version']=='1.0.0':
+            self._pos  = dd['pos']
+            self._size = dd['size']
+            self._name = dd['name']
+            self._data = dd['data']
+            def _getColor(cd):
                 fg,bg = cd
-                if fg and bg:
-                    self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
-                elif fg:
-                    self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)
-                elif bg:
-                    self._colors[i+y][ii+x] = ttk.TTkColor.bg(bg)
-                else:
-                    self._colors[i+y][ii+x] = ttk.TTkColor.RST
+                if fg and bg: return ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
+                elif fg:      return ttk.TTkColor.fg(fg)
+                elif bg:      return ttk.TTkColor.bg(bg)
+                else:         return ttk.TTkColor.RST
+            if 'palette' in dd:
+                palette = [_getColor(c) for c in  dd['palette']]
+                self._colors = [[palette[c] for c in row] for row in dd['colors']]
+            else:
+                self._colors = [[_getColor(c) for c in row] for row in dd['colors']]
+        else: # Legacy old import
+            w = len(dd['data'][0]) + 10
+            h = len(dd['data']) + 4
+            x,y=5,2
+            self.resize(w,h)
+            self._pos = (0,0)
+            for i,rd in enumerate(dd['data']):
+                for ii,cd in enumerate(rd):
+                    self._data[i+y][ii+x] = cd
+            for i,rd in enumerate(dd['colors']):
+                for ii,cd in enumerate(rd):
+                    fg,bg = cd
+                    if fg and bg:
+                        self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
+                    elif fg:
+                        self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)
+                    elif bg:
+                        self._colors[i+y][ii+x] = ttk.TTkColor.bg(bg)
+                    else:
+                        self._colors[i+y][ii+x] = ttk.TTkColor.RST
 
     def placeFill(self,geometry,tool,glyph,color):
         w,h = self._size
@@ -267,8 +338,8 @@ class PaintArea(ttk.TTkWidget):
 
     def __init__(self, *args, **kwargs):
         self._transparentColor = ttk.TTkColor.bg('#FF00FF')
-        self._currentLayer:CanvasLayer       = CanvasLayer()
-        self._canvasLayers:list[CanvasLayer] = [self._currentLayer]
+        self._currentLayer:CanvasLayer = None
+        self._canvasLayers:list[CanvasLayer] = []
         self._glyph = 'X'
         self._glyphColor = ttk.TTkColor.RST
         self._posBk = (0,0)
@@ -281,8 +352,12 @@ class PaintArea(ttk.TTkWidget):
         self.resizeCanvas(80,25)
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
 
+    def canvasLayers(self):
+        return self._canvasLayers
+
     def resizeCanvas(self, w, h):
-        self._currentLayer.resize(w,h)
+        if self._currentLayer:
+            self._currentLayer.resize(w,h)
         self._canvasSize = (w,h)
         self.update()
 
@@ -301,6 +376,30 @@ class PaintArea(ttk.TTkWidget):
     def importLayer(self, dd):
         self._currentLayer.importLayer(dd)
         self.update()
+
+    def importDocument(self, dd):
+        self._canvasLayers = []
+        if 'version' in dd and dd['version']=='1.0.0':
+            self.resizeCanvas(*dd['size'])
+            for l in dd['layers']:
+                nl = self.newLayer()
+                nl.importLayer(l)
+
+    def exportImage(self):
+        return {}
+
+    def exportLayer(self) -> dict:
+        if self._currentLayer:
+            return self._currentLayer.exportLayer()
+        return {}
+
+    def exportDocument(self):
+        pw,ph = self._canvasSize
+        outData  = {
+            'version':'1.0.0',
+            'size':(pw,ph),
+            'layers':[l.exportLayer() for l in self._canvasLayers]}
+        return outData
 
     def leaveEvent(self, evt):
         self._mouseMove = None

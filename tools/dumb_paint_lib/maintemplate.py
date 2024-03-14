@@ -114,8 +114,8 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
 class ExportArea(ttk.TTkGridLayout):
     __slots__ = ('_paintArea', '_te')
-    def __init__(self, paintArea, **kwargs):
-        self._paintArea = paintArea
+    def __init__(self, paintArea:PaintArea, **kwargs):
+        self._paintArea:PaintArea = paintArea
         super().__init__(**kwargs)
         self._te = ttk.TTkTextEdit(lineNumber=True, readOnly=False)
         btn_exIm   = ttk.TTkButton(text="Export Image")
@@ -129,59 +129,65 @@ class ExportArea(ttk.TTkGridLayout):
         self.addWidget(self._te,1,0,1,5)
 
         btn_exLa.clicked.connect(self._exportLayer)
+        btn_exPr.clicked.connect(self._exportDocument)
 
     @ttk.pyTTkSlot()
     def _exportLayer(self):
-        # Don't try this at home
-        pw,ph  = self._paintArea._canvasSize
-        data   = self._paintArea._canvasArea['data']
-        colors = self._paintArea._canvasArea['colors']
-        # get the bounding box
-        xa,xb,ya,yb = pw,0,ph,0
-        for y,row in enumerate(data):
-            for x,d in enumerate(row):
-                c = colors[y][x]
-                if d != ' ' or c.background():
-                    xa = min(x,xa)
-                    xb = max(x,xb)
-                    ya = min(y,ya)
-                    yb = max(y,yb)
-
-        if xa>xb or ya>yb:
-            self._te.setText("No Picture Found!!!")
+        dd = self._paintArea.exportLayer()
+        if not dd:
+            self._te.setText('# No Data toi be saved!!!')
             return
 
-        out      = "data = {'data': [\n"
-        outData  = {'data':[], 'colors':[]}
-        for row in data[ya:yb+1]:
-            out += "        ["
-            outData['data'].append(row[xa:xb+1])
-            for c in row[xa:xb+1]:
-                out += f"'{c}',"
-            out += "],\n"
-        out     += "          ],\n"
-        out     += "        'colors': [\n"
-        for row in colors[ya:yb+1]:
-            out += "        ["
-            outData['colors'].append([])
-            for c in row[xa:xb+1]:
-                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
-                out += f"('{fg}','{bg}'),"
-                outData['colors'][-1].append((fg,bg))
-            out += "],\n"
-        out     += "          ]}\n"
-
-        self._te.setText(out)
-
-        self._te.append('\n# Compressed Data:')
+        self._te.setText('# Compressed Data:')
         self._te.append('data = TTkUtil.base64_deflate_2_obj(')
-        b64str = ttk.TTkUtil.obj_inflate_2_base64(outData)
+        b64str = ttk.TTkUtil.obj_inflate_2_base64(dd)
         b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '")'
         self._te.append(b64list)
 
+        self._te.append('\n# Uncompressed Data:')
+        outTxt = '{\n'
+        for i in dd:
+            if i in ('data','colors'): continue
+            outTxt += f"  '{i}':'{dd[i]}',\n"
+        for l in dd['data']:
+            outTxt += f"    {l},\n"
+        outTxt += "  ],'colors':[\n"
+        for l in dd['colors']:
+            outTxt += f"    {l},\n"
+        outTxt += "  ],'palette':["
+        for i,l in enumerate(dd['palette']):
+            if not i%10:
+                outTxt += f"\n    "
+            outTxt += f"{l},"
+        outTxt += "]}\n"
+        self._te.append(outTxt)
 
+    @ttk.pyTTkSlot()
+    def _exportDocument(self):
+        dd = self._paintArea.exportDocument()
+        if not dd:
+            self._te.setText('# No Data to be saved!!!')
+            return
 
+        self._te.setText('# Compressed Data:')
+        self._te.append('data = TTkUtil.base64_deflate_2_obj(')
+        b64str = ttk.TTkUtil.obj_inflate_2_base64(dd)
+        b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '")'
+        self._te.append(b64list)
+
+        self._te.append('\n# Uncompressed Data:')
+        outTxt = '{\n'
+        for i in dd:
+            if i=='layers': continue
+            if type(dd[i]) == str:
+                outTxt += f"  '{i}':'{dd[i]}',\n"
+            else:
+                outTxt += f"  '{i}':{dd[i]},\n"
+        outTxt +=  "  'layers':[\n"
+        for l in dd['layers']:
+            outTxt += f"    {l},\n"
+        outTxt += "]}\n"
+        self._te.append(outTxt)
 
 # Layout:
 #
@@ -193,13 +199,14 @@ class ExportArea(ttk.TTkGridLayout):
 #                 Export
 #
 class PaintTemplate(ttk.TTkAppTemplate):
+    __slots__ = ('_parea','_layers')
     def __init__(self, border=False, **kwargs):
         super().__init__(border, **kwargs)
-        self._parea = parea = PaintArea()
+        self._parea  = parea = PaintArea()
+        self._layers = layers = Layers()
         ptoolkit = PaintToolKit()
         tarea    = TextArea()
-        layers   = Layers()
-        expArea  = ExportArea(self._parea)
+        expArea  = ExportArea(parea)
 
         leftPanel = LeftPanel()
         palette = leftPanel.palette()
@@ -251,19 +258,29 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self._parea.setGlyphColor(palette.color())
         ptoolkit.setColor(palette.color())
 
-        # Connect and handle Layers event
-        @ttk.pyTTkSlot(LayerData)
-        def _layerAdded(l:LayerData):
-            nl = parea.newLayer()
-            l.setData(nl)
-
         @ttk.pyTTkSlot(LayerData)
         def _layerSelected(l:LayerData):
             parea.setCurrentLayer(l.data())
 
-        layers.layerAdded.connect(_layerAdded)
+        layers.layerAdded.connect(self._layerAdded)
         layers.layerSelected.connect(_layerSelected)
         layers.addLayer(name="Background")
+
+    # Connect and handle Layers event
+    @ttk.pyTTkSlot(LayerData)
+    def _layerAdded(self, l:LayerData):
+        nl = self._parea.newLayer()
+        nl.setName(l.name())
+        l.setData(nl)
+
+    def importDocument(self, dd):
+        self._parea.importDocument(dd)
+        self._layers.clear()
+        # Little Hack that I don't know how to overcome
+        self._layers.layerAdded.disconnect(self._layerAdded)
+        for l in self._parea.canvasLayers():
+            self._layers.addLayer(name=l.name(),data=l)
+        self._layers.layerAdded.connect(self._layerAdded)
 
     @ttk.pyTTkSlot()
     def importDictWin(self):
@@ -298,7 +315,11 @@ class PaintTemplate(ttk.TTkAppTemplate):
                 ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
                 return
 
-            self._parea.importLayer(dd)
+            if 'layers' in dd:
+                self.importDocument(dd)
+            else:
+                self._layers.addLayer(name="Import")
+                self._parea.importLayer(dd)
 
             newWindow.close()
 

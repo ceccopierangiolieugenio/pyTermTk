@@ -144,10 +144,17 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         self.layerSelected.emit(layerButton._layer)
         self.update()
 
+    def clear(self):
+        for layBtn in self._layers:
+            self.layout().removeWidget(layBtn)
+            layBtn.clicked.clear()
+        self._layers.clear()
+        self.update()
+
     @ttk.pyTTkSlot()
-    def addLayer(self,name=None):
+    def addLayer(self,name=None, data=None):
         name = name if name else f"Layer #{len(self._layers)}"
-        _l=LayerData(name=name)
+        _l=LayerData(name=name,data=data)
         newLayerBtn:_layerButton  = _layerButton(parent=self,layer=_l)
         self._layers.insert(0,newLayerBtn)
         if sel:=self._selected: sel._isSelected = False
@@ -174,7 +181,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
 class Layers(ttk.TTkGridLayout):
     __slots__ = ('_scrollWidget',
                  # Forward Methods
-                 'addLayer',
+                 'addLayer','clear',
                  # Forward Signals
                  'layerSelected','layerAdded','layerDeleted','layerOrderChanged')
     def __init__(self, **kwargs):
@@ -205,3 +212,4 @@ class Layers(ttk.TTkGridLayout):
 
         # forward methods
         self.addLayer = _lsw.addLayer
+        self.clear    = _lsw.clear
