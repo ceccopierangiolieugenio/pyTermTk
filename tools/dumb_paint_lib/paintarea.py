@@ -134,6 +134,7 @@ class CanvasLayer():
 
     def name(self):
         return self._name
+    @ttk.pyTTkSlot(str)
     def setName(self, name):
         self._name = name
 

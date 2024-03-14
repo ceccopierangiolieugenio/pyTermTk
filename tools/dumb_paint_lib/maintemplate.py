@@ -223,7 +223,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self.setItem(leftPanel     , self.LEFT,  size=16*2)
         self.setWidget(self._parea , self.MAIN)
         self.setItem(ptoolkit      , self.TOP,   fixed=True)
-        self.setItem(rightPanel    , self.RIGHT, size=50)
+        self.setItem(rightPanel    , self.RIGHT, size=40)
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
@@ -272,6 +272,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         nl = self._parea.newLayer()
         nl.setName(l.name())
         l.setData(nl)
+        l.nameChanged.connect(nl.setName)
 
     def importDocument(self, dd):
         self._parea.importDocument(dd)
@@ -279,7 +280,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         # Little Hack that I don't know how to overcome
         self._layers.layerAdded.disconnect(self._layerAdded)
         for l in self._parea.canvasLayers():
-            self._layers.addLayer(name=l.name(),data=l)
+            ld = self._layers.addLayer(name=l.name(),data=l)
+            ld.nameChanged.connect(l.setName)
         self._layers.layerAdded.connect(self._layerAdded)
 
     @ttk.pyTTkSlot()

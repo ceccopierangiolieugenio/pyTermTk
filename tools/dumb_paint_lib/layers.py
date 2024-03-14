@@ -28,20 +28,24 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 class LayerData():
-    __slots__ = ('_name','_data')
+    __slots__ = ('_name','_data',
+                 #signals
+                 'nameChanged')
     def __init__(self,name:ttk.TTkString=ttk.TTkString('New'),data=None) -> None:
         self._name:ttk.TTkString = ttk.TTkString(name) if type(name)==str else name
         self._data = data
+        self.nameChanged = ttk.pyTTkSignal(str)
     def name(self):
         return self._name
     def setName(self,name):
+        self.nameChanged.emit(name)
         self._name = name
     def data(self):
         return self._data
     def setData(self,data):
         self._data = data
 
-class _layerButton(ttk.TTkWidget):
+class _layerButton(ttk.TTkContainer):
     classStyle = {
                 'default':     {'color': ttk.TTkColor.fg("#dddd88")+ttk.TTkColor.bg("#000044"),
                                 'borderColor': ttk.TTkColor.fg('#CCDDDD'),
@@ -67,6 +71,7 @@ class _layerButton(ttk.TTkWidget):
             }
 
     __slots__ = ('_layer','_first', '_isSelected',
+                 '_ledit',
                # signals
                'clicked'
                )
@@ -75,10 +80,23 @@ class _layerButton(ttk.TTkWidget):
         self._layer:LayerData = layer
         self._isSelected = False
         self._first = True
-        super().__init__(**kwargs)
+        super().__init__(**kwargs|{'layout':ttk.TTkGridLayout()})
+        self.setPadding(1,1,7,2)
+        self._ledit = ttk.TTkLineEdit(parent=self, text=layer.name(),visible=False)
+        self._ledit.focusChanged.connect(self._ledit.setVisible)
+        self._ledit.textEdited.connect(self._textEdited)
+
+    @ttk.pyTTkSlot(str)
+    def _textEdited(self, text):
+        self._layer.setName(text)
 
     def mouseReleaseEvent(self, evt) -> bool:
         self.clicked.emit(self)
+        return True
+
+    def mouseDoubleClickEvent(self, evt) -> bool:
+        self._ledit.setVisible(True)
+        self._ledit.setFocus()
         return True
 
     def paintEvent(self, canvas: ttk.TTkCanvas):
