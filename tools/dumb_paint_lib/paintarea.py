@@ -119,11 +119,12 @@ class PaintToolKit(ttk.TTkGridLayout):
         self._refreshColor(emit=False)
 
 class CanvasLayer():
-    __slot__ = ('_pos','_name','_size','_data','_colors')
+    __slot__ = ('_pos','_name','_visible','_size','_data','_colors')
     def __init__(self) -> None:
         self._pos  = (0,0)
         self._size = (0,0)
         self._name = ""
+        self._visible = True
         self._data:  list[list[str         ]] = []
         self._colors:list[list[ttk.TTkColor]] = []
 
@@ -131,6 +132,12 @@ class CanvasLayer():
         return self._pos
     def size(self):
         return self._size
+
+    def visible(self):
+        return self._visible
+    @ttk.pyTTkSlot(bool)
+    def setVisible(self, visible):
+        self._visible = visible
 
     def name(self):
         return self._name
@@ -292,6 +299,7 @@ class CanvasLayer():
         return False
 
     def drawInCanvas(self, pos, canvas:ttk.TTkCanvas):
+        if not self._visible: return
         px,py = pos
         pw,ph = self._size
         cw,ch = canvas.size()

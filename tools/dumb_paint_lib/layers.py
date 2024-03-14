@@ -30,9 +30,10 @@ import TermTk as ttk
 class LayerData():
     __slots__ = ('_name','_data',
                  #signals
-                 'nameChanged')
+                 'nameChanged','visibilityToggled')
     def __init__(self,name:ttk.TTkString=ttk.TTkString('New'),data=None) -> None:
         self._name:ttk.TTkString = ttk.TTkString(name) if type(name)==str else name
+        self.visibilityToggled = ttk.pyTTkSignal(bool)
         self._data = data
         self.nameChanged = ttk.pyTTkSignal(str)
     def name(self):
@@ -70,25 +71,37 @@ class _layerButton(ttk.TTkContainer):
                                 'grid':1},
             }
 
-    __slots__ = ('_layer','_first', '_isSelected',
+    __slots__ = ('_layer','_first', '_isSelected', '_layerVisible',
                  '_ledit',
                # signals
-               'clicked'
+               'clicked', 'visibilityToggled',
                )
     def __init__(self, layer:LayerData, **kwargs):
         self.clicked = ttk.pyTTkSignal(_layerButton)
         self._layer:LayerData = layer
         self._isSelected = False
         self._first = True
+        self._layerVisible = True
+        self.visibilityToggled = layer.visibilityToggled
+
         super().__init__(**kwargs|{'layout':ttk.TTkGridLayout()})
         self.setPadding(1,1,7,2)
         self._ledit = ttk.TTkLineEdit(parent=self, text=layer.name(),visible=False)
         self._ledit.focusChanged.connect(self._ledit.setVisible)
         self._ledit.textEdited.connect(self._textEdited)
+        # self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
     @ttk.pyTTkSlot(str)
     def _textEdited(self, text):
         self._layer.setName(text)
+
+    def mousePressEvent(self, evt) -> bool:
+        if evt.x <= 3:
+            self._layerVisible = not self._layerVisible
+            self.visibilityToggled.emit(self._layerVisible)
+        self.setFocus()
+        self.update()
+        return True
 
     def mouseReleaseEvent(self, evt) -> bool:
         self.clicked.emit(self)
@@ -118,13 +131,14 @@ class _layerButton(ttk.TTkContainer):
             style = self.currentStyle()
         borderColor = style['borderColor']
         textColor   = style['color']
+        btnVisible = '▣' if self._layerVisible else '□'
         w,h = self.size()
         canvas.drawText(    pos=(0,0),text=f"     ┏{'━'*(w-7)}┓",color=borderColor)
         canvas.drawText(    pos=(0,2),text=f"     ┗{'━'*(w-7)}┛",color=borderColor)
         if self._first:
-            canvas.drawText(pos=(0,1),text=f" □ ▣ ┃{' '*(w-7)}┃",color=borderColor)
+            canvas.drawText(pos=(0,1),text=f" {btnVisible} - ┃{' '*(w-7)}┃",color=borderColor)
         else:
-            canvas.drawText(pos=(0,1),text=f" □ ▣ ╽{' '*(w-7)}╽",color=borderColor)
+            canvas.drawText(pos=(0,1),text=f" {btnVisible} - ╽{' '*(w-7)}╽",color=borderColor)
         canvas.drawTTkString(pos=(7,1),text=self._layer.name(), color=textColor)
 
 class LayerScrollWidget(ttk.TTkAbstractScrollView):
@@ -166,6 +180,8 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         for layBtn in self._layers:
             self.layout().removeWidget(layBtn)
             layBtn.clicked.clear()
+            layBtn.visibilityToggled.clear()
+            layBtn._layer.nameChanged.clear()
         self._layers.clear()
         self.update()
 

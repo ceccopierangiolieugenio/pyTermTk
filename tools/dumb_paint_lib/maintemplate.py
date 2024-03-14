@@ -273,6 +273,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         nl.setName(l.name())
         l.setData(nl)
         l.nameChanged.connect(nl.setName)
+        l.visibilityToggled.connect(nl.setVisible)
+        l.visibilityToggled.connect(self._parea.update)
 
     def importDocument(self, dd):
         self._parea.importDocument(dd)
@@ -282,6 +284,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         for l in self._parea.canvasLayers():
             ld = self._layers.addLayer(name=l.name(),data=l)
             ld.nameChanged.connect(l.setName)
+            ld.visibilityToggled.connect(l.setVisible)
+            ld.visibilityToggled.connect(self._parea.update)
         self._layers.layerAdded.connect(self._layerAdded)
 
     @ttk.pyTTkSlot()
