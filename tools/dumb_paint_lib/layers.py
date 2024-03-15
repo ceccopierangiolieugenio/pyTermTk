@@ -112,19 +112,19 @@ class _layerButton(ttk.TTkContainer):
         self._ledit.setFocus()
         return True
 
+    def mouseDragEvent(self, evt) -> bool:
+        drag = ttk.TTkDrag()
+        drag.setData(self)
+        name = self._layerData.name()
+        pm = ttk.TTkCanvas(width=len(name)+4,height=3)
+        pm.drawBox(pos=(0,0),size=pm.size())
+        pm.drawText(pos=(2,1), text=name)
+        drag.setHotSpot(5, 1)
+        drag.setPixmap(pm)
+        drag.exec()
+        return True
+
     def paintEvent(self, canvas: ttk.TTkCanvas):
-        # if self.isEnabled() and self._checkable:
-        #     if self._checked:
-        #         style = self.style()['checked']
-        #     else:
-        #         style = self.style()['unchecked']
-        #     if self.hasFocus():
-        #         borderColor = self.style()['focus']['borderColor']
-        #     else:
-        #         borderColor = style['borderColor']
-        # else:
-        #    style = self.currentStyle()
-        #    borderColor = style['borderColor']
         if self._isSelected:
             style = self.style()['selected']
         else:
@@ -139,10 +139,10 @@ class _layerButton(ttk.TTkContainer):
             canvas.drawText(pos=(0,1),text=f" {btnVisible} - ┃{' '*(w-7)}┃",color=borderColor)
         else:
             canvas.drawText(pos=(0,1),text=f" {btnVisible} - ╽{' '*(w-7)}╽",color=borderColor)
-        canvas.drawTTkString(pos=(7,1),text=self._layerData.name(), color=textColor)
+        canvas.drawTTkString(pos=(7,1),text=self._layerData.name(), width=w-9, color=textColor)
 
 class LayerScrollWidget(ttk.TTkAbstractScrollView):
-    __slots__ = ('_layers','_selected',
+    __slots__ = ('_layers','_selected', '_dropTo',
                  # Signals
                  'layerSelected','layerAdded','layerDeleted','layersOrderChanged')
     def __init__(self, **kwargs):
@@ -152,6 +152,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         self.layersOrderChanged = ttk.pyTTkSignal(list[LayerData])
 
         self._selected = None
+        self._dropTo = None
         self._layers:list[_layerButton] = []
         super().__init__(**kwargs)
         self.viewChanged.connect(self._placeTheButtons)
@@ -230,6 +231,48 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
     @ttk.pyTTkSlot()
     def delLayer(self):
         self._layers.remove()
+
+    def dragEnterEvent(self, evt) -> bool:
+        if type(evt.data())!=_layerButton: return False
+        self._dropTo = max(0,min(len(self._layers),(evt.y-1)//2))
+        self.update()
+        return True
+    def dragLeaveEvent(self, evt) -> bool:
+        if type(evt.data())!=_layerButton: return False
+        self._dropTo = None
+        self.update()
+        return True
+    def dragMoveEvent(self, evt) -> bool:
+        if type(evt.data())!=_layerButton: return False
+        self._dropTo = max(0,min(len(self._layers),(evt.y-1)//2))
+        self.update()
+        ttk.TTkLog.debug(f"{evt.x},{evt.y} - {len(self._layers)} - {self._dropTo}")
+        return True
+    def dropEvent(self, evt) -> bool:
+        if type(evt.data())!=_layerButton: return False
+        self._dropTo = None
+        data = evt.data()
+        # dropPos = len(self._layers)-(evt.y-1)//2
+        dropPos = max(0,min(len(self._layers),(evt.y-1)//2))
+        ttk.TTkLog.debug(f"{evt.x},{evt.y} - {len(self._layers)} - {self._dropTo} {dropPos}")
+        if dropPos > self._layers.index(data):
+            dropPos -= 1
+        self._layers.remove(data)
+        self._layers.insert(dropPos,data)
+        self._placeTheButtons()
+        self.layersOrderChanged.emit([_l._layerData for _l in self._layers])
+        return True
+
+    # Stupid hack to paint on top of the child widgets
+    def paintChildCanvas(self):
+        super().paintChildCanvas()
+        if self._dropTo == None: return
+        canvas = self.getCanvas()
+        w,h = canvas.size()
+        color = ttk.TTkColor.YELLOW
+        canvas.drawText(pos=(0,self._dropTo*2),text=f"╞{'═'*(w-2)}╍",color=color)
+
+
 
 class Layers(ttk.TTkGridLayout):
     __slots__ = ('_scrollWidget',
