@@ -71,14 +71,14 @@ class _layerButton(ttk.TTkContainer):
                                 'grid':1},
             }
 
-    __slots__ = ('_layer','_first', '_isSelected', '_layerVisible',
+    __slots__ = ('_layerData','_first', '_isSelected', '_layerVisible',
                  '_ledit',
                # signals
                'clicked', 'visibilityToggled',
                )
     def __init__(self, layer:LayerData, **kwargs):
         self.clicked = ttk.pyTTkSignal(_layerButton)
-        self._layer:LayerData = layer
+        self._layerData:LayerData = layer
         self._isSelected = False
         self._first = True
         self._layerVisible = True
@@ -93,7 +93,7 @@ class _layerButton(ttk.TTkContainer):
 
     @ttk.pyTTkSlot(str)
     def _textEdited(self, text):
-        self._layer.setName(text)
+        self._layerData.setName(text)
 
     def mousePressEvent(self, evt) -> bool:
         if evt.x <= 3:
@@ -139,16 +139,18 @@ class _layerButton(ttk.TTkContainer):
             canvas.drawText(pos=(0,1),text=f" {btnVisible} - ┃{' '*(w-7)}┃",color=borderColor)
         else:
             canvas.drawText(pos=(0,1),text=f" {btnVisible} - ╽{' '*(w-7)}╽",color=borderColor)
-        canvas.drawTTkString(pos=(7,1),text=self._layer.name(), color=textColor)
+        canvas.drawTTkString(pos=(7,1),text=self._layerData.name(), color=textColor)
 
 class LayerScrollWidget(ttk.TTkAbstractScrollView):
     __slots__ = ('_layers','_selected',
                  # Signals
-                 'layerSelected','layerAdded','layerDeleted')
+                 'layerSelected','layerAdded','layerDeleted','layersOrderChanged')
     def __init__(self, **kwargs):
         self.layerSelected = ttk.pyTTkSignal(LayerData)
-        self.layerAdded = ttk.pyTTkSignal(LayerData)
-        self.layerDeleted = ttk.pyTTkSignal(LayerData)
+        self.layerAdded    = ttk.pyTTkSignal(LayerData)
+        self.layerDeleted  = ttk.pyTTkSignal(LayerData)
+        self.layersOrderChanged = ttk.pyTTkSignal(list[LayerData])
+
         self._selected = None
         self._layers:list[_layerButton] = []
         super().__init__(**kwargs)
@@ -173,7 +175,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
             sel.update()
         self._selected = layerButton
         layerButton._isSelected = True
-        self.layerSelected.emit(layerButton._layer)
+        self.layerSelected.emit(layerButton._layerData)
         self.update()
 
     def clear(self):
@@ -181,9 +183,26 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
             self.layout().removeWidget(layBtn)
             layBtn.clicked.clear()
             layBtn.visibilityToggled.clear()
-            layBtn._layer.nameChanged.clear()
+            layBtn._layerData.nameChanged.clear()
         self._layers.clear()
         self.update()
+
+    @ttk.pyTTkSlot()
+    def moveUp(self):
+        return self._moveButton(-1)
+
+    @ttk.pyTTkSlot()
+    def moveDown(self):
+        return self._moveButton(+1)
+
+    def _moveButton(self,direction):
+        if not self._selected: return
+        index = self._layers.index(self._selected)
+        if index+direction < 0: return
+        l = self._layers.pop(index)
+        self._layers.insert(index+direction,l)
+        self._placeTheButtons()
+        self.layersOrderChanged.emit([_l._layerData for _l in self._layers])
 
     @ttk.pyTTkSlot()
     def addLayer(self,name=None, data=None):
@@ -197,7 +216,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         newLayerBtn.clicked.connect(self._clickedLayer)
         self.viewChanged.emit()
         self._placeTheButtons()
-        self.layerAdded.emit(newLayerBtn._layer)
+        self.layerAdded.emit(newLayerBtn._layerData)
         return _l
 
     def _placeTheButtons(self):
@@ -217,7 +236,7 @@ class Layers(ttk.TTkGridLayout):
                  # Forward Methods
                  'addLayer','clear',
                  # Forward Signals
-                 'layerSelected','layerAdded','layerDeleted','layerOrderChanged')
+                 'layerSelected','layerAdded','layerDeleted','layersOrderChanged')
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._scrollWidget = _lsw = LayerScrollWidget()
@@ -235,14 +254,17 @@ class Layers(ttk.TTkGridLayout):
         btnUp.setToolTip(  "Raise the selected Layer one step")
         btnDown.setToolTip("Lower the selected Layer one step")
 
-        btnAdd.clicked.connect(_lsw.addLayer)
-        btnDel.clicked.connect(_lsw.delLayer)
+        btnAdd.clicked.connect( _lsw.addLayer)
+        btnDel.clicked.connect( _lsw.delLayer)
+        btnUp.clicked.connect(  _lsw.moveUp)
+        btnDown.clicked.connect(_lsw.moveDown)
 
         # forward signals
         self.layerSelected = _lsw.layerSelected
         self.layerSelected = _lsw.layerSelected
         self.layerAdded    = _lsw.layerAdded
         self.layerDeleted  = _lsw.layerDeleted
+        self.layersOrderChanged = _lsw.layersOrderChanged
 
         # forward methods
         self.addLayer = _lsw.addLayer

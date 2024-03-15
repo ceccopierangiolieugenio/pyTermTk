@@ -264,6 +264,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         layers.layerAdded.connect(self._layerAdded)
         layers.layerSelected.connect(_layerSelected)
+        layers.layersOrderChanged.connect(self._layersOrderChanged)
         layers.addLayer(name="Background")
 
     # Connect and handle Layers event
@@ -275,6 +276,11 @@ class PaintTemplate(ttk.TTkAppTemplate):
         l.nameChanged.connect(nl.setName)
         l.visibilityToggled.connect(nl.setVisible)
         l.visibilityToggled.connect(self._parea.update)
+
+    @ttk.pyTTkSlot(list[LayerData])
+    def _layersOrderChanged(self, layers:list[LayerData]):
+        self._parea._canvasLayers = [ld.data() for ld in reversed(layers)]
+        self._parea.update()
 
     def importDocument(self, dd):
         self._parea.importDocument(dd)
