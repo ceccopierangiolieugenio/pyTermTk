@@ -156,6 +156,12 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         self._layers:list[_layerButton] = []
         super().__init__(**kwargs)
         self.viewChanged.connect(self._placeTheButtons)
+        self.viewChanged.connect(self._viewChangedHandler)
+
+    @ttk.pyTTkSlot()
+    def _viewChangedHandler(self):
+        x,y = self.getViewOffsets()
+        self.layout().setOffset(-x,-y)
 
     def viewFullAreaSize(self) -> tuple:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
@@ -234,7 +240,8 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
 
     def dragEnterEvent(self, evt) -> bool:
         if type(evt.data())!=_layerButton: return False
-        self._dropTo = max(0,min(len(self._layers),(evt.y-1)//2))
+        x,y = self.getViewOffsets()
+        self._dropTo = max(0,min(len(self._layers),(evt.y-1+y)//2))
         self.update()
         return True
     def dragLeaveEvent(self, evt) -> bool:
@@ -244,17 +251,19 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         return True
     def dragMoveEvent(self, evt) -> bool:
         if type(evt.data())!=_layerButton: return False
-        self._dropTo = max(0,min(len(self._layers),(evt.y-1)//2))
+        x,y = self.getViewOffsets()
+        self._dropTo = max(0,min(len(self._layers),(evt.y-1+y)//2))
         self.update()
-        ttk.TTkLog.debug(f"{evt.x},{evt.y} - {len(self._layers)} - {self._dropTo}")
+        ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layers)} - {self._dropTo}")
         return True
     def dropEvent(self, evt) -> bool:
         if type(evt.data())!=_layerButton: return False
+        x,y = self.getViewOffsets()
         self._dropTo = None
         data = evt.data()
         # dropPos = len(self._layers)-(evt.y-1)//2
-        dropPos = max(0,min(len(self._layers),(evt.y-1)//2))
-        ttk.TTkLog.debug(f"{evt.x},{evt.y} - {len(self._layers)} - {self._dropTo} {dropPos}")
+        dropPos = max(0,min(len(self._layers),(evt.y-1+y)//2))
+        ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layers)} - {self._dropTo} {dropPos}")
         if dropPos > self._layers.index(data):
             dropPos -= 1
         self._layers.remove(data)
@@ -266,11 +275,12 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
     # Stupid hack to paint on top of the child widgets
     def paintChildCanvas(self):
         super().paintChildCanvas()
+        offx, offy = self.getViewOffsets()
         if self._dropTo == None: return
         canvas = self.getCanvas()
         w,h = canvas.size()
         color = ttk.TTkColor.YELLOW
-        canvas.drawText(pos=(0,self._dropTo*2),text=f"╞{'═'*(w-2)}╍",color=color)
+        canvas.drawText(pos=(0,(self._dropTo)*2-offy),text=f"╞{'═'*(w-2)}╍",color=color)
 
 
 

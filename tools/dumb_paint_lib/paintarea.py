@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['PaintArea','PaintToolKit','CanvasLayer']
+__all__ = ['PaintArea','PaintScrollArea','PaintToolKit','CanvasLayer']
 
 import sys, os
 
@@ -28,9 +28,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 
-class PaintToolKit(ttk.TTkGridLayout):
-
-
+class PaintToolKit(ttk.TTkContainer):
     __slots__ = ('_rSelect', '_rPaint', '_lgliph',
                  '_cbFg', '_cbBg',
                  '_bpFg', '_bpBg', '_bpDef',
@@ -38,32 +36,18 @@ class PaintToolKit(ttk.TTkGridLayout):
                  #Signals
                  'updatedColor', 'updatedTrans')
     def __init__(self, *args, **kwargs):
+        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"paintToolKit.tui.json"),self)
         self._glyph = 'X'
         self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
         self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
-        super().__init__(*args, **kwargs)
-        self._rSelect = ttk.TTkRadioButton(text='Select '     , maxWidth=10, enabled=False)
-        self._rPaint  = ttk.TTkRadioButton(text='Paint  '     ,              enabled=False)
-        self._lgliph   = ttk.TTkLabel(text=""                 , maxWidth=8)
-        self._cbFg    = ttk.TTkCheckbox(text="Fg"             , maxWidth= 6)
-        self._cbBg    = ttk.TTkCheckbox(text="Bg"                    )
-        self._bpFg    = ttk.TTkColorButtonPicker(enabled=False, maxWidth= 6)
-        self._bpBg    = ttk.TTkColorButtonPicker(enabled=False,            )
-        self._bpDef   = ttk.TTkColorButtonPicker(color=ttk.TTkColor.bg('#FF00FF'), maxWidth=6)
-        self.addWidget(self._rSelect ,0,0)
-        self.addWidget(self._rPaint  ,1,0)
-        self.addWidget(self._lgliph  ,0,1,2,1)
-        self.addWidget(self._cbFg    ,0,2)
-        self.addWidget(self._cbBg    ,1,2)
-        self.addWidget(self._bpFg    ,0,3)
-        self.addWidget(self._bpBg    ,1,3)
+        self._lgliph  = self.getWidgetByName("lglyph")
+        self._cbFg    = self.getWidgetByName("cbFg")
+        self._cbBg    = self.getWidgetByName("cbBg")
+        self._bpFg    = self.getWidgetByName("bpFg")
+        self._bpBg    = self.getWidgetByName("bpBg")
+        self._bpDef   = self.getWidgetByName("bpDef")
 
-        self.addWidget(ttk.TTkLabel(text=" Trans:", maxWidth=7) ,1,4)
-        self.addWidget(self._bpDef          ,1,5)
-        self.addItem(ttk.TTkLayout() ,0,6,2,1)
-
-        self._cbFg.toggled.connect(self._bpFg.setEnabled)
-        self._cbBg.toggled.connect(self._bpBg.setEnabled)
+        self._bpDef.setColor(ttk.TTkColor.bg('#FF00FF'))
         self._cbFg.toggled.connect(self._refreshColor)
         self._cbBg.toggled.connect(self._refreshColor)
 
@@ -77,12 +61,11 @@ class PaintToolKit(ttk.TTkGridLayout):
     def _refreshColor(self, emit=True):
         color =self.color()
         self._lgliph.setText(
-                ttk.TTkString("Glyph\n '") +
+                ttk.TTkString("Glyph: '") +
                 ttk.TTkString(self._glyph,color) +
                 ttk.TTkString("'"))
         if emit:
             self.updatedColor.emit(color)
-
 
     @ttk.pyTTkSlot(ttk.TTkString)
     def glyphFromString(self, ch:ttk.TTkString):
@@ -342,7 +325,7 @@ class CanvasLayer():
                     canvas._colors[y][x] = newC
 
 
-class PaintArea(ttk.TTkWidget):
+class PaintArea(ttk.TTkAbstractScrollView):
     class Tool(int):
         MOVE      = 0x01
         BRUSH     = 0x02
@@ -351,13 +334,14 @@ class PaintArea(ttk.TTkWidget):
 
     __slots__ = ('_canvasLayers', '_currentLayer',
                  '_transparentColor',
+                 '_documentPos','_documentOffset','_documentSize',
                  '_mouseMove', '_mouseDrag', '_mousePress', '_mouseRelease',
                  '_moveData',
                  '_tool',
                  '_glyph', '_glyphColor')
 
     def __init__(self, *args, **kwargs):
-        self._transparentColor = ttk.TTkColor.bg('#FF00FF')
+        self._transparentColor = {'base':ttk.TTkColor.RST,'dim':ttk.TTkColor.RST}
         self._currentLayer:CanvasLayer = None
         self._canvasLayers:list[CanvasLayer] = []
         self._glyph = 'X'
@@ -368,9 +352,53 @@ class PaintArea(ttk.TTkWidget):
         self._mousePress   = None
         self._mouseRelease = None
         self._tool = self.Tool.BRUSH
+        self._documentOffset = ( 0, 0)
+        self._documentPos    = (6,3)
+        self._documentSize   = ( 0, 0)
         super().__init__(*args, **kwargs)
+        self.setTrans(ttk.TTkColor.bg('#FF00FF'))
         self.resizeCanvas(80,25)
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
+
+    def _getGeometry(self):
+        dx,dy = self._documentPos
+        # doffx,doffy = self._documentOffset
+        # dx+=doffx
+        # dy+=doffy
+        dw,dh = self._documentSize
+        ww,wh = self.size()
+        # dw,dh = max(dw,dx+ww),max(dh,dx+wh)
+        x1,y1 = min(0,dx),min(0,dy)
+        x2,y2 = max(dx+dw,ww),max(dy+dh,wh)
+        for l in self._canvasLayers:
+            lx,ly = l.pos()
+            lw,lh = l.size()
+            x1 = min(x1,dx+lx)
+            y1 = min(y1,dy+ly)
+            x2 = max(x2,dx+lx+lw)
+            y2 = max(y2,dy+ly+lh)
+        ttk.TTkLog.debug(f"{x1=},{y1=},{x2-x1=},{y2-y1=}")
+        return x1,y1,x2-x1,y2-y1
+
+    def _retuneGeometry(self):
+            x1,y1,_,_ = self._getGeometry()
+            self._documentOffset = (max(0,-x1),max(0,-y1))
+            self.viewMoveTo(max(0,-x1),max(0,-y1))
+            self.viewChanged.emit()
+            # dx,dy = self._documentPos
+            # self.chan
+
+    def viewFullAreaSize(self) -> tuple[int,int]:
+        _,_,w,h = self._getGeometry()
+        return w,h
+
+    def viewDisplayedSize(self) -> tuple:
+        return self.size()
+
+    def maximumWidth(self):   return 0x10000
+    def maximumHeight(self):  return 0x10000
+    def minimumWidth(self):   return 0
+    def minimumHeight(self):  return 0
 
     def canvasLayers(self):
         return self._canvasLayers
@@ -378,7 +406,7 @@ class PaintArea(ttk.TTkWidget):
     def resizeCanvas(self, w, h):
         if self._currentLayer:
             self._currentLayer.resize(w,h)
-        self._canvasSize = (w,h)
+        self._documentSize  = (w,h)
         self.update()
 
     def setCurrentLayer(self, layer:CanvasLayer):
@@ -395,7 +423,7 @@ class PaintArea(ttk.TTkWidget):
 
     def importLayer(self, dd):
         self._currentLayer.importLayer(dd)
-        self.update()
+        self._retuneGeometry()
 
     def importDocument(self, dd):
         self._canvasLayers = []
@@ -404,6 +432,7 @@ class PaintArea(ttk.TTkWidget):
             for l in dd['layers']:
                 nl = self.newLayer()
                 nl.importLayer(l)
+        self._retuneGeometry()
 
     def exportImage(self):
         return {}
@@ -414,7 +443,7 @@ class PaintArea(ttk.TTkWidget):
         return {}
 
     def exportDocument(self):
-        pw,ph = self._canvasSize
+        pw,ph = self._documentSize
         outData  = {
             'version':'1.0.0',
             'size':(pw,ph),
@@ -433,6 +462,11 @@ class PaintArea(ttk.TTkWidget):
         self.update()
 
     def _handleAction(self):
+        dx,dy = self._documentPos
+        doffx,doffy = self._documentOffset
+        dx+=doffx
+        dy+=doffy
+        ox, oy = self.getViewOffsets()
         mp = self._mousePress
         # mm = self._mouseMove
         md = self._mouseDrag
@@ -449,12 +483,16 @@ class PaintArea(ttk.TTkWidget):
                     tml = lm
                     self._moveData = {'pos':tml.pos(),'layer':tml}
                     break
-        elif self._tool == self.Tool.MOVE and mp and md and self._moveData:
+        elif self._tool == self.Tool.MOVE and mp and md:
             mpx,mpy = mp
             mdx,mdy = md
-            px,py = self._moveData['pos']
-            dx,dy = mdx-mpx,mdy-mpy
-            self._moveData['layer'].move(px+dx,py+dy)
+            pdx,pdy = mdx-mpx,mdy-mpy
+            if self._moveData:
+                px,py = self._moveData['pos']
+                self._moveData['layer'].move(px+pdx,py+pdy)
+            else:
+                self._documentPos = (dx+pdx,dy+pdy)
+            self._retuneGeometry()
         elif self._tool == self.Tool.BRUSH and (mp or md):
             if md: mx,my = md
             else:  mx,my = mp
@@ -466,19 +504,34 @@ class PaintArea(ttk.TTkWidget):
         self.update()
 
     def mouseMoveEvent(self, evt) -> bool:
-        self._mouseMove = (evt.x,evt.y)
+        dx,dy = self._documentPos
+        doffx,doffy = self._documentOffset
+        dx+=doffx
+        dy+=doffy
+        ox, oy = self.getViewOffsets()
+        self._mouseMove=(evt.x+ox-dx,evt.y+oy-dy)
         self._mouseDrag    = None
         self.update()
         return True
 
     def mouseDragEvent(self, evt) -> bool:
-        self._mouseDrag=(evt.x,evt.y)
+        dx,dy = self._documentPos
+        doffx,doffy = self._documentOffset
+        dx+=doffx
+        dy+=doffy
+        ox, oy = self.getViewOffsets()
+        self._mouseDrag=(evt.x+ox-dx,evt.y+oy-dy)
         self._mouseMove= None
         self._handleAction()
         return True
 
     def mousePressEvent(self, evt) -> bool:
-        self._mousePress=(evt.x,evt.y)
+        dx,dy = self._documentPos
+        doffx,doffy = self._documentOffset
+        dx+=doffx
+        dy+=doffy
+        ox, oy = self.getViewOffsets()
+        self._mousePress=(evt.x+ox-dx,evt.y+oy-dy)
         self._moveData     = None
         self._mouseMove    = None
         self._mouseDrag    = None
@@ -487,7 +540,12 @@ class PaintArea(ttk.TTkWidget):
         return True
 
     def mouseReleaseEvent(self, evt) -> bool:
-        self._mouseRelease=(evt.x,evt.y)
+        dx,dy = self._documentPos
+        doffx,doffy = self._documentOffset
+        dx+=doffx
+        dy+=doffy
+        ox, oy = self.getViewOffsets()
+        self._mouseRelease=(evt.x+ox-dx,evt.y+oy-dy)
         self._mouseMove   = None
         self._handleAction()
         self._moveData     = None
@@ -517,8 +575,13 @@ class PaintArea(ttk.TTkWidget):
         self._glyphColor = color
 
     @ttk.pyTTkSlot(ttk.TTkColor)
-    def setTrans(self, color):
-        self._transparentColor = color
+    def setTrans(self, color:ttk.TTkColor):
+        r,g,b = color.bgToRGB()
+        self._transparentColor = {
+            'base':color,
+            'dim':     ttk.TTkColor.bg(f'#{int(r*0.3):02x}{int(g*0.3):02x}{int(b*0.3):02x}'),
+            'layer':   ttk.TTkColor.bg(f'#{int(r*0.6):02x}{int(g*0.6):02x}{int(b*0.6):02x}'),
+            'layerDim':ttk.TTkColor.bg(f'#{int(r*0.2):02x}{int(g*0.2):02x}{int(b*0.2):02x}')}
         self.update()
 
     def _placeFill(self):
@@ -539,14 +602,56 @@ class PaintArea(ttk.TTkWidget):
         return ret
 
     def paintEvent(self, canvas:ttk.TTkCanvas):
-        pw,ph = self._canvasSize
+        dx,dy = self._documentPos
+        doffx,doffy = self._documentOffset
+        dx+=doffx
+        dy+=doffy
+        ox, oy = self.getViewOffsets()
+        dw,dh = self._documentSize
+        dox,doy = dx-ox,dy-oy
         cw,ch = canvas.size()
-        w=min(cw,pw)
-        h=min(ch,ph)
-        tc = self._transparentColor
-        canvas.fill(pos=(0,0),size=(pw,ph),color=tc)
+        w=min(cw,dw)
+        h=min(ch,dh)
+        tcb = self._transparentColor['base']
+        tcd = self._transparentColor['dim']
+        # canvas.fill(pos=(0    ,dy-oy),size=(cw,dh),color=tcd)
+        # canvas.fill(pos=(dx-ox,0    ),size=(dw,ch),color=tcd)
+
+        if l:=self._currentLayer:
+            tclb = self._transparentColor['layer']
+            tcld = self._transparentColor['layerDim']
+            lx,ly = l.pos()
+            lw,lh = l.size()
+            canvas.fill(pos=(0     ,ly+doy),size=(cw,lh),color=tcld)
+            canvas.fill(pos=(lx+dox,0     ),size=(lw,ch),color=tcld)
+            canvas.fill(pos=(lx+dox,ly+doy),size=(lw,lh),color=tclb)
+        canvas.fill(pos=(dx-ox,dy-oy),size=(dw,dh),color=tcb)
+        canvas.fill(pos=(0    ,dy-oy-1), size=(cw,1),color=tcd)
+        canvas.fill(pos=(0    ,dy-oy+dh),size=(cw,1),color=tcd)
+        canvas.fill(pos=(dx-ox-2 ,0    ),size=(2,ch),color=tcd)
+        canvas.fill(pos=(dx-ox+dw,0    ),size=(2,ch),color=tcd)
+
+        # Draw canvas/currentLayout ruler
+
+        ruleColor = ttk.TTkColor.fg("#444444")
+        # # canvas.drawText(pos=((0,dy-oy-1 )),text="═"*cw,color=ruleColor)
+        # # canvas.drawText(pos=((0,dy-oy+dh)),text="═"*cw,color=ruleColor)
+        # # canvas.drawText(pos=((0,dy-oy-1 )),text="▁"*cw,color=ruleColor)
+        # # canvas.drawText(pos=((0,dy-oy+dh)),text="▔"*cw,color=ruleColor)
+        # canvas.drawText(pos=((0,dy-oy-1 )),text="▄"*cw,color=ruleColor)
+        # canvas.drawText(pos=((0,dy-oy+dh)),text="▀"*cw,color=ruleColor)
+        # for y in range(ch):
+        #     canvas.drawText(pos=((dx-ox-1 ,y)),text="▐",color=ruleColor)
+        #     canvas.drawText(pos=((dx-ox+dw,y)),text="▌",color=ruleColor)
+        # canvas.drawText(pos=((dx-ox-1 ,dy-oy-1 )),text="▟",color=ruleColor)
+        # canvas.drawText(pos=((dx-ox+dw,dy-oy-1 )),text="▙",color=ruleColor)
+        # canvas.drawText(pos=((dx-ox-1 ,dy-oy+dh)),text="▜",color=ruleColor)
+        # canvas.drawText(pos=((dx-ox+dw,dy-oy+dh)),text="▛",color=ruleColor)
+
         for l in self._canvasLayers:
-            l.drawInCanvas(pos=l.pos(),canvas=canvas)
+            lx,ly = l.pos()
+            l.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
+        return
         if self._mouseMove:
             x,y = self._mouseMove
             gc = self._glyphColor
@@ -573,3 +678,8 @@ class PaintArea(ttk.TTkWidget):
                 for y in range(y+1,y+h-1):
                     canvas.drawChar(pos=(x    ,y),char=gl,color=gc)
                     canvas.drawChar(pos=(x+w-1,y),char=gl,color=gc)
+
+class PaintScrollArea(ttk.TTkAbstractScrollArea):
+    def __init__(self, pwidget:PaintArea, **kwargs):
+        super().__init__(**kwargs)
+        self.setViewport(pwidget)

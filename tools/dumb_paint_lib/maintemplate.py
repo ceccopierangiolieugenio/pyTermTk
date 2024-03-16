@@ -22,12 +22,12 @@
 
 __all__ = ['PaintTemplate']
 
-import sys, os
+import sys, os, json
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-from .paintarea import PaintArea, PaintToolKit
+from .paintarea import PaintArea, PaintToolKit, PaintScrollArea
 from .palette   import Palette
 from .textarea  import TextArea
 from .layers    import Layers,LayerData
@@ -200,7 +200,7 @@ class ExportArea(ttk.TTkGridLayout):
 #
 class PaintTemplate(ttk.TTkAppTemplate):
     __slots__ = ('_parea','_layers')
-    def __init__(self, border=False, **kwargs):
+    def __init__(self, fileName=None, border=False, **kwargs):
         super().__init__(border, **kwargs)
         self._parea  = parea = PaintArea()
         self._layers = layers = Layers()
@@ -221,8 +221,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self.setItem(expArea, self.BOTTOM, title="Export")
 
         self.setItem(leftPanel     , self.LEFT,  size=16*2)
-        self.setWidget(self._parea , self.MAIN)
-        self.setItem(ptoolkit      , self.TOP,   fixed=True)
+        self.setWidget(PaintScrollArea(parea) , self.MAIN)
+        self.setWidget(ptoolkit      , self.TOP,   fixed=True)
         self.setItem(rightPanel    , self.RIGHT, size=40)
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
@@ -266,6 +266,21 @@ class PaintTemplate(ttk.TTkAppTemplate):
         layers.layerSelected.connect(_layerSelected)
         layers.layersOrderChanged.connect(self._layersOrderChanged)
         layers.addLayer(name="Background")
+        if fileName:
+            self._openFile(fileName)
+
+    def _openFile(self, fileName):
+        ttk.TTkLog.info(f"Open: {fileName}")
+
+        with open(fileName) as fp:
+            # dd = json.load(fp)
+            text = fp.read()
+            dd = eval(text)
+            if 'layers' in dd:
+                self.importDocument(dd)
+            else:
+                self._layers.addLayer(name="Import")
+                self._parea.importLayer(dd)
 
     # Connect and handle Layers event
     @ttk.pyTTkSlot(LayerData)

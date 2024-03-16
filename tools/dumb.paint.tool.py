@@ -32,16 +32,25 @@ from dumb_paint_lib import PaintTemplate
 ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
 
 
-root = ttk.TTk(
-        title="Dumb Paint Tool",
-        layout=ttk.TTkGridLayout(),
-        mouseTrack=True,
-        sigmask=(
-            ttk.TTkTerm.Sigmask.CTRL_C |
-            ttk.TTkTerm.Sigmask.CTRL_Q |
-            ttk.TTkTerm.Sigmask.CTRL_S |
-            ttk.TTkTerm.Sigmask.CTRL_Z ))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', type=str, nargs='?', help='the file to open')
+    # parser.add_argument('-k', '--showkeys', action='store_true', help='display the keypresses and mouse interactions')
+    args = parser.parse_args()
 
-PaintTemplate(parent=root)
+    root = ttk.TTk(
+            title="Dumb Paint Tool",
+            layout=ttk.TTkGridLayout(),
+            mouseTrack=True,
+            sigmask=(
+                # ttk.TTkTerm.Sigmask.CTRL_C |
+                ttk.TTkTerm.Sigmask.CTRL_Q |
+                ttk.TTkTerm.Sigmask.CTRL_S |
+                ttk.TTkTerm.Sigmask.CTRL_Z ))
 
-root.mainloop()
+    PaintTemplate(parent=root,fileName=args.filename)
+
+    root.mainloop()
+
+if __name__ == '__main__':
+    main()
