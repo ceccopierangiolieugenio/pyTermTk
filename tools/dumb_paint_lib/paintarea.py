@@ -28,86 +28,15 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 
-class PaintToolKit(ttk.TTkContainer):
-    __slots__ = ('_rSelect', '_rPaint', '_lgliph',
-                 '_cbFg', '_cbBg',
-                 '_bpFg', '_bpBg', '_bpDef',
-                 '_glyph',
-                 #Signals
-                 'updatedColor', 'updatedTrans')
-    def __init__(self, *args, **kwargs):
-        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"paintToolKit.tui.json"),self)
-        self._glyph = 'X'
-        self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
-        self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
-        self._lgliph  = self.getWidgetByName("lglyph")
-        self._cbFg    = self.getWidgetByName("cbFg")
-        self._cbBg    = self.getWidgetByName("cbBg")
-        self._bpFg    = self.getWidgetByName("bpFg")
-        self._bpBg    = self.getWidgetByName("bpBg")
-        self._bpDef   = self.getWidgetByName("bpDef")
-
-        self._bpDef.setColor(ttk.TTkColor.bg('#FF00FF'))
-        self._cbFg.toggled.connect(self._refreshColor)
-        self._cbBg.toggled.connect(self._refreshColor)
-
-        self._bpFg.colorSelected.connect(self._refreshColor)
-        self._bpBg.colorSelected.connect(self._refreshColor)
-        self._bpDef.colorSelected.connect(self.updatedTrans.emit)
-
-        self._refreshColor(emit=False)
-
-    @ttk.pyTTkSlot()
-    def _refreshColor(self, emit=True):
-        color =self.color()
-        self._lgliph.setText(
-                ttk.TTkString("Glyph: '") +
-                ttk.TTkString(self._glyph,color) +
-                ttk.TTkString("'"))
-        if emit:
-            self.updatedColor.emit(color)
-
-    @ttk.pyTTkSlot(ttk.TTkString)
-    def glyphFromString(self, ch:ttk.TTkString):
-        if len(ch)<=0: return
-        self._glyph = ch.charAt(0)
-        self._refreshColor()
-        # self.setColor(ch.colorAt(0))
-
-    def color(self):
-        color = ttk.TTkColor()
-        if self._cbFg.checkState() == ttk.TTkK.Checked:
-            color += self._bpFg.color().invertFgBg()
-        if self._cbBg.checkState() == ttk.TTkK.Checked:
-           color += self._bpBg.color()
-        return color
-
-    @ttk.pyTTkSlot(ttk.TTkColor)
-    def setColor(self, color:ttk.TTkColor):
-        if fg := color.foreground():
-            self._cbFg.setCheckState(ttk.TTkK.Checked)
-            self._bpFg.setEnabled()
-            self._bpFg.setColor(fg.invertFgBg())
-        else:
-            self._cbFg.setCheckState(ttk.TTkK.Unchecked)
-            self._bpFg.setDisabled()
-
-        if bg := color.background():
-            self._cbBg.setCheckState(ttk.TTkK.Checked)
-            self._bpBg.setEnabled()
-            self._bpBg.setColor(bg)
-        else:
-            self._cbBg.setCheckState(ttk.TTkK.Unchecked)
-            self._bpBg.setDisabled()
-        self._refreshColor(emit=False)
 
 class CanvasLayer():
-    __slot__ = ('_pos','_name','_visible','_size','_data','_colors')
+    __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview')
     def __init__(self) -> None:
         self._pos  = (0,0)
         self._size = (0,0)
         self._name = ""
         self._visible = True
+        self._preview = None
         self._data:  list[list[str         ]] = []
         self._colors:list[list[ttk.TTkColor]] = []
 
@@ -251,7 +180,7 @@ class CanvasLayer():
                     else:
                         self._colors[i+y][ii+x] = ttk.TTkColor.RST
 
-    def placeFill(self,geometry,tool,glyph,color):
+    def placeFill(self,geometry,tool,glyph,color,preview=False):
         w,h = self._size
         ax,ay,bx,by = geometry
         ax = max(0,min(w-1,ax))
@@ -262,8 +191,14 @@ class CanvasLayer():
         fbx,fby = max(ax,bx), max(ay,by)
 
         color = color if glyph != ' ' else color.background()
-        data   = self._data
-        colors = self._colors
+        if preview:
+            data   = [_r.copy() for _r in self._data]
+            colors = [_r.copy() for _r in self._colors]
+            self._preview = {'data':data,'colors':colors}
+        else:
+            self._preview = None
+            data   = self._data
+            colors = self._colors
 
         if tool == PaintArea.Tool.RECTFILL:
             for row in data[fay:fby+1]:
@@ -281,11 +216,17 @@ class CanvasLayer():
                 row[fax]=row[fbx]=color
         return True
 
-    def placeGlyph(self,x,y,glyph,color):
+    def placeGlyph(self,x,y,glyph,color,preview=False):
         w,h = self._size
         color = color if glyph != ' ' else color.background()
-        data = self._data
-        colors = self._colors
+        if preview:
+            data   = [_r.copy() for _r in self._data]
+            colors = [_r.copy() for _r in self._colors]
+            self._preview = {'data':data,'colors':colors}
+        else:
+            self._preview = None
+            data   = self._data
+            colors = self._colors
         if 0<=x<w and 0<=y<h:
             data[y][x]   = glyph
             colors[y][x] = color
@@ -308,8 +249,12 @@ class CanvasLayer():
         dw = min(cw-cx,pw-lx)
         dh = min(ch-cy,ph-ly)
 
-        data   = self._data
-        colors = self._colors
+        if _p := self._preview:
+            data   = _p['data']
+            colors = _p['colors']
+        else:
+            data   = self._data
+            colors = self._colors
         for y in range(cy,cy+dh):
             for x in range(cx,cx+dw):
                 gl = data[y+ly-cy][x+lx-cx]
@@ -325,12 +270,91 @@ class CanvasLayer():
                     canvas._colors[y][x] = newC
 
 
+class PaintToolKit(ttk.TTkContainer):
+    __slots__ = ('_rSelect', '_rPaint', '_lgliph',
+                 '_cbFg', '_cbBg',
+                 '_bpFg', '_bpBg', '_bpDef',
+                 '_glyph',
+                 #Signals
+                 'updatedColor', 'updatedTrans')
+    def __init__(self, *args, **kwargs):
+        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"paintToolKit.tui.json"),self)
+        self._glyph = 'X'
+        self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
+        self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
+        self._lgliph  = self.getWidgetByName("lglyph")
+        self._cbFg    = self.getWidgetByName("cbFg")
+        self._cbBg    = self.getWidgetByName("cbBg")
+        self._bpFg    = self.getWidgetByName("bpFg")
+        self._bpBg    = self.getWidgetByName("bpBg")
+        self._bpDef   = self.getWidgetByName("bpDef")
+
+        self._bpDef.setColor(ttk.TTkColor.bg('#FF00FF'))
+        self._cbFg.toggled.connect(self._refreshColor)
+        self._cbBg.toggled.connect(self._refreshColor)
+
+        self._bpFg.colorSelected.connect(self._refreshColor)
+        self._bpBg.colorSelected.connect(self._refreshColor)
+        self._bpDef.colorSelected.connect(self.updatedTrans.emit)
+
+        self._refreshColor(emit=False)
+
+    @ttk.pyTTkSlot(CanvasLayer)
+    def updateLayer(self, layer):
+        pass
+
+    @ttk.pyTTkSlot()
+    def _refreshColor(self, emit=True):
+        color =self.color()
+        self._lgliph.setText(
+                ttk.TTkString("Glyph: '") +
+                ttk.TTkString(self._glyph,color) +
+                ttk.TTkString("'"))
+        if emit:
+            self.updatedColor.emit(color)
+
+    @ttk.pyTTkSlot(ttk.TTkString)
+    def glyphFromString(self, ch:ttk.TTkString):
+        if len(ch)<=0: return
+        self._glyph = ch.charAt(0)
+        self._refreshColor()
+        # self.setColor(ch.colorAt(0))
+
+    def color(self):
+        color = ttk.TTkColor()
+        if self._cbFg.checkState() == ttk.TTkK.Checked:
+            color += self._bpFg.color().invertFgBg()
+        if self._cbBg.checkState() == ttk.TTkK.Checked:
+           color += self._bpBg.color()
+        return color
+
+    @ttk.pyTTkSlot(ttk.TTkColor)
+    def setColor(self, color:ttk.TTkColor):
+        if fg := color.foreground():
+            self._cbFg.setCheckState(ttk.TTkK.Checked)
+            self._bpFg.setEnabled()
+            self._bpFg.setColor(fg.invertFgBg())
+        else:
+            self._cbFg.setCheckState(ttk.TTkK.Unchecked)
+            self._bpFg.setDisabled()
+
+        if bg := color.background():
+            self._cbBg.setCheckState(ttk.TTkK.Checked)
+            self._bpBg.setEnabled()
+            self._bpBg.setColor(bg)
+        else:
+            self._cbBg.setCheckState(ttk.TTkK.Unchecked)
+            self._bpBg.setDisabled()
+        self._refreshColor(emit=False)
+
+
 class PaintArea(ttk.TTkAbstractScrollView):
     class Tool(int):
         MOVE      = 0x01
-        BRUSH     = 0x02
-        RECTFILL  = 0x03
-        RECTEMPTY = 0x04
+        RESIZE    = 0x02
+        BRUSH     = 0x04
+        RECTFILL  = 0x08
+        RECTEMPTY = 0x10
 
     __slots__ = ('_canvasLayers', '_currentLayer',
                  '_transparentColor',
@@ -338,9 +362,12 @@ class PaintArea(ttk.TTkAbstractScrollView):
                  '_mouseMove', '_mouseDrag', '_mousePress', '_mouseRelease',
                  '_moveData',
                  '_tool',
-                 '_glyph', '_glyphColor')
+                 '_glyph', '_glyphColor',
+                 # Signals
+                 'selectedLayer')
 
     def __init__(self, *args, **kwargs):
+        self.selectedLayer = ttk.pyTTkSignal(CanvasLayer)
         self._transparentColor = {'base':ttk.TTkColor.RST,'dim':ttk.TTkColor.RST}
         self._currentLayer:CanvasLayer = None
         self._canvasLayers:list[CanvasLayer] = []
@@ -377,7 +404,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
             y1 = min(y1,dy+ly)
             x2 = max(x2,dx+lx+lw)
             y2 = max(y2,dy+ly+lh)
-        ttk.TTkLog.debug(f"{x1=},{y1=},{x2-x1=},{y2-y1=}")
+        # ttk.TTkLog.debug(f"{x1=},{y1=},{x2-x1=},{y2-y1=}")
         return x1,y1,x2-x1,y2-y1
 
     def _retuneGeometry(self):
@@ -468,39 +495,55 @@ class PaintArea(ttk.TTkAbstractScrollView):
         dy+=doffy
         ox, oy = self.getViewOffsets()
         mp = self._mousePress
-        # mm = self._mouseMove
+        mm = self._mouseMove
         md = self._mouseDrag
         mr = self._mouseRelease
         l = self._currentLayer
         lx,ly = l.pos()
-        if self._tool == self.Tool.MOVE and mp and not md:
+        if self._tool & self.Tool.MOVE and mp and not md:
             # Get The Layer to Move
             self._moveData = None
             for lm in reversed(self._canvasLayers):
                 mpx,mpy = mp
                 lmx,lmy = lm.pos()
                 if lm.isOpaque(mpx-lmx,mpy-lmy):
+                    self._currentLayer = lm
                     tml = lm
                     self._moveData = {'pos':tml.pos(),'layer':tml}
+                    self.selectedLayer.emit(lm)
                     break
-        elif self._tool == self.Tool.MOVE and mp and md:
+        elif self._tool & self.Tool.MOVE and mp and md:
             mpx,mpy = mp
             mdx,mdy = md
             pdx,pdy = mdx-mpx,mdy-mpy
             if self._moveData:
                 px,py = self._moveData['pos']
                 self._moveData['layer'].move(px+pdx,py+pdy)
+                self.selectedLayer.emit(self._moveData['layer'])
             else:
                 self._documentPos = (dx+pdx,dy+pdy)
             self._retuneGeometry()
-        elif self._tool == self.Tool.BRUSH and (mp or md):
-            if md: mx,my = md
-            else:  mx,my = mp
-            self._currentLayer.placeGlyph(mx-lx,my-ly,self._glyph,self._glyphColor)
-        elif self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL) and mr and mp:
-            mpx,mpy = mp
-            mrx,mry = mr
-            self._currentLayer.placeFill((mpx-lx,mpy-ly,mrx-lx,mry-ly),self._tool,self._glyph,self._glyphColor)
+        elif self._tool == self.Tool.BRUSH:
+            if mp or md:
+                if md: mx,my = md
+                else:  mx,my = mp
+                preview=False
+                self._currentLayer.placeGlyph(mx-lx,my-ly,self._glyph,self._glyphColor,preview)
+            elif mm:
+                mx,my = mm
+                preview=True
+                self._currentLayer.placeGlyph(mx-lx,my-ly,self._glyph,self._glyphColor,preview)
+        elif self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL):
+            if mr and mp:
+                mpx,mpy = mp
+                mrx,mry = mr
+                preview=False
+                self._currentLayer.placeFill((mpx-lx,mpy-ly,mrx-lx,mry-ly),self._tool,self._glyph,self._glyphColor,preview)
+            elif md:
+                mpx,mpy = mp
+                mrx,mry = md
+                preview=True
+                self._currentLayer.placeFill((mpx-lx,mpy-ly,mrx-lx,mry-ly),self._tool,self._glyph,self._glyphColor,preview)
         self.update()
 
     def mouseMoveEvent(self, evt) -> bool:
@@ -511,7 +554,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         ox, oy = self.getViewOffsets()
         self._mouseMove=(evt.x+ox-dx,evt.y+oy-dy)
         self._mouseDrag    = None
-        self.update()
+        self._handleAction()
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -584,23 +627,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
             'layerDim':ttk.TTkColor.bg(f'#{int(r*0.2):02x}{int(g*0.2):02x}{int(b*0.2):02x}')}
         self.update()
 
-    def _placeFill(self):
-        if not self._mouseDrag: return False
-        mfill = self._mouseDrag
-        self._mouseDrag = None
-        self._mouseMove = None
-        self._moveData  = None
-        ret = self._currentLayer.placeFill(mfill,self._tool,self._glyph,self._glyphColor)
-        self.update()
-        return ret
-
-    def _placeGlyph(self,x,y):
-        self._mouseMove = None
-        self._moveData  = None
-        ret = self._currentLayer.placeGlyph(x,y,self._glyph,self._glyphColor)
-        self.update()
-        return ret
-
     def paintEvent(self, canvas:ttk.TTkCanvas):
         dx,dy = self._documentPos
         doffx,doffy = self._documentOffset
@@ -633,7 +659,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
         # Draw canvas/currentLayout ruler
 
-        ruleColor = ttk.TTkColor.fg("#444444")
+        # ruleColor = ttk.TTkColor.fg("#444444")
         # # canvas.drawText(pos=((0,dy-oy-1 )),text="═"*cw,color=ruleColor)
         # # canvas.drawText(pos=((0,dy-oy+dh)),text="═"*cw,color=ruleColor)
         # # canvas.drawText(pos=((0,dy-oy-1 )),text="▁"*cw,color=ruleColor)
@@ -651,33 +677,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         for l in self._canvasLayers:
             lx,ly = l.pos()
             l.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
-        return
-        if self._mouseMove:
-            x,y = self._mouseMove
-            gc = self._glyphColor
-            canvas._data[y][x] = self._glyph
-            canvas._colors[y][x] = gc if gc._bg else gc+tc
-        if self._mouseDrag and self._mousePress:
-            ax,ay = self._mousePress
-            bx,by = self._mouseDrag
-            ax = max(0,min(w-1,ax))
-            ay = max(0,min(h-1,ay))
-            bx = max(0,min(w-1,bx))
-            by = max(0,min(h-1,by))
-            x,y = min(ax,bx),     min(ay,by)
-            w,h = max(ax-x,bx-x)+1, max(ay-y,by-y)+1
-            gl = self._glyph
-            gc = self._glyphColor
-            if self._tool == PaintArea.Tool.RECTFILL:
-                canvas.fill(pos=(x,y), size=(w,h),
-                            color=gc if gc._bg else gc+tc,
-                            char=gl)
-            elif self._tool == PaintArea.Tool.RECTEMPTY:
-                canvas.drawText(pos=(x,y    ),text=gl*w,color=gc)
-                canvas.drawText(pos=(x,y+h-1),text=gl*w,color=gc)
-                for y in range(y+1,y+h-1):
-                    canvas.drawChar(pos=(x    ,y),char=gl,color=gc)
-                    canvas.drawChar(pos=(x+w-1,y),char=gl,color=gc)
+            # Draw Preview for mouse move/drag
 
 class PaintScrollArea(ttk.TTkAbstractScrollArea):
     def __init__(self, pwidget:PaintArea, **kwargs):

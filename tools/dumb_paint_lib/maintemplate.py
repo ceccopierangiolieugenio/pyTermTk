@@ -27,10 +27,11 @@ import sys, os, json
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-from .paintarea import PaintArea, PaintToolKit, PaintScrollArea
-from .palette   import Palette
-from .textarea  import TextArea
-from .layers    import Layers,LayerData
+from .paintarea    import PaintArea, PaintScrollArea
+from .painttoolkit import PaintToolKit
+from .palette      import Palette
+from .textarea     import TextArea
+from .layers       import Layers,LayerData
 
 class LeftPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
@@ -54,7 +55,7 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
         # Toolset
         lTools = ttk.TTkGridLayout()
-        ra_move   = ttk.TTkRadioButton(radiogroup="tools", text="Move",  enabled=True)
+        ra_move   = ttk.TTkRadioButton(radiogroup="tools", text="Select/Move",  enabled=True)
         ra_select = ttk.TTkRadioButton(radiogroup="tools", text="Select",enabled=False)
         ra_brush  = ttk.TTkRadioButton(radiogroup="tools", text="Brush", checked=True)
         ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line",  enabled=False)
@@ -64,12 +65,16 @@ class LeftPanel(ttk.TTkVBoxLayout):
         ra_rect_f = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Fill" , enabled=False, checked=True)
         ra_rect_e = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Empty", enabled=False)
 
+        cb_move_r = ttk.TTkCheckbox(text="Resize", enabled=False)
+
         @ttk.pyTTkSlot(bool)
         def _emitTool(checked):
             if not checked: return
             tool = PaintArea.Tool.BRUSH
             if ra_move.isChecked():
-                tool = PaintArea.Tool.MOVE
+                tool  = PaintArea.Tool.MOVE
+                if cb_move_r.isChecked():
+                    tool |= PaintArea.Tool.RESIZE
             elif ra_brush.isChecked():
                 tool = PaintArea.Tool.BRUSH
             elif ra_rect.isChecked():
@@ -81,6 +86,7 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
         ra_rect.toggled.connect(ra_rect_f.setEnabled)
         ra_rect.toggled.connect(ra_rect_e.setEnabled)
+        ra_move.toggled.connect(cb_move_r.setEnabled)
 
         ra_move.toggled.connect(  _emitTool)
         ra_select.toggled.connect(  _emitTool)
@@ -92,6 +98,7 @@ class LeftPanel(ttk.TTkVBoxLayout):
         ra_oval.toggled.connect(   _emitTool)
 
         lTools.addWidget(ra_move  ,0,0)
+        lTools.addWidget(cb_move_r,0,1)
         lTools.addWidget(ra_select,1,0)
         lTools.addWidget(ra_brush ,2,0)
         lTools.addWidget(ra_line  ,3,0)
@@ -232,12 +239,19 @@ class PaintTemplate(ttk.TTkAppTemplate):
         buttonClose   = fileMenu.addMenu("Save &As...")
         fileMenu.addSpacer()
         fileMenu.addMenu("&Import").menuButtonClicked.connect(self.importDictWin)
+        menuExport = fileMenu.addMenu("&Export")
         fileMenu.addSpacer()
         fileMenu.addMenu("Load Palette")
         fileMenu.addMenu("Save Palette")
         fileMenu.addSpacer()
         buttonExit    = fileMenu.addMenu("E&xit")
         buttonExit.menuButtonClicked.connect(ttk.TTkHelper.quit)
+
+        menuExport.addMenu("&Ascii/Txt")
+        menuExport.addMenu("&Ansi")
+        menuExport.addMenu("&Python")
+        menuExport.addMenu("&Bash")
+
 
         # extraMenu = appMenuBar.addMenu("E&xtra")
         # extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
@@ -257,6 +271,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         self._parea.setGlyphColor(palette.color())
         ptoolkit.setColor(palette.color())
+
+        parea.selectedLayer.connect(ptoolkit.updateLayer)
 
         @ttk.pyTTkSlot(LayerData)
         def _layerSelected(l:LayerData):
