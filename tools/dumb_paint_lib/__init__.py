@@ -4,3 +4,4 @@ from .painttoolkit import *
 from .textarea     import *
 from .palette      import *
 from .layers       import *
+from .canvaslayer  import *

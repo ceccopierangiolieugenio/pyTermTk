@@ -28,6 +28,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from .paintarea    import PaintArea, PaintScrollArea
+from .canvaslayer  import CanvasLayer
 from .painttoolkit import PaintToolKit
 from .palette      import Palette
 from .textarea     import TextArea
@@ -38,7 +39,7 @@ class LeftPanel(ttk.TTkVBoxLayout):
                  # Signals
                  'toolSelected')
     def __init__(self, *args, **kwargs):
-        self.toolSelected = ttk.pyTTkSignal(PaintArea.Tool)
+        self.toolSelected = ttk.pyTTkSignal(CanvasLayer.Tool)
         super().__init__(*args, **kwargs)
         self._palette  = Palette(maxHeight=12)
         self.addWidget(self._palette)
@@ -69,18 +70,18 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
         @ttk.pyTTkSlot()
         def _checkTools():
-            tool = PaintArea.Tool.BRUSH
+            tool = CanvasLayer.Tool.BRUSH
             if ra_move.isChecked():
-                tool  = PaintArea.Tool.MOVE
+                tool  = CanvasLayer.Tool.MOVE
                 if cb_move_r.isChecked():
-                    tool |= PaintArea.Tool.RESIZE
+                    tool |= CanvasLayer.Tool.RESIZE
             elif ra_brush.isChecked():
-                tool = PaintArea.Tool.BRUSH
+                tool = CanvasLayer.Tool.BRUSH
             elif ra_rect.isChecked():
                 if ra_rect_e.isChecked():
-                    tool = PaintArea.Tool.RECTEMPTY
+                    tool = CanvasLayer.Tool.RECTEMPTY
                 else:
-                    tool = PaintArea.Tool.RECTFILL
+                    tool = CanvasLayer.Tool.RECTFILL
             self.toolSelected.emit(tool)
 
         @ttk.pyTTkSlot(bool)
@@ -146,6 +147,15 @@ class ExportArea(ttk.TTkGridLayout):
 
         btn_exLa.clicked.connect(self._exportLayer)
         btn_exPr.clicked.connect(self._exportDocument)
+        btn_exIm.clicked.connect(self._exportImage)
+
+    @ttk.pyTTkSlot()
+    def _exportImage(self):
+        crop    = self._cbCrop.isChecked()
+        palette = self._cbPal.isChecked()
+        full    = self._cbFull.isChecked()
+        image = self._paintArea.exportImage(full=full,palette=palette,crop=crop)
+        self._te.setText(image)
 
     @ttk.pyTTkSlot()
     def _exportLayer(self):
