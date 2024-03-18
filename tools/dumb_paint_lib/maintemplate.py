@@ -67,9 +67,8 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
         cb_move_r = ttk.TTkCheckbox(text="Resize", enabled=False)
 
-        @ttk.pyTTkSlot(bool)
-        def _emitTool(checked):
-            if not checked: return
+        @ttk.pyTTkSlot()
+        def _checkTools():
             tool = PaintArea.Tool.BRUSH
             if ra_move.isChecked():
                 tool  = PaintArea.Tool.MOVE
@@ -84,18 +83,24 @@ class LeftPanel(ttk.TTkVBoxLayout):
                     tool = PaintArea.Tool.RECTFILL
             self.toolSelected.emit(tool)
 
+        @ttk.pyTTkSlot(bool)
+        def _emitTool(checked):
+            if not checked: return
+            _checkTools()
+
         ra_rect.toggled.connect(ra_rect_f.setEnabled)
         ra_rect.toggled.connect(ra_rect_e.setEnabled)
         ra_move.toggled.connect(cb_move_r.setEnabled)
 
-        ra_move.toggled.connect(  _emitTool)
-        ra_select.toggled.connect(  _emitTool)
+        ra_move.toggled.connect(   _emitTool)
+        ra_select.toggled.connect( _emitTool)
         ra_brush.toggled.connect(  _emitTool)
         ra_line.toggled.connect(   _emitTool)
         ra_rect.toggled.connect(   _emitTool)
         ra_rect_f.toggled.connect( _emitTool)
         ra_rect_e.toggled.connect( _emitTool)
         ra_oval.toggled.connect(   _emitTool)
+        cb_move_r.toggled.connect( _checkTools)
 
         lTools.addWidget(ra_move  ,0,0)
         lTools.addWidget(cb_move_r,0,1)

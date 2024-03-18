@@ -191,7 +191,7 @@
        0
       ],
       "Size": [
-       8,
+       3,
        1
       ],
       "Min Width": 3,
@@ -331,7 +331,7 @@
      "params": {
       "Name": "sbDx",
       "Position": [
-       30,
+       31,
        0
       ],
       "Size": [
@@ -378,7 +378,7 @@
      "params": {
       "Name": "sbDy",
       "Position": [
-       30,
+       31,
        1
       ],
       "Size": [
@@ -425,7 +425,7 @@
      "params": {
       "Name": "TTkLabel-6",
       "Position": [
-       37,
+       38,
        0
       ],
       "Size": [
@@ -453,7 +453,7 @@
      "params": {
       "Name": "TTkLabel-7",
       "Position": [
-       37,
+       38,
        1
       ],
       "Size": [
@@ -481,7 +481,7 @@
      "params": {
       "Name": "sbDw",
       "Position": [
-       38,
+       40,
        0
       ],
       "Size": [
@@ -528,7 +528,7 @@
      "params": {
       "Name": "sbDh",
       "Position": [
-       38,
+       40,
        1
       ],
       "Size": [
@@ -575,11 +575,11 @@
      "params": {
       "Name": "TTkLabel-3",
       "Position": [
-       46,
+       48,
        0
       ],
       "Size": [
-       6,
+       5,
        1
       ],
       "Min Width": 5,
@@ -603,7 +603,7 @@
      "params": {
       "Name": "TTkLabel-8",
       "Position": [
-       52,
+       54,
        0
       ],
       "Size": [
@@ -631,7 +631,7 @@
      "params": {
       "Name": "TTkLabel-9",
       "Position": [
-       52,
+       54,
        1
       ],
       "Size": [
@@ -659,7 +659,7 @@
      "params": {
       "Name": "sbLx",
       "Position": [
-       53,
+       56,
        0
       ],
       "Size": [
@@ -706,7 +706,7 @@
      "params": {
       "Name": "sbLy",
       "Position": [
-       53,
+       56,
        1
       ],
       "Size": [
@@ -753,7 +753,7 @@
      "params": {
       "Name": "TTkLabel-10",
       "Position": [
-       60,
+       63,
        0
       ],
       "Size": [
@@ -781,7 +781,7 @@
      "params": {
       "Name": "TTkLabel-11",
       "Position": [
-       60,
+       63,
        1
       ],
       "Size": [
@@ -809,7 +809,7 @@
      "params": {
       "Name": "sbLw",
       "Position": [
-       61,
+       65,
        0
       ],
       "Size": [
@@ -856,7 +856,7 @@
      "params": {
       "Name": "sbLh",
       "Position": [
-       61,
+       65,
        1
       ],
       "Size": [
