@@ -133,90 +133,141 @@ class CanvasLayer():
             self._colors[i] = [ttk.TTkColor.RST]*w
 
 
-    def exportLayer(self):
+    def exportLayer(self, full=False, palette=True, crop=True):
+        #           xa|----------|  xb
+        #     px        |-----------| = max(px,px+xa-ox)
+        # Offset |------|    pw
+        #   Data |----------------------------|
+        #             daw
+
         # Don't try this at home
+        ox,oy = self._offset
         px,py  = self.pos()
         pw,ph  = self.size()
-        data   = self._data
-        colors = self._colors
-        # get the bounding box
-        xa,xb,ya,yb = pw,0,ph,0
-        for y,row in enumerate(data):
-            for x,d in enumerate(row):
-                c = colors[y][x]
-                if d != ' ' or c.background():
-                    xa = min(x,xa)
-                    xb = max(x,xb)
-                    ya = min(y,ya)
-                    yb = max(y,yb)
 
-        if (xa,xb,ya,yb) == (pw,0,ph,0):
-            xa=xb=ya=yb=0
+        if full:
+            data   = self._data
+            colors = self._colors
+        else:
+            data   = [row[ox:ox+pw] for row in self._data[  oy:oy+ph]  ]
+            colors = [row[ox:ox+pw] for row in self._colors[oy:oy+ph]  ]
+            ox=oy=0
+
+        daw = len(data[0])
+        dah = len(data)
+
+        # get the bounding box
+        if crop:
+            xa,xb,ya,yb = daw,0,dah,0
+            for y,(drow,crow) in enumerate(zip(data,colors)):
+                for x,(d,c) in enumerate(zip(drow,crow)):
+                    if d != ' ' or c.background():
+                        xa = min(x,xa)
+                        xb = max(x,xb)
+                        ya = min(y,ya)
+                        yb = max(y,yb)
+            if (xa,xb,ya,yb) == (daw,0,dah,0):
+                xa=xb=ya=yb=0
+        else:
+            xa,xb,ya,yb = 0,daw,0,dah
+
+        # Visble Area intersecting the bounding box
+        vxa,vya = max(px,px+xa-ox),   max(py,py+ya-oy)
+        vxb,vyb = min(px+pw,vxa+xb-xa),min(py+ph,vya+yb-ya)
+        vw,vh   = vxb-vxa+1, vyb-vya+1
 
         outData  = {
-            'version':'1.0.0',
-            'size':[xb-xa+1,yb-ya+1],
-            'pos': (px+xa,py+ya),
+            'version':'1.1.0',
+            'size':[vw,vh],
+            'pos': (vxa,vya),
             'name':str(self.name()),
-            'data':[], 'colors':[], 'palette':[]}
+            'data':[], 'colors':[]}
 
-        palette=outData['palette']
-        for row in colors:
-            for c in row:
-                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
-                if (pc:=(fg,bg)) not in palette:
-                    palette.append(pc)
+        if palette:
+            palette = outData['palette'] = []
+            for row in colors:
+                for c in row:
+                    fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
+                    bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                    if (pc:=(fg,bg)) not in palette:
+                        palette.append(pc)
 
-        for row in data[ya:yb+1]:
-            outData['data'].append(row[xa:xb+1])
-        for row in colors[ya:yb+1]:
+        if full:
+            wslice = slice(xa,xb+1)
+            hslice = slice(ya,yb+1)
+            outData['offset'] = (max(0,ox-xa),max(0,oy-ya))
+        else:
+            wslice = slice(ox+vxa-px,ox+vxa-px+vw)
+            hslice = slice(oy+vya-py,oy+vya-py+vh)
+
+        for row in data[hslice]:
+            outData['data'].append(row[wslice])
+        for row in colors[hslice]:
             outData['colors'].append([])
-            for c in row[xa:xb+1]:
+            for c in row[wslice]:
                 fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
                 bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
-                outData['colors'][-1].append(palette.index((fg,bg)))
+                if palette:
+                    outData['colors'][-1].append(palette.index((fg,bg)))
+                else:
+                    outData['colors'][-1].append((fg,bg))
+
         return outData
+
+    def _import_v1_1_0(self, dd):
+        self._import_v1_0_0(dd)
+        self._offset = dd.get('offset',(0,0))
+
+    def _import_v1_0_0(self, dd):
+        self._pos  = dd['pos']
+        self._size = dd['size']
+        self._name = dd['name']
+        self._data = dd['data']
+        def _getColor(cd):
+            fg,bg = cd
+            if fg and bg: return ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
+            elif fg:      return ttk.TTkColor.fg(fg)
+            elif bg:      return ttk.TTkColor.bg(bg)
+            else:         return ttk.TTkColor.RST
+        if 'palette' in dd:
+            palette = [_getColor(c) for c in  dd['palette']]
+            self._colors = [[palette[c] for c in row] for row in dd['colors']]
+        else:
+            self._colors = [[_getColor(c) for c in row] for row in dd['colors']]
+
+    def _import_v0_0_0(self, dd):
+        # Legacy old import
+        w = len(dd['data'][0]) + 10
+        h = len(dd['data']) + 4
+        x,y=5,2
+        self.resize(w,h)
+        self._pos = (0,0)
+        for i,rd in enumerate(dd['data']):
+            for ii,cd in enumerate(rd):
+                self._data[i+y][ii+x] = cd
+        for i,rd in enumerate(dd['colors']):
+            for ii,cd in enumerate(rd):
+                fg,bg = cd
+                if fg and bg:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
+                elif fg:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)
+                elif bg:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.bg(bg)
+                else:
+                    self._colors[i+y][ii+x] = ttk.TTkColor.RST
 
     def importLayer(self, dd):
         self.clean()
 
-        if 'version' in dd and dd['version']=='1.0.0':
-            self._pos  = dd['pos']
-            self._size = dd['size']
-            self._name = dd['name']
-            self._data = dd['data']
-            def _getColor(cd):
-                fg,bg = cd
-                if fg and bg: return ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
-                elif fg:      return ttk.TTkColor.fg(fg)
-                elif bg:      return ttk.TTkColor.bg(bg)
-                else:         return ttk.TTkColor.RST
-            if 'palette' in dd:
-                palette = [_getColor(c) for c in  dd['palette']]
-                self._colors = [[palette[c] for c in row] for row in dd['colors']]
-            else:
-                self._colors = [[_getColor(c) for c in row] for row in dd['colors']]
-        else: # Legacy old import
-            w = len(dd['data'][0]) + 10
-            h = len(dd['data']) + 4
-            x,y=5,2
-            self.resize(w,h)
-            self._pos = (0,0)
-            for i,rd in enumerate(dd['data']):
-                for ii,cd in enumerate(rd):
-                    self._data[i+y][ii+x] = cd
-            for i,rd in enumerate(dd['colors']):
-                for ii,cd in enumerate(rd):
-                    fg,bg = cd
-                    if fg and bg:
-                        self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
-                    elif fg:
-                        self._colors[i+y][ii+x] = ttk.TTkColor.fg(fg)
-                    elif bg:
-                        self._colors[i+y][ii+x] = ttk.TTkColor.bg(bg)
-                    else:
-                        self._colors[i+y][ii+x] = ttk.TTkColor.RST
+        if 'version' in dd:
+            ver = dd['version']
+            if   ver == ('1.0.0'):
+                self._import_v1_0_0(dd)
+            elif ver == ('1.1.0'):
+                self._import_v1_1_0(dd)
+        else:
+            self._import_v0_0_0(dd)
 
     def placeFill(self,geometry,tool,glyph,color,preview=False):
         ox,oy = self._offset
@@ -434,17 +485,17 @@ class PaintArea(ttk.TTkAbstractScrollView):
     def exportImage(self):
         return {}
 
-    def exportLayer(self) -> dict:
+    def exportLayer(self, full=False, palette=True, crop=True) -> dict:
         if self._currentLayer:
-            return self._currentLayer.exportLayer()
+            return self._currentLayer.exportLayer(full=full,palette=palette,crop=crop)
         return {}
 
-    def exportDocument(self):
+    def exportDocument(self, full=True, palette=True, crop=True) -> dict:
         pw,ph = self._documentSize
         outData  = {
             'version':'1.0.0',
             'size':(pw,ph),
-            'layers':[l.exportLayer() for l in self._canvasLayers]}
+            'layers':[l.exportLayer(full=full,palette=palette,crop=crop) for l in self._canvasLayers]}
         return outData
 
     def leaveEvent(self, evt):
@@ -630,8 +681,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
         h=min(ch,dh)
         tcb = self._transparentColor['base']
         tcd = self._transparentColor['dim']
-        # canvas.fill(pos=(0    ,dy-oy),size=(cw,dh),color=tcd)
-        # canvas.fill(pos=(dx-ox,0    ),size=(dw,ch),color=tcd)
 
         if l:=self._currentLayer:
             tclb = self._transparentColor['layer']
@@ -647,27 +696,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
         canvas.fill(pos=(dx-ox-2 ,0    ),size=(2,ch),color=tcd)
         canvas.fill(pos=(dx-ox+dw,0    ),size=(2,ch),color=tcd)
 
-        # Draw canvas/currentLayout ruler
-
-        # ruleColor = ttk.TTkColor.fg("#444444")
-        # # canvas.drawText(pos=((0,dy-oy-1 )),text="═"*cw,color=ruleColor)
-        # # canvas.drawText(pos=((0,dy-oy+dh)),text="═"*cw,color=ruleColor)
-        # # canvas.drawText(pos=((0,dy-oy-1 )),text="▁"*cw,color=ruleColor)
-        # # canvas.drawText(pos=((0,dy-oy+dh)),text="▔"*cw,color=ruleColor)
-        # canvas.drawText(pos=((0,dy-oy-1 )),text="▄"*cw,color=ruleColor)
-        # canvas.drawText(pos=((0,dy-oy+dh)),text="▀"*cw,color=ruleColor)
-        # for y in range(ch):
-        #     canvas.drawText(pos=((dx-ox-1 ,y)),text="▐",color=ruleColor)
-        #     canvas.drawText(pos=((dx-ox+dw,y)),text="▌",color=ruleColor)
-        # canvas.drawText(pos=((dx-ox-1 ,dy-oy-1 )),text="▟",color=ruleColor)
-        # canvas.drawText(pos=((dx-ox+dw,dy-oy-1 )),text="▙",color=ruleColor)
-        # canvas.drawText(pos=((dx-ox-1 ,dy-oy+dh)),text="▜",color=ruleColor)
-        # canvas.drawText(pos=((dx-ox+dw,dy-oy+dh)),text="▛",color=ruleColor)
-
         for l in self._canvasLayers:
             lx,ly = l.pos()
             l.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
-            # Draw Preview for mouse move/drag
 
         if self._tool & self.Tool.RESIZE:
             rd = self._resizeData

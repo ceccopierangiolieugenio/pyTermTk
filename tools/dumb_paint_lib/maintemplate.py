@@ -125,7 +125,7 @@ class LeftPanel(ttk.TTkVBoxLayout):
         return self._palette
 
 class ExportArea(ttk.TTkGridLayout):
-    __slots__ = ('_paintArea', '_te')
+    __slots__ = ('_paintArea', '_te','_cbCrop', '_cbFull', '_cbPal')
     def __init__(self, paintArea:PaintArea, **kwargs):
         self._paintArea:PaintArea = paintArea
         super().__init__(**kwargs)
@@ -133,19 +133,26 @@ class ExportArea(ttk.TTkGridLayout):
         btn_exIm   = ttk.TTkButton(text="Export Image")
         btn_exLa   = ttk.TTkButton(text="Export Layer")
         btn_exPr   = ttk.TTkButton(text="Export Document")
-        btn_cbCrop = ttk.TTkCheckbox(text="Crop",checked=True)
+        self._cbCrop = ttk.TTkCheckbox(text="Crop",checked=True)
+        self._cbFull = ttk.TTkCheckbox(text="Full",checked=True)
+        self._cbPal  = ttk.TTkCheckbox(text="Palette",checked=True)
         self.addWidget(btn_exLa  ,0,0)
         self.addWidget(btn_exIm  ,0,1)
         self.addWidget(btn_exPr  ,0,2)
-        self.addWidget(btn_cbCrop,0,3)
-        self.addWidget(self._te,1,0,1,5)
+        self.addWidget(self._cbCrop,0,3)
+        self.addWidget(self._cbFull,0,4)
+        self.addWidget(self._cbPal ,0,5)
+        self.addWidget(self._te,1,0,1,7)
 
         btn_exLa.clicked.connect(self._exportLayer)
         btn_exPr.clicked.connect(self._exportDocument)
 
     @ttk.pyTTkSlot()
     def _exportLayer(self):
-        dd = self._paintArea.exportLayer()
+        crop    = self._cbCrop.isChecked()
+        palette = self._cbPal.isChecked()
+        full    = self._cbFull.isChecked()
+        dd = self._paintArea.exportLayer(full=full,palette=palette,crop=crop)
         if not dd:
             self._te.setText('# No Data toi be saved!!!')
             return
@@ -159,24 +166,32 @@ class ExportArea(ttk.TTkGridLayout):
         self._te.append('\n# Uncompressed Data:')
         outTxt = '{\n'
         for i in dd:
-            if i in ('data','colors'): continue
-            outTxt += f"  '{i}':'{dd[i]}',\n"
+            if i in ('data','colors','palette'): continue
+            if type(dd[i]) == str:
+                outTxt += f"  '{i}':'{dd[i]}',\n"
+            else:
+                outTxt += f"  '{i}':{dd[i]},\n"
+        outTxt += "    'data':[\n"
         for l in dd['data']:
             outTxt += f"    {l},\n"
         outTxt += "  ],'colors':[\n"
         for l in dd['colors']:
             outTxt += f"    {l},\n"
-        outTxt += "  ],'palette':["
-        for i,l in enumerate(dd['palette']):
-            if not i%10:
-                outTxt += f"\n    "
-            outTxt += f"{l},"
+        if 'palette' in dd:
+            outTxt += "  ],'palette':["
+            for i,l in enumerate(dd['palette']):
+                if not i%10:
+                    outTxt += f"\n    "
+                outTxt += f"{l},"
         outTxt += "]}\n"
         self._te.append(outTxt)
 
     @ttk.pyTTkSlot()
     def _exportDocument(self):
-        dd = self._paintArea.exportDocument()
+        crop    = self._cbCrop.isChecked()
+        palette = self._cbPal.isChecked()
+        full    = self._cbFull.isChecked()
+        dd = self._paintArea.exportDocument(full=full,palette=palette,crop=crop)
         if not dd:
             self._te.setText('# No Data to be saved!!!')
             return
