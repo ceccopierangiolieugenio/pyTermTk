@@ -39,7 +39,7 @@ class PaintToolKit(ttk.TTkContainer):
                  #Signals
                  'updatedColor', 'updatedTrans')
     def __init__(self, *args, **kwargs):
-        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"paintToolKit.tui.json"),self)
+        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/paintToolKit.tui.json"),self)
         self._glyph = 'X'
         self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
         self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)

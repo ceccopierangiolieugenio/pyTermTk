@@ -357,7 +357,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
     @ttk.pyTTkSlot()
     def importDictWin(self):
-        newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"quickImport.tui.json"))
+        newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/quickImport.tui.json"))
         te = newWindow.getWidgetByName("TextEdit")
 
         @ttk.pyTTkSlot()

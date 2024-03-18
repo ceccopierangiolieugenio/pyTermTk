@@ -78,13 +78,21 @@ class PaintArea(ttk.TTkAbstractScrollView):
         return x1,y1,x2-x1,y2-y1
 
     def _retuneGeometry(self):
+            ox, oy = self.getViewOffsets()
             dx,dy = self._documentPos
             x1,y1,_,_ = self._getGeometry()
-            self._documentPos = max(dx,-dx,-x1),max(dy,-dy,-y1)
+            dx1,dy1 = max(0,dx,dx-x1),max(0,dy,dy-y1)
+            self._documentPos = dx1,dy1
             # self.viewMoveTo(max(0,-x1),max(0,-y1))
             self.viewChanged.emit()
             # dx,dy = self._documentPos
             # self.chan
+            if md:=self._moveData:
+                mx,my=md['pos']
+                md['pos']=(mx+dx1-dx,my+dy1-dy)
+            if rd:=self._resizeData:
+                rx,ry=rd['pos']
+                rd['pos']=(rx+dx1-dx,ry+dy1-dy)
 
     def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self._getGeometry()
