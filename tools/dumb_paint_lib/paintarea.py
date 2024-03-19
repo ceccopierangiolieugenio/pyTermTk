@@ -83,10 +83,17 @@ class PaintArea(ttk.TTkAbstractScrollView):
             x1,y1,_,_ = self._getGeometry()
             dx1,dy1 = max(0,dx,dx-x1),max(0,dy,dy-y1)
             self._documentPos = dx1,dy1
-            # self.viewMoveTo(max(0,-x1),max(0,-y1))
             self.viewChanged.emit()
             # dx,dy = self._documentPos
             # self.chan
+            self.viewMoveTo(ox+dx1-dx,oy+dy1-dy)
+            # If the area move to be adapted to the
+            # Negative coordinates, the reference values used in
+            # mouse press, moveData, resizeData need to be
+            # adapted to the new topology
+            if mp:=self._mousePress:
+                mpx,mpy = mp
+                self._mousePress = (mpx-x1,mpy-y1)
             if md:=self._moveData:
                 mx,my=md['pos']
                 md['pos']=(mx+dx1-dx,my+dy1-dy)
