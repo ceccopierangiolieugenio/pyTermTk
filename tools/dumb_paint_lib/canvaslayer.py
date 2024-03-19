@@ -108,22 +108,22 @@ class CanvasLayer():
         diffx = dx-x
         diffy = dy-y
         self._preview = None
-        if ox<=x-dx: # we need to resize and move ox
+        if ox < x-dx: # we need to resize and move ox
             _nw = x-dx-ox
             ox  = x-dx
             self._data   = [([' ']*_nw             ) + _r for _r in self._data]
             self._colors = [([ttk.TTkColor.RST]*_nw) + _r for _r in self._colors]
-        if x+dw+ox > daw:
-            _nw = x+dw+ox-daw
+        if dw+ox > daw:
+            _nw = dw+ox-daw
             self._data   = [_r + ([' ']*_nw             )  for _r in self._data]
             self._colors = [_r + ([ttk.TTkColor.RST]*_nw)  for _r in self._colors]
-        if oy<=y-dy: # we need to resize and move ox
+        if oy < y-dy: # we need to resize and move ox
             _nh = y-dy-oy
             oy  = y-dy
             self._data   = [[' ']*daw              for _ in range(_nh)] + self._data
             self._colors = [[ttk.TTkColor.RST]*daw for _ in range(_nh)] + self._colors
-        if y+dh+oy > dah:
-            _nh = y+dh+oy-dah
+        if dh+oy > dah:
+            _nh = dh+oy-dah
             self._data   = self._data   + [[' ']*daw              for _ in range(_nh)]
             self._colors = self._colors + [[ttk.TTkColor.RST]*daw for _ in range(_nh)]
         self._offset = (ox+diffx,oy+diffy)
