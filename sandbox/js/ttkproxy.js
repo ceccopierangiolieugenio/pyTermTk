@@ -29,6 +29,32 @@ class TTkProxy {
     }
 
     pyodideProxy = {
+        copy: function(text){
+          console.log("Copying:",text)
+          if(navigator.clipboard){
+              navigator.clipboard.writeText(text)
+              return //codes below wont be executed
+          }
+          const textArea = document.createElement("textarea")
+          textArea.value = text
+
+          document.body.appendChild(textArea)
+
+          textArea.focus()
+          textArea.select()
+
+          document.execCommand('copy')
+
+          document.body.removeChild(textArea)
+        },
+        paste: function(){
+          if(navigator.clipboard){
+            text = navigator.clipboard.readText()
+            console.log("Pasted:",text)
+            return text
+          }
+          return null
+        },
         consoleLog: function(m){
           console.log("TTk:",m)
         },
