@@ -117,6 +117,7 @@ class CanvasLayer():
             _nw = dw+ox-daw
             self._data   = [_r + ([' ']*_nw             )  for _r in self._data]
             self._colors = [_r + ([ttk.TTkColor.RST]*_nw)  for _r in self._colors]
+        daw = len(self._data[0])
         if oy < y-dy: # we need to resize and move ox
             _nh = y-dy-oy
             oy  = y-dy

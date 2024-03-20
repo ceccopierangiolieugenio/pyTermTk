@@ -99,7 +99,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 md['pos']=(mx+dx1-dx,my+dy1-dy)
             # if rd:=self._resizeData:
             #     rx,ry,rw,rh=rd['geometry']
-            #     rd['geometry']=(rx+dx1-dx,ry+dy1-dy,rw,rh)
+            #     # rd['geometry']=(rx+dx1-dx,ry+dy1-dy,rw,rh)
 
     def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self._getGeometry()
