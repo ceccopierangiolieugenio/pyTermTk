@@ -93,7 +93,10 @@ deployDoc:
 	git checkout main
 
 deploySandbox:
-	cp -a tests/sandbox tmp/
+	rm -rf tmp/sandbox
+	mkdir -p tmp/sandbox
+	cp -a tests/sandbox/*.html tmp/sandbox
+	cp -a tools/webExporter/js tmp/sandbox
 
 	git checkout gh-pages
 	git pull
