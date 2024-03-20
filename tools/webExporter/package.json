@@ -1,0 +1,10 @@
+{
+    "libs" : [
+            {"pkg" :"bin/TermTk.tgz",
+             "name": "TermTk"},
+             {"pkg" :"bin/dpt.tgz",
+             "name": "Dumb Paint Tool"}
+        ],
+    "mainOld": "main.py",
+    "main": "dumb.paint.tool.py"
+}
