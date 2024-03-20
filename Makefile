@@ -113,6 +113,10 @@ deployTest: .venv
 	. .venv/bin/activate ; \
 	python3 -m twine upload --repository testpypi tmp/dist/* --verbose
 
+itchDumbPaintToolexporter:
+	tools/webExporterInit.sh
+	python3 -m http.server --directory tmp
+
 test: .venv
 	# Record a stream
 	#   tests/pytest/test_001_demo.py -r test.input.bin
