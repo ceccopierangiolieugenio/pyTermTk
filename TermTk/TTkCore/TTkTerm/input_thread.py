@@ -112,19 +112,23 @@ class TTkInput:
         TTkInput._inputQueue.put(None)
 
     @staticmethod
+    def _handleBracketedPaste(stdinRead:str):
+        if stdinRead.endswith("\033[201~"):
+            TTkInput._pasteBuffer += stdinRead[:-6]
+            TTkInput._bracketedPaste = False
+            # due to the CRNL methos (don't ask me why) the terminal
+            # is substituting all the \n with \r
+            _paste = TTkInput._pasteBuffer.replace('\r','\n')
+            TTkInput._pasteBuffer = ""
+            return None, None, _paste
+        else:
+            TTkInput._pasteBuffer += stdinRead
+        return None, None, None
+
+    @staticmethod
     def key_process(stdinRead:str) -> None:
         if TTkInput._bracketedPaste:
-            if stdinRead.endswith("\033[201~"):
-                TTkInput._pasteBuffer += stdinRead[:-6]
-                TTkInput._bracketedPaste = False
-                # due to the CRNL methos (don't ask me why) the terminal
-                # is substituting all the \n with \r
-                _paste = TTkInput._pasteBuffer.replace('\r','\n')
-                TTkInput._pasteBuffer = ""
-                return None, None, _paste
-            else:
-                TTkInput._pasteBuffer += stdinRead
-            return None, None, None
+            return TTkInput._handleBracketedPaste(stdinRead)
 
         mevt,kevt = None,None
 
@@ -205,9 +209,8 @@ class TTkInput:
             return kevt, mevt, None
 
         if stdinRead.startswith("\033[200~"):
-            TTkInput._pasteBuffer = stdinRead[6:]
             TTkInput._bracketedPaste = True
-            return None, None, None
+            return TTkInput._handleBracketedPaste(stdinRead[6:])
 
         hex = [f"0x{ord(x):02x}" for x in stdinRead]
         TTkLog.error("UNHANDLED: "+stdinRead.replace("\033","<ESC>") + " - "+",".join(hex))
