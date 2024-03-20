@@ -113,7 +113,7 @@ class _TTkColor:
         cmax = max(r,g,b)
         cmin = min(r,g,b)
 
-        lum = (cmax-cmin)/2
+        lum = (cmax+cmin)/2
         if cmax == cmin:
             return 0,0,lum
 
