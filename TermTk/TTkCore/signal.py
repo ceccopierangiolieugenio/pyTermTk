@@ -123,7 +123,7 @@ class _pyTTkSignal_obj():
                 raise TypeError(error)
             else:
               for a,b in zip(slot._TTkslot_attr, self._types):
-                if not issubclass(a,b):
+                if a!=b and not issubclass(a,b):
                     error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                     raise TypeError(error)
         if slot not in self._connected_slots:

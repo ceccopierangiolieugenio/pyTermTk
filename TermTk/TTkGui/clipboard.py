@@ -59,7 +59,13 @@ class TTkClipboard():
     @staticmethod
     def _loadClipboardManager():
         try:
-            if importlib.util.find_spec('copykitten'):
+            if importlib.util.find_spec('pyodideProxy'):
+                TTkLog.info("Using 'pyodideProxy' as clipboard manager")
+                import pyodideProxy as _c
+                TTkClipboard._manager = _c
+                TTkClipboard._setText = _c.copy
+                TTkClipboard._text = _c.paste
+            elif importlib.util.find_spec('copykitten'):
                 TTkLog.info("Using 'copykitten' as clipboard manager")
                 import copykitten as _c
                 TTkClipboard._manager = _c
@@ -113,9 +119,14 @@ class TTkClipboard():
     def text():
         '''text'''
         if TTkClipboard._text:
-            txt = TTkClipboard._text()
-            if txt == str(TTkClipboard._clipboard):
+            txt = ""
+            try:
+                txt = TTkClipboard._text()
+            except Exception as e:
+                TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
+                for line in str(e).split("\n"):
+                    TTkLog.error(line)
+            if txt == None or txt == str(TTkClipboard._clipboard):
                 return TTkClipboard._clipboard
-            else:
-                return TTkClipboard._text()
+            return txt
         return TTkClipboard._clipboard

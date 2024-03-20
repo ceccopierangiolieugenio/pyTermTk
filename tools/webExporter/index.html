@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="www/favicon.ico">
+
+    <script src="www/pyodide/pyodide.js"></script>
+
+    <link  href="www/xterm/xterm.css" rel="stylesheet" />
+    <script src="www/xterm/xterm.js"></script>
+    <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
+    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
+
+    <script src="js/ttkproxy.js"></script>
+    <style>
+      .xterm .xterm-viewport {overflow-y: hidden;}
+    </style>
+  </head>
+  <body>
+
+    <div id="terminal" contenteditable="true" onpaste="pasteFunction()" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
+
+    <script type="text/javascript">
+
+      function pasteFunction(abc) {
+            text = abc.clipboardData.getData("Text")
+            console.log(`Pasted: ${text}`);
+      }
+
+      // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
+      // const font = new FontFace("NerdFont", "url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
+      const font = new FontFace("NerdFont", "url(www/opentype/3270SemiCondensed-Regular.otf)");
+      document.fonts.add(font);
+      font.load();
+      document.fonts.ready.then(() => {fetchData()});
+
+      function fetchData(){
+        fetch("package.json")
+        .then(response => response.json())
+        .then(json => processAndStart(json));
+      }
+
+      function processAndStart(json){
+        console.log(json)
+        main(json)
+      }
+
+      /* pyodide demo */
+      async function mainTTk(term,json){
+        ttkProxy = new TTkProxy(term)
+        await ttkProxy.init()
+
+        for (lib of json['libs']){
+          await ttkProxy.loadLib(lib['pkg']);
+          term.write(`${lib['name']} - Loaded\n\r`)
+        }
+
+        term.write('Starting...\n\r')
+
+        ttkProxy.preRun()
+
+        let file = json['main']
+        let content = ttkProxy.readFile(file)
+
+        ttkProxy.run(content, file, 60)
+      }
+
+      function main(json){
+        /* xterm.js */
+        var term = new Terminal({
+            allowProposedApi: true,
+            fontFamily: 'NerdFont'});
+
+        /* https://www.npmjs.com/package/xterm-addon-fit */
+        const fitAddon = new FitAddon.FitAddon();
+        /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+        const unicode11Addon = new Unicode11Addon.Unicode11Addon();
+
+        term.loadAddon(fitAddon);
+        term.loadAddon(unicode11Addon);
+
+        term.unicode.activeVersion = '11';
+
+        term.open(document.getElementById('terminal'));
+
+        fitAddon.fit()
+
+        // start observing the terminal for resize
+        const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
+        resize_ob.observe(document.querySelector("#terminal"));
+
+        term.write('xterm.js - Loaded\n\r')
+        mainTTk(term,json)
+      }
+    </script>
+
+  </body>
+</html>

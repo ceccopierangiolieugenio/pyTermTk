@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clipboard Test</title>
+</head>
+<body>
+
+<h2>Clipboard Test</h2>
+
+<p>Click the button below to copy the text to your clipboard:</p>
+
+<button onclick="copyToClipboard()">CopyTo Text</button>
+<button onclick="copyFromClipboard()">CopyFrom Text</button>
+<button onclick="copyTA()">CopyFrom TextArea</button>
+<button onclick="pasteTA()">PasteTo TextArea</button>
+<br/>
+<textarea id="TB" rows="10" cols="50">
+
+      ████████╗            ████████╗
+      ╚══██╔══╝            ╚══██╔══╝
+         ██║  ▄▄  ▄ ▄▄ ▄▄▖▄▖  ██║ █ ▗▖
+ ▞▀▚ ▖▗  ██║ █▄▄█ █▀▘  █ █ █  ██║ █▟▘
+ ▙▄▞▐▄▟  ██║ ▀▄▄▖ █    █ ▝ █  ██║ █ ▀▄
+ ▌    ▐  ╚═╝                  ╚═╝
+   ▚▄▄▘
+               Test
+</textarea>
+<br/>
+<input type="text" id="myInput" value="Paste something here" size="40">
+<p id="demo"></p>
+<script>
+    document.getElementById("myInput").addEventListener("paste", myFunction);
+
+    function myFunction(abc) {
+      document.getElementById("demo").innerHTML = "You pasted text!:"+abc.clipboardData.getData("Text");
+    }
+
+function copyTA() {
+  let textarea = document.getElementById("TB");
+  textarea.select();
+  document.execCommand("copy");
+}
+function pasteTA() {
+  let textarea = document.getElementById("TB");
+  textarea.select();
+  document.execCommand("paste");
+}
+function copyToClipboard() {
+  // Text to be copied
+  var textToCopy = "Hello, world! This is a clipboard test.";
+
+  // Use the navigator.clipboard API to copy text to clipboard
+  window.navigator.clipboard.writeText(textToCopy)
+    .then(function() {
+      // Success callback
+      alert("Text copied to clipboard: " + textToCopy);
+    })
+    .catch(function(error) {
+      // Error callback
+      console.error("Failed to copy text: ", error);
+    });
+}
+function copyFromClipboard() {
+  // Create a temporary textarea element
+  var textarea = document.createElement("textarea");
+  textarea.value = textToCopy;
+  document.body.appendChild(textarea);
+
+  // Select and copy the text from the textarea
+  textarea.select();
+  document.execCommand("copy");
+
+  // Remove the temporary textarea
+  document.body.removeChild(textarea);
+
+  // Alert the user that the text has been copied
+  alert("Text copied to clipboard: " + textToCopy);
+}
+</script>
+
+</body>
+</html>
