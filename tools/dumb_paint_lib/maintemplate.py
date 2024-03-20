@@ -154,7 +154,7 @@ class ExportArea(ttk.TTkGridLayout):
         crop    = self._cbCrop.isChecked()
         palette = self._cbPal.isChecked()
         full    = self._cbFull.isChecked()
-        image = self._paintArea.exportImage(full=full,palette=palette,crop=crop)
+        image = self._paintArea.exportImage()
         self._te.setText(image)
 
     @ttk.pyTTkSlot()
@@ -265,8 +265,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
         buttonOpen    = fileMenu.addMenu("&Open")
-        buttonClose   = fileMenu.addMenu("&Save")
-        buttonClose   = fileMenu.addMenu("Save &As...")
+        fileMenu.addMenu("&Save"      ).menuButtonClicked.connect(self._save)
+        fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self._saveAs)
         fileMenu.addSpacer()
         fileMenu.addMenu("&Import").menuButtonClicked.connect(self.importDictWin)
         menuExport = fileMenu.addMenu("&Export")
@@ -314,6 +314,16 @@ class PaintTemplate(ttk.TTkAppTemplate):
         layers.addLayer(name="Background")
         if fileName:
             self._openFile(fileName)
+
+    @ttk.pyTTkSlot()
+    def _save(self):
+        image = self._parea.exportImage()
+        ttk.ttkCrossSave('untitled.DPT.txt', image, ttk.TTkEncoding.TEXT_PLAIN)
+
+    @ttk.pyTTkSlot()
+    def _saveAs(self):
+        image = self._parea.exportImage()
+        ttk.ttkCrossSaveAs('untitled.DPT.txt', image, ttk.TTkEncoding.TEXT_PLAIN)
 
     def _openFile(self, fileName):
         ttk.TTkLog.info(f"Open: {fileName}")

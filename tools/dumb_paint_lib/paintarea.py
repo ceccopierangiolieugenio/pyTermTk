@@ -142,7 +142,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
     def newLayer(self) -> CanvasLayer:
         newLayer = CanvasLayer()
-        w,h = self.size()
+        w,h = self._documentSize
         w,h = (w,h) if (w,h)!=(0,0) else (80,24)
         newLayer.resize(w,h)
         self._currentLayer = newLayer
@@ -178,7 +178,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
             'layers':[l.exportLayer(full=full,palette=palette,crop=crop) for l in self._canvasLayers]}
         return outData
 
-    def exportImage(self, full=True, palette=True, crop=True) -> dict:
+    def exportImage(self) -> dict:
         pw,ph = self._documentSize
         image = ttk.TTkCanvas(width=pw,height=ph)
         for l in self._canvasLayers:
