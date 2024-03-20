@@ -65,6 +65,7 @@ dWidgets = {
     },
     'Pickers':{
         "Color Picker"     : { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,3), 'border':True}},
+        "Color Picker Slim": { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,1), 'border':False}},
         "File Picker"      : { "class":ttk.TTkFileButtonPicker,  "params":{'size':(20,3), 'border':True}},
         "Date Picker"      : { "class":ttk.TTkButton, "params":{'size':(20,3)}, "disabled": True},
         "TtkString Picker" : { "class":ttk.TTkButton, "params":{'size':(20,3)}, "disabled": True},
