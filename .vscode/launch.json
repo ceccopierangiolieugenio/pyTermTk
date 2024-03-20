@@ -42,6 +42,14 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },{
+            "name": "Python: DumbPaintTool File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "tools/dumb.paint.tool.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args":["experiments/paint.test.json"]
+        },{
             "name": "Python: Demo",
             "type": "debugpy",
             "request": "launch",
