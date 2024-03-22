@@ -34,7 +34,7 @@ from TermTk import TTkFileDialogPicker, TTkMessageBox
 from TermTk import TTkGridLayout, TTkVBoxLayout, TTkHBoxLayout
 from TermTk import TTkSplitter, TTkAppTemplate, TTkMenuBarLayout
 from TermTk import TTkLogViewer, TTkKeyPressView
-from TermTk import TTkUiLoader, TTkUtil
+from TermTk import TTkUiLoader, TTkUiSignature, TTkUtil
 
 from .cfg  import *
 from .about import *
@@ -455,7 +455,8 @@ class TTkDesigner(TTkAppTemplate):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         newUI = {
-            'version':'2.0.0',
+            'type': TTkUiSignature,
+            'version':'2.0.1',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)
