@@ -33,6 +33,7 @@ from .painttoolkit import PaintToolKit
 from .palette      import Palette
 from .textarea     import TextArea
 from .layers       import Layers,LayerData
+from .about        import About
 
 class LeftPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
@@ -287,9 +288,14 @@ class PaintTemplate(ttk.TTkAppTemplate):
         # extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
         # extraMenu.addSpacer()
 
+        def _showAbout(btn):
+            ttk.TTkHelper.overlay(None, About(), 30,10)
+        def _showAboutTTk(btn):
+            ttk.TTkHelper.overlay(None, ttk.TTkAbout(), 30,10)
+
         helpMenu = appMenuBar.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
-        helpMenu.addMenu("About ...").menuButtonClicked
-        helpMenu.addMenu("About tlogg").menuButtonClicked
+        helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAboutTTk)
+        helpMenu.addMenu("About DPT").menuButtonClicked.connect(_showAbout)
 
         palette.colorSelected.connect(self._parea.setGlyphColor)
         palette.colorSelected.connect(ptoolkit.setColor)
