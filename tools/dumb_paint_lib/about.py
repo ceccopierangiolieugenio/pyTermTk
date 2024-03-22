@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -22,35 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, argparse
+__all__ = ['About']
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-import TermTk as ttk
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
+from TermTk import TTkAbout, TTkWindow
+# from .cfg import TTkDesignerCfg
 
-from dumb_paint_lib import PaintTemplate
-
-ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('filename', type=str, nargs='?', help='the file to open')
-    # parser.add_argument('-k', '--showkeys', action='store_true', help='display the keypresses and mouse interactions')
-    args = parser.parse_args()
-
-    root = ttk.TTk(
-            title="Dumb Paint Tool",
-            layout=ttk.TTkGridLayout(),
-            mouseTrack=True,
-            sigmask=(
-                # ttk.TTkTerm.Sigmask.CTRL_C |
-                ttk.TTkTerm.Sigmask.CTRL_Q |
-                ttk.TTkTerm.Sigmask.CTRL_S |
-                ttk.TTkTerm.Sigmask.CTRL_Z ))
-
-    PaintTemplate(parent=root,fileName=args.filename)
-
-    root.mainloop()
-
-if __name__ == '__main__':
-    main()
+class About(TTkAbout):
+    def paintEvent(self, canvas):
+        super().paintEvent(canvas)

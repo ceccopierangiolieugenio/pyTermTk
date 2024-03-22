@@ -14,3 +14,11 @@ You can use this command:
 /usr/share/fonts/opentype/3270/3270Condensed-Regular.otf: IBM 3270 Condensed:style=Condensed
 
 ```
+
+Check the font rendering in the browser:
+https://typezebra.com
+OK: 
+* FreeSans Regular
+* FreeSerif Regular
+* FreeMono Regular
+

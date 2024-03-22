@@ -9,16 +9,26 @@
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
     <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
+    <!--
+      <script src="www/xterm-addon-canvas/xterm-addon-canvas.js"></script>
+    -->
     <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
+    <script src="www/file-saver/FileSaver.js"></script>
 
     <script src="js/ttkproxy.js"></script>
     <style>
+      body {
+        height: 100%;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
       .xterm .xterm-viewport {overflow-y: hidden;}
     </style>
   </head>
   <body>
 
     <div id="terminal" contenteditable="true" onpaste="pasteFunction()" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
+    <input type="file" id="file-input" hidden />
 
     <script type="text/javascript">
 
@@ -28,8 +38,10 @@
       }
 
       // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
-      // const font = new FontFace("NerdFont", "url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
-      const font = new FontFace("NerdFont", "url(www/opentype/3270SemiCondensed-Regular.otf)");
+      // const font = new FontFace("pyTermTkFont", "url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
+      // const font = new FontFace("pyTermTkFont", "url(www/fonts/opentype/3270SemiCondensed-Regular.otf)");
+      const font = new FontFace("pyTermTkFont", "url(www/fonts/opentype/3270-Regular.otf)");
+      // const font = new FontFace("pyTermTkFont", "url(www/fonts/unifont/unifont_upper.ttf)");
       document.fonts.add(font);
       font.load();
       document.fonts.ready.then(() => {fetchData()});
@@ -43,6 +55,20 @@
       function processAndStart(json){
         console.log(json)
         main(json)
+      }
+
+      async function paste(){
+        if(navigator.clipboard){
+            try {
+              // let text = null
+              let text = await navigator.clipboard.readText().then((clipText) => clipText)
+              console.log('Pasted content: ', text)
+              return text
+            } catch (err) {
+              console.error('Failed to read clipboard contents: ', err);
+            }
+          }
+          return null
       }
 
       /* pyodide demo */
@@ -69,7 +95,9 @@
         /* xterm.js */
         var term = new Terminal({
             allowProposedApi: true,
-            fontFamily: 'NerdFont'});
+            fontSize: 17,
+            // fontFamily: 'FreeSerif Regular'});
+            fontFamily: 'pyTermTkFont'});
 
         /* https://www.npmjs.com/package/xterm-addon-fit */
         const fitAddon = new FitAddon.FitAddon();
@@ -77,6 +105,7 @@
         const unicode11Addon = new Unicode11Addon.Unicode11Addon();
 
         term.loadAddon(fitAddon);
+        // term.loadAddon(new CanvasAddon.CanvasAddon());
         term.loadAddon(unicode11Addon);
 
         term.unicode.activeVersion = '11';

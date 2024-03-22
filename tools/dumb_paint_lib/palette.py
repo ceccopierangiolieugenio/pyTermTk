@@ -55,6 +55,7 @@ class Palette(ttk.TTkWidget):
         self._mouseMove = None
         self.setPalette(_defaultPalette)
         super().__init__(*args, **kwargs)
+        self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
     def setPalette(self, palette):
         self._palette = []

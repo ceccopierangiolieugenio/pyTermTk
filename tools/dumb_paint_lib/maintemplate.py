@@ -22,21 +22,25 @@
 
 __all__ = ['PaintTemplate']
 
-import sys, os
+import sys, os, json
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-from .paintarea import PaintArea, PaintToolKit
-from .palette   import Palette
-from .textarea  import TextArea
+from .paintarea    import PaintArea, PaintScrollArea
+from .canvaslayer  import CanvasLayer
+from .painttoolkit import PaintToolKit
+from .palette      import Palette
+from .textarea     import TextArea
+from .layers       import Layers,LayerData
+from .about        import About
 
 class LeftPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
                  # Signals
                  'toolSelected')
     def __init__(self, *args, **kwargs):
-        self.toolSelected = ttk.pyTTkSignal(PaintArea.Tool)
+        self.toolSelected = ttk.pyTTkSignal(CanvasLayer.Tool)
         super().__init__(*args, **kwargs)
         self._palette  = Palette(maxHeight=12)
         self.addWidget(self._palette)
@@ -53,43 +57,62 @@ class LeftPanel(ttk.TTkVBoxLayout):
 
         # Toolset
         lTools = ttk.TTkGridLayout()
+        ra_move   = ttk.TTkRadioButton(radiogroup="tools", text="Select/Move",  enabled=True)
+        ra_select = ttk.TTkRadioButton(radiogroup="tools", text="Select",enabled=False)
         ra_brush  = ttk.TTkRadioButton(radiogroup="tools", text="Brush", checked=True)
-        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line", enabled=False)
+        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line",  enabled=False)
         ra_rect   = ttk.TTkRadioButton(radiogroup="tools", text="Rect")
-        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval", enabled=False)
+        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval",  enabled=False)
 
         ra_rect_f = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Fill" , enabled=False, checked=True)
         ra_rect_e = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Empty", enabled=False)
 
+        cb_move_r = ttk.TTkCheckbox(text="Resize", enabled=False)
+
+        @ttk.pyTTkSlot()
+        def _checkTools():
+            tool = CanvasLayer.Tool.BRUSH
+            if ra_move.isChecked():
+                tool  = CanvasLayer.Tool.MOVE
+                if cb_move_r.isChecked():
+                    tool |= CanvasLayer.Tool.RESIZE
+            elif ra_brush.isChecked():
+                tool = CanvasLayer.Tool.BRUSH
+            elif ra_rect.isChecked():
+                if ra_rect_e.isChecked():
+                    tool = CanvasLayer.Tool.RECTEMPTY
+                else:
+                    tool = CanvasLayer.Tool.RECTFILL
+            self.toolSelected.emit(tool)
+
         @ttk.pyTTkSlot(bool)
         def _emitTool(checked):
             if not checked: return
-            tool = PaintArea.Tool.BRUSH
-            if ra_brush.isChecked():
-                tool = PaintArea.Tool.BRUSH
-            elif ra_rect.isChecked():
-                if ra_rect_e.isChecked():
-                    tool = PaintArea.Tool.RECTEMPTY
-                else:
-                    tool = PaintArea.Tool.RECTFILL
-            self.toolSelected.emit(tool)
+            _checkTools()
 
         ra_rect.toggled.connect(ra_rect_f.setEnabled)
         ra_rect.toggled.connect(ra_rect_e.setEnabled)
+        ra_move.toggled.connect(cb_move_r.setEnabled)
 
+        ra_move.toggled.connect(   _emitTool)
+        ra_select.toggled.connect( _emitTool)
         ra_brush.toggled.connect(  _emitTool)
         ra_line.toggled.connect(   _emitTool)
         ra_rect.toggled.connect(   _emitTool)
         ra_rect_f.toggled.connect( _emitTool)
         ra_rect_e.toggled.connect( _emitTool)
         ra_oval.toggled.connect(   _emitTool)
+        cb_move_r.toggled.connect( _checkTools)
 
-        lTools.addWidget(ra_brush,0,0)
-        lTools.addWidget(ra_line,1,0)
-        lTools.addWidget(ra_rect,2,0)
-        lTools.addWidget(ra_rect_f,2,1)
-        lTools.addWidget(ra_rect_e,2,2)
-        lTools.addWidget(ra_oval,3,0)
+        lTools.addWidget(ra_move  ,0,0)
+        lTools.addWidget(cb_move_r,0,1)
+        lTools.addWidget(ra_select,1,0)
+        lTools.addWidget(ra_brush ,2,0)
+        lTools.addWidget(ra_line  ,3,0)
+        lTools.addWidget(ra_rect  ,4,0)
+        lTools.addWidget(ra_rect_f,4,1)
+        lTools.addWidget(ra_rect_e,4,2)
+        lTools.addWidget(ra_oval  ,5,0)
         self.addItem(lTools)
 
         # brush
@@ -104,69 +127,105 @@ class LeftPanel(ttk.TTkVBoxLayout):
         return self._palette
 
 class ExportArea(ttk.TTkGridLayout):
-    __slots__ = ('_paintArea', '_te')
-    def __init__(self, paintArea, **kwargs):
-        self._paintArea = paintArea
+    __slots__ = ('_paintArea', '_te','_cbCrop', '_cbFull', '_cbPal')
+    def __init__(self, paintArea:PaintArea, **kwargs):
+        self._paintArea:PaintArea = paintArea
         super().__init__(**kwargs)
         self._te = ttk.TTkTextEdit(lineNumber=True, readOnly=False)
-        btn_ex   = ttk.TTkButton(text="Export")
-        self.addWidget(btn_ex  ,0,0)
-        self.addWidget(self._te,1,0,1,3)
+        btn_exIm   = ttk.TTkButton(text="Export Image")
+        btn_exLa   = ttk.TTkButton(text="Export Layer")
+        btn_exPr   = ttk.TTkButton(text="Export Document")
+        self._cbCrop = ttk.TTkCheckbox(text="Crop",checked=True)
+        self._cbFull = ttk.TTkCheckbox(text="Full",checked=True)
+        self._cbPal  = ttk.TTkCheckbox(text="Palette",checked=True)
+        self.addWidget(btn_exLa  ,0,0)
+        self.addWidget(btn_exIm  ,0,1)
+        self.addWidget(btn_exPr  ,0,2)
+        self.addWidget(self._cbCrop,0,3)
+        self.addWidget(self._cbFull,0,4)
+        self.addWidget(self._cbPal ,0,5)
+        self.addWidget(self._te,1,0,1,7)
 
-        btn_ex.clicked.connect(self._export)
+        btn_exLa.clicked.connect(self._exportLayer)
+        btn_exPr.clicked.connect(self._exportDocument)
+        btn_exIm.clicked.connect(self._exportImage)
 
     @ttk.pyTTkSlot()
-    def _export(self):
-        # Don't try this at home
-        pw,ph  = self._paintArea._canvasSize
-        data   = self._paintArea._canvasArea['data']
-        colors = self._paintArea._canvasArea['colors']
-        # get the bounding box
-        xa,xb,ya,yb = pw,0,ph,0
-        for y,row in enumerate(data):
-            for x,d in enumerate(row):
-                c = colors[y][x]
-                if d != ' ' or c.background():
-                    xa = min(x,xa)
-                    xb = max(x,xb)
-                    ya = min(y,ya)
-                    yb = max(y,yb)
+    def _exportImage(self):
+        crop    = self._cbCrop.isChecked()
+        palette = self._cbPal.isChecked()
+        full    = self._cbFull.isChecked()
+        image = self._paintArea.exportImage()
+        self._te.setText(image)
 
-        if xa>xb or ya>yb:
-            self._te.setText("No Picture Found!!!")
+    @ttk.pyTTkSlot()
+    def _exportLayer(self):
+        crop    = self._cbCrop.isChecked()
+        palette = self._cbPal.isChecked()
+        full    = self._cbFull.isChecked()
+        dd = self._paintArea.exportLayer(full=full,palette=palette,crop=crop)
+        if not dd:
+            self._te.setText('# No Data toi be saved!!!')
             return
 
-        out      = "data = {'data': [\n"
-        outData  = {'data':[], 'colors':[]}
-        for row in data[ya:yb+1]:
-            out += "        ["
-            outData['data'].append(row[xa:xb+1])
-            for c in row[xa:xb+1]:
-                out += f"'{c}',"
-            out += "],\n"
-        out     += "          ],\n"
-        out     += "        'colors': [\n"
-        for row in colors[ya:yb+1]:
-            out += "        ["
-            outData['colors'].append([])
-            for c in row[xa:xb+1]:
-                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
-                out += f"('{fg}','{bg}'),"
-                outData['colors'][-1].append((fg,bg))
-            out += "],\n"
-        out     += "          ]}\n"
-
-        self._te.setText(out)
-
-        self._te.append('\n# Compressed Data:')
+        self._te.setText('# Compressed Data:')
         self._te.append('data = TTkUtil.base64_deflate_2_obj(')
-        b64str = ttk.TTkUtil.obj_inflate_2_base64(outData)
+        b64str = ttk.TTkUtil.obj_inflate_2_base64(dd)
         b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '")'
         self._te.append(b64list)
 
+        self._te.append('\n# Uncompressed Data:')
+        outTxt = '{\n'
+        for i in dd:
+            if i in ('data','colors','palette'): continue
+            if type(dd[i]) == str:
+                outTxt += f"  '{i}':'{dd[i]}',\n"
+            else:
+                outTxt += f"  '{i}':{dd[i]},\n"
+        outTxt += "    'data':[\n"
+        for l in dd['data']:
+            outTxt += f"    {l},\n"
+        outTxt += "  ],'colors':[\n"
+        for l in dd['colors']:
+            outTxt += f"    {l},\n"
+        if 'palette' in dd:
+            outTxt += "  ],'palette':["
+            for i,l in enumerate(dd['palette']):
+                if not i%10:
+                    outTxt += f"\n    "
+                outTxt += f"{l},"
+        outTxt += "]}\n"
+        self._te.append(outTxt)
 
+    @ttk.pyTTkSlot()
+    def _exportDocument(self):
+        crop    = self._cbCrop.isChecked()
+        palette = self._cbPal.isChecked()
+        full    = self._cbFull.isChecked()
+        dd = self._paintArea.exportDocument(full=full,palette=palette,crop=crop)
+        if not dd:
+            self._te.setText('# No Data to be saved!!!')
+            return
 
+        self._te.setText('# Compressed Data:')
+        self._te.append('data = TTkUtil.base64_deflate_2_obj(')
+        b64str = ttk.TTkUtil.obj_inflate_2_base64(dd)
+        b64list = '    "' + '" +\n    "'.join([b64str[i:i+128] for i in range(0,len(b64str),128)]) + '")'
+        self._te.append(b64list)
+
+        self._te.append('\n# Uncompressed Data:')
+        outTxt = '{\n'
+        for i in dd:
+            if i=='layers': continue
+            if type(dd[i]) == str:
+                outTxt += f"  '{i}':'{dd[i]}',\n"
+            else:
+                outTxt += f"  '{i}':{dd[i]},\n"
+        outTxt +=  "  'layers':[\n"
+        for l in dd['layers']:
+            outTxt += f"    {l},\n"
+        outTxt += "]}\n"
+        self._te.append(outTxt)
 
 # Layout:
 #
@@ -178,12 +237,14 @@ class ExportArea(ttk.TTkGridLayout):
 #                 Export
 #
 class PaintTemplate(ttk.TTkAppTemplate):
-    def __init__(self, border=False, **kwargs):
+    __slots__ = ('_parea','_layers')
+    def __init__(self, fileName=None, border=False, **kwargs):
         super().__init__(border, **kwargs)
-        self._parea    = PaintArea()
+        self._parea  = parea = PaintArea()
+        self._layers = layers = Layers()
         ptoolkit = PaintToolKit()
         tarea    = TextArea()
-        expArea  = ExportArea(self._parea)
+        expArea  = ExportArea(parea)
 
         leftPanel = LeftPanel()
         palette = leftPanel.palette()
@@ -192,21 +253,24 @@ class PaintTemplate(ttk.TTkAppTemplate):
         rightPanel.addWidget(tarea)
         # rightPanel.addItem(expArea, title="Export")
         # rightPanel.setSizes([None,5])
+        rightPanel.addItem(layers, title='Layers')
+        rightPanel.setSizes([None,9])
 
         self.setItem(expArea, self.BOTTOM, title="Export")
 
         self.setItem(leftPanel     , self.LEFT,  size=16*2)
-        self.setWidget(self._parea , self.MAIN)
-        self.setItem(ptoolkit      , self.TOP,   fixed=True)
-        self.setItem(rightPanel    , self.RIGHT, size=50)
+        self.setWidget(PaintScrollArea(parea) , self.MAIN)
+        self.setWidget(ptoolkit      , self.TOP,   fixed=True)
+        self.setItem(rightPanel    , self.RIGHT, size=40)
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
-        buttonOpen    = fileMenu.addMenu("&Open")
-        buttonClose   = fileMenu.addMenu("&Save")
-        buttonClose   = fileMenu.addMenu("Save &As...")
+        fileMenu.addMenu("&Open"      ).menuButtonClicked.connect(self._open)
+        fileMenu.addMenu("&Save"      ).menuButtonClicked.connect(self._save)
+        fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self._saveAs)
         fileMenu.addSpacer()
         fileMenu.addMenu("&Import").menuButtonClicked.connect(self.importDictWin)
+        menuExport = fileMenu.addMenu("&Export")
         fileMenu.addSpacer()
         fileMenu.addMenu("Load Palette")
         fileMenu.addMenu("Save Palette")
@@ -214,13 +278,24 @@ class PaintTemplate(ttk.TTkAppTemplate):
         buttonExit    = fileMenu.addMenu("E&xit")
         buttonExit.menuButtonClicked.connect(ttk.TTkHelper.quit)
 
+        menuExport.addMenu("&Ascii/Txt").menuButtonClicked.connect(self._saveAsAscii)
+        menuExport.addMenu("&Ansi").menuButtonClicked.connect(self._saveAsAnsi)
+        menuExport.addMenu("&Python")
+        menuExport.addMenu("&Bash")
+
+
         # extraMenu = appMenuBar.addMenu("E&xtra")
         # extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
         # extraMenu.addSpacer()
 
+        def _showAbout(btn):
+            ttk.TTkHelper.overlay(None, About(), 30,10)
+        def _showAboutTTk(btn):
+            ttk.TTkHelper.overlay(None, ttk.TTkAbout(), 30,10)
+
         helpMenu = appMenuBar.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
-        helpMenu.addMenu("About ...").menuButtonClicked
-        helpMenu.addMenu("About tlogg").menuButtonClicked
+        helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAboutTTk)
+        helpMenu.addMenu("About DPT").menuButtonClicked.connect(_showAbout)
 
         palette.colorSelected.connect(self._parea.setGlyphColor)
         palette.colorSelected.connect(ptoolkit.setColor)
@@ -233,9 +308,107 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self._parea.setGlyphColor(palette.color())
         ptoolkit.setColor(palette.color())
 
+        parea.selectedLayer.connect(ptoolkit.updateLayer)
+
+        @ttk.pyTTkSlot(LayerData)
+        def _layerSelected(l:LayerData):
+            parea.setCurrentLayer(l.data())
+
+        layers.layerAdded.connect(self._layerAdded)
+        layers.layerSelected.connect(_layerSelected)
+        layers.layersOrderChanged.connect(self._layersOrderChanged)
+        layers.addLayer(name="Background")
+        if fileName:
+            self._openFile(fileName)
+
+        ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
+
+    @ttk.pyTTkSlot()
+    def _open(self):
+        ttk.ttkCrossOpen(
+                path='.',
+                encoding=ttk.TTkEncoding.APPLICATION_JSON,
+                filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
+                cb=self._openDragData)
+
+    @ttk.pyTTkSlot()
+    def _save(self):
+        doc = self._parea.exportDocument()
+        ttk.ttkCrossSave('untitled.DPT.json', json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON)
+
+    @ttk.pyTTkSlot()
+    def _saveAs(self):
+        doc = self._parea.exportDocument()
+        ttk.ttkCrossSaveAs('untitled.DPT.json', json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON,
+                           filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)")
+
+    @ttk.pyTTkSlot()
+    def _saveAsAnsi(self):
+        image = self._parea.exportImage()
+        text = ttk.TTkString(image)
+        ttk.ttkCrossSaveAs('untitled.DPT.Ansi.txt', text.toAnsi(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
+                           filter="Ansi text Files (*.Ansi.txt);;Text Files (*.txt);;All Files (*)")
+
+    @ttk.pyTTkSlot()
+    def _saveAsAscii(self):
+        image = self._parea.exportImage()
+        text = ttk.TTkString(image)
+        ttk.ttkCrossSaveAs('untitled.DPT.ASCII.txt', text.toAscii(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
+                           filter="ASCII Text Files (*.ASCII.txt);;Text Files (*.txt);;All Files (*)")
+
+    @ttk.pyTTkSlot(dict)
+    def _openDragData(self, data):
+        dd = json.loads(data['data'])
+        if 'layers' in dd:
+            self.importDocument(dd)
+        else:
+            self._layers.addLayer(name="Import")
+            self._parea.importLayer(dd)
+
+    def _openFile(self, fileName):
+        ttk.TTkLog.info(f"Open: {fileName}")
+
+        with open(fileName) as fp:
+            # dd = json.load(fp)
+            # text = fp.read()
+            # dd = eval(text)
+            dd = json.load(fp)
+            if 'layers' in dd:
+                self.importDocument(dd)
+            else:
+                self._layers.addLayer(name="Import")
+                self._parea.importLayer(dd)
+
+    # Connect and handle Layers event
+    @ttk.pyTTkSlot(LayerData)
+    def _layerAdded(self, l:LayerData):
+        nl = self._parea.newLayer()
+        nl.setName(l.name())
+        l.setData(nl)
+        l.nameChanged.connect(nl.setName)
+        l.visibilityToggled.connect(nl.setVisible)
+        l.visibilityToggled.connect(self._parea.update)
+
+    @ttk.pyTTkSlot(list[LayerData])
+    def _layersOrderChanged(self, layers:list[LayerData]):
+        self._parea._canvasLayers = [ld.data() for ld in reversed(layers)]
+        self._parea.update()
+
+    def importDocument(self, dd):
+        self._parea.importDocument(dd)
+        self._layers.clear()
+        # Little Hack that I don't know how to overcome
+        self._layers.layerAdded.disconnect(self._layerAdded)
+        for l in self._parea.canvasLayers():
+            ld = self._layers.addLayer(name=l.name(),data=l)
+            ld.nameChanged.connect(l.setName)
+            ld.visibilityToggled.connect(l.setVisible)
+            ld.visibilityToggled.connect(self._parea.update)
+        self._layers.layerAdded.connect(self._layerAdded)
+
     @ttk.pyTTkSlot()
     def importDictWin(self):
-        newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"quickImport.tui.json"))
+        newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/quickImport.tui.json"))
         te = newWindow.getWidgetByName("TextEdit")
 
         @ttk.pyTTkSlot()
@@ -266,7 +439,11 @@ class PaintTemplate(ttk.TTkAppTemplate):
                 ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
                 return
 
-            self._parea.importLayer(dd)
+            if 'layers' in dd:
+                self.importDocument(dd)
+            else:
+                self._layers.addLayer(name="Import")
+                self._parea.importLayer(dd)
 
             newWindow.close()
 

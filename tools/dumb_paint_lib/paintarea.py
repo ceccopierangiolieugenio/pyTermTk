@@ -20,227 +20,324 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['PaintArea','PaintToolKit']
+__all__ = ['PaintArea','PaintScrollArea','CanvasLayer']
 
 import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+from .canvaslayer import CanvasLayer
 
-class PaintToolKit(ttk.TTkGridLayout):
-
-
-    __slots__ = ('_rSelect', '_rPaint', '_lgliph',
-                 '_cbFg', '_cbBg',
-                 '_bpFg', '_bpBg', '_bpDef',
-                 '_glyph',
-                 #Signals
-                 'updatedColor', 'updatedTrans')
-    def __init__(self, *args, **kwargs):
-        self._glyph = 'X'
-        self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
-        self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
-        super().__init__(*args, **kwargs)
-        self._rSelect = ttk.TTkRadioButton(text='Select '     , maxWidth=10)
-        self._rPaint  = ttk.TTkRadioButton(text='Paint  '            )
-        self._lgliph   = ttk.TTkLabel(text=""                 , maxWidth=8)
-        self._cbFg    = ttk.TTkCheckbox(text="Fg"             , maxWidth= 6)
-        self._cbBg    = ttk.TTkCheckbox(text="Bg"                    )
-        self._bpFg    = ttk.TTkColorButtonPicker(enabled=False, maxWidth= 6)
-        self._bpBg    = ttk.TTkColorButtonPicker(enabled=False,            )
-        self._bpDef   = ttk.TTkColorButtonPicker(color=ttk.TTkColor.bg('#FF00FF'), maxWidth=6)
-        self.addWidget(self._rSelect ,0,0)
-        self.addWidget(self._rPaint  ,1,0)
-        self.addWidget(self._lgliph  ,0,1,2,1)
-        self.addWidget(self._cbFg    ,0,2)
-        self.addWidget(self._cbBg    ,1,2)
-        self.addWidget(self._bpFg    ,0,3)
-        self.addWidget(self._bpBg    ,1,3)
-
-        self.addWidget(ttk.TTkLabel(text=" Trans:", maxWidth=7) ,1,4)
-        self.addWidget(self._bpDef          ,1,5)
-        self.addItem(ttk.TTkLayout() ,0,6,2,1)
-
-        self._cbFg.toggled.connect(self._bpFg.setEnabled)
-        self._cbBg.toggled.connect(self._bpBg.setEnabled)
-        self._cbFg.toggled.connect(self._refreshColor)
-        self._cbBg.toggled.connect(self._refreshColor)
-
-        self._bpFg.colorSelected.connect(self._refreshColor)
-        self._bpBg.colorSelected.connect(self._refreshColor)
-        self._bpDef.colorSelected.connect(self.updatedTrans.emit)
-
-        self._refreshColor(emit=False)
-
-    @ttk.pyTTkSlot()
-    def _refreshColor(self, emit=True):
-        color =self.color()
-        self._lgliph.setText(
-                ttk.TTkString("Glyph\n '") +
-                ttk.TTkString(self._glyph,color) +
-                ttk.TTkString("'"))
-        if emit:
-            self.updatedColor.emit(color)
-
-
-    @ttk.pyTTkSlot(ttk.TTkString)
-    def glyphFromString(self, ch:ttk.TTkString):
-        if len(ch)<=0: return
-        self._glyph = ch.charAt(0)
-        self._refreshColor()
-        # self.setColor(ch.colorAt(0))
-
-    def color(self):
-        color = ttk.TTkColor()
-        if self._cbFg.checkState() == ttk.TTkK.Checked:
-            color += self._bpFg.color().invertFgBg()
-        if self._cbBg.checkState() == ttk.TTkK.Checked:
-           color += self._bpBg.color()
-        return color
-
-    @ttk.pyTTkSlot(ttk.TTkColor)
-    def setColor(self, color:ttk.TTkColor):
-        if fg := color.foreground():
-            self._cbFg.setCheckState(ttk.TTkK.Checked)
-            self._bpFg.setEnabled()
-            self._bpFg.setColor(fg.invertFgBg())
-        else:
-            self._cbFg.setCheckState(ttk.TTkK.Unchecked)
-            self._bpFg.setDisabled()
-
-        if bg := color.background():
-            self._cbBg.setCheckState(ttk.TTkK.Checked)
-            self._bpBg.setEnabled()
-            self._bpBg.setColor(bg)
-        else:
-            self._cbBg.setCheckState(ttk.TTkK.Unchecked)
-            self._bpBg.setDisabled()
-        self._refreshColor(emit=False)
-
-class PaintArea(ttk.TTkWidget):
-    class Tool(int):
-        BRUSH = 0x01
-        RECTFILL  = 0x02
-        RECTEMPTY = 0x03
-
-    __slots__ = ('_canvasArea', '_canvasSize',
+class PaintArea(ttk.TTkAbstractScrollView):
+    __slots__ = ('_canvasLayers', '_currentLayer',
                  '_transparentColor',
-                 '_mouseMove', '_mouseFill', '_tool',
-                 '_glyph', '_glyphColor')
+                 '_documentPos','_documentSize',
+                 '_mouseMove', '_mouseDrag', '_mousePress', '_mouseRelease',
+                 '_moveData','_resizeData',
+                 '_tool',
+                 '_glyph', '_glyphColor',
+                 # Signals
+                 'selectedLayer')
 
     def __init__(self, *args, **kwargs):
-        self._transparentColor = ttk.TTkColor.bg('#FF00FF')
-        self._canvasSize = (0,0)
-        self._canvasArea = {'data':[],'colors':[]}
+        self.selectedLayer = ttk.pyTTkSignal(CanvasLayer)
+        self._transparentColor = {'base':ttk.TTkColor.RST,'dim':ttk.TTkColor.RST}
+        self._currentLayer:CanvasLayer = None
+        self._canvasLayers:list[CanvasLayer] = []
         self._glyph = 'X'
         self._glyphColor = ttk.TTkColor.RST
+        self._moveData = None
+        self._resizeData = None
         self._mouseMove = None
-        self._mouseFill = None
-        self._tool = self.Tool.BRUSH
+        self._mouseDrag = None
+        self._mousePress   = None
+        self._mouseRelease = None
+        self._tool = CanvasLayer.Tool.BRUSH
+        self._documentPos    = (6,3)
+        self._documentSize   = ( 0, 0)
         super().__init__(*args, **kwargs)
+        self.setTrans(ttk.TTkColor.bg('#FF00FF'))
         self.resizeCanvas(80,25)
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
 
+    def _getGeometry(self):
+        dx,dy = self._documentPos
+        dw,dh = self._documentSize
+        ww,wh = self.size()
+        x1,y1 = min(0,dx),min(0,dy)
+        x2,y2 = max(dx+dw,ww),max(dy+dh,wh)
+        for l in self._canvasLayers:
+            lx,ly = l.pos()
+            lw,lh = l.size()
+            x1 = min(x1,dx+lx)
+            y1 = min(y1,dy+ly)
+            x2 = max(x2,dx+lx+lw)
+            y2 = max(y2,dy+ly+lh)
+        # ttk.TTkLog.debug(f"{x1=},{y1=},{x2-x1=},{y2-y1=}")
+        return x1,y1,x2-x1,y2-y1
+
+    def _retuneGeometry(self):
+            ox, oy = self.getViewOffsets()
+            dx,dy = self._documentPos
+            x1,y1,_,_ = self._getGeometry()
+            dx1,dy1 = max(0,dx,dx-x1),max(0,dy,dy-y1)
+            self._documentPos = dx1,dy1
+            self.viewChanged.emit()
+            # dx,dy = self._documentPos
+            # self.chan
+            self.viewMoveTo(ox+dx1-dx,oy+dy1-dy)
+            # If the area move to be adapted to the
+            # Negative coordinates, the reference values used in
+            # mouse press, moveData, resizeData need to be
+            # adapted to the new topology
+            if mp:=self._mousePress:
+                mpx,mpy = mp
+                self._mousePress = (mpx-x1,mpy-y1)
+            if md:=self._moveData:
+                mx,my=md['pos']
+                md['pos']=(mx+dx1-dx,my+dy1-dy)
+            # if rd:=self._resizeData:
+            #     rx,ry,rw,rh=rd['geometry']
+            #     # rd['geometry']=(rx+dx1-dx,ry+dy1-dy,rw,rh)
+
+    def viewFullAreaSize(self) -> tuple[int,int]:
+        _,_,w,h = self._getGeometry()
+        return w,h
+
+    def viewDisplayedSize(self) -> tuple:
+        return self.size()
+
+    def maximumWidth(self):   return 0x10000
+    def maximumHeight(self):  return 0x10000
+    def minimumWidth(self):   return 0
+    def minimumHeight(self):  return 0
+
+    def canvasLayers(self):
+        return self._canvasLayers
+
     def resizeCanvas(self, w, h):
-        self._canvasSize = (w,h)
-        self._canvasArea['data']   = (self._canvasArea['data']   + [[] for _ in range(h)])[:h]
-        self._canvasArea['colors'] = (self._canvasArea['colors'] + [[] for _ in range(h)])[:h]
-        for i in range(h):
-            self._canvasArea['data'][i]   = (self._canvasArea['data'][i]   + [' '              for _ in range(w)])[:w]
-            self._canvasArea['colors'][i] = (self._canvasArea['colors'][i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
+        self._documentSize  = (w,h)
+        self._retuneGeometry()
         self.update()
 
-    def clean(self):
-        w,h = self._canvasSize
-        for i in range(h):
-            self._canvasArea['data'][i]   = [' ']*w
-            self._canvasArea['colors'][i] = [ttk.TTkColor.RST]*w
+    def superResize(self,x,y,w,h):
+        dx,dy = self._documentPos
+        dw,dh = self._documentSize
+        if (x,y,w,h) == (dx,dy,dw,dh): return
+        if w<0: x=dx;w=dw
+        if h<0: y=dy;h=dh
+        if self._documentPos  != (x,y):
+            diffx = dx-x
+            diffy = dy-y
+            for l in self._canvasLayers:
+                lx,ly = l.pos()
+                l.move(lx+diffx,ly+diffy)
+            self._documentPos = (x,y)
+        self._documentSize = (w,h)
+        self.update()
+
+    def setCurrentLayer(self, layer:CanvasLayer):
+        self._currentLayer = layer
+
+    def newLayer(self) -> CanvasLayer:
+        newLayer = CanvasLayer()
+        w,h = self._documentSize
+        w,h = (w,h) if (w,h)!=(0,0) else (80,24)
+        newLayer.resize(w,h)
+        self._currentLayer = newLayer
+        self._canvasLayers.append(newLayer)
+        return newLayer
 
     def importLayer(self, dd):
-        w,h = self._canvasSize
-        w = len(dd['data'][0]) + 10
-        h = len(dd['data']) + 4
-        x,y=5,2
+        self._currentLayer.importLayer(dd)
+        self._retuneGeometry()
 
-        self.resizeCanvas(w,h)
-        self.clean()
+    def importDocument(self, dd):
+        self._canvasLayers = []
+        if (
+            ( 'version' in dd and dd['version'] == '1.0.0' ) or
+            ( 'version' in dd and dd['version'] == '1.0.1' and dd['type'] == 'DumbPaintTool/Document') ):
+            self.resizeCanvas(*dd['size'])
+            for l in dd['layers']:
+                nl = self.newLayer()
+                nl.importLayer(l)
+        else:
+            ttk.TTkLog.error("File Format not recognised")
+        self._retuneGeometry()
 
-        for i,rd in enumerate(dd['data']):
-            for ii,cd in enumerate(rd):
-                self._canvasArea['data'][i+y][ii+x] = cd
-        for i,rd in enumerate(dd['colors']):
-            for ii,cd in enumerate(rd):
-                fg,bg = cd
-                if fg and bg:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.fg(fg)+ttk.TTkColor.bg(bg)
-                elif fg:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.fg(fg)
-                elif bg:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.bg(bg)
-                else:
-                    self._canvasArea['colors'][i+y][ii+x] = ttk.TTkColor.RST
-        self.update()
+    def exportImage(self):
+        return {}
+
+    def exportLayer(self, full=False, palette=True, crop=True) -> dict:
+        if self._currentLayer:
+            return self._currentLayer.exportLayer(full=full,palette=palette,crop=crop)
+        return {}
+
+    def exportDocument(self, full=True, palette=True, crop=True) -> dict:
+        pw,ph = self._documentSize
+        outData  = {
+            'type':'DumbPaintTool/Document',
+            'version':'1.0.1',
+            'size':(pw,ph),
+            'layers':[l.exportLayer(full=full,palette=palette,crop=crop) for l in self._canvasLayers]}
+        return outData
+
+    def exportImage(self) -> dict:
+        pw,ph = self._documentSize
+        image = ttk.TTkCanvas(width=pw,height=ph)
+        for l in self._canvasLayers:
+            lx,ly = l.pos()
+            l.drawInCanvas(pos=(lx,ly),canvas=image)
+        return image.toAnsi()
 
     def leaveEvent(self, evt):
         self._mouseMove = None
+        self._moveData  = None
         self.update()
         return super().leaveEvent(evt)
 
-    @ttk.pyTTkSlot(Tool)
+    @ttk.pyTTkSlot(CanvasLayer.Tool)
     def setTool(self, tool):
         self._tool = tool
         self.update()
 
-    def mouseMoveEvent(self, evt) -> bool:
-        # self._mouseFill = None
-        x,y = evt.x, evt.y
-        w,h = self._canvasSize
-        if 0<=x<w and 0<=y<h:
-            self._mouseMove = (x, y)
-            self.update()
-            return True
-        self._mouseMove = None
+    def _handleAction(self):
+        dx,dy = self._documentPos
+        dw,dh = self._documentSize
+        ox, oy = self.getViewOffsets()
+        mp = self._mousePress
+        mm = self._mouseMove
+        md = self._mouseDrag
+        mr = self._mouseRelease
+        l = self._currentLayer
+        lx,ly = l.pos()
+
+        if self._tool & CanvasLayer.Tool.MOVE and mp and not md:
+            if self._tool & CanvasLayer.Tool.RESIZE and not md:
+                mpx,mpy = mp
+                self._resizeData = None
+                def _getSelected(_x,_y,_w,_h):
+                    _selected = ttk.TTkK.NONE
+                    if _x <= mpx < _x+_w and mpy == _y:      _selected |= ttk.TTkK.TOP
+                    if _x <= mpx < _x+_w and mpy == _y+_h-1: _selected |= ttk.TTkK.BOTTOM
+                    if _y <= mpy < _y+_h and mpx == _x:      _selected |= ttk.TTkK.LEFT
+                    if _y <= mpy < _y+_h and mpx == _x+_w-1: _selected |= ttk.TTkK.RIGHT
+                    return _selected
+                # Main Area Resize Borders
+                if selected :=  _getSelected(dx-1,dy-1,dw+2,dh+2):
+                    self._resizeData = {'type':PaintArea,'selected':selected,'cb':self.superResize,'geometry':(dx,dy,dw,dh)}
+                elif  l:
+                    # Selected Layer Resize Borders
+                    lx,ly = l.pos()
+                    lw,lh = l.size()
+                    if selected := _getSelected(dx+lx-1,dy+ly-1,lw+2,lh+2):
+                        self._resizeData = {'type':CanvasLayer,'selected':selected,'cb':l.superResize,'geometry':(lx,ly,lw,lh)}
+            if not self._resizeData:
+                # Get The Layer to Move
+                self._moveData = None
+                for lm in reversed(self._canvasLayers):
+                    mpx,mpy = mp
+                    lmx,lmy = lm.pos()
+                    self._moveData = {'type':PaintArea,'pos':(dx,dy)}
+                    if lm.isOpaque(mpx-lmx-dx,mpy-lmy-dy):
+                        self._currentLayer = lm
+                        tml = lm
+                        self._moveData = {'type':CanvasLayer,'pos':tml.pos(),'layer':tml}
+                        self.selectedLayer.emit(lm)
+                        break
+
+        elif self._tool & CanvasLayer.Tool.MOVE and mp and md:
+            # Move/Resize Tool
+            if self._tool & CanvasLayer.Tool.RESIZE and (rData:=self._resizeData):
+                _rx,_ry,_rw,_rh = rData['geometry']
+                _rdx,_rdy,_rdw,_rdh=(_rx,_ry,_rw,_rh)
+                mpx,mpy = mp
+                mdx,mdy = md
+                diffx = mdx-mpx
+                diffy = mdy-mpy
+                if rData['selected'] & ttk.TTkK.TOP:    _rdh-=diffy ; _rdy+=diffy
+                if rData['selected'] & ttk.TTkK.BOTTOM: _rdh+=diffy
+                if rData['selected'] & ttk.TTkK.LEFT:   _rdw-=diffx ; _rdx+=diffx
+                if rData['selected'] & ttk.TTkK.RIGHT:  _rdw+=diffx
+                rData['cb'](_rdx,_rdy,_rdw,_rdh)
+            if not self._resizeData and (mData:=self._moveData):
+                mpx,mpy = mp
+                mdx,mdy = md
+                pdx,pdy = mdx-mpx,mdy-mpy
+                if mData['type']==CanvasLayer:
+                    px,py = self._moveData['pos']
+                    self._moveData['layer'].move(px+pdx,py+pdy)
+                    self.selectedLayer.emit(self._moveData['layer'])
+                elif mData['type']==PaintArea:
+                    px,py = self._moveData['pos']
+                    self._documentPos = (px+pdx,py+pdy)
+            self._retuneGeometry()
+
+        elif self._tool == CanvasLayer.Tool.BRUSH:
+            if mp or md:
+                if md: mx,my = md
+                else:  mx,my = mp
+                preview=False
+                self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,preview)
+            elif mm:
+                mx,my = mm
+                preview=True
+                self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,preview)
+
+        elif self._tool in (CanvasLayer.Tool.RECTEMPTY, CanvasLayer.Tool.RECTFILL):
+            if mr and mp:
+                mpx,mpy = mp
+                mrx,mry = mr
+                preview=False
+                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,preview)
+            elif md:
+                mpx,mpy = mp
+                mrx,mry = md
+                preview=True
+                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,preview)
         self.update()
-        return super().mouseMoveEvent(evt)
+
+    def mouseMoveEvent(self, evt) -> bool:
+        ox, oy = self.getViewOffsets()
+        self._mouseMove = (evt.x+ox,evt.y+oy)
+        self._mouseDrag = None
+        self._handleAction()
+        return True
 
     def mouseDragEvent(self, evt) -> bool:
-        x,y = evt.x,evt.y
-        if self._tool == self.Tool.BRUSH:
-            if self._placeGlyph(evt.x, evt.y):
-                return True
-        if self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL) and self._mouseFill:
-            mx,my = self._mouseFill[:2]
-            self._mouseFill = [mx,my,x,y]
-            self.update()
-            return True
-        return super().mouseDragEvent(evt)
+        ox, oy = self.getViewOffsets()
+        self._mouseDrag=(evt.x+ox,evt.y+oy)
+        self._mouseMove= None
+        self._handleAction()
+        return True
 
     def mousePressEvent(self, evt) -> bool:
-        x,y = evt.x,evt.y
-        if self._tool == self.Tool.BRUSH:
-            if self._placeGlyph(x,y):
-                return True
-        if self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL):
-            self._mouseFill = [x,y,x,y]
-            self.update()
-            return True
-        return super().mousePressEvent(evt)
+        ox, oy = self.getViewOffsets()
+        self._mousePress=(evt.x+ox,evt.y+oy)
+        self._moveData     = None
+        self._mouseMove    = None
+        self._mouseDrag    = None
+        self._mouseRelease = None
+        self._handleAction()
+        return True
 
     def mouseReleaseEvent(self, evt) -> bool:
-        x,y = evt.x,evt.y
-        if self._tool in (self.Tool.RECTEMPTY, self.Tool.RECTFILL):
-            self._placeFill()
-            self.update()
-            return True
-        self._mouseFill = None
+        ox, oy = self.getViewOffsets()
+        self._mouseRelease=(evt.x+ox,evt.y+oy)
+        self._mouseMove   = None
+        self._handleAction()
+        self._moveData     = None
+        self._resizeData   = None
+        self._mousePress   = None
+        self._mouseDrag    = None
+        self._mouseRelease = None
         return super().mousePressEvent(evt)
 
     @ttk.pyTTkSlot(ttk.TTkString)
     def glyphFromString(self, ch:ttk.TTkString):
         if len(ch)<=0: return
         self._glyph = ch.charAt(0)
-        # self._glyphColor = ch.colorAt(0)
 
     def glyph(self):
         return self._glyph
@@ -258,85 +355,71 @@ class PaintArea(ttk.TTkWidget):
         self._glyphColor = color
 
     @ttk.pyTTkSlot(ttk.TTkColor)
-    def setTrans(self, color):
-        self._transparentColor = color
+    def setTrans(self, color:ttk.TTkColor):
+        r,g,b = color.bgToRGB()
+        self._transparentColor = {
+            'base':color,
+            'dim':     ttk.TTkColor.bg(f'#{int(r*0.3):02x}{int(g*0.3):02x}{int(b*0.3):02x}'),
+            'layer':   ttk.TTkColor.bg(f'#{int(r*0.6):02x}{int(g*0.6):02x}{int(b*0.6):02x}'),
+            'layerDim':ttk.TTkColor.bg(f'#{int(r*0.2):02x}{int(g*0.2):02x}{int(b*0.2):02x}')}
         self.update()
 
-    def _placeFill(self):
-        if not self._mouseFill: return False
-        w,h = self._canvasSize
-        ax,ay,bx,by = self._mouseFill
-        ax = max(0,min(w-1,ax))
-        ay = max(0,min(h-1,ay))
-        bx = max(0,min(w-1,bx))
-        by = max(0,min(h-1,by))
-        fax,fay = min(ax,bx), min(ay,by)
-        fbx,fby = max(ax,bx), max(ay,by)
-
-        self._mouseFill = None
-        self._mouseMove = None
-
-        data   = self._canvasArea['data']
-        colors = self._canvasArea['colors']
-        glyph = self._glyph
-        color = self._glyphColor
-
-        if self._tool == self.Tool.RECTFILL:
-            for row in data[fay:fby+1]:
-                row[fax:fbx+1] = [glyph]*(fbx-fax+1)
-            for row in colors[fay:fby+1]:
-                row[fax:fbx+1] = [color]*(fbx-fax+1)
-        if self._tool == self.Tool.RECTEMPTY:
-            data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-            data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-            colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
-            colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
-            for row in data[fay:fby]:
-                row[fax]=row[fbx]=glyph
-            for row in colors[fay:fby]:
-                row[fax]=row[fbx]=color
-        self.update()
-        return True
-
-    def _placeGlyph(self,x,y):
-        self._mouseMove = None
-        w,h = self._canvasSize
-        data = self._canvasArea['data']
-        colors = self._canvasArea['colors']
-        if 0<=x<w and 0<=y<h:
-            data[y][x] = self._glyph
-            colors[y][x] = self._glyphColor
-            self.update()
-            return True
-        return False
-
-    def paintEvent(self, canvas: ttk.TTkCanvas):
-        pw,ph = self._canvasSize
+    def paintEvent(self, canvas:ttk.TTkCanvas):
+        dx,dy = self._documentPos
+        ox, oy = self.getViewOffsets()
+        dw,dh = self._documentSize
+        dox,doy = dx-ox,dy-oy
         cw,ch = canvas.size()
-        w=min(cw,pw)
-        h=min(ch,ph)
-        data = self._canvasArea['data']
-        colors = self._canvasArea['colors']
-        tc = self._transparentColor
-        for y in range(h):
-            canvas._data[y][0:w] = data[y][0:w]
-            for x in range(w):
-                c = colors[y][x]
-                canvas._colors[y][x] = c if c._bg else c+tc
-        if self._mouseMove:
-            x,y = self._mouseMove
-            gc = self._glyphColor
-            canvas._data[y][x] = self._glyph
-            canvas._colors[y][x] = gc if gc._bg else gc+tc
-        if self._mouseFill:
-            ax,ay,bx,by = self._mouseFill
-            ax = max(0,min(w-1,ax))
-            ay = max(0,min(h-1,ay))
-            bx = max(0,min(w-1,bx))
-            by = max(0,min(h-1,by))
-            x,y = min(ax,bx),     min(ay,by)
-            w,h = max(ax-x,bx-x)+1, max(ay-y,by-y)+1
-            gc = self._glyphColor
-            canvas.fill(pos=(x,y), size=(w,h),
-                        color=gc if gc._bg else gc+tc,
-                        char=self._glyph)
+        w=min(cw,dw)
+        h=min(ch,dh)
+        tcb = self._transparentColor['base']
+        tcd = self._transparentColor['dim']
+
+        if l:=self._currentLayer:
+            tclb = self._transparentColor['layer']
+            tcld = self._transparentColor['layerDim']
+            lx,ly = l.pos()
+            lw,lh = l.size()
+            canvas.fill(pos=(0     ,ly+doy),size=(cw,lh),color=tcld)
+            canvas.fill(pos=(lx+dox,0     ),size=(lw,ch),color=tcld)
+            canvas.fill(pos=(lx+dox,ly+doy),size=(lw,lh),color=tclb)
+        canvas.fill(pos=(dx-ox,dy-oy),size=(dw,dh),color=tcb)
+        canvas.fill(pos=(0    ,dy-oy-1), size=(cw,1),color=tcd)
+        canvas.fill(pos=(0    ,dy-oy+dh),size=(cw,1),color=tcd)
+        canvas.fill(pos=(dx-ox-2 ,0    ),size=(2,ch),color=tcd)
+        canvas.fill(pos=(dx-ox+dw,0    ),size=(2,ch),color=tcd)
+
+        for l in self._canvasLayers:
+            lx,ly = l.pos()
+            l.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
+
+        if self._tool & CanvasLayer.Tool.RESIZE:
+            rd = self._resizeData
+            def _drawResizeBorders(_rx,_ry,_rw,_rh,_sel):
+                selColor = ttk.TTkColor.YELLOW + ttk.TTkColor.BG_BLUE
+                # canvas.drawBox(pos=_pos,size=_size)
+                canvas.drawText(pos=(_rx      ,_ry      ),text='─'*_rw, color=selColor if _sel & ttk.TTkK.TOP    else ttk.TTkColor.RST)
+                canvas.drawText(pos=(_rx      ,_ry+_rh-1),text='─'*_rw, color=selColor if _sel & ttk.TTkK.BOTTOM else ttk.TTkColor.RST)
+                for _y in range(_ry,_ry+_rh):
+                    canvas.drawText(pos=(_rx      ,_y),text='│',color=selColor if _sel & ttk.TTkK.LEFT  else ttk.TTkColor.RST)
+                    canvas.drawText(pos=(_rx+_rw-1,_y),text='│',color=selColor if _sel & ttk.TTkK.RIGHT else ttk.TTkColor.RST)
+                canvas.drawChar(pos=(_rx      ,_ry      ), char='▛')
+                canvas.drawChar(pos=(_rx+_rw-1,_ry      ), char='▜')
+                canvas.drawChar(pos=(_rx      ,_ry+_rh-1), char='▙')
+                canvas.drawChar(pos=(_rx+_rw-1,_ry+_rh-1), char='▟')
+
+            sMain  = rd['selected'] if rd and rd['type'] == PaintArea   else ttk.TTkK.NONE
+            sLayer = rd['selected'] if rd and rd['type'] == CanvasLayer else ttk.TTkK.NONE
+
+            _drawResizeBorders(dx-ox-1, dy-oy-1, dw+2, dh+2, sMain)
+
+            if l:=self._currentLayer:
+                lx,ly = l.pos()
+                lw,lh = l.size()
+                _drawResizeBorders(lx+dx-ox-1, ly+dy-oy-1, lw+2, lh+2, sLayer)
+
+
+class PaintScrollArea(ttk.TTkAbstractScrollArea):
+    def __init__(self, pwidget:PaintArea, **kwargs):
+        super().__init__(**kwargs)
+        self.setViewport(pwidget)
