@@ -49,6 +49,7 @@ class CanvasLayer():
         BRUSH     = 0x04
         RECTFILL  = 0x08
         RECTEMPTY = 0x10
+        CLONE     = 0x20
 
     __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset')
     def __init__(self) -> None:
@@ -277,7 +278,7 @@ class CanvasLayer():
         else:
             self._import_v0_0_0(dd)
 
-    def placeFill(self,geometry,tool,glyph,color,preview=False):
+    def placeFill(self,geometry,tool,glyph:str,color:ttk.TTkColor,preview=False):
         ox,oy = self._offset
         w,h = self._size
         ax,ay,bx,by = geometry
@@ -289,6 +290,7 @@ class CanvasLayer():
         fbx,fby = ox+max(ax,bx), oy+max(ay,by)
 
         color = color if glyph != ' ' else color.background()
+        color = color if color else ttk.TTkColor.RST
         if preview:
             data   = [_r.copy() for _r in self._data]
             colors = [_r.copy() for _r in self._colors]
@@ -314,10 +316,11 @@ class CanvasLayer():
                 row[fax]=row[fbx]=color
         return True
 
-    def placeGlyph(self,x,y,glyph,color,preview=False):
+    def placeGlyph(self,x,y,glyph:str,color:ttk.TTkColor,preview=False):
         ox,oy = self._offset
         w,h = self._size
         color = color if glyph != ' ' else color.background()
+        color = color if color else ttk.TTkColor.RST
         if preview:
             data   = [_r.copy() for _r in self._data]
             colors = [_r.copy() for _r in self._colors]
@@ -327,7 +330,7 @@ class CanvasLayer():
             data   = self._data
             colors = self._colors
         if 0<=x<w and 0<=y<h:
-            data[  oy+y][ox+x]   = glyph
+            data[  oy+y][ox+x] = glyph
             colors[oy+y][ox+x] = color
             return True
         return False
