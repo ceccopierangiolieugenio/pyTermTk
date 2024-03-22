@@ -272,16 +272,16 @@ class PaintTemplate(ttk.TTkAppTemplate):
         fileMenu.addMenu("&Import").menuButtonClicked.connect(self.importDictWin)
         menuExport = fileMenu.addMenu("&Export")
         fileMenu.addSpacer()
-        fileMenu.addMenu("Load Palette")
-        fileMenu.addMenu("Save Palette")
+        fileMenu.addMenu("Load Palette").setEnabled(False)
+        fileMenu.addMenu("Save Palette").setEnabled(False)
         fileMenu.addSpacer()
         buttonExit    = fileMenu.addMenu("E&xit")
         buttonExit.menuButtonClicked.connect(ttk.TTkHelper.quit)
 
-        menuExport.addMenu("&Ascii/Txt").menuButtonClicked.connect(self._saveAsAscii)
+        menuExport.addMenu("Ascii/&Txt").menuButtonClicked.connect(self._saveAsAscii)
         menuExport.addMenu("&Ansi").menuButtonClicked.connect(self._saveAsAnsi)
-        menuExport.addMenu("&Python")
-        menuExport.addMenu("&Bash")
+        menuExport.addMenu("&Python").setEnabled(False)
+        menuExport.addMenu("&Bash").setEnabled(False)
 
 
         # extraMenu = appMenuBar.addMenu("E&xtra")
