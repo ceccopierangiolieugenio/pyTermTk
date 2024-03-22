@@ -61,10 +61,21 @@ class TTkClipboard():
         try:
             if importlib.util.find_spec('pyodideProxy'):
                 TTkLog.info("Using 'pyodideProxy' as clipboard manager")
-                import pyodideProxy as _c
-                TTkClipboard._manager = _c
-                TTkClipboard._setText = _c.copy
-                TTkClipboard._text = _c.paste
+                import pyodideProxy
+                import asyncio
+                async def _async_co():
+                    text = await pyodideProxy.paste()
+                    TTkLog.debug(f"ttkProxy paste_co: {text}")
+                    return text
+                def _paste():
+                    loop = asyncio.get_event_loop()
+                    text = loop.run_until_complete(_async_co())
+                    # text = loop.run_until_complete(pyodideProxy.paste())
+                    TTkLog.debug(f"ttkProxy paste: {text=} {_async_co()=}")
+                    return text
+                TTkClipboard._manager = pyodideProxy
+                TTkClipboard._setText = pyodideProxy.copy
+                TTkClipboard._text = pyodideProxy.paste # _paste
             elif importlib.util.find_spec('copykitten'):
                 TTkLog.info("Using 'copykitten' as clipboard manager")
                 import copykitten as _c
@@ -113,13 +124,13 @@ class TTkClipboard():
             except Exception as e:
                 TTkLog.error("Clipboard error, try to export X11 if you are running this UI via SSH")
                 for line in str(e).split("\n"):
-                    TTkLog.error(line)
+                    TTkLog.error(str(line))
 
     @staticmethod
     def text():
         '''text'''
         if TTkClipboard._text:
-            txt = ""
+            txt = None
             try:
                 txt = TTkClipboard._text()
             except Exception as e:

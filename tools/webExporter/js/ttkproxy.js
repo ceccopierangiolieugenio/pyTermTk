@@ -22,19 +22,87 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+async function permissionsCheck() {
+  if (navigator.clipboard){
+    const read = await navigator.permissions.query({
+        name: 'clipboard-read',
+    });
+    const write = await navigator.permissions.query({
+        name: 'clipboard-write',
+    });
+    return write.state === 'granted' && read.state !== 'denied';
+  }
+  return false
+}
+
 // Declaration
 class TTkProxy {
     constructor(term) {
         this.term = term
+        document.getElementById("file-input").addEventListener("change", (e) => {
+          e.preventDefault();
+          const file = e.target.files[0]
+          let reader = new FileReader()
+          reader.onload = (event) => {
+            let data = {
+                  'type':file.type,
+                  'name':file.name,
+                  'size':file.size,
+                  'data':event.target.result}
+            this.ttk_fileOpen(data)
+          }
+          if (file.type.startsWith('application/json') ||
+              file.type.startsWith('text')){
+            reader.readAsText(file);
+          }
+        })
+        document.getElementById("terminal").addEventListener("dragover", (e) => {
+          e.preventDefault(); //preventing from default behaviour
+          //dropArea.classList.add("active");
+          //dragFile.textContent = "Release to Upload File";
+        })
+        document.getElementById("terminal").addEventListener("dragleave", () => {
+          //dropArea.classList.remove("active");
+          // dragFile.textContent = "Drag files here to upload";
+        })
+        document.getElementById("terminal").addEventListener("drop", (e) => {
+          e.preventDefault();
+          const target = e.dataTransfer;
+          const file = target.files[0]
+          let reader = new FileReader()
+          reader.onload = (event) => {
+            let data = {
+                  'type':file.type,
+                  'name':file.name,
+                  'size':file.size,
+                  'data':event.target.result}
+            this.ttk_dragOpen(data)
+          }
+          if (file.type.startsWith('application/json') ||
+              file.type.startsWith('text')){
+            reader.readAsText(file);
+          }
+        })
     }
 
     pyodideProxy = {
-        copy: function(text){
+        openFile: function(encoding){
+          let input = document.getElementById("file-input")
+          input.accept = encoding
+          input.click();
+        },
+        saveFile: function(name, content, encoding){
+          const blob = new Blob([content], {type: encoding});
+          saveAs(blob, name);
+        },
+        copy: async function(text){
           console.log("Copying:",text)
-          if(navigator.clipboard){
+          const permission = await permissionsCheck()
+          if(permission){
               navigator.clipboard.writeText(text)
               return //codes below wont be executed
           }
+          const active = document.activeElement
           const textArea = document.createElement("textarea")
           textArea.value = text
 
@@ -46,13 +114,23 @@ class TTkProxy {
           document.execCommand('copy')
 
           document.body.removeChild(textArea)
+          active.focus()
         },
         paste: function(){
-          if(navigator.clipboard){
-            text = navigator.clipboard.readText()
-            console.log("Pasted:",text)
-            return text
+          /*
+          const permission = await permissionsCheck()
+          if(permission){
+            try {
+              // let text = null
+              let text = await navigator.clipboard.readText().then((txt) => txt)
+              // const text = navigator.clipboard.readText()
+              console.log('Pasted content: ', text)
+              return text
+            } catch (err) {
+              console.error('Failed to read clipboard contents: ', err);
+            }
           }
+          */
           return null
         },
         consoleLog: function(m){
@@ -135,6 +213,16 @@ class TTkProxy {
             from TermTk.TTkCore.TTkTerm.input import TTkInput
             import pyodideProxy
 
+            def ttk_dragOpen(data):
+              data = data.to_py()
+              ttk.ttkEmitDragOpen(data['type'],data)
+              # ttk_log(f"{type(data.to_py())=}, {str(data.to_py())}")
+
+            def ttk_fileOpen(data):
+              data = data.to_py()
+              ttk.ttkEmitFileOpen(data['type'],data)
+              # ttk_log(f"{type(data.to_py())=}, {str(data.to_py())}")
+
             def ttk_input(val):
               kevt,mevt,paste = TTkInput.key_process(val)
               if kevt or mevt:
@@ -155,7 +243,7 @@ class TTkProxy {
             def ttk_log(val):
               # hex = [f"0x{ord(x):02x}" for x in val]
               ttk.TTkLog.debug("---> "+val.replace("\\033","<ESC>") + " - ")
-              ttk.TTkHelper.paintAll()
+              # ttk.TTkHelper.paintAll()
 
             def ttk_clean():
               if ttk.TTkHelper._rootWidget:
@@ -187,12 +275,14 @@ class TTkProxy {
         `,{ globals: this.namespace }
         );
 
-        this.ttk_log    = this.namespace.get("ttk_log");
-        this.ttk_input  = this.namespace.get("ttk_input");
-        this.ttk_timer  = this.namespace.get("ttk_timer");
-        this.ttk_resize = this.namespace.get("ttk_resize");
-        this.ttk_clean  = this.namespace.get("ttk_clean");
-        this.ttk_init   = this.namespace.get("ttk_init");
+        this.ttk_log      = this.namespace.get("ttk_log");
+        this.ttk_input    = this.namespace.get("ttk_input");
+        this.ttk_timer    = this.namespace.get("ttk_timer");
+        this.ttk_resize   = this.namespace.get("ttk_resize");
+        this.ttk_clean    = this.namespace.get("ttk_clean");
+        this.ttk_init     = this.namespace.get("ttk_init");
+        this.ttk_dragOpen = this.namespace.get("ttk_dragOpen");
+        this.ttk_fileOpen = this.namespace.get("ttk_fileOpen");
 
         this.pyodideProxy.ttk_timer = this.ttk_timer
         this.pyodideProxy.term      = this.term

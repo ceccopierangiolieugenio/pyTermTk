@@ -264,7 +264,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
-        buttonOpen    = fileMenu.addMenu("&Open")
+        fileMenu.addMenu("&Open"      ).menuButtonClicked.connect(self._open)
         fileMenu.addMenu("&Save"      ).menuButtonClicked.connect(self._save)
         fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self._saveAs)
         fileMenu.addSpacer()
@@ -277,8 +277,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         buttonExit    = fileMenu.addMenu("E&xit")
         buttonExit.menuButtonClicked.connect(ttk.TTkHelper.quit)
 
-        menuExport.addMenu("&Ascii/Txt")
-        menuExport.addMenu("&Ansi")
+        menuExport.addMenu("&Ascii/Txt").menuButtonClicked.connect(self._saveAsAscii)
+        menuExport.addMenu("&Ansi").menuButtonClicked.connect(self._saveAsAnsi)
         menuExport.addMenu("&Python")
         menuExport.addMenu("&Bash")
 
@@ -315,23 +315,58 @@ class PaintTemplate(ttk.TTkAppTemplate):
         if fileName:
             self._openFile(fileName)
 
+        ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
+
+    @ttk.pyTTkSlot()
+    def _open(self):
+        ttk.ttkCrossOpen(
+                path='.',
+                encoding=ttk.TTkEncoding.APPLICATION_JSON,
+                filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
+                cb=self._openDragData)
+
     @ttk.pyTTkSlot()
     def _save(self):
-        image = self._parea.exportImage()
-        ttk.ttkCrossSave('untitled.DPT.txt', image, ttk.TTkEncoding.TEXT_PLAIN)
+        doc = self._parea.exportDocument()
+        ttk.ttkCrossSave('untitled.DPT.json', json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON)
 
     @ttk.pyTTkSlot()
     def _saveAs(self):
+        doc = self._parea.exportDocument()
+        ttk.ttkCrossSaveAs('untitled.DPT.json', json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON,
+                           filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)")
+
+    @ttk.pyTTkSlot()
+    def _saveAsAnsi(self):
         image = self._parea.exportImage()
-        ttk.ttkCrossSaveAs('untitled.DPT.txt', image, ttk.TTkEncoding.TEXT_PLAIN)
+        text = ttk.TTkString(image)
+        ttk.ttkCrossSaveAs('untitled.DPT.Ansi.txt', text.toAnsi(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
+                           filter="Ansi text Files (*.Ansi.txt);;Text Files (*.txt);;All Files (*)")
+
+    @ttk.pyTTkSlot()
+    def _saveAsAscii(self):
+        image = self._parea.exportImage()
+        text = ttk.TTkString(image)
+        ttk.ttkCrossSaveAs('untitled.DPT.ASCII.txt', text.toAscii(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
+                           filter="ASCII Text Files (*.ASCII.txt);;Text Files (*.txt);;All Files (*)")
+
+    @ttk.pyTTkSlot(dict)
+    def _openDragData(self, data):
+        dd = json.loads(data['data'])
+        if 'layers' in dd:
+            self.importDocument(dd)
+        else:
+            self._layers.addLayer(name="Import")
+            self._parea.importLayer(dd)
 
     def _openFile(self, fileName):
         ttk.TTkLog.info(f"Open: {fileName}")
 
         with open(fileName) as fp:
             # dd = json.load(fp)
-            text = fp.read()
-            dd = eval(text)
+            # text = fp.read()
+            # dd = eval(text)
+            dd = json.load(fp)
             if 'layers' in dd:
                 self.importDocument(dd)
             else:

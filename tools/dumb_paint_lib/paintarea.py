@@ -155,11 +155,15 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
     def importDocument(self, dd):
         self._canvasLayers = []
-        if 'version' in dd and dd['version']=='1.0.0':
+        if (
+            ( 'version' in dd and dd['version'] == '1.0.0' ) or
+            ( 'version' in dd and dd['version'] == '1.0.1' and dd['type'] == 'DumbPaintTool/Document') ):
             self.resizeCanvas(*dd['size'])
             for l in dd['layers']:
                 nl = self.newLayer()
                 nl.importLayer(l)
+        else:
+            ttk.TTkLog.error("File Format not recognised")
         self._retuneGeometry()
 
     def exportImage(self):
@@ -173,7 +177,8 @@ class PaintArea(ttk.TTkAbstractScrollView):
     def exportDocument(self, full=True, palette=True, crop=True) -> dict:
         pw,ph = self._documentSize
         outData  = {
-            'version':'1.0.0',
+            'type':'DumbPaintTool/Document',
+            'version':'1.0.1',
             'size':(pw,ph),
             'layers':[l.exportLayer(full=full,palette=palette,crop=crop) for l in self._canvasLayers]}
         return outData
