@@ -36,7 +36,8 @@ __check(){
             -e "propertyanimation.py:from inspect import getfullargspec" \
             -e "propertyanimation.py:from types import LambdaType" \
             -e "propertyanimation.py:import time, math" \
-            -e "terminal.py:from select import select" |
+            -e "savetools.py:import importlib.util" \
+            -e "savetools.py:import json" |
         grep -v \
             -e "TTkTerm/input_mono.py:from time import time" \
             -e "TTkTerm/input_mono.py:import platform" \
@@ -71,6 +72,7 @@ __check(){
             -e "drivers/__init__.py:import platform" |
         grep -v \
             -e "TTkTerminal/debugterminal.py:import struct, fcntl, termios" \
+            -e "TTkTerminal/debugterminal.py:from select import select" \
             -e "TTkTerminal/terminalview.py:import struct, fcntl, termios" \
             -e "TTkTerminal/terminalview.py:from select import select" \
             -e "TTkTerminal/terminalview.py:from .terminalview_CSI_DEC import _TTkTerminal_CSI_DEC" \
