@@ -308,7 +308,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         self._parea.setGlyphColor(palette.color())
         ptoolkit.setColor(palette.color())
 
-        parea.selectedLayer.connect(ptoolkit.updateLayer)
+        parea.layerSelected.connect(ptoolkit.updateLayer)
+        parea.layerAdded.connect(self._canvasLayerAdded)
 
         @ttk.pyTTkSlot(LayerData)
         def _layerSelected(l:LayerData):
@@ -382,22 +383,18 @@ class PaintTemplate(ttk.TTkAppTemplate):
     # Connect and handle Layers event
     @ttk.pyTTkSlot(LayerData)
     def _layerAdded(self, l:LayerData):
+        self._parea.layerAdded.disconnect(self._canvasLayerAdded)
         nl = self._parea.newLayer()
+        self._parea.layerAdded.connect(self._canvasLayerAdded)
         nl.setName(l.name())
         l.setData(nl)
         l.nameChanged.connect(nl.setName)
         l.visibilityToggled.connect(nl.setVisible)
         l.visibilityToggled.connect(self._parea.update)
 
-    @ttk.pyTTkSlot(list[LayerData])
-    def _layersOrderChanged(self, layers:list[LayerData]):
-        self._parea._canvasLayers = [ld.data() for ld in reversed(layers)]
-        self._parea.update()
-
-    def importDocument(self, dd):
-        self._parea.importDocument(dd)
+    @ttk.pyTTkSlot(CanvasLayer)
+    def _canvasLayerAdded(self, l:CanvasLayer=None):
         self._layers.clear()
-        # Little Hack that I don't know how to overcome
         self._layers.layerAdded.disconnect(self._layerAdded)
         for l in self._parea.canvasLayers():
             ld = self._layers.addLayer(name=l.name(),data=l)
@@ -405,6 +402,17 @@ class PaintTemplate(ttk.TTkAppTemplate):
             ld.visibilityToggled.connect(l.setVisible)
             ld.visibilityToggled.connect(self._parea.update)
         self._layers.layerAdded.connect(self._layerAdded)
+
+    @ttk.pyTTkSlot(list[LayerData])
+    def _layersOrderChanged(self, layers:list[LayerData]):
+        self._parea._canvasLayers = [ld.data() for ld in reversed(layers)]
+        self._parea.update()
+
+    def importDocument(self, dd):
+        self._parea.layerAdded.disconnect(self._canvasLayerAdded)
+        self._parea.importDocument(dd)
+        self._canvasLayerAdded()
+        self._parea.layerAdded.connect(self._canvasLayerAdded)
 
     @ttk.pyTTkSlot()
     def importDictWin(self):

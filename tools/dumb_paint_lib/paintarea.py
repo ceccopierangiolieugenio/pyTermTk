@@ -35,13 +35,15 @@ class PaintArea(ttk.TTkAbstractScrollView):
                  '_documentPos','_documentSize',
                  '_mouseMove', '_mouseDrag', '_mousePress', '_mouseRelease',
                  '_moveData','_resizeData',
+                 '_clipboard',
                  '_tool',
                  '_glyph', '_glyphColor',
                  # Signals
-                 'selectedLayer')
+                 'layerSelected', 'layerAdded')
 
     def __init__(self, *args, **kwargs):
-        self.selectedLayer = ttk.pyTTkSignal(CanvasLayer)
+        self.layerSelected = ttk.pyTTkSignal(CanvasLayer)
+        self.layerAdded    = ttk.pyTTkSignal(CanvasLayer)
         self._transparentColor = {'base':ttk.TTkColor.RST,'dim':ttk.TTkColor.RST}
         self._currentLayer:CanvasLayer = None
         self._canvasLayers:list[CanvasLayer] = []
@@ -56,6 +58,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._tool = CanvasLayer.Tool.BRUSH
         self._documentPos    = (6,3)
         self._documentSize   = ( 0, 0)
+        self._clipboard = ttk.TTkClipboard()
         super().__init__(*args, **kwargs)
         self.setTrans(ttk.TTkColor.bg('#FF00FF'))
         self.resizeCanvas(80,25)
@@ -147,6 +150,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         newLayer.resize(w,h)
         self._currentLayer = newLayer
         self._canvasLayers.append(newLayer)
+        self.layerAdded.emit(newLayer)
         return newLayer
 
     def importLayer(self, dd):
@@ -244,7 +248,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                         self._currentLayer = lm
                         tml = lm
                         self._moveData = {'type':CanvasLayer,'pos':tml.pos(),'layer':tml}
-                        self.selectedLayer.emit(lm)
+                        self.layerSelected.emit(lm)
                         break
 
         elif self._tool & CanvasLayer.Tool.MOVE and mp and md:
@@ -268,7 +272,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 if mData['type']==CanvasLayer:
                     px,py = self._moveData['pos']
                     self._moveData['layer'].move(px+pdx,py+pdy)
-                    self.selectedLayer.emit(self._moveData['layer'])
+                    self.layerSelected.emit(self._moveData['layer'])
                 elif mData['type']==PaintArea:
                     px,py = self._moveData['pos']
                     self._documentPos = (px+pdx,py+pdy)
@@ -333,6 +337,47 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._mouseDrag    = None
         self._mouseRelease = None
         return super().mousePressEvent(evt)
+
+    def keyEvent(self, evt) -> bool:
+        ret = None
+        l = self._currentLayer
+        if   l and evt.key == ttk.TTkK.Key_Up:
+            x,y = l.pos()
+            l.move(x,y-1)
+            ret = True
+        elif l and evt.key == ttk.TTkK.Key_Down:
+            x,y = l.pos()
+            l.move(x,y+1)
+            ret = True
+        elif l and evt.key == ttk.TTkK.Key_Left:
+            x,y = l.pos()
+            l.move(x-1,y)
+            ret = True
+        elif l and evt.key == ttk.TTkK.Key_Right:
+            x,y = l.pos()
+            l.move(x+1,y)
+            ret = True
+        elif evt.mod==ttk.TTkK.ControlModifier and evt.key == ttk.TTkK.Key_V:
+            self.paste()
+            ret = True
+        else:
+            return super().keyEvent(evt)
+        self._retuneGeometry()
+        self.update()
+        if ret is None:
+            return super().keyEvent(evt)
+        return ret
+
+    @ttk.pyTTkSlot()
+    def paste(self):
+        txt = self._clipboard.text()
+        self.pasteEvent(txt)
+
+    def pasteEvent(self, txt:str):
+        l = self.newLayer()
+        l.importTTkString(ttk.TTkString(txt))
+        self.update()
+        return True
 
     @ttk.pyTTkSlot(ttk.TTkString)
     def glyphFromString(self, ch:ttk.TTkString):

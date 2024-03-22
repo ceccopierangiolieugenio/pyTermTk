@@ -278,6 +278,21 @@ class CanvasLayer():
         else:
             self._import_v0_0_0(dd)
 
+    def importTTkString(self, txt:ttk.TTkString):
+        self._data   = data  = []
+        self._colors = colors = []
+        for line in txt.split('\n'):
+            d,c = line.getData()
+            data.append(list(d))
+            colors.append(list(c))
+        w = max(len(d) for d in data)
+        h = len(data)
+        for i,(d,c) in enumerate(zip(data,colors)):
+            data[i]   = (d + [' ']*w)[:w]
+            colors[i] = (c + [ttk.TTkColor.RST]*w)[:w]
+        self._size = (w,h)
+        self._name = "Pasted"
+
     def placeFill(self,geometry,tool,glyph:str,color:ttk.TTkColor,preview=False):
         ox,oy = self._offset
         w,h = self._size
