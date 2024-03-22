@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkUiLoader']
+__all__ = ['TTkUiLoader','TTkUiSignature']
 
 import json
 
@@ -30,6 +30,8 @@ from TermTk.TTkLayouts import TTkLayout, TTkGridLayout
 from TermTk.TTkWidgets import *
 from TermTk.TTkTestWidgets import *
 from TermTk.TTkUiTools.uiproperties import TTkUiProperties
+
+TTkUiSignature = "TTkUi/Document"
 
 class TTkUiLoader():
     '''TTkUiLoader
@@ -73,6 +75,13 @@ class TTkUiLoader():
         '''
         return TTkUiLoader.loadDict(json.loads(text), baseWidget, kwargs)
 
+    def _convert_2_0_0_to_2_0_1(ui):
+        return {
+            "type": TTkUiSignature,
+            "version": "2.0.1",
+            "connections" : ui['connections'],
+            "tui": ui['tui'] }
+
     def _convert_1_0_1_to_2_0_0(ui):
         def _processWidget(_wid):
             if issubclass(globals()[_wid['class']],TTkContainer):
@@ -98,8 +107,19 @@ class TTkUiLoader():
         ui = TTkUiLoader._convert_1_0_1_to_2_0_0(ui)
         return TTkUiLoader._loadDict_2_0_0(ui, *args, **kwargs)
 
+    def _loadDict_2_0_0(ui, *args, **kwargs):
+        ui = TTkUiLoader._convert_2_0_0_to_2_0_1(ui)
+        return TTkUiLoader._loadDict_2_0_1(ui, *args, **kwargs)
+
     @staticmethod
-    def _loadDict_2_0_0(ui, baseWidget:TTkWidget=None, args=None):
+    def _loadDict_2_0_1(ui, baseWidget:TTkWidget=None, args=None):
+        if (
+            ui['version'] != '2.0.1' or
+            'type' not in ui or
+            ui['type'] != TTkUiSignature):
+            TTkLog.error("Ui Format not valid")
+            return None
+
         def _setMenuButton(_menuButtonProp, _menuButton:TTkMenuButton):
             if 'submenu' in _menuButtonProp:
                 for _sm in _menuButtonProp['submenu']:
@@ -288,7 +308,8 @@ class TTkUiLoader():
     def normalise(ui):
         cb = {'1.0.0' : TTkUiLoader._convert_1_0_1_to_2_0_0,
               '1.0.1' : TTkUiLoader._convert_1_0_1_to_2_0_0,
-              '2.0.0' : lambda x: x
+              '2.0.0' : TTkUiLoader._convert_2_0_0_to_2_0_1,
+              '2.0.1' : lambda x: x
               }.get(ui['version'], lambda x: x)
         return cb(ui)
 
@@ -307,7 +328,8 @@ class TTkUiLoader():
         '''
         cb = {'1.0.0' : TTkUiLoader._loadDict_1_0_0,
               '1.0.1' : TTkUiLoader._loadDict_1_0_0,
-              '2.0.0' : TTkUiLoader._loadDict_2_0_0
+              '2.0.0' : TTkUiLoader._loadDict_2_0_0,
+              '2.0.1' : TTkUiLoader._loadDict_2_0_1,
               }.get(ui['version'], None)
         if cb:
             return cb(ui, baseWidget, kwargs)
