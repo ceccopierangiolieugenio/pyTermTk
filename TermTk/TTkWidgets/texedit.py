@@ -804,7 +804,8 @@ class TTkTextEdit(TTkAbstractScrollArea):
         )
     def __init__(self, textEditView=None, lineNumber=False, lineNumberStarting=0, **kwargs):
         super().__init__(**kwargs)
-        if 'parent' in kwargs: kwargs.pop('parent')
+        kwargs.pop('parent', None)
+        kwargs.pop('visible', None)
         self._textEditView = textEditView if textEditView else TTkTextEditView(**kwargs)
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)

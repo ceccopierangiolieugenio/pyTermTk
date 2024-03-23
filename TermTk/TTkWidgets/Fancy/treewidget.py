@@ -81,7 +81,8 @@ class TTkFancyTreeWidget(TTkFancyTableView):
         super().__init__(*args, **kwargs)
         self._topLevelItems = TTkFancyTreeWidgetItem(None)
         self.doubleClicked.connect(self._doubleClickItem)
-        # if 'parent' in kwargs: kwargs.pop('parent')
+        # kwargs.pop('parent',None)
+        # kwargs.pop('visible',None)
 
     def _expand(self, item, depth):
         item.setExpand(True)

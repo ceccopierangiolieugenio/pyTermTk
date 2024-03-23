@@ -376,7 +376,8 @@ class TTkFancyTableView(TTkAbstractScrollView):
     def __init__(self, **kwargs):
         self._excludeEvent = False
         super().__init__(**(kwargs|{'layout':TTkGridLayout()}))
-        if 'parent' in kwargs: kwargs.pop('parent')
+        kwargs.pop('parent',None)
+        kwargs.pop('visible',None)
         self._showHeader = kwargs.get('showHeader', True)
         self._tableView = _TTkFancyTableView(**kwargs)
         self._header = _TTkFancyTableViewHeader(**kwargs)

@@ -31,7 +31,8 @@ class ScrollAreaTest(ttk.TTkAbstractScrollArea):
     __slots__ = ('_areaView')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'parent' in kwargs: kwargs.pop('parent')
+        kwargs.pop('parent',None)
+        kwargs.pop('visible',None)
         self.setFocusPolicy(ttk.TTkK.ClickFocus)
         self.setViewport(ttk.TTkTestAbstractScrollWidget(areaSize=(100,40), areaPos=(10,5)))
 

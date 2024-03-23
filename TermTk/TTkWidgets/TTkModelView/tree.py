@@ -38,7 +38,8 @@ class TTkTree(TTkAbstractScrollArea):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'parent' in kwargs: kwargs.pop('parent')
+        kwargs.pop('parent',None)
+        kwargs.pop('visible',None)
         self._treeView = kwargs.get('treeWidget',TTkTreeWidget(*args, **kwargs))
         self.setViewport(self._treeView)
         self.setFocusPolicy(TTkK.ClickFocus)

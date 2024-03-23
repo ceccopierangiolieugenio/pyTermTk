@@ -123,7 +123,8 @@ class _emojiPickerArea(TTkAbstractScrollArea):
     __slots__ = ('_areaView')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'parent' in kwargs: kwargs.pop('parent')
+        kwargs.pop('parent',None)
+        kwargs.pop('visible',None)
         self._areaView = _emojiPickerView(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._areaView)
