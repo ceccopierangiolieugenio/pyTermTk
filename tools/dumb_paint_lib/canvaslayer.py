@@ -291,17 +291,34 @@ class CanvasLayer():
             self._import_v0_0_0(dd)
 
     def importTTkString(self, txt:ttk.TTkString):
-        self._data   = data  = []
-        self._colors = colors = []
+        tmpd = []
+        tmpc = []
         for line in txt.split('\n'):
             d,c = line.getData()
-            data.append(list(d))
-            colors.append(list(c))
-        w = max(len(d) for d in data)
-        h = len(data)
+            tmpd.append(list(d))
+            tmpc.append(list(c))
+        # Trim
+        xa,xb,ya,yb = 0x10000,0,0x10000,0
+        for y,(drow,crow) in enumerate(zip(tmpd,tmpc)):
+            for x,(d,c) in enumerate(zip(drow,crow)):
+                if d != ' ' or c.background():
+                    xa = min(x,xa)
+                    xb = max(x,xb)
+                    ya = min(y,ya)
+                    yb = max(y,yb)
+        if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
+            xa=xb=ya=yb=0
+
+        self._data   = data   = [r[xa:xb+1] for r in tmpd[ya:yb+1]]
+        self._colors = colors = [r[xa:xb+1] for r in tmpc[ya:yb+1]]
+
+        w = xb-xa+1
+        h = yb-ya+1
+
         for i,(d,c) in enumerate(zip(data,colors)):
             data[i]   = (d + [' ']*w)[:w]
             colors[i] = (c + [ttk.TTkColor.RST]*w)[:w]
+
         self._size = (w,h)
         self._name = "Pasted"
 
