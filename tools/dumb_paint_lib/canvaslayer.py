@@ -44,12 +44,16 @@ import TermTk as ttk
 
 class CanvasLayer():
     class Tool(int):
-        MOVE      = 0x01
-        RESIZE    = 0x02
-        BRUSH     = 0x04
-        RECTFILL  = 0x08
-        RECTEMPTY = 0x10
-        CLONE     = 0x20
+        MOVE        = 0x0001
+        RESIZE      = 0x0002
+        BRUSH       = 0x0004
+        RECTFILL    = 0x0008
+        RECTEMPTY   = 0x0010
+        CLONE       = 0x0020
+        AREA        = 0x0040
+        GLYPH       = 0x0080
+        PICK        = 0x0100
+        TRANSPARENT = 0x0200
 
     __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset')
     def __init__(self) -> None:
@@ -141,6 +145,14 @@ class CanvasLayer():
             self._data[i]   = [' ']*w
             self._colors[i] = [ttk.TTkColor.RST]*w
 
+    def toTTkString(self):
+        ret = []
+        pw,ph = self._size
+        ox,oy = self._offset
+        if not (pw and ph) : return ttk.TTkString()
+        for d,c in zip(self._data[oy:oy+ph],self._colors[oy:oy+ph]):
+            ret.append(ttk.TTkString._importString1(''.join(d[ox:ox+pw]),c[ox:ox+pw]))
+        return ttk.TTkString('\n').join(ret)
 
     def exportLayer(self, full=False, palette=True, crop=True):
         #           xa|----------|  xb
@@ -349,6 +361,38 @@ class CanvasLayer():
             colors[oy+y][ox+x] = color
             return True
         return False
+
+    def placeArea(self,x,y,area,transparent=False,preview=False):
+        ox,oy = self._offset
+        w,h = self._size
+
+        dw,dh = area.size()
+        darea = area._data
+        carea = area._colors
+        x-=dw//2
+        y-=dh//2
+
+        if preview:
+            data   = [_r.copy() for _r in self._data]
+            colors = [_r.copy() for _r in self._colors]
+            self._preview = {'data':data,'colors':colors}
+        else:
+            self._preview = None
+            data   = self._data
+            colors = self._colors
+
+        for _y,(darow,carow) in enumerate(zip(darea,carea),oy+y):
+            for _x,(da,ca)   in enumerate(zip(darow,carow),ox+x):
+                if 0<=_x<w and 0<=_y<h and ( da!=' ' or ca.background()):
+                    if not transparent or (da==' ' and ca._bg):
+                        data[_y][_x]   = da
+                        colors[_y][_x] = ca
+                    elif da!=' ':
+                        data[_y][_x]   = da
+                        cc = colors[_y][_x]
+                        newC = ca.copy()
+                        newC._bg = ca._bg if ca._bg else cc._bg
+                        colors[_y][_x] = newC
 
     def drawInCanvas(self, pos, canvas:ttk.TTkCanvas):
         if not self._visible: return

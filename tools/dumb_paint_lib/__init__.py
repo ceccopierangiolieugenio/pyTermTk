@@ -1,4 +1,5 @@
 from .maintemplate import *
+from .toolspanel   import *
 from .paintarea    import *
 from .painttoolkit import *
 from .textarea     import *

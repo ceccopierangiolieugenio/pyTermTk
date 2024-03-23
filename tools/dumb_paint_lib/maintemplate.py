@@ -28,103 +28,12 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from .paintarea    import PaintArea, PaintScrollArea
+from .toolspanel   import ToolsPanel
 from .canvaslayer  import CanvasLayer
 from .painttoolkit import PaintToolKit
-from .palette      import Palette
 from .textarea     import TextArea
 from .layers       import Layers,LayerData
 from .about        import About
-
-class LeftPanel(ttk.TTkVBoxLayout):
-    __slots__ = ('_palette',
-                 # Signals
-                 'toolSelected')
-    def __init__(self, *args, **kwargs):
-        self.toolSelected = ttk.pyTTkSignal(CanvasLayer.Tool)
-        super().__init__(*args, **kwargs)
-        self._palette  = Palette(maxHeight=12)
-        self.addWidget(self._palette)
-
-        # Layout for the toggle buttons
-        lToggleFgBg = ttk.TTkHBoxLayout()
-        cb_p_fg = ttk.TTkCheckbox(text="-FG-", checked=ttk.TTkK.Checked)
-        cb_p_bg = ttk.TTkCheckbox(text="-BG-", checked=ttk.TTkK.Checked)
-        lToggleFgBg.addWidgets([cb_p_fg,cb_p_bg])
-        lToggleFgBg.addItem(ttk.TTkLayout())
-        cb_p_fg.toggled.connect(self._palette.enableFg)
-        cb_p_bg.toggled.connect(self._palette.enableBg)
-        self.addItem(lToggleFgBg)
-
-        # Toolset
-        lTools = ttk.TTkGridLayout()
-        ra_move   = ttk.TTkRadioButton(radiogroup="tools", text="Select/Move",  enabled=True)
-        ra_select = ttk.TTkRadioButton(radiogroup="tools", text="Select",enabled=False)
-        ra_brush  = ttk.TTkRadioButton(radiogroup="tools", text="Brush", checked=True)
-        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line",  enabled=False)
-        ra_rect   = ttk.TTkRadioButton(radiogroup="tools", text="Rect")
-        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval",  enabled=False)
-
-        ra_rect_f = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Fill" , enabled=False, checked=True)
-        ra_rect_e = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Empty", enabled=False)
-
-        cb_move_r = ttk.TTkCheckbox(text="Resize", enabled=False)
-
-        @ttk.pyTTkSlot()
-        def _checkTools():
-            tool = CanvasLayer.Tool.BRUSH
-            if ra_move.isChecked():
-                tool  = CanvasLayer.Tool.MOVE
-                if cb_move_r.isChecked():
-                    tool |= CanvasLayer.Tool.RESIZE
-            elif ra_brush.isChecked():
-                tool = CanvasLayer.Tool.BRUSH
-            elif ra_rect.isChecked():
-                if ra_rect_e.isChecked():
-                    tool = CanvasLayer.Tool.RECTEMPTY
-                else:
-                    tool = CanvasLayer.Tool.RECTFILL
-            self.toolSelected.emit(tool)
-
-        @ttk.pyTTkSlot(bool)
-        def _emitTool(checked):
-            if not checked: return
-            _checkTools()
-
-        ra_rect.toggled.connect(ra_rect_f.setEnabled)
-        ra_rect.toggled.connect(ra_rect_e.setEnabled)
-        ra_move.toggled.connect(cb_move_r.setEnabled)
-
-        ra_move.toggled.connect(   _emitTool)
-        ra_select.toggled.connect( _emitTool)
-        ra_brush.toggled.connect(  _emitTool)
-        ra_line.toggled.connect(   _emitTool)
-        ra_rect.toggled.connect(   _emitTool)
-        ra_rect_f.toggled.connect( _emitTool)
-        ra_rect_e.toggled.connect( _emitTool)
-        ra_oval.toggled.connect(   _emitTool)
-        cb_move_r.toggled.connect( _checkTools)
-
-        lTools.addWidget(ra_move  ,0,0)
-        lTools.addWidget(cb_move_r,0,1)
-        lTools.addWidget(ra_select,1,0)
-        lTools.addWidget(ra_brush ,2,0)
-        lTools.addWidget(ra_line  ,3,0)
-        lTools.addWidget(ra_rect  ,4,0)
-        lTools.addWidget(ra_rect_f,4,1)
-        lTools.addWidget(ra_rect_e,4,2)
-        lTools.addWidget(ra_oval  ,5,0)
-        self.addItem(lTools)
-
-        # brush
-        # line
-        # rettangle [empty,fill]
-        # oval [empty,fill]
-        self.addItem(ttk.TTkLayout())
-
-
-
-    def palette(self):
-        return self._palette
 
 class ExportArea(ttk.TTkGridLayout):
     __slots__ = ('_paintArea', '_te','_cbCrop', '_cbFull', '_cbPal')
@@ -246,8 +155,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
         tarea    = TextArea()
         expArea  = ExportArea(parea)
 
-        leftPanel = LeftPanel()
-        palette = leftPanel.palette()
+        toolsPanel = ToolsPanel()
+        palette = toolsPanel.palette()
 
         rightPanel = ttk.TTkSplitter(orientation=ttk.TTkK.VERTICAL)
         rightPanel.addWidget(tarea)
@@ -258,7 +167,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         self.setItem(expArea, self.BOTTOM, title="Export")
 
-        self.setItem(leftPanel     , self.LEFT,  size=16*2)
+        self.setItem(toolsPanel     , self.LEFT,  size=16*2)
         self.setWidget(PaintScrollArea(parea) , self.MAIN)
         self.setWidget(ptoolkit      , self.TOP,   fixed=True)
         self.setItem(rightPanel    , self.RIGHT, size=40)
@@ -299,17 +208,27 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         palette.colorSelected.connect(self._parea.setGlyphColor)
         palette.colorSelected.connect(ptoolkit.setColor)
+
         ptoolkit.updatedColor.connect(self._parea.setGlyphColor)
         ptoolkit.updatedTrans.connect(self._parea.setTrans)
+
         tarea.charSelected.connect(ptoolkit.glyphFromString)
-        tarea.charSelected.connect(self._parea.glyphFromString)
-        leftPanel.toolSelected.connect(self._parea.setTool)
+        tarea.charSelected.connect(parea.glyphFromString)
+        tarea.charSelected.connect(toolsPanel.glyphFromString)
+
+        toolsPanel.toolSelected.connect(parea.setTool)
+        toolsPanel.areaChanged.connect(parea.setAreaBrush)
 
         self._parea.setGlyphColor(palette.color())
         ptoolkit.setColor(palette.color())
 
+        ptoolkit.glyphFromString(ttk.TTkString('X'))
+        parea.glyphFromString(ttk.TTkString('X'))
+        toolsPanel.glyphFromString(ttk.TTkString('X'))
+
         parea.layerSelected.connect(ptoolkit.updateLayer)
         parea.layerAdded.connect(self._canvasLayerAdded)
+        parea.layerPicked.connect(toolsPanel.setAreaLayer)
 
         @ttk.pyTTkSlot(LayerData)
         def _layerSelected(l:LayerData):
