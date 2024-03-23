@@ -66,6 +66,13 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self.resizeCanvas(80,25)
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
 
+    def clear(self):
+        self._documentPos    = (6,3)
+        self._documentSize   = (80, 25)
+        self._currentLayer:CanvasLayer = None
+        self._canvasLayers:list[CanvasLayer] = []
+        self.update()
+
     def _getGeometry(self):
         dx,dy = self._documentPos
         dw,dh = self._documentSize
@@ -153,6 +160,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._currentLayer = newLayer
         self._canvasLayers.append(newLayer)
         self.layerAdded.emit(newLayer)
+        self._retuneGeometry()
         return newLayer
 
     def importLayer(self, dd):

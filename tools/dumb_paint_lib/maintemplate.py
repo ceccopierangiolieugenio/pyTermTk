@@ -174,6 +174,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
+        fileMenu.addMenu("&New"       ).menuButtonClicked.connect(self._new)
         fileMenu.addMenu("&Open"      ).menuButtonClicked.connect(self._open)
         fileMenu.addMenu("&Save"      ).menuButtonClicked.connect(self._save)
         fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self._saveAs)
@@ -243,6 +244,12 @@ class PaintTemplate(ttk.TTkAppTemplate):
             self._openFile(fileName)
 
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
+
+    @ttk.pyTTkSlot()
+    def _new(self):
+        self._parea.clear()
+        self._layers.clear()
+        self._layers.addLayer(name="Background")
 
     @ttk.pyTTkSlot()
     def _open(self):
