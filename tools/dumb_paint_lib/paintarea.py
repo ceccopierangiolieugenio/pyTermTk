@@ -384,6 +384,11 @@ class PaintArea(ttk.TTkAbstractScrollView):
         elif evt.mod==ttk.TTkK.ControlModifier and evt.key == ttk.TTkK.Key_V:
             self.paste()
             ret = True
+        elif evt.mod==ttk.TTkK.ControlModifier and evt.key == ttk.TTkK.Key_C:
+            if self._currentLayer:
+                text = self._currentLayer.toTTkString()
+                self.copy(text)
+                ret = True
         else:
             return super().keyEvent(evt)
         self._retuneGeometry()
@@ -396,6 +401,10 @@ class PaintArea(ttk.TTkAbstractScrollView):
     def paste(self):
         txt = self._clipboard.text()
         self.pasteEvent(txt)
+
+    @ttk.pyTTkSlot(ttk.TTkString)
+    def copy(self, text):
+        self._clipboard.setText(text)
 
     def pasteEvent(self, txt:str):
         l = self.newLayer()
