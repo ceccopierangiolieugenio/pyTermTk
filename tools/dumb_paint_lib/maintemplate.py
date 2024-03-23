@@ -225,6 +225,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         ptoolkit.glyphFromString(ttk.TTkString('X'))
         parea.glyphFromString(ttk.TTkString('X'))
         toolsPanel.glyphFromString(ttk.TTkString('X'))
+        parea.setTool(CanvasLayer.Tool.BRUSH|CanvasLayer.Tool.GLYPH)
 
         parea.layerSelected.connect(ptoolkit.updateLayer)
         parea.layerAdded.connect(self._canvasLayerAdded)

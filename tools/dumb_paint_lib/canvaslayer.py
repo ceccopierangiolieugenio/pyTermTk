@@ -179,15 +179,13 @@ class CanvasLayer():
 
         # get the bounding box
         if crop:
-            xa,xb,ya,yb = daw,0,dah,0
+            xa,xb,ya,yb = 0x10000,0,0x10000,0
             for y,(drow,crow) in enumerate(zip(data,colors)):
                 for x,(d,c) in enumerate(zip(drow,crow)):
                     if d != ' ' or c.background():
-                        xa = min(x,xa)
-                        xb = max(x,xb)
-                        ya = min(y,ya)
-                        yb = max(y,yb)
-            if (xa,xb,ya,yb) == (daw,0,dah,0):
+                        xa,xb = min(x,xa),max(x,xb)
+                        ya,yb = min(y,ya),max(y,yb)
+            if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
                 xa=xb=ya=yb=0
         else:
             xa,xb,ya,yb = 0,daw,0,dah
@@ -290,6 +288,34 @@ class CanvasLayer():
         else:
             self._import_v0_0_0(dd)
 
+    def trim(self):
+        pw,ph = self._size
+        ox,oy = self._offset
+        cl = CanvasLayer()
+        if not (pw and ph) : return cl
+
+        tmpd = [r[ox:ox+pw] for r in self._data[  oy:oy+ph]]
+        tmpc = [r[ox:ox+pw] for r in self._colors[oy:oy+ph]]
+        # Trim
+        xa,xb,ya,yb = 0x10000,0,0x10000,0
+        for y,(drow,crow) in enumerate(zip(tmpd,tmpc)):
+            for x,(d,c) in enumerate(zip(drow,crow)):
+                if d != ' ' or c.background():
+                    xa,xb = min(x,xa),max(x,xb)
+                    ya,yb = min(y,ya),max(y,yb)
+        if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
+            xa=xb=ya=yb=0
+
+        cl._data   = [r[xa:xb+1] for r in tmpd[ya:yb+1]]
+        cl._colors = [r[xa:xb+1] for r in tmpc[ya:yb+1]]
+
+        w = xb-xa+1
+        h = yb-ya+1
+
+        cl._size = (w,h)
+        cl._name = self._name
+        return cl
+
     def importTTkString(self, txt:ttk.TTkString):
         tmpd = []
         tmpc = []
@@ -302,10 +328,8 @@ class CanvasLayer():
         for y,(drow,crow) in enumerate(zip(tmpd,tmpc)):
             for x,(d,c) in enumerate(zip(drow,crow)):
                 if d != ' ' or c.background():
-                    xa = min(x,xa)
-                    xb = max(x,xb)
-                    ya = min(y,ya)
-                    yb = max(y,yb)
+                    xa,xb = min(x,xa),max(x,xb)
+                    ya,yb = min(y,ya),max(y,yb)
         if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
             xa=xb=ya=yb=0
 

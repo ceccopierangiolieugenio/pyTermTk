@@ -116,6 +116,8 @@ class ToolsPanel(ttk.TTkVBoxLayout):
                 cb_trans_a.show()
                 btn_pick_a.show()
                 ta_brush_a.show()
+                spacer.hide()
+
 
             self.toolSelected.emit(tool)
             lTools.update()
@@ -208,7 +210,7 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
     @ttk.pyTTkSlot(CanvasLayer)
     def setAreaLayer(self, layer:CanvasLayer):
-        self._ta_brush_a.setText(layer.toTTkString())
+        self._ta_brush_a.setText(layer.trim().toTTkString())
 
     def palette(self):
         return self._palette

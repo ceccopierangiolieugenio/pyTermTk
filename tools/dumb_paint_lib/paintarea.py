@@ -57,7 +57,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._mouseDrag = None
         self._mousePress   = None
         self._mouseRelease = None
-        self._tool = CanvasLayer.Tool.BRUSH
+        self._tool = 0
         self._documentPos    = (6,3)
         self._documentSize   = ( 0, 0)
         self._clipboard = ttk.TTkClipboard()
@@ -293,6 +293,8 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 self._mouseMove    = None
                 self._mouseDrag    = None
                 self._mouseRelease = None
+            elif self._tool & CanvasLayer.Tool.PICK:
+                pass # Do not show any preview if we are in picking mode
             elif mp or md:
                 if md: mx,my = md
                 else:  mx,my = mp
