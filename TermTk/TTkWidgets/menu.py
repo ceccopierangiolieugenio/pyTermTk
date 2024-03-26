@@ -274,8 +274,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if not curBtn:
                     curBtn = btns[0]
                 else:
-                    if (i := btns.index(curBtn)-1) >= 0:
-                        curBtn = btns[i]
+                    curBtn = btns[(btns.index(curBtn)-1)%len(btns)]
                 curBtn.setHighlight(True)
                 return True
             elif evt.key == TTkK.Key_Down:
@@ -283,8 +282,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if not curBtn:
                     curBtn = btns[0]
                 else:
-                    if (i := btns.index(curBtn)+1) < len(btns):
-                        curBtn = btns[i]
+                    curBtn = btns[(btns.index(curBtn)+1)%len(btns)]
                 curBtn.setHighlight(True)
                 return True
             elif evt.key == TTkK.Key_Left:
