@@ -120,8 +120,7 @@ else:
         with open(filePath,'w') as fp:
             fp.write(content)
 
-    def _saveAs(filePath, content, encoding, filter, cb=None):
-        if not cb: return
+    def _saveAs(filePath, content, encoding, filter, cb=lambda :None):
         def _approveFile(fileName):
             if os.path.exists(fileName):
                 @pyTTkSlot(TTkMessageBox.StandardButton)
