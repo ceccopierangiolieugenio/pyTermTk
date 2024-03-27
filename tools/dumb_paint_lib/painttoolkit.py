@@ -28,6 +28,7 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from .paintarea import *
+from .glbls     import glbls
 
 class PaintToolKit(ttk.TTkContainer):
     __slots__ = ('_rSelect', '_rPaint', '_lgliph',
@@ -35,13 +36,10 @@ class PaintToolKit(ttk.TTkContainer):
                  '_bpFg', '_bpBg', '_bpDef',
                  '_sbDx','_sbDy','_sbDw','_sbDh',
                  '_sbLx','_sbLy','_sbLw','_sbLh',
-                 '_glyph',
                  #Signals
-                 'updatedColor', 'updatedTrans')
+                 'updatedTrans')
     def __init__(self, *args, **kwargs):
         ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/paintToolKit.tui.json"),self)
-        self._glyph = 'X'
-        self.updatedColor = ttk.pyTTkSignal(ttk.TTkColor)
         self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
         self._lgliph  = self.getWidgetByName("lglyph")
         self._cbFg    = self.getWidgetByName("cbFg")
@@ -67,6 +65,9 @@ class PaintToolKit(ttk.TTkContainer):
         self._bpBg.colorSelected.connect(self._refreshColor)
         self._bpDef.colorSelected.connect(self.updatedTrans.emit)
 
+        glbls.brush.glyphChanged.connect(   lambda:self._refreshColor(False))
+        glbls.brush.colorChanged.connect(   self.setColor)
+
         self._refreshColor(emit=False)
 
     @ttk.pyTTkSlot(CanvasLayer)
@@ -80,20 +81,14 @@ class PaintToolKit(ttk.TTkContainer):
 
     @ttk.pyTTkSlot()
     def _refreshColor(self, emit=True):
-        color =self.color()
+        glyph = glbls.brush.glyph()
+        color = self.color()
         self._lgliph.setText(
                 ttk.TTkString("Glyph: '") +
-                ttk.TTkString(self._glyph,color) +
+                ttk.TTkString(glyph,color) +
                 ttk.TTkString("'"))
         if emit:
-            self.updatedColor.emit(color)
-
-    @ttk.pyTTkSlot(ttk.TTkString)
-    def glyphFromString(self, ch:ttk.TTkString):
-        if len(ch)<=0: return
-        self._glyph = ch.charAt(0)
-        self._refreshColor()
-        # self.setColor(ch.colorAt(0))
+            glbls.brush.setColor(color)
 
     def color(self):
         color = ttk.TTkColor()

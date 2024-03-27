@@ -34,6 +34,7 @@ from .painttoolkit import PaintToolKit
 from .textarea     import TextArea
 from .layers       import Layers,LayerData
 from .about        import About
+from .const        import ToolType
 
 class ExportArea(ttk.TTkGridLayout):
     __slots__ = ('_paintArea', '_te','_cbCrop', '_cbFull', '_cbPal')
@@ -156,7 +157,6 @@ class PaintTemplate(ttk.TTkAppTemplate):
         expArea  = ExportArea(parea)
 
         toolsPanel = ToolsPanel()
-        palette = toolsPanel.palette()
 
         rightPanel = ttk.TTkSplitter(orientation=ttk.TTkK.VERTICAL)
         rightPanel.addWidget(tarea)
@@ -207,37 +207,23 @@ class PaintTemplate(ttk.TTkAppTemplate):
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAboutTTk)
         helpMenu.addMenu("About DPT").menuButtonClicked.connect(_showAbout)
 
-        palette.colorSelected.connect(self._parea.setGlyphColor)
-        palette.colorSelected.connect(ptoolkit.setColor)
-
-        ptoolkit.updatedColor.connect(self._parea.setGlyphColor)
+        # Paint Area Transparency color
         ptoolkit.updatedTrans.connect(self._parea.setTrans)
 
-        tarea.charSelected.connect(ptoolkit.glyphFromString)
-        tarea.charSelected.connect(parea.glyphFromString)
-        tarea.charSelected.connect(toolsPanel.glyphFromString)
-
-        toolsPanel.toolSelected.connect(parea.setTool)
-        toolsPanel.areaChanged.connect(parea.setAreaBrush)
-
-        self._parea.setGlyphColor(palette.color())
-        ptoolkit.setColor(palette.color())
-
-        ptoolkit.glyphFromString(ttk.TTkString('X'))
-        parea.glyphFromString(ttk.TTkString('X'))
-        toolsPanel.glyphFromString(ttk.TTkString('X'))
-        parea.setTool(CanvasLayer.Tool.BRUSH|CanvasLayer.Tool.GLYPH)
-
-        parea.layerSelected.connect(ptoolkit.updateLayer)
-        parea.layerAdded.connect(self._canvasLayerAdded)
-        parea.layerPicked.connect(toolsPanel.setAreaLayer)
+        @ttk.pyTTkSlot(CanvasLayer)
+        def _canvasLayerSelected(l:CanvasLayer):
+            layers.selectLayerByData(l)
 
         @ttk.pyTTkSlot(LayerData)
-        def _layerSelected(l:LayerData):
+        def _layerDataSelected(l:LayerData):
             parea.setCurrentLayer(l.data())
 
+        parea.layerSelected.connect(ptoolkit.updateLayer)
+        parea.layerSelected.connect(_canvasLayerSelected)
+        parea.layerAdded.connect(self._canvasLayerAdded)
+
         layers.layerAdded.connect(self._layerAdded)
-        layers.layerSelected.connect(_layerSelected)
+        layers.layerSelected.connect(_layerDataSelected)
         layers.layersOrderChanged.connect(self._layersOrderChanged)
         layers.addLayer(name="Background")
         if fileName:
