@@ -29,17 +29,20 @@ import TermTk as ttk
 
 from .canvaslayer  import CanvasLayer
 from .palette      import Palette
+from .const        import ToolType
+from .glbls        import glbls
 
 class ToolsPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
                  '_glyph','_color',
                  '_la_brush_g', '_ta_brush_a'
                  # Signals
-                 'toolSelected','areaChanged')
+                 'pickArea', 'toolSelected','areaChanged','glyphEnabled')
     def __init__(self, *args, **kwargs):
         self.pickArea = ttk.pyTTkSignal()
+        self.glyphEnabled = ttk.pyTTkSignal(bool)
         self.areaChanged = ttk.pyTTkSignal(ttk.TTkString)
-        self.toolSelected = ttk.pyTTkSignal(CanvasLayer.Tool)
+        self.toolSelected = ttk.pyTTkSignal(ToolType)
         self._color = ttk.TTkColor.RST
         super().__init__(*args, **kwargs)
         self._palette  = Palette(maxHeight=12)
@@ -49,28 +52,31 @@ class ToolsPanel(ttk.TTkVBoxLayout):
         lToggleFgBg = ttk.TTkHBoxLayout()
         cb_p_fg = ttk.TTkCheckbox(text="-FG-", checked=ttk.TTkK.Checked)
         cb_p_bg = ttk.TTkCheckbox(text="-BG-", checked=ttk.TTkK.Checked)
-        lToggleFgBg.addWidgets([cb_p_fg,cb_p_bg])
+        cb_p_gl = ttk.TTkCheckbox(text="Glyph", checked=ttk.TTkK.Checked)
+        lToggleFgBg.addWidgets([cb_p_fg,cb_p_bg,cb_p_gl])
         lToggleFgBg.addItem(ttk.TTkLayout())
         cb_p_fg.toggled.connect(self._palette.enableFg)
         cb_p_bg.toggled.connect(self._palette.enableBg)
+        cb_p_gl.toggled.connect(self.glyphEnabled.emit)
         self.addItem(lToggleFgBg)
 
         # Toolset
         lTools = ttk.TTkGridLayout()
-        ra_move   = ttk.TTkRadioButton(radiogroup="tools", text="Sel/Move",  enabled=True)
-        ra_select = ttk.TTkRadioButton(radiogroup="tools", text="Select",enabled=False)
-        ra_brush  = ttk.TTkRadioButton(radiogroup="tools", text="Brush", checked=True)
-        ra_line   = ttk.TTkRadioButton(radiogroup="tools", text="Line",  enabled=False)
-        ra_rect   = ttk.TTkRadioButton(radiogroup="tools", text="Rect")
-        ra_oval   = ttk.TTkRadioButton(radiogroup="tools", text="Oval",  enabled=False)
+        main_toolset = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/tools.tui.json"))
 
-        ra_rect_f = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Fill" , enabled=False, checked=True)
-        ra_rect_e = ttk.TTkRadioButton(radiogroup="toolsRectFill", text="Empty", enabled=False)
+        ra_move   = main_toolset.getWidgetByName("ra_move")
+        ra_brush  = main_toolset.getWidgetByName("ra_brush")
+        ra_line   = main_toolset.getWidgetByName("ra_line")
+        ra_rect   = main_toolset.getWidgetByName("ra_rect")
+        ra_oval   = main_toolset.getWidgetByName("ra_oval")
 
-        ra_brush_g = ttk.TTkRadioButton(radiogroup="toolsBrush", text="Glyph", enabled=True, checked=True)
-        ra_brush_a = ttk.TTkRadioButton(radiogroup="toolsBrush", text="Area",  enabled=True )
+        ra_rect_f = main_toolset.getWidgetByName("ra_rect_f")
+        ra_rect_e = main_toolset.getWidgetByName("ra_rect_e")
 
-        cb_move_r = ttk.TTkCheckbox(text="Resize", enabled=False)
+        ra_brush_g = main_toolset.getWidgetByName("ra_brush_g")
+        ra_brush_a = main_toolset.getWidgetByName("ra_brush_a")
+
+        cb_move_r = main_toolset.getWidgetByName("cb_move_r")
 
         la_brush_g = ttk.TTkLabel(   maxHeight=1, minHeight=1)
         btn_pick_a = ttk.TTkButton(  maxHeight=1, minHeight=1, visible=False, text='Pick Area')
@@ -85,41 +91,40 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
         @ttk.pyTTkSlot()
         def _checkTools():
-            tool = CanvasLayer.Tool.BRUSH
+            tool = ToolType.BRUSH | ToolType.GLYPH
             if ra_move.isChecked():
-                tool  = CanvasLayer.Tool.MOVE
+                tool  = ToolType.MOVE
                 if cb_move_r.isChecked():
-                    tool |= CanvasLayer.Tool.RESIZE
+                    tool |= ToolType.RESIZE
             elif ra_brush.isChecked():
-                tool = CanvasLayer.Tool.BRUSH
+                tool = ToolType.BRUSH
                 if ra_brush_g.isChecked():
-                    tool |= CanvasLayer.Tool.GLYPH
+                    tool |= ToolType.GLYPH
                 else:
-                    tool |= CanvasLayer.Tool.AREA
+                    tool |= ToolType.AREA
                     if cb_trans_a.isChecked():
-                        tool |= CanvasLayer.Tool.TRANSPARENT
+                        tool |= ToolType.TRANSPARENT
             elif ra_rect.isChecked():
                 if ra_rect_e.isChecked():
-                    tool = CanvasLayer.Tool.RECTEMPTY
+                    tool = ToolType.RECTEMPTY
                 else:
-                    tool = CanvasLayer.Tool.RECTFILL
+                    tool = ToolType.RECTFILL
 
             spacer.show()
             la_brush_g.hide()
             cb_trans_a.hide()
             btn_pick_a.hide()
             ta_brush_a.hide()
-            if tool & CanvasLayer.Tool.GLYPH:
+            if tool & ToolType.GLYPH:
                 la_brush_g.show()
                 spacer.show()
-            elif tool & CanvasLayer.Tool.AREA:
+            elif tool & ToolType.AREA:
                 cb_trans_a.show()
                 btn_pick_a.show()
                 ta_brush_a.show()
                 spacer.hide()
 
-
-            self.toolSelected.emit(tool)
+            glbls.brush.setToolType(tool)
             lTools.update()
             self.update()
 
@@ -130,10 +135,10 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
         @ttk.pyTTkSlot()
         def _pick():
-            self.toolSelected.emit(
-                CanvasLayer.Tool.BRUSH |
-                CanvasLayer.Tool.AREA |
-                CanvasLayer.Tool.PICK )
+            glbls.brush.setToolType(
+                ToolType.BRUSH |
+                ToolType.AREA |
+                ToolType.PICK )
 
         btn_pick_a.clicked.connect(_pick)
 
@@ -149,7 +154,6 @@ class ToolsPanel(ttk.TTkVBoxLayout):
         ra_brush_a.toggled.connect(self.update)
 
         ra_move.toggled.connect(   _emitTool)
-        ra_select.toggled.connect( _emitTool)
         ra_brush.toggled.connect(  _emitTool)
         ra_line.toggled.connect(   _emitTool)
         ra_rect.toggled.connect(   _emitTool)
@@ -163,17 +167,18 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
         ta_brush_a.textChanged.connect(lambda : self.areaChanged.emit(ta_brush_a.toRawText()))
 
-        lTools.addWidget(ra_move    ,0,0)
-        lTools.addWidget(cb_move_r  ,0,1)
-        lTools.addWidget(ra_select  ,1,0)
-        lTools.addWidget(ra_brush   ,2,0)
-        lTools.addWidget(ra_brush_g ,2,1)
-        lTools.addWidget(ra_brush_a ,2,2)
-        lTools.addWidget(ra_line    ,3,0)
-        lTools.addWidget(ra_rect    ,4,0)
-        lTools.addWidget(ra_rect_f  ,4,1)
-        lTools.addWidget(ra_rect_e  ,4,2)
-        lTools.addWidget(ra_oval    ,5,0)
+        # lTools.addWidget(ra_move    ,0,0)
+        # lTools.addWidget(cb_move_r  ,0,1)
+        # lTools.addWidget(ra_select  ,1,0)
+        # lTools.addWidget(ra_brush   ,2,0)
+        # lTools.addWidget(ra_brush_g ,2,1)
+        # lTools.addWidget(ra_brush_a ,2,2)
+        # lTools.addWidget(ra_line    ,3,0)
+        # lTools.addWidget(ra_rect    ,4,0)
+        # lTools.addWidget(ra_rect_f  ,4,1)
+        # lTools.addWidget(ra_rect_e  ,4,2)
+        # lTools.addWidget(ra_oval    ,5,0)
+        lTools.addWidget(main_toolset ,1,0,1,3)
         lTools.addWidget(la_brush_g ,6,0)
         lTools.addWidget(btn_pick_a ,7,2,1,1)
         lTools.addWidget(cb_trans_a ,7,0,1,2)
@@ -182,35 +187,34 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
         self.addItem(lTools)
 
-        self._palette.colorSelected.connect(self.setColor)
+        self._palette.colorSelected.connect(glbls.brush.setColor)
+
+        glbls.brush.glyphChanged.connect(self._refreshColor)
+        glbls.brush.areaChanged.connect( self.setArea)
+        glbls.brush.colorChanged.connect(self._refreshColor)
+        glbls.brush.setColor(self._palette.color())
+
+        _checkTools()
+        self._refreshColor()
 
         # brush
         # line
         # rettangle [empty,fill]
         # oval [empty,fill]
 
-    @ttk.pyTTkSlot(ttk.TTkString)
-    def glyphFromString(self, ch:ttk.TTkString):
-        if len(ch)<=0: return
-        self._glyph = ch.charAt(0)
-        self._refreshColor()
-
     @ttk.pyTTkSlot()
     def _refreshColor(self):
-        color =self._color
+        color = glbls.brush.color()
+        glyph = glbls.brush.glyph()
         self._la_brush_g.setText(
                 ttk.TTkString("Glyph: '") +
-                ttk.TTkString(self._glyph,color) +
+                ttk.TTkString(glyph,color) +
                 ttk.TTkString("'"))
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def setColor(self, color:ttk.TTkColor):
-        self._color = color
         self._refreshColor()
 
-    @ttk.pyTTkSlot(CanvasLayer)
-    def setAreaLayer(self, layer:CanvasLayer):
-        self._ta_brush_a.setText(layer.trim().toTTkString())
-
-    def palette(self):
-        return self._palette
+    @ttk.pyTTkSlot(ttk.TTkString)
+    def setArea(self, area:ttk.TTkString):
+        self._ta_brush_a.setText(area)

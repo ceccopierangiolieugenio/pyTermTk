@@ -48,7 +48,7 @@
             "program": "tools/dumb.paint.tool.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["experiments/paint.test.json"]
+            "args":["experiments/untitled.DPT.json"]
         },{
             "name": "Python: Demo",
             "type": "debugpy",

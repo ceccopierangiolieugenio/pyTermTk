@@ -259,6 +259,7 @@ class TTkLayout(TTkLayoutItem):
                 item.widget().setParent(self.parentWidget())
         if self.parentWidget() and self.parentWidget().isVisible():
             self.parentWidget().update(repaint=True, updateLayout=True)
+        self.update()
 
     def addWidget(self, widget):
         ''' Add a widget to this Layout

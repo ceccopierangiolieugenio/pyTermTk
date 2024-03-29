@@ -170,7 +170,7 @@ class TTkFileDialogPicker(TTkWindow):
                 self._path += '/'
         else:
             self._fileName = os.path.basename(self._path)
-            self._path     = os.path.dirname(self._path)
+            self._path     = os.path.dirname(self._path)+'/'
         self._filter   = '*'
         self._filters  = kwargs.get('filter','All Files (*)')
         self._caption  = kwargs.get('caption','File Dialog')

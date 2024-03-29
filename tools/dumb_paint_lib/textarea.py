@@ -27,6 +27,8 @@ import sys, os
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+from .glbls import glbls
+
 _StartingText = '''Ansi Editor:
 
 ─ ┌─┬┐  ┏━┳┓  ┎─┰┒  ┍━┯┑  ┏┭┲━┱┮┓
@@ -88,9 +90,8 @@ Symbols for Legacy Computing
 
 '''
 class TextArea(ttk.TTkGridLayout):
-    __slots__ = ('_te','charSelected')
+    __slots__ = ('_te')
     def __init__(self, *args, **kwargs):
-        self.charSelected = ttk.pyTTkSignal(ttk.TTkString)
         super().__init__(*args, **kwargs)
 
         self._te = ttk.TTkTextEdit(lineNumber=True, readOnly=False)
@@ -212,8 +213,8 @@ class TextArea(ttk.TTkGridLayout):
     @ttk.pyTTkSlot(ttk.TTkTextCursor)
     def _cursorPositionChanged(self, cursor):
         ch = cursor.positionChar()
-        color = cursor.positionColor()
-        self.charSelected.emit(ttk.TTkString(ch,color))
+        # color = cursor.positionColor()
+        glbls.brush.setGlyph(ch)
 
     def te(self):
         return self._te

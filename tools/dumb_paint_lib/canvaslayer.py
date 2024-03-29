@@ -27,6 +27,8 @@ import sys, os
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
+from .const import ToolType
+
 # Canvas Layer structure
 # The data may include more areas than the visible one
 # This is helpful in case of resize to not lose the drawn areas
@@ -43,18 +45,6 @@ import TermTk as ttk
 #        \---w--/
 
 class CanvasLayer():
-    class Tool(int):
-        MOVE        = 0x0001
-        RESIZE      = 0x0002
-        BRUSH       = 0x0004
-        RECTFILL    = 0x0008
-        RECTEMPTY   = 0x0010
-        CLONE       = 0x0020
-        AREA        = 0x0040
-        GLYPH       = 0x0080
-        PICK        = 0x0100
-        TRANSPARENT = 0x0200
-
     __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset')
     def __init__(self) -> None:
         self._pos  = (0,0)
@@ -368,12 +358,12 @@ class CanvasLayer():
             data   = self._data
             colors = self._colors
 
-        if tool == CanvasLayer.Tool.RECTFILL:
+        if tool == ToolType.RECTFILL:
             for row in data[fay:fby+1]:
                 row[fax:fbx+1] = [glyph]*(fbx-fax+1)
             for row in colors[fay:fby+1]:
                 row[fax:fbx+1] = [color]*(fbx-fax+1)
-        if tool == CanvasLayer.Tool.RECTEMPTY:
+        if tool == ToolType.RECTEMPTY:
             data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
             data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
             colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
