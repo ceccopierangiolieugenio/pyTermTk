@@ -270,7 +270,7 @@ class TTkAppTemplate(TTkContainer):
             elif loc in (TTkAppTemplate.HEADER, TTkAppTemplate.TOP):
                 p.size = evt.y-y
             else:
-                p.size = h+y-evt.y
+                p.size = h+y-evt.y-1
         self._updateGeometries()
         return True
 
