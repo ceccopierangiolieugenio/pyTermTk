@@ -397,7 +397,7 @@ class TTkContainer(TTkWidget):
 
     def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
         super().update(repaint=repaint, updateLayout=updateLayout, updateParent=updateParent)
-        if updateLayout and self.rootLayout() is not None:
+        if updateLayout and self.rootLayout() is not None and self.size() != (0,0):
             self.rootLayout().setGeometry(0,0,self._width,self._height)
             self.layout().setGeometry(
                         self._padl, self._padt,

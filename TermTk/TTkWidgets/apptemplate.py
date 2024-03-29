@@ -159,7 +159,7 @@ class TTkAppTemplate(TTkContainer):
 
         super().__init__( **kwargs)
         self.layout().addItem(self._panels[TTkAppTemplate.MAIN].item)
-        self._updateGeometries()
+        self._updateGeometries(force=True)
         self.setFocusPolicy(TTkK.ClickFocus)
 
     def setWidget(self, widget, position=MAIN, size=None, title="", border=None, fixed=None):
@@ -182,7 +182,7 @@ class TTkAppTemplate(TTkContainer):
             self._panels[position].size = ( size if size is not None else
                                             widget.minimumWidth() if position in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else
                                             widget.minimumHeight() )
-        self._updateGeometries()
+        self._updateGeometries(force=True)
 
     def setItem(self, item, position=MAIN, size=None, title="", border=None, fixed=None):
         if not self._panels[position]:
@@ -204,7 +204,7 @@ class TTkAppTemplate(TTkContainer):
             self._panels[position].size = ( size if size is not None else
                                             item.minimumWidth() if position in (TTkAppTemplate.LEFT,TTkAppTemplate.RIGHT) else
                                             item.minimumHeight() )
-        self._updateGeometries()
+        self._updateGeometries(force=True)
 
     def menuBar(self, position=MAIN):
         return None if not self._panels[position] else self._panels[position].menubar
@@ -219,19 +219,19 @@ class TTkAppTemplate(TTkContainer):
         p.menubar = menuBar
         if menuBar:
             self.rootLayout().addItem(p.menubar)
-        self._updateGeometries()
+        self._updateGeometries(force=True)
 
     def setBorder(self, border=True, position=MAIN):
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         self._panels[position].border = border
-        self._updateGeometries()
+        self._updateGeometries(force=True)
 
     def setFixed(self, fixed=False, position=MAIN):
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         self._panels[position].fixed = fixed
-        self._updateGeometries()
+        self._updateGeometries(force=True)
 
     def resizeEvent(self, w, h):
         self._updateGeometries()
@@ -381,9 +381,9 @@ class TTkAppTemplate(TTkContainer):
 
         return mh+mf+min(mr ,ml, mm+mt+mb ) + ( 2 if bm else 0 )
 
-    def _updateGeometries(self):
+    def _updateGeometries(self, force=False):
         w,h = self.size()
-        if w<=0 or h<=0 or not self.isVisibleAndParent(): return
+        if w<=0 or h<=0 or (not force and not self.isVisibleAndParent()): return
         pns = self._panels
         spl = self._splitters
         mbl = self._menubarLines
