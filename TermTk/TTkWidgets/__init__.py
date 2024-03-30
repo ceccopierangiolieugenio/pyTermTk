@@ -25,6 +25,7 @@ from .menu            import *
 from .radiobutton     import *
 from .scrollarea      import *
 from .scrollbar       import *
+from .slider          import *
 from .spacer          import *
 from .spinbox         import *
 from .tabwidget       import *

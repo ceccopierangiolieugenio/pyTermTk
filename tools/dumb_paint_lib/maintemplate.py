@@ -35,6 +35,7 @@ from .textarea     import TextArea
 from .layers       import Layers,LayerData
 from .about        import About
 from .const        import ToolType
+from .filters      import HueChromaLightness,BrightnessContrast
 
 class ExportArea(ttk.TTkGridLayout):
     __slots__ = ('_paintArea', '_te','_cbCrop', '_cbFull', '_cbPal')
@@ -193,6 +194,9 @@ class PaintTemplate(ttk.TTkAppTemplate):
         menuExport.addMenu("&Python").setEnabled(False)
         menuExport.addMenu("&Bash").setEnabled(False)
 
+        colorMenu      = appMenuBar.addMenu("&Color")
+        colorMenu.addMenu("&Hue Chroma Lightness").menuButtonClicked.connect(self._hueChromaLightness)
+        colorMenu.addMenu("&Brightness Contrast").menuButtonClicked.connect(self._brightnessContrast)
 
         # extraMenu = appMenuBar.addMenu("E&xtra")
         # extraMenu.addMenu("Scratchpad").menuButtonClicked.connect(self.scratchpad)
@@ -320,6 +324,16 @@ class PaintTemplate(ttk.TTkAppTemplate):
     def _layersOrderChanged(self, layers:list[LayerData]):
         self._parea._canvasLayers = [ld.data() for ld in reversed(layers)]
         self._parea.update()
+
+    @ttk.pyTTkSlot()
+    def _hueChromaLightness(self):
+        newWindow = HueChromaLightness(self._parea._currentLayer)
+        ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
+
+    @ttk.pyTTkSlot()
+    def _brightnessContrast(self):
+        newWindow = BrightnessContrast(self._parea._currentLayer)
+        ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
 
     def importDocument(self, dd):
         self._parea.layerAdded.disconnect(self._canvasLayerAdded)

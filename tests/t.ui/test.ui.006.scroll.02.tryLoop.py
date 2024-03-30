@@ -29,17 +29,44 @@ import TermTk as ttk
 
 root = ttk.TTk()
 
-sb1 = ttk.TTkScrollBar(parent=root, pos=(10,2), size=(1,10))
-sb2 = ttk.TTkScrollBar(parent=root, pos=(12,2), size=(1,12))
-sb3 = ttk.TTkScrollBar(parent=root, pos=(14,2), size=(1,14))
-sb4 = ttk.TTkScrollBar(parent=root, pos=(16,2), size=(1,16))
+sb1 = ttk.TTkScrollBar(parent=root, pos=(10,6), size=(1,10))
+sb2 = ttk.TTkScrollBar(parent=root, pos=(12,6), size=(1,12))
+sb3 = ttk.TTkScrollBar(parent=root, pos=(14,6), size=(1,14))
+sb4 = ttk.TTkScrollBar(parent=root, pos=(16,6), size=(1,16))
 sb5 = ttk.TTkScrollBar(parent=root, pos=( 5,0), size=(30,1), orientation=ttk.TTkK.HORIZONTAL)
+
+slh6 = ttk.TTkSlider(parent=root, pos=( 5,1), size=(30,1), orientation=ttk.TTkK.HORIZONTAL)
+slh7 = ttk.TTkSlider(parent=root, pos=( 5,2), size=(40,1), orientation=ttk.TTkK.HORIZONTAL)
+slh8 = ttk.TTkSlider(parent=root, pos=( 5,3), size=(50,1), orientation=ttk.TTkK.HORIZONTAL)
+
+slv6 = ttk.TTkSlider(parent=root, pos=(18,14), size=(1,10), orientation=ttk.TTkK.VERTICAL)
+slv7 = ttk.TTkSlider(parent=root, pos=(20,10), size=(1,14), orientation=ttk.TTkK.VERTICAL)
+slv8 = ttk.TTkSlider(parent=root, pos=(22, 6), size=(1,18), orientation=ttk.TTkK.VERTICAL)
+
+sb9 = ttk.TTkSpinBox(parent=root, pos=(10,5), size=(10,1))
 
 sb1.valueChanged.connect(sb2.setValue)
 sb2.valueChanged.connect(sb3.setValue)
 sb3.valueChanged.connect(sb4.setValue)
 sb4.valueChanged.connect(sb5.setValue)
 sb5.valueChanged.connect(sb1.setValue)
+sb5.valueChanged.connect(slh6.setValue)
+
+slh6.valueChanged.connect(slh7.setValue)
+slh7.valueChanged.connect(slh8.setValue)
+slh8.valueChanged.connect(slh6.setValue)
+slh8.valueChanged.connect(sb2.setValue)
+slh8.valueChanged.connect(sb2.setValue)
+
+sb9.valueChanged.connect(sb1.setValue)
+sb1.valueChanged.connect(sb9.setValue)
+
+slv6.valueChanged.connect(slh7.setValue)
+slv7.valueChanged.connect(slh8.setValue)
+slv8.valueChanged.connect(slh6.setValue)
+slh6.valueChanged.connect(slv7.setValue)
+slh7.valueChanged.connect(slv8.setValue)
+slh8.valueChanged.connect(slv6.setValue)
 
 
 root.mainloop()

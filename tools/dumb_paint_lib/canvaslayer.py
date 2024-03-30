@@ -45,8 +45,10 @@ from .const import ToolType
 #        \---w--/
 
 class CanvasLayer():
-    __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset')
+    __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset',
+                'changed')
     def __init__(self) -> None:
+        self.changed = ttk.pyTTkSignal()
         self._pos  = (0,0)
         self._size = (0,0)
         self._offset = (0,0)
@@ -55,6 +57,9 @@ class CanvasLayer():
         self._preview = None
         self._data:  list[list[str         ]] = []
         self._colors:list[list[ttk.TTkColor]] = []
+
+    def update(self):
+        self.changed.emit()
 
     def pos(self):
         return self._pos
@@ -85,6 +90,7 @@ class CanvasLayer():
 
     def move(self,x,y):
         self._pos=(x,y)
+        self.changed.emit()
 
     def resize(self,w,h):
         self._size = (w,h)
@@ -93,6 +99,7 @@ class CanvasLayer():
         for i in range(h):
             self._data[i]   = (self._data[i]   + [' '              for _ in range(w)])[:w]
             self._colors[i] = (self._colors[i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
+        self.changed.emit()
 
     def superResize(self,dx,dy,dw,dh):
         ox,oy = self._offset
@@ -125,7 +132,7 @@ class CanvasLayer():
         self._offset = (ox+diffx,oy+diffy)
         self._pos  = (dx,dy)
         self._size = (dw,dh)
-
+        self.changed.emit()
 
     def clean(self):
         w,h = self._size
@@ -134,6 +141,7 @@ class CanvasLayer():
         for i in range(h):
             self._data[i]   = [' ']*w
             self._colors[i] = [ttk.TTkColor.RST]*w
+        self.changed.emit()
 
     def toTTkString(self):
         ret = []
@@ -277,6 +285,7 @@ class CanvasLayer():
                 self._import_v1_1_0(dd)
         else:
             self._import_v0_0_0(dd)
+        self.changed.emit()
 
     def trim(self):
         pw,ph = self._size
@@ -336,7 +345,7 @@ class CanvasLayer():
         self._size = (w,h)
         self._name = "Pasted"
 
-    def placeFill(self,geometry,tool,glyph:str,color:ttk.TTkColor,preview=False):
+    def placeFill(self,geometry,tool,glyph:str,color:ttk.TTkColor,glyphEnabled=True,preview=False):
         ox,oy = self._offset
         w,h = self._size
         ax,ay,bx,by = geometry
@@ -358,27 +367,35 @@ class CanvasLayer():
             data   = self._data
             colors = self._colors
 
+        # if tool == ToolType.RECTFILL:
+        #     for row in data[fay:fby+1]:
+        #         row[fax:fbx+1] = [glyph]*(fbx-fax+1)
+        #     for row in colors[fay:fby+1]:
+        #         row[fax:fbx+1] = [color]*(fbx-fax+1)
+        # if tool == ToolType.RECTEMPTY:
+        #     data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
+        #     data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
+        #     colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
+        #     colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
+        #     for row in data[fay:fby]:
+        #         row[fax]=row[fbx]=glyph
+        #     for row in colors[fay:fby]:
+        #         row[fax]=row[fbx]=color
         if tool == ToolType.RECTFILL:
-            for row in data[fay:fby+1]:
-                row[fax:fbx+1] = [glyph]*(fbx-fax+1)
-            for row in colors[fay:fby+1]:
-                row[fax:fbx+1] = [color]*(fbx-fax+1)
+            for y in range(fay,fby+1):
+                for x in range(fax,fbx+1):
+                    self._placeGlyph(data,colors,x,y,glyph,color,glyphEnabled,preview)
         if tool == ToolType.RECTEMPTY:
-            data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-            data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-            colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
-            colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
-            for row in data[fay:fby]:
-                row[fax]=row[fbx]=glyph
-            for row in colors[fay:fby]:
-                row[fax]=row[fbx]=color
+            for x in range(fax,fbx+1):
+                self._placeGlyph(data,colors,x,fay,glyph,color,glyphEnabled,preview)
+                self._placeGlyph(data,colors,x,fby,glyph,color,glyphEnabled,preview)
+            for y in range(fay,fby+1):
+                self._placeGlyph(data,colors,fax,y,glyph,color,glyphEnabled,preview)
+                self._placeGlyph(data,colors,fbx,y,glyph,color,glyphEnabled,preview)
+        self.changed.emit()
         return True
 
-    def placeGlyph(self,x,y,glyph:str,color:ttk.TTkColor,preview=False):
-        ox,oy = self._offset
-        w,h = self._size
-        color = color if glyph != ' ' else color.background()
-        color = color if color else ttk.TTkColor.RST
+    def placeGlyph(self,x,y,glyph:str,color:ttk.TTkColor,glyphEnabled=True,preview=False):
         if preview:
             data   = [_r.copy() for _r in self._data]
             colors = [_r.copy() for _r in self._colors]
@@ -387,9 +404,35 @@ class CanvasLayer():
             self._preview = None
             data   = self._data
             colors = self._colors
+
+        self.changed.emit()
+        return self._placeGlyph(data,colors,x,y,glyph,color,glyphEnabled,preview)
+
+    def _placeGlyph(self,data,colors,x,y,glyph:str,color:ttk.TTkColor,glyphEnabled=True,preview=False):
+        ox,oy = self._offset
+        w,h = self._size
+
         if 0<=x<w and 0<=y<h:
-            data[  oy+y][ox+x] = glyph
-            colors[oy+y][ox+x] = color
+            if glyphEnabled:
+                color = color if glyph != ' ' else color.background()
+                color = color if color else ttk.TTkColor.RST
+                data[  oy+y][ox+x] = glyph
+                colors[oy+y][ox+x] = color
+            else:
+                glyph = data[  oy+y][ox+x]
+                ofg = colors[oy+y][ox+x].foreground()
+                obg = colors[oy+y][ox+x].background()
+                nfg = color.foreground()
+                nbg = color.background()
+                if glyph==' ':
+                    if obg:
+                        colors[oy+y][ox+x] = nbg if nbg else ttk.TTkColor.RST
+                else:
+                    fg = nfg if nfg         else ofg if ofg else ttk.TTkColor.RST
+                    bg = nbg if nbg and obg else obg if obg else fg
+                    color = fg+bg
+                    color = color if color else ttk.TTkColor.RST
+                    colors[oy+y][ox+x] = color
             return True
         return False
 
@@ -424,6 +467,7 @@ class CanvasLayer():
                         newC = ca.copy()
                         newC._bg = ca._bg if ca._bg else cc._bg
                         colors[_y][_x] = newC
+        self.changed.emit()
 
     def drawInCanvas(self, pos, canvas:ttk.TTkCanvas):
         if not self._visible: return

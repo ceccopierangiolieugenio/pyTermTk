@@ -37,10 +37,9 @@ class ToolsPanel(ttk.TTkVBoxLayout):
                  '_glyph','_color',
                  '_la_brush_g', '_ta_brush_a'
                  # Signals
-                 'pickArea', 'toolSelected','areaChanged','glyphEnabled')
+                 'pickArea', 'toolSelected','areaChanged')
     def __init__(self, *args, **kwargs):
         self.pickArea = ttk.pyTTkSignal()
-        self.glyphEnabled = ttk.pyTTkSignal(bool)
         self.areaChanged = ttk.pyTTkSignal(ttk.TTkString)
         self.toolSelected = ttk.pyTTkSignal(ToolType)
         self._color = ttk.TTkColor.RST
@@ -57,7 +56,7 @@ class ToolsPanel(ttk.TTkVBoxLayout):
         lToggleFgBg.addItem(ttk.TTkLayout())
         cb_p_fg.toggled.connect(self._palette.enableFg)
         cb_p_bg.toggled.connect(self._palette.enableBg)
-        cb_p_gl.toggled.connect(self.glyphEnabled.emit)
+        cb_p_gl.toggled.connect(glbls.brush.setGlyphEnabled)
         self.addItem(lToggleFgBg)
 
         # Toolset
@@ -190,6 +189,7 @@ class ToolsPanel(ttk.TTkVBoxLayout):
         self._palette.colorSelected.connect(glbls.brush.setColor)
 
         glbls.brush.glyphChanged.connect(self._refreshColor)
+        glbls.brush.glyphEnabledChanged.connect(self._refreshColor)
         glbls.brush.areaChanged.connect( self.setArea)
         glbls.brush.colorChanged.connect(self._refreshColor)
         glbls.brush.setColor(self._palette.color())

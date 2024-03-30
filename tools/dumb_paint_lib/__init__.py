@@ -10,3 +10,4 @@ from .about        import *
 from .brush        import *
 from .glbls        import *
 from .const        import *
+from .filters      import *

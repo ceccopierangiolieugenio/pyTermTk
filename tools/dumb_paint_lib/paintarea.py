@@ -39,7 +39,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                  '_moveData','_resizeData',
                  '_clipboard',
                  '_tool',
-                 '_glyph', '_glyphColor', '_areaBrush',
+                 '_glyph', '_glyphColor', '_glyphEnabled', '_areaBrush',
                  # Signals
                  'layerSelected', 'layerAdded')
 
@@ -51,7 +51,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._canvasLayers:list[CanvasLayer] = []
         self._glyph = 'X'
         self._glyphColor = ttk.TTkColor.RST
+        self._glyphEnabled = True
         self._areaBrush = CanvasLayer()
+        self._areaBrush.changed.connect(self.update)
         self._moveData = None
         self._resizeData = None
         self._mouseMove = None
@@ -68,14 +70,14 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
 
         glbls.brush.toolTypeChanged.connect(self.setTool)
-        glbls.brush.glyphChanged.connect(   self.setGlyph)
         glbls.brush.areaChanged.connect(    self.setAreaBrush)
-        glbls.brush.colorChanged.connect(   self.setGlyphColor)
+        glbls.brush.glyphChanged.connect(       self.updateGlyph)
+        glbls.brush.colorChanged.connect(       self.updateGlyph)
+        glbls.brush.glyphEnabledChanged.connect(self.updateGlyph)
 
         # Retrieve the default values
         self.setTool(      glbls.brush.toolType())
-        self.setGlyph(     glbls.brush.glyph())
-        self.setGlyphColor(glbls.brush.color())
+        self.updateGlyph()
 
     def clear(self):
         self._documentPos    = (6,3)
@@ -170,6 +172,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         w,h = (w,h) if (w,h)!=(0,0) else (80,24)
         newLayer.resize(w,h)
         self._currentLayer = newLayer
+        newLayer.changed.connect(self.update)
         self._canvasLayers.append(newLayer)
         self.layerAdded.emit(newLayer)
         self._retuneGeometry()
@@ -321,7 +324,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 preview=False
                 transparent=self._tool & ToolType.TRANSPARENT
                 if self._tool & ToolType.GLYPH:
-                    self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,preview)
+                    self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,self._glyphEnabled,preview)
                 if self._tool & ToolType.AREA:
                     self._currentLayer.placeArea(mx-lx-dx,my-ly-dy,self._areaBrush,transparent,preview)
             elif mm:
@@ -329,7 +332,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 preview=True
                 transparent=self._tool & ToolType.TRANSPARENT
                 if self._tool & ToolType.GLYPH:
-                    self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,preview)
+                    self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,self._glyphEnabled,preview)
                 if self._tool & ToolType.AREA:
                     self._currentLayer.placeArea(mx-lx-dx,my-ly-dy,self._areaBrush,transparent,preview)
 
@@ -338,12 +341,12 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 mpx,mpy = mp
                 mrx,mry = mr
                 preview=False
-                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,preview)
-            elif md:
+                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+            elif md and mp:
                 mpx,mpy = mp
                 mrx,mry = md
                 preview=True
-                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,preview)
+                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
         self.update()
 
     def mouseMoveEvent(self, evt) -> bool:
@@ -436,6 +439,12 @@ class PaintArea(ttk.TTkAbstractScrollView):
     def setAreaBrush(self, ab:ttk.TTkString):
         self._areaBrush = CanvasLayer()
         self._areaBrush.importTTkString(ab)
+
+    @ttk.pyTTkSlot()
+    def updateGlyph(self):
+        self.setGlyph(glbls.brush.glyph())
+        self.setGlyphColor(glbls.brush.color())
+        self._glyphEnabled = glbls.brush.glyphEnabled()
 
     def glyph(self):
         return self._glyph
