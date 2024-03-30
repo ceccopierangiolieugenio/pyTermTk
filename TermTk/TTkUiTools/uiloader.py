@@ -75,10 +75,17 @@ class TTkUiLoader():
         '''
         return TTkUiLoader.loadDict(json.loads(text), baseWidget, kwargs)
 
-    def _convert_2_0_0_to_2_0_1(ui):
+    def _convert_2_0_1_to_2_0_2(ui):
         return {
             "type": TTkUiSignature,
-            "version": "2.0.1",
+            "version": "2.0.2",
+            "connections" : ui['connections'],
+            "tui": ui['tui'] }
+
+    def _convert_2_0_0_to_2_0_2(ui):
+        return {
+            "type": TTkUiSignature,
+            "version": "2.0.2",
             "connections" : ui['connections'],
             "tui": ui['tui'] }
 
@@ -108,13 +115,17 @@ class TTkUiLoader():
         return TTkUiLoader._loadDict_2_0_0(ui, *args, **kwargs)
 
     def _loadDict_2_0_0(ui, *args, **kwargs):
-        ui = TTkUiLoader._convert_2_0_0_to_2_0_1(ui)
-        return TTkUiLoader._loadDict_2_0_1(ui, *args, **kwargs)
+        ui = TTkUiLoader._convert_2_0_0_to_2_0_2(ui)
+        return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
+
+    def _loadDict_2_0_1(ui, *args, **kwargs):
+        ui = TTkUiLoader._convert_2_0_1_to_2_0_2(ui)
+        return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
 
     @staticmethod
-    def _loadDict_2_0_1(ui, baseWidget:TTkWidget=None, args=None):
+    def _loadDict_2_0_2(ui, baseWidget:TTkWidget=None, args=None):
         if (
-            ui['version'] != '2.0.1' or
+            ui['version'] != '2.0.2' or
             'type' not in ui or
             ui['type'] != TTkUiSignature):
             TTkLog.error("Ui Format not valid")
@@ -308,8 +319,9 @@ class TTkUiLoader():
     def normalise(ui):
         cb = {'1.0.0' : TTkUiLoader._convert_1_0_1_to_2_0_0,
               '1.0.1' : TTkUiLoader._convert_1_0_1_to_2_0_0,
-              '2.0.0' : TTkUiLoader._convert_2_0_0_to_2_0_1,
-              '2.0.1' : lambda x: x
+              '2.0.0' : TTkUiLoader._convert_2_0_0_to_2_0_2,
+              '2.0.1' : TTkUiLoader._convert_2_0_1_to_2_0_2,
+              '2.0.2' : lambda x: x
               }.get(ui['version'], lambda x: x)
         return cb(ui)
 
@@ -330,6 +342,7 @@ class TTkUiLoader():
               '1.0.1' : TTkUiLoader._loadDict_1_0_0,
               '2.0.0' : TTkUiLoader._loadDict_2_0_0,
               '2.0.1' : TTkUiLoader._loadDict_2_0_1,
+              '2.0.2' : TTkUiLoader._loadDict_2_0_2,
               }.get(ui['version'], None)
         if cb:
             return cb(ui, baseWidget, kwargs)

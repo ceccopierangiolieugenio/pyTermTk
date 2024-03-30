@@ -53,6 +53,8 @@ dWidgets = {
         "SpinBox"     : { "class":ttk.TTkSpinBox,   "params":{'size':(20,1)} },
         "H ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(10,1), "orientation":ttk.TTkK.HORIZONTAL} },
         "V ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(1,5),  "orientation":ttk.TTkK.VERTICAL} },
+        "H Slider"    : { "class":ttk.TTkSlider,    "params":{'size':(10,1), "orientation":ttk.TTkK.HORIZONTAL} },
+        "V Slider"    : { "class":ttk.TTkSlider,    "params":{'size':(1,5),  "orientation":ttk.TTkK.VERTICAL} },
     },
     'Widgets':{
         "Label"           : { "class":ttk.TTkLabel,          "params":{'size':(20,1), 'text':'Label'}},

@@ -44,6 +44,7 @@ from .properties.radiobutton import *
 from .properties.resizableframe import *
 # from .properties.scrollarea import
 from .properties.scrollbar import *
+from .properties.slider import *
 # from .properties.spacer import
 from .properties.spinbox import *
 from .properties.splitter import *

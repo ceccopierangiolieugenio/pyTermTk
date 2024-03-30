@@ -98,7 +98,6 @@ class TTkSlider(TTkScrollBar):
             smin = self._minimum
             smax = self._maximum
             val  = int(0.5+smin+(smax-smin)*mouse/size)
-            TTkLog.debug(f"{val=} {smin=} {smax=} {mouse=}")
             if val != self._value:
                 self.setValue(val)
                 self.sliderMoved.emit(self._value)
@@ -106,14 +105,6 @@ class TTkSlider(TTkScrollBar):
 
 
     '''
-         | min        | max
-        <-----XXXXX-------->   scrollbar
-        |------------------|   size = widt or height
-         |----------------|   size2 = widt or height - 2 (removed the ending arrows)
-         |------------|     workingSize = max - min
-         |----------------| drawingSize = max - min + pageStep
-              a---b            slider = [a=value-min, b=a+pageStep]
-              |---|            pageStep, asciiStep (step size in ascii)
         ╞═══════════╬═════╡
 
     '''

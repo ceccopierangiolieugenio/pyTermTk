@@ -456,7 +456,7 @@ class TTkDesigner(TTkAppTemplate):
         connections = self._sigslotEditor.dumpDict()
         newUI = {
             'type': TTkUiSignature,
-            'version':'2.0.1',
+            'version':'2.0.2',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)
