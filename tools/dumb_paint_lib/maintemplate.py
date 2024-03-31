@@ -36,6 +36,7 @@ from .layers       import Layers,LayerData
 from .about        import About
 from .const        import ToolType
 from .filters      import HueChromaLightness,BrightnessContrast
+from .importimage  import ImportImage
 
 class ExportArea(ttk.TTkGridLayout):
     __slots__ = ('_paintArea', '_te','_cbCrop', '_cbFull', '_cbPal')
@@ -181,6 +182,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self._saveAs)
         fileMenu.addSpacer()
         fileMenu.addMenu("&Import").menuButtonClicked.connect(self.importDictWin)
+        fileMenu.addMenu("Import Image").menuButtonClicked.connect(self._openImage)
         menuExport = fileMenu.addMenu("&Export")
         fileMenu.addSpacer()
         fileMenu.addMenu("Load Palette").setEnabled(False)
@@ -235,6 +237,13 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
 
+        # Debug import image
+        from PIL import Image
+        pilImage = Image.open("experiments/Peppered/euDock-purple.png")
+        newWindow = ImportImage(pilImage,minSize=(60,30))
+        newWindow.exportedImage.connect(parea.pasteEvent)
+        ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
+
     @ttk.pyTTkSlot()
     def _new(self):
         self._parea.clear()
@@ -248,6 +257,14 @@ class PaintTemplate(ttk.TTkAppTemplate):
                 encoding=ttk.TTkEncoding.APPLICATION_JSON,
                 filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
                 cb=self._openDragData)
+
+    @ttk.pyTTkSlot()
+    def _openImage(self):
+        ttk.ttkCrossOpen(
+                path='.',
+                encoding=ttk.TTkEncoding.IMAGE,
+                filter="Images (*.png *.jpg *.gif *.ico);;All Files (*)",
+                cb=self._openImageData)
 
     @ttk.pyTTkSlot()
     def _save(self):
@@ -273,6 +290,12 @@ class PaintTemplate(ttk.TTkAppTemplate):
         text = ttk.TTkString(image)
         ttk.ttkCrossSaveAs('untitled.DPT.ASCII.txt', text.toAscii(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
                            filter="ASCII Text Files (*.ASCII.txt);;Text Files (*.txt);;All Files (*)")
+
+    @ttk.pyTTkSlot(dict)
+    def _openImageData(self, data):
+        newWindow = ImportImage(data['data'])
+        newWindow.exportedImage.connect(self._parea.pasteEvent)
+        ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
 
     @ttk.pyTTkSlot(dict)
     def _openDragData(self, data):

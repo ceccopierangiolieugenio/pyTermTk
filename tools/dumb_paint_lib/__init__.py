@@ -11,3 +11,4 @@ from .brush        import *
 from .glbls        import *
 from .const        import *
 from .filters      import *
+from .importimage  import *

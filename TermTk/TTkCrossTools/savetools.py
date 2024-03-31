@@ -20,21 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['ttkCrossOpen', 'ttkCrossSave', 'ttkCrossSaveAs', 'TTkEncoding', 'ttkConnectDragOpen', 'ttkEmitDragOpen', 'ttkEmitFileOpen']
+__all__ = [
+        'ttkCrossOpen',
+        'ttkCrossSave', 'ttkCrossSaveAs',
+        'TTkEncoding', 'ImageData',
+        'ttkConnectDragOpen',
+        'ttkEmitDragOpen', 'ttkEmitFileOpen']
 
 import os
 import importlib.util
 import json
+from dataclasses import dataclass
 
 from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkLog
 from TermTk import TTkMessageBox, TTkFileDialogPicker, TTkHelper, TTkString, TTkK, TTkColor
 
-ttkCrossOpen    = None
-ttkCrossSave    = None
-ttkCrossSaveAs  = None
-ttkEmitDragOpen = None
-ttkEmitFileOpen = None
+class ImageData:
+    size:list[int,int] = (0,0)
+    data:list[list[list[int,int,int,int]]] = []
+
+ttkCrossOpen       = None
+ttkCrossSave       = None
+ttkCrossSaveAs     = None
+ttkEmitDragOpen    = None
+ttkEmitFileOpen    = None
 ttkConnectDragOpen = None
 
 class TTkEncoding(str):
@@ -91,7 +101,14 @@ else:
             # return json.load(fp)
             return fp.read()
     def _crossDecoder_image(fileName):
-        return None
+        from PIL import Image
+        pilImage = Image.open(fileName)
+        # pilImage = pilImage.convert('RGBA')
+        # pilData = list(pilImage.getdata())
+        # data = ImageData()
+        # w,h = data.size = pilImage.size
+        # data.data = [pilData[i:i+w] for i in range(0, len(pilData), w)]
+        return pilImage
 
     _crossDecoder = {
         TTkEncoding.TEXT             : _crossDecoder_text ,
@@ -105,8 +122,10 @@ else:
         TTkEncoding.IMAGE_JPG        : _crossDecoder_image ,
     }
 
-    def _open(path, encoding, filter, cb=None):
+    def _open(path, encoding:TTkEncoding, filter:str, cb=None):
         if not cb: return
+        if encoding.startswith(TTkEncoding.IMAGE):
+            if not importlib.util.find_spec('PIL'): return
         def __openFile(fileName):
             _decoder = _crossDecoder.get(encoding,lambda _:None)
             content = _decoder(fileName)
@@ -150,9 +169,9 @@ else:
         filePicker.pathPicked.connect(_approveFile)
         TTkHelper.overlay(None, filePicker, 5, 5, True)
 
-    ttkCrossOpen    = _open
-    ttkCrossSave    = _save
-    ttkCrossSaveAs  = _saveAs
-    ttkEmitDragOpen = lambda a:None
-    ttkEmitFileOpen = lambda a:None
-    ttkConnectDragOpen  = lambda a,b:None
+    ttkCrossOpen       = _open
+    ttkCrossSave       = _save
+    ttkCrossSaveAs     = _saveAs
+    ttkEmitDragOpen    = lambda a:None
+    ttkEmitFileOpen    = lambda a:None
+    ttkConnectDragOpen = lambda a,b:None
