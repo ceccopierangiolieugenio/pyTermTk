@@ -153,7 +153,7 @@ class TTkImage(TTkWidget):
             return splitReduce(2)
 
     def _reduceSex(self, a,b,c,d,e,f):
-        # quadblitter notcurses like
+        # sexblitter notcurses like
         l = (a,b,c,d,e,f)
         def delta(i):
             return max(v[i] for v in l) - min(v[i] for v in l)
