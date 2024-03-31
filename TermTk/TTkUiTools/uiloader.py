@@ -279,7 +279,7 @@ class TTkUiLoader():
                         layout.addWidget(w)
             return layout
 
-        TTkLog.debug(ui)
+        # TTkLog.debug(ui)
 
         if issubclass(globals()[ui['tui']['class']],TTkLayout):
             widget =  _getLayout(ui['tui'], baseWidget)
