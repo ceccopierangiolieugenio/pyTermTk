@@ -55,6 +55,11 @@ class TTkProxy {
               file.type.startsWith('text')){
             reader.readAsText(file);
           }
+          if (file.type.startsWith('image') ||
+            file.type.startsWith('text')){
+            //reader.readAsBinaryString(file);
+            reader.readAsArrayBuffer(file);
+          }
         })
         document.getElementById("terminal").addEventListener("dragover", (e) => {
           e.preventDefault(); //preventing from default behaviour
@@ -174,6 +179,10 @@ class TTkProxy {
         let zipResponse = await fetch(lib);
         let zipBinary = await zipResponse.arrayBuffer();
         this.pyodide.unpackArchive(zipBinary, ".tar.gz");
+    }
+
+    async loadPackage(pkg) {
+      await this.pyodide.loadPackage(pkg);
     }
 
     async loadFile(fileUri,file){

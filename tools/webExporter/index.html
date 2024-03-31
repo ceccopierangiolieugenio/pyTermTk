@@ -81,6 +81,11 @@
           term.write(`${lib['name']} - Loaded\n\r`)
         }
 
+        for (pkg of json['pkgs']){
+          await ttkProxy.loadPackage(pkg);
+          term.write(`${pkg} - Loaded\n\r`)
+        }
+
         term.write('Starting...\n\r')
 
         ttkProxy.preRun()

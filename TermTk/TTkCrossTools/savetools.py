@@ -82,6 +82,15 @@ if importlib.util.find_spec('pyodideProxy'):
             do.emit(data)
 
     def _emitFileOpen(encoding, data):
+        if encoding.startswith(TTkEncoding.IMAGE):
+            from PIL import Image
+            import io
+            # TTkLog.debug(data['data'])
+            # TTkLog.debug(type(data['data']))
+            # Image.open(data['data'])
+            im = Image.open(io.BytesIO(data['data']))
+            # TTkLog.debug(f"{im.size}")
+            data['data'] = im
         ttkFileOpen.emit(data)
         ttkFileOpen.clear()
 

@@ -66,13 +66,14 @@ function _download {
 };
 
 _download  ${_TMP_PATH}/www/pyodide/  www/pyodide/pyodide.js
-# _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.js.map
-# _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.js
+_download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.js.map
 _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide-lock.json
 _download ${_TMP_PATH}/www/pyodide/   www/pyodide/python_stdlib.zip
 _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.asm.js
 # _download ${_TMP_PATH}/www/pyodide/   www/pyodide/repodata.json
 _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.asm.wasm
+_download ${_TMP_PATH}/www/pyodide/   www/pyodide/Pillow-10.0.0-cp311-cp311-emscripten_3_1_46_wasm32.whl
+_download ${_TMP_PATH}/www/pyodide/   www/pyodide/Pillow-10.0.0-cp311-cp311-emscripten_3_1_46_wasm32.whl.metadata
 
 _download ${_TMP_PATH}/www/xterm/    www/xterm/xterm.css
 _download ${_TMP_PATH}/www/xterm/    www/xterm/xterm.js
@@ -117,6 +118,9 @@ echo '{
              {"pkg" :"bin/DPT.tgz",
              "name": "Dumb Paint Tool"}
         ],
+    "pkgs" : [
+        "Pillow"
+    ],
     "mainOld": "main.py",
     "main": "dumb.paint.tool.py"
 }' > ${_TMP_PATH}/package.json

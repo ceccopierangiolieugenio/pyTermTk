@@ -238,11 +238,11 @@ class PaintTemplate(ttk.TTkAppTemplate):
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
 
         # Debug import image
-        from PIL import Image
-        pilImage = Image.open("experiments/Peppered/euDock-purple.png")
-        newWindow = ImportImage(pilImage,minSize=(60,30))
-        newWindow.exportedImage.connect(parea.pasteEvent)
-        ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
+        # from PIL import Image
+        # pilImage = Image.open("experiments/Peppered/euDock-purple.png")
+        # newWindow = ImportImage(pilImage,minSize=(60,30))
+        # newWindow.exportedImage.connect(parea.pasteEvent)
+        # ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
 
     @ttk.pyTTkSlot()
     def _new(self):
