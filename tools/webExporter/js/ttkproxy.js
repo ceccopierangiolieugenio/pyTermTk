@@ -55,8 +55,7 @@ class TTkProxy {
               file.type.startsWith('text')){
             reader.readAsText(file);
           }
-          if (file.type.startsWith('image') ||
-            file.type.startsWith('text')){
+          if (file.type.startsWith('image')){
             //reader.readAsBinaryString(file);
             reader.readAsArrayBuffer(file);
           }
@@ -86,6 +85,10 @@ class TTkProxy {
           if (file.type.startsWith('application/json') ||
               file.type.startsWith('text')){
             reader.readAsText(file);
+          }
+          if (file.type.startsWith('image')){
+            //reader.readAsBinaryString(file);
+            reader.readAsArrayBuffer(file);
           }
         })
     }

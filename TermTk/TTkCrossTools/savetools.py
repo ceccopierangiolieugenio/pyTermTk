@@ -78,6 +78,11 @@ if importlib.util.find_spec('pyodideProxy'):
         return ttkDragOpen[encoding].connect(cb)
 
     def _emitDragOpen(encoding, data):
+        if encoding.startswith(TTkEncoding.IMAGE):
+            from PIL import Image
+            import io
+            im = Image.open(io.BytesIO(data['data']))
+            data['data'] = im
         for do in [ttkDragOpen[e] for e in ttkDragOpen if encoding.startswith(e)]:
             do.emit(data)
 

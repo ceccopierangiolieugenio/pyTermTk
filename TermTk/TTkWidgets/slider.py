@@ -22,8 +22,6 @@
 
 __all__ = ['TTkSlider']
 
-import math
-
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.canvas import TTkCanvas

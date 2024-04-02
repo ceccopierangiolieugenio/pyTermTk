@@ -236,6 +236,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
             self._openFile(fileName)
 
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
+        ttk.ttkConnectDragOpen(ttk.TTkEncoding.IMAGE, self._openImageData)
 
         # Debug import image
         # from PIL import Image
