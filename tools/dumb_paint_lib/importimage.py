@@ -135,6 +135,9 @@ class TTkImageNew(ttk.TTkWidget):
             color = ttk.TTkColor.fg(f'#{cr:02X}{cg:02X}{cb:02X}')
             return ttk.TTkString(ttk.TTkImage._quadMap[ch],color)
 
+        if a[:3]==b[:3]==c[:3]==d[:3]:
+            color = ttk.TTkColor.bg(f'#{a[0]:02X}{a[1]:02X}{a[2]:02X}')
+            return ttk.TTkString(' ',color)
 
         def delta(i):
             return max(v[i] for v in l) - min(v[i] for v in l)
@@ -204,6 +207,10 @@ class TTkImageNew(ttk.TTkWidget):
             ch = sum(g     for  _,g in lth)
             color = ttk.TTkColor.fg(f'#{cr:02X}{cg:02X}{cb:02X}')
             return ttk.TTkString(ttk.TTkImage._sexMap[ch],color)
+
+        if a[:3]==b[:3]==c[:3]==d[:3]==e[:3]==f[:3]:
+            color = ttk.TTkColor.bg(f'#{a[0]:02X}{a[1]:02X}{a[2]:02X}')
+            return ttk.TTkString(' ',color)
 
         def delta(i):
             return max(v[i] for v in l) - min(v[i] for v in l)
@@ -288,6 +295,9 @@ class TTkImageNew(ttk.TTkWidget):
                     elif c1[3]<threshold:
                         color = ttk.TTkColor.fg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}')
                         canvas.drawChar(pos=(x,y//2), char='▄', color=color)
+                    elif c1[:3]==c2[:3]:
+                        color = ttk.TTkColor.bg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}')
+                        canvas.drawChar(pos=(x,y//2), char=' ', color=color)
                     else:
                         color = ( ttk.TTkColor.fg(f'#{c1[0]:02X}{c1[1]:02X}{c1[2]:02X}') +
                                   ttk.TTkColor.bg(f'#{c2[0]:02X}{c2[1]:02X}{c2[2]:02X}') )

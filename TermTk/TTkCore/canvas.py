@@ -675,7 +675,7 @@ class TTkCanvas:
         ret = ""
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
-            ansi = str(TTkColor.RST)
+            ansi = str(lastcolor)
             for x in range(0, self._width):
                 ch = self._data[y][x]
                 color = self._colors[y][x]
@@ -690,7 +690,7 @@ class TTkCanvas:
         # TTkLog.debug("pushToTerminal")
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
-            ansi = TTkColor.RST+TTkTerm.Cursor.moveTo(y+1,1)
+            ansi = lastcolor+TTkTerm.Cursor.moveTo(y+1,1)
             for x in range(0, self._width):
                 ch = self._data[y][x]
                 color = self._colors[y][x]
