@@ -318,7 +318,7 @@ def _resize():
                 'HAMMING' : Image.HAMMING,
                 'BICUBIC' : Image.BICUBIC,
                 'LANCZOS' : Image.LANCZOS}.get(
-                    cb_resample.currentText,Image.NEAREST)
+                    cb_resample.currentText(),Image.NEAREST)
     pilImage = pilImage.resize((width,height),resample)
     data = list(pilImage.getdata())
     # rgbList = [(r,g,b) for r,g,b,a in data]

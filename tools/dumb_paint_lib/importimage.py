@@ -484,8 +484,8 @@ class ImportImage(ttk.TTkWindow):
                     'HAMMING' : Image.HAMMING,
                     'BICUBIC' : Image.BICUBIC,
                     'LANCZOS' : Image.LANCZOS}.get(
-                        self._cb_resample.currentText,Image.NEAREST)
-        self._pilImage = pilImage = pilImage.resize((w,h),resample)
+                        self._cb_resample.currentText(),Image.NEAREST)
+        self._pilImage = self._pilImage_bk.resize((w,h),resample)
         self._updateImage()
 
     @ttk.pyTTkSlot()
