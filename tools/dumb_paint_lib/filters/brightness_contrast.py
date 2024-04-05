@@ -38,6 +38,7 @@ class BrightnessContrast(ttk.TTkWindow):
     def __init__(self, canvasLayer:CanvasLayer, **kwargs):
         layout = ttk.TTkGridLayout()
         super().__init__(**kwargs|{"layout":layout,'size':(50,11)})
+        self.setTitle("Brightness Contrast")
         self._sl_brightness = sl_brightness = ttk.TTkSlider( minimum=-256, maximum=256, orientation=ttk.TTkK.HORIZONTAL)
         self._sl_contrast   = sl_contrast   = ttk.TTkSlider( minimum=-256, maximum=512, orientation=ttk.TTkK.HORIZONTAL)
         self._sb_brightness = sb_brightness = ttk.TTkSpinBox(minimum=-256, maximum=256)

@@ -1,6 +1,6 @@
 {
  "type": "TTkUi/Document",
- "version": "2.0.1",
+ "version": "2.0.2",
  "tui": {
   "class": "TTkContainer",
   "params": {
@@ -60,8 +60,8 @@
       "ToolTip": "",
       "Text": "Sel/Move",
       "RadioGroup": "tools",
-      "Checked": false,
-      "Check State": 0
+      "Checked": true,
+      "Check State": 2
      },
      "row": 0,
      "col": 0,
@@ -89,8 +89,8 @@
       "ToolTip": "",
       "Text": "Brush",
       "RadioGroup": "tools",
-      "Checked": true,
-      "Check State": 2
+      "Checked": false,
+      "Check State": 0
      },
      "row": 1,
      "col": 0,
@@ -230,7 +230,7 @@
       "Max Width": 65536,
       "Max Height": 1,
       "Visible": true,
-      "Enabled": true,
+      "Enabled": false,
       "ToolTip": "",
       "Text": "Glyph",
       "RadioGroup": "brush",
@@ -259,7 +259,7 @@
       "Max Width": 65536,
       "Max Height": 1,
       "Visible": true,
-      "Enabled": true,
+      "Enabled": false,
       "ToolTip": "",
       "Text": "Area",
       "RadioGroup": "brush",
@@ -288,7 +288,7 @@
       "Max Width": 65536,
       "Max Height": 1,
       "Visible": true,
-      "Enabled": false,
+      "Enabled": true,
       "ToolTip": "",
       "Text": "Resize",
       "Tristate": false,

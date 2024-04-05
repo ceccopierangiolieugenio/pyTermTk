@@ -38,6 +38,7 @@ class HueChromaLightness(ttk.TTkWindow):
     def __init__(self, canvasLayer:CanvasLayer, **kwargs):
         layout = ttk.TTkGridLayout()
         super().__init__(**kwargs|{"layout":layout,'size':(50,13)})
+        self.setTitle("Hue Chroma Lightness")
         self._sl_hue       = sl_hue       = ttk.TTkSlider( minimum=-180, maximum=180, orientation=ttk.TTkK.HORIZONTAL)
         self._sl_chroma    = sl_chroma    = ttk.TTkSlider( minimum=-100, maximum=100, orientation=ttk.TTkK.HORIZONTAL)
         self._sl_lightness = sl_lightness = ttk.TTkSlider( minimum=-100, maximum=100, orientation=ttk.TTkK.HORIZONTAL)
