@@ -195,9 +195,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
             ttk.TTkLog.error("File Format not recognised")
         self._retuneGeometry()
 
-    def exportImage(self):
-        return {}
-
     def exportLayer(self, full=False, palette=True, crop=True) -> dict:
         if self._currentLayer:
             return self._currentLayer.exportLayer(full=full,palette=palette,crop=crop)
@@ -212,7 +209,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
             'layers':[l.exportLayer(full=full,palette=palette,crop=crop) for l in self._canvasLayers]}
         return outData
 
-    def exportImage(self) -> dict:
+    def exportImage(self) -> str:
         pw,ph = self._documentSize
         image = ttk.TTkCanvas(width=pw,height=ph)
         for l in self._canvasLayers:
@@ -345,6 +342,11 @@ class PaintArea(ttk.TTkAbstractScrollView):
             elif md and mp:
                 mpx,mpy = mp
                 mrx,mry = md
+                preview=True
+                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+            elif mm:
+                mpx,mpy = mm
+                mrx,mry = mm
                 preview=True
                 self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
         self.update()

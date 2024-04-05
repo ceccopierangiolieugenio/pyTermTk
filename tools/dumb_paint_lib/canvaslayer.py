@@ -356,8 +356,6 @@ class CanvasLayer():
         fax,fay = ox+min(ax,bx), oy+min(ay,by)
         fbx,fby = ox+max(ax,bx), oy+max(ay,by)
 
-        color = color if glyph != ' ' else color.background()
-        color = color if color else ttk.TTkColor.RST
         if preview:
             data   = [_r.copy() for _r in self._data]
             colors = [_r.copy() for _r in self._colors]
@@ -367,20 +365,6 @@ class CanvasLayer():
             data   = self._data
             colors = self._colors
 
-        # if tool == ToolType.RECTFILL:
-        #     for row in data[fay:fby+1]:
-        #         row[fax:fbx+1] = [glyph]*(fbx-fax+1)
-        #     for row in colors[fay:fby+1]:
-        #         row[fax:fbx+1] = [color]*(fbx-fax+1)
-        # if tool == ToolType.RECTEMPTY:
-        #     data[fay][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-        #     data[fby][fax:fbx+1]   = [glyph]*(fbx-fax+1)
-        #     colors[fay][fax:fbx+1] = [color]*(fbx-fax+1)
-        #     colors[fby][fax:fbx+1] = [color]*(fbx-fax+1)
-        #     for row in data[fay:fby]:
-        #         row[fax]=row[fbx]=glyph
-        #     for row in colors[fay:fby]:
-        #         row[fax]=row[fbx]=color
         if tool == ToolType.RECTFILL:
             for y in range(fay,fby+1):
                 for x in range(fax,fbx+1):

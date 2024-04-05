@@ -12,3 +12,4 @@ from .glbls        import *
 from .const        import *
 from .filters      import *
 from .importimage  import *
+from .exportarea   import *
