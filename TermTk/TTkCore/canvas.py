@@ -54,11 +54,12 @@ class TTkCanvas:
         # self.resize(self._width, self._height)
         # TTkLog.debug((self._width, self._height))
 
-    def transparent(self):
+    def transparent(self) -> bool:
         return self._transparent
 
-    def setTransparent(self, tr):
+    def setTransparent(self, tr=True):
         self._transparent = tr
+        self.clean()
 
     def enableDoubleBuffer(self):
         self._doubleBuffer = True
