@@ -45,7 +45,7 @@ class TTkLayoutItem:
     LAYER1    =  0x40000000
     LAYER2    =  0x80000000
     LAYER3    =  0xC0000000
-    LAYERMASK = ~0xC0000000
+    LAYERMASK = ~(LAYER0 | LAYER1 | LAYER2 | LAYER3)
 
     __slots__ = (
         '_x', '_y', '_z', '_w', '_h',

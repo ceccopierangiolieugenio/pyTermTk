@@ -527,6 +527,8 @@ class TTkHelper:
             y = my+1
         else: # Draw above the Mouse
             y = max(0,my-th)
+        wi = tt.widgetItem()
+        wi.setLayer(wi.LAYER3)
         tt.move(x,y)
         TTkHelper._rootWidget.rootLayout().addWidget(tt)
         tt.raiseWidget()
