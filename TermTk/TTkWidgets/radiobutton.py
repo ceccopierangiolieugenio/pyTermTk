@@ -188,6 +188,7 @@ class TTkRadioButton(TTkWidget):
 
     def mousePressEvent(self, evt):
         self.setCheckState(TTkK.Checked)
+        self.clicked.emit()
         return True
 
     def keyEvent(self, evt):

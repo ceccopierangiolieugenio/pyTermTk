@@ -525,7 +525,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     def hasFocus(self):
         return self._focus
 
-    def getCanvas(self):
+    def getCanvas(self) -> TTkCanvas:
         return self._canvas
 
     def focusPolicy(self):
