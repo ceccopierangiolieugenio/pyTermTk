@@ -51,11 +51,14 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self._filter = '*'
         self.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
         self.openPath(self._path)
+        self.resizeColumnToContents(0)
+        self.resizeColumnToContents(1)
+        self.resizeColumnToContents(2)
+        self.resizeColumnToContents(3)
         self.itemExpanded.connect(self._folderExpanded)
         self.itemCollapsed.connect(self._folderCollapsed)
         self.itemExpanded.connect(self._updateChildren)
         self.itemActivated.connect(self._activated)
-
 
     def setFilter(self, filter):
         self._filter = filter
