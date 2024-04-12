@@ -48,7 +48,7 @@ Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.
 Smell deliciousness with the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
 
 ## [theDumbPaintTool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/dumbPaintTool)
-Unravel your hidden artist with [The Terminal ASCII Photoshop](https://ceccopierangiolieugenio.itch.io/dumb-paint-tool)
+Unravel your inner artist with [The Terminal ASCII Photoshop](https://ceccopierangiolieugenio.itch.io/dumb-paint-tool)
 
 ---
 
@@ -85,7 +85,7 @@ python3 tests/test.ui.018.TextEdit.Pygments.py README.md
 ---
 
 ## Projects using [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
-- [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner) - the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
+- [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner) - the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
 - [the DumbPaintTool](https://ceccopierangiolieugenio.itch.io/dumb-paint-tool) - The Terminal ASCII Photoshop
 - [tlogg](https://github.com/ceccopierangiolieugenio/tlogg) - A fast, advanced log explorer.
 - [ttkode](https://github.com/ceccopierangiolieugenio/ttkode) - TerminalToolKit (Studio) Code (editor)

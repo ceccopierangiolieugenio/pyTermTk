@@ -18,7 +18,7 @@ Widgets and forms created with **ttkDesigner** integrate seamlessly with program
 tbd
 
 ## Install/Upgrade
-[ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner)
+[ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner)
  is available on [PyPI](https://pypi.org/project/ttkDesigner/)
 ```bash
 pip3 install --upgrade ttkDesigner

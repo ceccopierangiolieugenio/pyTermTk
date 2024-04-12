@@ -1,6 +1,6 @@
 .. _pyTermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
 .. _TermTk:      https://github.com/ceccopierangiolieugenio/pyTermTk
-.. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner
+.. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner
 
 .. _Widget:        https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html
 .. _Textedit:      https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html
