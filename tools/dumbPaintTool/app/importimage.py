@@ -22,10 +22,8 @@
 
 __all__ = ['ImportImage']
 
-import sys, os, json
 from PIL import Image
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 class TTkImageNew(ttk.TTkWidget):

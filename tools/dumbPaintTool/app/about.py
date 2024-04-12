@@ -22,9 +22,6 @@
 
 __all__ = ['About']
 
-import sys, os
-
-sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 _DPT_image = ttk.TTkUtil.base64_deflate_2_obj(

@@ -22,12 +22,10 @@
 
 __all__ = ['ToolsPanel']
 
-import sys, os, json
+import os
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
-from .canvaslayer  import CanvasLayer
 from .palette      import Palette
 from .const        import ToolType
 from .glbls        import glbls
@@ -61,7 +59,7 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
         # Toolset
         lTools = ttk.TTkGridLayout()
-        main_toolset = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/tools.tui.json"))
+        main_toolset = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/tools.tui.json"))
 
         ra_move   = main_toolset.getWidgetByName("ra_move")
         ra_brush  = main_toolset.getWidgetByName("ra_brush")

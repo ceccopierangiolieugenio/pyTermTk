@@ -1,6 +1,7 @@
+#!/usr/bin/env python3
 # MIT License
 #
-# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +21,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['glbls']
+import sys,os
+sys.path.append(os.path.join(sys.path[0],'..'))
 
-from dataclasses import dataclass
+from dumbPaintTool.app import main
 
-import sys, os
-sys.path.append(os.path.join(sys.path[0],'../..'))
-import TermTk as ttk
-
-from .brush import Brush
-from .canvaslayer import CanvasLayer
-
-@dataclass()
-class Glbls:
-    brush:Brush = Brush()
-
-glbls = Glbls()
+if __name__ == '__main__':
+    main()

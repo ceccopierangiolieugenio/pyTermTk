@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys, os, argparse
+from .app import main
 
-sys.path.append(os.path.join(sys.path[0],'..'))
-import TermTk as ttk
-
-from dumb_paint_lib import PaintTemplate
-
-ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('filename', type=str, nargs='?', help='the file to open')
-    # parser.add_argument('-k', '--showkeys', action='store_true', help='display the keypresses and mouse interactions')
-    args = parser.parse_args()
-
-    root = ttk.TTk(
-            title="Dumb Paint Tool",
-            layout=ttk.TTkGridLayout(),
-            mouseTrack=True,
-            sigmask=(
-                ttk.TTkTerm.Sigmask.CTRL_C |
-                ttk.TTkTerm.Sigmask.CTRL_Q |
-                ttk.TTkTerm.Sigmask.CTRL_S |
-                ttk.TTkTerm.Sigmask.CTRL_Z ))
-
-    PaintTemplate(parent=root,fileName=args.filename)
-
-    root.mainloop()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

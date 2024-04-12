@@ -1,3 +1,4 @@
+from .main         import *
 from .maintemplate import *
 from .toolspanel   import *
 from .paintarea    import *

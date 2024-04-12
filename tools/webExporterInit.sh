@@ -101,29 +101,15 @@ _download ${_TMP_PATH}/www/   www/favicon.ico
 
 
 tar cvzf ${_TMP_PATH}/bin/TermTk.tgz --exclude='__pycache__' --transform "s,^.*TermTk/,TermTk/," ${_TMP_PATH}/TermTk
-tar cvzf ${_TMP_PATH}/bin/DPT.tgz    --exclude='__pycache__' --transform "s,^.*/dumb,dumb,"      ${_TOOLS_BASE_PATH}/dumb.paint.tool.py ${_TOOLS_BASE_PATH}/dumb_paint_lib
+tar cvzf ${_TMP_PATH}/bin/DPT.tgz    --exclude='__pycache__' --transform "s,^.*/dumbPaintTool,dumbPaintTool," \
+    ${_TOOLS_BASE_PATH}/dumbPaintTool.py \
+    ${_TOOLS_BASE_PATH}/dumbPaintTool/*.py \
+    ${_TOOLS_BASE_PATH}/dumbPaintTool/app \
+    ${_TOOLS_BASE_PATH}/dumbPaintTool/tui
 
-# find ${_TMP_PATH}/TermTk \
-#     | grep -v __pycache__ | xargs tar cvzf ${_TMP_PATH}/bin/TermTk.tgz -C ${_TMP_PATH}
-#
-# find ${_TOOLS_BASE_PATH}/dumb.paint.tool.py ${_TOOLS_BASE_PATH}/dumb_paint_lib \
-#     | grep -v __pycache__ | xargs tar cvzf ${_TMP_PATH}/bin/DPT.tgz -C ${_TOOLS_BASE_PATH}
+cp  ${_TOOLS_BASE_PATH}/dumbPaintTool/web.ttk.package.json ${_TMP_PATH}
 
 cp -a ${_TOOLS_BASE_PATH}/webExporter/* ${_TMP_PATH}/
-
-echo '{
-    "libs" : [
-            {"pkg" :"bin/TermTk.tgz",
-             "name": "TermTk"},
-             {"pkg" :"bin/DPT.tgz",
-             "name": "Dumb Paint Tool"}
-        ],
-    "pkgs" : [
-        "Pillow"
-    ],
-    "mainOld": "main.py",
-    "main": "dumb.paint.tool.py"
-}' > ${_TMP_PATH}/package.json
 
 rm -rf ${_TMP_PATH}/TermTk
 pushd ${_TMP_PATH}

@@ -22,9 +22,6 @@
 
 __all__ = ['TextArea']
 
-import sys, os
-
-sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from .glbls import glbls

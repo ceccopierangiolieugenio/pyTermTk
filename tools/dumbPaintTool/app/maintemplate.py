@@ -22,9 +22,8 @@
 
 __all__ = ['PaintTemplate']
 
-import sys, os, json
+import os, json
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from .paintarea    import PaintArea, PaintScrollArea
@@ -268,7 +267,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
     @ttk.pyTTkSlot()
     def importDictWin(self):
-        newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/quickImport.tui.json"))
+        newWindow = ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/quickImport.tui.json"))
         te = newWindow.getWidgetByName("TextEdit")
 
         @ttk.pyTTkSlot()

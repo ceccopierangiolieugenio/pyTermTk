@@ -22,9 +22,8 @@
 
 __all__ = ['PaintToolKit']
 
-import sys, os
+import os
 
-sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 from .paintarea import *
@@ -39,7 +38,7 @@ class PaintToolKit(ttk.TTkContainer):
                  #Signals
                  'updatedTrans')
     def __init__(self, *args, **kwargs):
-        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"tui/paintToolKit.tui.json"),self)
+        ttk.TTkUiLoader.loadFile(os.path.join(os.path.dirname(os.path.abspath(__file__)),"../tui/paintToolKit.tui.json"),self)
         self.updatedTrans = ttk.pyTTkSignal(ttk.TTkColor)
         self._lgliph  = self.getWidgetByName("lglyph")
         self._cbFg    = self.getWidgetByName("cbFg")
