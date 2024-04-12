@@ -17,7 +17,7 @@ setup(
     description='ttkDesigner is a terminal user interface designer for pyTermTk applications',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ceccopierangiolieugenio/pyTermTk",
+    url="https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner",
     classifiers=[
         # https://pypi.org/classifiers/
         "Programming Language :: Python :: 3",

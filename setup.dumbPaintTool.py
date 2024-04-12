@@ -14,10 +14,10 @@ setup(
     version=version,
     author='Eugenio Parodi',
     author_email='ceccopierangiolieugenio@googlemail.com',
-    description='ttkDesigner is a terminal user interface designer for pyTermTk applications',
+    description='the Dumb Paint Tool is a Terminal ASCII Photoshop',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ceccopierangiolieugenio/pyTermTk",
+    url="https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/dumbPaintTool",
     classifiers=[
         # https://pypi.org/classifiers/
         "Programming Language :: Python :: 3",
