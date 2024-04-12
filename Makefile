@@ -76,6 +76,12 @@ buildTTkDesigner: .venv
 	cd tmp ; \
 	python3 -m build
 
+buildDumbPaintTool: .venv
+	. .venv/bin/activate ; \
+	tools/prepareBuild.sh dumbPaintTool ; \
+	cd tmp ; \
+	python3 -m build
+
 deployTTkDesigner: .venv
 	. .venv/bin/activate ; \
 	python3 -m twine upload tmp/dist/*

@@ -19,6 +19,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ceccopierangiolieugenio/pyTermTk",
     classifiers=[
+        # https://pypi.org/classifiers/
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
@@ -33,6 +34,10 @@ setup(
         "Intended Audience :: Information Technology",
         "Topic :: Terminals",
         "Topic :: Text Editors :: Text Processing",
+        "Topic :: Multimedia :: Graphics",
+        "Topic :: Multimedia :: Graphics :: Editors",
+        "Topic :: Multimedia :: Graphics :: Editors :: Raster-Based",
+        "Topic :: Multimedia :: Graphics :: Graphics Conversion",
         "Topic :: Software Development :: User Interfaces",
         "Topic :: Software Development :: Libraries",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -51,25 +56,3 @@ setup(
         ],
     },
 )
-
-# https://pypi.org/classifiers/
-#
-# INTENDED AUDIENCE :: EDUCATION
-# INTENDED AUDIENCE :: END USERS/DESKTOP
-#
-# TOPIC :: ARTISTIC SOFTWARE
-# TOPIC :: INTERNET
-# TOPIC :: MULTIMEDIA :: GRAPHICS
-# TOPIC :: MULTIMEDIA :: GRAPHICS :: EDITORS
-# TOPIC :: MULTIMEDIA :: GRAPHICS :: EDITORS :: RASTER-BASED
-# TOPIC :: SOFTWARE DEVELOPMENT :: LIBRARIES
-# TOPIC :: SOFTWARE DEVELOPMENT :: LIBRARIES :: APPLICATION FRAMEWORKS
-# TOPIC :: SOFTWARE DEVELOPMENT :: LIBRARIES :: PYTHON MODULES
-# TOPIC :: SOFTWARE DEVELOPMENT :: USER INTERFACES
-# TOPIC :: TERMINALS
-# TOPIC :: TERMINALS :: SERIAL
-# TOPIC :: TERMINALS :: TELNET
-# TOPIC :: TERMINALS :: TERMINAL EMULATORS/X TERMINALS
-# TOPIC :: TEXT EDITORS :: INTEGRATED DEVELOPMENT ENVIRONMENTS (IDE)
-# TOPIC :: TEXT EDITORS :: TEXT PROCESSING
-# TOPIC :: TEXT EDITORS :: WORD PROCESSORS
