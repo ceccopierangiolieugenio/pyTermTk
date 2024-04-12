@@ -7,7 +7,7 @@
 [![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 
 
-[![dpt hero](https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/b5d7b870-1217-45a0-9fec-17358b563aa9)](https://pypi.org/project/tools/dumbPaintTool)
+[![dpt hero](https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/54d29d95-717d-404d-9112-efed866d4048)](https://pypi.org/project/tools/dumbPaintTool)
 
 
 ## [the Dumb Paint Tool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/dumbPaintTool)
