@@ -47,7 +47,7 @@
       document.fonts.ready.then(() => {fetchData()});
 
       function fetchData(){
-        fetch("package.json")
+        fetch("web.ttk.package.json")
         .then(response => response.json())
         .then(json => processAndStart(json));
       }
