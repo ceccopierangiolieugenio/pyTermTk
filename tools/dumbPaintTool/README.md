@@ -21,7 +21,7 @@ A Uber SourcesOpen Super Duper Powerful and User-Friendly ASCII/ANSI/UTF-8  Term
 * Wide variety of glyphs (UTF-8)
 * Wide Variety of tools
 * Copy and Paste from the terminal or the web app
-* Drag files to be open (WebVersion Only)
+* Drag files to be open ([WebVersion](https://ceccopierangiolieugenio.itch.io/dumb-paint-tool) Only)
 * Imkage/Pictures import with configurable ASCII rasterizers
 * Layers
 * Intelligent Transparent Layers
