@@ -271,7 +271,7 @@ class TTkLineEdit(TTkWidget):
                 elif evt.key == TTkK.Key_X:
                     self.cut()
                 else:
-                    return False
+                    return super().keyEvent(evt)
                 return True
 
             if evt.key == TTkK.Key_Left:
