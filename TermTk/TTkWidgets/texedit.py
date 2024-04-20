@@ -30,6 +30,7 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
@@ -488,6 +489,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             # TTkLog.debug(f"Saving {self._textCursor.selectedText()} {self._textCursor._properties[0].anchor.pos}")
             self._textDocument.saveSnapshot(self._textCursor.copy())
 
+        if evt.key == TTkK.Key_Tab and evt.mod==TTkK.NoModifier:
+            evt = TTkKeyEvent(TTkK.Character, '\t', '\t', TTkK.NoModifier)
+
         if evt.type == TTkK.SpecialKey:
             _,_,w,h = self.geometry()
 
@@ -505,9 +509,6 @@ class TTkTextEditView(TTkAbstractScrollView):
 
             ctrl = evt.mod==TTkK.ControlModifier
 
-            if evt.key == TTkK.Key_Tab:
-                # Don't Handle the special tab key, for now
-                return False
             if ctrl:
                 p = self._textCursor.position()
                 cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
@@ -568,6 +569,9 @@ class TTkTextEditView(TTkAbstractScrollView):
             elif evt.key == TTkK.Key_Enter:
                 if self._multiLine:
                     self._textCursor.insertText('\n', moveCursor=True)
+            else:
+                # No action performed
+                return super().keyEvent(evt)
             # Scroll to align to the cursor
             p = self._textCursor.position()
             cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
