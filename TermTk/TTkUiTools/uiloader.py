@@ -289,7 +289,7 @@ class TTkUiLoader():
         def _getSignal(sender, name):
             for cc in reversed(type(sender).__mro__):
                 if cc.__name__ in TTkUiProperties:
-                    if not name in TTkUiProperties[cc.__name__]['signals']:
+                    if name not in TTkUiProperties[cc.__name__]['signals']:
                         continue
                     signame = TTkUiProperties[cc.__name__]['signals'][name]['name']
                     return getattr(sender,signame)
@@ -298,7 +298,7 @@ class TTkUiLoader():
         def _getSlot(receiver, name):
             for cc in reversed(type(receiver).__mro__):
                 if cc.__name__ in TTkUiProperties:
-                    if not name in TTkUiProperties[cc.__name__]['slots']:
+                    if name not in TTkUiProperties[cc.__name__]['slots']:
                         continue
                     slotname = TTkUiProperties[cc.__name__]['slots'][name]['name']
                     return getattr(receiver,slotname)
