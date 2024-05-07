@@ -23,9 +23,9 @@
       /*
       @font-face {
         font-family: "NerdFont";
-        src: url(www/nerdfonts/HurmitNerdFontMono-Regular.otf) format("opentype");
-        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
-        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
+        src: url(www/fonts/nerdfonts/HurmitNerdFontMono-Regular.otf) format("opentype");
+        src: url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
+        src: url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
       }
       */
     </style>
@@ -36,7 +36,7 @@
 
     <script type="text/javascript">
       // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
-      const font = new FontFace("NerdFont", "url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
+      const font = new FontFace("NerdFont", "url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
       document.fonts.add(font);
       font.load();
       document.fonts.ready.then(() => {main()});
