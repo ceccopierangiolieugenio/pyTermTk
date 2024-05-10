@@ -31,12 +31,14 @@ from .toolspanel   import ToolsPanel
 from .canvaslayer  import CanvasLayer
 from .painttoolkit import PaintToolKit
 from .textarea     import TextArea
-from .layers       import Layers,LayerData
+from .layersctrl   import LayersControl,LayerData
 from .about        import About
 from .const        import ToolType
 from .filters      import HueChromaLightness,BrightnessContrast
 from .importimage  import ImportImage
 from .exportarea   import ExportArea
+from .glbls        import glbls
+
 
 
 # Layout:
@@ -53,7 +55,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
     def __init__(self, fileName=None, border=False, **kwargs):
         super().__init__(border, **kwargs)
         self._parea  = parea = PaintArea()
-        self._layers = layers = Layers()
+        self._layers = layers = LayersControl()
         ptoolkit = PaintToolKit()
         tarea    = TextArea()
         expArea  = ExportArea(parea)
@@ -116,22 +118,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         # Paint Area Transparency color
         ptoolkit.updatedTrans.connect(self._parea.setTrans)
 
-        @ttk.pyTTkSlot(CanvasLayer)
-        def _canvasLayerSelected(l:CanvasLayer):
-            layers.selectLayerByData(l)
-
-        @ttk.pyTTkSlot(LayerData)
-        def _layerDataSelected(l:LayerData):
-            parea.setCurrentLayer(l.data())
-
-        parea.layerSelected.connect(ptoolkit.updateLayer)
-        parea.layerSelected.connect(_canvasLayerSelected)
-        parea.layerAdded.connect(self._canvasLayerAdded)
-
-        layers.layerAdded.connect(self._layerAdded)
-        layers.layerSelected.connect(_layerDataSelected)
-        layers.layersOrderChanged.connect(self._layersOrderChanged)
-        layers.addLayer(name="Background")
+        glbls.layers.addLayer(name="Background")
         if fileName:
             self._openFile(fileName)
 
@@ -204,8 +191,20 @@ class PaintTemplate(ttk.TTkAppTemplate):
         if 'layers' in dd:
             self.importDocument(dd)
         else:
-            self._layers.addLayer(name="Import")
-            self._parea.importLayer(dd)
+            glbls.layers.importLayer(dd,"Import")
+
+    def importDocument(self, data):
+        glbls.layers.clear()
+        if (
+            ( 'version' in data and data['version'] == '1.0.0' ) or
+            ( 'version' in data and data['version'] == '1.0.1' and data['type'] == 'DumbPaintTool/Document') ):
+            for ld in reversed(data['layers']):
+                cl = CanvasLayer()
+                cl.importLayer(ld)
+                glbls.layers.addLayer(cl.name(),cl)
+        else:
+            ttk.TTkLog.error("File Format not recognised")
+
 
     def _openFile(self, fileName):
         ttk.TTkLog.info(f"Open: {fileName}")
@@ -218,36 +217,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
             if 'layers' in dd:
                 self.importDocument(dd)
             else:
-                self._layers.addLayer(name="Import")
-                self._parea.importLayer(dd)
-
-    # Connect and handle Layers event
-    @ttk.pyTTkSlot(LayerData)
-    def _layerAdded(self, l:LayerData):
-        self._parea.layerAdded.disconnect(self._canvasLayerAdded)
-        nl = self._parea.newLayer()
-        self._parea.layerAdded.connect(self._canvasLayerAdded)
-        nl.setName(l.name())
-        l.setData(nl)
-        l.nameChanged.connect(nl.setName)
-        l.visibilityToggled.connect(nl.setVisible)
-        l.visibilityToggled.connect(self._parea.update)
-
-    @ttk.pyTTkSlot(CanvasLayer)
-    def _canvasLayerAdded(self, l:CanvasLayer=None):
-        self._layers.clear()
-        self._layers.layerAdded.disconnect(self._layerAdded)
-        for l in self._parea.canvasLayers():
-            ld = self._layers.addLayer(name=l.name(),data=l)
-            ld.nameChanged.connect(l.setName)
-            ld.visibilityToggled.connect(l.setVisible)
-            ld.visibilityToggled.connect(self._parea.update)
-        self._layers.layerAdded.connect(self._layerAdded)
-
-    @ttk.pyTTkSlot(list[LayerData])
-    def _layersOrderChanged(self, layers:list[LayerData]):
-        self._parea._canvasLayers = [ld.data() for ld in reversed(layers)]
-        self._parea.update()
+                glbls.layers.importLayer(dd,"Import")
 
     @ttk.pyTTkSlot()
     def _hueChromaLightness(self):
@@ -258,12 +228,6 @@ class PaintTemplate(ttk.TTkAppTemplate):
     def _brightnessContrast(self):
         newWindow = BrightnessContrast(self._parea._currentLayer)
         ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
-
-    def importDocument(self, dd):
-        self._parea.layerAdded.disconnect(self._canvasLayerAdded)
-        self._parea.importDocument(dd)
-        self._canvasLayerAdded()
-        self._parea.layerAdded.connect(self._canvasLayerAdded)
 
     @ttk.pyTTkSlot()
     def importDictWin(self):
@@ -301,8 +265,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
             if 'layers' in dd:
                 self.importDocument(dd)
             else:
-                self._layers.addLayer(name="Import")
-                self._parea.importLayer(dd)
+                glbls.layers.importLayer(dd,"Impport")
 
             newWindow.close()
 

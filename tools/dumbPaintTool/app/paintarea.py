@@ -36,13 +36,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
                  '_moveData','_resizeData',
                  '_clipboard',
                  '_tool',
-                 '_glyph', '_glyphColor', '_glyphEnabled', '_areaBrush',
-                 # Signals
-                 'layerSelected', 'layerAdded')
+                 '_glyph', '_glyphColor', '_glyphEnabled', '_areaBrush')
 
     def __init__(self, *args, **kwargs):
-        self.layerSelected = ttk.pyTTkSignal(CanvasLayer)
-        self.layerAdded    = ttk.pyTTkSignal(CanvasLayer)
         self._transparentColor = {'base':ttk.TTkColor.RST,'dim':ttk.TTkColor.RST}
         self._currentLayer:CanvasLayer = None
         self._canvasLayers:list[CanvasLayer] = []
@@ -72,15 +68,17 @@ class PaintArea(ttk.TTkAbstractScrollView):
         glbls.brush.colorChanged.connect(       self.updateGlyph)
         glbls.brush.glyphEnabledChanged.connect(self.updateGlyph)
 
+        glbls.layers.layerSelected.connect(self.setCurrentLayer)
+        # glbls.layers.layerAdded.connect()
+        # glbls.layers.layerDeleted.connect()
+        glbls.layers.layersOrderChanged.connect(self._setCanvasLayers)
+
         # Retrieve the default values
         self.setTool(      glbls.brush.toolType())
         self.updateGlyph()
 
-    def clear(self):
-        self._documentPos    = (6,3)
-        self._documentSize   = (80, 25)
-        self._currentLayer:CanvasLayer = None
-        self._canvasLayers:list[CanvasLayer] = []
+    def _setCanvasLayers(self, cl):
+        self._canvasLayers = cl
         self.update()
 
     def _getGeometry(self):
@@ -163,35 +161,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._currentLayer = layer
         self.update()
 
-    def newLayer(self) -> CanvasLayer:
-        newLayer = CanvasLayer()
-        w,h = self._documentSize
-        w,h = (w,h) if (w,h)!=(0,0) else (80,24)
-        newLayer.resize(w,h)
-        self._currentLayer = newLayer
-        newLayer.changed.connect(self.update)
-        self._canvasLayers.append(newLayer)
-        self.layerAdded.emit(newLayer)
-        self._retuneGeometry()
-        return newLayer
-
-    def importLayer(self, dd):
-        self._currentLayer.importLayer(dd)
-        self._retuneGeometry()
-
-    def importDocument(self, dd):
-        self._canvasLayers = []
-        if (
-            ( 'version' in dd and dd['version'] == '1.0.0' ) or
-            ( 'version' in dd and dd['version'] == '1.0.1' and dd['type'] == 'DumbPaintTool/Document') ):
-            self.resizeCanvas(*dd['size'])
-            for l in dd['layers']:
-                nl = self.newLayer()
-                nl.importLayer(l)
-        else:
-            ttk.TTkLog.error("File Format not recognised")
-        self._retuneGeometry()
-
     def exportLayer(self, full=False, palette=True, crop=True) -> dict:
         if self._currentLayer:
             return self._currentLayer.exportLayer(full=full,palette=palette,crop=crop)
@@ -226,6 +195,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self.update()
 
     def _handleAction(self):
+        if not self._currentLayer: return
         dx,dy = self._documentPos
         dw,dh = self._documentSize
         ox, oy = self.getViewOffsets()
@@ -267,7 +237,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                         self._currentLayer = lm
                         tml = lm
                         self._moveData = {'type':CanvasLayer,'pos':tml.pos(),'layer':tml}
-                        self.layerSelected.emit(lm)
+                        glbls.layers.selectLayerByData(lm)
                         break
 
         elif self._tool & ToolType.MOVE and mp and md:
@@ -291,7 +261,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 if mData['type']==CanvasLayer:
                     px,py = self._moveData['pos']
                     self._moveData['layer'].move(px+pdx,py+pdy)
-                    self.layerSelected.emit(self._moveData['layer'])
+                    glbls.layers.selectLayerByData(self._moveData['layer'])
                 elif mData['type']==PaintArea:
                     px,py = self._moveData['pos']
                     self._documentPos = (px+pdx,py+pdy)

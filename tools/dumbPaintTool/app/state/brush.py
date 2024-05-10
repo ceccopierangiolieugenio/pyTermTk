@@ -24,9 +24,9 @@ __all__ = ['Brush']
 
 import TermTk as ttk
 
-from .const import ToolType
+from ..const import ToolType
 
-# Due bto the variety of widgets that depends
+# Due to the variety of widgets that depends
 # on the brush state, I am defining this class
 # with all the signals required to broadcast
 # all the changes to the widgets that require it

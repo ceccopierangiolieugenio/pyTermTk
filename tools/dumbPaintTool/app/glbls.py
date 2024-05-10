@@ -24,13 +24,17 @@ __all__ = ['glbls']
 
 from dataclasses import dataclass
 
-import TermTk as ttk
+# import TermTk as ttk
 
-from .brush import Brush
-from .canvaslayer import CanvasLayer
+from .state.brush  import Brush
+from .state.layers import Layers
+# from .canvaslayer import CanvasLayer
 
 @dataclass()
 class Glbls:
-    brush:Brush = Brush()
+    brush:Brush   = Brush()
+    layers:Layers = Layers()
+
+
 
 glbls = Glbls()
