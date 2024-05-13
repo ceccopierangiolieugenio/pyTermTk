@@ -177,6 +177,6 @@
  - [x] Events (Signal/Slots)
  - [x] Themes
 #### Yes/No Ok/Cancel Picker
- - [ ] Basic Implementation
- - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Basic Implementation
+ - [x] Events (Signal/Slots)
+ - [x] Themes

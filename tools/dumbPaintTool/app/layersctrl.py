@@ -55,10 +55,9 @@ class _layerButton(ttk.TTkContainer):
     __slots__ = ('_layerData','_first', '_isSelected', '_layerVisible',
                  '_ledit',
                # signals
-               'clicked', 'visibilityToggled',
+               'visibilityToggled',
                )
     def __init__(self, layer:LayerData, **kwargs):
-        self.clicked = ttk.pyTTkSignal(_layerButton)
         self._layerData:LayerData = layer
         self._isSelected = False
         self._first = True
@@ -79,6 +78,11 @@ class _layerButton(ttk.TTkContainer):
         self._layerData = data
         self.update()
 
+    def setSelected(self, selected:bool=True) -> None:
+        if self._isSelected == selected: return
+        self._isSelected = selected
+        self.update()
+
     @ttk.pyTTkSlot(str)
     def _textEdited(self, text):
         self._layerData.setName(text)
@@ -92,7 +96,7 @@ class _layerButton(ttk.TTkContainer):
         return True
 
     def mouseReleaseEvent(self, evt) -> bool:
-        self.clicked.emit(self)
+        glbls.layers.selectLayer(self._layerData)
         return True
 
     def mouseDoubleClickEvent(self, evt) -> bool:
@@ -130,12 +134,10 @@ class _layerButton(ttk.TTkContainer):
         canvas.drawTTkString(pos=(7,1),text=self._layerData.name(), width=w-9, color=textColor)
 
 class LayerScrollWidget(ttk.TTkAbstractScrollView):
-    __slots__ = ('_layers','_layerButtons','_layers_XXX_ToBeRemoved','_selected_XXX_ToBeRemoved', '_dropTo')
+    __slots__ = ('_layers','_layerButtons', '_dropTo')
     def __init__(self, **kwargs):
         self._layers = glbls.layers
-        self._selected_XXX_ToBeRemoved = None
         self._dropTo = None
-        self._layers_XXX_ToBeRemoved:list[_layerButton] = []
         self._layerButtons:list[_layerButton] = []
         super().__init__(**kwargs)
         self.viewChanged.connect(self._placeTheButtons)
@@ -156,7 +158,8 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
 
     @ttk.pyTTkSlot(LayerData)
     def _layerSelected(self, data:LayerData) -> None:
-        self._updateLayerButtons()
+        for btn in self._layerButtons:
+            btn.setSelected(btn.data() == data)
 
     @ttk.pyTTkSlot(list[LayerData])
     def _layersOrderChanged(self, layers:list[LayerData]) -> None:
@@ -167,19 +170,16 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         # remove unused buttons
         for btn in self._layerButtons[len(layers):]:
             self.layout().removeWidget(btn)
-            btn.clicked.clear()
-            btn.visibilityToggled.clear()
             btn._layerData.nameChanged.clear()
 
         self._layerButtons = self._layerButtons[:len(layers)]
-        for i,layer in enumerate(reversed(layers)):
+        for i,layer in enumerate(layers):
             if i >= len(self._layerButtons):
                 self._layerButtons.append(_layerButton(parent=self,layer=layer))
             btn = self._layerButtons[i]
             btn.setData(layer)
         self._placeTheButtons()
         self.viewChanged.emit()
-
 
 
     @ttk.pyTTkSlot()
@@ -199,40 +199,6 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
     def minimumWidth(self):   return 0
     def minimumHeight(self):  return 0
 
-    @ttk.pyTTkSlot(_layerButton)
-    def _clickedLayer(self, layerButton:_layerButton):
-        if sel:=self._selected_XXX_ToBeRemoved:
-            sel._isSelected = False
-            sel.update()
-        self._selected_XXX_ToBeRemoved = layerButton
-        layerButton._isSelected = True
-        self.layerSelected.emit(layerButton._layerData)
-        self.update()
-
-    def clear(self):
-        for layBtn in self._layers_XXX_ToBeRemoved:
-            self.layout().removeWidget(layBtn)
-            layBtn.clicked.clear()
-            layBtn.visibilityToggled.clear()
-            layBtn._layerData.nameChanged.clear()
-        self._layers_XXX_ToBeRemoved.clear()
-        self.update()
-
-    @ttk.pyTTkSlot()
-    def addLayer(self,name=None, data=None):
-        name = name if name else f"Layer #{len(self._layers_XXX_ToBeRemoved)}"
-        _l=LayerData(name=name,data=data)
-        newLayerBtn:_layerButton  = _layerButton(parent=self,layer=_l)
-        self._layers_XXX_ToBeRemoved.insert(0,newLayerBtn)
-        if sel:=self._selected_XXX_ToBeRemoved: sel._isSelected = False
-        self._selected_XXX_ToBeRemoved = newLayerBtn
-        newLayerBtn._isSelected = True
-        newLayerBtn.clicked.connect(self._clickedLayer)
-        self.viewChanged.emit()
-        self._placeTheButtons()
-        self.layerAdded.emit(newLayerBtn._layerData)
-        return _l
-
     def _placeTheButtons(self):
         w,h = self.size()
         for i,l in enumerate(self._layerButtons):
@@ -241,14 +207,10 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
             l.lowerWidget()
         self.update()
 
-    @ttk.pyTTkSlot()
-    def delLayer(self):
-        self._layers_XXX_ToBeRemoved.remove()
-
     def dragEnterEvent(self, evt) -> bool:
         if type(evt.data())!=_layerButton: return False
         x,y = self.getViewOffsets()
-        self._dropTo = max(0,min(len(self._layers_XXX_ToBeRemoved),(evt.y-1+y)//2))
+        self._dropTo = max(0,min(len(self._layerButtons),(evt.y-1+y)//2))
         self.update()
         return True
     def dragLeaveEvent(self, evt) -> bool:
@@ -259,9 +221,9 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
     def dragMoveEvent(self, evt) -> bool:
         if type(evt.data())!=_layerButton: return False
         x,y = self.getViewOffsets()
-        self._dropTo = max(0,min(len(self._layers_XXX_ToBeRemoved),(evt.y-1+y)//2))
+        self._dropTo = max(0,min(len(self._layerButtons),(evt.y+y)//2))
         self.update()
-        ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layers_XXX_ToBeRemoved)} - {self._dropTo}")
+        ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layerButtons)} - {self._dropTo}")
         return True
     def dropEvent(self, evt) -> bool:
         if type(evt.data())!=_layerButton: return False
@@ -269,14 +231,15 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         self._dropTo = None
         data = evt.data()
         # dropPos = len(self._layers)-(evt.y-1)//2
-        dropPos = max(0,min(len(self._layers_XXX_ToBeRemoved),(evt.y-1+y)//2))
-        ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layers_XXX_ToBeRemoved)} - {self._dropTo} {dropPos}")
-        if dropPos > self._layers_XXX_ToBeRemoved.index(data):
-            dropPos -= 1
-        self._layers_XXX_ToBeRemoved.remove(data)
-        self._layers_XXX_ToBeRemoved.insert(dropPos,data)
-        self._placeTheButtons()
-        self.layersOrderChanged.emit([_l._layerData for _l in self._layers_XXX_ToBeRemoved])
+        dropPos = max(0,min(len(self._layerButtons),(evt.y+y)//2))
+        ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layerButtons)} - {self._dropTo} {dropPos}")
+        glbls.layers.moveLayer(self._layerButtons.index(data), dropPos)
+        # if dropPos > self._layerButtons.index(data):
+        #     dropPos -= 1
+        # self._layerButtons.remove(data)
+        # self._layerButtons.insert(dropPos,data)
+        # self._placeTheButtons()
+        # self.layersOrderChanged.emit([_l._layerData for _l in self._layers_XXX_ToBeRemoved])
         return True
 
     # Stupid hack to paint on top of the child widgets

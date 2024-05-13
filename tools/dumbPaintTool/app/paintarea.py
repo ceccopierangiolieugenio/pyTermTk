@@ -27,6 +27,7 @@ import TermTk as ttk
 from .canvaslayer import CanvasLayer
 from .const       import ToolType
 from .glbls       import glbls
+from .state       import LayerData
 
 class PaintArea(ttk.TTkAbstractScrollView):
     __slots__ = ('_canvasLayers', '_currentLayer',
@@ -68,17 +69,40 @@ class PaintArea(ttk.TTkAbstractScrollView):
         glbls.brush.colorChanged.connect(       self.updateGlyph)
         glbls.brush.glyphEnabledChanged.connect(self.updateGlyph)
 
-        glbls.layers.layerSelected.connect(self.setCurrentLayer)
-        # glbls.layers.layerAdded.connect()
-        # glbls.layers.layerDeleted.connect()
-        glbls.layers.layersOrderChanged.connect(self._setCanvasLayers)
+        # glbls.layers.layerSelected.connect(self.setCurrentLayer)
+        # # glbls.layers.layerAdded.connect()
+        # # glbls.layers.layerDeleted.connect()
+        # glbls.layers.layersOrderChanged.connect(self._setCanvasLayers)
+
+        glbls.layers.layerAdded.connect(self._layerAdded)
+        glbls.layers.layerDeleted.connect(self._layerDeleted)
+        glbls.layers.layerSelected.connect(self._layerSelected)
+        glbls.layers.layersOrderChanged.connect(self._layersOrderChanged)
 
         # Retrieve the default values
         self.setTool(      glbls.brush.toolType())
         self.updateGlyph()
 
-    def _setCanvasLayers(self, cl):
-        self._canvasLayers = cl
+    @ttk.pyTTkSlot(LayerData)
+    def _layerAdded(self, data:LayerData) -> None:
+        self._canvasLayers = glbls.layers.layersData()
+        self.update()
+        # raise NotImplementedError()
+
+    @ttk.pyTTkSlot(LayerData)
+    def _layerDeleted(self, data:LayerData) -> None:
+        self._canvasLayers = glbls.layers.layersData()
+        self.update()
+        # raise NotImplementedError()
+
+    @ttk.pyTTkSlot(LayerData)
+    def _layerSelected(self, data:LayerData) -> None:
+        self._currentLayer = data.data() if data else None
+        self.update()
+
+    @ttk.pyTTkSlot(list[LayerData])
+    def _layersOrderChanged(self, layers:list[LayerData]) -> None:
+        self._canvasLayers = [ld.data() for ld in layers]
         self.update()
 
     def _getGeometry(self):
@@ -87,9 +111,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
         ww,wh = self.size()
         x1,y1 = min(0,dx),min(0,dy)
         x2,y2 = max(dx+dw,ww),max(dy+dh,wh)
-        for l in self._canvasLayers:
-            lx,ly = l.pos()
-            lw,lh = l.size()
+        for cl in self._canvasLayers:
+            lx,ly = cl.pos()
+            lw,lh = cl.size()
             x1 = min(x1,dx+lx)
             y1 = min(y1,dy+ly)
             x2 = max(x2,dx+lx+lw)
@@ -155,10 +179,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 l.move(lx+diffx,ly+diffy)
             self._documentPos = (x,y)
         self._documentSize = (w,h)
-        self.update()
-
-    def setCurrentLayer(self, layer:CanvasLayer):
-        self._currentLayer = layer
         self.update()
 
     def exportLayer(self, full=False, palette=True, crop=True) -> dict:
@@ -229,7 +249,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
             if not self._resizeData:
                 # Get The Layer to Move
                 self._moveData = None
-                for lm in reversed(self._canvasLayers):
+                for lm in self._canvasLayers:
                     mpx,mpy = mp
                     lmx,lmy = lm.pos()
                     self._moveData = {'type':PaintArea,'pos':(dx,dy)}
@@ -271,7 +291,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
             if mp and self._tool & ToolType.PICK:
                 glbls.brush.setToolType(self._tool & ~ToolType.PICK)
                 mpx,mpy = mp
-                for lm in reversed(self._canvasLayers):
+                for lm in self._canvasLayers:
                     lmx,lmy = lm.pos()
                     if lm.isOpaque(mpx-lmx-dx,mpy-lmy-dy):
                         glbls.brush.setArea(lm.trim().toTTkString())
@@ -467,9 +487,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
         canvas.fill(pos=(dx-ox-2 ,0    ),size=(2,ch),color=tcd)
         canvas.fill(pos=(dx-ox+dw,0    ),size=(2,ch),color=tcd)
 
-        for l in self._canvasLayers:
-            lx,ly = l.pos()
-            l.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
+        for cl in reversed(self._canvasLayers):
+            lx,ly = cl.pos()
+            cl.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
 
         if self._tool & ToolType.RESIZE:
             rd = self._resizeData

@@ -198,7 +198,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
         if (
             ( 'version' in data and data['version'] == '1.0.0' ) or
             ( 'version' in data and data['version'] == '1.0.1' and data['type'] == 'DumbPaintTool/Document') ):
-            for ld in reversed(data['layers']):
+            for ld in data['layers']:
                 cl = CanvasLayer()
                 cl.importLayer(ld)
                 glbls.layers.addLayer(cl.name(),cl)

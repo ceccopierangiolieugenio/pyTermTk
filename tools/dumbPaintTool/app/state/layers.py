@@ -23,6 +23,7 @@
 __all__ = ['Layers', 'LayerData']
 
 import TermTk as ttk
+from ..canvaslayer import CanvasLayer
 
 class LayerData():
     __slots__ = ('_name','_data',
@@ -31,7 +32,7 @@ class LayerData():
     def __init__(self,name:ttk.TTkString=ttk.TTkString('New'),data=None) -> None:
         self._name:ttk.TTkString = ttk.TTkString(name) if isinstance(name,str) else name
         self.visibilityToggled = ttk.pyTTkSignal(bool)
-        self._data = data if data else {}
+        self._data = data if data else CanvasLayer()
         self.nameChanged = ttk.pyTTkSignal(str)
 
     def name(self):
@@ -58,6 +59,9 @@ class Layers():
         self._selected = None
         self._layers:list[LayerData] = []
 
+    def __len__(self):
+        return len(self._layers)
+
     def layers(self) -> list[LayerData]:
         return self._layers
 
@@ -76,7 +80,7 @@ class Layers():
         self._layers = []
         self._selected = None
         self.layerSelected.emit(None)
-        self.layersOrderChanged.emit(self.layersData())
+        self.layersOrderChanged.emit(self._layers)
 
     @ttk.pyTTkSlot(int, int)
     def move(self, fr:int, to:int) -> None:
@@ -84,7 +88,7 @@ class Layers():
         if to>fr:
             to-=1
         self._layers.insert(to,obj)
-        self.layersOrderChanged.emit(self.layersData())
+        self.layersOrderChanged.emit(self._layers)
 
     @ttk.pyTTkSlot()
     def addLayer(self,name:str=None, data=None) -> LayerData:
@@ -93,9 +97,9 @@ class Layers():
         self._layers.insert(0,ld)
         self._selected = ld
         self.layerAdded.emit(ld.data())
-        self.layersOrderChanged.emit(self.layersData())
+        self.layersOrderChanged.emit(self._layers)
         if len(self._layers) == 1:
-            self.layerSelected.emit(ld.data())
+            self.layerSelected.emit(ld)
         return ld
 
     @ttk.pyTTkSlot()
@@ -105,14 +109,19 @@ class Layers():
         dl = la.pop(la.index(self._selected))
         self._selected = la[0] if la else None
         self.layerDeleted(dl.data())
-        self.layersOrderChanged.emit(self.layersData())
+        self.layersOrderChanged.emit(self._layers)
         return dl
+
+    def selectLayer(self, layer) -> None:
+       if layer in self._layers:
+           self._selected = layer
+           self.layerSelected.emit(layer)
 
     def selectLayerByData(self, data) -> None:
        for lay in self._layers:
             if lay.data() == data:
                 self._selected = lay
-                self.layerSelected.emit(data)
+                self.layerSelected.emit(lay)
                 return
 
     @ttk.pyTTkSlot()
@@ -129,4 +138,13 @@ class Layers():
         if index+direction < 0: return
         la = self._layers.pop(index)
         self._layers.insert(index+direction,la)
-        self.layersOrderChanged.emit(self.layersData())
+        self.layersOrderChanged.emit(self._layers)
+
+    def moveLayer(self, fr:int, to:int) -> None:
+        if not self._layers: return
+        fr = max(0,fr)
+        to = max(0,to) - (1 if to>fr else 0)
+        # ttk.TTkLog.debug(f"{fr=} {to=}")
+        la = self._layers.pop(fr)
+        self._layers.insert(to,la)
+        self.layersOrderChanged.emit(self._layers)

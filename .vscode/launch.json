@@ -38,14 +38,14 @@
             "name": "Python: DumbPaintTool",
             "type": "debugpy",
             "request": "launch",
-            "program": "tools/dumb.paint.tool.py",
+            "program": "tools/dumbPaintTool.py",
             "console": "integratedTerminal",
             "justMyCode": true
         },{
             "name": "Python: DumbPaintTool File",
             "type": "debugpy",
             "request": "launch",
-            "program": "tools/dumb.paint.tool.py",
+            "program": "tools/dumbPaintTool.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args":["experiments/untitled.DPT.json"]
