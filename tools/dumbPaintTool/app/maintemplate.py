@@ -262,7 +262,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
             if 'layers' in dd:
                 self.importDocument(dd)
             else:
-                glbls.layers.importLayer(dd,"Impport")
+                glbls.layers.addLayer().importLayer(dd)
 
             newWindow.close()
 

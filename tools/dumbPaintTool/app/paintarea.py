@@ -193,15 +193,15 @@ class PaintArea(ttk.TTkAbstractScrollView):
             'type':'DumbPaintTool/Document',
             'version':'1.0.1',
             'size':(pw,ph),
-            'layers':[l.exportLayer(full=full,palette=palette,crop=crop) for l in self._canvasLayers]}
+            'layers':[cl.exportLayer(full=full,palette=palette,crop=crop) for cl in reversed(self._canvasLayers)]}
         return outData
 
     def exportImage(self) -> str:
         pw,ph = self._documentSize
         image = ttk.TTkCanvas(width=pw,height=ph)
-        for l in self._canvasLayers:
-            lx,ly = l.pos()
-            l.drawInCanvas(pos=(lx,ly),canvas=image)
+        for cl in reversed(self._canvasLayers):
+            lx,ly = cl.pos()
+            cl.drawInCanvas(pos=(lx,ly),canvas=image)
         return image.toAnsi()
 
     def leaveEvent(self, evt):
