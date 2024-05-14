@@ -34,7 +34,6 @@ from .state.layers import Layers
 class Glbls:
     brush:Brush   = Brush()
     layers:Layers = Layers()
-
-
+    documentSize = (80,25)
 
 glbls = Glbls()

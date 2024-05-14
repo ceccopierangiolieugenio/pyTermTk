@@ -20,56 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['Layers', 'LayerData']
+__all__ = ['Layers', 'CanvasLayer']
 
 import TermTk as ttk
 from ..canvaslayer import CanvasLayer
-
-class LayerData():
-    __slots__ = ('_name','_data',
-                 #signals
-                 'nameChanged','visibilityToggled')
-    def __init__(self,name:ttk.TTkString=ttk.TTkString('New'),data=None) -> None:
-        self._name:ttk.TTkString = ttk.TTkString(name) if isinstance(name,str) else name
-        self.visibilityToggled = ttk.pyTTkSignal(bool)
-        self._data = data if data else CanvasLayer()
-        self.nameChanged = ttk.pyTTkSignal(str)
-
-    def name(self):
-        return self._name
-    def setName(self,name):
-        self.nameChanged.emit(name)
-        self._name = name
-
-    def data(self):
-        return self._data
-    def setData(self,data):
-        self._data = data
 
 class Layers():
     __slots__ = ('_layers','_selected',
                  # Signals
                  'layerSelected','layerAdded','layerDeleted','layersOrderChanged')
     def __init__(self) -> None:
-        self.layerSelected = ttk.pyTTkSignal(LayerData)
-        self.layerAdded    = ttk.pyTTkSignal(LayerData)
-        self.layerDeleted  = ttk.pyTTkSignal(LayerData)
-        self.layersOrderChanged = ttk.pyTTkSignal(list[LayerData])
+        self.layerSelected = ttk.pyTTkSignal(CanvasLayer)
+        self.layerAdded    = ttk.pyTTkSignal(CanvasLayer)
+        self.layerDeleted  = ttk.pyTTkSignal(CanvasLayer)
+        self.layersOrderChanged = ttk.pyTTkSignal(list[CanvasLayer])
 
         self._selected = None
-        self._layers:list[LayerData] = []
+        self._layers:list[CanvasLayer] = []
 
     def __len__(self):
         return len(self._layers)
 
-    def layers(self) -> list[LayerData]:
+    def layers(self) -> list[CanvasLayer]:
         return self._layers
 
-    def layersData(self) -> list:
-        return [ld.data() for ld in self._layers]
-
-    def selected(self) -> LayerData:
-        return self._selected.data()
+    def selected(self) -> CanvasLayer:
+        return self._selected
 
     def isEmpty(self):
         return len(self._layers) == 0
@@ -91,15 +67,16 @@ class Layers():
         self.layersOrderChanged.emit(self._layers)
 
     @ttk.pyTTkSlot()
-    def addLayer(self,name:str=None, data=None) -> LayerData:
-        name = name if name else f"Layer #{len(self._layers)}"
-        ld=LayerData(name=name,data=data)
+    def addLayer(self,name:ttk.TTkString=None) -> CanvasLayer:
+        from ..glbls import glbls
+        name = ttk.TTkString(name if name else f"Layer #{len(self._layers)}")
+        ld=CanvasLayer(name=name)
+        ld.resize(*glbls.documentSize)
         self._layers.insert(0,ld)
         self._selected = ld
-        self.layerAdded.emit(ld.data())
+        self.layerAdded.emit(ld)
         self.layersOrderChanged.emit(self._layers)
-        if len(self._layers) == 1:
-            self.layerSelected.emit(ld)
+        self.layerSelected.emit(self._selected)
         return ld
 
     @ttk.pyTTkSlot()
@@ -108,7 +85,7 @@ class Layers():
         la = self._layers
         dl = la.pop(la.index(self._selected))
         self._selected = la[0] if la else None
-        self.layerDeleted(dl.data())
+        self.layerDeleted(dl)
         self.layersOrderChanged.emit(self._layers)
         return dl
 
@@ -116,13 +93,6 @@ class Layers():
        if layer in self._layers:
            self._selected = layer
            self.layerSelected.emit(layer)
-
-    def selectLayerByData(self, data) -> None:
-       for lay in self._layers:
-            if lay.data() == data:
-                self._selected = lay
-                self.layerSelected.emit(lay)
-                return
 
     @ttk.pyTTkSlot()
     def moveUp(self):

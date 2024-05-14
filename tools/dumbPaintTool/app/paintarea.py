@@ -27,7 +27,6 @@ import TermTk as ttk
 from .canvaslayer import CanvasLayer
 from .const       import ToolType
 from .glbls       import glbls
-from .state       import LayerData
 
 class PaintArea(ttk.TTkAbstractScrollView):
     __slots__ = ('_canvasLayers', '_currentLayer',
@@ -60,7 +59,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._clipboard = ttk.TTkClipboard()
         super().__init__(*args, **kwargs)
         self.setTrans(ttk.TTkColor.bg('#FF00FF'))
-        self.resizeCanvas(80,25)
+        self.resizeCanvas(*glbls.documentSize)
         self.setFocusPolicy(ttk.TTkK.ClickFocus + ttk.TTkK.TabFocus)
 
         glbls.brush.toolTypeChanged.connect(self.setTool)
@@ -83,26 +82,26 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self.setTool(      glbls.brush.toolType())
         self.updateGlyph()
 
-    @ttk.pyTTkSlot(LayerData)
-    def _layerAdded(self, data:LayerData) -> None:
-        self._canvasLayers = glbls.layers.layersData()
+    @ttk.pyTTkSlot(CanvasLayer)
+    def _layerAdded(self, data:CanvasLayer) -> None:
+        self._canvasLayers = glbls.layers.layers()
         self.update()
         # raise NotImplementedError()
 
-    @ttk.pyTTkSlot(LayerData)
-    def _layerDeleted(self, data:LayerData) -> None:
-        self._canvasLayers = glbls.layers.layersData()
+    @ttk.pyTTkSlot(CanvasLayer)
+    def _layerDeleted(self, data:CanvasLayer) -> None:
+        self._canvasLayers = glbls.layers.layers()
         self.update()
         # raise NotImplementedError()
 
-    @ttk.pyTTkSlot(LayerData)
-    def _layerSelected(self, data:LayerData) -> None:
-        self._currentLayer = data.data() if data else None
+    @ttk.pyTTkSlot(CanvasLayer)
+    def _layerSelected(self, data:CanvasLayer) -> None:
+        self._currentLayer = data
         self.update()
 
-    @ttk.pyTTkSlot(list[LayerData])
-    def _layersOrderChanged(self, layers:list[LayerData]) -> None:
-        self._canvasLayers = [ld.data() for ld in layers]
+    @ttk.pyTTkSlot(list[CanvasLayer])
+    def _layersOrderChanged(self, layers:list[CanvasLayer]) -> None:
+        self._canvasLayers = layers
         self.update()
 
     def _getGeometry(self):
@@ -161,7 +160,8 @@ class PaintArea(ttk.TTkAbstractScrollView):
         return self._canvasLayers
 
     def resizeCanvas(self, w, h):
-        self._documentSize  = (w,h)
+        self._documentSize = (w,h)
+        glbls.documentSize = (w,h)
         self._retuneGeometry()
         self.update()
 
@@ -179,6 +179,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 l.move(lx+diffx,ly+diffy)
             self._documentPos = (x,y)
         self._documentSize = (w,h)
+        glbls.documentSize = (w,h)
         self.update()
 
     def exportLayer(self, full=False, palette=True, crop=True) -> dict:
@@ -257,7 +258,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                         self._currentLayer = lm
                         tml = lm
                         self._moveData = {'type':CanvasLayer,'pos':tml.pos(),'layer':tml}
-                        glbls.layers.selectLayerByData(lm)
+                        glbls.layers.selectLayer(lm)
                         break
 
         elif self._tool & ToolType.MOVE and mp and md:
@@ -281,7 +282,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 if mData['type']==CanvasLayer:
                     px,py = self._moveData['pos']
                     self._moveData['layer'].move(px+pdx,py+pdy)
-                    glbls.layers.selectLayerByData(self._moveData['layer'])
+                    glbls.layers.selectLayer(self._moveData['layer'])
                 elif mData['type']==PaintArea:
                     px,py = self._moveData['pos']
                     self._documentPos = (px+pdx,py+pdy)

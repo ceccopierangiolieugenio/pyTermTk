@@ -31,7 +31,7 @@ from .toolspanel   import ToolsPanel
 from .canvaslayer  import CanvasLayer
 from .painttoolkit import PaintToolKit
 from .textarea     import TextArea
-from .layersctrl   import LayersControl,LayerData
+from .layersctrl   import LayersControl
 from .about        import About
 from .const        import ToolType
 from .filters      import HueChromaLightness,BrightnessContrast
@@ -134,9 +134,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
     @ttk.pyTTkSlot()
     def _new(self):
-        self._parea.clear()
-        self._layers.clear()
-        self._layers.addLayer(name="Background")
+        glbls.layers.clear()
+        glbls.layers.addLayer(name="Background")
 
     @ttk.pyTTkSlot()
     def _open(self):
@@ -199,9 +198,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
             ( 'version' in data and data['version'] == '1.0.0' ) or
             ( 'version' in data and data['version'] == '1.0.1' and data['type'] == 'DumbPaintTool/Document') ):
             for ld in data['layers']:
-                cl = CanvasLayer()
-                cl.importLayer(ld)
-                glbls.layers.addLayer(cl.name(),cl)
+                glbls.layers.addLayer().importLayer(ld)
         else:
             ttk.TTkLog.error("File Format not recognised")
 

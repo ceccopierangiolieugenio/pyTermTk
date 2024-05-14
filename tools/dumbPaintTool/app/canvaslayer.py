@@ -43,13 +43,16 @@ from .const import ToolType
 
 class CanvasLayer():
     __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset',
-                'changed')
-    def __init__(self) -> None:
+                #signals
+                'nameChanged','visibilityToggled','changed')
+    def __init__(self,name:ttk.TTkString=ttk.TTkString('New')) -> None:
         self.changed = ttk.pyTTkSignal()
+        self.visibilityToggled = ttk.pyTTkSignal(bool)
+        self._name:ttk.TTkString = ttk.TTkString(name) if isinstance(name,str) else name
+        self.nameChanged = ttk.pyTTkSignal(ttk.TTkString)
         self._pos  = (0,0)
         self._size = (0,0)
         self._offset = (0,0)
-        self._name = ""
         self._visible = True
         self._preview = None
         self._data:  list[list[str         ]] = []
@@ -67,7 +70,9 @@ class CanvasLayer():
         return self._visible
     @ttk.pyTTkSlot(bool)
     def setVisible(self, visible):
+        if visible == self._visible: return
         self._visible = visible
+        self.changed.emit()
 
     def name(self):
         return self._name
@@ -235,7 +240,7 @@ class CanvasLayer():
     def _import_v1_0_0(self, dd):
         self._pos  = dd['pos']
         self._size = dd['size']
-        self._name = dd['name']
+        self._name = ttk.TTkString(dd['name'])
         self._data = dd['data']
         def _getColor(cd):
             fg,bg = cd
