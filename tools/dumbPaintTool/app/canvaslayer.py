@@ -44,10 +44,9 @@ from .const import ToolType
 class CanvasLayer():
     __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset',
                 #signals
-                'nameChanged','visibilityToggled','changed')
+                'nameChanged','changed')
     def __init__(self,name:ttk.TTkString=ttk.TTkString('New')) -> None:
         self.changed = ttk.pyTTkSignal()
-        self.visibilityToggled = ttk.pyTTkSignal(bool)
         self._name:ttk.TTkString = ttk.TTkString(name) if isinstance(name,str) else name
         self.nameChanged = ttk.pyTTkSignal(ttk.TTkString)
         self._pos  = (0,0)
@@ -345,7 +344,7 @@ class CanvasLayer():
             colors[i] = (c + [ttk.TTkColor.RST]*w)[:w]
 
         self._size = (w,h)
-        self._name = "Pasted"
+        self._name = ttk.TTkString("Pasted")
 
     def placeFill(self,geometry,tool,glyph:str,color:ttk.TTkColor,glyphEnabled=True,preview=False):
         ox,oy = self._offset

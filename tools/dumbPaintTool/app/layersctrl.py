@@ -52,17 +52,13 @@ class _layerButton(ttk.TTkContainer):
                                 'grid':1},
             }
 
-    __slots__ = ('_CanvasLayer','_first', '_isSelected', '_layerVisible',
-                 '_ledit',
-               # signals
-               'visibilityToggled',
+    __slots__ = ('_canvasLayer','_first', '_isSelected',
+                 '_ledit'
                )
     def __init__(self, layer:CanvasLayer, **kwargs):
-        self._CanvasLayer:CanvasLayer = layer
+        self._canvasLayer:CanvasLayer = layer
         self._isSelected = False
         self._first = True
-        self._layerVisible = True
-        self.visibilityToggled = layer.visibilityToggled
 
         super().__init__(**kwargs|{'layout':ttk.TTkGridLayout()})
         self.setPadding(1,1,7,2)
@@ -72,10 +68,10 @@ class _layerButton(ttk.TTkContainer):
         # self.setFocusPolicy(ttk.TTkK.ClickFocus)
 
     def data(self):
-        return self._CanvasLayer
+        return self._canvasLayer
 
     def setData(self, data):
-        self._CanvasLayer = data
+        self._canvasLayer = data
         self.update()
 
     def setSelected(self, selected:bool=True) -> None:
@@ -85,18 +81,17 @@ class _layerButton(ttk.TTkContainer):
 
     @ttk.pyTTkSlot(str)
     def _textEdited(self, text):
-        self._CanvasLayer.setName(text)
+        self._canvasLayer.setName(text)
 
     def mousePressEvent(self, evt) -> bool:
         if evt.x <= 3:
-            self._layerVisible = not self._layerVisible
-            self.visibilityToggled.emit(self._layerVisible)
+            self._canvasLayer.setVisible(not self._canvasLayer.visible())
         self.setFocus()
         self.update()
         return True
 
     def mouseReleaseEvent(self, evt) -> bool:
-        glbls.layers.selectLayer(self._CanvasLayer)
+        glbls.layers.selectLayer(self._canvasLayer)
         return True
 
     def mouseDoubleClickEvent(self, evt) -> bool:
@@ -107,7 +102,7 @@ class _layerButton(ttk.TTkContainer):
     def mouseDragEvent(self, evt) -> bool:
         drag = ttk.TTkDrag()
         drag.setData(self)
-        name = self._CanvasLayer.name()
+        name = self._canvasLayer.name()
         pm = ttk.TTkCanvas(width=len(name)+4,height=3)
         pm.drawBox(pos=(0,0),size=pm.size())
         pm.drawText(pos=(2,1), text=name)
@@ -123,7 +118,7 @@ class _layerButton(ttk.TTkContainer):
             style = self.currentStyle()
         borderColor = style['borderColor']
         textColor   = style['color']
-        btnVisible = '▣' if self._layerVisible else '□'
+        btnVisible = '▣' if self._canvasLayer.visible() else '□'
         w,h = self.size()
         canvas.drawText(    pos=(0,0),text=f"     ┏{'━'*(w-7)}┓",color=borderColor)
         canvas.drawText(    pos=(0,2),text=f"     ┗{'━'*(w-7)}┛",color=borderColor)
@@ -131,7 +126,7 @@ class _layerButton(ttk.TTkContainer):
             canvas.drawText(pos=(0,1),text=f" {btnVisible} - ┃{' '*(w-7)}┃",color=borderColor)
         else:
             canvas.drawText(pos=(0,1),text=f" {btnVisible} - ╽{' '*(w-7)}╽",color=borderColor)
-        canvas.drawTTkString(pos=(7,1),text=self._CanvasLayer.name(), width=w-9, color=textColor)
+        canvas.drawTTkString(pos=(7,1),text=self._canvasLayer.name(), width=w-9, color=textColor)
 
 class LayerScrollWidget(ttk.TTkAbstractScrollView):
     __slots__ = ('_layers','_layerButtons', '_dropTo')
@@ -170,7 +165,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         # remove unused buttons
         for btn in self._layerButtons[len(layers):]:
             self.layout().removeWidget(btn)
-            btn._CanvasLayer.nameChanged.clear()
+            btn._canvasLayer.nameChanged.clear()
 
         self._layerButtons = self._layerButtons[:len(layers)]
         for i,layer in enumerate(layers):

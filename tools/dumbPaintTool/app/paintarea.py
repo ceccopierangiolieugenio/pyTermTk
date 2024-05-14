@@ -420,8 +420,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._clipboard.setText(text)
 
     def pasteEvent(self, txt:str):
-        l = self.newLayer()
-        l.importTTkString(ttk.TTkString(txt))
+        glbls.layers.addLayer().importTTkString(ttk.TTkString(txt))
         self.update()
         return True
 
