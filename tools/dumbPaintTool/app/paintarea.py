@@ -29,8 +29,7 @@ from .const       import ToolType
 from .glbls       import glbls
 
 class PaintArea(ttk.TTkAbstractScrollView):
-    __slots__ = ('_canvasLayers', '_currentLayer',
-                 '_transparentColor',
+    __slots__ = ('_transparentColor',
                  '_documentPos','_documentSize',
                  '_mouseMove', '_mouseDrag', '_mousePress', '_mouseRelease',
                  '_moveData','_resizeData',
@@ -40,8 +39,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
     def __init__(self, *args, **kwargs):
         self._transparentColor = {'base':ttk.TTkColor.RST,'dim':ttk.TTkColor.RST}
-        self._currentLayer:CanvasLayer = None
-        self._canvasLayers:list[CanvasLayer] = []
         self._glyph = 'X'
         self._glyphColor = ttk.TTkColor.RST
         self._glyphEnabled = True
@@ -68,41 +65,14 @@ class PaintArea(ttk.TTkAbstractScrollView):
         glbls.brush.colorChanged.connect(       self.updateGlyph)
         glbls.brush.glyphEnabledChanged.connect(self.updateGlyph)
 
-        # glbls.layers.layerSelected.connect(self.setCurrentLayer)
-        # # glbls.layers.layerAdded.connect()
-        # # glbls.layers.layerDeleted.connect()
-        # glbls.layers.layersOrderChanged.connect(self._setCanvasLayers)
-
-        glbls.layers.layerAdded.connect(self._layerAdded)
-        glbls.layers.layerDeleted.connect(self._layerDeleted)
-        glbls.layers.layerSelected.connect(self._layerSelected)
-        glbls.layers.layersOrderChanged.connect(self._layersOrderChanged)
+        glbls.layers.layerAdded.connect(self.update)
+        glbls.layers.layerDeleted.connect(self.update)
+        glbls.layers.layerSelected.connect(self.update)
+        glbls.layers.layersOrderChanged.connect(self.update)
 
         # Retrieve the default values
         self.setTool(      glbls.brush.toolType())
         self.updateGlyph()
-
-    @ttk.pyTTkSlot(CanvasLayer)
-    def _layerAdded(self, data:CanvasLayer) -> None:
-        self._canvasLayers = glbls.layers.layers()
-        self.update()
-        # raise NotImplementedError()
-
-    @ttk.pyTTkSlot(CanvasLayer)
-    def _layerDeleted(self, data:CanvasLayer) -> None:
-        self._canvasLayers = glbls.layers.layers()
-        self.update()
-        # raise NotImplementedError()
-
-    @ttk.pyTTkSlot(CanvasLayer)
-    def _layerSelected(self, data:CanvasLayer) -> None:
-        self._currentLayer = data
-        self.update()
-
-    @ttk.pyTTkSlot(list[CanvasLayer])
-    def _layersOrderChanged(self, layers:list[CanvasLayer]) -> None:
-        self._canvasLayers = layers
-        self.update()
 
     def _getGeometry(self):
         dx,dy = self._documentPos
@@ -110,7 +80,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         ww,wh = self.size()
         x1,y1 = min(0,dx),min(0,dy)
         x2,y2 = max(dx+dw,ww),max(dy+dh,wh)
-        for cl in self._canvasLayers:
+        for cl in glbls.layers.layers():
             lx,ly = cl.pos()
             lw,lh = cl.size()
             x1 = min(x1,dx+lx)
@@ -156,9 +126,6 @@ class PaintArea(ttk.TTkAbstractScrollView):
     def minimumWidth(self):   return 0
     def minimumHeight(self):  return 0
 
-    def canvasLayers(self):
-        return self._canvasLayers
-
     def resizeCanvas(self, w, h):
         self._documentSize = (w,h)
         glbls.documentSize = (w,h)
@@ -174,7 +141,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         if self._documentPos  != (x,y):
             diffx = dx-x
             diffy = dy-y
-            for l in self._canvasLayers:
+            for l in glbls.layers.layers():
                 lx,ly = l.pos()
                 l.move(lx+diffx,ly+diffy)
             self._documentPos = (x,y)
@@ -183,8 +150,8 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self.update()
 
     def exportLayer(self, full=False, palette=True, crop=True) -> dict:
-        if self._currentLayer:
-            return self._currentLayer.exportLayer(full=full,palette=palette,crop=crop)
+        if glbls.layers.selected():
+            return glbls.layers.selected().exportLayer(full=full,palette=palette,crop=crop)
         return {}
 
     def exportDocument(self, full=True, palette=True, crop=True) -> dict:
@@ -193,13 +160,13 @@ class PaintArea(ttk.TTkAbstractScrollView):
             'type':'DumbPaintTool/Document',
             'version':'1.0.1',
             'size':(pw,ph),
-            'layers':[cl.exportLayer(full=full,palette=palette,crop=crop) for cl in reversed(self._canvasLayers)]}
+            'layers':[cl.exportLayer(full=full,palette=palette,crop=crop) for cl in reversed(glbls.layers.layers())]}
         return outData
 
     def exportImage(self) -> str:
         pw,ph = self._documentSize
         image = ttk.TTkCanvas(width=pw,height=ph)
-        for cl in reversed(self._canvasLayers):
+        for cl in reversed(glbls.layers.layers()):
             lx,ly = cl.pos()
             cl.drawInCanvas(pos=(lx,ly),canvas=image)
         return image.toAnsi()
@@ -216,7 +183,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self.update()
 
     def _handleAction(self):
-        if not self._currentLayer: return
+        if not glbls.layers.selected(): return
         dx,dy = self._documentPos
         dw,dh = self._documentSize
         ox, oy = self.getViewOffsets()
@@ -224,7 +191,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         mm = self._mouseMove
         md = self._mouseDrag
         mr = self._mouseRelease
-        l = self._currentLayer
+        l = glbls.layers.selected()
         lx,ly = l.pos()
 
         if self._tool & ToolType.MOVE and mp and not md:
@@ -250,12 +217,11 @@ class PaintArea(ttk.TTkAbstractScrollView):
             if not self._resizeData:
                 # Get The Layer to Move
                 self._moveData = None
-                for lm in self._canvasLayers:
+                for lm in glbls.layers.layers():
                     mpx,mpy = mp
                     lmx,lmy = lm.pos()
                     self._moveData = {'type':PaintArea,'pos':(dx,dy)}
                     if lm.isOpaque(mpx-lmx-dx,mpy-lmy-dy):
-                        self._currentLayer = lm
                         tml = lm
                         self._moveData = {'type':CanvasLayer,'pos':tml.pos(),'layer':tml}
                         glbls.layers.selectLayer(lm)
@@ -292,7 +258,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
             if mp and self._tool & ToolType.PICK:
                 glbls.brush.setToolType(self._tool & ~ToolType.PICK)
                 mpx,mpy = mp
-                for lm in self._canvasLayers:
+                for lm in glbls.layers.layers():
                     lmx,lmy = lm.pos()
                     if lm.isOpaque(mpx-lmx-dx,mpy-lmy-dy):
                         glbls.brush.setArea(lm.trim().toTTkString())
@@ -309,34 +275,34 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 preview=False
                 transparent=self._tool & ToolType.TRANSPARENT
                 if self._tool & ToolType.GLYPH:
-                    self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+                    glbls.layers.selected().placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,self._glyphEnabled,preview)
                 if self._tool & ToolType.AREA:
-                    self._currentLayer.placeArea(mx-lx-dx,my-ly-dy,self._areaBrush,transparent,preview)
+                    glbls.layers.selected().placeArea(mx-lx-dx,my-ly-dy,self._areaBrush,transparent,preview)
             elif mm:
                 mx,my = mm
                 preview=True
                 transparent=self._tool & ToolType.TRANSPARENT
                 if self._tool & ToolType.GLYPH:
-                    self._currentLayer.placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+                    glbls.layers.selected().placeGlyph(mx-lx-dx,my-ly-dy,self._glyph,self._glyphColor,self._glyphEnabled,preview)
                 if self._tool & ToolType.AREA:
-                    self._currentLayer.placeArea(mx-lx-dx,my-ly-dy,self._areaBrush,transparent,preview)
+                    glbls.layers.selected().placeArea(mx-lx-dx,my-ly-dy,self._areaBrush,transparent,preview)
 
         elif self._tool in (ToolType.RECTEMPTY, ToolType.RECTFILL):
             if mr and mp:
                 mpx,mpy = mp
                 mrx,mry = mr
                 preview=False
-                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+                glbls.layers.selected().placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
             elif md and mp:
                 mpx,mpy = mp
                 mrx,mry = md
                 preview=True
-                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+                glbls.layers.selected().placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
             elif mm:
                 mpx,mpy = mm
                 mrx,mry = mm
                 preview=True
-                self._currentLayer.placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
+                glbls.layers.selected().placeFill((mpx-lx-dx,mpy-ly-dy,mrx-lx-dx,mry-ly-dy),self._tool,self._glyph,self._glyphColor,self._glyphEnabled,preview)
         self.update()
 
     def mouseMoveEvent(self, evt) -> bool:
@@ -377,29 +343,29 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
     def keyEvent(self, evt) -> bool:
         ret = None
-        l = self._currentLayer
-        if   l and evt.key == ttk.TTkK.Key_Up:
-            x,y = l.pos()
-            l.move(x,y-1)
+        cl = glbls.layers.selected()
+        if   cl and evt.key == ttk.TTkK.Key_Up:
+            x,y = cl.pos()
+            cl.move(x,y-1)
             ret = True
-        elif l and evt.key == ttk.TTkK.Key_Down:
-            x,y = l.pos()
-            l.move(x,y+1)
+        elif cl and evt.key == ttk.TTkK.Key_Down:
+            x,y = cl.pos()
+            cl.move(x,y+1)
             ret = True
-        elif l and evt.key == ttk.TTkK.Key_Left:
-            x,y = l.pos()
-            l.move(x-1,y)
+        elif cl and evt.key == ttk.TTkK.Key_Left:
+            x,y = cl.pos()
+            cl.move(x-1,y)
             ret = True
-        elif l and evt.key == ttk.TTkK.Key_Right:
-            x,y = l.pos()
-            l.move(x+1,y)
+        elif cl and evt.key == ttk.TTkK.Key_Right:
+            x,y = cl.pos()
+            cl.move(x+1,y)
             ret = True
         elif evt.mod==ttk.TTkK.ControlModifier and evt.key == ttk.TTkK.Key_V:
             self.paste()
             ret = True
         elif evt.mod==ttk.TTkK.ControlModifier and evt.key == ttk.TTkK.Key_C:
-            if self._currentLayer:
-                text = self._currentLayer.toTTkString()
+            if glbls.layers.selected():
+                text = glbls.layers.selected().toTTkString()
                 self.copy(text)
                 ret = True
         else:
@@ -439,10 +405,11 @@ class PaintArea(ttk.TTkAbstractScrollView):
         return self._glyph
     @ttk.pyTTkSlot(str)
     def setGlyph(self, glyph):
-        if len(glyph) <= 0: return
-        if type(glyph)==str:
+        if len(glyph) <= 0:
+            return
+        if isinstance(glyph,str):
             self._glyph = glyph[0]
-        if type(glyph)==ttk.TTkString:
+        if isinstance(glyph,ttk.TTkString):
             self._glyph = glyph.charAt(0)
             self._glyphColor = glyph.colorAt(0)
 
@@ -468,16 +435,16 @@ class PaintArea(ttk.TTkAbstractScrollView):
         dw,dh = self._documentSize
         dox,doy = dx-ox,dy-oy
         cw,ch = canvas.size()
-        w=min(cw,dw)
-        h=min(ch,dh)
+        # w=min(cw,dw)
+        # h=min(ch,dh)
         tcb = self._transparentColor['base']
         tcd = self._transparentColor['dim']
 
-        if l:=self._currentLayer:
+        if cl:=glbls.layers.selected():
             tclb = self._transparentColor['layer']
             tcld = self._transparentColor['layerDim']
-            lx,ly = l.pos()
-            lw,lh = l.size()
+            lx,ly = cl.pos()
+            lw,lh = cl.size()
             canvas.fill(pos=(0     ,ly+doy),size=(cw,lh),color=tcld)
             canvas.fill(pos=(lx+dox,0     ),size=(lw,ch),color=tcld)
             canvas.fill(pos=(lx+dox,ly+doy),size=(lw,lh),color=tclb)
@@ -487,7 +454,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         canvas.fill(pos=(dx-ox-2 ,0    ),size=(2,ch),color=tcd)
         canvas.fill(pos=(dx-ox+dw,0    ),size=(2,ch),color=tcd)
 
-        for cl in reversed(self._canvasLayers):
+        for cl in reversed(glbls.layers.layers()):
             lx,ly = cl.pos()
             cl.drawInCanvas(pos=(lx+dox,ly+doy),canvas=canvas)
 
@@ -511,9 +478,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
             _drawResizeBorders(dx-ox-1, dy-oy-1, dw+2, dh+2, sMain)
 
-            if l:=self._currentLayer:
-                lx,ly = l.pos()
-                lw,lh = l.size()
+            if cl:=glbls.layers.selected():
+                lx,ly = cl.pos()
+                lw,lh = cl.size()
                 _drawResizeBorders(lx+dx-ox-1, ly+dy-oy-1, lw+2, lh+2, sLayer)
 
 
