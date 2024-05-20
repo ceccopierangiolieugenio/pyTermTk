@@ -121,8 +121,9 @@ class PaintTemplate(ttk.TTkAppTemplate):
         glbls.layers.addLayer(name="Background")
         if fileName:
             self._openFile(fileName)
-        glbls.clearSnapshot()
-        glbls.saveSnapshot()
+        else:
+            glbls.clearSnapshot()
+            glbls.saveSnapshot()
 
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.IMAGE, self._openImageData)
@@ -220,6 +221,8 @@ class PaintTemplate(ttk.TTkAppTemplate):
                 self.importDocument(dd)
             else:
                 glbls.layers.importLayer(dd,"Import")
+            glbls.clearSnapshot()
+            glbls.saveSnapshot()
 
     @ttk.pyTTkSlot()
     def _hueChromaLightness(self):

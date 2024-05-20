@@ -73,6 +73,10 @@ class Glbls:
     _snaphots     = []
     _snapId:int   = 0
 
+    def clearSnapshot(self):
+        self._snaphots     = []
+        self._snapId:int   = 0
+
     def saveSnapshot(self):
         # TODO: Dispose properly of the unused clones
         snapshot = Snapshot()
