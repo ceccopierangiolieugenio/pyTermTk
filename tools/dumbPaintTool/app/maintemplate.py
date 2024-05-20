@@ -121,9 +121,14 @@ class PaintTemplate(ttk.TTkAppTemplate):
         glbls.layers.addLayer(name="Background")
         if fileName:
             self._openFile(fileName)
+        glbls.clearSnapshot()
+        glbls.saveSnapshot()
 
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.APPLICATION_JSON, self._openDragData)
         ttk.ttkConnectDragOpen(ttk.TTkEncoding.IMAGE, self._openImageData)
+
+        ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_Z).activated.connect(glbls.undo)
+        ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_Y).activated.connect(glbls.redo)
 
         # Debug import image
         # from PIL import Image
@@ -218,12 +223,12 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
     @ttk.pyTTkSlot()
     def _hueChromaLightness(self):
-        newWindow = HueChromaLightness(self._parea._currentLayer)
+        newWindow = HueChromaLightness(glbls.layers.selected())
         ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
 
     @ttk.pyTTkSlot()
     def _brightnessContrast(self):
-        newWindow = BrightnessContrast(self._parea._currentLayer)
+        newWindow = BrightnessContrast(glbls.layers.selected())
         ttk.TTkHelper.overlay(None, newWindow, 10, 4, modal=True)
 
     @ttk.pyTTkSlot()

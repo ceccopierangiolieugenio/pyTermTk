@@ -43,7 +43,7 @@ def main():
             layout=ttk.TTkGridLayout(),
             mouseTrack=True,
             sigmask=(
-                # ttk.TTkTerm.Sigmask.CTRL_C |
+                ttk.TTkTerm.Sigmask.CTRL_C |
                 ttk.TTkTerm.Sigmask.CTRL_Q |
                 ttk.TTkTerm.Sigmask.CTRL_S |
                 ttk.TTkTerm.Sigmask.CTRL_Z ))

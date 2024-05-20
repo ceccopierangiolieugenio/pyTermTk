@@ -162,6 +162,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
 
     def _updateLayerButtons(self):
         layers = glbls.layers.layers()
+        selected = glbls.layers.selected()
         # remove unused buttons
         for btn in self._layerButtons[len(layers):]:
             self.layout().removeWidget(btn)
@@ -173,6 +174,10 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
                 self._layerButtons.append(_layerButton(parent=self,layer=layer))
             btn = self._layerButtons[i]
             btn.setData(layer)
+
+        for btn in self._layerButtons:
+            btn.setSelected(btn.data() == selected)
+
         self._placeTheButtons()
         self.viewChanged.emit()
 
@@ -228,6 +233,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         dropPos = max(0,min(len(self._layerButtons),(evt.y+y)//2))
         # ttk.TTkLog.debug(f"{evt.x},{evt.y-y} - {len(self._layerButtons)} - {self._dropTo} {dropPos}")
         glbls.layers.moveLayer(self._layerButtons.index(data), dropPos)
+        glbls.saveSnapshot()
         return True
 
     # Stupid hack to paint on top of the child widgets
@@ -265,4 +271,7 @@ class LayersControl(ttk.TTkGridLayout):
         btnDel.clicked.connect( glbls.layers.delLayer)
         btnUp.clicked.connect(  glbls.layers.moveUp)
         btnDown.clicked.connect(glbls.layers.moveDown)
-
+        btnAdd.clicked.connect( glbls.saveSnapshot)
+        btnDel.clicked.connect( glbls.saveSnapshot)
+        btnUp.clicked.connect(  glbls.saveSnapshot)
+        btnDown.clicked.connect(glbls.saveSnapshot)

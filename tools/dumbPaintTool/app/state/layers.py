@@ -20,16 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['Layers', 'CanvasLayer']
+__all__ = ['Layers']
 
 import TermTk as ttk
 from ..canvaslayer import CanvasLayer
 
+
 class Layers():
-    __slots__ = ('_layers','_selected',
+    __slots__ = ('_layers','_selected', '_modified',
                  # Signals
-                 'layerSelected','layerAdded','layerDeleted','layersOrderChanged')
+                 'layerSelected','layerAdded','layerDeleted','layersOrderChanged','changed')
     def __init__(self) -> None:
+        self._modified = True
+        self.changed       = ttk.pyTTkSignal()
         self.layerSelected = ttk.pyTTkSignal(CanvasLayer)
         self.layerAdded    = ttk.pyTTkSignal(CanvasLayer)
         self.layerDeleted  = ttk.pyTTkSignal(CanvasLayer)
@@ -37,6 +40,20 @@ class Layers():
 
         self._selected = None
         self._layers:list[CanvasLayer] = []
+
+    def clone(self) -> None:
+        la = Layers()
+        la._modified = False
+        la._selected = self._selected
+        la._layers   = self._layers.copy()
+        return la
+
+    def restore(self, la) -> None:
+        self._modified = False
+        self._selected = la._selected
+        self._layers   = la._layers.copy()
+        self.layersOrderChanged.emit(self._layers)
+        self.layerSelected.emit(self._selected)
 
     def __len__(self):
         return len(self._layers)
@@ -58,22 +75,16 @@ class Layers():
         self.layerSelected.emit(None)
         self.layersOrderChanged.emit(self._layers)
 
-    @ttk.pyTTkSlot(int, int)
-    def move(self, fr:int, to:int) -> None:
-        obj = self._layers.pop(fr)
-        if to>fr:
-            to-=1
-        self._layers.insert(to,obj)
-        self.layersOrderChanged.emit(self._layers)
-
     @ttk.pyTTkSlot()
     def addLayer(self,name:ttk.TTkString=None) -> CanvasLayer:
         from ..glbls import glbls
         name = ttk.TTkString(name if name else f"Layer #{len(self._layers)}")
         ld=CanvasLayer(name=name)
         ld.resize(*glbls.documentSize)
+        ld.changed.connect(self.changed.emit)
         self._layers.insert(0,ld)
         self._selected = ld
+        self._modified = True
         self.layerAdded.emit(ld)
         self.layersOrderChanged.emit(self._layers)
         self.layerSelected.emit(self._selected)
@@ -85,7 +96,8 @@ class Layers():
         la = self._layers
         dl = la.pop(la.index(self._selected))
         self._selected = la[0] if la else None
-        self.layerDeleted(dl)
+        self.layerDeleted.emit(dl)
+        self._modified = True
         self.layersOrderChanged.emit(self._layers)
         return dl
 
@@ -108,13 +120,16 @@ class Layers():
         if index+direction < 0: return
         la = self._layers.pop(index)
         self._layers.insert(index+direction,la)
+        self._modified = True
         self.layersOrderChanged.emit(self._layers)
 
     def moveLayer(self, fr:int, to:int) -> None:
         if not self._layers: return
+        if fr == to: return
         fr = max(0,fr)
         to = max(0,to) - (1 if to>fr else 0)
         # ttk.TTkLog.debug(f"{fr=} {to=}")
         la = self._layers.pop(fr)
+        self._modified = True
         self._layers.insert(to,la)
         self.layersOrderChanged.emit(self._layers)

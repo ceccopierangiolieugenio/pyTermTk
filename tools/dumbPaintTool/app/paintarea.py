@@ -65,6 +65,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         glbls.brush.colorChanged.connect(       self.updateGlyph)
         glbls.brush.glyphEnabledChanged.connect(self.updateGlyph)
 
+        glbls.layers.changed.connect(self.update)
         glbls.layers.layerAdded.connect(self.update)
         glbls.layers.layerDeleted.connect(self.update)
         glbls.layers.layerSelected.connect(self.update)
@@ -339,6 +340,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
         self._mousePress   = None
         self._mouseDrag    = None
         self._mouseRelease = None
+        glbls.saveSnapshot()
         return super().mousePressEvent(evt)
 
     def keyEvent(self, evt) -> bool:
