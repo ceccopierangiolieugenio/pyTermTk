@@ -55,14 +55,9 @@ class Snapshot():
             cl.restore(clone)
 
     def __eq__(self, value: object) -> bool:
-        if self._layer != value._layer:
-            return False
-        for (a,_),(b,_) in zip(self._canvasLayers,value._canvasLayers):
-            if a!=b:
-                return False
-        return True
-
-
+        return (
+            self._layer == value._layer and
+            all(a==b for a,b in self._canvasLayers))
 
 @dataclass()
 class Glbls:

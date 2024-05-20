@@ -55,6 +55,9 @@ class Layers():
         self.layersOrderChanged.emit(self._layers)
         self.layerSelected.emit(self._selected)
 
+    def __eq__(self, value: object) -> bool:
+        return self._layers == value._layers
+
     def __len__(self):
         return len(self._layers)
 

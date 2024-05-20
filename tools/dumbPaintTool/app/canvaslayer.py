@@ -79,6 +79,16 @@ class CanvasLayer():
         self._colors  = [row.copy() for row in cl._colors]
         self.changed.emit()
 
+    def __eq__(self, value: object) -> bool:
+        return (
+            issubclass(type(value),CanvasLayer) and
+            self._pos     == value._pos     and
+            self._size    == value._size    and
+            self._offset  == value._offset  and
+            self._visible == value._visible and
+            all(a==b for a,b in zip(self._data,  value._data)) and
+            all(a==b for a,b in zip(self._colors,value._colors)) )
+
     def update(self):
         self.changed.emit()
 
