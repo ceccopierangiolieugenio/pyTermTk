@@ -84,7 +84,7 @@ class Brush():
         return self._area
 
     def setArea(self, area:ttk.TTkString) -> None:
-        if self._area == area: return
+        if self._area.toAnsi() == area.toAnsi(): return
         self._area = area
         self.areaChanged.emit(area)
 
