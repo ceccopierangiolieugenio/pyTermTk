@@ -54,6 +54,7 @@ class Layers():
         self._layers   = la._layers.copy()
         self.layersOrderChanged.emit(self._layers)
         self.layerSelected.emit(self._selected)
+        self.changed.emit()
 
     def __eq__(self, value: object) -> bool:
         return self._layers == value._layers
@@ -99,8 +100,8 @@ class Layers():
         la = self._layers
         dl = la.pop(la.index(self._selected))
         self._selected = la[0] if la else None
-        self.layerDeleted.emit(dl)
         self._modified = True
+        self.layerDeleted.emit(dl)
         self.layersOrderChanged.emit(self._layers)
         return dl
 

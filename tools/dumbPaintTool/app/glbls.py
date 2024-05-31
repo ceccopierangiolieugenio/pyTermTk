@@ -33,31 +33,19 @@ from .state.layers import Layers
 class Snapshot():
     __slots__ = ('_layer','_canvasLayers')
     def __init__(self) -> None:
-        self._layer = None
-        self._canvasLayers = []
-        if glbls.layers._modified:
-            self._layer = glbls.layers.clone()
-            glbls.layers._modified = False
-        for cl in glbls.layers.layers():
-            if cl._modified:
-                cl._modified = False
-                self._canvasLayers.append((cl,cl.clone()))
-
-    def valid(self) -> None:
-        if self._layer or self._canvasLayers:
-            return True
-        return False
+        self._layer = glbls.layers.clone()
+        self._canvasLayers = [cl.saveSnapshot() for cl in glbls.layers.layers()]
 
     def restore(self) -> None:
         if self._layer:
             glbls.layers.restore(self._layer)
-        for cl,clone in self._canvasLayers:
-            cl.restore(clone)
+        for cl,snapId in zip(glbls.layers.layers(),self._canvasLayers):
+            cl.restoreSnapshot(snapId)
 
     def __eq__(self, value: object) -> bool:
         return (
             self._layer == value._layer and
-            all(a==b for a,b in self._canvasLayers))
+            self._canvasLayers == value._canvasLayers )
 
 @dataclass()
 class Glbls:
@@ -75,13 +63,17 @@ class Glbls:
     def saveSnapshot(self):
         # TODO: Dispose properly of the unused clones
         snapshot = Snapshot()
-        if not snapshot.valid():
-            return
+        # if not snapshot.valid():
+        #     return
+        if 0 <= self._snapId < len(self._snaphots):
+            if self._snaphots[self._snapId] == snapshot:
+                return
         self._snaphots = self._snaphots[:self._snapId+1] + [snapshot]
         self._snapId = len(self._snaphots)-1
 
     @ttk.pyTTkSlot()
     def undo(self):
+        # ttk.TTkLog.debug(f"{self._snapId=} - {len(self._snaphots)=}")
         if self._snapId:
             self._snapId -= 1
             self._snaphots[self._snapId].restore()

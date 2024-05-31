@@ -370,6 +370,9 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 text = glbls.layers.selected().toTTkString()
                 self.copy(text)
                 ret = True
+        elif cl and evt.key == ttk.TTkK.Key_Delete:
+            glbls.layers.delLayer()
+            glbls.saveSnapshot()
         else:
             return super().keyEvent(evt)
         self._retuneGeometry()
@@ -389,6 +392,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
     def pasteEvent(self, txt:str):
         glbls.layers.addLayer().importTTkString(ttk.TTkString(txt))
+        glbls.saveSnapshot()
         self.update()
         return True
 
@@ -462,28 +466,28 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
         if self._tool & ToolType.RESIZE:
             rd = self._resizeData
-            def _drawResizeBorders(_rx,_ry,_rw,_rh,_sel):
+            def _drawResizeBorders(_rx,_ry,_rw,_rh,_sel,_color=ttk.TTkColor.RST):
                 selColor = ttk.TTkColor.YELLOW + ttk.TTkColor.BG_BLUE
                 # canvas.drawBox(pos=_pos,size=_size)
-                canvas.drawText(pos=(_rx      ,_ry      ),text='─'*_rw, color=selColor if _sel & ttk.TTkK.TOP    else ttk.TTkColor.RST)
-                canvas.drawText(pos=(_rx      ,_ry+_rh-1),text='─'*_rw, color=selColor if _sel & ttk.TTkK.BOTTOM else ttk.TTkColor.RST)
+                canvas.drawText(pos=(_rx      ,_ry      ),text='─'*_rw, color=selColor if _sel & ttk.TTkK.TOP    else _color)
+                canvas.drawText(pos=(_rx      ,_ry+_rh-1),text='─'*_rw, color=selColor if _sel & ttk.TTkK.BOTTOM else _color)
                 for _y in range(_ry,_ry+_rh):
-                    canvas.drawText(pos=(_rx      ,_y),text='│',color=selColor if _sel & ttk.TTkK.LEFT  else ttk.TTkColor.RST)
-                    canvas.drawText(pos=(_rx+_rw-1,_y),text='│',color=selColor if _sel & ttk.TTkK.RIGHT else ttk.TTkColor.RST)
-                canvas.drawChar(pos=(_rx      ,_ry      ), char='▛')
-                canvas.drawChar(pos=(_rx+_rw-1,_ry      ), char='▜')
-                canvas.drawChar(pos=(_rx      ,_ry+_rh-1), char='▙')
-                canvas.drawChar(pos=(_rx+_rw-1,_ry+_rh-1), char='▟')
+                    canvas.drawText(pos=(_rx      ,_y),text='│',color=selColor if _sel & ttk.TTkK.LEFT  else _color)
+                    canvas.drawText(pos=(_rx+_rw-1,_y),text='│',color=selColor if _sel & ttk.TTkK.RIGHT else _color)
+                canvas.drawChar(pos=(_rx      ,_ry      ), char='▛', color=_color)
+                canvas.drawChar(pos=(_rx+_rw-1,_ry      ), char='▜', color=_color)
+                canvas.drawChar(pos=(_rx      ,_ry+_rh-1), char='▙', color=_color)
+                canvas.drawChar(pos=(_rx+_rw-1,_ry+_rh-1), char='▟', color=_color)
 
             sMain  = rd['selected'] if rd and rd['type'] == PaintArea   else ttk.TTkK.NONE
             sLayer = rd['selected'] if rd and rd['type'] == CanvasLayer else ttk.TTkK.NONE
-
-            _drawResizeBorders(dx-ox-1, dy-oy-1, dw+2, dh+2, sMain)
 
             if cl:=glbls.layers.selected():
                 lx,ly = cl.pos()
                 lw,lh = cl.size()
                 _drawResizeBorders(lx+dx-ox-1, ly+dy-oy-1, lw+2, lh+2, sLayer)
+
+            _drawResizeBorders(dx-ox-1, dy-oy-1, dw+2, dh+2, sMain, _color=ttk.TTkColor.YELLOW)
 
 
 class PaintScrollArea(ttk.TTkAbstractScrollArea):

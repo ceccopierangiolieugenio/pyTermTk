@@ -42,14 +42,16 @@ from .const import ToolType
 #        \---w--/
 
 class CanvasLayer():
-    __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset','_modified'
+    __slot__ = ('_pos','_name','_visible','_size','_data','_colors','_preview','_offset',
+                '_snapVersion', '_snapshots',
                 #signals
                 'nameChanged','changed')
     def __init__(self,name:ttk.TTkString=ttk.TTkString('New')) -> None:
-        self._modified = False
         self.changed = ttk.pyTTkSignal()
         self._name:ttk.TTkString = ttk.TTkString(name) if isinstance(name,str) else name
         self.nameChanged = ttk.pyTTkSignal(ttk.TTkString)
+        self._snapVersion = 0
+        self._snapshots = {}
         self._pos  = (0,0)
         self._size = (0,0)
         self._offset = (0,0)
@@ -58,9 +60,9 @@ class CanvasLayer():
         self._data:  list[list[str         ]] = []
         self._colors:list[list[ttk.TTkColor]] = []
 
-    def clone(self) -> None:
+    def clone(self) -> object:
         cl = CanvasLayer()
-        cl._modified = False
+        cl._snapVersion = self._snapVersion
         cl._pos     = self._pos
         cl._size    = self._size
         cl._offset  = self._offset
@@ -69,8 +71,9 @@ class CanvasLayer():
         cl._colors  = [row.copy() for row in self._colors]
         return cl
 
-    def restore(self, cl) -> None:
-        self._modified = False
+    def restore(self, cl: object) -> None:
+        self._preview = None
+        self._snapVersion = cl._snapVersion
         self._pos     = cl._pos
         self._size    = cl._size
         self._offset  = cl._offset
@@ -78,6 +81,24 @@ class CanvasLayer():
         self._data    = [row.copy() for row in cl._data]
         self._colors  = [row.copy() for row in cl._colors]
         self.changed.emit()
+
+    def restoreSnapshot(self, id:int) -> None:
+        if id == self._snapVersion:
+            return
+        ttk.TTkLog.debug(f"restore {id=}")
+        if id in self._snapshots:
+            self.restore(self._snapshots[id])
+
+    def saveSnapshot(self) -> int:
+        self._snapshots = {key:self._snapshots[key] for key in self._snapshots if key <= self._snapVersion}
+        if self._snapVersion not in self._snapshots:
+            ttk.TTkLog.debug(f"{self._snapVersion=}")
+            self._snapshots[self._snapVersion] = self.clone()
+        return self._snapVersion
+
+    def clearSnapshot(self) -> None:
+        self._snapshots = {}
+        self.saveSnapshot()
 
     def __eq__(self, value: object) -> bool:
         return (
@@ -102,7 +123,7 @@ class CanvasLayer():
     @ttk.pyTTkSlot(bool)
     def setVisible(self, visible):
         if visible == self._visible: return
-        self._modified = True
+        self._snapVersion += 1
         self._visible = visible
         self.changed.emit()
 
@@ -110,7 +131,7 @@ class CanvasLayer():
         return self._name
     @ttk.pyTTkSlot(str)
     def setName(self, name):
-        self._modified = True
+        self._snapVersion += 1
         self._name = name
 
     def isOpaque(self,x,y):
@@ -125,7 +146,7 @@ class CanvasLayer():
 
     def move(self,x,y):
         self._pos=(x,y)
-        self._modified = True
+        self._snapVersion += 1
         self.changed.emit()
 
     def resize(self,w,h):
@@ -135,7 +156,7 @@ class CanvasLayer():
         for i in range(h):
             self._data[i]   = (self._data[i]   + [' '              for _ in range(w)])[:w]
             self._colors[i] = (self._colors[i] + [ttk.TTkColor.RST for _ in range(w)])[:w]
-        self._modified = True
+        self._snapVersion += 1
         self.changed.emit()
 
     def superResize(self,dx,dy,dw,dh):
@@ -169,7 +190,7 @@ class CanvasLayer():
         self._offset = (ox+diffx,oy+diffy)
         self._pos  = (dx,dy)
         self._size = (dw,dh)
-        self._modified = True
+        self._snapVersion += 1
         self.changed.emit()
 
     def clean(self):
@@ -179,7 +200,7 @@ class CanvasLayer():
         for i in range(h):
             self._data[i]   = [' ']*w
             self._colors[i] = [ttk.TTkColor.RST]*w
-        self._modified = True
+        self._snapVersion += 1
         self.changed.emit()
 
     def toTTkString(self):
@@ -324,7 +345,7 @@ class CanvasLayer():
                 self._import_v1_1_0(dd)
         else:
             self._import_v0_0_0(dd)
-        self._modified = True
+        self._snapVersion += 1
         self.changed.emit()
 
     def trim(self):
@@ -384,7 +405,7 @@ class CanvasLayer():
 
         self._size = (w,h)
         self._name = ttk.TTkString("Pasted")
-        self._modified = True
+        self._snapVersion += 1
 
     def placeFill(self,geometry,tool,glyph:str,color:ttk.TTkColor,glyphEnabled=True,preview=False):
         ox,oy = self._offset
@@ -402,6 +423,7 @@ class CanvasLayer():
             colors = [_r.copy() for _r in self._colors]
             self._preview = {'data':data,'colors':colors}
         else:
+            self._snapVersion += 1
             self._preview = None
             data   = self._data
             colors = self._colors
@@ -417,7 +439,6 @@ class CanvasLayer():
             for y in range(fay,fby+1):
                 self._placeGlyph(data,colors,fax,y,glyph,color,glyphEnabled,preview)
                 self._placeGlyph(data,colors,fbx,y,glyph,color,glyphEnabled,preview)
-        self._modified = True
         self.changed.emit()
         return True
 
@@ -427,11 +448,11 @@ class CanvasLayer():
             colors = [_r.copy() for _r in self._colors]
             self._preview = {'data':data,'colors':colors}
         else:
+            self._snapVersion += 1
             self._preview = None
             data   = self._data
             colors = self._colors
 
-        self._modified = True
         self.changed.emit()
         return self._placeGlyph(data,colors,x,y,glyph,color,glyphEnabled,preview)
 
@@ -478,6 +499,7 @@ class CanvasLayer():
             colors = [_r.copy() for _r in self._colors]
             self._preview = {'data':data,'colors':colors}
         else:
+            self._snapVersion += 1
             self._preview = None
             data   = self._data
             colors = self._colors
@@ -495,7 +517,6 @@ class CanvasLayer():
                         newC._bg = ca._bg if ca._bg else cc._bg
                         colors[_y][_x] = newC
 
-        self._modified = True
         self.changed.emit()
 
     def drawInCanvas(self, pos, canvas:ttk.TTkCanvas):
