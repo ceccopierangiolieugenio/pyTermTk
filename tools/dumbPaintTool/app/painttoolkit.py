@@ -64,19 +64,53 @@ class PaintToolKit(ttk.TTkContainer):
         self._bpBg.colorSelected.connect(self._refreshColor)
         self._bpDef.colorSelected.connect(self.updatedTrans.emit)
 
-        glbls.brush.glyphChanged.connect(   lambda:self._refreshColor(False))
-        glbls.brush.colorChanged.connect(   self.setColor)
+        glbls.brush.glyphChanged.connect(  lambda:self._refreshColor(False))
+        glbls.brush.colorChanged.connect(  self.setColor)
+        glbls.layers.changed.connect(      self._layerChanged)
+        glbls.layers.layerSelected.connect(self._layerChanged)
+
+        # self._sbDx
+        # self._sbDy
+        # self._sbDw
+        # self._sbDh
+        self._sbLx.valueChanged.connect(self._pushLayerValues)
+        self._sbLy.valueChanged.connect(self._pushLayerValues)
+        self._sbLw.valueChanged.connect(self._pushLayerValues)
+        self._sbLh.valueChanged.connect(self._pushLayerValues)
 
         self._refreshColor(emit=False)
+
+    @ttk.pyTTkSlot()
+    def _pushLayerValues(self):
+        if not (layer := glbls.layers.selected()): return
+        nlx = self._sbLx.value()
+        nly = self._sbLy.value()
+        nlw = self._sbLw.value()
+        nlh = self._sbLh.value()
+        layer.move(nlx,nly)
+        layer.superResize(nlx,nly,nlw,nlh)
+
+    @ttk.pyTTkSlot()
+    def _layerChanged(self):
+        if not (layer := glbls.layers.selected()): return
+        self.updateLayer(layer)
 
     @ttk.pyTTkSlot(CanvasLayer)
     def updateLayer(self, layer:CanvasLayer):
         lx,ly = layer.pos()
         lw,lh = layer.size()
+        self._sbLx.valueChanged.disconnect(self._pushLayerValues)
+        self._sbLy.valueChanged.disconnect(self._pushLayerValues)
+        self._sbLw.valueChanged.disconnect(self._pushLayerValues)
+        self._sbLh.valueChanged.disconnect(self._pushLayerValues)
         self._sbLx.setValue(lx)
         self._sbLy.setValue(ly)
         self._sbLw.setValue(lw)
         self._sbLh.setValue(lh)
+        self._sbLx.valueChanged.connect(self._pushLayerValues)
+        self._sbLy.valueChanged.connect(self._pushLayerValues)
+        self._sbLw.valueChanged.connect(self._pushLayerValues)
+        self._sbLh.valueChanged.connect(self._pushLayerValues)
 
     @ttk.pyTTkSlot()
     def _refreshColor(self, emit=True):
