@@ -47,14 +47,14 @@ class Snapshot():
             self._layer == value._layer and
             self._canvasLayers == value._canvasLayers )
 
-@dataclass()
 class Glbls:
-    brush:Brush   = Brush()
-    layers:Layers = Layers()
-    documentSize  = (80,25)
+    def __init__(self) -> None:
+        self.brush:Brush   = Brush()
+        self.layers:Layers = Layers()
+        self.documentSize  = (80,25)
 
-    _snaphots     = []
-    _snapId:int   = 0
+        self._snaphots     = []
+        self._snapId:int   = 0
 
     def clearSnapshot(self):
         self._snaphots     = []
