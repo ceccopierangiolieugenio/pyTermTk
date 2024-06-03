@@ -73,7 +73,7 @@ if importlib.util.find_spec('pyodideProxy'):
         pyodideProxy.saveFile(os.path.basename(filePath), content, encoding)
 
     def _connectDragOpen(encoding, cb):
-        if not encoding in ttkDragOpen:
+        if encoding not in ttkDragOpen:
             ttkDragOpen[encoding] = pyTTkSignal(dict)
         return ttkDragOpen[encoding].connect(cb)
 

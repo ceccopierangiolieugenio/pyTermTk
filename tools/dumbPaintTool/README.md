@@ -16,13 +16,13 @@ A Uber SourcesOpen Super Duper Powerful and User-Friendly ASCII/ANSI/UTF-8  Term
 
 
 #### Features
-* Pure Terminal App (it run on [xterm](https://en.wikipedia.org/wiki/Xterm) or [Terminator](https://en.wikipedia.org/wiki/GNOME_Terminator) or [MacOS Terminal](https://support.apple.com/en-gb/guide/terminal/welcome/mac) or [Windows Terminal](https://github.com/microsoft/terminal) or . . .)
+* Pure Terminal App (it runs on [xterm](https://en.wikipedia.org/wiki/Xterm) or [Terminator](https://en.wikipedia.org/wiki/GNOME_Terminator) or [MacOS Terminal](https://support.apple.com/en-gb/guide/terminal/welcome/mac) or [Windows Terminal](https://github.com/microsoft/terminal) or . . .)
 * Did I mention it is a Terminal App? You can run it via SSH, Telnet or Serial
 * Wide variety of glyphs (UTF-8)
 * Wide Variety of tools
 * Copy and Paste from the terminal or the web app
 * Drag files to be open ([WebVersion](https://ceccopierangiolieugenio.itch.io/dumb-paint-tool) Only)
-* Imkage/Pictures import with configurable ASCII rasterizers
+* Image/Pictures import with configurable ASCII rasterizers
 * Layers
 * Intelligent Transparent Layers
 * Beautiful Dumb Transparent Layers

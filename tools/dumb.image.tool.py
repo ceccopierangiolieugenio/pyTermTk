@@ -24,9 +24,8 @@
 
 import os
 from PIL import Image
-import zlib, pickle, base64
 
-import sys, os, argparse, math, random
+import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk

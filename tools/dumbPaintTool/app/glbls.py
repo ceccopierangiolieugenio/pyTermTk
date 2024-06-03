@@ -26,11 +26,62 @@ from dataclasses import dataclass
 
 import TermTk as ttk
 
-from .brush import Brush
-from .canvaslayer import CanvasLayer
+from .state.brush  import Brush
+from .state.layers import Layers
+# from .canvaslayer import CanvasLayer
+
+class Snapshot():
+    __slots__ = ('_layer','_canvasLayers')
+    def __init__(self) -> None:
+        self._layer = glbls.layers.clone()
+        self._canvasLayers = [cl.saveSnapshot() for cl in glbls.layers.layers()]
+
+    def restore(self) -> None:
+        if self._layer:
+            glbls.layers.restore(self._layer)
+        for cl,snapId in zip(glbls.layers.layers(),self._canvasLayers):
+            cl.restoreSnapshot(snapId)
+
+    def __eq__(self, value: object) -> bool:
+        return (
+            self._layer == value._layer and
+            self._canvasLayers == value._canvasLayers )
 
 @dataclass()
 class Glbls:
-    brush:Brush = Brush()
+    brush:Brush   = Brush()
+    layers:Layers = Layers()
+    documentSize  = (80,25)
+
+    _snaphots     = []
+    _snapId:int   = 0
+
+    def clearSnapshot(self):
+        self._snaphots     = []
+        self._snapId:int   = 0
+
+    def saveSnapshot(self):
+        # TODO: Dispose properly of the unused clones
+        snapshot = Snapshot()
+        # if not snapshot.valid():
+        #     return
+        if 0 <= self._snapId < len(self._snaphots):
+            if self._snaphots[self._snapId] == snapshot:
+                return
+        self._snaphots = self._snaphots[:self._snapId+1] + [snapshot]
+        self._snapId = len(self._snaphots)-1
+
+    @ttk.pyTTkSlot()
+    def undo(self):
+        # ttk.TTkLog.debug(f"{self._snapId=} - {len(self._snaphots)=}")
+        if self._snapId:
+            self._snapId -= 1
+            self._snaphots[self._snapId].restore()
+
+    @ttk.pyTTkSlot()
+    def redo(self):
+        if 0 <= self._snapId < len(self._snaphots)-1:
+            self._snapId += 1
+            self._snaphots[self._snapId].restore()
 
 glbls = Glbls()

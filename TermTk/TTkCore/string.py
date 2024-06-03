@@ -624,7 +624,7 @@ class TTkString():
     def nextPos(self, pos):
         pos += 1
         for i,ch in enumerate(self._text[pos:]):
-            if not unicodedata.category(ch) in ('Me','Mn'):
+            if unicodedata.category(ch) not in ('Me','Mn'):
                 return pos+i
         return len(self._text)
 
@@ -634,7 +634,7 @@ class TTkString():
         # TTkLog.debug(f"{str(reversed(self._text[:pos]))} {pos=}")
         for i,ch in enumerate(reversed(self._text[:pos])):
             # TTkLog.debug(f"{i}---> {ch}    ")
-            if not unicodedata.category(ch) in ('Me','Mn'):
+            if unicodedata.category(ch) not in ('Me','Mn'):
                 return pos-i-1
         return 0
 
