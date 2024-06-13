@@ -134,8 +134,8 @@ class ToolsPanel(ttk.TTkVBoxLayout):
         def _pick():
             glbls.brush.setToolType(
                 ToolType.BRUSH |
-                ToolType.AREA |
-                ToolType.PICK )
+                ToolType.AREA  |
+                ToolType.PICKAREA )
 
         btn_pick_a.clicked.connect(_pick)
 

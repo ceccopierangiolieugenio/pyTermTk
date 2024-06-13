@@ -28,9 +28,11 @@ import TermTk as ttk
 
 from .paintarea import *
 from .glbls     import glbls
+from .const     import ToolType
 
 class PaintToolKit(ttk.TTkContainer):
     __slots__ = ('_rSelect', '_rPaint', '_lgliph',
+                 '_btnPick',
                  '_cbFg', '_cbBg',
                  '_bpFg', '_bpBg', '_bpDef',
                  '_sbDx','_sbDy','_sbDw','_sbDh',
@@ -56,6 +58,8 @@ class PaintToolKit(ttk.TTkContainer):
         self._sbLw = self.getWidgetByName("sbLw")
         self._sbLh = self.getWidgetByName("sbLh")
 
+        self._btnPick = self.getWidgetByName("btnPick")
+
         self._bpDef.setColor(ttk.TTkColor.bg('#FF00FF'))
         self._cbFg.toggled.connect(self._refreshColor)
         self._cbBg.toggled.connect(self._refreshColor)
@@ -79,6 +83,13 @@ class PaintToolKit(ttk.TTkContainer):
         self._sbLh.valueChanged.connect(self._pushLayerValues)
 
         self._refreshColor(emit=False)
+
+        @ttk.pyTTkSlot()
+        def _pick():
+            ttType = glbls.brush.toolType() & ~ToolType.PICKMASK
+            glbls.brush.setToolType( ttType | ToolType.PICKGLYPH )
+
+        self._btnPick.clicked.connect(_pick)
 
     @ttk.pyTTkSlot()
     def _pushLayerValues(self):

@@ -175,6 +175,8 @@ class PaintArea(ttk.TTkAbstractScrollView):
     def leaveEvent(self, evt):
         self._mouseMove = None
         self._moveData  = None
+        if current := glbls.layers.selected():
+            current.cleanPreview()
         self.update()
         return super().leaveEvent(evt)
 
@@ -195,7 +197,35 @@ class PaintArea(ttk.TTkAbstractScrollView):
         l = glbls.layers.selected()
         lx,ly = l.pos()
 
-        if self._tool & ToolType.MOVE and mp and not md:
+        if self._tool & ToolType.PICKGLYPH:
+            if mp:
+                mpx,mpy = mp
+                color = None
+                glyph = None
+                for lm in glbls.layers.layers():
+                    lmx,lmy = lm.pos()
+                    if lm.isOpaque(mpx-lmx-dx,mpy-lmy-dy):
+                        _gl, _co = lm.glyphColorAt(mpx-lmx-dx,mpy-lmy-dy)
+                        if not glyph and not color:
+                            glyph = _gl
+                            color = _co
+                        elif not color.background():
+                            if _co.background():
+                                if _fg:=color.foreground():
+                                    color = _fg + _co.background()
+                                else:
+                                    color = _co.background()
+                        else:
+                            break
+                glbls.brush.setColor(color)
+                glbls.brush.setGlyph(glyph)
+            if mr:
+                glbls.brush.setToolType(self._tool & ~ToolType.PICKGLYPH)
+                self._mousePress   = None
+                self._mouseMove    = None
+                self._mouseDrag    = None
+                self._mouseRelease = None
+        elif self._tool & ToolType.MOVE and mp and not md:
             if self._tool & ToolType.RESIZE and not md:
                 mpx,mpy = mp
                 self._resizeData = None
@@ -256,8 +286,8 @@ class PaintArea(ttk.TTkAbstractScrollView):
             self._retuneGeometry()
 
         elif self._tool & ToolType.BRUSH:
-            if mp and self._tool & ToolType.PICK:
-                glbls.brush.setToolType(self._tool & ~ToolType.PICK)
+            if mp and self._tool & ToolType.PICKAREA:
+                glbls.brush.setToolType(self._tool & ~ToolType.PICKAREA)
                 mpx,mpy = mp
                 for lm in glbls.layers.layers():
                     lmx,lmy = lm.pos()
@@ -268,7 +298,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
                 self._mouseMove    = None
                 self._mouseDrag    = None
                 self._mouseRelease = None
-            elif self._tool & ToolType.PICK:
+            elif self._tool & ToolType.PICKAREA:
                 pass # Do not show any preview if we are in picking mode
             elif mp or md:
                 if md: mx,my = md

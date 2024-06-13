@@ -134,6 +134,13 @@ class CanvasLayer():
         self._snapVersion += 1
         self._name = name
 
+    def glyphColorAt(self, x, y):
+        ox,oy = self._offset
+        w,h = self._size
+        data = self._data
+        colors = self._colors
+        return data[oy+y][ox+x], colors[oy+y][ox+x]
+
     def isOpaque(self,x,y):
         if not self._visible: return False
         ox,oy = self._offset
@@ -203,6 +210,10 @@ class CanvasLayer():
         self._snapVersion += 1
         self.changed.emit()
 
+    def cleanPreview(self):
+        self._preview = None
+        self.changed.emit()
+
     def toTTkString(self):
         ret = []
         pw,ph = self._size
@@ -245,13 +256,16 @@ class CanvasLayer():
                         ya,yb = min(y,ya),max(y,yb)
             if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
                 xa=xb=ya=yb=0
+            else:
+                xb+=1
+                yb+=1
         else:
             xa,xb,ya,yb = 0,daw,0,dah
 
         # Visble Area intersecting the bounding box
         vxa,vya = max(px,px+xa-ox),   max(py,py+ya-oy)
         vxb,vyb = min(px+pw,vxa+xb-xa),min(py+ph,vya+yb-ya)
-        vw,vh   = vxb-vxa+1, vyb-vya+1
+        vw,vh   = vxb-vxa, vyb-vya
 
         outData  = {
             'version':'1.1.0',
@@ -293,7 +307,18 @@ class CanvasLayer():
 
     def _import_v1_1_0(self, dd):
         self._import_v1_0_0(dd)
-        self._offset = dd.get('offset',(0,0))
+        # Fix the correct size if the data has been trimmed in the wrong save
+        ox,oy = self._offset = dd.get('offset',(0,0))
+        ttk.TTkLog.debug(f"{self._offset=} {self._size=} {self._pos=}")
+        ttk.TTkLog.debug(f"{len(self._data[0])=}")
+        w,h = self._size
+        dw = len(self._data[0])
+        dh = len(self._data)
+        w = min(w,dw-ox)
+        h = min(h,dh-oy)
+        self._size = w,h
+        # px,py = self._pos
+        # self.superResize(x,y,w,h)
 
     def _import_v1_0_0(self, dd):
         self._pos  = dd['pos']

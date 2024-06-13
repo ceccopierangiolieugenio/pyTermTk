@@ -31,5 +31,7 @@ class ToolType(int):
     CLONE       = 0x0020
     AREA        = 0x0040
     GLYPH       = 0x0080
-    PICK        = 0x0100
+    PICKAREA    = 0x0100
+    PICKGLYPH   = 0x0400
+    PICKMASK    = PICKAREA|PICKGLYPH
     TRANSPARENT = 0x0200

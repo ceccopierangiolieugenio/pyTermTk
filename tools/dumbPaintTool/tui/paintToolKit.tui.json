@@ -1,5 +1,6 @@
 {
- "version": "2.0.0",
+ "type": "TTkUi/Document",
+ "version": "2.0.2",
  "tui": {
   "class": "TTkContainer",
   "params": {
@@ -9,7 +10,7 @@
     2
    ],
    "Size": [
-    78,
+    87,
     2
    ],
    "Min Width": 50,
@@ -33,7 +34,7 @@
     "Geometry": [
      0,
      0,
-     78,
+     87,
      2
     ]
    },
@@ -183,34 +184,6 @@
      "colspan": 1
     },
     {
-     "class": "TTkLabel",
-     "params": {
-      "Name": "TTkLabel-2",
-      "Position": [
-       25,
-       0
-      ],
-      "Size": [
-       3,
-       1
-      ],
-      "Min Width": 3,
-      "Min Height": 1,
-      "Max Width": 65536,
-      "Max Height": 65536,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Text": "Doc",
-      "Color": "\u001b[0m",
-      "Alignment": 0
-     },
-     "row": 0,
-     "col": 0,
-     "rowspan": 1,
-     "colspan": 1
-    },
-    {
      "class": "TTkColorButtonPicker",
      "params": {
       "Name": "bpBg",
@@ -273,159 +246,9 @@
     {
      "class": "TTkLabel",
      "params": {
-      "Name": "TTkLabel-4",
-      "Position": [
-       29,
-       0
-      ],
-      "Size": [
-       1,
-       1
-      ],
-      "Min Width": 1,
-      "Min Height": 1,
-      "Max Width": 65536,
-      "Max Height": 65536,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Text": "x",
-      "Color": "\u001b[0m",
-      "Alignment": 0
-     },
-     "row": 0,
-     "col": 0,
-     "rowspan": 1,
-     "colspan": 1
-    },
-    {
-     "class": "TTkLabel",
-     "params": {
-      "Name": "TTkLabel-5",
-      "Position": [
-       29,
-       1
-      ],
-      "Size": [
-       1,
-       1
-      ],
-      "Min Width": 1,
-      "Min Height": 1,
-      "Max Width": 65536,
-      "Max Height": 65536,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Text": "y",
-      "Color": "\u001b[0m",
-      "Alignment": 0
-     },
-     "row": 0,
-     "col": 0,
-     "rowspan": 1,
-     "colspan": 1
-    },
-    {
-     "class": "TTkSpinBox",
-     "params": {
-      "Name": "sbDx",
-      "Position": [
-       31,
-       0
-      ],
-      "Size": [
-       6,
-       1
-      ],
-      "Min Width": 4,
-      "Min Height": 1,
-      "Max Width": 65536,
-      "Max Height": 65536,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Padding": [
-       0,
-       0,
-       0,
-       2
-      ],
-      "Layout": "TTkGridLayout",
-      "Value": 0,
-      "Minimum": -100,
-      "Maximum": 100
-     },
-     "layout": {
-      "class": "TTkGridLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        4,
-        1
-       ]
-      },
-      "children": []
-     },
-     "row": 0,
-     "col": 0,
-     "rowspan": 1,
-     "colspan": 1
-    },
-    {
-     "class": "TTkSpinBox",
-     "params": {
-      "Name": "sbDy",
-      "Position": [
-       31,
-       1
-      ],
-      "Size": [
-       6,
-       1
-      ],
-      "Min Width": 4,
-      "Min Height": 1,
-      "Max Width": 65536,
-      "Max Height": 65536,
-      "Visible": true,
-      "Enabled": true,
-      "ToolTip": "",
-      "Padding": [
-       0,
-       0,
-       0,
-       2
-      ],
-      "Layout": "TTkGridLayout",
-      "Value": 0,
-      "Minimum": -100,
-      "Maximum": 100
-     },
-     "layout": {
-      "class": "TTkGridLayout",
-      "params": {
-       "Geometry": [
-        0,
-        0,
-        4,
-        1
-       ]
-      },
-      "children": []
-     },
-     "row": 0,
-     "col": 0,
-     "rowspan": 1,
-     "colspan": 1
-    },
-    {
-     "class": "TTkLabel",
-     "params": {
       "Name": "TTkLabel-6",
       "Position": [
-       38,
+       47,
        0
       ],
       "Size": [
@@ -453,7 +276,7 @@
      "params": {
       "Name": "TTkLabel-7",
       "Position": [
-       38,
+       47,
        1
       ],
       "Size": [
@@ -481,7 +304,7 @@
      "params": {
       "Name": "sbDw",
       "Position": [
-       40,
+       49,
        0
       ],
       "Size": [
@@ -528,7 +351,7 @@
      "params": {
       "Name": "sbDh",
       "Position": [
-       40,
+       49,
        1
       ],
       "Size": [
@@ -575,7 +398,7 @@
      "params": {
       "Name": "TTkLabel-3",
       "Position": [
-       48,
+       57,
        0
       ],
       "Size": [
@@ -603,7 +426,7 @@
      "params": {
       "Name": "TTkLabel-8",
       "Position": [
-       54,
+       63,
        0
       ],
       "Size": [
@@ -631,7 +454,7 @@
      "params": {
       "Name": "TTkLabel-9",
       "Position": [
-       54,
+       63,
        1
       ],
       "Size": [
@@ -659,7 +482,7 @@
      "params": {
       "Name": "sbLx",
       "Position": [
-       56,
+       65,
        0
       ],
       "Size": [
@@ -706,7 +529,7 @@
      "params": {
       "Name": "sbLy",
       "Position": [
-       56,
+       65,
        1
       ],
       "Size": [
@@ -753,7 +576,7 @@
      "params": {
       "Name": "TTkLabel-10",
       "Position": [
-       63,
+       72,
        0
       ],
       "Size": [
@@ -781,7 +604,7 @@
      "params": {
       "Name": "TTkLabel-11",
       "Position": [
-       63,
+       72,
        1
       ],
       "Size": [
@@ -809,7 +632,7 @@
      "params": {
       "Name": "sbLw",
       "Position": [
-       65,
+       74,
        0
       ],
       "Size": [
@@ -856,7 +679,7 @@
      "params": {
       "Name": "sbLh",
       "Position": [
-       65,
+       74,
        1
       ],
       "Size": [
@@ -892,6 +715,213 @@
        ]
       },
       "children": []
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkSpinBox",
+     "params": {
+      "Name": "sbDx",
+      "Position": [
+       40,
+       0
+      ],
+      "Size": [
+       6,
+       1
+      ],
+      "Min Width": 4,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Padding": [
+       0,
+       0,
+       0,
+       2
+      ],
+      "Layout": "TTkGridLayout",
+      "Value": 0,
+      "Minimum": -100,
+      "Maximum": 100
+     },
+     "layout": {
+      "class": "TTkGridLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        4,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkSpinBox",
+     "params": {
+      "Name": "sbDy",
+      "Position": [
+       40,
+       1
+      ],
+      "Size": [
+       6,
+       1
+      ],
+      "Min Width": 4,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Padding": [
+       0,
+       0,
+       0,
+       2
+      ],
+      "Layout": "TTkGridLayout",
+      "Value": 0,
+      "Minimum": -100,
+      "Maximum": 100
+     },
+     "layout": {
+      "class": "TTkGridLayout",
+      "params": {
+       "Geometry": [
+        0,
+        0,
+        4,
+        1
+       ]
+      },
+      "children": []
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel-4",
+      "Position": [
+       38,
+       0
+      ],
+      "Size": [
+       1,
+       1
+      ],
+      "Min Width": 1,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "x",
+      "Color": "\u001b[0m",
+      "Alignment": 0
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel-5",
+      "Position": [
+       38,
+       1
+      ],
+      "Size": [
+       1,
+       1
+      ],
+      "Min Width": 1,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "y",
+      "Color": "\u001b[0m",
+      "Alignment": 0
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel-2",
+      "Position": [
+       34,
+       0
+      ],
+      "Size": [
+       3,
+       1
+      ],
+      "Min Width": 3,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Doc",
+      "Color": "\u001b[0m",
+      "Alignment": 0
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "btnPick",
+      "Position": [
+       23,
+       0
+      ],
+      "Size": [
+       9,
+       1
+      ],
+      "Min Width": 9,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Pick \ud83d\uded2",
+      "Border": false,
+      "Checkable": false,
+      "Checked": false
      },
      "row": 0,
      "col": 0,
