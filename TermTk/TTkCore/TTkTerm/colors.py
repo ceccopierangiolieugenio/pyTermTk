@@ -61,8 +61,14 @@ class TTkTermColor():
         29: ~STRIKETROUGH } # Ps = 2 9  ⇒  Not crossed-out, ECMA-48 3rd.
 
     @staticmethod
-    def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, link:str='', clean:bool=False):
+    def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, link:str='', clean:bool=False, cleanLink:bool=False):
         ret = []
+        linkAnsi = ""
+
+        if cleanLink:
+            linkAnsi = "\033]8;;\033\\"
+        if link:
+            linkAnsi = f"\033]8;;{link}\033\\"
 
         if clean:
             ret.append(0)
@@ -89,9 +95,9 @@ class TTkTermColor():
         if mod & TTkTermColor.STRIKETROUGH:
             ret.append('9')
         if ret:
-            return f'\033[{";".join(str(x) for x in ret)}m'
+            return f'\033[{";".join(str(x) for x in ret)}m{linkAnsi}'
         else:
-            return '\033[0m'
+            return '\033[0m'+linkAnsi
 
     def _256toRgb(val):
         pass
