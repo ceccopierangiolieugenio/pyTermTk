@@ -1,0 +1,9 @@
+ - [x] Save to open or last open/saved filename
+ - [ ] Ask to Save on quit
+ - [ ] Fix CanvasLayer Sizes on Save 
+ - [ ] Brush colors applied back to Palette
+ - AppTemplate 
+   -  [ ] Title, show the bar
+   -  [ ] Add Title in the menuBar if available
+- Tree
+   - [ ] Expose resize 

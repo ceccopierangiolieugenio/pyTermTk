@@ -206,6 +206,11 @@ class TTkAppTemplate(TTkContainer):
                                             item.minimumHeight() )
         self._updateGeometries(force=True)
 
+    def setTitle(self, position=MAIN, title=""):
+        if not self._panels[position]: return
+        self._panels[position].title = TTkString(title) if title else ""
+        self._updateGeometries(force=True)
+
     def menuBar(self, position=MAIN):
         return None if not self._panels[position] else self._panels[position].menubar
 

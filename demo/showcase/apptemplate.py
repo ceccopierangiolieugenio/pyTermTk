@@ -77,13 +77,13 @@ def demoAppTemplate(root=None):
                 "Left"   : {'wid': twl, 'loc':at.LEFT}},
             minSize=( 15,  5), maxSize=( 0x1000, 0x1000))
 
-    at.setWidget(twm, at.MAIN)
-    at.setWidget(twl, at.LEFT)
-    at.setWidget(twr, at.RIGHT)
-    at.setWidget(twh, at.HEADER)
-    at.setWidget(twt, at.TOP)
-    at.setWidget(twb, at.BOTTOM)
-    at.setWidget(twf, at.FOOTER)
+    at.setWidget(widget=twm, title="MAIN"   , position=at.MAIN)
+    at.setWidget(widget=twl, title="LEFT"   , position=at.LEFT)
+    at.setWidget(widget=twr, title="RIGHT"  , position=at.RIGHT)
+    at.setWidget(widget=twh, title="HEADER" , position=at.HEADER)
+    at.setWidget(widget=twt, title="TOP"    , position=at.TOP)
+    at.setWidget(widget=twb, title="BOTTOM" , position=at.BOTTOM)
+    at.setWidget(widget=twf, title="FOOTER" , position=at.FOOTER)
 
 
     def _createMenuBar(position, text):
