@@ -73,8 +73,10 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
         self.setItem(toolsPanel     , self.LEFT,  size=16*2)
         self.setWidget(PaintScrollArea(parea) , self.MAIN)
-        self.setWidget(ptoolkit      , self.TOP,   fixed=True)
+        self.setWidget(ptoolkit      , self.TOP,   fixed=True, title=glbls.fileName())
         self.setItem(rightPanel    , self.RIGHT, size=40)
+
+        glbls.fileNameChanged.connect(lambda _n : self.setTitle(self.TOP,_n))
 
         self.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), self.TOP)
         fileMenu      = appMenuBar.addMenu("&File")
@@ -162,19 +164,20 @@ class PaintTemplate(ttk.TTkAppTemplate):
     @ttk.pyTTkSlot()
     def _save(self):
         doc = self._parea.exportDocument()
-        ttk.ttkCrossSave('untitled.DPT.json', json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON)
+        ttk.ttkCrossSave(glbls.fileName(), json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON)
 
     @ttk.pyTTkSlot()
     def _saveAs(self):
         doc = self._parea.exportDocument()
-        ttk.ttkCrossSaveAs('untitled.DPT.json', json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON,
-                           filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)")
+        ttk.ttkCrossSaveAs(glbls.fileName(), json.dumps(doc, indent=1), ttk.TTkEncoding.APPLICATION_JSON,
+                           filter="DumbPaintTool Files (*.DPT.json);;Json Files (*.json);;All Files (*)",
+                           cb=lambda _d:glbls.setFilename(_d['name']))
 
     @ttk.pyTTkSlot()
     def _saveAsAnsi(self):
         image = self._parea.exportImage()
         text = ttk.TTkString(image)
-        ttk.ttkCrossSaveAs('untitled.DPT.Ansi.txt', text.toAnsi(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
+        ttk.ttkCrossSaveAs(glbls.fileName(), text.toAnsi(), ttk.TTkEncoding.TEXT_PLAIN_UTF8,
                            filter="Ansi text Files (*.Ansi.txt);;Text Files (*.txt);;All Files (*)")
 
     @ttk.pyTTkSlot()
@@ -193,6 +196,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
     @ttk.pyTTkSlot(dict)
     def _openDragData(self, data):
         dd = json.loads(data['data'])
+        glbls.setFilename(data['name'])
         if 'layers' in dd:
             self.importDocument(dd)
         else:
@@ -211,6 +215,7 @@ class PaintTemplate(ttk.TTkAppTemplate):
 
     def _openFile(self, fileName):
         ttk.TTkLog.info(f"Open: {fileName}")
+        glbls.setFilename(fileName)
 
         with open(fileName) as fp:
             # dd = json.load(fp)

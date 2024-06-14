@@ -69,7 +69,7 @@ if importlib.util.find_spec('pyodideProxy'):
         ttkFileOpen.connect(cb)
         pyodideProxy.openFile(encoding)
 
-    def _save(filePath, content, encoding, filter=None):
+    def _save(filePath, content, encoding, filter=None, cb=lambda _d:None):
         pyodideProxy.saveFile(os.path.basename(filePath), content, encoding)
 
     def _connectDragOpen(encoding, cb):
@@ -153,7 +153,7 @@ else:
         with open(filePath,'w') as fp:
             fp.write(content)
 
-    def _saveAs(filePath, content, encoding, filter, cb=lambda :None):
+    def _saveAs(filePath, content, encoding, filter, cb=lambda _d:None):
         def _approveFile(fileName):
             if os.path.exists(fileName):
                 @pyTTkSlot(TTkMessageBox.StandardButton)
@@ -163,7 +163,7 @@ else:
                     elif btn == TTkMessageBox.StandardButton.Cancel:
                         return
                     if cb:
-                        cb()
+                        cb({'name':fileName})
                 messageBox = TTkMessageBox(
                     text= (
                         TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', TTkColor.BOLD) +
@@ -174,6 +174,8 @@ else:
                 TTkHelper.overlay(None, messageBox, 5, 5, True)
             else:
                 ttkCrossSave(fileName,content,encoding)
+                if cb:
+                    cb({'name':fileName})
         filePicker = TTkFileDialogPicker(
                         size=(100,30), path=filePath,
                         acceptMode=TTkK.AcceptMode.AcceptSave,

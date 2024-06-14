@@ -52,9 +52,19 @@ class Glbls:
         self.brush:Brush   = Brush()
         self.layers:Layers = Layers()
         self.documentSize  = (80,25)
+        self.fileNameChanged = ttk.pyTTkSignal(str)
+
+        self._filename = "untitled.DPT.json"
 
         self._snaphots     = []
         self._snapId:int   = 0
+
+    def setFilename(self, fileName):
+        self._filename = fileName
+        self.fileNameChanged.emit(fileName)
+
+    def fileName(self):
+        return self._filename
 
     def clearSnapshot(self):
         self._snaphots     = []
