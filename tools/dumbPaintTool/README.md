@@ -7,7 +7,7 @@
 [![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 
 
-[![dpt hero](https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/005b31a9-d9d6-4799-be17-5a3e478a4703)]
+![dpt hero](https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/005b31a9-d9d6-4799-be17-5a3e478a4703)
 
 
 ## [the Dumb Paint Tool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/dumbPaintTool)
@@ -27,6 +27,8 @@ A Uber SourcesOpen Super Duper Powerful and User-Friendly ASCII/ANSI/UTF-8  Term
 * Intelligent Transparent Layers
 * Beautiful Dumb Transparent Layers
 * ANSI/ASCII Export
+* **Unlimited** Undo/Redo
+
 * And more to come . . .
 
 #### Used in:
