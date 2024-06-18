@@ -39,7 +39,7 @@ setup(
     package_data={'ttkDesigner': ['tui/*']},
     python_requires=">=3.9",
     install_requires=[
-        'pyTermTk>=0.39.0a116',
+        'pyTermTk>=0.39.0a149',
         'pyperclip',
         'Pillow'],
     entry_points={
