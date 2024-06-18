@@ -36,7 +36,7 @@ class TTkTerminalHelper():
     def __init__(self, term=None) -> None:
         self.dataOut = pyTTkSignal(str)
         self.terminalClosed = pyTTkSignal()
-        self._shell = os.environ.get('SHELL', 'sh')
+        self._shell = [os.environ.get('SHELL', 'sh')]
         self._fd = None
         self._inout = None
         self._pid = None
@@ -56,11 +56,15 @@ class TTkTerminalHelper():
 
     def runShell(self, program=None):
         self._shell = program if program else self._shell
+        if isinstance(self._shell, str):
+            self._shell = [self._shell]
+        elif type(self._shell) not in [list,tuple]:
+            raise TypeError(f"Program type '{type(self._shell)}' of '{self._shell}' not accepted")
 
         self._pid, self._fd = pty.fork()
 
         if self._pid == 0:
-            def _spawnTerminal(argv=[self._shell], env=os.environ):
+            def _spawnTerminal(argv=self._shell, env=os.environ):
                 os.execvpe(argv[0], argv, env)
             # threading.Thread(target=_spawnTerminal).start()
             # TTkHelper.quit()

@@ -104,13 +104,29 @@ def _addHtop():
     term.raiseWidget()
     th.runShell("htop")
 
+@ttk.pyTTkSlot()
+def _addHtopParam():
+    win  = ttk.TTkWindow(pos=(12,0), size=(100,30), title=f"Htop", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint|ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+    term = ttk.TTkTerminal(parent=win)
+
+    th = ttk.TTkTerminalHelper(term=term)
+    th.terminalClosed.connect(win.close)
+    win.closed.connect(term.close)
+    top.addWidget(win)
+    term.setFocus()
+    term.raiseWidget()
+    th.runShell(["htop","-C"])
+
 addBtn = ttk.TTkButton(pos=(0,7), text="New Term.", border=True)
 addBtn.clicked.connect(_addTerminal)
 
-addHtop = ttk.TTkButton(pos=(0,10), text="HTOP", border=True)
-addHtop.clicked.connect(_addHtop)
+addHtop1 = ttk.TTkButton(pos=(0,10), text="HTOP", border=True)
+addHtop1.clicked.connect(_addHtop)
 
-top.addWidgets([quitBtn, addBtn, addHtop, cb_c, cb_s, cb_z, cb_q, winT])
+addHtop2 = ttk.TTkButton(pos=(0,13), text="HTOP -C", border=True)
+addHtop2.clicked.connect(_addHtopParam)
+
+top.addWidgets([quitBtn, addBtn, addHtop1, addHtop2, cb_c, cb_s, cb_z, cb_q, winT])
 
 _addTerminal()
 
