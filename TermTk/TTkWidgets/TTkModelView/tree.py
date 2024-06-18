@@ -33,6 +33,7 @@ class TTkTree(TTkAbstractScrollArea):
         'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
         # Forwarded Methods
         'setHeaderLabels',
+        'setColumnWidth', 'resizeColumnToContents',
         # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
         'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
@@ -65,5 +66,7 @@ class TTkTree(TTkAbstractScrollArea):
         self.topLevelItem        = self._treeView.topLevelItem
         self.indexOfTopLevelItem = self._treeView.indexOfTopLevelItem
         self.selectedItems       = self._treeView.selectedItems
+        self.setColumnWidth         = self._treeView.setColumnWidth
+        self.resizeColumnToContents = self._treeView.resizeColumnToContents
 
         self.clear           = self._treeView.clear
