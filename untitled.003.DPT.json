@@ -1,0 +1,42 @@
+{
+ "type": "DumbPaintTool/Document",
+ "version": "1.0.1",
+ "size": [
+  80,
+  25
+ ],
+ "layers": [
+  {
+   "version": "1.1.0",
+   "size": [
+    0,
+    0
+   ],
+   "pos": [
+    0,
+    0
+   ],
+   "name": "Background",
+   "data": [
+    [
+     " "
+    ]
+   ],
+   "colors": [
+    [
+     0
+    ]
+   ],
+   "palette": [
+    [
+     null,
+     null
+    ]
+   ],
+   "offset": [
+    0,
+    0
+   ]
+  }
+ ]
+}

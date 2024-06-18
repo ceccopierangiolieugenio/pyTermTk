@@ -48,7 +48,8 @@
             "program": "tools/dumbPaintTool.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["experiments/untitled.DPT.json"]
+            // "args":["experiments/DumbPaintTool.Eumigo.004.DPT.json"]
+            "args":["untitled.DPT.json"]
         },{
             "name": "Python: Demo",
             "type": "debugpy",

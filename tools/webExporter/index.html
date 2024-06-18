@@ -49,12 +49,18 @@
       function fetchData(){
         fetch("web.ttk.package.json")
         .then(response => response.json())
-        .then(json => processAndStart(json));
+        .then(json => fetchHero(json));
       }
 
-      function processAndStart(json){
+      function fetchHero(json){
+        fetch("eumigo.Ansi.txt")
+        .then(response => response.text())
+        .then(hero => processAndStart(json,hero));
+      }
+
+      function processAndStart(json,hero){
         console.log(json)
-        main(json)
+        main(json,hero)
       }
 
       async function paste(){
@@ -96,7 +102,7 @@
         ttkProxy.run(content, file, 60)
       }
 
-      function main(json){
+      function main(json,hero){
         /* xterm.js */
         var term = new Terminal({
             allowProposedApi: true,
@@ -123,7 +129,22 @@
         const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
         resize_ob.observe(document.querySelector("#terminal"));
 
-        term.write('xterm.js - Loaded\n\r')
+        let cols = term.cols
+        let rows = term.rows
+        let hx = (cols-hero.split("\n")[0].replace(/\x1b[^m]*m/g,'').length)>>1
+        let hy = (rows-hero.split("\n").length)>>1
+        // term.write('\x1b[48;5;7m') // Set White BG Color
+        // term.write('\x1b[48;5;15m') // Set White BG Color
+        term.write('\x1b[0;48;2;255;255;255m') // Set White BG Color
+        // term.write(' '.repeat(cols*rows))
+        term.write(` \x1b[${cols*rows}b`)
+        term.write('\x1b[0m') // Set White BG Color
+        // term.write(`---->>>[${hy};${hx}f<---- \n\r`)
+        term.write(`\x1b[${hy};${hx}f`)
+        term.write(hero.split("\n").join(`\n\r\x1b[${hx-1}C`))
+        term.write(`\x1b[1;1f`)
+
+        term.write('\n\rxterm.js - Loaded\n\r')
         mainTTk(term,json)
       }
     </script>
