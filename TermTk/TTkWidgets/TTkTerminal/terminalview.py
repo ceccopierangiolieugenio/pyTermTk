@@ -165,7 +165,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     re_CSI_Ps_fu    = re.compile(r'^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])')
     re_CSI_Ps_Ps_fu = re.compile(r'^\[(\d*);(\d*)([Hf])')
 
-    re_DEC_SET_RST  = re.compile(r'^\[(\??)(\d+)([lh])')
+    re_DEC_SET_RST  = re.compile(r'^\[(\??)([\d;]+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
     re_OSC_ps_Pt    = re.compile(r'^(\d*);(.*)$')
@@ -209,24 +209,26 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
                 ################################################
                 # CSI Modes
-                #   CSI Pm h
+                #   CSI Pm ; Pm ; ... h
                 #       Set Mode (SM).
-                #   CSI Pm l
+                #   CSI Pm ; Pm ; ... l
                 #       Reset Mode (RM).
-                #   CSI ? Pm h
+                #   CSI ? Pm ; Pm ; ... h
                 #      DEC Private Mode Set (DECSET).
-                #   CSI ? Pm l
+                #   CSI ? Pm ; Pm ; ... l
                 #      DEC Private Mode Reset (DECRST).
                 ################################################
                 if m := TTkTerminalView.re_DEC_SET_RST.match(slice):
                     en = m.end()
-                    qm = m.group(1) == '?'
-                    ps = int(m.group(2))
+                    qm = (m.group(1) == '?')
                     sr = (m.group(3) == 'h')
+                    pms = [int(_pm) for _pm in m.group(2).split(';')]
                     if qm:
-                        self._CSI_DEC_SET_RST(ps,sr)
+                        for pm in pms:
+                            self._CSI_DEC_SET_RST(pm,sr)
                     else:
-                        self._CSI_SM_RM(ps,sr)
+                        for pm in pms:
+                            self._CSI_SM_RM(pm,sr)
                     slice = slice[en:]
 
                 ################################################
