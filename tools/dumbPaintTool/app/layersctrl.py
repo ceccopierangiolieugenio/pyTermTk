@@ -154,7 +154,7 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
     @ttk.pyTTkSlot(CanvasLayer)
     def _layerSelected(self, data:CanvasLayer) -> None:
         for btn in self._layerButtons:
-            btn.setSelected(btn.data() == data)
+            btn.setSelected(id(btn.data()) == id(data))
 
     @ttk.pyTTkSlot(list[CanvasLayer])
     def _layersOrderChanged(self, layers:list[CanvasLayer]) -> None:
