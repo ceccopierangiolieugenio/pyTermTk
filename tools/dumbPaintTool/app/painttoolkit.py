@@ -68,7 +68,7 @@ class PaintToolKit(ttk.TTkContainer):
         self._bpBg.colorSelected.connect(self._refreshColor)
         self._bpDef.colorSelected.connect(self.updatedTrans.emit)
 
-        glbls.brush.glyphChanged.connect(  lambda:self._refreshColor(False))
+        glbls.brush.glyphChanged.connect(  self._refreshColor)
         glbls.brush.colorChanged.connect(  self.setColor)
         glbls.layers.changed.connect(      self._layerChanged)
         glbls.layers.layerSelected.connect(self._layerChanged)
@@ -82,7 +82,7 @@ class PaintToolKit(ttk.TTkContainer):
         self._sbLw.valueChanged.connect(self._pushLayerValues)
         self._sbLh.valueChanged.connect(self._pushLayerValues)
 
-        self._refreshColor(emit=False)
+        self._refreshColor()
 
         @ttk.pyTTkSlot()
         def _pick():
@@ -124,15 +124,14 @@ class PaintToolKit(ttk.TTkContainer):
         self._sbLh.valueChanged.connect(self._pushLayerValues)
 
     @ttk.pyTTkSlot()
-    def _refreshColor(self, emit=True):
+    def _refreshColor(self):
         glyph = glbls.brush.glyph()
         color = self.color()
         self._lgliph.setText(
                 ttk.TTkString("Glyph: '") +
                 ttk.TTkString(glyph,color) +
                 ttk.TTkString("'"))
-        if emit:
-            glbls.brush.setColor(color)
+        glbls.brush.setColor(color)
 
     def color(self):
         color = ttk.TTkColor()
@@ -159,4 +158,4 @@ class PaintToolKit(ttk.TTkContainer):
         else:
             self._cbBg.setCheckState(ttk.TTkK.Unchecked)
             self._bpBg.setDisabled()
-        self._refreshColor(emit=False)
+        self._refreshColor()

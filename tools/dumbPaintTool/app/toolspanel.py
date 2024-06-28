@@ -34,6 +34,7 @@ class ToolsPanel(ttk.TTkVBoxLayout):
     __slots__ = ('_palette',
                  '_glyph','_color',
                  '_la_brush_g', '_ta_brush_a'
+                 '_cb_p_fg', '_cb_p_bg',
                  # Signals
                  'pickArea', 'toolSelected','areaChanged')
     def __init__(self, *args, **kwargs):
@@ -85,6 +86,8 @@ class ToolsPanel(ttk.TTkVBoxLayout):
 
         self._la_brush_g = la_brush_g
         self._ta_brush_a = ta_brush_a
+        self._cb_p_fg    = cb_p_fg
+        self._cb_p_bg    = cb_p_bg
 
         @ttk.pyTTkSlot()
         def _checkTools():
@@ -190,6 +193,7 @@ class ToolsPanel(ttk.TTkVBoxLayout):
         glbls.brush.glyphEnabledChanged.connect(self._refreshColor)
         glbls.brush.areaChanged.connect( self.setArea)
         glbls.brush.colorChanged.connect(self._refreshColor)
+        glbls.brush.colorChanged.connect(self._palette.setColor)
         glbls.brush.setColor(self._palette.color())
 
         _checkTools()
@@ -208,6 +212,8 @@ class ToolsPanel(ttk.TTkVBoxLayout):
                 ttk.TTkString("Glyph: '") +
                 ttk.TTkString(glyph,color) +
                 ttk.TTkString("'"))
+        self._cb_p_fg.setChecked(None != color.foreground())
+        self._cb_p_bg.setChecked(None != color.background())
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def setColor(self, color:ttk.TTkColor):

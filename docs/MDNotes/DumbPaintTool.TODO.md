@@ -1,7 +1,7 @@
  - [x] Save to open or last open/saved filename
  - [ ] Ask to Save on quit
  - [ ] Fix CanvasLayer Sizes on Save 
- - [ ] Brush colors applied back to Palette
+ - [x] Brush colors applied back to Palette
  - [x] Fix multiple layers added linked together
  - AppTemplate 
    -  [ ] Title, show the bar
