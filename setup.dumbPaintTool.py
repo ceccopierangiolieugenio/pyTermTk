@@ -39,7 +39,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Libraries :: Application Frameworks"],
     include_package_data=False,
-    packages=['dumbPaintTool','dumbPaintTool.app','dumbPaintTool.app.filters'],
+    packages=['dumbPaintTool','dumbPaintTool.app','dumbPaintTool.app.filters','dumbPaintTool.app.state'],
     package_data={'dumbPaintTool': ['tui/*']},
     python_requires=">=3.9",
     install_requires=[
