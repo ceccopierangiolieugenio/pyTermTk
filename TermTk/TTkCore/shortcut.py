@@ -75,6 +75,14 @@ class TTkShortcut():
             TTkShortcut._shortcuts[key] = []
         TTkShortcut._shortcuts[key].append(self)
 
+    def dispose(self):
+        self.activated.clear()
+        if self._key in TTkShortcut._shortcuts:
+            if self in TTkShortcut._shortcuts[self._key]:
+                TTkShortcut._shortcuts[self._key].remove(self)
+            if not TTkShortcut._shortcuts[self._key]:
+                del TTkShortcut._shortcuts[self._key]
+
     @staticmethod
     def processKey(key, focusWidget):
         # TTkLog.debug(f"{str(key)=}")

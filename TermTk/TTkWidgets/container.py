@@ -82,6 +82,14 @@ class TTkContainer(TTkWidget):
         self._layout.setParent(self)
         self.update(updateLayout=True)
 
+    def dispose(self, children:bool=False):
+        super().dispose()
+        if children:
+            cl = [_w for _w in self._layout.iterWidgets(onlyVisible=False, recurse=True)]
+            for wid in reversed(cl):
+                wid.dispose()
+                TTkLog.debug(wid._name)
+
     def addWidget(self, widget):
         '''
         .. warning::
