@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
-# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +22,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkAbstractTableModel']
+class A():
+    def __init__(self,a,b) -> None:
+        self.a = a
+        self.b = b
 
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+    def __eq__(self, value: object) -> bool:
+        print(f"{self=},{value=}")
+        return self.a==value.a and self.b==value.b
 
-class TTkAbstractTableModel():
-    '''TTkAbstractTableModel'''
-    __slots__ = (
-        # Signals
-        'dataChanged'
-    )
-    def __init__(self):
-        self.dataChanged = pyTTkSignal()
 
-    def rowCount(self) -> int:
-        raise NotImplementedError()
+a = A(1,2)
+b = a
+c = A(1,2)
+d = A(1,3)
 
-    def columnCount(self) -> int:
-        raise NotImplementedError()
-
-    def data(self, row:int, col:int) -> TTkString:
-        return TTkString()
-
-    def headerData(self, pos:int, orientation:TTkK.Direction) -> TTkString:
-        if orientation==TTkK.HORIZONTAL:
-            return TTkString(str(pos))
-        elif orientation==TTkK.VERTICAL:
-            return TTkString(str(pos))
-        return TTkString()
-
-    def sort(self, col:int, order) -> None:
-        pass
+print(f"{(a==b)=}")
+print(f"{(a==c)=}")
+print(f"{(a==d)=}")
+print(f"{(a is b)=}")
+print(f"{(a is c)=}")
+print(f"{(a is d)=}")

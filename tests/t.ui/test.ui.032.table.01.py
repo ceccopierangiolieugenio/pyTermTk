@@ -36,7 +36,7 @@ import TermTk as ttk
 
 class MyTableModel(ttk.TTkAbstractTableModel):
     def __init__(self, mylist, header, *args):
-        ttk.TTkAbstractTableModel.__init__(self, *args)
+        super().__init__(*args)
         self.mylist = mylist
         self.header = header
     def rowCount(self):
@@ -48,7 +48,7 @@ class MyTableModel(ttk.TTkAbstractTableModel):
     def headerData(self, col, orientation):
         if orientation == ttk.TTkK.HORIZONTAL:
             return self.header[col]
-        return super().headerData(self, col, orientation)
+        return super().headerData(col, orientation)
     def sort(self, col, order):
         """sort table by given column number col"""
         # self.emit(SIGNAL("layoutAboutToBeChanged()"))
@@ -120,7 +120,8 @@ data_list = [
 ('TRIETHYLAMINE', 89.5, -114.7, 0.726),
 ('TRIFLUOROACETIC ACID', 71.8, -15.3, 1.489),
 ('WATER', 100.0, 0.0, 1.0),
-('XYLENES', 139.1, -47.8, 0.86)
+('XYLENES', 139.1, -47.8, 0.86),
+('!!!END!!!', 123.4, -5432.1, 0.123)
 ]
 
 ttk.TTkLog.use_default_file_logging()
@@ -131,19 +132,22 @@ args = parser.parse_args()
 
 root = ttk.TTk()
 if args.f:
-    rootTree1 = root
+    rootTable = root
     root.setLayout(ttk.TTkGridLayout())
 else:
-    rootTree1 = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
+    rootTable = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Table 1", layout=ttk.TTkGridLayout(), border=True)
 
-table = ttk.TTkTable(parent=rootTree1)
+splitter = ttk.TTkSplitter(parent=rootTable,orientation=ttk.TTkK.VERTICAL)
+
+table = ttk.TTkTable(parent=splitter)
 
 table_model = MyTableModel(data_list, header)
-table_view = ttk.TTkTable()
-table_view.setModel(table_model)
+table.setModel(table_model)
 # set column width to fit contents (set font first!)
-table_view.resizeColumnsToContents()
+table.resizeColumnsToContents()
 # enable sorting
-table_view.setSortingEnabled(True)
+table.setSortingEnabled(True)
+
+splitter.addWidget(ttk.TTkLogViewer(),size=10,title="LOGS")
 
 root.mainloop()

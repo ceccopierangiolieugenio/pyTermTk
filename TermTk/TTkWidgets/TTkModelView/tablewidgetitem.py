@@ -20,36 +20,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkAbstractTableModel']
-
-from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
-
-class TTkAbstractTableModel():
-    '''TTkAbstractTableModel'''
-    __slots__ = (
-        # Signals
-        'dataChanged'
-    )
-    def __init__(self):
-        self.dataChanged = pyTTkSignal()
-
-    def rowCount(self) -> int:
-        raise NotImplementedError()
-
-    def columnCount(self) -> int:
-        raise NotImplementedError()
-
-    def data(self, row:int, col:int) -> TTkString:
-        return TTkString()
-
-    def headerData(self, pos:int, orientation:TTkK.Direction) -> TTkString:
-        if orientation==TTkK.HORIZONTAL:
-            return TTkString(str(pos))
-        elif orientation==TTkK.VERTICAL:
-            return TTkString(str(pos))
-        return TTkString()
-
-    def sort(self, col:int, order) -> None:
-        pass
+__all__ = []
