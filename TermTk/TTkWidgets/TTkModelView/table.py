@@ -25,6 +25,7 @@ __all__ = ['TTkTable']
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
+from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
 
 class TTkTable(TTkAbstractScrollArea):
     __slots__ = (
@@ -41,7 +42,10 @@ class TTkTable(TTkAbstractScrollArea):
         # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
         'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
-    def __init__(self, *, parent=None, visible=True, **kwargs):
+    def __init__(self, *,
+                 parent=None, visible=True,
+                 **kwargs):
+        self._tableView = None
         super().__init__(parent=parent, visible=visible, **kwargs)
         self._tableView = kwargs.get('TableWidget',TTkTableWidget(**kwargs))
         self.setViewport(self._tableView)
@@ -69,3 +73,13 @@ class TTkTable(TTkAbstractScrollArea):
         # self.resizeColumnToContents = self._tableView.resizeColumnToContents
 
         # self.clear           = self._tableView.clear
+
+    def setStyle(self, style):
+        if self._tableView:
+            self._tableView.setStyle(style)
+        return super().setStyle(style)
+
+    def mergeStyle(self, style):
+        if self._tableView:
+            self._tableView.mergeStyle(style)
+        return super().mergeStyle(style)
