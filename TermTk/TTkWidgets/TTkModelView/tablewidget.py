@@ -51,7 +51,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     'color':          TTkColor.RST,
                     'lineColor':      TTkColor.fg("#444444"),
                     'headerColor':    TTkColor.fg("#FFFFFF")+TTkColor.bg("#444444")+TTkColor.BOLD,
-                    'hoverColor':     TTkColor.bg("#AAAA44")+TTkColor.BOLD,
+                    'hoverColor':     TTkColor.fg("#4444FF")+TTkColor.bg("#AAAA44")+TTkColor.BOLD,
                     'selectedColor':  TTkColor.bg("#888800"),
                     'separatorColor': TTkColor.fg("#555555")+TTkColor.bg("#444444")},
                 'disabled':    {
@@ -68,7 +68,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_showVSeparators', '_showHSeparators',
                   '_colsPos', '_rowsPos',
                   '_selected', '_hSeparatorSelected', '_vSeparatorSelected',
-                  '_hoverPos',
+                  '_hoverPos', '_dragPos',
                   '_sortColumn', '_sortOrder',
                   # Signals
                   # 'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
@@ -90,6 +90,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._showVSeparators = hSeparator
         self._selected = None
         self._hoverPos = None
+        self._dragPos = None
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
         self._sortColumn = -1
@@ -159,20 +160,10 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return super().leaveEvent(evt)
 
-    def mouseMoveEvent(self, evt) -> bool:
+    def _findCell(self, x, y):
         vx = self._vHeaderSize
-        x,y = evt.x-vx,evt.y-1
-        self._hoverPos = None
-        if x<0 or y<0:
-            self.update()
-            return True
-
         ox, oy = self.getViewOffsets()
-        x,y = x+ox,y+oy
-        w,h = self.size()
-
-        rows = self._tableModel.rowCount()
-        cols = self._tableModel.columnCount()
+        x,y = x+ox-vx, y+oy-1
         rp = self._rowsPos
         cp = self._colsPos
 
@@ -180,10 +171,17 @@ class TTkTableWidget(TTkAbstractScrollView):
             if py>y:
                 for col,px in enumerate(cp):
                     if px>x:
-                        self._hoverPos = (row, col)
-                        self.update()
-                        return True
+                        return row,col
+        return None
 
+    def mouseMoveEvent(self, evt) -> bool:
+        vx = self._vHeaderSize
+        x,y = evt.x,evt.y
+        self._hoverPos = None
+        if x<vx or y<1:
+            self.update()
+            return True
+        self._hoverPos = self._findCell(x,y)
         self.update()
         return True
 
@@ -191,6 +189,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         vx = self._vHeaderSize
+
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
 
@@ -223,7 +222,16 @@ class TTkTableWidget(TTkAbstractScrollView):
                     # self.sortItems(i, order)
                     break
             return True
-
+        else:
+            row,col = self._findCell(x,y)
+            self._dragPos = [(row,col),(row,col)]
+            if evt.mod==TTkK.ControlModifier:
+                self._selected[row][col] = not self._selected[row][col]
+            else:
+                self._selected[row][col] = True
+            self._hoverPos = None
+            self.update()
+            return True
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -242,6 +250,10 @@ class TTkTableWidget(TTkAbstractScrollView):
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         vx = self._vHeaderSize
+        if self._dragPos and not self._hSeparatorSelected and not self._vSeparatorSelected:
+            self._dragPos[1] = self._findCell(x,y)
+            self.update()
+            return True
         if self._hSeparatorSelected is not None:
             x += ox-vx
             ss = self._hSeparatorSelected
@@ -273,6 +285,25 @@ class TTkTableWidget(TTkAbstractScrollView):
             self.update()
             return True
         return False
+
+    def mouseReleaseEvent(self, evt) -> bool:
+        if self._dragPos:
+            rows = self._tableModel.rowCount()
+            cols = self._tableModel.columnCount()
+            state = True
+            (rowa,cola),(rowb,colb) = self._dragPos
+            if evt.mod==TTkK.ControlModifier:
+                state = self._selected[rowa][cola]
+            else:
+                self._selected = [[False]*cols for _ in range(rows)]
+            cola,colb=min(cola,colb),max(cola,colb)
+            rowa,rowb=min(rowa,rowb),max(rowa,rowb)
+            for line in self._selected[rowa:rowb+1]:
+                line[cola:colb+1] = [state]*(colb-cola+1)
+        self._hoverPos = None
+        self._dragPos = None
+        self.update()
+        return True
 
     def paintEvent(self, canvas) -> None:
         style = self.currentStyle()
@@ -488,12 +519,25 @@ class TTkTableWidget(TTkAbstractScrollView):
             # Draw Borders
             # Top, Bottom
             hoverColorInv = hoverColor.background().invertFgBg()
-            if ya>1:
-                canvas.drawTTkString(pos=(xa,ya-1), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
+            canvas.drawTTkString(pos=(xa,ya-1), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
             canvas.drawTTkString(pos=(xa,yb-1), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
             canvas.fill(char='▐',pos=(xa,ya), size=(1,yb-ya-1), color=hoverColorInv)
             canvas.fill(char='▌',pos=(xb,ya), size=(1,yb-ya-1), color=hoverColorInv)
 
+        if self._dragPos:
+            (rowa,cola),(rowb,colb) = self._dragPos
+            cola,colb=min(cola,colb),max(cola,colb)
+            rowa,rowb=min(rowa,rowb),max(rowa,rowb)
+            xa = sliceCol[cola][0]-ox+vx
+            xb = sliceCol[colb][1]-ox+vx
+            ya = sliceRow[rowa][0]-oy+1
+            yb = sliceRow[rowb][1]-oy+1
+
+            hoverColorInv = hoverColor.background().invertFgBg()
+            canvas.drawTTkString(pos=(xa,ya-1), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
+            canvas.drawTTkString(pos=(xa,yb-1), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
+            canvas.fill(char='▐',pos=(xa,ya), size=(1,yb-ya-1), color=hoverColorInv)
+            canvas.fill(char='▌',pos=(xb,ya), size=(1,yb-ya-1), color=hoverColorInv)
 
         # Draw H-Header first:
         for col in range(cols):

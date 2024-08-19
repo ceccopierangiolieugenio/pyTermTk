@@ -77,7 +77,7 @@ class MyTableModel(ttk.TTkAbstractTableModel):
 header = ['Solvent Name', ' BP (deg C)', ' MP (deg C)', ' Density (g/ml)','a','b','c','d','e','f','aa','bb','cc','dd','ee','ff','gg','hh','ii','jj']
 # use numbers for numeric data to sort properly
 data_list = [
-    ('ACETIC ACID', 117.9, 16.7, 1.049,123,123,123,123,123,123,1,2,3,4,5,6,7,8,9,0),
+    ('ACETIC ACID', fire, 16.7, 1.049,123,123,123,123,123,123,1,2,3,4,5,6,7,8,9,0),
     ('ACETIC ANHYDRIDE', 140.1, -73.1, 1.087,123,123,123,123,123,123,1,2,3,4,5,6,7,8,9,0),
     ('ACETONE', 56.3, -94.7, 0.791,123,123,123,123,123,123,1,2,3,4,5,6,7,8,9,0),
     ('ACETONITRILE', 81.6, -43.8, 0.786,123,123,123,123,123,123,1,2,3,4,5,6,7,8,9,0),
