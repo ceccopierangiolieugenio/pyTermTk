@@ -311,6 +311,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if isinstance(txt,TTkString): pass
                 elif type(txt) == str: txt = TTkString(txt, cellColor)
                 else:                  txt = TTkString(f"{txt}", cellColor)
+                txt = txt.completeColor(cellColor)
                 for i,line in enumerate(txt.split('\n')):
                     y = 1+i+ya-oy
                     if y == 1+yb-oy: break
@@ -451,16 +452,22 @@ class TTkTableWidget(TTkAbstractScrollView):
                         (0x01+0x02) * self._selected[row  ][col  ] )
 
                 if not chId: continue
-                char = [
-                    # 0x00 0x01 0x02 0x03
-                      ' ', '▘', '▝', '▀',
-                    # 0x04 0x05 0x06 0x07
-                      '▖', '▌', '▞', '▛',
-                    # 0x08 0x09 0x0A 0x0B
-                      '▗', '▚', '▐', '▜',
-                    # 0x0C 0x0D 0x0E 0x0F
-                      '▄', '▙', '▟', '█'][chId]
-                canvas.drawChar(char=char,pos=(x,y),color=selectedColorInv)
+                if chId == 0x0F:
+                    if col<cols-1:
+                        canvas.drawChar(char='┼',pos=(x,y),color=selectedColor)
+                    else:
+                        canvas.drawChar(char='─',pos=(x,y),color=selectedColor)
+                else:
+                    char = [
+                        # 0x00 0x01 0x02 0x03
+                          ' ', '▘', '▝', '▀',
+                        # 0x04 0x05 0x06 0x07
+                          '▖', '▌', '▞', '▛',
+                        # 0x08 0x09 0x0A 0x0B
+                          '▗', '▚', '▐', '▜',
+                        # 0x0C 0x0D 0x0E 0x0F
+                          '▄', '▙', '▟', '█'][chId]
+                    canvas.drawChar(char=char,pos=(x,y),color=selectedColorInv)
 
         if self._hoverPos:
             row,col = self._hoverPos
@@ -470,8 +477,9 @@ class TTkTableWidget(TTkAbstractScrollView):
             xa,xb = xa+vx-ox, xb+vx-ox
             txt = self._tableModel.data(row, col)
             if isinstance(txt,TTkString): pass
-            elif type(txt) == str: txt = TTkString(txt, hoverColor)
-            else:                  txt = TTkString(f"{txt}", hoverColor)
+            elif type(txt) == str:        txt = TTkString(txt, hoverColor)
+            else:                         txt = TTkString(f"{txt}", hoverColor)
+            txt = txt.completeColor(hoverColor)
             for i,line in enumerate(txt.split('\n')):
                 y = i+ya
                 if y == yb: break
