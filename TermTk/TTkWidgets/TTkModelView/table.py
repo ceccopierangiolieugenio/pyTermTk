@@ -35,6 +35,7 @@ class TTkTable(TTkAbstractScrollArea):
         # Forwarded Methods
         'setModel', 'setSortingEnabled',
         'resizeColumnsToContents',
+        'setSelection',
 
         # Forwarded Methods From TTkTree
         'setHeaderLabels',
@@ -54,6 +55,7 @@ class TTkTable(TTkAbstractScrollArea):
         self.setModel = self._tableView.setModel
         self.setSortingEnabled = self._tableView.setSortingEnabled
         self.resizeColumnsToContents = self._tableView.resizeColumnsToContents
+        self.setSelection = self._tableView.setSelection
 
         # # Forward the signal
         # self.itemActivated     = self._tableView.itemActivated

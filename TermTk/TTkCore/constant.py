@@ -312,6 +312,31 @@ class TTkConstant:
         AcceptSave	= 1
         '''Save'''
 
+    class TTkItemSelectionModel(int):
+        '''These values describes the way the selection model will be updated.'''
+        NoUpdate = 0x0000
+        '''No selection will be made.'''
+        Clear    = 0x0001
+        '''The complete selection will be cleared.'''
+        Select   = 0x0002
+        '''All specified indexes will be selected.'''
+        Deselect = 0x0004
+        '''All specified indexes will be deselected.'''
+        Toggle   = 0x0008
+        '''All specified indexes will be selected or deselected depending on their current state.'''
+        Current  = 0x0010
+        '''The current selection will be updated.'''
+        Rows     = 0x0020
+        '''All indexes will be expanded to span rows.'''
+        Columns  = 0x0040
+        '''All indexes will be expanded to span columns.'''
+        SelectCurrent = Select | Current
+        '''A combination of Select and Current, provided for convenience.'''
+        ToggleCurrent = Toggle | Current
+        '''A combination of Toggle and Current, provided for convenience.'''
+        ClearAndSelect = Clear | Select
+        '''A combination of Clear and Select, provided for convenience.'''
+
     # LayoutItem Types
     class LayoutItemTypes(int):
         '''Types used internally in :mod:`~TermTk.TTkLayouts`'''

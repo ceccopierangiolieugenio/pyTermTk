@@ -51,7 +51,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     'color': TTkColor.RST,
                     'lineColor': TTkColor.fg("#444444"),
                     'headerColor': TTkColor.fg("#ffffff")+TTkColor.bg("#444444")+TTkColor.BOLD,
-                    'selectedColor': TTkColor.fg("#ffff88")+TTkColor.bg("#000066")+TTkColor.BOLD,
+                    'selectedColor': TTkColor.bg("#888800")+TTkColor.BOLD,
                     'separatorColor': TTkColor.fg("#555555")+TTkColor.bg("#444444")},
                 'disabled':    {
                     'color': TTkColor.fg("#888888"),
@@ -102,15 +102,18 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.connect(self._viewChangedHandler)
 
     def _refreshLayout(self):
-        self._vHeaderSize = 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(self._tableModel.rowCount()) )
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        self._vHeaderSize = 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
         if self._showVSeparators:
-            self._colsPos  = [(1+x)*11 for x in range(self._tableModel.columnCount())]
+            self._colsPos  = [(1+x)*11 for x in range(cols)]
         else:
-            self._colsPos  = [(1+x)*10 for x in range(self._tableModel.columnCount())]
+            self._colsPos  = [(1+x)*10 for x in range(cols)]
         if self._showHSeparators:
-            self._rowsPos     = [(1+x)*2  for x in range(self._tableModel.rowCount())]
+            self._rowsPos     = [(1+x)*2  for x in range(rows)]
         else:
-            self._rowsPos     = [(1+x)    for x in range(self._tableModel.rowCount())]
+            self._rowsPos     = [(1+x)    for x in range(rows)]
+        self._selected = [[False]*cols for _ in range(rows)]
 
     # Overridden function
     def viewFullAreaSize(self) -> tuple[int, int]:
@@ -121,6 +124,13 @@ class TTkTableWidget(TTkAbstractScrollView):
     # Overridden function
     def viewDisplayedSize(self) -> tuple[int, int]:
         return self.size()
+
+    def setSelection(self, pos, size, flags:TTkK.TTkItemSelectionModel):
+        x,y = pos
+        w,h = size
+        for line in self._selected[y:y+h]:
+            line[x:x+w]=[True]*w
+        self.update()
 
     @pyTTkSlot()
     def _viewChangedHandler(self) -> None:
@@ -178,33 +188,6 @@ class TTkTableWidget(TTkAbstractScrollView):
                     break
             return True
 
-        # # Handle Tree/Table Events
-        # y += oy-1
-        # if 0 <= y < len(self._cache):
-        #     item  = self._cache[y].item
-        #     level = self._cache[y].level
-        #     # check if the expand button is pressed with +-1 tollerance
-        #     if level*2 <= x < level*2+3 and \
-        #        ( item.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and item.children() or
-        #          item.childIndicatorPolicy() == TTkK.ShowIndicator ):
-        #         item.setExpanded(not item.isExpanded())
-        #         if item.isExpanded():
-        #             self.itemExpanded.emit(item)
-        #         else:
-        #             self.itemCollapsed.emit(item)
-        #     else:
-        #         if self._selected:
-        #             self._selected.setSelected(False)
-        #         self._selectedId = y
-        #         self._selected = item
-        #         self._selected.setSelected(True)
-        #     col = -1
-        #     for i, c in enumerate(self._columnsPos):
-        #         if x < c:
-        #             col = i
-        #             break
-        #     self.itemClicked.emit(item, col)
-        #     self.update()
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -258,11 +241,11 @@ class TTkTableWidget(TTkAbstractScrollView):
     def paintEvent(self, canvas) -> None:
         style = self.currentStyle()
 
-        color= style['color']
-        lineColor= style['lineColor']
-        headerColor= style['headerColor']
-        selectedColor= style['selectedColor']
-        separatorColor= style['separatorColor']
+        color:TTkColor= style['color']
+        lineColor:TTkColor= style['lineColor']
+        headerColor:TTkColor= style['headerColor']
+        selectedColor:TTkColor= style['selectedColor']
+        separatorColor:TTkColor= style['separatorColor']
 
         ox,oy = self.getViewOffsets()
         w,h = self.size()
@@ -285,20 +268,21 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if xa>w+ox: break
                 if xb<ox: continue
                 txt = self._tableModel.data(row, col)
-                cellColor = color.mod(col,row)
+                cellColor = selectedColor if self._selected[row][col] else color.mod(col,row)
                 if isinstance(txt,TTkString): pass
-                elif type(txt) == str: txt = TTkString(txt)
-                else:                  txt = TTkString(f"{txt}")
+                elif type(txt) == str: txt = TTkString(txt, cellColor)
+                else:                  txt = TTkString(f"{txt}", cellColor)
                 for i,line in enumerate(txt.split('\n')):
                     y = 1+i+ya-oy
                     if y == 1+yb-oy: break
                     canvas.drawTTkString(pos=(vx+1+xa-ox,y), text=line, width=xb-xa-1, color=cellColor)
                 canvas.fill(pos=(vx+1+xa-ox,2+i+ya-oy),size=(xb-xa-1,yb-ya-i-1),color=cellColor)
                 # Draw the VSeparator of the cell
-                for sy in range(1+ya-oy,1+yb-oy):
-                    lineColorMix = lineColor + color.mod(0,row)
-                    canvas.drawChar(pos=(vx-ox+xb,sy), char='│', color=lineColorMix)
-
+                lineColorMix = color.mod(0,row) + lineColor
+                if cellColor==TTkColor.RST or col<cols-1:
+                    canvas.fill(pos=(vx-ox+xb,1+ya-oy), size=(1,yb-ya), char='│', color=lineColorMix)
+                else:
+                    canvas.fill(pos=(vx-ox+xb,1+ya-oy), size=(1,yb-ya), char=' ', color=lineColorMix)
 
         # Draw H-Header first:
         for col in range(cols):
@@ -346,27 +330,129 @@ class TTkTableWidget(TTkAbstractScrollView):
             y = rp[row]-oy
             if y > h : break
             if y < 1: continue
-            lineColorMixA:TTkColor = lineColor + (bgA:=color.mod(0,row))
-            lineColorMixB:TTkColor = lineColor + (bgB:=color.mod(0,row+1))
-            if bgA == bgB:
+            bgA:TTkColor = c if (c:=color.mod(0,row).background()) else TTkColor.RST
+            bgB:TTkColor = c if (c:=color.mod(0,row+1).background()) else TTkColor.RST
+            lineColorMix:TTkColor = bgA + lineColor
+            if bgA == bgB == TTkColor.RST:
                 if row<rows-1:
-                    canvas.drawTTkString(pos=(vx-ox,y), text=lineC, color=lineColorMixA)
-                    canvas.drawChar(pos=(vx-ox+cp[-1],y), char="┤", color=lineColorMixA)
+                    canvas.drawTTkString(pos=(vx-ox,y), text=lineC, color=lineColorMix)
+                    canvas.drawChar(pos=(vx-ox+cp[-1],y), char="┤", color=lineColorMix)
                 else:
-                    canvas.drawTTkString(pos=(vx-ox,y), text=lineB, color=lineColorMixA)
-                    canvas.drawChar(pos=(vx-ox+cp[-1],y), char="┘", color=lineColorMixA)
+                    canvas.drawTTkString(pos=(vx-ox,y), text=lineB, color=lineColorMix)
+                    canvas.drawChar(pos=(vx-ox+cp[-1],y), char="┘", color=lineColorMix)
+            elif bgA == bgB:
+                canvas.drawTTkString(pos=(vx-ox,y), text=lineC, color=lineColorMix)
+                canvas.drawChar(pos=(vx-ox+cp[-1],y), char="─", color=lineColorMix)
             else:
-                if row<rows-1:
-                    canvas.fill(char='▀', pos=(vx,y), size=(1-ox+cp[-1],1), color=bgA.invertFgBg()+bgB)
-                else:
+                if row>=rows-1 or bgB==TTkColor.RST:
                     canvas.fill(char='▀', pos=(vx,y), size=(1-ox+cp[-1],1), color=bgA.invertFgBg())
+                else:
+                    canvas.fill(char='▄', pos=(vx,y), size=(1-ox+cp[-1],1), color=bgA+bgB.invertFgBg())
 
             canvas.drawTTkString(pos=(  0,y), text=hline)
 
         # Draw Top/Left Corner
         canvas.drawText(pos=(0,0), text=' ', width=vx, color=separatorColor.invertFgBg() )
 
+        selectedColorInv = selectedColor.background().invertFgBg()
+        # Draw Select H-Edges
+        for row in range(rows):
+            y = rp[row]-oy
+            if y > h : break
+            if y < 1: continue
+            # Draw Top Line
+            # selMixA:TTkColor = c.background()+selectedColorInv if (row < rows-1 and (c:=color.mod(0,row  ).background())) else selectedColorInv
+            # selMixB:TTkColor = c.background()+selectedColorInv if (row < rows-1 and (c:=color.mod(0,row+1).background())) else selectedColorInv
+            selMixA:TTkColor = selectedColorInv
+            selMixB:TTkColor = selectedColorInv
+            for col in range(cols):
+                xa,xb = sliceCol[col]
+                xa = max(vx,vx+xa-ox)
+                xb = max(vx,vx+xb-ox)
+                if xa>w: break
+                if xb<vx: continue
+                if row < rows-1:
+                    chId = (
+                        0x01 * self._selected[row  ][col  ] +
+                        0x04 * self._selected[row+1][col  ] )
+                else:
+                    chId = 0x01 * self._selected[row  ][col]
+                if not chId: continue
+                if chId == 0x01:
+                    canvas.fill(char='▀', pos=(xa,y), size=(xb-xa,1), color=selMixB)
+                elif chId == 0x04:
+                    canvas.fill(char='▄', pos=(xa,y), size=(xb-xa,1), color=selMixA)
+                elif chId == (0x04|0x01):
+                    canvas.fill(char='─', pos=(xa,y), size=(xb-xa,1), color=selectedColor)
 
+        # Draw Select V-Edges
+        for row in range(rows):
+            ya,yb = sliceRow[row]
+            ya = max(1,1+ya-oy)
+            yb = max(1,1+yb-oy)
+            if ya>h: break
+            if yb<1: continue
+            # Draw Top Line
+            # selMix:TTkColor = c.background()+selectedColorInv if (c:=color.mod(0,row).background()) else selectedColorInv
+            selMix:TTkColor = selectedColorInv
+            for col in range(cols):
+                x = cp[col]-ox+vx
+                if x>w: break
+                if x<vx: continue
+                if col < cols-1:
+                    chId = (
+                        0x01 * self._selected[row][col  ] +
+                        0x02 * self._selected[row][col+1] )
+                else:
+                    chId = (0x01+0x02) * self._selected[row][col]
+                if not chId: continue
+                if chId == 0x01:
+                    canvas.fill(char='▌', pos=(x,ya), size=(1,yb-ya), color=selMix)
+                elif chId == 0x02:
+                    canvas.fill(char='▐', pos=(x,ya), size=(1,yb-ya), color=selMix)
+                elif chId == (0x01|0x02) and col < cols-1:
+                    canvas.fill(char='│', pos=(x,ya), size=(1,yb-ya), color=selectedColor)
+                elif chId == (0x01|0x02):
+                    canvas.fill(char=' ', pos=(x,ya), size=(1,yb-ya), color=selectedColor)
+
+        # Draw Select corners
+        for row in range(rows):
+            y = rp[row]-oy
+            if y > h : break
+            if y < 1: continue
+            for col in range(cols):
+                x = cp[col]-ox+vx
+                if x>w: break
+                if x<vx: continue
+                if row<rows-1 and col<cols-1:
+                    chId = (
+                        0x01 * self._selected[row  ][col  ] +
+                        0x02 * self._selected[row  ][col+1] +
+                        0x04 * self._selected[row+1][col  ] +
+                        0x08 * self._selected[row+1][col+1] )
+                elif col<cols-1:
+                    chId = (
+                        0x01 * self._selected[row  ][col  ] +
+                        0x02 * self._selected[row  ][col+1] )
+                elif row<rows-1:
+                    chId = (
+                        (0x01+0x02) * self._selected[row  ][col  ] +
+                        (0x04+0x08) * self._selected[row+1][col  ] )
+                else:
+                    chId = (
+                        (0x01+0x02) * self._selected[row  ][col  ] )
+
+                if not chId: continue
+                char = [
+                    # 0x00 0x01 0x02 0x03
+                      ' ', '▘', '▝', '▀',
+                    # 0x04 0x05 0x06 0x07
+                      '▖', '▌', '▞', '▛',
+                    # 0x08 0x09 0x0A 0x0B
+                      '▗', '▚', '▐', '▜',
+                    # 0x0C 0x0D 0x0E 0x0F
+                      '▄', '▙', '▟', '█'][chId]
+                canvas.drawChar(char=char,pos=(x,y),color=selectedColorInv)
 
 
 

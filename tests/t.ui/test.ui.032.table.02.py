@@ -29,9 +29,20 @@ import os
 import sys
 import argparse
 import operator
+import json
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
+
+imagesFile = os.path.join(os.path.dirname(os.path.abspath(__file__)),'ansi.images.json')
+with open(imagesFile) as f:
+    d = json.load(f)
+    # Image exported by the Dumb Paint Tool
+    pepper   = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['pepper'])
+    python   = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['python'])
+    fire     = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['fire'])
+    fireMini = ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['fireMini'])
+
 
 class MyTableModel(ttk.TTkAbstractTableModel):
     def __init__(self, mylist, header, *args):
@@ -47,14 +58,20 @@ class MyTableModel(ttk.TTkAbstractTableModel):
     def headerData(self, num, orientation):
         if orientation == ttk.TTkK.HORIZONTAL:
             return self.header[num]
+        if orientation == ttk.TTkK.VERTICAL:
+            prefix = ['aa','bb','cc','dd','ee','ff','gg','Euge']
+            return f"{prefix[num%len(prefix)]}:{num:03}"
         return super().headerData(num, orientation)
     def sort(self, col, order):
         """sort table by given column number col"""
+        # self.emit(SIGNAL("layoutAboutToBeChanged()"))
         self.mylist = sorted(self.mylist,
             key=operator.itemgetter(col))
         if order == ttk.TTkK.DescendingOrder:
             self.mylist.reverse()
         self.dataChanged.emit()
+        # self.layoutChanged.emit()
+        # self.emit(SIGNAL("layoutChanged()"))
 
 # the solvent data ...
 header = ['Solvent Name', ' BP (deg C)', ' MP (deg C)', ' Density (g/ml)']
@@ -64,9 +81,14 @@ data_list = [
     ('ACETIC ANHYDRIDE', 140.1, -73.1, 1.087),
     ('ACETONE', 56.3, -94.7, 0.791),
     ('ACETONITRILE', 81.6, -43.8, 0.786),
+    (python, 34.5, -116.2, fire),
+    ('DIMETHYLACETAMIDE', 166.1, -20.0, fireMini),
+    ('DIMETHYLFORMAMIDE', 153.3, pepper, 0.944),
     ('ANISOLE', 154.2, -37.0, 0.995),
+    (' (1) Miultiline\nAnother Line\nAnd another\nAnd ANOTHER\nLast ONE ', 99.2, pepper, 0.692),
     ('BENZYL ALCOHOL', 205.4, -15.3, 1.045),
     ('BENZYL BENZOATE', 323.5, 19.4, 1.112),
+    (' (2) Long Line Very Long Long Long Long Long Long ', 99.2, -107.4, 0.692),
     ('BUTYL ALCOHOL NORMAL', 117.7, -88.6, 0.81),
     ('BUTYL ALCOHOL SEC', 99.6, -114.7, 0.805),
     ('BUTYL ALCOHOL TERTIARY', 82.2, 25.5, 0.786),
@@ -77,8 +99,6 @@ data_list = [
     ('DICHLOROETHANE 1 2', 83.5, -35.7, 1.246),
     ('DICHLOROMETHANE', 39.8, -95.1, 1.325),
     ('DIETHYL ETHER', 34.5, -116.2, 0.715),
-    ('DIMETHYLACETAMIDE', 166.1, -20.0, 0.937),
-    ('DIMETHYLFORMAMIDE', 153.3, -60.4, 0.944),
     ('DIMETHYLSULFOXIDE', 189.4, 18.5, 1.102),
     ('DIOXANE 1 4', 101.3, 11.8, 1.034),
     ('DIPHENYL ETHER', 258.3, 26.9, 1.066),
@@ -102,7 +122,7 @@ data_list = [
     ('MORPHOLINE', 128.9, -3.1, 1.0),
     ('NITROBENZENE', 210.8, 5.7, 1.208),
     ('NITROMETHANE', 101.2, -28.5, 1.131),
-    ('PENTANE', 36.1, ' -129.7', 0.626),
+    ('PENTANE', 36.1, -129.7, 0.626),
     ('PHENOL', 181.8, 40.9, 1.066),
     ('PROPANENITRILE', 97.1, -92.8, 0.782),
     ('PROPIONIC ACID', 141.1, -20.7, 0.993),
@@ -116,7 +136,58 @@ data_list = [
     ('TRIETHYLAMINE', 89.5, -114.7, 0.726),
     ('TRIFLUOROACETIC ACID', 71.8, -15.3, 1.489),
     ('WATER', 100.0, 0.0, 1.0),
-    ('XYLENES', 139.1, -47.8, 0.86)]
+    ('XYLENES', 139.1, -47.8, 0.86),
+    ('!!!END!!!', 123.4, -5432.1, 0.123)]
+
+class CustomColorModifier(ttk.TTkAlternateColor):
+    colors = [
+        ttk.TTkColor.bg("#000066"),
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.bg("#000066"),
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.bg("#003300"),
+        ttk.TTkColor.bg("#006600"),
+        ttk.TTkColor.bg("#000066"),
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.bg("#000066"),
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.fgbg("#00FFFF","#880000") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#00FFFF","#FF0000") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#0000FF","#FFFF00") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#FF00FF","#00FF00") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#FF0000","#00FFFF") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#FFFF00","#0000FF") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#FFFF00","#0000FF") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#00FF00","#FF00FF") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.fgbg("#00FF00","#880088") + ttk.TTkColor.BOLD,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.RST,
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.bg("#0000FF"),
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+        ttk.TTkColor.RST,
+    ]
+    def __init__(self):
+        super().__init__()
+
+    def exec(self, x:int, y:int, base_color:ttk.TTkColor) -> ttk.TTkColor:
+        c =  CustomColorModifier.colors
+        return c[y%len(c)]
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', help='Full Screen', action='store_true')
@@ -135,14 +206,27 @@ else:
 
 splitter = ttk.TTkSplitter(parent=rootTable,orientation=ttk.TTkK.VERTICAL)
 
+tableStyle = {'default': {'color':ttk.TTkColor.bg("#000000", modifier=CustomColorModifier())} }
+
 table_model = MyTableModel(data_list, header)
 
 table = ttk.TTkTable(parent=splitter, tableModel=table_model)
+table.mergeStyle(tableStyle)
 
 # set column width to fit contents (set font first!)
 table.resizeColumnsToContents()
 # enable sorting
 table.setSortingEnabled(True)
+
+table.setSelection((0,0),(2,2),1)
+table.setSelection((3,0),(1,2),1)
+
+table.setSelection((1,3),(2,4),1)
+table.setSelection((2,5),(2,4),1)
+table.setSelection((0,9),(2,3),1)
+
+table.setSelection((1,59),(1,2),1)
+table.setSelection((3,59),(1,2),1)
 
 splitter.addWidget(ttk.TTkLogViewer(),size=10,title="LOGS")
 
