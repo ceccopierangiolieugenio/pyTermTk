@@ -43,6 +43,35 @@ class _DefaultTableModel(TTkAbstractTableModel):
     def data(self, row, col):
         return f"{row}x{col}"
 
+class _HeaderView():
+    '''_HeaderView
+    This is a placeholder for a future "TTkHeaderView"
+    '''
+    __slots__ = ('_visible','visibilityUpdated')
+    def __init__(self) -> None:
+        self.visibilityUpdated = pyTTkSignal(bool)
+        self._visible = True
+
+    @pyTTkSlot(bool)
+    def setVisible(self, visible: bool):
+        '''setVisible'''
+        if self._visible == visible: return
+        self._visible = visible
+        self.visibilityUpdated.emit(visible)
+
+    @pyTTkSlot()
+    def show(self):
+        '''show'''
+        self.setVisible(True)
+
+    @pyTTkSlot()
+    def hide(self):
+        '''hide'''
+        self.setVisible(False)
+
+    def isVisible(self) -> bool:
+        return self._visible
+
 class TTkTableWidget(TTkAbstractScrollView):
     '''TTkTableWidget'''
 
@@ -64,9 +93,11 @@ class TTkTableWidget(TTkAbstractScrollView):
             }
 
     __slots__ = ( '_tableModel',
-                  '_vHeaderSize',
+                  '_vHeaderSize', '_hHeaderSize',
                   '_showVSeparators', '_showHSeparators',
+                  '_verticalHeader', '_horizontallHeader',
                   '_colsPos', '_rowsPos',
+                  '_internal',
                   '_selected', '_hSeparatorSelected', '_vSeparatorSelected',
                   '_hoverPos', '_dragPos',
                   '_sortColumn', '_sortOrder',
@@ -88,9 +119,12 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         self._showHSeparators = vSeparator
         self._showVSeparators = hSeparator
+        self._verticalHeader    = _HeaderView()
+        self._horizontallHeader = _HeaderView()
         self._selected = None
         self._hoverPos = None
         self._dragPos = None
+        self._internal = {}
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
         self._sortColumn = -1
@@ -104,25 +138,28 @@ class TTkTableWidget(TTkAbstractScrollView):
         # self.clear()
         self.setPadding(1,0,0,0)
         self.viewChanged.connect(self._viewChangedHandler)
+        self._verticalHeader.visibilityUpdated.connect(self.update)
+        self._horizontallHeader.visibilityUpdated.connect(self.update)
 
     def _refreshLayout(self):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
-        self._vHeaderSize = 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
+        self._vHeaderSize = vhs= 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
+        self._hHeaderSize = hhs= 1
         if self._showVSeparators:
             self._colsPos  = [(1+x)*11 for x in range(cols)]
         else:
             self._colsPos  = [(1+x)*10 for x in range(cols)]
         if self._showHSeparators:
-            self._rowsPos     = [(1+x)*2  for x in range(rows)]
+            self._rowsPos     = [1+x*2  for x in range(rows)]
         else:
-            self._rowsPos     = [(1+x)    for x in range(rows)]
+            self._rowsPos     = [1+x    for x in range(rows)]
         self._selected = [[False]*cols for _ in range(rows)]
 
     # Overridden function
     def viewFullAreaSize(self) -> tuple[int, int]:
         w = self._vHeaderSize+self._colsPos[-1]
-        h = 1+self._rowsPos[-1]
+        h = self._hHeaderSize+self._rowsPos[-1]
         return w,h
 
     # Overridden function
@@ -140,6 +177,11 @@ class TTkTableWidget(TTkAbstractScrollView):
     def _viewChangedHandler(self) -> None:
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
+
+    def verticalHeader(self):
+        pass
+    def horizontalHeader(self):
+        pass
 
     def setModel(self, model) -> None:
         self._tableModel = model
@@ -161,24 +203,27 @@ class TTkTableWidget(TTkAbstractScrollView):
         return super().leaveEvent(evt)
 
     def _findCell(self, x, y):
-        vx = self._vHeaderSize
+        vhs = self._vHeaderSize
+        hhs = self._hHeaderSize
         ox, oy = self.getViewOffsets()
-        x,y = x+ox-vx, y+oy-1
+        x,y = x+ox-vhs, y+oy-hhs
         rp = self._rowsPos
         cp = self._colsPos
 
         for row,py in enumerate(rp):
             if py>y:
-                for col,px in enumerate(cp):
-                    if px>x:
-                        return row,col
-        return None
+                break
+        for col,px in enumerate(cp):
+            if px>x:
+                break
+        return row,col
 
     def mouseMoveEvent(self, evt) -> bool:
-        vx = self._vHeaderSize
+        vhs = self._vHeaderSize
+        hhs = self._hHeaderSize
         x,y = evt.x,evt.y
         self._hoverPos = None
-        if x<vx or y<1:
+        if x<vhs or y<hhs:
             self.update()
             return True
         self._hoverPos = self._findCell(x,y)
@@ -188,14 +233,15 @@ class TTkTableWidget(TTkAbstractScrollView):
     def mousePressEvent(self, evt) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
-        vx = self._vHeaderSize
+        vhs = self._vHeaderSize
+        hhs = self._hHeaderSize
 
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
 
         # Handle Header Events
-        if y == 0:
-            x += ox-vx
+        if y < hhs:
+            x += ox-vhs
             for i, c in enumerate(self._colsPos):
                 if x == c:
                     # I-th separator selected
@@ -208,8 +254,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     # self.sortItems(i, order)
                     break
             return True
-        elif x<vx:
-            y += oy
+        elif x < vhs:
+            y += oy-hhs
             for i, r in enumerate(self._rowsPos):
                 if y == r:
                     # I-th separator selected
@@ -249,13 +295,14 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
-        vx = self._vHeaderSize
+        vhs = self._vHeaderSize
+        hhs = self._hHeaderSize
         if self._dragPos and not self._hSeparatorSelected and not self._vSeparatorSelected:
             self._dragPos[1] = self._findCell(x,y)
             self.update()
             return True
         if self._hSeparatorSelected is not None:
-            x += ox-vx
+            x += ox-vhs
             ss = self._hSeparatorSelected
             pos = max((ss+1)*4, x)
             diff = pos - self._colsPos[ss]
@@ -270,7 +317,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             self.update()
             return True
         if self._vSeparatorSelected is not None:
-            y += oy
+            y += oy-hhs
             ss = self._vSeparatorSelected
             pos = max((ss+1)*2, y)
             diff = pos - self._rowsPos[ss]
@@ -305,6 +352,35 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return True
 
+    #   -1  X
+    #        <-(0,0)->│<-(1,0)->│<-(2,0)->│<-(3,0)->│
+    #    1   ─────────┼─────────┼─────────┼─────────┼
+    #        <-(0,1)->│<-(1,1)->│<-(2,1)->│<-(3,1)->│
+    #    3   ─────────┼─────────┼─────────┼─────────┼
+    #        <-(0,2)->│<-(1,2)->│<-(2,2)->│<-(3,2)->│
+    #    4   ─────────┼─────────┼─────────┼─────────┼
+    #        <-(0,3)->│<-(1,3)->│<-(2,3)->│<-(3,3)->│ h-cell = 5 = 10-(4+1)
+    #                 │ abc     │         │         │
+    #                 │ de      │         │         │
+    #                 │         │         │         │
+    #                 │         │         │         │
+    #   10   ─────────┼─────────┼─────────┼─────────┼
+    #        <-(0,4)->│<-(1,4)->│<-(2,4)->│<-(3,4)->│
+    #   12   ─────────┼─────────┼─────────┼─────────┼
+    #        <-(0,5)->│<-(1,5)->│<-(2,5)->│<-(3,5)->│
+    #   14   ─────────┼─────────┼─────────┼─────────┼
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    #
     def paintEvent(self, canvas) -> None:
         style = self.currentStyle()
 
@@ -324,19 +400,22 @@ class TTkTableWidget(TTkAbstractScrollView):
         cols = self._tableModel.columnCount()
         rp = self._rowsPos
         cp = self._colsPos
-        vx = self._vHeaderSize
+        vhs = self._vHeaderSize
+        hhs = self._hHeaderSize
 
         # Draw Cells
         sliceCol=list(zip([-1]+cp,cp))
-        sliceRow=list(zip([0]+rp,rp))
+        sliceRow=list(zip([-1]+rp,rp))
         for row in range(rows):
             ya,yb = sliceRow[row]
-            if ya>h+oy: break
-            if yb<oy: continue
+            ya,yb = ya+hhs-oy, yb+hhs-oy
+            if ya>h  : break
+            if yb<hhs: continue
             for col in range(cols):
                 xa,xb = sliceCol[col]
-                if xa>w+ox: break
-                if xb<ox: continue
+                xa,xb = xa+vhs-ox, xb+vhs-ox
+                if xa>w  : break
+                if xb<vhs: continue
                 txt = self._tableModel.data(row, col)
                 cellColor = selectedColor if self._selected[row][col] else color.mod(col,row)
                 if isinstance(txt,TTkString): pass
@@ -344,16 +423,16 @@ class TTkTableWidget(TTkAbstractScrollView):
                 else:                  txt = TTkString(f"{txt}", cellColor)
                 txt = txt.completeColor(cellColor)
                 for i,line in enumerate(txt.split('\n')):
-                    y = 1+i+ya-oy
-                    if y == 1+yb-oy: break
-                    canvas.drawTTkString(pos=(vx+1+xa-ox,y), text=line, width=xb-xa-1, color=cellColor)
-                canvas.fill(pos=(vx+1+xa-ox,2+i+ya-oy),size=(xb-xa-1,yb-ya-i-1),color=cellColor)
-                # Draw the VSeparator of the cell
+                    y = i+ya+1
+                    if y == yb: break
+                    canvas.drawTTkString(pos=(1+xa,y), text=line, width=xb-xa-1, color=cellColor)
+                canvas.fill(pos=(1+xa,y+1),size=(xb-xa-1,yb-y),color=cellColor)
+                 # Draw the VSeparator of the cell
                 lineColorMix = color.mod(0,row) + lineColor
                 if cellColor==TTkColor.RST or col<cols-1:
-                    canvas.fill(pos=(vx-ox+xb,1+ya-oy), size=(1,yb-ya), char='│', color=lineColorMix)
+                    canvas.fill(pos=(xb,ya), size=(1,yb-ya), char='│', color=lineColorMix)
                 else:
-                    canvas.fill(pos=(vx-ox+xb,1+ya-oy), size=(1,yb-ya), char=' ', color=lineColorMix)
+                    canvas.fill(pos=(xb,ya), size=(1,yb-ya), char=' ', color=lineColorMix)
 
 
         hline = TTkString()
@@ -367,39 +446,39 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         # Draw rows separators
         for row in range(rows):
-            y = rp[row]-oy
-            if y > h : break
-            if y < 1: continue
+            y = rp[row]-oy+hhs
+            if y > h  : break
+            if y < hhs: continue
             bgA:TTkColor = c if (c:=color.mod(0,row).background()) else TTkColor.RST
             bgB:TTkColor = c if (c:=color.mod(0,row+1).background()) else TTkColor.RST
             lineColorMix:TTkColor = bgA + lineColor
             if bgA == bgB == TTkColor.RST:
                 if row<rows-1:
-                    canvas.drawTTkString(pos=(vx-ox,y), text=lineC, color=lineColorMix)
-                    canvas.drawChar(pos=(vx-ox+cp[-1],y), char="┤", color=lineColorMix)
+                    canvas.drawTTkString(pos=(vhs-ox,y), text=lineC, color=lineColorMix)
+                    canvas.drawChar(pos=(vhs-ox+cp[-1],y), char="┤", color=lineColorMix)
                 else:
-                    canvas.drawTTkString(pos=(vx-ox,y), text=lineB, color=lineColorMix)
-                    canvas.drawChar(pos=(vx-ox+cp[-1],y), char="┘", color=lineColorMix)
+                    canvas.drawTTkString(pos=(vhs-ox,y), text=lineB, color=lineColorMix)
+                    canvas.drawChar(pos=(vhs-ox+cp[-1],y), char="┘", color=lineColorMix)
             elif bgA == bgB:
-                canvas.drawTTkString(pos=(vx-ox,y), text=lineC, color=lineColorMix)
-                canvas.drawChar(pos=(vx-ox+cp[-1],y), char="─", color=lineColorMix)
+                canvas.drawTTkString(pos=(vhs-ox,y), text=lineC, color=lineColorMix)
+                canvas.drawChar(pos=(vhs-ox+cp[-1],y), char="─", color=lineColorMix)
             else:
                 if row>=rows-1 or bgB==TTkColor.RST:
-                    canvas.fill(char='▀', pos=(vx,y), size=(1-ox+cp[-1],1), color=bgA.invertFgBg())
+                    canvas.fill(char='▀', pos=(vhs,y), size=(1-ox+cp[-1],1), color=bgA.invertFgBg())
                 else:
-                    canvas.fill(char='▄', pos=(vx,y), size=(1-ox+cp[-1],1), color=bgA+bgB.invertFgBg())
+                    canvas.fill(char='▄', pos=(vhs,y), size=(1-ox+cp[-1],1), color=bgA+bgB.invertFgBg())
 
-            canvas.drawTTkString(pos=(  vx,y), text=hline)
+            canvas.drawTTkString(pos=(  vhs,y), text=hline)
 
         # Draw Top/Left Corner
-        canvas.drawText(pos=(0,0), text=' ', width=vx, color=separatorColor.invertFgBg() )
+        canvas.drawText(pos=(0,0), text=' ', width=vhs, color=separatorColor.invertFgBg() )
 
         selectedColorInv = selectedColor.background().invertFgBg()
         # Draw Select H-Edges
         for row in range(rows):
-            y = rp[row]-oy
-            if y > h : break
-            if y < 1: continue
+            y = rp[row]-oy+hhs
+            if y > h  : break
+            if y < hhs: continue
             # Draw Top Line
             # selMixA:TTkColor = c.background()+selectedColorInv if (row < rows-1 and (c:=color.mod(0,row  ).background())) else selectedColorInv
             # selMixB:TTkColor = c.background()+selectedColorInv if (row < rows-1 and (c:=color.mod(0,row+1).background())) else selectedColorInv
@@ -407,10 +486,10 @@ class TTkTableWidget(TTkAbstractScrollView):
             selMixB:TTkColor = selectedColorInv
             for col in range(cols):
                 xa,xb = sliceCol[col]
-                xa = max(vx,vx+xa-ox)
-                xb = max(vx,vx+xb-ox)
+                xa = max(vhs,vhs+xa-ox)
+                xb = max(vhs,vhs+xb-ox)
                 if xa>w: break
-                if xb<vx: continue
+                if xb<vhs: continue
                 if row < rows-1:
                     chId = (
                         0x01 * self._selected[row  ][col  ] +
@@ -428,17 +507,17 @@ class TTkTableWidget(TTkAbstractScrollView):
         # Draw Select V-Edges
         for row in range(rows):
             ya,yb = sliceRow[row]
-            ya = max(1,1+ya-oy)
-            yb = max(1,1+yb-oy)
+            ya = max(hhs,hhs+ya-oy)
+            yb = max(hhs,hhs+yb-oy)
             if ya>h: break
-            if yb<1: continue
+            if yb<hhs: continue
             # Draw Top Line
             # selMix:TTkColor = c.background()+selectedColorInv if (c:=color.mod(0,row).background()) else selectedColorInv
             selMix:TTkColor = selectedColorInv
             for col in range(cols):
-                x = cp[col]-ox+vx
+                x = cp[col]-ox+vhs
                 if x>w: break
-                if x<vx: continue
+                if x<vhs: continue
                 if col < cols-1:
                     chId = (
                         0x01 * self._selected[row][col  ] +
@@ -457,13 +536,13 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         # Draw Select corners
         for row in range(rows):
-            y = rp[row]-oy
+            y = rp[row]-oy+hhs
             if y > h : break
-            if y < 1: continue
+            if y < hhs: continue
             for col in range(cols):
-                x = cp[col]-ox+vx
+                x = cp[col]-ox+vhs
                 if x>w: break
-                if x<vx: continue
+                if x<vhs: continue
                 if row<rows-1 and col<cols-1:
                     chId = (
                         0x01 * self._selected[row  ][col  ] +
@@ -504,40 +583,41 @@ class TTkTableWidget(TTkAbstractScrollView):
             row,col = self._hoverPos
             ya,yb = sliceRow[row]
             xa,xb = sliceCol[col]
-            ya,yb = ya+ 1-oy, yb+ 1-oy
-            xa,xb = xa+vx-ox, xb+vx-ox
+            ya,yb = ya+hhs-oy, yb+hhs-oy
+            xa,xb = xa+vhs-ox, xb+vhs-ox
             txt = self._tableModel.data(row, col)
             if isinstance(txt,TTkString): pass
             elif type(txt) == str:        txt = TTkString(txt, hoverColor)
             else:                         txt = TTkString(f"{txt}", hoverColor)
             txt = txt.completeColor(hoverColor)
             for i,line in enumerate(txt.split('\n')):
-                y = i+ya
+                y = i+ya+1
                 if y == yb: break
                 canvas.drawTTkString(pos=(1+xa,y), text=line, width=xb-xa-1, color=hoverColor)
-            canvas.fill(pos=(1+xa,1+i+ya),size=(xb-xa-1,yb-ya-i-1),color=hoverColor)
+            canvas.fill(pos=(1+xa,y+1),size=(xb-xa-1,yb-y),color=hoverColor)
             # Draw Borders
             # Top, Bottom
             hoverColorInv = hoverColor.background().invertFgBg()
-            canvas.drawTTkString(pos=(xa,ya-1), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
-            canvas.drawTTkString(pos=(xa,yb-1), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
-            canvas.fill(char='▐',pos=(xa,ya), size=(1,yb-ya-1), color=hoverColorInv)
-            canvas.fill(char='▌',pos=(xb,ya), size=(1,yb-ya-1), color=hoverColorInv)
+            canvas.drawTTkString(pos=(xa,ya), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
+            canvas.drawTTkString(pos=(xa,yb), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
+            # Left, Right
+            canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=hoverColorInv)
+            canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=hoverColorInv)
 
         if self._dragPos:
             (rowa,cola),(rowb,colb) = self._dragPos
             cola,colb=min(cola,colb),max(cola,colb)
             rowa,rowb=min(rowa,rowb),max(rowa,rowb)
-            xa = sliceCol[cola][0]-ox+vx
-            xb = sliceCol[colb][1]-ox+vx
-            ya = sliceRow[rowa][0]-oy+1
-            yb = sliceRow[rowb][1]-oy+1
+            xa = sliceCol[cola][0]-ox+vhs
+            xb = sliceCol[colb][1]-ox+vhs
+            ya = sliceRow[rowa][0]-oy+hhs
+            yb = sliceRow[rowb][1]-oy+hhs
 
             hoverColorInv = hoverColor.background().invertFgBg()
-            canvas.drawTTkString(pos=(xa,ya-1), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
-            canvas.drawTTkString(pos=(xa,yb-1), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
-            canvas.fill(char='▐',pos=(xa,ya), size=(1,yb-ya-1), color=hoverColorInv)
-            canvas.fill(char='▌',pos=(xb,ya), size=(1,yb-ya-1), color=hoverColorInv)
+            canvas.drawTTkString(pos=(xa,ya), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
+            canvas.drawTTkString(pos=(xa,yb), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
+            canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=hoverColorInv)
+            canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=hoverColorInv)
 
         # Draw H-Header first:
         for col in range(cols):
@@ -547,30 +627,28 @@ class TTkTableWidget(TTkAbstractScrollView):
             else:                  txt = TTkString(f"{txt}")
             hx  = 0 if col==0 else cp[col-1]+1
             hx1 = cp[col]
-            canvas.drawText(pos=(vx+hx-ox,0), text=txt, width=hx1-hx, color=headerColor)
+            canvas.drawText(pos=(vhs+hx-ox,0), text=txt, width=hx1-hx, color=headerColor)
             if col == self._sortColumn:
                 s = '▼' if self._sortOrder == TTkK.AscendingOrder else '▲'
-                canvas.drawText(pos=(vx+hx1-ox-1,0), text=s, color=headerColor)
-            canvas.drawChar(pos=(vx+hx1-ox,0), char='╿', color=headerColor)
+                canvas.drawText(pos=(vhs+hx1-ox-1,0), text=s, color=headerColor)
+            canvas.drawChar(pos=(vhs+hx1-ox,0), char='╿', color=headerColor)
 
         # Draw V-Header :
-        hlineHead = TTkString('╾'+'╌'*(vx-2), color=headerColor) + vHSeparator
+        hlineHead = TTkString('╾'+'╌'*(vhs-2), color=headerColor) + vHSeparator
         for row in range(rows):
-            ya,yb = sliceRow[row]
-            if ya>h+oy: break
-            if yb<oy: continue
-            if (1+yb-oy)<1: continue
+            ya = sliceRow[row][0]-oy+hhs
+            yb = sliceRow[row][1]-oy+hhs
+            if ya>h  : break
+            if yb<hhs: continue
             txt = self._tableModel.headerData(row,TTkK.VERTICAL)
             if isinstance(txt,TTkString): pass
             elif type(txt) == str: txt = TTkString(txt)
             else:                  txt = TTkString(f"{txt}")
-            canvas.drawTTkString(pos=(0,1+ya-oy), text=txt, width=vx, color=headerColor)
-            canvas.drawTTkString(pos=(vx-1,1+ya-oy), text=vHSeparator)
-            for i in range(1,yb-ya):
-                # canvas.drawTTkString(pos=(0,i+1+ya-oy), text=' ', width=vx, color=headerColor)
-                canvas.drawTTkString(pos=(0,i+1+ya-oy), text=vHSeparator, width=vx, alignment=TTkK.RIGHT_ALIGN, color=headerColor)
-            canvas.drawTTkString(pos=(0,yb-oy), text=hlineHead)
-            # canvas.drawText(pos=(0,1+ya-oy), text='lkjslkj', color=headerColor)
+            canvas.drawTTkString(pos=(0    ,ya+1), text=txt, width=vhs, color=headerColor)
+            canvas.drawTTkString(pos=(vhs-1,ya+1), text=vHSeparator)
+            for y in range(ya+2,yb):
+                canvas.drawTTkString(pos=(0,y), text=vHSeparator, width=vhs, alignment=TTkK.RIGHT_ALIGN, color=headerColor)
+            canvas.drawTTkString(pos=(0,yb), text=hlineHead)
 
 
 
