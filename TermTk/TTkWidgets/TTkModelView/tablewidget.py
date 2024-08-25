@@ -403,9 +403,22 @@ class TTkTableWidget(TTkAbstractScrollView):
         vhs = self._vHeaderSize
         hhs = self._hHeaderSize
 
-        # Draw Cells
         sliceCol=list(zip([-1]+cp,cp))
         sliceRow=list(zip([-1]+rp,rp))
+
+        def _drawCell(_col,_row,_xa,_xb,_ya,_yb,_color):
+                txt = self._tableModel.data(_row, _col)
+                if isinstance(txt,TTkString): pass
+                elif type(txt) == str: txt = TTkString(txt, _color)
+                else:                  txt = TTkString(f"{txt}", _color)
+                txt = txt.completeColor(_color)
+                for i,line in enumerate(txt.split('\n')):
+                    y = i+_ya+1
+                    if y == _yb: break
+                    canvas.drawTTkString(pos=(1+_xa,y), text=line, width=_xb-_xa-1, color=_color)
+                canvas.fill(pos=(1+_xa,y+1),size=(_xb-_xa-1,_yb-y),color=_color)
+
+        # Draw Cells
         for row in range(rows):
             ya,yb = sliceRow[row]
             ya,yb = ya+hhs-oy, yb+hhs-oy
@@ -416,18 +429,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 xa,xb = xa+vhs-ox, xb+vhs-ox
                 if xa>w  : break
                 if xb<vhs: continue
-                txt = self._tableModel.data(row, col)
                 cellColor = selectedColor if self._selected[row][col] else color.mod(col,row)
-                if isinstance(txt,TTkString): pass
-                elif type(txt) == str: txt = TTkString(txt, cellColor)
-                else:                  txt = TTkString(f"{txt}", cellColor)
-                txt = txt.completeColor(cellColor)
-                for i,line in enumerate(txt.split('\n')):
-                    y = i+ya+1
-                    if y == yb: break
-                    canvas.drawTTkString(pos=(1+xa,y), text=line, width=xb-xa-1, color=cellColor)
-                canvas.fill(pos=(1+xa,y+1),size=(xb-xa-1,yb-y),color=cellColor)
-                 # Draw the VSeparator of the cell
+                _drawCell(col,row,xa,xb,ya,yb,cellColor)
+
                 lineColorMix = color.mod(0,row) + lineColor
                 if cellColor==TTkColor.RST or col<cols-1:
                     canvas.fill(pos=(xb,ya), size=(1,yb-ya), char='│', color=lineColorMix)
@@ -585,16 +589,8 @@ class TTkTableWidget(TTkAbstractScrollView):
             xa,xb = sliceCol[col]
             ya,yb = ya+hhs-oy, yb+hhs-oy
             xa,xb = xa+vhs-ox, xb+vhs-ox
-            txt = self._tableModel.data(row, col)
-            if isinstance(txt,TTkString): pass
-            elif type(txt) == str:        txt = TTkString(txt, hoverColor)
-            else:                         txt = TTkString(f"{txt}", hoverColor)
-            txt = txt.completeColor(hoverColor)
-            for i,line in enumerate(txt.split('\n')):
-                y = i+ya+1
-                if y == yb: break
-                canvas.drawTTkString(pos=(1+xa,y), text=line, width=xb-xa-1, color=hoverColor)
-            canvas.fill(pos=(1+xa,y+1),size=(xb-xa-1,yb-y),color=hoverColor)
+            _drawCell(col,row,xa,xb,ya,yb,hoverColor)
+
             # Draw Borders
             # Top, Bottom
             hoverColorInv = hoverColor.background().invertFgBg()
