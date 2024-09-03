@@ -37,8 +37,11 @@ class TTkTable(TTkAbstractScrollArea):
         'resizeColumnsToContents',
         'setSelection',
 
-        # Forwarded Methods From TTkTree
+        # Forwarded Methods From TTkTable
         'setHeaderLabels',
+        'verticalHeader', 'horizntalHeader',
+        'hSeparatorVisibility',    'vSeparatorVisibility',
+        'setHSeparatorVisibility', 'setVSeparatorVisibility',
         'setColumnWidth', 'resizeColumnToContents',
         # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
         'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
@@ -53,9 +56,17 @@ class TTkTable(TTkAbstractScrollArea):
         self.setFocusPolicy(TTkK.ClickFocus)
 
         self.setModel = self._tableView.setModel
+        self.setSelection = self._tableView.setSelection
         self.setSortingEnabled = self._tableView.setSortingEnabled
         self.resizeColumnsToContents = self._tableView.resizeColumnsToContents
-        self.setSelection = self._tableView.setSelection
+
+        self.verticalHeader   = self._tableView.verticalHeader
+        self.horizontalHeader = self._tableView.horizontalHeader
+
+        self.hSeparatorVisibility = self._tableView.hSeparatorVisibility
+        self.vSeparatorVisibility = self._tableView.vSeparatorVisibility
+        self.setHSeparatorVisibility = self._tableView.setHSeparatorVisibility
+        self.setVSeparatorVisibility = self._tableView.setVSeparatorVisibility
 
         # # Forward the signal
         # self.itemActivated     = self._tableView.itemActivated
@@ -75,6 +86,11 @@ class TTkTable(TTkAbstractScrollArea):
         # self.resizeColumnToContents = self._tableView.resizeColumnToContents
 
         # self.clear           = self._tableView.clear
+
+    def style(self):
+        if self._tableView:
+            return self._tableView.style()
+        return super().style()
 
     def setStyle(self, style):
         if self._tableView:
