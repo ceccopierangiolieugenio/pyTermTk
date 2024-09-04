@@ -162,8 +162,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         showHH = self._horizontallHeader.isVisible()
         hhs = self._hHeaderSize if showHH else 0
         vhs = self._vHeaderSize if showVH else 0
-        w = hhs+self._colsPos[-1]
-        h = vhs+self._rowsPos[-1]
+        w = vhs+self._colsPos[-1]+1
+        h = hhs+self._rowsPos[-1]+1
         return w,h
 
     # Overridden function
@@ -232,41 +232,39 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return super().leaveEvent(evt)
 
-    def _findCell(self, x, y):
-        showHS = self._showHSeparators
-        showVS = self._showVSeparators
+    def _findCell(self, x, y, headers):
         showVH = self._verticalHeader.isVisible()
         showHH = self._horizontallHeader.isVisible()
         hhs = self._hHeaderSize if showHH else 0
         vhs = self._vHeaderSize if showVH else 0
         ox, oy = self.getViewOffsets()
-        x,y = x+ox-vhs, y+oy-hhs
         rp = self._rowsPos
         cp = self._colsPos
 
-        row = -1
-        col = -1
+        row = 0
+        col = 0
 
-        if y<0:
+        if headers and y<hhs:
             row = -1
         else:
-            y += 0 if showHS else 0
+            y += oy-hhs
             for row,py in enumerate(rp):
                 if py>=y:
                     break
-        if x<0:
+
+        if headers and x<vhs:
             col = -1
         else:
-            x += 0 if showVS else 0
+            x += ox-vhs
             for col,px in enumerate(cp):
                 if px>=x:
                     break
+
         return row,col
 
     def mouseMoveEvent(self, evt) -> bool:
         x,y = evt.x,evt.y
-        self._hoverPos = None
-        self._hoverPos = self._findCell(x,y)
+        self._hoverPos = self._findCell(x,y, headers=True)
         self.update()
         return True
 
@@ -315,7 +313,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     break
             #   return True
 
-        row,col = self._findCell(x,y)
+        row,col = self._findCell(x,y, headers=True)
         if not row==col==-1:
             self._dragPos = [(row,col),(row,col)]
         rows = self._tableModel.rowCount()
@@ -366,7 +364,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         hhs = self._hHeaderSize if showHH else 0
         vhs = self._vHeaderSize if showVH else 0
         if self._dragPos and not self._hSeparatorSelected and not self._vSeparatorSelected:
-            self._dragPos[1] = self._findCell(x,y)
+            self._dragPos[1] = self._findCell(x,y, headers=False)
             self.update()
             return True
         if self._hSeparatorSelected is not None:
