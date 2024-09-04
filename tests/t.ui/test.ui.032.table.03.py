@@ -230,4 +230,8 @@ table.setSelection((3,59),(1,2),1)
 
 splitter.addWidget(ttk.TTkLogViewer(),size=10,title="LOGS")
 
+winKey = ttk.TTkWindow(title="KeyPress",layout=ttk.TTkGridLayout(), size=(30,7))
+winKey.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3))
+ttk.TTkHelper.overlay(None, winKey, 10, 4, toolWindow=True)
+
 root.mainloop()

@@ -233,6 +233,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         return super().leaveEvent(evt)
 
     def _findCell(self, x, y):
+        showHS = self._showHSeparators
+        showVS = self._showVSeparators
         showVH = self._verticalHeader.isVisible()
         showHH = self._horizontallHeader.isVisible()
         hhs = self._hHeaderSize if showHH else 0
@@ -242,24 +244,28 @@ class TTkTableWidget(TTkAbstractScrollView):
         rp = self._rowsPos
         cp = self._colsPos
 
-        for row,py in enumerate(rp):
-            if py>y:
-                break
-        for col,px in enumerate(cp):
-            if px>x:
-                break
+        row = -1
+        col = -1
+
+        if y<0:
+            row = -1
+        else:
+            y += 0 if showHS else 0
+            for row,py in enumerate(rp):
+                if py>=y:
+                    break
+        if x<0:
+            col = -1
+        else:
+            x += 0 if showVS else 0
+            for col,px in enumerate(cp):
+                if px>=x:
+                    break
         return row,col
 
     def mouseMoveEvent(self, evt) -> bool:
-        showVH = self._verticalHeader.isVisible()
-        showHH = self._horizontallHeader.isVisible()
-        hhs = self._hHeaderSize if showHH else 0
-        vhs = self._vHeaderSize if showVH else 0
         x,y = evt.x,evt.y
         self._hoverPos = None
-        if x<vhs or y<hhs:
-            self.update()
-            return True
         self._hoverPos = self._findCell(x,y)
         self.update()
         return True
@@ -267,6 +273,8 @@ class TTkTableWidget(TTkAbstractScrollView):
     def mousePressEvent(self, evt) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
+        showHS = self._showHSeparators
+        showVS = self._showVSeparators
         showVH = self._verticalHeader.isVisible()
         showHH = self._horizontallHeader.isVisible()
         hhs = self._hHeaderSize if showHH else 0
@@ -276,44 +284,66 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._vSeparatorSelected = None
 
         # Handle Header Events
-        if y < hhs:
-            x += ox-vhs
+        # And return if handled
+        # This is important to handle the header selection in the next part
+        if showVS and y < hhs:
+            _x = x+ox-vhs
             for i, c in enumerate(self._colsPos):
-                if x == c:
+                if _x == c:
                     # I-th separator selected
                     self._hSeparatorSelected = i
                     self.update()
-                    break
-                elif x < c:
+                    return True
+                elif _x < c:
                     # # I-th header selected
                     # order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
                     # self.sortItems(i, order)
                     break
-            return True
-        elif x < vhs:
-            y += oy-hhs
+            # return True
+        elif showHS and x < vhs:
+            _y = y+oy-hhs
             for i, r in enumerate(self._rowsPos):
-                if y == r:
+                if _y == r:
                     # I-th separator selected
                     self._vSeparatorSelected = i
                     self.update()
-                    break
-                elif y < r:
+                    return True
+                elif _y < r:
                     # # I-th header selected
                     # order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
                     # self.sortItems(i, order)
                     break
-            return True
-        else:
-            row,col = self._findCell(x,y)
+            #   return True
+
+        row,col = self._findCell(x,y)
+        if not row==col==-1:
             self._dragPos = [(row,col),(row,col)]
-            if evt.mod==TTkK.ControlModifier:
-                self._selected[row][col] = not self._selected[row][col]
-            else:
-                self._selected[row][col] = True
-            self._hoverPos = None
-            self.update()
-            return True
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        _ctrl = evt.mod==TTkK.ControlModifier
+        if row==col==-1:
+            # Corner Press
+            # Select Everything
+            self._selected = [[True]*cols for _ in range(rows)]
+        elif col==-1:
+            # Row select
+            state = all(self._selected[row])
+            if not _ctrl:
+                self._selected = [[False]*cols for _ in range(rows)]
+            self._selected[row] = [not state]*cols
+        elif row==-1:
+            # Col select
+            state = all(line[col] for line in self._selected)
+            if not _ctrl:
+                self._selected = [[False]*cols for _ in range(rows)]
+            for line in self._selected:
+                line[col] = not state
+        else:
+            # Cell Select
+            if _ctrl: self._selected[row][col] = not self._selected[row][col]
+            else:     self._selected[row][col] = True
+        self._hoverPos = None
+        self.update()
         return True
 
     def mouseDragEvent(self, evt) -> bool:
@@ -377,14 +407,28 @@ class TTkTableWidget(TTkAbstractScrollView):
             cols = self._tableModel.columnCount()
             state = True
             (rowa,cola),(rowb,colb) = self._dragPos
+
             if evt.mod==TTkK.ControlModifier:
-                state = self._selected[rowa][cola]
+                # Pick the status to be applied to the selection if CTRL is Pressed
+                # In case of line/row selection I choose the element 0 of that line
+                state = self._selected[max(0,rowa)][max(0,cola)]
             else:
+                # Clear the selection if no ctrl has been pressed
                 self._selected = [[False]*cols for _ in range(rows)]
-            cola,colb=min(cola,colb),max(cola,colb)
-            rowa,rowb=min(rowa,rowb),max(rowa,rowb)
+
+            if rowa == -1:
+                cola,colb=min(cola,colb),max(cola,colb)
+                rowa,rowb=0,rows
+            elif cola == -1:
+                rowa,rowb=min(rowa,rowb),max(rowa,rowb)
+                cola,colb=0,cols
+            else:
+                cola,colb=min(cola,colb),max(cola,colb)
+                rowa,rowb=min(rowa,rowb),max(rowa,rowb)
+
             for line in self._selected[rowa:rowb+1]:
                 line[cola:colb+1] = [state]*(colb-cola+1)
+
         self._hoverPos = None
         self._dragPos = None
         self.update()
@@ -507,7 +551,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if xa>w  : break
                 if xb<vhs: continue
                 cellColor = (
-                    hoverColor if (row,col) == self._hoverPos else
+                    hoverColor if self._hoverPos in [(row,col),(-1,col),(row,-1),(-1,-1)] else
                     selectedColor if self._selected[row][col] else
                     rowColor )
                 _colorCache2d[row-rowa][col-cola] = cellColor
@@ -719,8 +763,14 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         if self._hoverPos:
             row,col = self._hoverPos
-            ya,yb = sliceRow[row]
-            xa,xb = sliceCol[col]
+            if row == -1:
+                ya,yb = -1,rp[-1]
+            else:
+                ya,yb = sliceRow[row]
+            if col == -1:
+                xa,xb = -1,cp[-1]
+            else:
+                xa,xb = sliceCol[col]
 
             if showVS:
                 xa,xb = xa+vhs-ox, xb+vhs-ox
@@ -745,12 +795,23 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         if self._dragPos:
             (rowa,cola),(rowb,colb) = self._dragPos
-            cola,colb=min(cola,colb),max(cola,colb)
-            rowa,rowb=min(rowa,rowb),max(rowa,rowb)
-            xa = sliceCol[cola][0]-ox+vhs
-            xb = sliceCol[colb][1]-ox+vhs
-            ya = sliceRow[rowa][0]-oy+hhs
-            yb = sliceRow[rowb][1]-oy+hhs
+            if rowa == -1:
+                cola,colb = min(cola,colb),max(cola,colb)
+                xa = sliceCol[cola][0]-ox+vhs
+                xb = sliceCol[colb][1]-ox+vhs + (0 if showHS else 1)
+                ya,yb = -1-oy+hhs,rp[-1]-oy+hhs
+            elif cola == -1:
+                rowa,rowb = min(rowa,rowb),max(rowa,rowb)
+                ya = sliceRow[rowa][0]-oy+hhs
+                yb = sliceRow[rowb][1]-oy+hhs + (0 if showVS else 1)
+                xa,xb = -1-ox+vhs,cp[-1]-ox+vhs
+            else:
+                cola,colb = min(cola,colb),max(cola,colb)
+                rowa,rowb = min(rowa,rowb),max(rowa,rowb)
+                xa = sliceCol[cola][0]-ox+vhs
+                xb = sliceCol[colb][1]-ox+vhs + (0 if showHS else 1)
+                ya = sliceRow[rowa][0]-oy+hhs
+                yb = sliceRow[rowb][1]-oy+hhs + (0 if showVS else 1)
 
             hoverColorInv = hoverColor.background().invertFgBg()
             canvas.drawTTkString(pos=(xa,ya), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',hoverColorInv))
