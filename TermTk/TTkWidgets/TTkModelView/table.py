@@ -42,8 +42,8 @@ class TTkTable(TTkAbstractScrollArea):
         'verticalHeader', 'horizntalHeader',
         'hSeparatorVisibility',    'vSeparatorVisibility',
         'setHSeparatorVisibility', 'setVSeparatorVisibility',
-        'setRowHeight',   'resizeRowToContents',
-        'setColumnWidth', 'resizeColumnToContents',
+        'setRowHeight',   'resizeRowToContents',    'resizeRowsToContents',
+        'setColumnWidth', 'resizeColumnToContents', 'resizeColumnsToContents',
         )
 
     def __init__(self, *,
@@ -62,8 +62,10 @@ class TTkTable(TTkAbstractScrollArea):
 
         self.setRowHeight     = self._tableView.setRowHeight
         self.setColumnWidth     = self._tableView.setColumnWidth
-        self.resizeRowToContents    = self._tableView.resizeRowToContents
-        self.resizeColumnToContents = self._tableView.resizeColumnToContents
+        self.resizeRowToContents     = self._tableView.resizeRowToContents
+        self.resizeRowsToContents    = self._tableView.resizeRowsToContents
+        self.resizeColumnToContents  = self._tableView.resizeColumnToContents
+        self.resizeColumnsToContents = self._tableView.resizeColumnsToContents
 
         self.verticalHeader   = self._tableView.verticalHeader
         self.horizontalHeader = self._tableView.horizontalHeader

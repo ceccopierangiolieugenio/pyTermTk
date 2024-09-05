@@ -268,15 +268,8 @@ m3.clicked.connect(lambda : table.setModel(table_model3))
 # Resize Button
 rb = ttk.TTkButton(parent=controls, pos=(33,5), size=(11,1), text="resize", border=False)
 
-ttk.pyTTkSlot()
-def _resize():
-    _model = table.model()
-    for i in range(_model.columnCount()):
-        table.resizeColumnToContents(i)
-    for i in range(_model.rowCount()):
-        table.resizeRowToContents(i)
-
-rb.clicked.connect(_resize)
+rb.clicked.connect(table.resizeRowsToContents)
+rb.clicked.connect(table.resizeColumnsToContents)
 
 controlAndLogsSplitter.addWidget(controls, size=50)
 controlAndLogsSplitter.addWidget(ttk.TTkLogViewer())

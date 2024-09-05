@@ -233,6 +233,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return super().leaveEvent(evt)
 
+    @pyTTkSlot(int)
     def setColumnWidth(self, column:int, width: int) -> None:
         i = column
         prevPos = self._colsPos[i-1] if i>0 else -1
@@ -247,6 +248,31 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
+    def _columnContentsSize(self, column:int) -> int:
+        def _wid(_c):
+            txt = self._tableModel.data(_c, column)
+            if isinstance(txt,TTkString): pass
+            elif type(txt) == str: txt = TTkString(txt)
+            else:                  txt = TTkString(f"{txt}")
+            return max(t.termWidth() for t in txt.split('\n'))
+        return max(_wid(i) for i in range(self._tableModel.rowCount()))
+
+    @pyTTkSlot(int)
+    def resizeColumnToContents(self, column:int) -> None:
+        self.setColumnWidth(column, self._columnContentsSize(column))
+
+    @pyTTkSlot()
+    def resizeColumnsToContents(self) -> None:
+        _d = 1 if self._showVSeparators else 0
+        cols = self._tableModel.columnCount()
+        pos = -1
+        for _c in range(cols):
+            pos += _d+self._columnContentsSize(_c)
+            self._colsPos[_c] = pos
+        self.viewChanged.emit()
+        self.update()
+
+    @pyTTkSlot(int,int)
     def setRowHeight(self, row:int, height: int) -> None:
         i = row
         prevPos = self._rowsPos[i-1] if i>0 else -1
@@ -261,25 +287,29 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
         self.update()
 
-    def resizeColumnToContents(self, column:int) -> None:
-        def _wid(i):
-            txt = self._tableModel.data(i, column)
-            if isinstance(txt,TTkString): pass
-            elif type(txt) == str: txt = TTkString(txt)
-            else:                  txt = TTkString(f"{txt}")
-            return max(t.termWidth() for t in txt.split('\n'))
-        contentSize = max(_wid(i) for i in range(self._tableModel.rowCount()))
-        self.setColumnWidth(column, contentSize)
-
-    def resizeRowToContents(self, row:int) -> None:
-        def _hei(i):
-            txt = self._tableModel.data(row, i)
+    def _rowContentsSize(self, row:int) -> int:
+        def _hei(_c):
+            txt = self._tableModel.data(row, _c)
             if isinstance(txt,TTkString): pass
             elif type(txt) == str: txt = TTkString(txt)
             else:                  txt = TTkString(f"{txt}")
             return len(txt.split('\n'))
-        contentSize = max(_hei(i) for i in range(self._tableModel.columnCount()))
-        self.setRowHeight(row, contentSize)
+        return max(_hei(i) for i in range(self._tableModel.columnCount()))
+
+    @pyTTkSlot(int)
+    def resizeRowToContents(self, row:int) -> None:
+        self.setRowHeight(row, self._rowContentsSize(row))
+
+    @pyTTkSlot()
+    def resizeRowsToContents(self) -> None:
+        rows = self._tableModel.rowCount()
+        _d = 1 if self._showHSeparators else 0
+        pos = -1
+        for _r in range(rows):
+            pos += _d + self._rowContentsSize(_r)
+            self._rowsPos[_r] = pos
+        self.viewChanged.emit()
+        self.update()
 
     def _findCell(self, x, y, headers):
         showVH = self._verticalHeader.isVisible()
