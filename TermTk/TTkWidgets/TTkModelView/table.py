@@ -32,19 +32,19 @@ class TTkTable(TTkAbstractScrollArea):
         '_tableView',
         # Forwarded Signals
         'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
+
         # Forwarded Methods
-        'setModel', 'setSortingEnabled',
-        'resizeColumnsToContents',
+        'model', 'setModel',
+        'setSortingEnabled',
         'setSelection',
 
         # Forwarded Methods From TTkTable
-        'setHeaderLabels',
         'verticalHeader', 'horizntalHeader',
         'hSeparatorVisibility',    'vSeparatorVisibility',
         'setHSeparatorVisibility', 'setVSeparatorVisibility',
+        'setRowHeight',   'resizeRowToContents',
         'setColumnWidth', 'resizeColumnToContents',
-        # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
-        'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
+        )
 
     def __init__(self, *,
                  parent=None, visible=True,
@@ -55,10 +55,15 @@ class TTkTable(TTkAbstractScrollArea):
         self.setViewport(self._tableView)
         self.setFocusPolicy(TTkK.ClickFocus)
 
+        self.model = self._tableView.model
         self.setModel = self._tableView.setModel
         self.setSelection = self._tableView.setSelection
         self.setSortingEnabled = self._tableView.setSortingEnabled
-        self.resizeColumnsToContents = self._tableView.resizeColumnsToContents
+
+        self.setRowHeight     = self._tableView.setRowHeight
+        self.setColumnWidth     = self._tableView.setColumnWidth
+        self.resizeRowToContents    = self._tableView.resizeRowToContents
+        self.resizeColumnToContents = self._tableView.resizeColumnToContents
 
         self.verticalHeader   = self._tableView.verticalHeader
         self.horizontalHeader = self._tableView.horizontalHeader

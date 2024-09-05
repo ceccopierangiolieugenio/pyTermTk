@@ -213,14 +213,15 @@ class TTkTableWidget(TTkAbstractScrollView):
             self._colsPos = [v-i for i,v in enumerate(self._colsPos,1)]
         self.viewChanged.emit()
 
+    def model(self) -> TTkAbstractTableModel:
+        return self._tableModel
+
     def setModel(self, model:TTkAbstractTableModel) -> None:
         self._tableModel = model
         self._refreshLayout()
         self.viewChanged.emit()
 
     def setSortingEnabled(self, enable) -> None:
-        pass
-    def resizeColumnsToContents(self) -> None:
         pass
 
     def focusOutEvent(self) -> None:
@@ -231,6 +232,54 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._hoverPos = None
         self.update()
         return super().leaveEvent(evt)
+
+    def setColumnWidth(self, column:int, width: int) -> None:
+        i = column
+        prevPos = self._colsPos[i-1] if i>0 else -1
+        if self._showVSeparators:
+            newPos = prevPos + width + 1
+        else:
+            newPos = prevPos + width
+        oldPos = self._colsPos[i]
+        diff    = newPos-oldPos
+        for ii in range(i,len(self._colsPos)):
+            self._colsPos[ii] += diff
+        self.viewChanged.emit()
+        self.update()
+
+    def setRowHeight(self, row:int, height: int) -> None:
+        i = row
+        prevPos = self._rowsPos[i-1] if i>0 else -1
+        if self._showHSeparators:
+            newPos = prevPos + height + 1
+        else:
+            newPos = prevPos + height
+        oldPos = self._rowsPos[i]
+        diff    = newPos-oldPos
+        for ii in range(i,len(self._rowsPos)):
+            self._rowsPos[ii] += diff
+        self.viewChanged.emit()
+        self.update()
+
+    def resizeColumnToContents(self, column:int) -> None:
+        def _wid(i):
+            txt = self._tableModel.data(i, column)
+            if isinstance(txt,TTkString): pass
+            elif type(txt) == str: txt = TTkString(txt)
+            else:                  txt = TTkString(f"{txt}")
+            return max(t.termWidth() for t in txt.split('\n'))
+        contentSize = max(_wid(i) for i in range(self._tableModel.rowCount()))
+        self.setColumnWidth(column, contentSize)
+
+    def resizeRowToContents(self, row:int) -> None:
+        def _hei(i):
+            txt = self._tableModel.data(row, i)
+            if isinstance(txt,TTkString): pass
+            elif type(txt) == str: txt = TTkString(txt)
+            else:                  txt = TTkString(f"{txt}")
+            return len(txt.split('\n'))
+        contentSize = max(_hei(i) for i in range(self._tableModel.columnCount()))
+        self.setRowHeight(row, contentSize)
 
     def _findCell(self, x, y, headers):
         showVH = self._verticalHeader.isVisible()
@@ -262,9 +311,68 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         return row,col
 
+    def mouseDoubleClickEvent(self, evt):
+        x,y = evt.x, evt.y
+        ox, oy = self.getViewOffsets()
+        showHS = self._showHSeparators
+        showVS = self._showVSeparators
+        showVH = self._verticalHeader.isVisible()
+        showHH = self._horizontallHeader.isVisible()
+        hhs = self._hHeaderSize if showHH else 0
+        vhs = self._vHeaderSize if showVH else 0
+
+        self._hSeparatorSelected = None
+        self._vSeparatorSelected = None
+
+        # Handle Header Events
+        # And return if handled
+        # This is important to handle the header selection in the next part
+        if showVS and y < hhs:
+            _x = x+ox-vhs
+            for i, c in enumerate(self._colsPos):
+                if _x == c:
+                    # I-th separator selected
+                    self.resizeColumnToContents(i)
+                    return True
+            # return True
+        elif showHS and x < vhs:
+            _y = y+oy-hhs
+            for i, r in enumerate(self._rowsPos):
+                if _y == r:
+                    # I-th separator selected
+                    # I-th separator selected
+                    self.resizeRowToContents(i)
+                    return True
+
+        return True
+
     def mouseMoveEvent(self, evt) -> bool:
         x,y = evt.x,evt.y
-        self._hoverPos = self._findCell(x,y, headers=True)
+        ox, oy = self.getViewOffsets()
+        showHS = self._showHSeparators
+        showVS = self._showVSeparators
+        showVH = self._verticalHeader.isVisible()
+        showHH = self._horizontallHeader.isVisible()
+        hhs = self._hHeaderSize if showHH else 0
+        vhs = self._vHeaderSize if showVH else 0
+
+        self._hoverPos = (row,col) = self._findCell(x,y, headers=True)
+        if showVS and row==-1:
+            _x = x+ox-vhs
+            for i, c in enumerate(self._colsPos):
+                if _x == c:
+                    # Over the I-th separator
+                    self._hoverPos = None
+                    self.update()
+                    return True
+        if showHS and col==-1:
+            _y = y+oy-hhs
+            for i, r in enumerate(self._rowsPos):
+                if _y == r:
+                    # Over the I-th separator
+                    self._hoverPos = None
+                    self.update()
+                    return True
         self.update()
         return True
 
