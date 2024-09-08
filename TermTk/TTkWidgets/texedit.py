@@ -148,7 +148,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self.textChanged = pyTTkSignal()
-        self._readOnly = kwargs.get('readOnly', True)
+        self._readOnly = kwargs.get('readOnly', False)
         self._multiLine = kwargs.get('multiLine', True)
         self._multiCursor = True
         self._hsize = 0

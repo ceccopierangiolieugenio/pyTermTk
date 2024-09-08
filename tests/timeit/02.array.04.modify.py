@@ -48,7 +48,19 @@ def test_ti_3_1():
     array1 = [[True]*1000 for _ in range(1000)]
     return True
 
-loop = 1000
+def test_ti_4_1():
+    array1 = [[True]*10000 for _ in range(10000)]
+    return True
+
+def test_ti_5_1():
+    array1 = [[True]*100 for _ in range(100000)]
+    return True
+
+def test_ti_6_1():
+    array1 = [[True]*11 for _ in range(2000000)]
+    return True
+
+loop = 10
 
 a = {}
 # while (testName := f'test{iii}') and (testName in globals()):

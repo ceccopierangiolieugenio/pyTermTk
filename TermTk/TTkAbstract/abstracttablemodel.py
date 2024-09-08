@@ -41,8 +41,20 @@ class TTkAbstractTableModel():
     def columnCount(self) -> int:
         raise NotImplementedError()
 
-    def data(self, row:int, col:int) -> TTkString:
+    def data(self, row:int, col:int) -> object:
         return TTkString()
+
+    def ttkStringData(self, row:int, col:int) -> TTkString:
+        data = self.data(row,col)
+        if isinstance(data,TTkString):
+            return data
+        elif type(data) == str:
+            return TTkString(data)
+        else:
+            return TTkString(str(data))
+
+    def setData(self, row:int, col:int, data:object):
+        raise NotImplementedError()
 
     def headerData(self, pos:int, orientation:TTkK.Direction) -> TTkString:
         if orientation==TTkK.HORIZONTAL:

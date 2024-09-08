@@ -90,55 +90,31 @@ def resize1():
 def resize2():
     [t.resize(500,200) for t in tables]
 
-tests = [
-    lambda : [t.resize(200,50)  for t in tables],
-    lambda : paint(tables[0]),
-    lambda : paint(tables[1]),
-    lambda : paint(tables[2]),
-    lambda : paint(tables[3]),
-    lambda : paint(tables[4]),
-    lambda : paint(tables[5]),
-    lambda : paint(tables[6]),
-    lambda : paint(tables[7]),
-    lambda : paint(tables[8]),
-    lambda : paint(tables[9]),
-    lambda : paint(tables[10]),
+def test_ti_A_00_200x50():  return [t.resize(200,50)  for t in tables]
+def test_ti_A_01():  return paint(tables[0])
+def test_ti_A_02():  return paint(tables[1])
+def test_ti_A_03():  return paint(tables[2])
+def test_ti_A_04():  return paint(tables[3])
+def test_ti_A_05():  return paint(tables[4])
+def test_ti_A_06():  return paint(tables[5])
+def test_ti_A_07():  return paint(tables[6])
+def test_ti_A_08():  return paint(tables[7])
+def test_ti_A_09():  return paint(tables[8])
+def test_ti_A_10():  return paint(tables[9])
+def test_ti_A_11():  return paint(tables[10])
+def test_ti_B_00_500x200():  return [t.resize(500,200)  for t in tables]
+def test_ti_B_01():  return paint(tables[0])
+def test_ti_B_02():  return paint(tables[1])
+def test_ti_B_03():  return paint(tables[2])
+def test_ti_B_04():  return paint(tables[3])
+def test_ti_B_05():  return paint(tables[4])
+def test_ti_B_06():  return paint(tables[5])
+def test_ti_B_07():  return paint(tables[6])
+def test_ti_B_08():  return paint(tables[7])
+def test_ti_B_09():  return paint(tables[8])
+def test_ti_B_10():  return paint(tables[9])
+def test_ti_B_11():  return paint(tables[10])
 
-    lambda : [t.resize(500,200)  for t in tables],
-    lambda : paint(tables[0]),
-    lambda : paint(tables[1]),
-    lambda : paint(tables[2]),
-    lambda : paint(tables[3]),
-    lambda : paint(tables[4]),
-    lambda : paint(tables[5]),
-    lambda : paint(tables[6]),
-    lambda : paint(tables[7]),
-    lambda : paint(tables[8]),
-    lambda : paint(tables[9]),
-    lambda : paint(tables[10]) ]
-
-def test_ti_01():  return tests[0]()
-def test_ti_02():  return tests[1]()
-def test_ti_03():  return tests[2]()
-def test_ti_04():  return tests[3]()
-def test_ti_05():  return tests[4]()
-def test_ti_06():  return tests[5]()
-def test_ti_07():  return tests[6]()
-def test_ti_08():  return tests[7]()
-def test_ti_09():  return tests[8]()
-def test_ti_10():  return tests[9]()
-def test_ti_11():  return tests[10]()
-def test_ti_12():  return tests[11]()
-def test_ti_13():  return tests[12]()
-def test_ti_14():  return tests[13]()
-def test_ti_15():  return tests[14]()
-def test_ti_16():  return tests[15]()
-def test_ti_17():  return tests[16]()
-def test_ti_18():  return tests[17]()
-def test_ti_19():  return tests[18]()
-def test_ti_20():  return tests[19]()
-def test_ti_21():  return tests[20]()
-def test_ti_22():  return tests[21]()
 
 for t in tables: t.resize(500,200)
 

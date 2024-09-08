@@ -28,10 +28,17 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
-# from TermTk.TTkWidgets.TTkModelView.tablewidgetitem import TTkTableWidgetItem
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+
+from TermTk.TTkGui.textdocument import TTkTextDocument
+
+from TermTk.TTkWidgets.texedit  import TTkTextEdit
+from TermTk.TTkWidgets.lineedit import TTkLineEdit
+from TermTk.TTkWidgets.spinbox  import TTkSpinBox
+from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker, TTkTextDialogPicker
+
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
-from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 class _DefaultTableModel(TTkAbstractTableModel):
     def __init__(self, **args):
@@ -80,8 +87,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     'color':          TTkColor.RST,
                     'lineColor':      TTkColor.fg("#444444"),
                     'headerColor':    TTkColor.fg("#FFFFFF")+TTkColor.bg("#444444")+TTkColor.BOLD,
-                    'hoverColor':     TTkColor.fg("#4444FF")+TTkColor.bg("#AAAA44")+TTkColor.BOLD,
-                    'selectedColor':  TTkColor.bg("#888800"),
+                    'hoverColor':     TTkColor.fg("#FFFF00")+TTkColor.bg("#0088AA")+TTkColor.BOLD,
+                    'selectedColor':  TTkColor.bg("#0066AA"),
                     'separatorColor': TTkColor.fg("#555555")+TTkColor.bg("#444444")},
                 'disabled':    {
                     'color':          TTkColor.fg("#888888"),
@@ -101,6 +108,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_selected', '_hSeparatorSelected', '_vSeparatorSelected',
                   '_hoverPos', '_dragPos',
                   '_sortColumn', '_sortOrder',
+                  '_fastCheck', '_guessDataEdit',
                   # Signals
                   # 'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
                   )
@@ -116,6 +124,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         # self.itemDoubleClicked = pyTTkSignal(TTkTableWidgetItem, int)
         # self.itemExpanded      = pyTTkSignal(TTkTableWidgetItem)
         # self.itemCollapsed     = pyTTkSignal(TTkTableWidgetItem)
+        self._fastCheck = True
+        self._guessDataEdit = True
 
         self._showHSeparators = vSeparator
         self._showVSeparators = hSeparator
@@ -130,22 +140,31 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
         self._tableModel = tableModel if tableModel else _DefaultTableModel()
-        self._refreshLayout()
         super().__init__(**kwargs)
+        self._refreshLayout()
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
         # self._rootItem = TTkTableWidgetItem(expanded=True)
         # self.clear()
-        self.setPadding(1,0,0,0)
         self.viewChanged.connect(self._viewChangedHandler)
-        self._verticalHeader.visibilityUpdated.connect(lambda:self.viewChanged.emit())
-        self._horizontallHeader.visibilityUpdated.connect(lambda:self.viewChanged.emit())
+        self._verticalHeader.visibilityUpdated.connect(   self._headerVisibilityChanged)
+        self._horizontallHeader.visibilityUpdated.connect(self._headerVisibilityChanged)
+
+    @pyTTkSlot()
+    def _headerVisibilityChanged(self):
+        showVH = self._verticalHeader.isVisible()
+        showHH = self._horizontallHeader.isVisible()
+        vhs = self._vHeaderSize if showVH else 0
+        hhs = self._hHeaderSize if showHH else 0
+        self.setPadding(hhs,0,vhs,0)
+        self.viewChanged.emit()
 
     def _refreshLayout(self):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
-        self._vHeaderSize = vhs= 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
-        self._hHeaderSize = hhs= 1
+        self._vHeaderSize = vhs = 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
+        self._hHeaderSize = hhs = 1
+        self.setPadding(hhs,0,vhs,0)
         if self._showVSeparators:
             self._colsPos  = [(1+x)*11 for x in range(cols)]
         else:
@@ -197,7 +216,6 @@ class TTkTableWidget(TTkAbstractScrollView):
     def setHSeparatorVisibility(self, visibility:bool):
         if self._showHSeparators == visibility: return
         self._showHSeparators = visibility
-
         if visibility:
             self._rowsPos = [v+i for i,v in enumerate(self._rowsPos,1)]
         else:
@@ -250,12 +268,16 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     def _columnContentsSize(self, column:int) -> int:
         def _wid(_c):
-            txt = self._tableModel.data(_c, column)
-            if isinstance(txt,TTkString): pass
-            elif type(txt) == str: txt = TTkString(txt)
-            else:                  txt = TTkString(f"{txt}")
+            txt = self._tableModel.ttkStringData(_c, column)
             return max(t.termWidth() for t in txt.split('\n'))
-        return max(_wid(i) for i in range(self._tableModel.rowCount()))
+        rows = self._tableModel.rowCount()
+        if self._fastCheck:
+            w,h = self.size()
+            row,_ = self._findCell(w//2, h//2, False)
+            rowa,rowb = max(0,row-100), min(row+100,rows)
+        else:
+            rowa,rowb = 0,rows
+        return max(_wid(i) for i in range(rowa,rowb))
 
     @pyTTkSlot(int)
     def resizeColumnToContents(self, column:int) -> None:
@@ -289,12 +311,16 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     def _rowContentsSize(self, row:int) -> int:
         def _hei(_c):
-            txt = self._tableModel.data(row, _c)
-            if isinstance(txt,TTkString): pass
-            elif type(txt) == str: txt = TTkString(txt)
-            else:                  txt = TTkString(f"{txt}")
+            txt = self._tableModel.ttkStringData(row, _c)
             return len(txt.split('\n'))
-        return max(_hei(i) for i in range(self._tableModel.columnCount()))
+        cols = self._tableModel.columnCount()
+        if self._fastCheck:
+            w,h = self.size()
+            _,col = self._findCell(w//2, h//2, False)
+            cola,colb = max(0,col-30), min(col+30,cols)
+        else:
+            cola,colb = 0,cols
+        return max(_hei(i) for i in range(cola,colb))
 
     @pyTTkSlot(int)
     def resizeRowToContents(self, row:int) -> None:
@@ -341,6 +367,75 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         return row,col
 
+    def _editStr(self, x,y,w,h, row, col, data):
+        _te = TTkTextEdit(
+                    parent=self, pos=(x, y), size=(w,h),
+                    readOnly=False, wrapMode=TTkK.NoWrap)
+        _te.setText(data)
+        _te.setFocus()
+
+        @pyTTkSlot(bool)
+        def _processClose(change):
+            if change:
+                self.focusChanged.disconnect(_processClose)
+                txt = _te.toPlainText()
+                self._tableModel.setData(row,col,txt)
+                self.update()
+                _te.close()
+
+        self.focusChanged.connect(_processClose)
+
+    _dataEditType = {
+        str : '',
+        TTkString : ''
+    }
+
+    def _editNum(self, x,y,w,h, row, col, data):
+        _sb = TTkSpinBox(
+                    parent=self, pos=(x, y), size=(w,1),
+                    minimum=-1000000, maximum=1000000,
+                    value=data)
+        _sb.setFocus()
+
+        @pyTTkSlot(bool)
+        def _processClose(change):
+            if change:
+                self.focusChanged.disconnect(_processClose)
+                val = _sb.value()
+                self._tableModel.setData(row,col,val)
+                self.update()
+                _sb.close()
+
+        self.focusChanged.connect(_processClose)
+
+    _dataEditType = {
+        str : '',
+        TTkString : ''
+    }
+
+    def _editTTkString(self, x,y,w,h, row, col, data):
+        _tp = TTkTextPicker(
+                    parent=self, pos=(x, y), size=(w,h),
+                    text=data, autoSize=False, wrapMode=TTkK.NoWrap)
+
+        _tp.setFocus()
+
+        @pyTTkSlot(bool)
+        def _processClose(change):
+            if change:
+                self.focusChanged.disconnect(_processClose)
+                txt = _tp.getTTkString()
+                self._tableModel.setData(row,col,txt)
+                self.update()
+                _tp.close()
+
+        self.focusChanged.connect(_processClose)
+
+    _dataEditType = {
+        str : '',
+        TTkString : ''
+    }
+
     def mouseDoubleClickEvent(self, evt):
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
@@ -353,6 +448,9 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
+
+        rp = self._rowsPos
+        cp = self._colsPos
 
         # Handle Header Events
         # And return if handled
@@ -373,6 +471,19 @@ class TTkTableWidget(TTkAbstractScrollView):
                     # I-th separator selected
                     self.resizeRowToContents(i)
                     return True
+
+        row,col = self._findCell(x,y, headers=False)
+        xa,xb = 1+cp[col-1] if col>0 else 0, cp[col] + (0 if showVS else 1)
+        ya,yb = 1+rp[row-1] if row>0 else 0, rp[row] + (0 if showHS else 1)
+
+        data = self._tableModel.data(row, col)
+        if type(data) is str:
+            self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
+        elif type(data) in [int,float]:
+            self._editNum(xa,ya,xb-xa,yb-ya,row,col,data)
+        else:
+            data = self._tableModel.ttkStringData(row, col)
+            self._editTTkString(xa,ya,xb-xa,yb-ya,row,col,data)
 
         return True
 
@@ -694,10 +805,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _cellsCache.append([row,col,xa,xb,ya,yb,cellColor])
 
         def _drawCellContent(_col,_row,_xa,_xb,_ya,_yb,_color):
-                txt = self._tableModel.data(_row, _col)
-                if isinstance(txt,TTkString): pass
-                elif type(txt) == str: txt = TTkString(txt, _color)
-                else:                  txt = TTkString(f"{txt}", _color)
+                txt = self._tableModel.ttkStringData(_row, _col)
                 if _color != TTkColor.RST:
                     txt = txt.completeColor(_color)
                 for i,line in enumerate(txt.split('\n')):

@@ -27,6 +27,8 @@
 
 import os
 import sys
+import csv
+import re
 import argparse
 import operator
 import json
@@ -34,6 +36,26 @@ import random
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f',    help='Full Screen', action='store_true')
+parser.add_argument('-t',    help='Track Mouse', action='store_true')
+parser.add_argument('--csv', help='Open CSV File', type=argparse.FileType('r'))
+
+args = parser.parse_args()
+
+fullScreen = args.f
+mouseTrack = args.t
+
+# csvData = []
+# if args.csv:
+#     sniffer = csv.Sniffer()
+#     has_header = sniffer.has_header(args.csv.read(2048))
+#     args.csv.seek(0)
+#     csvreader = csv.reader(args.csv)
+#     for row in csvreader:
+#         csvData.append(row)
+
 
 imagesFile = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../ansi.images.json')
 with open(imagesFile) as f:
@@ -117,6 +139,52 @@ class MyTableModel(ttk.TTkAbstractTableModel):
             return f"{prefix[num%len(prefix)]}:{num:03}"
         return super().headerData(num, orientation)
 
+class MyTableModelCSV(ttk.TTkAbstractTableModel):
+    def __init__(self, fd):
+        self.mylist = []
+        self.hheader = []
+        self.vheader = []
+        self._csvImport(fd)
+        super().__init__()
+
+    def _csvImport(self, fd):
+        sniffer = csv.Sniffer()
+        has_header = sniffer.has_header(fd.read(2048))
+        fd.seek(0)
+        csvreader = csv.reader(fd)
+        for row in csvreader:
+            self.mylist.append(row)
+        if has_header:
+            self.hheader = self.mylist.pop(0)
+        # check if the first column include an index:
+        if self._checkIndexColumn():
+            self.hheader.pop(0)
+            for l in self.mylist:
+                self.vheader.append(l.pop(0))
+
+    def _checkIndexColumn(self):
+        if all(l[0].isdigit() for l in self.mylist):
+            num = int(self.mylist[0][0])
+            return all(num+i==int(l[0]) for i,l in enumerate(self.mylist))
+        return False
+
+    def rowCount(self):        return len(self.mylist)
+    def columnCount(self):     return len(self.mylist[0])
+    def data(self, row, col):  return self.mylist[row][col]
+    def setData(self, row, col, data):  self.mylist[row][col] = data
+    def headerData(self, num, orientation):
+        if orientation == ttk.TTkK.HORIZONTAL:
+            if self.hheader:
+                return self.hheader[num]
+            prefix = ['H-aa','H-bb','H-cc','H-dd','H-ee','H-ff','H-gg','Parodi','H-hh',]
+            return f"{prefix[num%len(prefix)]}:{num:03}"
+        if orientation == ttk.TTkK.VERTICAL:
+            if self.vheader:
+                return self.vheader[num]
+            prefix = ['aa','bb','cc','dd','ee','ff','gg','Euge']
+            return f"{prefix[num%len(prefix)]}:{num:03}"
+        return super().headerData(num, orientation)
+
 txt1 = "Text"
 txt2 = txt1*5
 txt3 = 'M1: '+' -M1\n'.join([txt1*2]*3)
@@ -164,15 +232,6 @@ data_list3 = [
     [random.choice(tiles*p1)]+
     [random.choice(tiles*p1)]
                  for x in range(30)]
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-f', help='Full Screen', action='store_true')
-parser.add_argument('-t', help='Track Mouse', action='store_true')
-args = parser.parse_args()
-
-fullScreen = args.f
-mouseTrack = args.t
 
 
 root = ttk.TTk(title="pyTermTk Table Demo", mouseTrack=mouseTrack)
@@ -232,15 +291,17 @@ tableStyle5 = {'default': defaultStyle|{
                     'separatorColor': ttk.TTkColor.fg("#330055")+ttk.TTkColor.bg("#660066")} }
 
 # Header Checkboxes
-ht = ttk.TTkCheckbox(parent=controls, pos=(1,1), size=(15,1), text=' Top  Header',checked=True)
-hl = ttk.TTkCheckbox(parent=controls, pos=(1,2), size=(15,1), text=' Left Header',checked=True)
+ttk.TTkLabel(parent=controls, pos=(1,0), text="Header:")
+ht = ttk.TTkCheckbox(parent=controls, pos=( 1,1), size=(15,1), text=' Top ',checked=True)
+hl = ttk.TTkCheckbox(parent=controls, pos=(10,1), size=(15,1), text=' Left',checked=True)
 
 ht.toggled.connect(table.horizontalHeader().setVisible)
 hl.toggled.connect(table.verticalHeader().setVisible)
 
 # Lines/Separator Checkboxes
-vli = ttk.TTkCheckbox(parent=controls, pos=(1,4), size=(15,1), text=' V Lines',checked=True)
-hli = ttk.TTkCheckbox(parent=controls, pos=(1,5), size=(15,1), text=' H Lines',checked=True)
+ttk.TTkLabel(parent=controls, pos=(1,2), text="Lines:")
+vli = ttk.TTkCheckbox(parent=controls, pos=( 1,3), size=(5,1), text=' V',checked=True)
+hli = ttk.TTkCheckbox(parent=controls, pos=(10,3), size=(5,1), text=' H',checked=True)
 
 vli.toggled.connect(table.setVSeparatorVisibility)
 hli.toggled.connect(table.setHSeparatorVisibility)
@@ -269,11 +330,22 @@ m1.clicked.connect(lambda : table.setModel(table_model1))
 m2.clicked.connect(lambda : table.setModel(table_model2))
 m3.clicked.connect(lambda : table.setModel(table_model3))
 
-# Resize Button
-rb = ttk.TTkButton(parent=controls, pos=(33,5), size=(11,1), text="resize", border=False)
+if args.csv:
+    table_model_csv = MyTableModelCSV(args.csv)
+    m_csv = ttk.TTkRadioButton(parent=controls, pos=(33,4), size=(11,1), text=' CSV', radiogroup='Models')
+    m_csv.clicked.connect(lambda : table.setModel(table_model_csv))
 
-rb.clicked.connect(table.resizeRowsToContents)
-rb.clicked.connect(table.resizeColumnsToContents)
+
+
+# Resize Button
+rvb = ttk.TTkButton(parent=controls, pos=(1,5), size=( 3,1), text="V", border=False)
+rhb = ttk.TTkButton(parent=controls, pos=(4,5), size=( 3,1), text="H", border=False)
+rb  = ttk.TTkButton(parent=controls, pos=(7,5), size=(11,1), text="Resize", border=False)
+
+rhb.clicked.connect(table.resizeRowsToContents)
+rvb.clicked.connect(table.resizeColumnsToContents)
+rb.clicked.connect( table.resizeRowsToContents)
+rb.clicked.connect( table.resizeColumnsToContents)
 
 controlAndLogsSplitter.addWidget(controls, size=50)
 controlAndLogsSplitter.addWidget(ttk.TTkLogViewer())
