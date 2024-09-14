@@ -350,8 +350,17 @@ rb.clicked.connect( table.resizeColumnsToContents)
 controlAndLogsSplitter.addWidget(controls, size=50)
 controlAndLogsSplitter.addWidget(ttk.TTkLogViewer())
 
-# winKey = ttk.TTkWindow(title="KeyPress",layout=ttk.TTkGridLayout(), size=(30,7))
-# winKey.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3))
-# ttk.TTkHelper.overlay(None, winKey, 10, 4, toolWindow=True)
+wkb = ttk.TTkButton(parent=controls, pos=(43,5), size=( 4,1), text="🤌", border=False)
+
+
+@ttk.pyTTkSlot()
+def _showWinKey():
+    winKey = ttk.TTkWindow(title="KeyPress",layout=ttk.TTkGridLayout(), size=(80,7))
+    winKey.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3))
+    ttk.TTkHelper.overlay(None, winKey, 10, 4, toolWindow=True)
+
+wkb.clicked.connect(_showWinKey)
+
+table.setFocus()
 
 root.mainloop()

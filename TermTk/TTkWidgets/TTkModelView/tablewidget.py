@@ -32,7 +32,7 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
-from TermTk.TTkWidgets.texedit  import TTkTextEdit
+from TermTk.TTkWidgets.texedit  import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker, TTkTextDialogPicker
@@ -79,6 +79,25 @@ class _HeaderView():
     def isVisible(self) -> bool:
         return self._visible
 
+class _TTkTextEditViewCustom(TTkTextEditView):
+    __slots__ = ('enterPressed')
+    def __init__(self, **kwargs):
+        self.enterPressed = pyTTkSignal(bool)
+        super().__init__(**kwargs)
+
+    def keyEvent(self, evt):
+        if ( evt.type == TTkK.SpecialKey and
+             evt.mod==TTkK.NoModifier and
+             evt.key == TTkK.Key_Enter ):
+            self.enterPressed.emit(True)
+            return True
+        elif ( evt.type == TTkK.SpecialKey and
+             evt.mod==TTkK.ControlModifier|TTkK.AltModifier and
+             evt.key == TTkK.Key_M ):
+            evt.mod = TTkK.NoModifier
+            evt.key = TTkK.Key_Enter
+        return super().keyEvent(evt)
+
 class TTkTableWidget(TTkAbstractScrollView):
     '''TTkTableWidget'''
 
@@ -88,6 +107,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     'lineColor':      TTkColor.fg("#444444"),
                     'headerColor':    TTkColor.fg("#FFFFFF")+TTkColor.bg("#444444")+TTkColor.BOLD,
                     'hoverColor':     TTkColor.fg("#FFFF00")+TTkColor.bg("#0088AA")+TTkColor.BOLD,
+                    'currentColor':   TTkColor.fg("#FFFF00")+TTkColor.bg("#0088FF")+TTkColor.BOLD,
                     'selectedColor':  TTkColor.bg("#0066AA"),
                     'separatorColor': TTkColor.fg("#555555")+TTkColor.bg("#444444")},
                 'disabled':    {
@@ -95,6 +115,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     'lineColor':      TTkColor.fg("#888888"),
                     'headerColor':    TTkColor.fg("#888888"),
                     'hoverColor':     TTkColor.bg("#888888"),
+                    'currentColor':   TTkColor.bg("#888888"),
                     'selectedColor':  TTkColor.fg("#888888"),
                     'separatorColor': TTkColor.fg("#888888")},
             }
@@ -106,7 +127,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_colsPos', '_rowsPos',
                   '_internal',
                   '_selected', '_hSeparatorSelected', '_vSeparatorSelected',
-                  '_hoverPos', '_dragPos',
+                  '_hoverPos', '_dragPos', '_currentPos',
                   '_sortColumn', '_sortOrder',
                   '_fastCheck', '_guessDataEdit',
                   # Signals
@@ -134,6 +155,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._selected = None
         self._hoverPos = None
         self._dragPos = None
+        self._currentPos = None
         self._internal = {}
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
@@ -143,7 +165,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         super().__init__(**kwargs)
         self._refreshLayout()
         self.setMinimumHeight(1)
-        self.setFocusPolicy(TTkK.ClickFocus)
+        self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
         # self._rootItem = TTkTableWidgetItem(expanded=True)
         # self.clear()
         self.viewChanged.connect(self._viewChangedHandler)
@@ -368,9 +390,11 @@ class TTkTableWidget(TTkAbstractScrollView):
         return row,col
 
     def _editStr(self, x,y,w,h, row, col, data):
+        _tev = _TTkTextEditViewCustom()
         _te = TTkTextEdit(
                     parent=self, pos=(x, y), size=(w,h),
                     readOnly=False, wrapMode=TTkK.NoWrap)
+        _tev = _te.textEditView()
         _te.setText(data)
         _te.setFocus()
 
@@ -382,13 +406,44 @@ class TTkTableWidget(TTkAbstractScrollView):
                 self._tableModel.setData(row,col,txt)
                 self.update()
                 _te.close()
+                self.setFocus()
 
+        # Override the key event
+        _ke = _tev.keyEvent
+        _doc = _tev.document()
+        _cur = _tev.textCursor()
+        def _keyEvent(evt):
+            if ( evt.type == TTkK.SpecialKey):
+                _line = _cur.anchor().line
+                _pos  = _cur.anchor().pos
+                _lineCount = _doc.lineCount()
+                _lineLen
+                if evt.mod==TTkK.NoModifier:
+                    if evt.key == TTkK.Key_Enter:
+                        # self.enterPressed.emit(True)
+                        self._moveCurrentCell( 0,+1)
+                        _processClose(True)
+                        return True
+                    elif evt.key == TTkK.Key_Up:
+                        if _cur.anchor().line == 0:
+                            self._moveCurrentCell( 0,-1)
+                            _processClose(True)
+                            return True
+                    elif evt.key == TTkK.Key_Left:
+                        if _cur.anchor().pos == 0:
+                            self._moveCurrentCell(-1, 0)
+                            _processClose(True)
+                            return True
+                elif ( evt.type == TTkK.SpecialKey and
+                       evt.mod==TTkK.ControlModifier|TTkK.AltModifier and
+                       evt.key == TTkK.Key_M ):
+                    evt.mod = TTkK.NoModifier
+                    evt.key = TTkK.Key_Enter
+            return _ke(evt)
+        _tev.keyEvent = _keyEvent
+
+        # _tev.enterPressed.connect(_processClose)
         self.focusChanged.connect(_processClose)
-
-    _dataEditType = {
-        str : '',
-        TTkString : ''
-    }
 
     def _editNum(self, x,y,w,h, row, col, data):
         _sb = TTkSpinBox(
@@ -405,13 +460,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 self._tableModel.setData(row,col,val)
                 self.update()
                 _sb.close()
+                self.setFocus()
 
         self.focusChanged.connect(_processClose)
-
-    _dataEditType = {
-        str : '',
-        TTkString : ''
-    }
 
     def _editTTkString(self, x,y,w,h, row, col, data):
         _tp = TTkTextPicker(
@@ -428,13 +479,58 @@ class TTkTableWidget(TTkAbstractScrollView):
                 self._tableModel.setData(row,col,txt)
                 self.update()
                 _tp.close()
+                self.setFocus()
 
         self.focusChanged.connect(_processClose)
 
-    _dataEditType = {
-        str : '',
-        TTkString : ''
-    }
+    def _editCell(self, row, col):
+        showHS = self._showHSeparators
+        showVS = self._showVSeparators
+        rp = self._rowsPos
+        cp = self._colsPos
+        xa,xb = 1+cp[col-1] if col>0 else 0, cp[col] + (0 if showVS else 1)
+        ya,yb = 1+rp[row-1] if row>0 else 0, rp[row] + (0 if showHS else 1)
+
+        data = self._tableModel.data(row, col)
+        if type(data) is str:
+            self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
+        elif type(data) in [int,float]:
+            self._editNum(xa,ya,xb-xa,yb-ya,row,col,data)
+        else:
+            data = self._tableModel.ttkStringData(row, col)
+            self._editTTkString(xa,ya,xb-xa,yb-ya,row,col,data)
+
+    def _moveCurrentCell(self, dx, dy):
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        if self._currentPos:
+            row,col = self._currentPos
+            row = max(0,min(row+dy, rows-1))
+            col = max(0,min(col+dx, cols-1))
+        else:
+            row,col = 0,0
+        self._currentPos = (row,col)
+        self.update()
+
+    def keyEvent(self, evt):
+        if self._currentPos:
+            row,col = self._currentPos
+        else:
+            row,col = 0,0
+        if evt.type == TTkK.SpecialKey:
+            if evt.mod==TTkK.NoModifier:
+                if   evt.key == TTkK.Key_Up:    self._moveCurrentCell( 0,-1)
+                elif evt.key == TTkK.Key_Down:  self._moveCurrentCell( 0, 1)
+                elif evt.key == TTkK.Key_Left:  self._moveCurrentCell(-1, 0)
+                elif evt.key == TTkK.Key_Right: self._moveCurrentCell( 1, 0)
+                elif evt.key == TTkK.Key_Enter: self._editCell(row,col)
+                self.update()
+            return True
+        else:
+            self._tableModel.setData(row,col,evt.key)
+            self._editCell(row,col)
+        return True
+
 
     def mouseDoubleClickEvent(self, evt):
         x,y = evt.x, evt.y
@@ -473,6 +569,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     return True
 
         row,col = self._findCell(x,y, headers=False)
+        self._editCell(row,col)
+        return True
         xa,xb = 1+cp[col-1] if col>0 else 0, cp[col] + (0 if showVS else 1)
         ya,yb = 1+rp[row-1] if row>0 else 0, rp[row] + (0 if showHS else 1)
 
@@ -587,6 +685,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 line[col] = not state
         else:
             # Cell Select
+            self._currentPos = (row,col)
             if _ctrl: self._selected[row][col] = not self._selected[row][col]
             else:     self._selected[row][col] = True
         self._hoverPos = None
@@ -719,6 +818,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         lineColor:TTkColor= style['lineColor']
         headerColor:TTkColor= style['headerColor']
         hoverColor:TTkColor= style['hoverColor']
+        currentColor:TTkColor= style['currentColor']
         selectedColor:TTkColor= style['selectedColor']
         separatorColor:TTkColor= style['separatorColor']
 
@@ -798,6 +898,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if xa>w  : break
                 if xb<vhs: continue
                 cellColor = (
+                    # currentColor if self._currentPos == (row,col) else
                     hoverColor if self._hoverPos in [(row,col),(-1,col),(row,-1),(-1,-1)] else
                     selectedColor if self._selected[row][col] else
                     rowColor )
@@ -1062,6 +1163,18 @@ class TTkTableWidget(TTkAbstractScrollView):
             canvas.drawTTkString(pos=(xa,yb), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',hoverColorInv))
             canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=hoverColorInv)
             canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=hoverColorInv)
+
+        if self._currentPos:
+            row,col = self._currentPos
+            xa = sliceCol[col][0]-ox+vhs
+            xb = sliceCol[col][1]-ox+vhs + (0 if showHS else 1)
+            ya = sliceRow[row][0]-oy+hhs
+            yb = sliceRow[row][1]-oy+hhs + (0 if showVS else 1)
+            currentColorInv = currentColor.background().invertFgBg()
+            canvas.drawTTkString(pos=(xa,ya), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',currentColorInv))
+            canvas.drawTTkString(pos=(xa,yb), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',currentColorInv))
+            canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=currentColorInv)
+            canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=currentColorInv)
 
         # Draw H-Header first:
         if showHH:

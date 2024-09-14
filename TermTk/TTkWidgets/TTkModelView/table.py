@@ -53,7 +53,7 @@ class TTkTable(TTkAbstractScrollArea):
         super().__init__(parent=parent, visible=visible, **kwargs)
         self._tableView = kwargs.get('TableWidget',TTkTableWidget(**kwargs))
         self.setViewport(self._tableView)
-        self.setFocusPolicy(TTkK.ClickFocus)
+        # self.setFocusPolicy(TTkK.ClickFocus)
 
         self.model = self._tableView.model
         self.setModel = self._tableView.setModel
@@ -74,6 +74,9 @@ class TTkTable(TTkAbstractScrollArea):
         self.vSeparatorVisibility = self._tableView.vSeparatorVisibility
         self.setHSeparatorVisibility = self._tableView.setHSeparatorVisibility
         self.setVSeparatorVisibility = self._tableView.setVSeparatorVisibility
+
+        self.setFocus = self._tableView.setFocus
+        self.focusChanged = self._tableView.focusChanged
 
         # # Forward the signal
         # self.itemActivated     = self._tableView.itemActivated
