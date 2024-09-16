@@ -417,7 +417,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _line = _cur.anchor().line
                 _pos  = _cur.anchor().pos
                 _lineCount = _doc.lineCount()
-                _lineLen
+                # _lineLen
                 if evt.mod==TTkK.NoModifier:
                     if evt.key == TTkK.Key_Enter:
                         # self.enterPressed.emit(True)
@@ -425,13 +425,23 @@ class TTkTableWidget(TTkAbstractScrollView):
                         _processClose(True)
                         return True
                     elif evt.key == TTkK.Key_Up:
-                        if _cur.anchor().line == 0:
+                        if _line == 0:
                             self._moveCurrentCell( 0,-1)
                             _processClose(True)
                             return True
+                    elif evt.key == TTkK.Key_Down:
+                        if _lineCount == 1:
+                            self._moveCurrentCell( 0,+1)
+                            _processClose(True)
+                            return True
                     elif evt.key == TTkK.Key_Left:
-                        if _cur.anchor().pos == 0:
+                        if _pos == _line == 0:
                             self._moveCurrentCell(-1, 0)
+                            _processClose(True)
+                            return True
+                    elif evt.key == TTkK.Key_Right:
+                        if _lineCount == 1 and _pos==len(_doc.toPlainText()):
+                            self._moveCurrentCell(+1, 0)
                             _processClose(True)
                             return True
                 elif ( evt.type == TTkK.SpecialKey and
@@ -490,6 +500,12 @@ class TTkTableWidget(TTkAbstractScrollView):
         cp = self._colsPos
         xa,xb = 1+cp[col-1] if col>0 else 0, cp[col] + (0 if showVS else 1)
         ya,yb = 1+rp[row-1] if row>0 else 0, rp[row] + (0 if showHS else 1)
+
+        # Mark only the current cell as aselected
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        self._selected = [[False]*cols for _ in range(rows)]
+        self._selected[row][col]=True
 
         data = self._tableModel.data(row, col)
         if type(data) is str:
