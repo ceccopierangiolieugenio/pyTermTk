@@ -288,7 +288,11 @@ class TTkString():
                 return i
         return len(self._text)
 
-    def toAscii(self):
+    def isPlainText(self) -> bool:
+        ''' Return True if the string does not include colors or modifications '''
+        return all(TTkColor.RST == c for c in self._colors)
+
+    def toAscii(self) -> str:
         ''' Return the ascii representation of the string '''
         return self._text
 

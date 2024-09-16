@@ -218,11 +218,11 @@ class TTkTextEditView(TTkAbstractScrollView):
             return self._textDocument.isRedoAvailable()
         return False
 
-    def document(self):
+    def document(self) -> TTkTextDocument:
         '''document'''
         return self._textDocument
 
-    def setDocument(self, document):
+    def setDocument(self, document:TTkTextDocument):
         '''setDocument'''
         if self._textDocument:
             self._textDocument.contentsChanged.disconnect(self._documentChanged)
@@ -248,7 +248,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def wordWrapMode(self, *args, **kwargs):    return self._textWrap.wordWrapMode(*args, **kwargs)
     def setWordWrapMode(self, *args, **kwargs): return self._textWrap.setWordWrapMode(*args, **kwargs)
 
-    def textCursor(self):
+    def textCursor(self) -> TTkTextCursor:
         return self._textCursor
 
     def isReadOnly(self) -> bool :

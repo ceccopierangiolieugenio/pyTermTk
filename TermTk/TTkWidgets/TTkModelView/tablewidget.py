@@ -402,8 +402,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         def _processClose(change):
             if change:
                 self.focusChanged.disconnect(_processClose)
-                txt = _te.toPlainText()
-                self._tableModel.setData(row,col,txt)
+                txt = _te.toRawText()
+                self._tableModel.setData(row,col,str(txt) if txt.isPlainText() else txt)
                 self.update()
                 _te.close()
                 self.setFocus()
@@ -472,6 +472,18 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _sb.close()
                 self.setFocus()
 
+        # Override the key event
+        _ke = _sb.keyEvent
+        def _keyEvent(evt):
+            if ( evt.type == TTkK.SpecialKey):
+                if evt.mod==TTkK.NoModifier:
+                    if evt.key == TTkK.Key_Enter:
+                        self._moveCurrentCell( 0,+1)
+                        _processClose(True)
+                        return True
+            return _ke(evt)
+        _sb.keyEvent = _keyEvent
+
         self.focusChanged.connect(_processClose)
 
     def _editTTkString(self, x,y,w,h, row, col, data):
@@ -493,7 +505,7 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         self.focusChanged.connect(_processClose)
 
-    def _editCell(self, row, col):
+    def _editCell(self, row, col, richEditSupport=True):
         showHS = self._showHSeparators
         showVS = self._showVSeparators
         rp = self._rowsPos
@@ -514,7 +526,10 @@ class TTkTableWidget(TTkAbstractScrollView):
             self._editNum(xa,ya,xb-xa,yb-ya,row,col,data)
         else:
             data = self._tableModel.ttkStringData(row, col)
-            self._editTTkString(xa,ya,xb-xa,yb-ya,row,col,data)
+            if richEditSupport:
+                self._editTTkString(xa,ya,xb-xa,yb-ya,row,col,data)
+            else:
+                self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
 
     def _moveCurrentCell(self, dx, dy):
         rows = self._tableModel.rowCount()
@@ -539,12 +554,12 @@ class TTkTableWidget(TTkAbstractScrollView):
                 elif evt.key == TTkK.Key_Down:  self._moveCurrentCell( 0, 1)
                 elif evt.key == TTkK.Key_Left:  self._moveCurrentCell(-1, 0)
                 elif evt.key == TTkK.Key_Right: self._moveCurrentCell( 1, 0)
-                elif evt.key == TTkK.Key_Enter: self._editCell(row,col)
+                elif evt.key == TTkK.Key_Enter: self._editCell(row,col,richEditSupport=False)
                 self.update()
             return True
         else:
             self._tableModel.setData(row,col,evt.key)
-            self._editCell(row,col)
+            self._editCell(row,col,richEditSupport=False)
         return True
 
 
