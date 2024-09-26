@@ -7,3 +7,5 @@ from .filetreewidgetitem  import *
 from .table               import *
 from .tablewidget         import *
 from .tablewidgetitem     import *
+from .tablemodelcsv       import *
+from .tablemodeljson      import *
