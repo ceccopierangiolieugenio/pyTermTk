@@ -732,27 +732,21 @@ class TTkTableWidget(TTkAbstractScrollView):
         # Handle Header Events
         # And return if handled
         # This is important to handle the header selection in the next part
-        if showVS and y < hhs:
+        if y < hhs:
             _x = x+ox-vhs
             for i, c in enumerate(self._colsPos):
-                if _x == c:
+                if showVS and _x == c:
                     # I-th separator selected
                     self._hSeparatorSelected = i
                     self.update()
                     return True
-                elif self._sortingEnabled and _x == c-1: # Pressed the sort otder icon
+                elif self._sortingEnabled and _x == c-(1 if showVS else 0) : # Pressed the sort otder icon
                     if self._sortColumn == i:
                         order = TTkK.SortOrder.DescendingOrder if self._sortOrder==TTkK.SortOrder.AscendingOrder else TTkK.SortOrder.AscendingOrder
                     else:
                         order = TTkK.SortOrder.AscendingOrder
                     self.sortByColumn(i,order)
                     return True
-                elif _x < c:
-                    # # I-th header selected
-                    # order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
-                    # self.sortItems(i, order)
-                    break
-            # return True
         elif showHS and x < vhs:
             _y = y+oy-hhs
             for i, r in enumerate(self._rowsPos):
@@ -761,12 +755,6 @@ class TTkTableWidget(TTkAbstractScrollView):
                     self._vSeparatorSelected = i
                     self.update()
                     return True
-                elif _y < r:
-                    # # I-th header selected
-                    # order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
-                    # self.sortItems(i, order)
-                    break
-            #   return True
 
         row,col = self._findCell(x,y, headers=True)
         if not row==col==-1:
