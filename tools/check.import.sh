@@ -85,8 +85,9 @@ __check(){
             -e "TTkTerminal/terminalhelper.py:import struct, fcntl, termios" \
             -e "TTkTerminal/terminalhelper.py:from select import select" \
             -e "TTkTerminal/__init__.py:import importlib.util" \
-            -e "TTkTerminal/__init__.py:import platform"
-
+            -e "TTkTerminal/__init__.py:import platform" |
+        grep -v \
+            -e "TTkModelView/tablemodelcsv.py:import csv"
 } ;
 
 if __check ;  then

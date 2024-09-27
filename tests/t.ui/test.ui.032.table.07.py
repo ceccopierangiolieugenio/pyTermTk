@@ -291,12 +291,12 @@ if args.csv:
 
 
 # Resize Button
-rvb = ttk.TTkButton(parent=controls, pos=(1,5), size=( 3,1), text="V", border=False)
-rhb = ttk.TTkButton(parent=controls, pos=(4,5), size=( 3,1), text="H", border=False)
+rcb = ttk.TTkButton(parent=controls, pos=(1,5), size=( 3,1), text="C", border=False)
+rrb = ttk.TTkButton(parent=controls, pos=(4,5), size=( 3,1), text="R", border=False)
 rb  = ttk.TTkButton(parent=controls, pos=(7,5), size=(11,1), text="Resize", border=False)
 
-rhb.clicked.connect(table.resizeRowsToContents)
-rvb.clicked.connect(table.resizeColumnsToContents)
+rrb.clicked.connect(table.resizeRowsToContents)
+rcb.clicked.connect(table.resizeColumnsToContents)
 rb.clicked.connect( table.resizeRowsToContents)
 rb.clicked.connect( table.resizeColumnsToContents)
 

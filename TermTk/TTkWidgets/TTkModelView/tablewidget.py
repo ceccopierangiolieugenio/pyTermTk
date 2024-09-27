@@ -233,6 +233,15 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
 
     def _refreshLayout(self):
+        self._selected = None
+        self._selectedBase = None
+        self._hoverPos = None
+        self._dragPos = None
+        self._currentPos = None
+        self._hSeparatorSelected = None
+        self._vSeparatorSelected = None
+        self._sortColumn = -1
+        self._sortOrder = TTkK.AscendingOrder
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
         self._vHeaderSize = vhs = 1+max(len(self._tableModel.headerData(_p, TTkK.VERTICAL)) for _p in range(rows) )
