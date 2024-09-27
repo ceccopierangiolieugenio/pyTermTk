@@ -25,59 +25,37 @@ __all__=['TTkTableModelCSV']
 import csv
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
+from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
-class TTkTableModelCSV(TTkAbstractTableModel):
-    __slots__ = ('_list', '_hheader', '_vheader')
+class TTkTableModelCSV(TTkTableModelList):
     def __init__(self, *, filename='', fd=None):
-        self._list = []
-        self._hheader = []
-        self._vheader = []
+        ml, head, idx = [[]], [], []
         if filename:
             with open(filename, "r") as fd:
-                self._csvImport(fd)
+                ml, head, idx = self._csvImport(fd)
         elif fd:
-            self._csvImport(fd)
-        super().__init__()
+            ml, head, idx = self._csvImport(fd)
+        super().__init__(list=ml,header=head,indexes=idx)
 
-    def _csvImport(self, fd):
+    def _csvImport(self, fd) -> tuple[list,list,list[list]]:
+        ml, head, idx = [], [], []
         sniffer = csv.Sniffer()
         has_header = sniffer.has_header(fd.read(2048))
         fd.seek(0)
         csvreader = csv.reader(fd)
         for row in csvreader:
-            self._list.append(row)
+            ml.append(row)
         if has_header:
-            self._hheader = self._list.pop(0)
+            head = ml.pop(0)
         # check if the first column include an index:
-        if self._checkIndexColumn():
-            self._hheader.pop(0)
-            for l in self._list:
-                self._vheader.append(l.pop(0))
+        if self._checkIndexColumn(ml):
+            head.pop(0)
+            for l in ml:
+                idx.append(l.pop(0))
+        return ml, head, idx
 
-    def _checkIndexColumn(self):
-        if all(l[0].isdigit() for l in self._list):
-            num = int(self._list[0][0])
-            return all(num+i==int(l[0]) for i,l in enumerate(self._list))
+    def _checkIndexColumn(self, ml:list[list]) -> bool:
+        if all(l[0].isdigit() for l in ml):
+            num = int(ml[0][0])
+            return all(num+i==int(l[0]) for i,l in enumerate(ml))
         return False
-
-    def rowCount(self):
-        return len(self._list)
-
-    def columnCount(self):
-        return len(self._list[0]) if self._list else 0
-
-    def data(self, row, col):
-        return self._list[row][col]
-
-    def setData(self, row, col, data):
-        self._list[row][col] = data
-
-    def headerData(self, num, orientation):
-        if orientation == TTkK.HORIZONTAL:
-            if self._hheader:
-                return self._hheader[num]
-        if orientation == TTkK.VERTICAL:
-            if self._vheader:
-                return self._vheader[num]
-        return super().headerData(num, orientation)

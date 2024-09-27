@@ -125,8 +125,11 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_showVSeparators', '_showHSeparators',
                   '_verticalHeader', '_horizontallHeader',
                   '_colsPos', '_rowsPos',
+                  '_sortingEnabled',
+                  '_dataPadding',
                   '_internal',
-                  '_selected', '_hSeparatorSelected', '_vSeparatorSelected',
+                  '_selected', '_selectedBase',
+                  '_hSeparatorSelected', '_vSeparatorSelected',
                   '_hoverPos', '_dragPos', '_currentPos',
                   '_sortColumn', '_sortOrder',
                   '_fastCheck', '_guessDataEdit',
@@ -137,6 +140,7 @@ class TTkTableWidget(TTkAbstractScrollView):
     def __init__(self, *,
                  tableModel:TTkAbstractTableModel=None,
                  vSeparator:bool=True, hSeparator:bool=True,
+                 sortingEnabled=False, dataPadding=1,
                  **kwargs) -> None:
         # Signals
         # self.itemActivated     = pyTTkSignal(TTkTableWidgetItem, int)
@@ -148,11 +152,14 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._fastCheck = True
         self._guessDataEdit = True
 
+        self._dataPadding = dataPadding
+        self._sortingEnabled = sortingEnabled
         self._showHSeparators = vSeparator
         self._showVSeparators = hSeparator
         self._verticalHeader    = _HeaderView()
         self._horizontallHeader = _HeaderView()
         self._selected = None
+        self._selectedBase = None
         self._hoverPos = None
         self._dragPos = None
         self._currentPos = None
@@ -171,6 +178,50 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.connect(self._viewChangedHandler)
         self._verticalHeader.visibilityUpdated.connect(   self._headerVisibilityChanged)
         self._horizontallHeader.visibilityUpdated.connect(self._headerVisibilityChanged)
+
+
+    @pyTTkSlot(bool)
+    def setSortingEnabled(self, enable:bool) -> None:
+        '''
+        If enable is true, enables sorting for the table and immediately trigger a call to sortByColumn() with the current sort section and order
+        Note: Setter function for property sortingEnabled.
+
+        :param enable: the availability of undo
+        :type enable: bool
+        '''
+        if enable == self._sortingEnabled: return
+        self._sortingEnabled = enable
+        self.sortByColumn(self._sortColumn, self._sortOrder)
+
+    def isSortingEnabled(self) -> bool:
+        '''
+        This property holds whether sorting is enabled
+
+        If this property is true, sorting is enabled for the table. If this property is false, sorting is not enabled. The default value is false.
+
+        Note: . Setting the property to true with setSortingEnabled() immediately triggers a call to sortByColumn() with the current sort section and order.
+
+        This property was introduced in Qt 4.2.
+        '''
+        return self._sortingEnabled
+
+    @pyTTkSlot(int, TTkK.SortOrder)
+    def sortByColumn(self, column:int, order:TTkK.SortOrder) -> None:
+        '''
+        Sorts the model by the values in the given column and order.
+
+        column may be -1, in which case no sort indicator will be shown and the model will return to its natural, unsorted order. Note that not all models support this and may even crash in this case.
+
+        :param column: the column used for the sorting
+        :type column: bool
+
+        :param order: the sort order
+        :type order: :class:`~TermTk.TTkCore.constant.TTkK.SortOrder`
+        '''
+        self._sortColumn = column
+        self._sortOrder = order
+        self._tableModel.sort(column,order)
+        self.update()
 
     @pyTTkSlot()
     def _headerVisibilityChanged(self):
@@ -195,6 +246,8 @@ class TTkTableWidget(TTkAbstractScrollView):
             self._rowsPos     = [1+x*2  for x in range(rows)]
         else:
             self._rowsPos     = [1+x    for x in range(rows)]
+        # self._selectedBase = sb =  [False]*cols
+        # self._selected = [sb]*rows
         self._selected = [[False]*cols for _ in range(rows)]
 
     # Overridden function
@@ -214,8 +267,12 @@ class TTkTableWidget(TTkAbstractScrollView):
     def setSelection(self, pos:tuple[int,int], size:tuple[int,int], flags:TTkK.TTkItemSelectionModel):
         x,y = pos
         w,h = size
-        for line in self._selected[y:y+h]:
-            line[x:x+w]=[True]*w
+        if flags & (TTkK.TTkItemSelectionModel.Clear|TTkK.TTkItemSelectionModel.Deselect):
+            for line in self._selected[y:y+h]:
+                line[x:x+w]=[False]*w
+        elif flags & TTkK.TTkItemSelectionModel.Select:
+            for line in self._selected[y:y+h]:
+                line[x:x+w]=[True]*w
         self.update()
 
     @pyTTkSlot()
@@ -223,6 +280,22 @@ class TTkTableWidget(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
         self.update()
+
+    def rowCount(self) -> int:
+        return self._tableModel.rowCount()
+
+    def currentRow(self) -> int:
+        if _cp := self._currentPos:
+            return _cp[0]
+        return 0
+
+    def columnCount(self) -> int:
+        return self._tableModel.columnCount()
+
+    def currentColumn(self) -> int:
+        if _cp := self._currentPos:
+            return _cp[1]
+        return 0
 
     def verticalHeader(self):
         return self._verticalHeader
@@ -261,9 +334,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._refreshLayout()
         self.viewChanged.emit()
 
-    def setSortingEnabled(self, enable) -> None:
-        pass
-
     def focusOutEvent(self) -> None:
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
@@ -299,7 +369,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             rowa,rowb = max(0,row-100), min(row+100,rows)
         else:
             rowa,rowb = 0,rows
-        return max(_wid(i) for i in range(rowa,rowb))
+        return max(_wid(i) for i in range(rowa,rowb))+self._dataPadding
 
     @pyTTkSlot(int)
     def resizeColumnToContents(self, column:int) -> None:
@@ -670,6 +740,13 @@ class TTkTableWidget(TTkAbstractScrollView):
                     self._hSeparatorSelected = i
                     self.update()
                     return True
+                elif self._sortingEnabled and _x == c-1: # Pressed the sort otder icon
+                    if self._sortColumn == i:
+                        order = TTkK.SortOrder.DescendingOrder if self._sortOrder==TTkK.SortOrder.AscendingOrder else TTkK.SortOrder.AscendingOrder
+                    else:
+                        order = TTkK.SortOrder.AscendingOrder
+                    self.sortByColumn(i,order)
+                    return True
                 elif _x < c:
                     # # I-th header selected
                     # order = not self._sortOrder if self._sortColumn == i else TTkK.AscendingOrder
@@ -929,7 +1006,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if xa>w  : break
                 if xb<vhs: continue
                 cellColor = (
-                    # currentColor if self._currentPos == (row,col) else
+                    currentColor if self._currentPos == (row,col) else
                     hoverColor if self._hoverPos in [(row,col),(-1,col),(row,-1),(-1,-1)] else
                     selectedColor if self._selected[row][col] else
                     rowColor )
@@ -1198,14 +1275,21 @@ class TTkTableWidget(TTkAbstractScrollView):
         if self._currentPos:
             row,col = self._currentPos
             xa = sliceCol[col][0]-ox+vhs
-            xb = sliceCol[col][1]-ox+vhs + (0 if showHS else 1)
+            xb = sliceCol[col][1]-ox+vhs + (0 if showVS else 1)
             ya = sliceRow[row][0]-oy+hhs
-            yb = sliceRow[row][1]-oy+hhs + (0 if showVS else 1)
+            yb = sliceRow[row][1]-oy+hhs + (0 if showHS else 1)
             currentColorInv = currentColor.background().invertFgBg()
-            canvas.drawTTkString(pos=(xa,ya), text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',currentColorInv))
-            canvas.drawTTkString(pos=(xa,yb), text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',currentColorInv))
-            canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=currentColorInv)
-            canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=currentColorInv)
+            if showVS and showHS:
+                canvas.drawTTkString(pos=(xa,ya),   text=TTkString('▗'+('▄'*(xb-xa-1))+'▖',currentColorInv))
+                canvas.drawTTkString(pos=(xa,yb),   text=TTkString('▝'+('▀'*(xb-xa-1))+'▘',currentColorInv))
+                canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=currentColorInv)
+                canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=currentColorInv)
+            # elif showHS:
+            #     canvas.drawTTkString(pos=(xa+1,ya), text=TTkString(     '▄'*(xb-xa-1)     ,currentColorInv))
+            #     canvas.drawTTkString(pos=(xa+1,yb), text=TTkString(     '▀'*(xb-xa-1)     ,currentColorInv))
+            # if showVS:
+            #     canvas.fill(char='▐',pos=(xa,ya+1), size=(1,yb-ya-1), color=currentColorInv)
+            #     canvas.fill(char='▌',pos=(xb,ya+1), size=(1,yb-ya-1), color=currentColorInv)
 
         # Draw H-Header first:
         if showHH:
@@ -1220,9 +1304,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 else:
                     xa,xb = xa+vhs-ox+1, xb+vhs-ox+1
                 canvas.drawText(pos=(xa,0), text=txt, width=xb-xa, color=headerColor)
-                if col == self._sortColumn:
-                    s = '▼' if self._sortOrder == TTkK.AscendingOrder else '▲'
-                    canvas.drawText(pos=(xb,0), text=s, color=headerColor)
+                if self._sortingEnabled:
+                    s = '•' if col != self._sortColumn else '▼' if self._sortOrder == TTkK.AscendingOrder else '▲'
+                    canvas.drawText(pos=(xb-1,0), text=s, color=headerColor)
                 if showVS:
                     canvas.drawChar(pos=(xb,0), char='╿', color=headerColor)
 

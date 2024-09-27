@@ -154,9 +154,12 @@ class TTkConstant:
     DontShowIndicator              = ChildIndicatorPolicy.DontShowIndicator
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
-    class SortOrder(int):
+    class SortOrder():
+        '''This enum describes how the items in a widget are sorted.'''
         AscendingOrder  = 0x00
+        '''The items are sorted ascending e.g. starts with 'AAA' ends with 'ZZZ' in Latin-1 locales'''
         DescendingOrder = 0x01
+        '''The items are sorted descending e.g. starts with 'ZZZ' ends with 'AAA' in Latin-1 locales'''
 
     AscendingOrder  = SortOrder.AscendingOrder
     DescendingOrder = SortOrder.DescendingOrder

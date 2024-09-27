@@ -120,16 +120,14 @@ class CustomColorModifier(ttk.TTkAlternateColor):
         return c[y%len(c)]
 
 
-class MyTableModel(ttk.TTkAbstractTableModel):
+class MyTableModel(ttk.TTkTableModelList):
     def __init__(self, mylist, size=None):
-        self.mylist = mylist
         self.size=size
-        super().__init__()
+        super().__init__(list=mylist)
 
-    def rowCount(self):        return len(self.mylist)    if not self.size else self.size[0]
-    def columnCount(self):     return len(self.mylist[0]) if not self.size else self.size[1]
-    def data(self, row, col):  return self.mylist[row][col]
-    def setData(self, row, col, data):  self.mylist[row][col] = data
+    def rowCount(self):        return super().rowCount()    if not self.size else self.size[0]
+    def columnCount(self):     return super().columnCount() if not self.size else self.size[1]
+
     def headerData(self, num, orientation):
         if orientation == ttk.TTkK.HORIZONTAL:
             prefix = ['H-aa','H-bb','H-cc','H-dd','H-ee','H-ff','H-gg','Parodi','H-hh',]
@@ -139,51 +137,6 @@ class MyTableModel(ttk.TTkAbstractTableModel):
             return f"{prefix[num%len(prefix)]}:{num:03}"
         return super().headerData(num, orientation)
 
-class MyTableModelCSV(ttk.TTkAbstractTableModel):
-    def __init__(self, fd):
-        self.mylist = []
-        self.hheader = []
-        self.vheader = []
-        self._csvImport(fd)
-        super().__init__()
-
-    def _csvImport(self, fd):
-        sniffer = csv.Sniffer()
-        has_header = sniffer.has_header(fd.read(2048))
-        fd.seek(0)
-        csvreader = csv.reader(fd)
-        for row in csvreader:
-            self.mylist.append(row)
-        if has_header:
-            self.hheader = self.mylist.pop(0)
-        # check if the first column include an index:
-        if self._checkIndexColumn():
-            self.hheader.pop(0)
-            for l in self.mylist:
-                self.vheader.append(l.pop(0))
-
-    def _checkIndexColumn(self):
-        if all(l[0].isdigit() for l in self.mylist):
-            num = int(self.mylist[0][0])
-            return all(num+i==int(l[0]) for i,l in enumerate(self.mylist))
-        return False
-
-    def rowCount(self):        return len(self.mylist)
-    def columnCount(self):     return len(self.mylist[0])
-    def data(self, row, col):  return self.mylist[row][col]
-    def setData(self, row, col, data):  self.mylist[row][col] = data
-    def headerData(self, num, orientation):
-        if orientation == ttk.TTkK.HORIZONTAL:
-            if self.hheader:
-                return self.hheader[num]
-            prefix = ['H-aa','H-bb','H-cc','H-dd','H-ee','H-ff','H-gg','Parodi','H-hh',]
-            return f"{prefix[num%len(prefix)]}:{num:03}"
-        if orientation == ttk.TTkK.VERTICAL:
-            if self.vheader:
-                return self.vheader[num]
-            prefix = ['aa','bb','cc','dd','ee','ff','gg','Euge']
-            return f"{prefix[num%len(prefix)]}:{num:03}"
-        return super().headerData(num, orientation)
 
 txt1 = "Text"
 txt2 = txt1*5
@@ -257,15 +210,15 @@ table = ttk.TTkTable(parent=splitter, tableModel=table_model1)
 # # enable sorting
 # table.setSortingEnabled(True)
 
-table.setSelection((0,0),(2,2),1)
-table.setSelection((3,0),(1,2),1)
+table.setSelection((0,0),(2,2),ttk.TTkK.TTkItemSelectionModel.Select)
+table.setSelection((3,0),(1,2),ttk.TTkK.TTkItemSelectionModel.Select)
 
-table.setSelection((1,3),(2,4),1)
-table.setSelection((2,5),(2,4),1)
-table.setSelection((0,9),(2,3),1)
+table.setSelection((1,3),(2,4),ttk.TTkK.TTkItemSelectionModel.Select)
+table.setSelection((2,5),(2,4),ttk.TTkK.TTkItemSelectionModel.Select)
+table.setSelection((0,9),(2,3),ttk.TTkK.TTkItemSelectionModel.Select)
 
-table.setSelection((1,59),(1,2),1)
-table.setSelection((3,59),(1,2),1)
+table.setSelection((1,59),(1,2),ttk.TTkK.TTkItemSelectionModel.Select)
+table.setSelection((3,59),(1,2),ttk.TTkK.TTkItemSelectionModel.Select)
 
 controlAndLogsSplitter = ttk.TTkSplitter()
 
@@ -331,7 +284,7 @@ m2.clicked.connect(lambda : table.setModel(table_model2))
 m3.clicked.connect(lambda : table.setModel(table_model3))
 
 if args.csv:
-    table_model_csv = MyTableModelCSV(args.csv)
+    table_model_csv = ttk.TTkTableModelCSV(fd=args.csv)
     m_csv = ttk.TTkRadioButton(parent=controls, pos=(33,4), size=(11,1), text=' CSV', radiogroup='Models')
     m_csv.clicked.connect(lambda : table.setModel(table_model_csv))
 
@@ -349,6 +302,10 @@ rb.clicked.connect( table.resizeColumnsToContents)
 
 controlAndLogsSplitter.addWidget(controls, size=50)
 controlAndLogsSplitter.addWidget(ttk.TTkLogViewer())
+
+cbs = ttk.TTkCheckbox(parent=controls, pos=( 33,5), size=(8,1), text='-Sort', checked=False)
+
+cbs.toggled.connect(table.setSortingEnabled)
 
 wkb = ttk.TTkButton(parent=controls, pos=(43,5), size=( 4,1), text="🤌", border=False)
 
