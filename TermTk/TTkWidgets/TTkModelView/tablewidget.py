@@ -848,6 +848,20 @@ class TTkTableWidget(TTkAbstractScrollView):
         else:
             row,col = 0,0
         self._currentPos = (row,col)
+        # move the offset to include the cell
+        w,h = self.size()
+        ox, oy = self.getViewOffsets()
+        showVH = self._verticalHeader.isVisible()
+        showHH = self._horizontallHeader.isVisible()
+        hhs = self._hHeaderSize if showHH else 0
+        vhs = self._vHeaderSize if showVH else 0
+        cxa,cxb = self._colsPos[col-1] if col else 0, self._colsPos[col]
+        cya,cyb = self._rowsPos[row-1] if row else 0, self._rowsPos[row]
+        if w+ox-vhs < cxb: ox=cxb+vhs-w
+        if ox > cxa: ox=cxa
+        if h+oy-hhs < cyb: oy=cyb+hhs-h
+        if oy > cya: oy=cya
+        self.viewMoveTo(ox,oy)
         self.update()
 
     def keyEvent(self, evt):
