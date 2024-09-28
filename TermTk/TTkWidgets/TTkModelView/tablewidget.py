@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 
-__all__ = ['TTkTableWidget']
+__all__ = ['TTkTableWidget','TTkHeaderView']
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
@@ -36,6 +36,7 @@ from TermTk.TTkWidgets.texedit  import TTkTextEdit, TTkTextEditView
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker, TTkTextDialogPicker
+from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
@@ -50,9 +51,9 @@ class _DefaultTableModel(TTkAbstractTableModel):
     def data(self, row, col):
         return f"{row}x{col}"
 
-class _HeaderView():
-    '''_HeaderView
-    This is a placeholder for a future "TTkHeaderView"
+class TTkHeaderView():
+    '''TTkHeaderView
+    This is a placeholder for a proper "TTkHeaderView"
     '''
     __slots__ = ('_visible','visibilityUpdated')
     def __init__(self) -> None:
@@ -60,19 +61,19 @@ class _HeaderView():
         self._visible = True
 
     @pyTTkSlot(bool)
-    def setVisible(self, visible: bool):
+    def setVisible(self, visible: bool) -> None:
         '''setVisible'''
         if self._visible == visible: return
         self._visible = visible
         self.visibilityUpdated.emit(visible)
 
     @pyTTkSlot()
-    def show(self):
+    def show(self) -> None:
         '''show'''
         self.setVisible(True)
 
     @pyTTkSlot()
-    def hide(self):
+    def hide(self) -> None:
         '''hide'''
         self.setVisible(False)
 
@@ -99,7 +100,73 @@ class _TTkTextEditViewCustom(TTkTextEditView):
         return super().keyEvent(evt)
 
 class TTkTableWidget(TTkAbstractScrollView):
-    '''TTkTableWidget'''
+    '''TTkTableWidget
+
+    ::
+
+            Customer Id     ╿First Name ╿Last Name   ╿Company                         ╿City                ╿
+        1  │DD37Cf93aecA6Dc │Sheryl     │Baxter      │Rasmussen Group                 │East Leonard        │
+        ╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+        2  │1Ef7b82A4CAAD10 │Preston    │Lozano      │Vega-Gentry                     │East Jimmychester   │
+        ╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+        3  │6F94879bDAfE5a6 │Roy        │Berry       │Murillo-Perry                   │Isabelborough       │
+        ╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+        4  │5Cef8BFA16c5e3c │Linda      │Olsen       │Dominguez, Mcmillan and Donovan │Bensonview          │
+        ╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+        5  │053d585Ab6b3159 │Joanna     │Bender      │Martin, Lang and Andrade        │West Priscilla      │
+        ╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+        6  │2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                    │Chavezborough       │
+        ╾╌╌┴────────────────┴───────────┴────────────┴────────────────────────────────┴────────────────────┘
+
+
+    A :class:`TTkTableWidget` implements a table view that displays items from a model.
+
+    The :class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
+
+    :class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :class:`TTkAbstractTableModel` class.
+
+    **Navigation**
+
+    You can navigate the cells in the table by clicking on a cell with the mouse,
+    or by using the arrow keys,
+    you can also hit Tab and Backtab to move from cell to cell.
+
+    **Visual Appearance**
+
+    The table has a vertical header that can be obtained using the :meth:`verticalHeader` function,
+    and a horizontal header that is available through the :meth:`horizontalHeader` function.
+    The height of each row in the table can be set using :meth:`setRowHeight`;
+    similarly, the width of columns can be set using :meth:`setColumnWidth`.
+
+    They can be selected with :meth:`selectRow` and :meth:`selectColumn`.
+    The table will show a grid depending on the :meth:`setHSeparatorVisibility` :meth:`setVSeparatorVisibility` methods.
+
+    The items shown in a table view, like those in the other item views, are rendered and edited using standard delegates.
+    However, for some tasks it is sometimes useful to be able to insert widgets in a table instead.
+    Widgets are set for particular indexes with the setIndexWidget() function, and later retrieved with indexWidget().
+
+    By default, the cells in a table do not expand to fill the available space.
+    You can make the cells fill the available space by stretching the last header section.
+
+    To distribute the available space according to the space requirement of each column or row,
+    call the view's :meth:`resizeColumnsToContents` or :meth:`resizeRowsToContents` functions.
+
+    :param tableModel: the model for the view to present.
+    :type tableModel: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+
+    :param vSeparator: show the vertical separators, defaults to 1
+    :type vSeparator: bool, optional
+
+    :param hSeparator: show the horizontal separators, defaults to True
+    :type hSeparator: bool, optional
+
+    :param sortingEnabled: enable the column sorting, defaults to False
+    :type sortingEnabled: bool, optional
+
+    :param dataPadding: the right column padding, defaults to 1
+    :type dataPadding: int, optional
+
+    '''
 
     classStyle = {
                 'default':     {
@@ -156,8 +223,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._sortingEnabled = sortingEnabled
         self._showHSeparators = vSeparator
         self._showVSeparators = hSeparator
-        self._verticalHeader    = _HeaderView()
-        self._horizontallHeader = _HeaderView()
+        self._verticalHeader    = TTkHeaderView()
+        self._horizontallHeader = TTkHeaderView()
         self._selected = None
         self._selectedBase = None
         self._hoverPos = None
@@ -168,7 +235,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._vSeparatorSelected = None
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
-        self._tableModel = tableModel if tableModel else _DefaultTableModel()
+        self._tableModel = tableModel if tableModel else TTkTableModelList(list=[['']*10 for _ in range(10)])
         super().__init__(**kwargs)
         self._refreshLayout()
         self.setMinimumHeight(1)
@@ -183,8 +250,11 @@ class TTkTableWidget(TTkAbstractScrollView):
     @pyTTkSlot(bool)
     def setSortingEnabled(self, enable:bool) -> None:
         '''
-        If enable is true, enables sorting for the table and immediately trigger a call to sortByColumn() with the current sort section and order
-        Note: Setter function for property sortingEnabled.
+        If enable is true, enables sorting for the table and immediately trigger a
+        call to :meth:`sortByColumn`
+        with the current sort section and order
+
+        **Note**: Setter function for property sortingEnabled.
 
         :param enable: the availability of undo
         :type enable: bool
@@ -196,12 +266,14 @@ class TTkTableWidget(TTkAbstractScrollView):
     def isSortingEnabled(self) -> bool:
         '''
         This property holds whether sorting is enabled
+        If this property is true, sorting is enabled for the table.
+        If this property is false, sorting is not enabled. The default value is false.
 
-        If this property is true, sorting is enabled for the table. If this property is false, sorting is not enabled. The default value is false.
+        **Note**: . Setting the property to true with :meth:`setSortingEnabled`
+        immediately triggers a call to :meth:`sortByColumn`
+        with the current sort section and order.
 
-        Note: . Setting the property to true with setSortingEnabled() immediately triggers a call to sortByColumn() with the current sort section and order.
-
-        This property was introduced in Qt 4.2.
+        :return: bool
         '''
         return self._sortingEnabled
 
@@ -210,9 +282,10 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Sorts the model by the values in the given column and order.
 
-        column may be -1, in which case no sort indicator will be shown and the model will return to its natural, unsorted order. Note that not all models support this and may even crash in this case.
+        column may be -1, in which case no sort indicator will be shown and the model will return to its natural, unsorted order.
+        Note that not all models support this and may even crash in this case.
 
-        :param column: the column used for the sorting
+        :param column: the column used for the sorting, -1 to keep the table unsorted
         :type column: bool
 
         :param order: the sort order
@@ -273,7 +346,17 @@ class TTkTableWidget(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> tuple[int, int]:
         return self.size()
 
-    def setSelection(self, pos:tuple[int,int], size:tuple[int,int], flags:TTkK.TTkItemSelectionModel):
+    def setSelection(self, pos:tuple[int,int], size:tuple[int,int], flags:TTkK.TTkItemSelectionModel) -> None:
+        '''
+        Selects the items within the given rect and in accordance with the specified selection flags.
+
+        :param pos: the x,y position of the rect
+        :type pos: tuple[int,int]
+        :param size: the width,height of the rect used for the selection
+        :type size: tuple[int,int]
+        :param flags: the selection model used (i.e. :class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select`)
+        :type flags: :class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel`
+        '''
         x,y = pos
         w,h = size
         if flags & (TTkK.TTkItemSelectionModel.Clear|TTkK.TTkItemSelectionModel.Deselect):
@@ -284,6 +367,26 @@ class TTkTableWidget(TTkAbstractScrollView):
                 line[x:x+w]=[True]*w
         self.update()
 
+    def selectRow(self, row:int) -> None:
+        '''
+        Selects the given row in the table view
+        :param row: the row to be selected
+        :type row: int
+        '''
+        cols = self._tableModel.columnCount()
+        self._selected[row] = [True]*cols
+        self.update()
+
+    def selectColumn(self, column:int) -> None:
+        '''
+        Selects the given column in the table view
+        :param column: the column to be selected
+        :type column: int
+        '''
+        for row in self._selected:
+            self._selected[column] = True
+        self.update()
+
     @pyTTkSlot()
     def _viewChangedHandler(self) -> None:
         x,y = self.getViewOffsets()
@@ -291,33 +394,89 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
 
     def rowCount(self) -> int:
+        '''
+        Returns the number of rows.
+
+        :return: int
+        '''
         return self._tableModel.rowCount()
 
     def currentRow(self) -> int:
+        '''
+        Returns the row of the current item.
+
+        :return: int
+        '''
         if _cp := self._currentPos:
             return _cp[0]
         return 0
 
     def columnCount(self) -> int:
+        '''
+        Returns the number of columns.
+
+        :return: int
+        '''
         return self._tableModel.columnCount()
 
     def currentColumn(self) -> int:
+        '''
+        Returns the column of the current item.
+
+        :return: int
+        '''
         if _cp := self._currentPos:
             return _cp[1]
         return 0
 
-    def verticalHeader(self):
+    def verticalHeader(self) -> TTkHeaderView:
+        '''
+        Returns the table view's vertical header.
+
+        :return: :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView`
+        '''
         return self._verticalHeader
 
-    def horizontalHeader(self):
+    def horizontalHeader(self) -> TTkHeaderView:
+        '''
+        Returns the table view's horizontal header.
+
+        :return: :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView`
+        '''
         return self._horizontallHeader
 
     def hSeparatorVisibility(self) -> bool:
+        '''
+        Returns the visibility status of the horizontal separator
+
+        :return: bool
+        '''
         return self._showHSeparators
     def vSeparatorVisibility(self) -> bool:
+        '''
+        Returns the visibility status of the vertical separator
+
+        :return: bool
+        '''
         return self._showVSeparators
 
-    def setHSeparatorVisibility(self, visibility:bool):
+    def setHSeparatorVisibility(self, visibility:bool) -> None:
+        '''
+        Set the the visibility of the horizontal separators (lines)
+
+        ::
+
+                 Customer Id      First Name  Last Name   Company
+            1  │ DD37Cf93aecA6Dc  Sheryl      Baxter      Rasmussen Group
+            ╾╌╌┼───────────────────────────────────────────────────────────
+            2  │ 1Ef7b82A4CAAD10  Preston     Lozano      Vega-Gentry
+            ╾╌╌┼───────────────────────────────────────────────────────────
+            3  │ 6F94879bDAfE5a6  Roy         Berry       Murillo-Perry
+            ╾╌╌┼───────────────────────────────────────────────────────────
+
+        :param visibility: the visibility status
+        :type visibility: bool
+        '''
         if self._showHSeparators == visibility: return
         self._showHSeparators = visibility
         if visibility:
@@ -327,6 +486,22 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
 
     def setVSeparatorVisibility(self, visibility:bool):
+        '''
+        Set the the visibility of the vertical separators (lines)
+
+        ::
+
+                 Customer Id     ╿First Name ╿Last Name   ╿Company                     ╿
+            1  │ DD37Cf93aecA6Dc │Sheryl     │Baxter      │Rasmussen Group             │
+            2  │ 1Ef7b82A4CAAD10 │Preston    │Lozano      │Vega-Gentry                 │
+            3  │ 6F94879bDAfE5a6 │Roy        │Berry       │Murillo-Perry               │
+            4  │ 5Cef8BFA16c5e3c │Linda      │Olsen       │Dominguez, Mcmillan and Don │
+            5  │ 053d585Ab6b3159 │Joanna     │Bender      │Martin, Lang and Andrade    │
+            6  │ 2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                │
+
+        :param visibility: the visibility status
+        :type visibility: bool
+        '''
         if self._showVSeparators == visibility: return
         self._showVSeparators = visibility
         if visibility:
@@ -336,9 +511,20 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewChanged.emit()
 
     def model(self) -> TTkAbstractTableModel:
+        '''
+        Returns the model that this view is presenting.
+
+        :return: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+        '''
         return self._tableModel
 
     def setModel(self, model:TTkAbstractTableModel) -> None:
+        '''
+        Sets the model for the view to present.
+
+        :param model:
+        :type model: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+        '''
         self._tableModel = model
         self._refreshLayout()
         self.viewChanged.emit()
@@ -354,6 +540,14 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot(int)
     def setColumnWidth(self, column:int, width: int) -> None:
+        '''
+        Sets the width of the given column.
+
+        :param column: the column
+        :type column: int
+        :param width: its width
+        :type width: int
+        '''
         i = column
         prevPos = self._colsPos[i-1] if i>0 else -1
         if self._showVSeparators:
@@ -382,10 +576,19 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot(int)
     def resizeColumnToContents(self, column:int) -> None:
+        '''
+        Resizes the given column based on the size hints of the delegate used to render each item in the column.
+
+        :param column: the column to be resized
+        :type column: int
+        '''
         self.setColumnWidth(column, self._columnContentsSize(column))
 
     @pyTTkSlot()
     def resizeColumnsToContents(self) -> None:
+        '''
+        Resizes all columns based on the size hints of the delegate used to render each item in the columns.
+        '''
         _d = 1 if self._showVSeparators else 0
         cols = self._tableModel.columnCount()
         pos = -1
@@ -397,6 +600,14 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot(int,int)
     def setRowHeight(self, row:int, height: int) -> None:
+        '''
+        Sets the height of the given row.
+
+        :param row: the row
+        :type row: int
+        :param height: its height
+        :type height: int
+        '''
         i = row
         prevPos = self._rowsPos[i-1] if i>0 else -1
         if self._showHSeparators:
@@ -425,10 +636,19 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot(int)
     def resizeRowToContents(self, row:int) -> None:
+        '''
+        Resizes the given row based on the size hints of the delegate used to render each item in the row.
+
+        :param row: the row to be resized
+        :type row: int
+        '''
         self.setRowHeight(row, self._rowContentsSize(row))
 
     @pyTTkSlot()
     def resizeRowsToContents(self) -> None:
+        '''
+        Resizes all rows based on the size hints of the delegate used to render each item in the rows.
+        '''
         rows = self._tableModel.rowCount()
         _d = 1 if self._showHSeparators else 0
         pos = -1
@@ -610,29 +830,43 @@ class TTkTableWidget(TTkAbstractScrollView):
             else:
                 self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
 
-    def _moveCurrentCell(self, dx, dy):
+    def _moveCurrentCell(self, dx, dy, borderStop=True):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
         if self._currentPos:
             row,col = self._currentPos
-            row = max(0,min(row+dy, rows-1))
-            col = max(0,min(col+dx, cols-1))
+            row = row+dy
+            col = col+dx
+            if borderStop:
+                row = max(0,min(row, rows-1))
+                col = max(0,min(col, cols-1))
+            else:
+                if col >= cols: col=0      ; row+=1
+                if col < 0:     col=cols-1 ; row-=1
+                if row >= rows: row=0
+                if row < 0:     row=rows-1
         else:
             row,col = 0,0
         self._currentPos = (row,col)
         self.update()
 
     def keyEvent(self, evt):
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
         if self._currentPos:
             row,col = self._currentPos
         else:
             row,col = 0,0
         if evt.type == TTkK.SpecialKey:
-            if evt.mod==TTkK.NoModifier:
-                if   evt.key == TTkK.Key_Up:    self._moveCurrentCell( 0,-1)
-                elif evt.key == TTkK.Key_Down:  self._moveCurrentCell( 0, 1)
-                elif evt.key == TTkK.Key_Left:  self._moveCurrentCell(-1, 0)
-                elif evt.key == TTkK.Key_Right: self._moveCurrentCell( 1, 0)
+            if evt.key == TTkK.Key_Tab: # Process Next/Prev
+                if   evt.mod == TTkK.NoModifier:    self._moveCurrentCell(dx=+1, dy=0, borderStop=False)
+                elif evt.mod == TTkK.ShiftModifier: self._moveCurrentCell(dx=-1, dy=0, borderStop=False)
+                return True
+            elif evt.mod==TTkK.NoModifier:
+                if   evt.key == TTkK.Key_Up:    self._moveCurrentCell(dx= 0, dy=-1, borderStop=True)
+                elif evt.key == TTkK.Key_Down:  self._moveCurrentCell(dx= 0, dy= 1, borderStop=True)
+                elif evt.key == TTkK.Key_Left:  self._moveCurrentCell(dx=-1, dy= 0, borderStop=True)
+                elif evt.key == TTkK.Key_Right: self._moveCurrentCell(dx= 1, dy= 0, borderStop=True)
                 elif evt.key == TTkK.Key_Enter: self._editCell(row,col,richEditSupport=False)
                 self.update()
             return True
@@ -798,18 +1032,13 @@ class TTkTableWidget(TTkAbstractScrollView):
         return True
 
     def mouseDragEvent(self, evt) -> bool:
-        '''
-        ::
-
-            columnPos       (Selected = 2)
-                0       1        2          3   4
-            ----|-------|--------|----------|---|
-            Mouse (Drag) Pos
-                                    ^
-            I consider at least 4 char (3+1) as spacing
-            Min Selected Pos = (Selected+1) * 4
-
-        '''
+        #     columnPos       (Selected = 2)
+        #         0       1        2          3   4
+        #     ----|-------|--------|----------|---|
+        #     Mouse (Drag) Pos
+        #                             ^
+        #     I consider at least 4 char (3+1) as spacing
+        #     Min Selected Pos = (Selected+1) * 4
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         showVH = self._verticalHeader.isVisible()

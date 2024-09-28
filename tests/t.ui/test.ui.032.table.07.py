@@ -204,6 +204,7 @@ table_model3 = MyTableModel(data_list3)
 # table_model = MyTableModel(data_list, size=(15,10))
 
 table = ttk.TTkTable(parent=splitter, tableModel=table_model1)
+# table = ttk.TTkTable(parent=splitter)
 
 # # set column width to fit contents (set font first!)
 # table.resizeColumnsToContents()

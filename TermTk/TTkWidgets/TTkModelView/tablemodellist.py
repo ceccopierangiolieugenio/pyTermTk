@@ -28,7 +28,7 @@ from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
 class TTkTableModelList(TTkAbstractTableModel):
     __slots__ = ('_list','_listOriginal', '_hheader', '_vheader')
     def __init__(self, *, list=[], header=[], indexes=[]):
-        self._list = self._listOriginal = list
+        self._list = self._listOriginal = list if list else [['']]
         self._hheader = header
         self._vheader = indexes
         super().__init__()
