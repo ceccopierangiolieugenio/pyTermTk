@@ -24,32 +24,18 @@
 __all__ = ['TTkTableWidget','TTkHeaderView']
 
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
-from TermTk.TTkGui.textdocument import TTkTextDocument
-
-from TermTk.TTkWidgets.texedit  import TTkTextEdit, TTkTextEditView
-from TermTk.TTkWidgets.lineedit import TTkLineEdit
+from TermTk.TTkWidgets.texedit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
-from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker, TTkTextDialogPicker
+from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
 from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
-
-class _DefaultTableModel(TTkAbstractTableModel):
-    def __init__(self, **args):
-        super().__init__(**args)
-    def rowCount(self):
-        return 15
-    def columnCount(self):
-        return 10
-    def data(self, row, col):
-        return f"{row}x{col}"
 
 class TTkHeaderView():
     '''TTkHeaderView
@@ -79,25 +65,6 @@ class TTkHeaderView():
 
     def isVisible(self) -> bool:
         return self._visible
-
-class _TTkTextEditViewCustom(TTkTextEditView):
-    __slots__ = ('enterPressed')
-    def __init__(self, **kwargs):
-        self.enterPressed = pyTTkSignal(bool)
-        super().__init__(**kwargs)
-
-    def keyEvent(self, evt):
-        if ( evt.type == TTkK.SpecialKey and
-             evt.mod==TTkK.NoModifier and
-             evt.key == TTkK.Key_Enter ):
-            self.enterPressed.emit(True)
-            return True
-        elif ( evt.type == TTkK.SpecialKey and
-             evt.mod==TTkK.ControlModifier|TTkK.AltModifier and
-             evt.key == TTkK.Key_M ):
-            evt.mod = TTkK.NoModifier
-            evt.key = TTkK.Key_Enter
-        return super().keyEvent(evt)
 
 class TTkTableWidget(TTkAbstractScrollView):
     '''TTkTableWidget
@@ -691,7 +658,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         return row,col
 
     def _editStr(self, x,y,w,h, row, col, data):
-        _tev = _TTkTextEditViewCustom()
         _te = TTkTextEdit(
                     parent=self, pos=(x, y), size=(w,h),
                     readOnly=False, wrapMode=TTkK.NoWrap)
