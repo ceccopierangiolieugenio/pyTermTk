@@ -123,7 +123,7 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     The :class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
 
-    :class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :class:`TTkAbstractTableModel` class.
+    :class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` class.
 
     **Navigation**
 
@@ -370,6 +370,7 @@ class TTkTableWidget(TTkAbstractScrollView):
     def selectRow(self, row:int) -> None:
         '''
         Selects the given row in the table view
+
         :param row: the row to be selected
         :type row: int
         '''
@@ -380,6 +381,7 @@ class TTkTableWidget(TTkAbstractScrollView):
     def selectColumn(self, column:int) -> None:
         '''
         Selects the given column in the table view
+
         :param column: the column to be selected
         :type column: int
         '''
