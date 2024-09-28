@@ -876,6 +876,20 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if   evt.mod == TTkK.NoModifier:    self._moveCurrentCell(dx=+1, dy=0, borderStop=False)
                 elif evt.mod == TTkK.ShiftModifier: self._moveCurrentCell(dx=-1, dy=0, borderStop=False)
                 return True
+            elif evt.key == TTkK.Key_PageDown:
+                _,h = self.size()
+                rp=self._rowsPos[row]
+                for dy,rh in enumerate(self._rowsPos[row:]):
+                    if rh-rp >= h: break
+                self._moveCurrentCell(dx=0, dy=dy, borderStop=True)
+            elif evt.key == TTkK.Key_PageUp:
+                _,h = self.size()
+                rp=self._rowsPos[row]
+                for dy,rh in enumerate(self._rowsPos[row::-1]):
+                    if rp-rh >= h: break
+                self._moveCurrentCell(dx=0, dy=-dy, borderStop=True)
+            elif evt.key == TTkK.Key_Home: self._moveCurrentCell(dx=-col, dy=0, borderStop=True)
+            elif evt.key == TTkK.Key_End:  self._moveCurrentCell(dx=cols, dy=0, borderStop=True)
             elif evt.mod==TTkK.NoModifier:
                 if   evt.key == TTkK.Key_Up:    self._moveCurrentCell(dx= 0, dy=-1, borderStop=True)
                 elif evt.key == TTkK.Key_Down:  self._moveCurrentCell(dx= 0, dy= 1, borderStop=True)
