@@ -67,7 +67,8 @@ class TTkHeaderView():
         return self._visible
 
 class TTkTableWidget(TTkAbstractScrollView):
-    '''TTkTableWidget
+    '''
+    A :class:`TTkTableWidget` implements a table view that displays items from a model.
 
     ::
 
@@ -84,9 +85,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         ╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
         6  │2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                    │Chavezborough       │
         ╾╌╌┴────────────────┴───────────┴────────────┴────────────────────────────────┴────────────────────┘
-
-
-    A :class:`TTkTableWidget` implements a table view that displays items from a model.
 
     The :class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
 

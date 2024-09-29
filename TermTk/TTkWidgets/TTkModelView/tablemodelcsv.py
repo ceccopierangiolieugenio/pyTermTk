@@ -28,34 +28,34 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
 class TTkTableModelCSV(TTkTableModelList):
-    def __init__(self, *, filename='', fd=None):
-        ml, head, idx = [[]], [], []
+    def __init__(self, *, filename=None, fd=None):
+        data, head, idx = [[]], [], []
         if filename:
             with open(filename, "r") as fd:
-                ml, head, idx = self._csvImport(fd)
+                data, head, idx = self._csvImport(fd)
         elif fd:
-            ml, head, idx = self._csvImport(fd)
-        super().__init__(list=ml,header=head,indexes=idx)
+            data, head, idx = self._csvImport(fd)
+        super().__init__(data=data,header=head,indexes=idx)
 
     def _csvImport(self, fd) -> tuple[list,list,list[list]]:
-        ml, head, idx = [], [], []
+        data, head, idx = [], [], []
         sniffer = csv.Sniffer()
         has_header = sniffer.has_header(fd.read(2048))
         fd.seek(0)
         csvreader = csv.reader(fd)
         for row in csvreader:
-            ml.append(row)
+            data.append(row)
         if has_header:
-            head = ml.pop(0)
+            head = data.pop(0)
         # check if the first column include an index:
-        if self._checkIndexColumn(ml):
+        if self._checkIndexColumn(data):
             head.pop(0)
-            for l in ml:
+            for l in data:
                 idx.append(l.pop(0))
-        return ml, head, idx
+        return data, head, idx
 
-    def _checkIndexColumn(self, ml:list[list]) -> bool:
-        if all(l[0].isdigit() for l in ml):
-            num = int(ml[0][0])
-            return all(num+i==int(l[0]) for i,l in enumerate(ml))
+    def _checkIndexColumn(self, data:list[list]) -> bool:
+        if all(l[0].isdigit() for l in data):
+            num = int(data[0][0])
+            return all(num+i==int(l[0]) for i,l in enumerate(data))
         return False

@@ -123,7 +123,7 @@ class CustomColorModifier(ttk.TTkAlternateColor):
 class MyTableModel(ttk.TTkTableModelList):
     def __init__(self, mylist, size=None):
         self.size=size
-        super().__init__(list=mylist)
+        super().__init__(data=mylist)
 
     def rowCount(self):        return super().rowCount()    if not self.size else self.size[0]
     def columnCount(self):     return super().columnCount() if not self.size else self.size[1]

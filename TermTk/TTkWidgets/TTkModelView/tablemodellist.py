@@ -26,31 +26,44 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
 
 class TTkTableModelList(TTkAbstractTableModel):
-    __slots__ = ('_list','_listOriginal', '_hheader', '_vheader')
-    def __init__(self, *, list=[], header=[], indexes=[]):
-        self._list = self._listOriginal = list if list else [['']]
+    '''
+    :class:`TTkTableModelList` extends :class:`¬TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`,
+    including a basic model with a 2d list data structure
+
+    :param data: the 2D List model for the view to present.
+    :type data: list[list]
+
+    :param header: the header labels, defaults to the column number.
+    :type header: list[str], optional.
+
+    :param indexes: the index labels, defaults to the line number.
+    :type indexes: list[str], optional.
+    '''
+    __slots__ = ('_data','_dataOriginal', '_hheader', '_vheader')
+    def __init__(self, *, data=[], header=[], indexes=[]):
+        self._data = self._dataOriginal = data if data else [['']]
         self._hheader = header
         self._vheader = indexes
         super().__init__()
 
     def modelList(self) -> list[list]:
-        return self._list
+        return self._data
 
     def setModelList(self, modelList:list[list]) -> None:
-        if modelList == self._list: return
-        self._list = modelList
+        if modelList == self._data: return
+        self._data = modelList
 
     def rowCount(self) -> int:
-        return len(self._list)
+        return len(self._data)
 
     def columnCount(self) -> int:
-        return len(self._list[0]) if self._list else 0
+        return len(self._data[0]) if self._data else 0
 
     def data(self, row:int, col:int) -> None:
-        return self._list[row][col]
+        return self._data[row][col]
 
     def setData(self, row:int, col:int, data:object) -> None:
-        self._list[row][col] = data
+        self._data[row][col] = data
 
     def headerData(self, num:int, orientation:int):
         if orientation == TTkK.HORIZONTAL:
@@ -63,9 +76,9 @@ class TTkTableModelList(TTkAbstractTableModel):
 
     def sort(self, column:int, order:TTkK.SortOrder) -> None:
         if column == -1:
-            self._list = self._listOriginal
+            self._data = self._dataOriginal
         else:
             try:
-                self._list = sorted(self._listOriginal, key=lambda x:x[column],     reverse=order==TTkK.SortOrder.DescendingOrder)
+                self._data = sorted(self._dataOriginal, key=lambda x:x[column],     reverse=order==TTkK.SortOrder.DescendingOrder)
             except TypeError as _:
-                self._list = sorted(self._listOriginal, key=lambda x:str(x[column]), reverse=order==TTkK.SortOrder.DescendingOrder)
+                self._data = sorted(self._dataOriginal, key=lambda x:str(x[column]), reverse=order==TTkK.SortOrder.DescendingOrder)

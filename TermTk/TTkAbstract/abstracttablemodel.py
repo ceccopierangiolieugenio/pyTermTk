@@ -27,7 +27,38 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 class TTkAbstractTableModel():
-    '''TTkAbstractTableModel'''
+    '''
+    :class:`TTkAbstractTableModel` provides a standard interface for
+    models that represent their data as a two-dimensional array of items.
+    It is not used directly, but must be subclassed.
+
+    Since the model provides a more specialized interface than QAbstractItemModel,
+    it is not suitable for use with tree views, although it can be used to provide data to a QListView.
+    If you need to represent a simple list of items, and only need a model to contain a single column of data,
+    subclassing the QAbstractListModel may be more appropriate.
+
+    The rowCount() and columnCount() functions return the dimensions of the table.
+    To retrieve a model index corresponding to an item in the model,
+    use index() and provide only the row and column numbers.
+
+    **Subclassing**
+
+    When subclassing QAbstractTableModel, you must implement :meth:`rowCount`, :meth:`columnCount`, and :meth:`data`.
+    Well behaved models will also implement :meth:`headerData`.
+
+    Editable models need to implement :meth:`setData`.
+
+    Models that provide interfaces to resizable data structures can provide implementations of
+    insertRows(), removeRows(), insertColumns(), and removeColumns().
+
+    **Built-In Implementation**
+
+    :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` basic subclass implementing a 2d list as data structure
+
+    :class:`~TermTk.TTkWidgets.TTkModelView.tablemodelcsv.TTkTableModelCSV` subclass of :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` including the api to import csv data
+
+    :class:`~TermTk.TTkWidgets.TTkModelView.tablemodeljson.TTkTableModelJson` subclass of :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` with a focus on json data structures
+    '''
     __slots__ = (
         # Signals
         'dataChanged'
@@ -42,7 +73,7 @@ class TTkAbstractTableModel():
         raise NotImplementedError()
 
     def data(self, row:int, col:int) -> object:
-        return TTkString()
+        raise NotImplementedError()
 
     def ttkStringData(self, row:int, col:int) -> TTkString:
         data = self.data(row,col)
