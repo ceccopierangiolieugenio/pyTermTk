@@ -27,20 +27,22 @@ from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
 
 class TTkTableModelList(TTkAbstractTableModel):
     '''
-    :class:`TTkTableModelList` extends :class:`¬TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`,
+    :class:`TTkTableModelList` extends :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`,
     including a basic model with a 2d list data structure
 
     :param data: the 2D List model for the view to present.
     :type data: list[list]
 
     :param header: the header labels, defaults to the column number.
-    :type header: list[str], optional.
+    :type header: list[str], optional
 
     :param indexes: the index labels, defaults to the line number.
-    :type indexes: list[str], optional.
+    :type indexes: list[str], optional
     '''
+
     __slots__ = ('_data','_dataOriginal', '_hheader', '_vheader')
-    def __init__(self, *, data=[], header=[], indexes=[]):
+
+    def __init__(self, *, data:list[list[object]]=[], header:list[str]=[], indexes:list[str]=[]) -> None:
         self._data = self._dataOriginal = data if data else [['']]
         self._hheader = header
         self._vheader = indexes
@@ -64,6 +66,8 @@ class TTkTableModelList(TTkAbstractTableModel):
 
     def setData(self, row:int, col:int, data:object) -> None:
         self._data[row][col] = data
+        self.dataChanged.emit((row,col),(1,1))
+        return True
 
     def headerData(self, num:int, orientation:int):
         if orientation == TTkK.HORIZONTAL:

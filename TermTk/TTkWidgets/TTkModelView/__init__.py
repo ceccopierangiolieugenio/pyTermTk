@@ -9,4 +9,3 @@ from .tablewidget         import *
 from .tablewidgetitem     import *
 from .tablemodellist      import *
 from .tablemodelcsv       import *
-from .tablemodeljson      import *

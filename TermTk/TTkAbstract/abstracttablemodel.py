@@ -32,24 +32,17 @@ class TTkAbstractTableModel():
     models that represent their data as a two-dimensional array of items.
     It is not used directly, but must be subclassed.
 
-    Since the model provides a more specialized interface than QAbstractItemModel,
-    it is not suitable for use with tree views, although it can be used to provide data to a QListView.
-    If you need to represent a simple list of items, and only need a model to contain a single column of data,
-    subclassing the QAbstractListModel may be more appropriate.
+    Since the model provides a more specialized interface than :class:`~TermTk.TTkAbstract.abstractitemmodel.TTkAbstractItemModel`,
+    it is not suitable for use with tree views.
 
-    The rowCount() and columnCount() functions return the dimensions of the table.
-    To retrieve a model index corresponding to an item in the model,
-    use index() and provide only the row and column numbers.
+    The :meth:`rowCount` and :meth:`columnCount` functions return the dimensions of the table.
 
     **Subclassing**
 
-    When subclassing QAbstractTableModel, you must implement :meth:`rowCount`, :meth:`columnCount`, and :meth:`data`.
+    When subclassing :class:`TTkAbstractTableModel`, you must implement :meth:`rowCount`, :meth:`columnCount`, and :meth:`data`.
     Well behaved models will also implement :meth:`headerData`.
 
     Editable models need to implement :meth:`setData`.
-
-    Models that provide interfaces to resizable data structures can provide implementations of
-    insertRows(), removeRows(), insertColumns(), and removeColumns().
 
     **Built-In Implementation**
 
@@ -57,25 +50,76 @@ class TTkAbstractTableModel():
 
     :class:`~TermTk.TTkWidgets.TTkModelView.tablemodelcsv.TTkTableModelCSV` subclass of :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` including the api to import csv data
 
-    :class:`~TermTk.TTkWidgets.TTkModelView.tablemodeljson.TTkTableModelJson` subclass of :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` with a focus on json data structures
-    '''
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: dataChanged(pos,size)
+            :signal:
+
+            This signal is emitted whenever the data in an existing item changes.
+
+            If more items are affected, the pos/size definne the minimum area including all of those changes.
+
+            When reimplementing the :meth:`setData` function, this signal must be emitted explicitly.
+
+            :param pos: the topLeft margin of the modified area
+            :type pos: tuple(int,int)
+
+            :param size: the size of the modified area
+            :type size: tuple(int,int)
+            '''
     __slots__ = (
         # Signals
         'dataChanged'
     )
     def __init__(self):
-        self.dataChanged = pyTTkSignal()
+        self.dataChanged = pyTTkSignal(tuple[int,int],tuple[int,int])
 
     def rowCount(self) -> int:
+        '''
+        Returns the number of rows of the current model.
+
+        :return: int
+        '''
         raise NotImplementedError()
 
     def columnCount(self) -> int:
+        '''
+        Returns the number of columns of the current moodel.
+
+        :return: int
+        '''
         raise NotImplementedError()
 
     def data(self, row:int, col:int) -> object:
+        '''
+        Returns the data stored for the item referred to by the row/column.
+
+        Note: If you do not have a value to return, return *None* instead of returning 0.
+
+        :return: object
+        '''
         raise NotImplementedError()
 
+    def setData(self, row:int, col:int, data:object) -> bool:
+        '''
+        Returns true if successful; otherwise returns false.
+
+        The :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.dataChanged` signal should be emitted if the data was successfully set.
+
+        The base class implementation returns false. This function and :meth:`data` must be reimplemented for editable models.
+
+        :return: bool
+        '''
+        return False
+
     def ttkStringData(self, row:int, col:int) -> TTkString:
+        '''
+        Returns the :class:`~TermTk.TTkCore.string.TTkString` reprsents the ddata stored in the row/column.
+
+        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
         data = self.data(row,col)
         if isinstance(data,TTkString):
             return data
@@ -84,10 +128,20 @@ class TTkAbstractTableModel():
         else:
             return TTkString(str(data))
 
-    def setData(self, row:int, col:int, data:object):
-        raise NotImplementedError()
-
     def headerData(self, pos:int, orientation:TTkK.Direction) -> TTkString:
+        '''
+        Returns the data for the given role and section in the header with the specified orientation.
+
+        For horizontal headers, the section number corresponds to the column number.
+        Similarly, for vertical headers, the section number corresponds to the row number.
+
+        :param pos: the position (col or row) of the header
+        :type pos: tuple(int,int)
+        :param orientation: the orienttin of the header to be retrieved
+        :type orientation: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+
+        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        '''
         if orientation==TTkK.HORIZONTAL:
             return TTkString(str(pos))
         elif orientation==TTkK.VERTICAL:

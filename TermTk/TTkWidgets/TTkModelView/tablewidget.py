@@ -130,7 +130,6 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     :param dataPadding: the right column padding, defaults to 1
     :type dataPadding: int, optional
-
     '''
 
     classStyle = {
