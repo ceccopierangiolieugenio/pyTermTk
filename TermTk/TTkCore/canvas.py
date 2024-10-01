@@ -674,6 +674,7 @@ class TTkCanvas:
     def toAnsi(self):
         # TTkLog.debug("pushToTerminal")
         ret = ""
+        rstColor = str(TTkColor.RST)
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
             ansi = str(lastcolor)
@@ -684,7 +685,10 @@ class TTkCanvas:
                     ansi += str(color-lastcolor)
                     lastcolor = color
                 ansi+=ch
-            ret += ansi + '\n'
+            if lastcolor != TTkColor.RST:
+                ret += ansi + rstColor + '\n'
+            else:
+                ret += ansi + '\n'
         return ret
 
     def pushToTerminal(self, x, y, w, h):
