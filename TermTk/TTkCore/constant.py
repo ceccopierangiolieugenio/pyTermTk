@@ -174,7 +174,7 @@ class TTkConstant:
     DontShowIndicator              = ChildIndicatorPolicy.DontShowIndicator
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
-    class SortOrder():
+    class SortOrder(int):
         '''This enum describes how the items in a widget are sorted.
 
         .. autosummary::
@@ -855,7 +855,7 @@ class TTkConstant:
     Key_Dead_e                  = 0x01001282
     Key_Dead_E                  = 0x01001283
     Key_Dead_i                  = 0x01001284
-    Key_Dead_I                  = 0x01001285
+    Key_Dead_I                  = 0x01001285dd3e612f3ca6f9971b2aa0f5e622e21244da98ff
     Key_Dead_o                  = 0x01001286
     Key_Dead_O                  = 0x01001287
     Key_Dead_u                  = 0x01001288
