@@ -491,6 +491,8 @@ class TTkColor(_TTkColor):
         :type color: str
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
+
+        :return: :class:`TTkColor`
         '''
         mod = kwargs.get('modifier', None )
         link = kwargs.get('link', '' )
@@ -516,6 +518,8 @@ class TTkColor(_TTkColor):
         :type color: str
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
+
+        :return: :class:`TTkColor`
         '''
         mod = kwargs.get('modifier', None )
         link = kwargs.get('link', '' )
@@ -525,6 +529,7 @@ class TTkColor(_TTkColor):
             color = kwargs.get('color', "" )
         return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
 
+    @staticmethod
     def fgbg(fg:str='', bg:str='', link:str='', modifier:_TTkColorModifier=None):
         ''' Helper to generate a Background color
 
@@ -542,6 +547,8 @@ class TTkColor(_TTkColor):
         :type bg: str
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
+
+        :return: :class:`TTkColor`
         '''
         return TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier, link=link)
 

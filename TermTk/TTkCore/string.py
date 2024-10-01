@@ -62,7 +62,7 @@ class TTkString():
 
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
 
-    def __init__(self, text="", color=None):
+    def __init__(self, text:str="", color:TTkColor=None) -> None:
         if issubclass(type(text), TTkString):
             self._text      = text._text
             self._colors    = text._colors if color is None else [color]*len(self._text)

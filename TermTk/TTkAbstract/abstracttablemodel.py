@@ -97,6 +97,11 @@ class TTkAbstractTableModel():
         Returns the data stored for the item referred to by the row/column.
 
         Note: If you do not have a value to return, return *None* instead of returning 0.
+        :param row: the row position od the data
+
+        :type row: int
+        :param col: the column position of the data
+        :type col: int
 
         :return: object
         '''
@@ -109,6 +114,13 @@ class TTkAbstractTableModel():
         The :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.dataChanged` signal should be emitted if the data was successfully set.
 
         The base class implementation returns false. This function and :meth:`data` must be reimplemented for editable models.
+
+        :param row: the row position od the data
+        :type row: int
+        :param col: the column position of the data
+        :type col: int
+        :param data: the data to be set in the (row,col) position of the table
+        :type data: object
 
         :return: bool
         '''
@@ -136,7 +148,7 @@ class TTkAbstractTableModel():
         Similarly, for vertical headers, the section number corresponds to the row number.
 
         :param pos: the position (col or row) of the header
-        :type pos: tuple(int,int)
+        :type pos: int
         :param orientation: the orienttin of the header to be retrieved
         :type orientation: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
 
@@ -148,5 +160,13 @@ class TTkAbstractTableModel():
             return TTkString(str(pos))
         return TTkString()
 
-    def sort(self, col:int, order) -> None:
+    def sort(self, column:int, order:TTkK.SortOrder) -> None:
+        '''
+        Sorts the model by column in the given order.
+
+        :param column: The column index to be sorted, if -1 is provided the original unsorted order is used.
+        :type column: int
+        :param order: the sorting order
+        :type order: :class:`~TermTk.TTkCore.constant.TTkConstant.SortOrder`
+        '''
         pass

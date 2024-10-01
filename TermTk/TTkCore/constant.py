@@ -78,7 +78,12 @@ class TTkConstant:
     TIME_EVENT   = 0x10
 
     class Direction(int):
-        '''This class type is used to describe the direction'''
+        '''This class type is used to describe the direction
+
+        .. autosummary::
+          HORIZONTAL
+          VERTICAL
+        '''
         HORIZONTAL = 0x01 + 0x02
         '''Horizontal direction'''
         VERTICAL   = 0x04 + 0x08
@@ -105,8 +110,11 @@ class TTkConstant:
           Checked
         '''
         Unchecked        = 0x00
+        '''The item is unchecked.'''
         PartiallyChecked = 0x01
+        '''The item is partially checked. Items in hierarchical models may be partially checked if some, but not all, of their children are checked.'''
         Checked          = 0x02
+        '''The item is checked.'''
 
     Unchecked        = CheckState.Unchecked
     PartiallyChecked = CheckState.PartiallyChecked
@@ -114,6 +122,11 @@ class TTkConstant:
 
     class InsertPolicy(int):
         '''Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.
+
+        .. autosummary::
+          NoInsert
+          InsertAtTop
+          InsertAtBottom
         '''
         NoInsert               = 0x00
         '''The string will not be inserted into the combobox.'''
@@ -131,7 +144,14 @@ class TTkConstant:
         # '''The string is inserted in the alphabetic order in the combobox.'''
 
     class DragDropMode(int):
-        '''Specifies the Drag and Drop mode allowed by this widget'''
+        '''Specifies the Drag and Drop mode allowed by this widget
+
+        .. autosummary::
+          NoDragDrop
+          AllowDrag
+          AllowDrop
+          AllowDragDrop
+        '''
         NoDragDrop = 0x00
         '''No Drag and Drop is allowed'''
         AllowDrag  = 0x01
@@ -155,7 +175,12 @@ class TTkConstant:
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
     class SortOrder():
-        '''This enum describes how the items in a widget are sorted.'''
+        '''This enum describes how the items in a widget are sorted.
+
+        .. autosummary::
+          AscendingOrder
+          DescendingOrder
+        '''
         AscendingOrder  = 0x00
         '''The items are sorted ascending e.g. starts with 'AAA' ends with 'ZZZ' in Latin-1 locales'''
         DescendingOrder = 0x01
@@ -177,6 +202,15 @@ class TTkConstant:
         '''Input Mouse Key
 
         Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
+
+        .. autosummary::
+          NoButton
+          AllButtons
+          LeftButton
+          RightButton
+          MidButton
+          MiddleButton
+          Wheel
         '''
         NoButton      = 0x00000000
         '''The button state does not refer to any button.'''
@@ -202,7 +236,13 @@ class TTkConstant:
     Wheel         = MouseKey.Wheel
 
     class WrapMode(int):
-        '''Those constants describes how text is wrapped in a document.'''
+        '''Those constants describes how text is wrapped in a document.
+
+        .. autosummary::
+          WordWrap
+          WrapAnywhere
+          WrapAtWordBoundaryOrAnywhere
+        '''
         # NoWrap        = 0x00
         # '''Text is not wrapped at all.'''
         WordWrap      = 0x01
@@ -221,9 +261,19 @@ class TTkConstant:
     WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
 
     class LineWrapMode(int):
+        '''Those constants describes which wrapping status is required in the document
+
+        .. autosummary::
+          NoWrapk
+          WidgetWidthk
+          FixedWidthk
+        '''
         NoWrap       =  0x00
+        '''No Wrapping is applied'''
         WidgetWidth  =  0x01
+        '''Wrapping around the Widget width'''
         FixedWidth   =  0x03
+        '''Wrapping around a fixed width'''
 
     NoWrap      = LineWrapMode.NoWrap
     WidgetWidth = LineWrapMode.WidgetWidth
@@ -235,6 +285,15 @@ class TTkConstant:
         '''Input Mouse Event
 
         Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
+
+        .. autosummary::
+          NoEvent
+          Press
+          Release
+          Drag
+          Move
+          WHEEL_Up
+          WHEEL_Down
         '''
         NoEvent    = 0x00000000
         Press      = 0x00010000
@@ -294,7 +353,13 @@ class TTkConstant:
     JUSTIFY      = Alignment.JUSTIFY
 
     class FileMode(int):
-        '''FileMode'''
+        '''FileMode
+
+        .. autosummary::
+          AnyFile
+          ExistingFile
+          Directory
+        '''
         AnyFile        = 0
         '''The name of a file, whether it exists or not.'''
         ExistingFile   = 1
@@ -309,14 +374,33 @@ class TTkConstant:
     # ExistingFiles = FileMode.ExistingFiles
 
     class AcceptMode(int):
-        '''AcceptMode'''
+        '''AcceptMode
+
+        .. autosummary::
+          AcceptOpen
+          AcceptSave
+        '''
         AcceptOpen	= 0
         '''Open'''
         AcceptSave	= 1
         '''Save'''
 
     class TTkItemSelectionModel(int):
-        '''These values describes the way the selection model will be updated.'''
+        '''These values describes the way the selection model will be updated.
+
+        .. autosummary::
+          NoUpdate
+          Clear
+          Select
+          Deselect
+          Toggle
+          Current
+          Rows
+          Columns
+          SelectCurrent
+          ToggleCurrent
+          ClearAndSelect
+        '''
         NoUpdate = 0x0000
         '''No selection will be made.'''
         Clear    = 0x0001
@@ -342,7 +426,12 @@ class TTkConstant:
 
     # LayoutItem Types
     class LayoutItemTypes(int):
-        '''Types used internally in :mod:`~TermTk.TTkLayouts`'''
+        '''Types used internally in :mod:`~TermTk.TTkLayouts`
+
+        .. autosummary::
+          LayoutItem
+          WidgetItem
+        '''
         LayoutItem = 0x01
         '''Item Type Layout'''
         WidgetItem = 0x02
@@ -353,6 +442,16 @@ class TTkConstant:
     WidgetItem = LayoutItemTypes.WidgetItem
 
     class WindowFlag(int):
+        '''
+        Those flags are used to enable customization of the window controls.
+
+        .. autosummary::
+          WindowReduceButtonHint
+          WindowMinimizeButtonHint
+          WindowMaximizeButtonHint
+          WindowMinMaxButtonsHint
+          WindowCloseButtonHint
+        '''
         # FramelessWindowHint         = 0x00000800
         # ''' Produces a borderless window.'''
         # CustomizeWindowHint         = 0x02000000
@@ -384,6 +483,10 @@ class TTkConstant:
         '''Input Key Types
 
         Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
+
+        .. autosummary::
+          Character
+          SpecialKey
         '''
         Character  = 0x0001
         '''Input Char Key'''
@@ -398,6 +501,19 @@ class TTkConstant:
         '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
 
         Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
+
+        .. autosummary::
+          NoModifier
+          ShiftModifier
+          ControlModifier
+          AltModifier
+          MetaModifier
+          KeypadModifier
+          GroupSwitchModifier
+          SHIFT
+          META
+          CTRL
+          ALT
         '''
         NoModifier          = 0x00000000
         '''No modifier key is pressed.'''
@@ -437,9 +553,17 @@ class TTkConstant:
     ALT   = KeyModifier.ALT
 
     class ShortcutContext(int):
-        '''For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,
-           the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
-           The possible contexts are these:'''
+        '''
+        For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,
+        the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
+        The possible contexts are these:
+
+        .. autosummary::
+          WidgetShortcut
+          WidgetWithChildrenShortcut
+          WindowShortcut
+          ApplicationShortcut
+        '''
         WidgetShortcut             = 0x00
         '''The shortcut is active when its parent widget has focus.'''
         WidgetWithChildrenShortcut = 0x03
