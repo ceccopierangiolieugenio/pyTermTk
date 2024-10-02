@@ -187,7 +187,14 @@ data_list3 = [
                  for x in range(30)]
 
 
-root = ttk.TTk(title="pyTermTk Table Demo", mouseTrack=mouseTrack)
+root = ttk.TTk(title="pyTermTk Table Demo",
+               mouseTrack=mouseTrack,
+               sigmask=(
+                    # ttk.TTkTerm.Sigmask.CTRL_Q |
+                    # ttk.TTkTerm.Sigmask.CTRL_S |
+                    # ttk.TTkTerm.Sigmask.CTRL_C |
+                    ttk.TTkTerm.Sigmask.CTRL_Z ))
+
 if fullScreen:
     rootTable = root
     root.setLayout(ttk.TTkGridLayout())
