@@ -31,6 +31,8 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
+from TermTk.TTkGui.clipboard import TTkClipboard
+
 from TermTk.TTkWidgets.texedit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
@@ -67,6 +69,32 @@ class TTkHeaderView():
 
     def isVisible(self) -> bool:
         return self._visible
+
+class _ClipboardTable(TTkString):
+    __slots__=('_data')
+    def __init__(self,data) -> None:
+        self._data = data
+        super().__init__(self._toTTkString())
+
+    def _toTTkString(self) -> str:
+        def _lineHeight(_line):
+            return max(len(str(_item[2]).split('\n')) for _item in _line)
+        ret  = []
+        minx,maxx = min(_a:=[_item[1] for _line in self._data for _item in _line]),max(_a)
+        # miny,maxy = min(_a:=[x[0][0] for x in self._data]),max(_a)
+        cols = maxx-minx+1
+        colSizes=[0]*cols
+        for line in self._data:
+            height = _lineHeight(line)
+            baseStr = TTkString()
+            retLines = [[baseStr]*cols for _ in range(height)]
+            for c,item in enumerate(line):
+                row,col,data = item
+                for r,txt in enumerate(TTkString(data).split('\n')):
+                    colSizes[col-minx] = max(colSizes[col-minx],txt.termWidth())
+                    retLines[r][col-minx] = TTkString(txt)
+            ret += retLines
+        return TTkString('\n').join(TTkString(' ').join(s.align(width=colSizes[c]) for c,s in enumerate(l)) for l in ret)
 
 class TTkTableWidget(TTkAbstractScrollView):
     '''
@@ -154,6 +182,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             }
 
     __slots__ = ( '_tableModel',
+                  '_clipboard',
                   '_vHeaderSize', '_hHeaderSize',
                   '_showVSeparators', '_showHSeparators',
                   '_verticalHeader', '_horizontallHeader',
@@ -186,6 +215,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._fastCheck = True
         self._guessDataEdit = True
 
+        self._clipboard = TTkClipboard()
         self._snapshot = []
         self._snapshotId = 0
         self._dataPadding = dataPadding
@@ -249,6 +279,58 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._restoreSnapshot(self._snapshotId, newData=True)
         self._snapshotId+=1
         self.update()
+
+    @pyTTkSlot()
+    def copy(self) -> None:
+        # TBD
+        data = []
+        for row,line in enumerate(self._selected):
+            dataLine = []
+            for col,x in enumerate(line):
+                if x:
+                    dataLine.append((row,col,self._tableModel.data(row,col)))
+            if dataLine:
+                data.append(dataLine)
+        clip = _ClipboardTable(data)
+        # str(clip)
+        self._clipboard.setText(clip)
+
+    @pyTTkSlot()
+    def cut(self) -> None:
+        # TBD
+        return
+        if not self._textCursor.hasSelection():
+            self._textCursor.movePosition(moveMode=TTkTextCursor.MoveAnchor, operation=TTkTextCursor.StartOfLine)
+            self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.EndOfLine)
+            self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.Right)
+        self.copy()
+        self._textCursor.removeSelectedText()
+
+    @pyTTkSlot()
+    def paste(self) -> None:
+        # TBD
+        return
+        txt = self._clipboard.text()
+        self.pasteEvent(txt)
+
+    def pasteEvent(self, data:object):
+        # TBD
+        return
+        txt = TTkString(txt)
+        if not self._multiLine:
+            txt = TTkString().join(txt.split('\n'))
+        if self._replace:
+            self._textCursor.replaceText(txt, moveCursor=True)
+        else:
+            self._textCursor.insertText(txt, moveCursor=True)
+        # Scroll to align to the cursor
+        p = self._textCursor.position()
+        cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
+        self._updateSize()
+        self._scrolToInclude(cx,cy)
+        self._pushCursor()
+        self.update()
+        return True
 
     def _tableModel_setData(self, row:int,col:int,data:object):
         # this is a helper to keep a snapshot copy if the data change
@@ -882,14 +964,14 @@ class TTkTableWidget(TTkAbstractScrollView):
             row,col = 0,0
         if evt.type == TTkK.SpecialKey:
             if evt.mod==TTkK.ControlModifier:
-                if evt.key == TTkK.Key_Z:
-                    self.undo()
-                elif evt.key == TTkK.Key_Y:
-                    self.redo()
+                if   evt.key == TTkK.Key_Z:  self.undo()
+                elif evt.key == TTkK.Key_Y:  self.redo()
+                elif evt.key == TTkK.Key_C:  self.copy()
+                elif evt.key == TTkK.Key_V:  self.paste()
+                elif evt.key == TTkK.Key_X:  self.cut()
             elif evt.key == TTkK.Key_Tab: # Process Next/Prev
                 if   evt.mod == TTkK.NoModifier:    self._moveCurrentCell(col=col+1, row=row, borderStop=False)
                 elif evt.mod == TTkK.ShiftModifier: self._moveCurrentCell(col=col-1, row=row, borderStop=False)
-                return True
             elif evt.key == TTkK.Key_PageDown:
                 _,h = self.size()
                 rp=self._rowsPos[row]

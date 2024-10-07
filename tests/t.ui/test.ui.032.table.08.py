@@ -150,7 +150,10 @@ p2 = 2
 p3 = 2
 p4 = 2
 
-data_list1 = [
+data_list1 = [[f"{y:03}\npippo\npeppo-ooo"]+[str(x) for x in range(10) ] for y in range(20)]
+data_list1[3][3] = "abc\ndef\nghi\njkl"
+
+data_list2 = [
     [f"{x:04}"]+
     [txt1,txt2,txt3,txt4,txt5]+
     [random.choice(tiles*p1+images*p2+[txt1,txt2]*p3+[123,234,345,567,890,123.001,234.02,345.3,567.04,890.01020304,1]*p4)]+
@@ -162,7 +165,7 @@ data_list1 = [
     [y+0.123 for y in range(10)]
                  for x in range(5000)]
 
-data_list2 = [
+data_list3 = [
     [txt1,txt2,txt3]+
     [random.choice(tiles*p1)]+
     [random.choice(tiles*p1)]+
@@ -174,7 +177,7 @@ data_list2 = [
     [y+0.123 for y in range(10)]
                  for x in range(1000)]
 
-data_list3 = [
+data_list4 = [
     [random.choice(tiles*p1)]+
     [random.choice(tiles*p1)]+
     [random.choice(tiles*p1)]+
@@ -203,9 +206,12 @@ else:
 
 splitter = ttk.TTkSplitter(parent=rootTable,orientation=ttk.TTkK.VERTICAL)
 
+
+
 table_model1 = MyTableModel(data_list1)
 table_model2 = MyTableModel(data_list2)
 table_model3 = MyTableModel(data_list3)
+table_model4 = MyTableModel(data_list3)
 # table_model = MyTableModel(data_list, size=(15,10))
 
 table = ttk.TTkTable(parent=splitter, tableModel=table_model1)
@@ -284,13 +290,15 @@ t5.clicked.connect(lambda : table.mergeStyle(tableStyle5))
 
 
 # Model Picker
-m1 = ttk.TTkRadioButton(parent=controls, pos=(36,1), size=(11,1), text=' Model 1', radiogroup='Models', checked=True)
-m2 = ttk.TTkRadioButton(parent=controls, pos=(36,2), size=(11,1), text=' Model 2', radiogroup='Models')
-m3 = ttk.TTkRadioButton(parent=controls, pos=(36,3), size=(11,1), text=' Model 3', radiogroup='Models')
+m1 = ttk.TTkRadioButton(parent=controls, pos=(36,0), size=(11,1), text=' Model 1', radiogroup='Models', checked=True)
+m2 = ttk.TTkRadioButton(parent=controls, pos=(36,1), size=(11,1), text=' Model 2', radiogroup='Models')
+m3 = ttk.TTkRadioButton(parent=controls, pos=(36,2), size=(11,1), text=' Model 3', radiogroup='Models')
+m4 = ttk.TTkRadioButton(parent=controls, pos=(36,3), size=(11,1), text=' Model 4', radiogroup='Models')
 
 m1.clicked.connect(lambda : table.setModel(table_model1))
 m2.clicked.connect(lambda : table.setModel(table_model2))
 m3.clicked.connect(lambda : table.setModel(table_model3))
+m4.clicked.connect(lambda : table.setModel(table_model4))
 
 if args.csv:
     table_model_csv = ttk.TTkTableModelCSV(fd=args.csv)
@@ -316,6 +324,7 @@ cbs = ttk.TTkCheckbox(parent=controls, pos=( 36,5), size=(8,1), text='-Sort', ch
 
 cbs.toggled.connect(table.setSortingEnabled)
 
+wtb = ttk.TTkButton(parent=controls, pos=(46,4), size=( 4,1), text="👌", border=False)
 wkb = ttk.TTkButton(parent=controls, pos=(46,5), size=( 4,1), text="🤌", border=False)
 
 
@@ -326,6 +335,14 @@ def _showWinKey():
     ttk.TTkHelper.overlay(None, winKey, 10, 4, toolWindow=True)
 
 wkb.clicked.connect(_showWinKey)
+
+@ttk.pyTTkSlot()
+def _showWinText():
+    winText = ttk.TTkWindow(title="Notepad",layout=ttk.TTkGridLayout(), size=(80,7))
+    winText.layout().addWidget(ttk.TTkTextEdit(lineNumber=True, readOnly=False))
+    ttk.TTkHelper.overlay(None, winText, 50, 20, toolWindow=True)
+
+wtb.clicked.connect(_showWinText)
 
 table.setFocus()
 

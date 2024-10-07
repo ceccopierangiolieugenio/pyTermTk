@@ -24,6 +24,7 @@ __all__ = ['TTkString']
 
 import re
 import unicodedata
+from types import GeneratorType
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
@@ -595,6 +596,8 @@ class TTkString():
         '''
         if not strings:
             return TTkString()
+        if isinstance(strings, GeneratorType):
+            strings = [s for s in strings]
         ret = TTkString(strings[0])
         for s in strings[1:]:
             ret += self + s
