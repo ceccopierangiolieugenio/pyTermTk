@@ -455,7 +455,10 @@ class TTkTextCursor():
         currPos = self.position().toNum()
         for p in self._properties:
             if   selection == TTkTextCursor.SelectionType.Document:
-                pass
+                p.position.pos  = 0
+                p.position.line = 0
+                p.anchor.pos    = len(self._document._dataLines[-1])
+                p.anchor.line   = len(self._document._dataLines)-1
             elif selection == TTkTextCursor.SelectionType.LineUnderCursor:
                 line = p.position.line
                 p.position.pos = 0
