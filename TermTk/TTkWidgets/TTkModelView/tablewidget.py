@@ -992,6 +992,11 @@ class TTkTableWidget(TTkAbstractScrollView):
                 elif evt.key == TTkK.Key_Left:  self._moveCurrentCell(col=col-1, row=row  , borderStop=True)
                 elif evt.key == TTkK.Key_Right: self._moveCurrentCell(col=col+1, row=row  , borderStop=True)
                 elif evt.key == TTkK.Key_Enter: self._editCell(row,col,richEditSupport=False)
+                elif evt.key in (TTkK.Key_Delete, TTkK.Key_Backspace):
+                # Clean Selected cells
+                    selected = [(_r,_c) for _r,_l in enumerate(self._selected) for _c,_v in enumerate(_l) if _v]
+                    for _row,_col in selected:
+                        self._tableModel.setData(row=_row,col=_col,data='')
                 self.update()
             return True
         else:
