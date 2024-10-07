@@ -257,8 +257,13 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._snapshotId += 1
 
     def _restoreSnapshot(self, snapId:int,newData=True):
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        self._selected = [[False]*cols for _ in range(rows)]
         for i in self._snapshot[snapId]:
+            self._selected[i.row][i.col]=True
             self._tableModel.setData(row=i.row,col=i.col,data=i.newData if newData else i.oldData)
+        self.update()
 
     @pyTTkSlot()
     def undo(self) -> None:
@@ -268,7 +273,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         if self._snapshotId == 0: return
         self._snapshotId-=1
         self._restoreSnapshot(self._snapshotId, newData=False)
-        self.update()
 
     @pyTTkSlot()
     def redo(self) -> None:
@@ -278,7 +282,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         if self._snapshotId >= len(self._snapshot): return
         self._restoreSnapshot(self._snapshotId, newData=True)
         self._snapshotId+=1
-        self.update()
 
     @pyTTkSlot()
     def copy(self) -> None:
@@ -295,16 +298,18 @@ class TTkTableWidget(TTkAbstractScrollView):
         # str(clip)
         self._clipboard.setText(clip)
 
+    def _cleanSelectedContent(self):
+        selected = [(_r,_c) for _r,_l in enumerate(self._selected) for _c,_v in enumerate(_l) if _v]
+        mods = []
+        for _row,_col in selected:
+            mods.append((_row,_col,''))
+        self._tableModel_setData(mods)
+        self.update()
+
     @pyTTkSlot()
     def cut(self) -> None:
-        # TBD
-        return
-        if not self._textCursor.hasSelection():
-            self._textCursor.movePosition(moveMode=TTkTextCursor.MoveAnchor, operation=TTkTextCursor.StartOfLine)
-            self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.EndOfLine)
-            self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.Right)
         self.copy()
-        self._textCursor.removeSelectedText()
+        self._cleanSelectedContent()
 
     @pyTTkSlot()
     def paste(self) -> None:
@@ -332,13 +337,16 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return True
 
-    def _tableModel_setData(self, row:int,col:int,data:object):
+    def _tableModel_setData(self, dataList:list):
         # this is a helper to keep a snapshot copy if the data change
-        oldData = self._tableModel.data(row=row,col=col)
-        if data == oldData: return
-        self._saveSnapshot([self._SnapItem(row=row,col=col,oldData=oldData,newData=data)])
-        self._tableModel.setData(row=row,col=col,data=data)
-
+        snaps = []
+        for row,col,data in dataList:
+            oldData = self._tableModel.data(row=row,col=col)
+            if data == oldData: continue
+            snaps.append(self._SnapItem(row=row,col=col,oldData=oldData,newData=data))
+            self._tableModel.setData(row=row,col=col,data=data)
+        if snaps:
+            self._saveSnapshot(snaps)
 
     @pyTTkSlot(bool)
     def setSortingEnabled(self, enable:bool) -> None:
@@ -799,7 +807,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 self.focusChanged.disconnect(_processClose)
                 txt = _te.toRawText()
                 val = str(txt) if txt.isPlainText() else txt
-                self._tableModel_setData(row,col,val)
+                self._tableModel_setData([(row,col,val)])
                 self.update()
                 _te.close()
                 self.setFocus()
@@ -817,27 +825,27 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if evt.mod==TTkK.NoModifier:
                     if evt.key == TTkK.Key_Enter:
                         # self.enterPressed.emit(True)
-                        self._moveCurrentCell( 0,+1)
+                        self._moveCurrentCell(diff=(0,+1))
                         _processClose(True)
                         return True
                     elif evt.key == TTkK.Key_Up:
                         if _line == 0:
-                            self._moveCurrentCell( 0,-1)
+                            self._moveCurrentCell(diff=(0,-1))
                             _processClose(True)
                             return True
                     elif evt.key == TTkK.Key_Down:
                         if _lineCount == 1:
-                            self._moveCurrentCell( 0,+1)
+                            self._moveCurrentCell(diff=(0,+1))
                             _processClose(True)
                             return True
                     elif evt.key == TTkK.Key_Left:
                         if _pos == _line == 0:
-                            self._moveCurrentCell(-1, 0)
+                            self._moveCurrentCell(diff=(-1, 0))
                             _processClose(True)
                             return True
                     elif evt.key == TTkK.Key_Right:
                         if _lineCount == 1 and _pos==len(_doc.toPlainText()):
-                            self._moveCurrentCell(+1, 0)
+                            self._moveCurrentCell(diff=(+1, 0))
                             _processClose(True)
                             return True
                 elif ( evt.type == TTkK.SpecialKey and
@@ -863,7 +871,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             if change:
                 self.focusChanged.disconnect(_processClose)
                 val = _sb.value()
-                self._tableModel_setData(row,col,val)
+                self._tableModel_setData([(row,col,val)])
                 self.update()
                 _sb.close()
                 self.setFocus()
@@ -894,7 +902,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             if change:
                 self.focusChanged.disconnect(_processClose)
                 txt = _tp.getTTkString()
-                self._tableModel_setData(row,col,txt)
+                self._tableModel_setData([(row,col,txt)])
                 self.update()
                 _tp.close()
                 self.setFocus()
@@ -927,9 +935,16 @@ class TTkTableWidget(TTkAbstractScrollView):
             else:
                 self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
 
-    def _moveCurrentCell(self, row, col, borderStop=True):
+    def _moveCurrentCell(self, col=0, row=0, borderStop=True, diff=None):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
+
+        if diff:
+            row,col = self._currentPos if self._currentPos else (0,0)
+            dc,dr = diff
+            row+=dr
+            col+=dc
+
         if borderStop:
             row = max(0,min(row, rows-1))
             col = max(0,min(col, cols-1))
@@ -993,14 +1008,11 @@ class TTkTableWidget(TTkAbstractScrollView):
                 elif evt.key == TTkK.Key_Right: self._moveCurrentCell(col=col+1, row=row  , borderStop=True)
                 elif evt.key == TTkK.Key_Enter: self._editCell(row,col,richEditSupport=False)
                 elif evt.key in (TTkK.Key_Delete, TTkK.Key_Backspace):
-                # Clean Selected cells
-                    selected = [(_r,_c) for _r,_l in enumerate(self._selected) for _c,_v in enumerate(_l) if _v]
-                    for _row,_col in selected:
-                        self._tableModel.setData(row=_row,col=_col,data='')
+                    self._cleanSelectedContent()
                 self.update()
             return True
         else:
-            self._tableModel_setData(row,col,evt.key)
+            self._tableModel_setData([(row,col,evt.key)])
             self._editCell(row,col,richEditSupport=False)
         return True
 
