@@ -528,6 +528,8 @@ class TTkTextEditView(TTkAbstractScrollView):
                     self.undo()
                 elif evt.key == TTkK.Key_Y:
                     self.redo()
+                elif evt.key == TTkK.Key_A:
+                    self._textCursor.select(TTkTextCursor.SelectionType.Document)
             elif evt.key == TTkK.Key_Up:
                 self._textCursor.movePosition(moveMode=moveMode, operation=TTkTextCursor.Up,   textWrap=self._textWrap)
                 self._textCursor.clearColor()
