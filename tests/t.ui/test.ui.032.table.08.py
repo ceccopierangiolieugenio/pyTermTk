@@ -211,7 +211,7 @@ splitter = ttk.TTkSplitter(parent=rootTable,orientation=ttk.TTkK.VERTICAL)
 table_model1 = MyTableModel(data_list1)
 table_model2 = MyTableModel(data_list2)
 table_model3 = MyTableModel(data_list3)
-table_model4 = MyTableModel(data_list3)
+table_model4 = MyTableModel(data_list4)
 # table_model = MyTableModel(data_list, size=(15,10))
 
 table = ttk.TTkTable(parent=splitter, tableModel=table_model1)

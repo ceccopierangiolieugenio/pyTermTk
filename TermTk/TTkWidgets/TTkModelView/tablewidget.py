@@ -77,6 +77,9 @@ class _ClipboardTable(TTkString):
         self._data = data
         super().__init__(self._toTTkString())
 
+    def data(self) -> list:
+        return self._data
+
     def _toTTkString(self) -> str:
         def _lineHeight(_line):
             return max(len(str(_item[2]).split('\n')) for _item in _line)
@@ -316,27 +319,31 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def paste(self) -> None:
-        # TBD
-        return
-        txt = self._clipboard.text()
-        self.pasteEvent(txt)
+        data = self._clipboard.text()
+        self.pasteEvent(data)
 
     def pasteEvent(self, data:object):
-        # TBD
-        return
-        txt = TTkString(txt)
-        if not self._multiLine:
-            txt = TTkString().join(txt.split('\n'))
-        if self._replace:
-            self._textCursor.replaceText(txt, moveCursor=True)
+        row,col = self._currentPos if self._currentPos else (0,0)
+        if isinstance(data,_ClipboardTable):
+            rows = self._tableModel.rowCount()
+            cols = self._tableModel.columnCount()
+            dataList = []
+            linearData = [_item for _line in data.data() for _item in _line]
+            minx,maxx = min(_a:=[_item[1] for _item in linearData]),max(_a)
+            miny,maxy = min(_a:=[_item[0] for _item in linearData]),max(_a)
+            for _dl in data.data():
+                for item in _dl:
+                    _r,_c,_d = item
+                    _r+=row-miny
+                    _c+=col-minx
+                    if _r<rows and _c<cols:
+                        dataList.append((_r,_c,_d))
+            if dataList:
+                self._tableModel_setData(dataList)
+        elif isinstance(data,TTkString):
+            self._tableModel_setData([(row,col,data)])
         else:
-            self._textCursor.insertText(txt, moveCursor=True)
-        # Scroll to align to the cursor
-        p = self._textCursor.position()
-        cx, cy = self._textWrap.dataToScreenPosition(p.line, p.pos)
-        self._updateSize()
-        self._scrolToInclude(cx,cy)
-        self._pushCursor()
+            self._tableModel_setData([(row,col,str(data))])
         self.update()
         return True
 
