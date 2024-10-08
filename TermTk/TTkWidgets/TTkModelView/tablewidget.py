@@ -32,6 +32,7 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from TermTk.TTkGui.clipboard import TTkClipboard
+from TermTk.TTkGui.textcursor import TTkTextCursor
 
 from TermTk.TTkWidgets.texedit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
@@ -252,17 +253,19 @@ class TTkTableWidget(TTkAbstractScrollView):
         newData: object = None
         oldData: object = None
 
-    def _saveSnapshot(self, items:list) -> None:
-        self._snapshot = self._snapshot[:self._snapshotId] + [items]
+    def _saveSnapshot(self, items:list, currentPos:tuple[int]) -> None:
+        self._snapshot = self._snapshot[:self._snapshotId] + [[currentPos]+items]
         self._snapshotId += 1
 
     def _restoreSnapshot(self, snapId:int,newData=True):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
         self._selected = [[False]*cols for _ in range(rows)]
-        for i in self._snapshot[snapId]:
+        for i in self._snapshot[snapId][1:]:
             self._selected[i.row][i.col]=True
             self._tableModel.setData(row=i.row,col=i.col,data=i.newData if newData else i.oldData)
+        self._currentPos = self._snapshot[snapId][0]
+        self._moveCurrentCell(diff=(0,0))
         self.update()
 
     @pyTTkSlot()
@@ -346,7 +349,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             snaps.append(self._SnapItem(row=row,col=col,oldData=oldData,newData=data))
             self._tableModel.setData(row=row,col=col,data=data)
         if snaps:
-            self._saveSnapshot(snaps)
+            self._saveSnapshot(snaps,self._currentPos)
 
     @pyTTkSlot(bool)
     def setSortingEnabled(self, enable:bool) -> None:
@@ -799,6 +802,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     readOnly=False, wrapMode=TTkK.NoWrap)
         _tev = _te.textEditView()
         _te.setText(data)
+        _te.textCursor().movePosition(operation=TTkTextCursor.EndOfLine)
         _te.setFocus()
 
         @pyTTkSlot(bool)
@@ -1055,19 +1059,6 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         row,col = self._findCell(x,y, headers=False)
         self._editCell(row,col)
-        return True
-        xa,xb = 1+cp[col-1] if col>0 else 0, cp[col] + (0 if showVS else 1)
-        ya,yb = 1+rp[row-1] if row>0 else 0, rp[row] + (0 if showHS else 1)
-
-        data = self._tableModel.data(row, col)
-        if type(data) is str:
-            self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
-        elif type(data) in [int,float]:
-            self._editNum(xa,ya,xb-xa,yb-ya,row,col,data)
-        else:
-            data = self._tableModel.ttkStringData(row, col)
-            self._editTTkString(xa,ya,xb-xa,yb-ya,row,col,data)
-
         return True
 
     def mouseMoveEvent(self, evt) -> bool:

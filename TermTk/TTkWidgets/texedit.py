@@ -339,6 +339,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def _cursorPositionChanged(self, cursor):
         if cursor == self._textCursor:
             self.currentColorChanged.emit(cursor.positionColor())
+            self._pushCursor()
 
     def resizeEvent(self, w, h):
         if ( self.lineWrapMode() == TTkK.WidgetWidth and
