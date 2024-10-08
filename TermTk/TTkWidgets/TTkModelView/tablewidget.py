@@ -37,7 +37,7 @@ from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkWidgets.texedit  import TTkTextEdit
 from TermTk.TTkWidgets.spinbox  import TTkSpinBox
 from TermTk.TTkWidgets.TTkPickers.textpicker import TTkTextPicker
-from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
+from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList, TTkModelIndex
 
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
@@ -251,8 +251,7 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @dataclass
     class _SnapItem():
-        row:  int = 0
-        col:  int = 0
+        dataIndex: TTkModelIndex = None
         newData: object = None
         oldData: object = None
 
@@ -265,29 +264,36 @@ class TTkTableWidget(TTkAbstractScrollView):
         cols = self._tableModel.columnCount()
         self._selected = [[False]*cols for _ in range(rows)]
         for i in self._snapshot[snapId][1:]:
-            self._selected[i.row][i.col]=True
-            self._tableModel.setData(row=i.row,col=i.col,data=i.newData if newData else i.oldData)
-        self._currentPos = self._snapshot[snapId][0]
+            self._selected[i.dataIndex.row()][i.dataIndex.col()]=True
+            i.dataIndex.setData(i.newData if newData else i.oldData)
+        cpsi:TTkModelIndex = self._snapshot[snapId][0]
+        self._currentPos = (cpsi.row(),cpsi.col())
         self._moveCurrentCell(diff=(0,0))
         self.update()
 
     @pyTTkSlot()
     def undo(self) -> None:
-        '''Undoes the last operation if undo is available.'''
+        '''
+        Undoes the last operation if undo is available.
+        '''
         if self._snapshotId == 0: return
         self._snapshotId-=1
         self._restoreSnapshot(self._snapshotId, newData=False)
 
     @pyTTkSlot()
     def redo(self) -> None:
-        '''Redoes the last operation if redo is available.'''
+        '''
+        Redoes the last operation if redo is available.
+        '''
         if self._snapshotId >= len(self._snapshot): return
         self._restoreSnapshot(self._snapshotId, newData=True)
         self._snapshotId+=1
 
     @pyTTkSlot()
     def copy(self) -> None:
-        '''Copies any selected cells to the clipboard.'''
+        '''
+        Copies any selected cells to the clipboard.
+        '''
         data = []
         for row,line in enumerate(self._selected):
             dataLine = []
@@ -318,7 +324,9 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def paste(self) -> None:
-        '''Pastes the text/cells from the clipboard into the table at the current cursor position.'''
+        '''
+        Pastes the text/cells from the clipboard into the table at the current cursor position.
+        '''
         data = self._clipboard.text()
         self.pasteEvent(data)
 
@@ -350,13 +358,18 @@ class TTkTableWidget(TTkAbstractScrollView):
     def _tableModel_setData(self, dataList:list):
         # this is a helper to keep a snapshot copy if the data change
         snaps = []
-        for row,col,data in dataList:
-            oldData = self._tableModel.data(row=row,col=col)
-            if data == oldData: continue
-            snaps.append(self._SnapItem(row=row,col=col,oldData=oldData,newData=data))
-            self._tableModel.setData(row=row,col=col,data=data)
+        for row,col,newData in dataList:
+            oldData   = self._tableModel.data(row=row,col=col)
+            dataIndex = self._tableModel.index(row=row,col=col)
+            if newData == oldData: continue
+            snaps.append(self._SnapItem(
+                                dataIndex=dataIndex,
+                                oldData=oldData,
+                                newData=newData))
+            self._tableModel.setData(row=row,col=col,data=newData)
         if snaps:
-            self._saveSnapshot(snaps,self._currentPos)
+            row,col = self._currentPos if self._currentPos else (0,0)
+            self._saveSnapshot(snaps,self._tableModel.index(row=row,col=col))
 
     @pyTTkSlot(bool)
     def setSortingEnabled(self, enable:bool) -> None:

@@ -23,7 +23,27 @@
 __all__=['TTkTableModelList']
 
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
+from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel, TTkModelIndex
+
+class _TTkModelIndexList(TTkModelIndex):
+    __slots__ = ('_col','_rowId','_rowCb')
+    def __init__(self, col:int, rowId:list, rowCb) -> None:
+        self._col   = col
+        self._rowId = rowId
+        self._rowCb = rowCb
+        super().__init__()
+
+    def row(self) -> int:
+        return self._rowCb(self._rowId)
+
+    def col(self) -> int:
+        return self._col
+
+    def data(self) -> object:
+        return self._rowId[self._col]
+
+    def setData(self, data: object) -> None:
+        self._rowId[self._col] = data
 
 class TTkTableModelList(TTkAbstractTableModel):
     '''
@@ -60,6 +80,12 @@ class TTkTableModelList(TTkAbstractTableModel):
 
     def columnCount(self) -> int:
         return len(self._data[0]) if self._data else 0
+
+    def index(self, row:int, col:int) -> TTkModelIndex:
+        return _TTkModelIndexList(
+                    col   = col ,
+                    rowId = self._data[row] ,
+                    rowCb = lambda rid: self._data.index(rid) )
 
     def data(self, row:int, col:int) -> None:
         return self._data[row][col]

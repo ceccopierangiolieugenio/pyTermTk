@@ -26,6 +26,55 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
+class TTkModelIndex():
+    '''
+    This class is used as an index into item models derived from :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`.
+    The index is used by item views, delegates, and selection models to locate an item in the model.
+
+    New :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex` objects are created by the model using the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` -> :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.index` function.
+    An invalid model index can be constructed with the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex` constructor.
+
+    Model indexes refer to items in models, and contain all the information required to specify their locations in those models.
+    Each index is located in a given row and column; use :meth:`row`, :meth:`column`, and :meth:`data` to obtain this information.
+
+    To obtain a model index that refers to an existing item in a model, call :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` -> :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.index` with the required row and column values.
+    '''
+    def __init__(self) -> None:
+        pass
+
+    def row(self) -> int:
+        '''
+        Returns the row this model index refers to.
+
+        :return: int
+        '''
+        pass
+
+    def col(self) -> int:
+        '''
+        Returns the column this model index refers to.
+
+        :return: int
+        '''
+        pass
+
+    def data(self) -> object:
+        '''
+        Returns the data for the item referred to by the index.
+
+        :return: object
+        '''
+        pass
+
+    def setData(self, data:object) -> None:
+        '''
+        Set the data in the item referred by the current index.
+
+        :param data: the data to be set in the (row,col) position of the table
+        :type data: object
+        '''
+        pass
+
 class TTkAbstractTableModel():
     '''
     :class:`TTkAbstractTableModel` provides a standard interface for
@@ -92,13 +141,26 @@ class TTkAbstractTableModel():
         '''
         raise NotImplementedError()
 
+    def index(self, row:int, col:int) -> TTkModelIndex:
+        '''
+        Returns the index of the item in the model specified by the given row, column.
+
+        :param row: the row position of the index
+        :type row: int
+        :param col: the column position of the index
+        :type col: int
+
+        :return: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex`
+        '''
+        return TTkModelIndex()
+
     def data(self, row:int, col:int) -> object:
         '''
         Returns the data stored for the item referred to by the row/column.
 
         Note: If you do not have a value to return, return *None* instead of returning 0.
-        :param row: the row position od the data
 
+        :param row: the row position of the data
         :type row: int
         :param col: the column position of the data
         :type col: int
