@@ -273,25 +273,21 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def undo(self) -> None:
-        '''
-        Undoes the last operation if undo is available.
-        '''
+        '''Undoes the last operation if undo is available.'''
         if self._snapshotId == 0: return
         self._snapshotId-=1
         self._restoreSnapshot(self._snapshotId, newData=False)
 
     @pyTTkSlot()
     def redo(self) -> None:
-        '''
-        Redoes the last operation if redo is available.
-        '''
+        '''Redoes the last operation if redo is available.'''
         if self._snapshotId >= len(self._snapshot): return
         self._restoreSnapshot(self._snapshotId, newData=True)
         self._snapshotId+=1
 
     @pyTTkSlot()
     def copy(self) -> None:
-        # TBD
+        '''Copies any selected cells to the clipboard.'''
         data = []
         for row,line in enumerate(self._selected):
             dataLine = []
@@ -314,11 +310,15 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def cut(self) -> None:
+        '''
+        Copies the selected ccells to the clipboard and deletes them from the table.
+        '''
         self.copy()
         self._cleanSelectedContent()
 
     @pyTTkSlot()
     def paste(self) -> None:
+        '''Pastes the text/cells from the clipboard into the table at the current cursor position.'''
         data = self._clipboard.text()
         self.pasteEvent(data)
 
