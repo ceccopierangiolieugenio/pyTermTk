@@ -985,7 +985,9 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         self.focusChanged.connect(_processClose)
 
-    def _editCell(self, row, col, richEditSupport=True):
+    def _editCell(self, row:int, col:int, richEditSupport:bool=True) -> None:
+        if not (self._tableModel.flags(row=row,col=col) & TTkK.ItemFlag.ItemIsEditable):
+            return
         showHS = self._showHSeparators
         showVS = self._showVSeparators
         rp = self._rowsPos
@@ -1088,8 +1090,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 self.update()
             return True
         else:
-            self._tableModel_setData([(row,col,evt.key)])
-            self._editCell(row,col,richEditSupport=False)
+            if (self._tableModel.flags(row=row,col=col) & TTkK.ItemFlag.ItemIsEditable):
+                self._tableModel_setData([(row,col,evt.key)])
+                self._editCell(row,col,richEditSupport=False)
         return True
 
 
