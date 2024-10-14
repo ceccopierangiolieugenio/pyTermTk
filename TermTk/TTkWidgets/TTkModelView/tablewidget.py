@@ -164,6 +164,70 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     :param dataPadding: the right column padding, defaults to 1
     :type dataPadding: int, optional
+
+    +-----------------------------------------------------------------------------------------------+
+    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
+    +-----------------------------------------------------------------------------------------------+
+
+        .. py:method:: cellChanged(row, col)
+            :signal:
+
+            This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
+
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+
+        .. py:method:: cellClicked(row, col)
+            :signal:
+
+            This signal is emitted whenever a cell in the table is clicked.
+            The row and column specified is the cell that was clicked.
+
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+
+        .. py:method:: cellDoubleClicked(row, col)
+            :signal:
+
+            This signal is emitted whenever a cell in the table is double clicked.
+            The row and column specified is the cell that was double clicked.
+
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+
+        .. py:method:: cellEntered(row, col)
+            :signal:
+
+            This signal is emitted when the mouse cursor enters a cell.
+            The cell is specified by row and column.
+
+            :param row: the row
+            :type row: int
+            :param col: the column
+            :type col: int
+
+        .. py:method:: currentCellChanged(currRow, currCol, prevRow, prevCol)
+            :signal:
+
+            This signal is emitted whenever the current cell changes.
+            The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+            the cell specified by **currRow** and **currCol** is the new current cell.
+
+            :param currRow: the current row
+            :type currRow: int
+            :param currColumn: the current column
+            :type currColumn: int
+            :param prevRow: the previous row
+            :type prevRow: int
+            :param prevCol: the previous column
+            :type prevCol: int
+
     '''
 
     classStyle = {
@@ -201,7 +265,11 @@ class TTkTableWidget(TTkAbstractScrollView):
                   '_fastCheck', '_guessDataEdit',
                   '_snapshot', '_snapshotId',
                   # Signals
-                  # 'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
+                  # 'cellActivated',
+                  'cellChanged',
+                  'cellClicked', 'cellDoubleClicked',
+                  'cellEntered', # 'cellPressed',
+                  'currentCellChanged',
                   )
 
     def __init__(self, *,
@@ -216,6 +284,16 @@ class TTkTableWidget(TTkAbstractScrollView):
         # self.itemDoubleClicked = pyTTkSignal(TTkTableWidgetItem, int)
         # self.itemExpanded      = pyTTkSignal(TTkTableWidgetItem)
         # self.itemCollapsed     = pyTTkSignal(TTkTableWidgetItem)
+
+        # self.cellActivated     = pyTTkSignal(int,int)
+        self.cellChanged       = pyTTkSignal(int,int)
+        self.cellClicked       = pyTTkSignal(int,int)
+        self.cellDoubleClicked = pyTTkSignal(int,int)
+        self.cellEntered       = pyTTkSignal(int,int)
+        # self.cellPressed       = pyTTkSignal(int,int)
+        self.currentCellChanged = pyTTkSignal(int,int,int,int)
+        # self.currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
+
         self._fastCheck = True
         self._guessDataEdit = True
 
@@ -269,7 +347,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             self.setSelection(pos=(col,row),size=(1,1),flags=TTkK.TTkItemSelectionModel.Select)
             i.dataIndex.setData(i.newData if newData else i.oldData)
         cpsi:TTkModelIndex = self._snapshot[snapId][0]
-        self._currentPos = (cpsi.row(),cpsi.col())
+        self._setCurrentCell(cpsi.row(),cpsi.col())
         self._moveCurrentCell(diff=(0,0))
         self.update()
 
@@ -364,6 +442,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             oldData   = self._tableModel.data(row=row,col=col)
             dataIndex = self._tableModel.index(row=row,col=col)
             if newData == oldData: continue
+            self.cellChanged.emit(row,col)
             snaps.append(self._SnapItem(
                                 dataIndex=dataIndex,
                                 oldData=oldData,
@@ -1013,6 +1092,12 @@ class TTkTableWidget(TTkAbstractScrollView):
             else:
                 self._editStr(xa,ya,xb-xa,yb-ya,row,col,data)
 
+    def _setCurrentCell(self, currRow:int, currCol:int) -> None:
+        prevRow,prevCol = self._currentPos if self._currentPos else (0,0)
+        self._currentPos = (currRow,currCol)
+        if (currRow,currRow)!=(prevRow,prevCol):
+            self.currentCellChanged.emit(currRow,currCol,prevRow,prevCol)
+
     def _moveCurrentCell(self, col=0, row=0, borderStop=True, diff=None):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
@@ -1031,7 +1116,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             if col < 0:     col=cols-1 ; row-=1
             if row >= rows: row=0
             if row < 0:     row=rows-1
-        self._currentPos = (row,col)
+        self._setCurrentCell(row,col)
         # move the offset to include the cell
         w,h = self.size()
         ox, oy = self.getViewOffsets()
@@ -1137,6 +1222,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     return True
 
         row,col = self._findCell(x,y, headers=False)
+        self.cellDoubleClicked.emit(row,col)
         self._editCell(row,col)
         return True
 
@@ -1167,6 +1253,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     self._hoverPos = None
                     self.update()
                     return True
+        if row>=0 and col>>0:
+            self.cellEntered.emit(row,col)
         self.update()
         return True
 
@@ -1242,7 +1330,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 self.selectColumn(col)
         else:
             # Cell Select
-            self._currentPos = (row,col)
+            self.cellClicked.emit(row,col)
+            # self.cellPressed.emit(row,col)
+            self._setCurrentCell(row,col)
             self.setSelection(pos   = (col,row), size = (1,1),
                               flags = TTkK.TTkItemSelectionModel.Clear if (self._selected[row][col] and  _ctrl) else TTkK.TTkItemSelectionModel.Select)
         self._hoverPos = None
