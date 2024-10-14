@@ -424,6 +424,30 @@ class TTkConstant:
         ClearAndSelect = Clear | Select
         '''A combination of Clear and Select, provided for convenience.'''
 
+    class ItemFlag(int):
+        ''':class:`ItemFlag` describes the properties of an item
+
+        .. autosummary::
+          NoItemFlags
+          ItemIsSelectable
+          ItemIsEditable
+          ItemIsEnabled
+        '''
+        NoItemFlags          = 0x0000
+        '''It does not have any properties set.'''
+        ItemIsSelectable     = 0x0001
+        '''It can be selected.'''
+        ItemIsEditable       = 0x0002
+        '''It can be edited.'''
+        # ItemIsDragEnabled    = 0x0004
+        # '''It can be dragged.'''
+        # ItemIsDropEnabled    = 0x0008
+        # '''It can be used as a drop target.'''
+        # ItemIsUserCheckable  = 0x0010
+        # '''It can be checked or unchecked by the user.'''
+        ItemIsEnabled        = 0x0020
+        '''The user can interact with the item.'''
+
     # LayoutItem Types
     class LayoutItemTypes(int):
         '''Types used internally in :mod:`~TermTk.TTkLayouts`

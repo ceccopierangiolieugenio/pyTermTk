@@ -177,7 +177,7 @@ class TTkAbstractTableModel():
 
         The base class implementation returns false. This function and :meth:`data` must be reimplemented for editable models.
 
-        :param row: the row position od the data
+        :param row: the row position of the data
         :type row: int
         :param col: the column position of the data
         :type col: int
@@ -191,6 +191,11 @@ class TTkAbstractTableModel():
     def ttkStringData(self, row:int, col:int) -> TTkString:
         '''
         Returns the :class:`~TermTk.TTkCore.string.TTkString` reprsents the ddata stored in the row/column.
+
+        :param row: the row position of the data
+        :type row: int
+        :param col: the column position of the data
+        :type col: int
 
         :return: :class:`~TermTk.TTkCore.string.TTkString`
         '''
@@ -221,6 +226,25 @@ class TTkAbstractTableModel():
         elif orientation==TTkK.VERTICAL:
             return TTkString(str(pos))
         return TTkString()
+
+    def flags(self, row:int, col:int) -> TTkK.ItemFlag:
+        '''
+        Returns the item flags for the given row,column.
+
+        The base class implementation returns a combination of flags that
+        enables the item (:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag.ItemIsEnabled`)
+        and allows it to be selected (:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag.ItemIsSelectable`).
+
+        :param row: the row position od the data
+        :type row: int
+        :param col: the column position of the data
+        :type col: int
+
+        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag`
+        '''
+        return (
+            TTkK.ItemFlag.ItemIsEnabled  |
+            TTkK.ItemFlag.ItemIsSelectable )
 
     def sort(self, column:int, order:TTkK.SortOrder) -> None:
         '''

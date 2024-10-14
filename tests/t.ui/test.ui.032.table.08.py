@@ -137,6 +137,17 @@ class MyTableModel(ttk.TTkTableModelList):
             return f"{prefix[num%len(prefix)]}:{num:03}"
         return super().headerData(num, orientation)
 
+    def flags(self, row: int, col: int) -> ttk.TTkConstant.ItemFlag:
+        if col==0:
+            return (
+                ttk.TTkK.ItemFlag.ItemIsEnabled  |
+                ttk.TTkK.ItemFlag.ItemIsSelectable )
+        if col==1:
+            return (
+                ttk.TTkK.ItemFlag.ItemIsEnabled  |
+                ttk.TTkK.ItemFlag.ItemIsEditable )
+        return super().flags(row, col)
+
 
 txt1 = "Text"
 txt2 = txt1*5
@@ -255,32 +266,34 @@ tableStyle5 = {'default': defaultStyle|{
                     'selectedColor':  ttk.TTkColor.bg("#FFAA66"),
                     'separatorColor': ttk.TTkColor.fg("#330055")+ttk.TTkColor.bg("#660066")} }
 
-quitBtn = ttk.TTkButton(parent=controls, pos=(0,0), size=(3,6), text="Q\nU\nI\nT")
+quitBtn = ttk.TTkButton(parent=controls, pos=(0,0), size=(5,6), text="Q\nU\nI\nT")
 quitBtn.clicked.connect(root.quit)
 
+offsetQuit = 6
+
 # Header Checkboxes
-ttk.TTkLabel(parent=controls, pos=(4,0), text="Header:")
-ht = ttk.TTkCheckbox(parent=controls, pos=( 4,1), size=(8,1), text=' Top ',checked=True)
-hl = ttk.TTkCheckbox(parent=controls, pos=(13,1), size=(8,1), text=' Left',checked=True)
+ttk.TTkLabel(parent=controls, pos=(offsetQuit,0), text="Header:")
+ht = ttk.TTkCheckbox(parent=controls, pos=( offsetQuit  ,1), size=(8,1), text=' Top ',checked=True)
+hl = ttk.TTkCheckbox(parent=controls, pos=( offsetQuit+9,1), size=(8,1), text=' Left',checked=True)
 
 ht.toggled.connect(table.horizontalHeader().setVisible)
 hl.toggled.connect(table.verticalHeader().setVisible)
 
 # Lines/Separator Checkboxes
-ttk.TTkLabel(parent=controls, pos=(4,2), text="Lines:")
-vli = ttk.TTkCheckbox(parent=controls, pos=( 4,3), size=(5,1), text=' V',checked=True)
-hli = ttk.TTkCheckbox(parent=controls, pos=(13,3), size=(5,1), text=' H',checked=True)
+ttk.TTkLabel(parent=controls, pos=(offsetQuit,2), text="Lines:")
+vli = ttk.TTkCheckbox(parent=controls, pos=(offsetQuit  ,3), size=(5,1), text=' V',checked=True)
+hli = ttk.TTkCheckbox(parent=controls, pos=(offsetQuit+9,3), size=(5,1), text=' H',checked=True)
 
 vli.toggled.connect(table.setVSeparatorVisibility)
 hli.toggled.connect(table.setHSeparatorVisibility)
 
 
 # Themes Control
-t1 = ttk.TTkRadioButton(parent=controls, pos=(23,1), size=(11,1), text=' Theme 1', radiogroup='Themes', checked=True)
-t2 = ttk.TTkRadioButton(parent=controls, pos=(23,2), size=(11,1), text=' Theme 2', radiogroup='Themes')
-t3 = ttk.TTkRadioButton(parent=controls, pos=(23,3), size=(11,1), text=' Theme 3', radiogroup='Themes')
-t4 = ttk.TTkRadioButton(parent=controls, pos=(23,4), size=(11,1), text=' Theme 4', radiogroup='Themes')
-t5 = ttk.TTkRadioButton(parent=controls, pos=(23,5), size=(11,1), text=' Theme 5', radiogroup='Themes')
+t1 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+19,1), size=(11,1), text=' Theme 1', radiogroup='Themes', checked=True)
+t2 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+19,2), size=(11,1), text=' Theme 2', radiogroup='Themes')
+t3 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+19,3), size=(11,1), text=' Theme 3', radiogroup='Themes')
+t4 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+19,4), size=(11,1), text=' Theme 4', radiogroup='Themes')
+t5 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+19,5), size=(11,1), text=' Theme 5', radiogroup='Themes')
 
 t1.clicked.connect(lambda : table.mergeStyle(tableStyle1))
 t2.clicked.connect(lambda : table.mergeStyle(tableStyle2))
@@ -290,10 +303,10 @@ t5.clicked.connect(lambda : table.mergeStyle(tableStyle5))
 
 
 # Model Picker
-m1 = ttk.TTkRadioButton(parent=controls, pos=(36,0), size=(11,1), text=' Model 1', radiogroup='Models', checked=True)
-m2 = ttk.TTkRadioButton(parent=controls, pos=(36,1), size=(11,1), text=' Model 2', radiogroup='Models')
-m3 = ttk.TTkRadioButton(parent=controls, pos=(36,2), size=(11,1), text=' Model 3', radiogroup='Models')
-m4 = ttk.TTkRadioButton(parent=controls, pos=(36,3), size=(11,1), text=' Model 4', radiogroup='Models')
+m1 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+32,0), size=(11,1), text=' Model 1', radiogroup='Models', checked=True)
+m2 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+32,1), size=(11,1), text=' Model 2', radiogroup='Models')
+m3 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+32,2), size=(11,1), text=' Model 3', radiogroup='Models')
+m4 = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+32,3), size=(11,1), text=' Model 4', radiogroup='Models')
 
 m1.clicked.connect(lambda : table.setModel(table_model1))
 m2.clicked.connect(lambda : table.setModel(table_model2))
@@ -302,30 +315,30 @@ m4.clicked.connect(lambda : table.setModel(table_model4))
 
 if args.csv:
     table_model_csv = ttk.TTkTableModelCSV(fd=args.csv)
-    m_csv = ttk.TTkRadioButton(parent=controls, pos=(36,4), size=(11,1), text=' CSV', radiogroup='Models')
+    m_csv = ttk.TTkRadioButton(parent=controls, pos=(offsetQuit+32,4), size=(11,1), text=' CSV', radiogroup='Models')
     m_csv.clicked.connect(lambda : table.setModel(table_model_csv))
 
 
 
 # Resize Button
-rcb = ttk.TTkButton(parent=controls, pos=( 4,5), size=( 3,1), text="C", border=False)
-rrb = ttk.TTkButton(parent=controls, pos=( 7,5), size=( 3,1), text="R", border=False)
-rb  = ttk.TTkButton(parent=controls, pos=(10,5), size=(11,1), text="Resize", border=False)
+rcb = ttk.TTkButton(parent=controls, pos=(offsetQuit  ,5), size=( 3,1), text="C", border=False)
+rrb = ttk.TTkButton(parent=controls, pos=(offsetQuit+3,5), size=( 3,1), text="R", border=False)
+rb  = ttk.TTkButton(parent=controls, pos=(offsetQuit+6,5), size=(11,1), text="Resize", border=False)
 
 rrb.clicked.connect(table.resizeRowsToContents)
 rcb.clicked.connect(table.resizeColumnsToContents)
 rb.clicked.connect( table.resizeRowsToContents)
 rb.clicked.connect( table.resizeColumnsToContents)
 
-controlAndLogsSplitter.addWidget(controls, size=50)
+controlAndLogsSplitter.addWidget(controls, size=51)
 controlAndLogsSplitter.addWidget(ttk.TTkLogViewer())
 
-cbs = ttk.TTkCheckbox(parent=controls, pos=( 36,5), size=(8,1), text='-Sort', checked=False)
+cbs = ttk.TTkCheckbox(parent=controls, pos=(offsetQuit+32,5), size=(8,1), text='-Sort', checked=False)
 
 cbs.toggled.connect(table.setSortingEnabled)
 
-wtb = ttk.TTkButton(parent=controls, pos=(46,4), size=( 4,1), text="👌", border=False)
-wkb = ttk.TTkButton(parent=controls, pos=(46,5), size=( 4,1), text="🤌", border=False)
+wtb = ttk.TTkButton(parent=controls, pos=(offsetQuit+41,4), size=( 4,1), text="👌", border=False)
+wkb = ttk.TTkButton(parent=controls, pos=(offsetQuit+41,5), size=( 4,1), text="🤌", border=False)
 
 
 @ttk.pyTTkSlot()

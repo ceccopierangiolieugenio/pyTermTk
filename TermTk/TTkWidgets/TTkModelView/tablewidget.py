@@ -262,9 +262,11 @@ class TTkTableWidget(TTkAbstractScrollView):
     def _restoreSnapshot(self, snapId:int,newData=True):
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
-        self._selected = [[False]*cols for _ in range(rows)]
+        self.clearSelection()
         for i in self._snapshot[snapId][1:]:
-            self._selected[i.dataIndex.row()][i.dataIndex.col()]=True
+            row=i.dataIndex.row()
+            col=i.dataIndex.col()
+            self.setSelection(pos=(col,row),size=(1,1),flags=TTkK.TTkItemSelectionModel.Select)
             i.dataIndex.setData(i.newData if newData else i.oldData)
         cpsi:TTkModelIndex = self._snapshot[snapId][0]
         self._currentPos = (cpsi.row(),cpsi.col())
@@ -456,7 +458,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             self._rowsPos     = [1+x    for x in range(rows)]
         # self._selectedBase = sb =  [False]*cols
         # self._selected = [sb]*rows
-        self._selected = [[False]*cols for _ in range(rows)]
+        self.clearSelection()
 
     # Overridden function
     def viewFullAreaSize(self) -> tuple[int, int]:
@@ -472,6 +474,28 @@ class TTkTableWidget(TTkAbstractScrollView):
     def viewDisplayedSize(self) -> tuple[int, int]:
         return self.size()
 
+    def clearSelection(self) -> None:
+        '''
+        Deselects all selected items.
+        The current index will not be changed.
+        '''
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        self._selected = [[False]*cols for _ in range(rows)]
+        self.update()
+
+    def selectAll(self) -> None:
+        '''
+        Selects all items in the view.
+        This function will use the selection behavior set on the view when selecting.
+        '''
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
+        flagFunc = self._tableModel.flags
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        self._selected = [[cmp==(cmp&flagFunc(_r,_c)) for _c in range(cols)] for _r in range(rows)]
+        self.update()
+
     def setSelection(self, pos:tuple[int,int], size:tuple[int,int], flags:TTkK.TTkItemSelectionModel) -> None:
         '''
         Selects the items within the given rect and in accordance with the specified selection flags.
@@ -485,12 +509,14 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         x,y = pos
         w,h = size
+        flagFunc = self._tableModel.flags
+        cmp = TTkK.ItemFlag.ItemIsSelectable
         if flags & (TTkK.TTkItemSelectionModel.Clear|TTkK.TTkItemSelectionModel.Deselect):
             for line in self._selected[y:y+h]:
                 line[x:x+w]=[False]*w
         elif flags & TTkK.TTkItemSelectionModel.Select:
-            for line in self._selected[y:y+h]:
-                line[x:x+w]=[True]*w
+            for _r, line in enumerate(self._selected[y:y+h],y):
+                line[x:x+w]=[cmp==(cmp&flagFunc(_r,_c)) for _c in range(x,x+w)]
         self.update()
 
     def selectRow(self, row:int) -> None:
@@ -501,18 +527,44 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type row: int
         '''
         cols = self._tableModel.columnCount()
-        self._selected[row] = [True]*cols
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        flagFunc = self._tableModel.flags
+        self._selected[row] = [cmp==(cmp&flagFunc(row,col)) for col in range(cols)]
         self.update()
 
-    def selectColumn(self, column:int) -> None:
+    def selectColumn(self, col:int) -> None:
         '''
         Selects the given column in the table view
 
-        :param column: the column to be selected
+        :param col: the column to be selected
+        :type col: int
+        '''
+        cmp = TTkK.ItemFlag.ItemIsSelectable
+        flagFunc = self._tableModel.flags
+        for row,line in enumerate(self._selected):
+            line[col] = cmp==(cmp&flagFunc(row,col))
+        self.update()
+
+    def unselectRow(self, row:int) -> None:
+        '''
+        Unselects the given row in the table view
+
+        :param row: the row to be unselected
+        :type row: int
+        '''
+        cols = self._tableModel.columnCount()
+        self._selected[row] = [False]*cols
+        self.update()
+
+    def unselectColumn(self, column:int) -> None:
+        '''
+        Unselects the given column in the table view
+
+        :param column: the column to be unselected
         :type column: int
         '''
-        for row in self._selected:
-            self._selected[column] = True
+        for line in self._selected:
+            line[column] = False
         self.update()
 
     @pyTTkSlot()
@@ -944,8 +996,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         # Mark only the current cell as aselected
         rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
-        self._selected = [[False]*cols for _ in range(rows)]
-        self._selected[row][col]=True
+        self.clearSelection()
+        self.setSelection(pos=(col,row),size=(1,1),flags=TTkK.TTkItemSelectionModel.Select)
 
         data = self._tableModel.data(row, col)
         if type(data) is str:
@@ -1154,31 +1206,38 @@ class TTkTableWidget(TTkAbstractScrollView):
         row,col = self._findCell(x,y, headers=True)
         if not row==col==-1:
             self._dragPos = [(row,col),(row,col)]
-        rows = self._tableModel.rowCount()
-        cols = self._tableModel.columnCount()
         _ctrl = evt.mod==TTkK.ControlModifier
         if row==col==-1:
             # Corner Press
             # Select Everything
-            self._selected = [[True]*cols for _ in range(rows)]
+            self.selectAll()
         elif col==-1:
             # Row select
-            state = all(self._selected[row])
+            flagFunc = self._tableModel.flags
+            cmp = TTkK.ItemFlag.ItemIsSelectable
+            state = all(_sel for i,_sel in enumerate(self._selected[row]) if flagFunc(row,i)&cmp)
             if not _ctrl:
-                self._selected = [[False]*cols for _ in range(rows)]
-            self._selected[row] = [not state]*cols
+                self.clearSelection()
+            if state:
+                self.unselectRow(row)
+            else:
+                self.selectRow(row)
         elif row==-1:
             # Col select
-            state = all(line[col] for line in self._selected)
+            flagFunc = self._tableModel.flags
+            cmp = TTkK.ItemFlag.ItemIsSelectable
+            state = all(_sel[col] for i,_sel in enumerate(self._selected) if flagFunc(i,col)&cmp)
             if not _ctrl:
-                self._selected = [[False]*cols for _ in range(rows)]
-            for line in self._selected:
-                line[col] = not state
+                self.clearSelection()
+            if state:
+                self.unselectColumn(col)
+            else:
+                self.selectColumn(col)
         else:
             # Cell Select
             self._currentPos = (row,col)
-            if _ctrl: self._selected[row][col] = not self._selected[row][col]
-            else:     self._selected[row][col] = True
+            self.setSelection(pos   = (col,row), size = (1,1),
+                              flags = TTkK.TTkItemSelectionModel.Clear if (self._selected[row][col] and  _ctrl) else TTkK.TTkItemSelectionModel.Select)
         self._hoverPos = None
         self.update()
         return True
@@ -1246,7 +1305,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 state = self._selected[max(0,rowa)][max(0,cola)]
             else:
                 # Clear the selection if no ctrl has been pressed
-                self._selected = [[False]*cols for _ in range(rows)]
+                self.clearSelection()
 
             if rowa == -1:
                 cola,colb=min(cola,colb),max(cola,colb)
@@ -1258,8 +1317,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                 cola,colb=min(cola,colb),max(cola,colb)
                 rowa,rowb=min(rowa,rowb),max(rowa,rowb)
 
-            for line in self._selected[rowa:rowb+1]:
-                line[cola:colb+1] = [state]*(colb-cola+1)
+            self.setSelection(pos   = (cola,rowa), size = (colb-cola+1,rowb-rowa+1),
+                              flags = TTkK.TTkItemSelectionModel.Select if state else TTkK.TTkItemSelectionModel.Clear)
 
         self._hoverPos = None
         self._dragPos = None

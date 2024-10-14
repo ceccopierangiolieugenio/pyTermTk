@@ -104,6 +104,12 @@ class TTkTableModelList(TTkAbstractTableModel):
                 return self._vheader[num]
         return super().headerData(num, orientation)
 
+    def flags(self, row:int, col:int) -> TTkK.ItemFlag:
+        return (
+            TTkK.ItemFlag.ItemIsEnabled  |
+            TTkK.ItemFlag.ItemIsEditable |
+            TTkK.ItemFlag.ItemIsSelectable )
+
     def sort(self, column:int, order:TTkK.SortOrder) -> None:
         if column == -1:
             self._data = self._dataOriginal
