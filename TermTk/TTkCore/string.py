@@ -24,6 +24,7 @@ __all__ = ['TTkString']
 
 import re
 import unicodedata
+from types import GeneratorType
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
@@ -62,7 +63,7 @@ class TTkString():
 
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
 
-    def __init__(self, text="", color=None):
+    def __init__(self, text:str="", color:TTkColor=None) -> None:
         if issubclass(type(text), TTkString):
             self._text      = text._text
             self._colors    = text._colors if color is None else [color]*len(self._text)
@@ -288,7 +289,11 @@ class TTkString():
                 return i
         return len(self._text)
 
-    def toAscii(self):
+    def isPlainText(self) -> bool:
+        ''' Return True if the string does not include colors or modifications '''
+        return all(TTkColor.RST == c for c in self._colors)
+
+    def toAscii(self) -> str:
         ''' Return the ascii representation of the string '''
         return self._text
 
@@ -501,7 +506,7 @@ class TTkString():
             ret._colors += self._colors
             start=0
             lenMatch = len(match)
-            while pos := self._text.index(match, start) if match in self._text[start:] else None:
+            while None != (pos := self._text.index(match, start) if match in self._text[start:] else None):
                 start = pos+lenMatch
                 ret._colors[pos: pos+lenMatch] = [color]*lenMatch
         elif posFrom == posTo == None:
@@ -591,6 +596,8 @@ class TTkString():
         '''
         if not strings:
             return TTkString()
+        if isinstance(strings, GeneratorType):
+            strings = [s for s in strings]
         ret = TTkString(strings[0])
         for s in strings[1:]:
             ret += self + s

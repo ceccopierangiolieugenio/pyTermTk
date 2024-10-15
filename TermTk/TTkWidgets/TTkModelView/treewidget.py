@@ -50,7 +50,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
                     'separatorColor': TTkColor.fg("#888888")},
             }
 
-    __slots__ = ( '_rootItem', '_header', '_columnsPos', '_cache',
+    __slots__ = ( '_rootItem', '_cache',
+                  '_header', '_columnsPos',
                   '_selectedId', '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder',
                   # Signals

@@ -100,9 +100,20 @@ class TTkSpinBox(TTkContainer):
         self._maximum = maximum
         self.setValue(self._value)
 
+    @staticmethod
+    def _isFloat(num):
+        try:
+            float(str(num))
+            return True
+        except:
+            return False
+
     @pyTTkSlot(str)
     def _textEdited(self, text):
-        self.setValue(int(str(text)))
+        if self._isFloat(text):
+            self.setValue(float(str(text)))
+        else:
+            self.setValue(int(str(text)))
         self._lineEdit.setText(str(self._value))
 
     def wheelEvent(self, evt):

@@ -128,12 +128,14 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--play',   help='Play input from File', type=argparse.FileType('br'))
     parser.add_argument('-f', help='Full Screen (default)', action='store_true')
     parser.add_argument('-w', help='Windowed',    action='store_true')
+    parser.add_argument('-t', help='Track Mouse', action='store_true')
     args = parser.parse_args()
+    mouseTrack = args.t
 
     print(args)
 
     if args.record:
-        root = TTkRecord(title="pyTermTk Demo Record", record=True)
+        root = TTkRecord(title="pyTermTk Demo Record", record=True, mouseTrack=mouseTrack)
         winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
         demo.demoShowcase(winTabbed1, True)
         root.mainloop()
@@ -176,6 +178,15 @@ def test_recording2():
     demo.ttk.TTkLog.installMessageHandler(message_handler)
     root = TTkRecord(title="pyTermTk Demo Record", record=False)
     root.loadQueue(open('tmp/test.input.002.bin', 'rb'))
+    winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
+    demo.demoShowcase(winTabbed1, True)
+    root.mainloop()
+
+def test_recording3():
+    # demo.ttk.TTkLog.use_default_file_logging()
+    demo.ttk.TTkLog.installMessageHandler(message_handler)
+    root = TTkRecord(title="pyTermTk Demo Record", record=False)
+    root.loadQueue(open('tmp/test.input.003.bin', 'rb'))
     winTabbed1 = demo.ttk.TTkWindow(parent=root,pos=(0,0), size=(80,24), title="pyTermTk Showcase", border=True, layout=demo.ttk.TTkGridLayout())
     demo.demoShowcase(winTabbed1, True)
     root.mainloop()

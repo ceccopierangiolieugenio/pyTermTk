@@ -134,10 +134,14 @@ test: .venv
 	mkdir -p tmp
 	wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
 	wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
+	wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
 	tools/check.import.sh
 	. .venv/bin/activate ; \
-	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp ; \
-	pytest tests/pytest/test_003_string.py ; \
-	pytest tests/pytest/test_002_textedit.py ; \
-	pytest -v tests/pytest/test_001_demo.py ;
+	    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp,experiments ;
+	. .venv/bin/activate ; \
+	    pytest tests/pytest/test_003_string.py ;
+	. .venv/bin/activate ; \
+	    pytest tests/pytest/test_002_textedit.py ;
+	. .venv/bin/activate ; \
+	    pytest -v tests/pytest/test_001_demo.py ;
 

@@ -20,7 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkColor', 'TTkColorGradient', 'TTkLinearGradient']
+__all__ = ['TTkColor',
+           'TTkColorGradient', 'TTkLinearGradient', 'TTkAlternateColor']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
@@ -246,7 +247,7 @@ class _TTkColor:
         return ret
 
     def mod(self, x , y):
-        if self._colorMod is None: return self
+        if not self._colorMod: return self
         return self._colorMod.exec(x,y,self)
 
     def copy(self, modifier=True):
@@ -269,7 +270,7 @@ class TTkColorGradient(_TTkColorModifier):
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
     _increment: int; _val: int
     def __init__(self, *args, **kwargs):
-        _TTkColorModifier.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         if "increment" in kwargs:
             self._fgincrement = kwargs.get("increment")
             self._bgincrement = kwargs.get("increment")
@@ -323,7 +324,7 @@ class TTkLinearGradient(_TTkColorModifier):
     default_target_color = _TTkColor(fg=(0,255,0), bg=(255,0,0))
 
     def __init__(self, *args, **kwargs):
-        _TTkColorModifier.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._base_pos = (0, 0)
         self._direction = (30, 30)
         self._target_color = self.default_target_color
@@ -490,6 +491,8 @@ class TTkColor(_TTkColor):
         :type color: str
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
+
+        :return: :class:`TTkColor`
         '''
         mod = kwargs.get('modifier', None )
         link = kwargs.get('link', '' )
@@ -515,6 +518,8 @@ class TTkColor(_TTkColor):
         :type color: str
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
+
+        :return: :class:`TTkColor`
         '''
         mod = kwargs.get('modifier', None )
         link = kwargs.get('link', '' )
@@ -523,3 +528,39 @@ class TTkColor(_TTkColor):
         else:
             color = kwargs.get('color', "" )
         return TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
+
+    @staticmethod
+    def fgbg(fg:str='', bg:str='', link:str='', modifier:_TTkColorModifier=None):
+        ''' Helper to generate a Background color
+
+        Example:
+
+        .. code:: python
+
+            color_1 = TTkColor.fgbg('#FF0000','#0000FF')
+            color_2 = TTkColor.fgbg(fg='#00FF00',bg='#0000FF')
+            color_3 = TTkColor.fgbg('#0000FF','#0000FF', modifier=TTkColorGradient(increment=6))
+
+        :param str fg: the foreground color representation in (str)HEX
+        :type fg: str
+        :param str bg: the background color representation in (str)HEX
+        :type bg: str
+        :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
+        :type modifier: TTkColorModifier, optional
+
+        :return: :class:`TTkColor`
+        '''
+        return TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier, link=link)
+
+class TTkAlternateColor(_TTkColorModifier):
+    __slots__ = ('_alternateColor')
+    def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs):
+        super().__init__(**kwargs)
+        self.setParam(alternateColor)
+
+    def setParam(self, alternateColor:TTkColor):
+        self._alternateColor = alternateColor
+
+    def exec(self, x:int, y:int, base_color:TTkColor) -> TTkColor:
+        if y%2: return self._alternateColor
+        else:   return base_color.copy(modifier=False)

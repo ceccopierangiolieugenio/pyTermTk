@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = []
+__all__ = ['TTkFileTreeWidgetItem']
 
 import re
 
@@ -39,7 +39,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
         self._raw    = kwargs.get('raw')
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
 
-    def setFilter(self, filter):
+    def setFilter(self, filter:str) -> None:
         for c in self._children:
             c.dataChanged.disconnect(self.emitDataChanged)
             c._processFilter(filter)
@@ -47,7 +47,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
             c.dataChanged.connect(self.emitDataChanged)
         self.dataChanged.emit()
 
-    def _processFilter(self, filter):
+    def _processFilter(self, filter:str) -> None:
         if self.getType() == TTkFileTreeWidgetItem.FILE:
             filterRe = '|'.join("^"+f.replace('.',r'\.').replace('*','.*')+"$" for f in filter.split(' ') if f)
             if re.match(filterRe, self._raw[0]):
@@ -55,7 +55,7 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
             else:
                 self.setHidden(True)
 
-    def sortData(self, col):
+    def sortData(self, col:int):
         return self._raw[col]
 
     def path(self):

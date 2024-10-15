@@ -117,7 +117,7 @@ class PaintArea(ttk.TTkAbstractScrollView):
 
     def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self._getGeometry()
-        return w,h
+        return w+1,h+1
 
     def viewDisplayedSize(self) -> tuple:
         return self.size()

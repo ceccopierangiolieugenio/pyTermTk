@@ -210,6 +210,8 @@ class TTkTextDocument():
 
     def setText(self, text):
         remLines = len(self._dataLines)
+        if not isinstance(text, str) and not isinstance(text,TTkString):
+            text=str(text)
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False
         self._lastSnap = self._dataLines.copy()

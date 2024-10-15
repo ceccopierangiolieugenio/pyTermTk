@@ -21,7 +21,7 @@ For this reason games like MarioBros are not technically possible on a terminal 
 * Syndicate
 * Lemmings
 * Puzzle bobble
-* Minesweeper
+* Minesweeper - CrapSweeper
 * Any terminal roguelike
 * Whac-A-Mole
 * Dungeon Master
@@ -29,6 +29,7 @@ For this reason games like MarioBros are not technically possible on a terminal 
 * Pacman (Does not require long keypresses)
 * Nibbles (Does not require long keypresses)
 * Canabalt (Mouse Press)
+* Plants VS Zombies (the table prototype with green theme and icons looks very similar)
 
 # 7DRL
 https://itch.io/jam/7drl-challenge-2024

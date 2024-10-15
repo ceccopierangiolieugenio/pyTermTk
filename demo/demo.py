@@ -46,6 +46,7 @@ from  showcase.menubar       import demoMenuBar
 from  showcase.filepicker    import demoFilePicker
 from  showcase.colorpicker   import demoColorPicker
 from  showcase.tree          import demoTree
+from  showcase.table         import demoTTkTable
 from  showcase.fancytable    import demoFancyTable
 from  showcase.fancytree     import demoFancyTree
 from  showcase.textedit      import demoTextEdit
@@ -172,6 +173,7 @@ def demoShowcase(root=None, border=True):
     tabWidgets.addTab(demoTextEdit(),    " Text Edit ", 'showcase/textedit.py')
     tabWidgets.addTab(demoList(),        " List Test ", 'showcase/list.py')
     tabWidgets.addTab(demoTree(),        " Tree Test",  'showcase/tree.py')
+    tabWidgets.addTab(demoTTkTable(),    " Table Test", 'showcase/table.py')
     tabWidgets.addTab(demoTab(),         " Tab Test ",  'showcase/tab.py')
     tabWidgets.addTab(demoFancyTable(),  " Old Table ", 'showcase/fancytable.py')
     tabWidgets.addTab(demoFancyTree(),   " Old Tree ",  'showcase/fancytree.py')
