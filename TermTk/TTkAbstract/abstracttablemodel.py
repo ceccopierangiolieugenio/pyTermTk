@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkAbstractTableModel']
+__all__ = ['TTkAbstractTableModel','TTkModelIndex']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -74,6 +74,26 @@ class TTkModelIndex():
         :type data: object
         '''
         pass
+
+class _TTkModelIndexList(TTkModelIndex):
+    __slots__ = ('_col','_row','_model')
+    def __init__(self, row:int, col:list, model) -> None:
+        self._col = col
+        self._row = row
+        self._model = model
+        super().__init__()
+
+    def row(self) -> int:
+        return self._row
+
+    def col(self) -> int:
+        return self._col
+
+    def data(self) -> object:
+        return self._model.data(self._row,self._col)
+
+    def setData(self, data: object) -> None:
+        self._model.setData(self._row,self._col,data)
 
 class TTkAbstractTableModel():
     '''
@@ -152,7 +172,7 @@ class TTkAbstractTableModel():
 
         :return: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex`
         '''
-        return TTkModelIndex()
+        return _TTkModelIndexList(row,col,self)
 
     def data(self, row:int, col:int) -> object:
         '''
