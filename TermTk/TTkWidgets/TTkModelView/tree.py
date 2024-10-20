@@ -34,6 +34,7 @@ class TTkTree(TTkAbstractScrollArea):
         # Forwarded Methods
         'setHeaderLabels',
         'setColumnWidth', 'resizeColumnToContents',
+        'sortColumn', 'sortItems',
         # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
         'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
@@ -41,7 +42,7 @@ class TTkTree(TTkAbstractScrollArea):
         super().__init__(*args, **kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
-        self._treeView = kwargs.get('treeWidget',TTkTreeWidget(*args, **kwargs))
+        self._treeView:TTkTreeWidget = kwargs.get('treeWidget',TTkTreeWidget(*args, **kwargs))
         self.setViewport(self._treeView)
         self.setFocusPolicy(TTkK.ClickFocus)
 
@@ -54,6 +55,8 @@ class TTkTree(TTkAbstractScrollArea):
         self.itemDoubleClicked = self._treeView.itemDoubleClicked
 
         # Forwarded Methods
+        self.sortColumn = self._treeView.sortColumn
+        self.sortItems  = self._treeView.sortItems
         #self.setAlignment    = self._treeView.setAlignment
         #self.setHeader       = self._treeView.setHeader
         self.setHeaderLabels = self._treeView.setHeaderLabels
