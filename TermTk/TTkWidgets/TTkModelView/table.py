@@ -120,6 +120,14 @@ class TTkTable(TTkAbstractScrollArea):
 
         This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.redo`
 
+    .. py:method:: isUndoAvailable()
+
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isUndoAvailable`
+
+    .. py:method:: isRedoAvailable()
+
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isRedoAvailable`
+
     .. py:method:: copy()
 
         This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.copy`
@@ -257,6 +265,7 @@ class TTkTable(TTkAbstractScrollArea):
 
         # Forwarded Methods From TTkTable
         'undo', 'redo',
+        'isUndoAvailable','isRedoAvailable',
         'copy', 'cut', 'paste',
         'setSortingEnabled', 'isSortingEnabled', 'sortByColumn',
         'clearSelection', 'selectAll', 'setSelection',
@@ -291,6 +300,9 @@ class TTkTable(TTkAbstractScrollArea):
 
         self.undo = self._tableView.undo
         self.redo = self._tableView.redo
+
+        self.isUndoAvailable = self._tableView.isUndoAvailable
+        self.isRedoAvailable = self._tableView.isRedoAvailable
 
         self.copy = self._tableView.copy
         self.cut = self._tableView.cut

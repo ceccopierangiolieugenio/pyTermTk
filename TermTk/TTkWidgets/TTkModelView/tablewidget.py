@@ -378,6 +378,14 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._restoreSnapshot(self._snapshotId, newData=True)
         self._snapshotId+=1
 
+    def isUndoAvailable(self) -> bool:
+        '''isUndoAvailable'''
+        return self._snapshotId > 0
+
+    def isRedoAvailable(self) -> bool:
+        '''isRedoAvailable'''
+        return self._snapshotId < len(self._snapshot)
+
     @pyTTkSlot()
     def copy(self) -> None:
         '''
