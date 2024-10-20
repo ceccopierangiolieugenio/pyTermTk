@@ -47,9 +47,9 @@ class TTkHeaderView():
     This is a placeholder for a proper "TTkHeaderView"
     '''
     __slots__ = ('_visible','visibilityUpdated')
-    def __init__(self) -> None:
+    def __init__(self, visible=True) -> None:
         self.visibilityUpdated = pyTTkSignal(bool)
-        self._visible = True
+        self._visible = visible
 
     @pyTTkSlot(bool)
     def setVisible(self, visible: bool) -> None:
@@ -153,11 +153,17 @@ class TTkTableWidget(TTkAbstractScrollView):
     :param tableModel: the model for the view to present.
     :type tableModel: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
 
-    :param vSeparator: show the vertical separators, defaults to 1
+    :param vSeparator: show the vertical separators, defaults to True
     :type vSeparator: bool, optional
 
     :param hSeparator: show the horizontal separators, defaults to True
     :type hSeparator: bool, optional
+
+    :param vHeader: show the vertical header, defaults to True
+    :type vHeader: bool, optional
+
+    :param hHeader: show the horizontal header, defaults to True
+    :type hHeader: bool, optional
 
     :param sortingEnabled: enable the column sorting, defaults to False
     :type sortingEnabled: bool, optional
@@ -248,6 +254,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                     'selectedColor':  TTkColor.fg("#888888"),
                     'separatorColor': TTkColor.fg("#888888")},
             }
+    '''default style'''
 
     __slots__ = ( '_tableModel',
                   '_clipboard',
@@ -275,6 +282,7 @@ class TTkTableWidget(TTkAbstractScrollView):
     def __init__(self, *,
                  tableModel:TTkAbstractTableModel=None,
                  vSeparator:bool=True, hSeparator:bool=True,
+                 vHeader:bool=True, hHeader:bool=True,
                  sortingEnabled=False, dataPadding=1,
                  **kwargs) -> None:
         # Signals
@@ -304,8 +312,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._sortingEnabled = sortingEnabled
         self._showHSeparators = vSeparator
         self._showVSeparators = hSeparator
-        self._verticalHeader    = TTkHeaderView()
-        self._horizontallHeader = TTkHeaderView()
+        self._verticalHeader    = TTkHeaderView(visible=vHeader)
+        self._horizontallHeader = TTkHeaderView(visible=hHeader)
         self._selected = None
         self._selectedBase = None
         self._hoverPos = None
@@ -317,6 +325,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
         self._tableModel = tableModel if tableModel else TTkTableModelList(list=[['']*10 for _ in range(10)])
+        self._tableModel.dataChanged.connect(self.update)
         super().__init__(**kwargs)
         self._refreshLayout()
         self.setMinimumHeight(1)
@@ -784,7 +793,9 @@ class TTkTableWidget(TTkAbstractScrollView):
         :param model:
         :type model: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
         '''
+        self._tableModel.dataChanged.disconnect(self.update)
         self._tableModel = model
+        self._tableModel.dataChanged.connect(self.update)
         self._refreshLayout()
         self.viewChanged.emit()
 

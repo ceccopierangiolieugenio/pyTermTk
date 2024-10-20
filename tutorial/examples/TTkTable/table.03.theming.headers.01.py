@@ -54,22 +54,42 @@ root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 dataList = [[f"{(row,col)}" for col in range(10)] for row in range(101)]
 basicTableModel = ttk.TTkTableModelList(data=dataList)
 
+# Custom color styles
+tableStyle2 = {'default': {'color': ttk.TTkColor.bg("#006600", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.bg("#003300")))} }
+tableStyle3 = {'default': {'color': ttk.TTkColor.bg("#660066", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.RST))} }
+tableStyle4 = {'default': {'color': ttk.TTkColor.bg("#660000", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.bg("#440000")))} }
+
 # Table initialization:
 #   parent = root
 #     In this example the root terminal (TTk) has this table as the only child
 #     since it is using a gridlayout, the child will be resized to occupy the entire
 #     area available
+#
 #   tableModel = basicTableModel
 #     I guess this is self explainatory
+#
+#   addStyle
+#     merge the new style with the default one
+#     this mergge is required to keep the default object theming values
+#     not explictly overridden  (i.e. header/separators colors)
+#
+#   vHeader, hHeader = True/False
+#     display the vertical/horizontal header
+table1 = ttk.TTkTable(tableModel=basicTableModel, hHeader=True,  vHeader=True )
+table2 = ttk.TTkTable(tableModel=basicTableModel, hHeader=False, vHeader=True,  addStyle=tableStyle2)
+table3 = ttk.TTkTable(tableModel=basicTableModel, hHeader=True,  vHeader=False, addStyle=tableStyle3)
+table4 = ttk.TTkTable(tableModel=basicTableModel, hHeader=False, vHeader=False, addStyle=tableStyle4)
 
-table = ttk.TTkTable(tableModel=basicTableModel)
-root.layout().addWidget(table,1,0,1,2)
-
-quitButton = ttk.TTkButton(text="QUIT", maxSize=(10,3))
-root.layout().addWidget(quitButton,0,0)
+root.layout().addWidget(table1,0,0)
+root.layout().addWidget(table2,0,1)
+root.layout().addWidget(table3,1,0)
+root.layout().addWidget(table4,1,1)
 
 # Adding a little touch, resizing the cols to its content
-table.resizeColumnsToContents()
+table1.resizeColumnsToContents()
+table2.resizeColumnsToContents()
+table3.resizeColumnsToContents()
+table4.resizeColumnsToContents()
 
 # Start the main thread
 root.mainloop()
