@@ -379,11 +379,19 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._snapshotId+=1
 
     def isUndoAvailable(self) -> bool:
-        '''isUndoAvailable'''
+        '''
+        isUndoAvailable
+
+        :return: bool
+        '''
         return self._snapshotId > 0
 
     def isRedoAvailable(self) -> bool:
-        '''isRedoAvailable'''
+        '''
+        isRedoAvailable
+
+        :return: bool
+        '''
         return self._snapshotId < len(self._snapshot)
 
     @pyTTkSlot()
