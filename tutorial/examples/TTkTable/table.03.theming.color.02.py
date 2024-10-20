@@ -54,14 +54,24 @@ root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 dataList = [[f"{(row,col)}" for col in range(10)] for row in range(101)]
 basicTableModel = ttk.TTkTableModelList(data=dataList)
 
+# As First Style, I am using as
+# Cell color:
+#   TTkColor Dark Green ("#006600") alternating with a darker green ("#003300") through the TTkAlternateColor modifier
+# Selection Color:
+#   TTkColor Brighter green ("#00AA00")
+# Hover Color: (the cell color under the mouse)
+#   TTkColor Cyan-ish ("#00AAAA")
 tableStyle1 = {'default': {
                     'color': ttk.TTkColor.bg("#006600", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.bg("#003300"))),
                     'selectedColor': ttk.TTkColor.bg("#00AA00"),
                     'hoverColor':    ttk.TTkColor.bg("#00AAAA")} }
+
+# As Second Style, I am using this configuration, I guess it is self explainatory.
+# I recommend to play with this and check the results.
 tableStyle2 = {'default': {
                     'color': ttk.TTkColor.bg("#660066", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.RST)),
                     'lineColor':      ttk.TTkColor.fg("#FFFF00"),
-                    'headerColor':    ttk.TTkColor.fg("#FFFF00")+ttk.TTkColor.bg("#660066"),
+                    'headerColor':    ttk.TTkColor.fg("#FFFF00")+ttk.TTkColor.bg("#AA0000"),
                     'hoverColor':     ttk.TTkColor.bg("#AAAAAA"),
                     'selectedColor':  ttk.TTkColor.bg("#FFAA66"),
                     'separatorColor': ttk.TTkColor.fg("#330055")+ttk.TTkColor.bg("#660066")} }

@@ -38,14 +38,15 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f',    help='Full Screen', action='store_true')
-parser.add_argument('-t',    help='Track Mouse', action='store_true')
+parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+parser.add_argument('-w', help='Windowed',    action='store_true')
+# parser.add_argument('-t',    help='Track Mouse', action='store_true')
 parser.add_argument('--csv', help='Open CSV File', type=argparse.FileType('r'))
 
 args = parser.parse_args()
 
-fullScreen = args.f
-mouseTrack = args.t
+fullScreen = not args.w
+mouseTrack = True
 
 # csvData = []
 # if args.csv:

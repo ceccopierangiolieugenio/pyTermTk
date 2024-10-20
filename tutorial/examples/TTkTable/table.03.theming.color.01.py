@@ -54,6 +54,8 @@ root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 dataList = [[f"{(row,col)}" for col in range(10)] for row in range(101)]
 basicTableModel = ttk.TTkTableModelList(data=dataList)
 
+# I am using as a style for the table a cell color with a
+# TTkColor Dark Blue ("#000066") + a modifier which alternate the color with a standard BG_BLUE (="#0000FF")
 tableStyle = {'default': {'color': ttk.TTkColor.bg("#000066", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.BG_BLUE))} }
 
 # Table initialization:

@@ -74,7 +74,6 @@ class CustomColorModifier(ttk.TTkAlternateColor):
         c =  CustomColorModifier.colors
         return c[y%len(c)]
 
-
 # root
 #   The root (TTk) widget is the main element of any pyTermTk apps
 #   It is responsible of any terminal routine, the terminal update
@@ -97,14 +96,22 @@ root = ttk.TTk(layout=ttk.TTkGridLayout(), mouseTrack=True)
 # TTkTableModelList which require a simple 2d List with the table data
 
 # I am initializing a simple list where any cell is a string representing its position (row,col) inside the list
-dataList = [[f"{(row,col)}" for col in range(10)] for row in range(101)]
+dataList = [[f"{(row,col)}" for col in range(10)] for row in range(20)]
 basicTableModel = ttk.TTkTableModelList(data=dataList)
 
-# Custom color styles
+# Table initialization:
+#   parent = root
+#     In this example the root terminal (TTk) has this table as the only child
+#     since it is using a gridlayout, the child will be resized to occupy the entire
+#     area available
+#
+#   tableModel = basicTableModel
+#     I guess this is self explainatory
+#
+table = ttk.TTkTable(tableModel=basicTableModel)
 
-# As First Style, I am defining an empty style only to show that
-# the missing fields are taken from the class default style values
-tableStyle1 = {'default': {}}
+
+# Custom color styles
 
 # As Second Style, I am using as
 # Cell color:
@@ -135,31 +142,86 @@ tableStyle4 = {'default': {
                     'selectedColor':  ttk.TTkColor.bg("#FFAA66"),
                     'separatorColor': ttk.TTkColor.fg("#330055")+ttk.TTkColor.bg("#660066")} }
 
-# Table initialization:
-#   parent = root
-#     In this example the root terminal (TTk) has this table as the only child
-#     since it is using a gridlayout, the child will be resized to occupy the entire
-#     area available
-#
-#   tableModel = basicTableModel
-#     I guess this is self explainatory
-#
-#   addStyle
-#     merge the new style with the default one
-#     this mergge is required to keep the default object theming values
-#     not explictly overridden  (i.e. header/separators colors)
-table1 = ttk.TTkTable(tableModel=basicTableModel, addStyle=tableStyle1)
-table2 = ttk.TTkTable(tableModel=basicTableModel, addStyle=tableStyle2)
-table3 = ttk.TTkTable(tableModel=basicTableModel, addStyle=tableStyle3)
-table4 = ttk.TTkTable(tableModel=basicTableModel, addStyle=tableStyle4)
+# Themes Control
+t1 = ttk.TTkRadioButton(text=' Theme 1', radiogroup='Themes', checked=True, maxWidth=15)
+t2 = ttk.TTkRadioButton(text=' Theme 2', radiogroup='Themes')
+t3 = ttk.TTkRadioButton(text=' Theme 3', radiogroup='Themes')
+t4 = ttk.TTkRadioButton(text=' Theme 4', radiogroup='Themes')
 
-root.layout().addWidget(table1,0,0)
-root.layout().addWidget(table2,0,1)
-root.layout().addWidget(table3,1,0)
-root.layout().addWidget(table4,1,1)
+t1.clicked.connect(lambda : table.setStyle(  None))
+t2.clicked.connect(lambda : table.mergeStyle(tableStyle2))
+t3.clicked.connect(lambda : table.mergeStyle(tableStyle3))
+t4.clicked.connect(lambda : table.mergeStyle(tableStyle4))
+
+# Headers Visibility Checkboxes
+ht = ttk.TTkCheckbox(text=' Header Top ',checked=True, maxWidth=20)
+hl = ttk.TTkCheckbox(text=' Header Left',checked=True)
+
+ht.toggled.connect(table.horizontalHeader().setVisible)
+hl.toggled.connect(table.verticalHeader().setVisible)
+
+# Lines/Separator Checkboxes
+vli = ttk.TTkCheckbox(text=' V-Line',checked=True)
+hli = ttk.TTkCheckbox(text=' H-Line',checked=True)
+
+vli.toggled.connect(table.setVSeparatorVisibility)
+hli.toggled.connect(table.setHSeparatorVisibility)
+
+# Select Button
+bs = ttk.TTkButton(text="Select", border=True)\
+
+# This is a routine attached to the button click event
+# which is selecting/deselecting a number of cells in the table
+@ttk.pyTTkSlot()
+def _customSelection():
+    table.setSelection((0,0),(6,9),ttk.TTkK.TTkItemSelectionModel.Select)
+    table.setSelection((1,1),(4,7),ttk.TTkK.TTkItemSelectionModel.Clear)
+    table.setSelection((3,0),(1,2),ttk.TTkK.TTkItemSelectionModel.Select)
+    table.setSelection((1,3),(2,4),ttk.TTkK.TTkItemSelectionModel.Select)
+    table.setSelection((2,5),(2,4),ttk.TTkK.TTkItemSelectionModel.Select)
+    table.setSelection((0,9),(2,3),ttk.TTkK.TTkItemSelectionModel.Select)
+
+bs.clicked.connect(_customSelection)
+
+# I am placing the widget in the GridLayout
+# Following this pattern
+# Normally any component is evenly placed in the grid
+# But Radio buttons and Checkboxes have fixed maximum height=1
+# this will force them to be placed at the bottom of the grid
+# I manually force the first checkbox (=t1) maximum width to 15
+# so that the first column will be forced to be maximum 15 char width
+# to keep the widget closer to the one in the second column
+#
+#          Col 0     Col 1       Col 2          Col 3
+#        ┌──────────────────────────────────────────────┐
+#  row 0 │ TABLE                                        │
+#        │   rowspan = 1                                │
+#        │   colspan = 4                                │
+#        ├─────────┬───────────┬───────────────┬────────┤
+#  row 1 │ Theme 1 │ Head Top  │ BUTTON        │        │
+#        ├─────────┼───────────┤   rowspan = 3 ├────────┤
+#  row 2 │ Theme 2 │ Head Left │   colspan = 1 │        │
+#        ├─────────┼───────────┤               ├────────┤
+#  row 3 │ Theme 3 │ V-Line    │               │        │
+#        ├─────────┼───────────┼───────────────┼────────┤
+#  row 4 │ Theme 4 │ H-Line    │               │        │
+#        └─────────┴───────────┴───────────────┴────────┘
+
+root.layout().addWidget(table,0,0,1,4)
+root.layout().addWidget(bs,   1,2,3,1)
+
+root.layout().addWidget(t1,   1,0)
+root.layout().addWidget(t2,   2,0)
+root.layout().addWidget(t3,   3,0)
+root.layout().addWidget(t4,   4,0)
+
+root.layout().addWidget(ht,   1,1)
+root.layout().addWidget(hl,   2,1)
+root.layout().addWidget(vli,  3,1)
+root.layout().addWidget(hli,  4,1)
 
 # Adding a little touch, resizing the cols to its content
-table1.resizeColumnsToContents()
+table.resizeColumnsToContents()
 
 # Start the main thread
 root.mainloop()
