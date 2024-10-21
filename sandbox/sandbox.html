@@ -119,6 +119,9 @@
         await ttkProxy.loadLib("bin/tutorial.tgz");
         term.write('Tutorials - Loaded\n\r')
 
+        await ttkProxy.loadLib("bin/tests.tgz");
+        term.write('Tests - Loaded\n\r')
+
         /* Sidebar
           Fetch all the files in the pyodide.FS
           And push them in the sidebar
