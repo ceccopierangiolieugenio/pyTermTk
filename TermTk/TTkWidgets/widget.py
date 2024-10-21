@@ -79,6 +79,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param toolTip: This property holds the widget's tooltip
     :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`
 
+    :param style: this field hold the custom style to be used by this widget
+    :type style: dict
+    :param addStyle: this field is required to override/merge the new style on top of the current one, useful if only few params need to be changed
+    :type addStyle: dict
+
     :param bool,optional visible: the visibility, optional, defaults to True
     :param bool,optional enabled: the ability to handle input events, optional, defaults to True
     '''
@@ -107,7 +112,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         #Signals
         'focusChanged', 'sizeChanged', 'currentStyleChanged', 'closed')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         #Signals
         self.focusChanged = pyTTkSignal(bool)
         self.sizeChanged = pyTTkSignal(int,int)
@@ -151,6 +156,10 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._currentStyle = TTkWidget.classStyle['default']
         self.setStyle(self.classStyle)
         self._processStyleEvent(TTkWidget._S_DEFAULT)
+        if 'style' in kwargs:
+            self.setStyle(kwargs['style'])
+        if 'addStyle' in kwargs:
+            self.mergeStyle(kwargs['addStyle'])
 
         self._canvas = TTkCanvas(
                             width  = self._width  ,
@@ -579,7 +588,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     _S_RELEASED = 0x40
 
     def style(self):
-        return self._style
+        return self._style.copy()
 
     def currentStyle(self):
         return self._currentStyle
@@ -590,7 +599,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.currentStyleChanged.emit(style)
         self.update()
 
-    def setStyle(self, style):
+    def setStyle(self, style=None):
+        if not style:
+            style = self.classStyle.copy()
         if 'default' not in style:
             # find the closest subclass/parent holding the style
             styleType = TTkWidget
@@ -608,6 +619,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     def mergeStyle(self, style):
         cs = None
+        # for field in style:
+        #     if field in self._style:
+        #         mergeStyle[field] = defaultStyle | self._style[field] | style[field]
+        #     else:
+        #         mergeStyle[field] = defaultStyle
         for t in self._style:
             if self._style[t] == self._currentStyle:
                 cs = t

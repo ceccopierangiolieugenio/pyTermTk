@@ -56,6 +56,7 @@ class TTkKeySequence():
         pass
 
 class TTkShortcut():
+    '''TTkShortcut'''
     _shortcuts = {}
     __slots__ = (
         '_key', '_parent', '_shortcutContext',

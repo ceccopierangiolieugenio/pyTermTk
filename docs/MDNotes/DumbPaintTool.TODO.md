@@ -6,5 +6,6 @@
  - AppTemplate 
    -  [ ] Title, show the bar
    -  [ ] Add Title in the menuBar if available
+   -  [ ] Tabs
 - Tree
    - [x] Expose resize 

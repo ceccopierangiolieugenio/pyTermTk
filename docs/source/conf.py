@@ -144,7 +144,11 @@ autodocgen_config = {
 }
 
 # autodoc_default_options = { 'inherited-members':True }
-autodoc_default_options = {}
+autodoc_default_options = {
+    'exclude-members': ('as_integer_ratio , bit_count , bit_length , '
+                        'conjugate , denominator , from_bytes , imag , '
+                        'numerator , real , to_bytes')
+}
 
 # Mock pyodide to avoid autogen failure
 class pyodideProxy(): pass

@@ -46,6 +46,13 @@ User Install
     # Clear/Erase/GetRidOf the venv
     rm -rf .venv
 
+Windows10 Install
+~~~~~~~~~~~~~~~~~
+
+.. raw:: html
+
+    <iframe width="600" height="450" src="https://www.youtube.com/embed/1nQ3P3bgKNY?si=aagKoOBKtMi8MT_1&cc_load_policy=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 
 .. _install-copy:
 

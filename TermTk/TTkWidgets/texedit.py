@@ -148,7 +148,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self.textChanged = pyTTkSignal()
-        self._readOnly = kwargs.get('readOnly', True)
+        self._readOnly = kwargs.get('readOnly', False)
         self._multiLine = kwargs.get('multiLine', True)
         self._multiCursor = True
         self._hsize = 0
@@ -218,11 +218,11 @@ class TTkTextEditView(TTkAbstractScrollView):
             return self._textDocument.isRedoAvailable()
         return False
 
-    def document(self):
+    def document(self) -> TTkTextDocument:
         '''document'''
         return self._textDocument
 
-    def setDocument(self, document):
+    def setDocument(self, document:TTkTextDocument):
         '''setDocument'''
         if self._textDocument:
             self._textDocument.contentsChanged.disconnect(self._documentChanged)
@@ -248,7 +248,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def wordWrapMode(self, *args, **kwargs):    return self._textWrap.wordWrapMode(*args, **kwargs)
     def setWordWrapMode(self, *args, **kwargs): return self._textWrap.setWordWrapMode(*args, **kwargs)
 
-    def textCursor(self):
+    def textCursor(self) -> TTkTextCursor:
         return self._textCursor
 
     def isReadOnly(self) -> bool :
@@ -339,6 +339,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def _cursorPositionChanged(self, cursor):
         if cursor == self._textCursor:
             self.currentColorChanged.emit(cursor.positionColor())
+            self._pushCursor()
 
     def resizeEvent(self, w, h):
         if ( self.lineWrapMode() == TTkK.WidgetWidth and
@@ -690,103 +691,103 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     .. py:method:: clear()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.clear`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.clear`
 
     .. py:method:: setText(text)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setText`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setText`
 
     .. py:method:: append(text)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.append`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.append`
 
     .. py:method:: isReadOnly()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isReadOnly`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isReadOnly`
 
     .. py:method:: setReadOnly(ro)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setReadOnly`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setReadOnly`
 
     .. py:method:: document()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.document`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.document`
 
     .. py:method:: wrapWidth()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wrapWidth`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wrapWidth`
 
     .. py:method:: setWrapWidth(width)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWrapWidth`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWrapWidth`
 
     .. py:method:: multiLine()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.multiLine`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.multiLine`
 
     .. py:method:: lineWrapMode()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.lineWrapMode`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.lineWrapMode`
 
     .. py:method:: setLineWrapMode(mode)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setLineWrapMode`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setLineWrapMode`
 
     .. py:method:: wordWrapMode()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wordWrapMode`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wordWrapMode`
 
     .. py:method:: setWordWrapMode(mode)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWordWrapMode`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWordWrapMode`
 
     .. py:method:: textCursor()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.textCursor`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.textCursor`
 
     .. py:method:: setColor(color)
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setColor`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setColor`
 
     .. py:method:: cut()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.cut`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.cut`
 
     .. py:method:: copy()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.copy`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.copy`
 
     .. py:method:: paste()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.paste`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.paste`
 
     .. py:method:: undo()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.undo`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.undo`
 
     .. py:method:: redo()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.redo`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.redo`
 
     .. py:method:: isUndoAvailable()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isUndoAvailable`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isUndoAvailable`
 
     .. py:method:: isRedoAvailable()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isRedoAvailable`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isRedoAvailable`
 
     .. py:method:: toAnsi()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toAnsi`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toAnsi`
 
     .. py:method:: toRawText()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toRawText`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toRawText`
 
     .. py:method:: toPlainText()
 
-        This method is forwarded to :class:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toPlainText`
+        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toPlainText`
 
     '''
     __slots__ = (
