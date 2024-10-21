@@ -613,6 +613,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         x,y = pos
         w,h = size
+        rows = self._tableModel.rowCount()
+        cols = self._tableModel.columnCount()
         flagFunc = self._tableModel.flags
         cmp = TTkK.ItemFlag.ItemIsSelectable
         if flags & (TTkK.TTkItemSelectionModel.Clear|TTkK.TTkItemSelectionModel.Deselect):
@@ -620,7 +622,7 @@ class TTkTableWidget(TTkAbstractScrollView):
                 line[x:x+w]=[False]*w
         elif flags & TTkK.TTkItemSelectionModel.Select:
             for _r, line in enumerate(self._selected[y:y+h],y):
-                line[x:x+w]=[cmp==(cmp&flagFunc(_r,_c)) for _c in range(x,x+w)]
+                line[x:x+w]=[cmp==(cmp&flagFunc(_r,_c)) for _c in range(x,min(x+w,cols))]
         self.update()
 
     def selectRow(self, row:int) -> None:
@@ -1433,10 +1435,10 @@ class TTkTableWidget(TTkAbstractScrollView):
 
             if rowa == -1:
                 cola,colb=min(cola,colb),max(cola,colb)
-                rowa,rowb=0,rows
+                rowa,rowb=0,rows-1
             elif cola == -1:
                 rowa,rowb=min(rowa,rowb),max(rowa,rowb)
-                cola,colb=0,cols
+                cola,colb=0,cols-1
             else:
                 cola,colb=min(cola,colb),max(cola,colb)
                 rowa,rowb=min(rowa,rowb),max(rowa,rowb)

@@ -53,6 +53,10 @@ Model View
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TreeWidget.ttkDesigner.gif
 * Tree Widget :class:`~TermTk.TTkWidgets.TTkModelView.tree.TTkTree`
 
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TableWidget.01.gif
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TableWidget.02.gif
+* Table Widget :class:`~TermTk.TTkWidgets.TTkModelView.table.TTkTable`
+
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.FileTree.gif
 * File Tree   :class:`~TermTk.TTkWidgets.TTkModelView.filetree.TTkFileTree`
 
