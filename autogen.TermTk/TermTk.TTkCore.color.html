@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkCore.color &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkCore.color &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -137,7 +137,7 @@
 <h2>TTkColor<a class="headerlink" href="#ttkcolor" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorMod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorMod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor" title="Permalink to this definition"></a></dt>
 <dd><p>TermTk Color helper</p>
 <p>The TTkColor constructor creates the color based on HEX values.</p>
 <p>Example:</p>
@@ -155,12 +155,77 @@
 <span class="n">color_1</span> <span class="o">=</span> <span class="n">color_fg_red</span> <span class="o">+</span> <span class="n">color_bg_blue</span>
 <span class="n">color_2</span> <span class="o">=</span> <span class="n">color_fg_red</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">bg</span><span class="p">(</span><span class="s1">&#39;#FFFF00&#39;</span><span class="p">)</span>
 <span class="n">color_3</span> <span class="o">=</span> <span class="n">color_2</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
+
+<span class="c1"># Use presets</span>
+<span class="n">color_4</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">RED</span>
+<span class="n">color_5</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BG_YELLOW</span> <span class="o">+</span> <span class="n">color_4</span>
+<span class="n">color_6</span> <span class="o">=</span> <span class="n">color_5</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">UNDERLINE</span> <span class="o">+</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">BOLD</span>
 </pre></div>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_BLACK">
+<span class="sig-name descname"><span class="pre">BG_BLACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_BLACK" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #000000 - Black</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_BLUE">
+<span class="sig-name descname"><span class="pre">BG_BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_BLUE" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #0000FF - Blue</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_CYAN">
+<span class="sig-name descname"><span class="pre">BG_CYAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_CYAN" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #00FFFF - Cyan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_GREEN">
+<span class="sig-name descname"><span class="pre">BG_GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_GREEN" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #00FF00 - Green</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_MAGENTA">
+<span class="sig-name descname"><span class="pre">BG_MAGENTA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_MAGENTA" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #FF00FF - Magenta</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_RED">
+<span class="sig-name descname"><span class="pre">BG_RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_RED" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #FF0000 - Red</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_WHITE">
+<span class="sig-name descname"><span class="pre">BG_WHITE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_WHITE" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #FFFFFF - White</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BG_YELLOW">
+<span class="sig-name descname"><span class="pre">BG_YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BG_YELLOW" title="Permalink to this definition"></a></dt>
+<dd><p>(bg) #FFFF00 - Yellow</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BLACK">
+<span class="sig-name descname"><span class="pre">BLACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BLACK" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #000000 - Black</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BLINKING">
 <span class="sig-name descname"><span class="pre">BLINKING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BLINKING" title="Permalink to this definition"></a></dt>
 <dd><p>“Blinking” modifier</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.BLUE">
+<span class="sig-name descname"><span class="pre">BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.BLUE" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #0000FF - Blue</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -170,9 +235,81 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.CYAN">
+<span class="sig-name descname"><span class="pre">CYAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.CYAN" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #00FFFF - Cyan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_BLACK">
+<span class="sig-name descname"><span class="pre">FG_BLACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_BLACK" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #000000 - Black</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_BLUE">
+<span class="sig-name descname"><span class="pre">FG_BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_BLUE" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #0000FF - Blue</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_CYAN">
+<span class="sig-name descname"><span class="pre">FG_CYAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_CYAN" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #00FFFF - Cyan</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_GREEN">
+<span class="sig-name descname"><span class="pre">FG_GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_GREEN" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #00FF00 - Green</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_MAGENTA">
+<span class="sig-name descname"><span class="pre">FG_MAGENTA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_MAGENTA" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FF00FF - Magenta</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_RED">
+<span class="sig-name descname"><span class="pre">FG_RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_RED" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FF0000 - Red</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_WHITE">
+<span class="sig-name descname"><span class="pre">FG_WHITE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_WHITE" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FFFFFF - White</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.FG_YELLOW">
+<span class="sig-name descname"><span class="pre">FG_YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.FG_YELLOW" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FFFF00 - Yellow</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.GREEN">
+<span class="sig-name descname"><span class="pre">GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.GREEN" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #00FF00 - Green</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.ITALIC">
 <span class="sig-name descname"><span class="pre">ITALIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.ITALIC" title="Permalink to this definition"></a></dt>
 <dd><p><em>Italic</em> modifier</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.MAGENTA">
+<span class="sig-name descname"><span class="pre">MAGENTA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.MAGENTA" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FF00FF - Magenta</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.RED">
+<span class="sig-name descname"><span class="pre">RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.RED" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FF0000 - Red</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -193,6 +330,18 @@
 <dd><p><span class="underline">Underline</span> modifier</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.WHITE">
+<span class="sig-name descname"><span class="pre">WHITE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.WHITE" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FFFFFF - White</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.YELLOW">
+<span class="sig-name descname"><span class="pre">YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.YELLOW" title="Permalink to this definition"></a></dt>
+<dd><p>(fg) #FFFF00 - Yellow</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.bg">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor.bg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.bg" title="Permalink to this definition"></a></dt>
@@ -209,6 +358,9 @@
 <li><p><strong>color</strong> (<em>str</em>) – the color representation in (str)HEX</p></li>
 <li><p><strong>modifier</strong> (<em>TTkColorModifier</em><em>, </em><em>optional</em>) – (experimental) the color modifier to be used to improve the <strong>kinkiness</strong></p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -229,6 +381,33 @@
 <li><p><strong>color</strong> (<em>str</em>) – the color representation in (str)HEX</p></li>
 <li><p><strong>modifier</strong> (<em>TTkColorModifier</em><em>, </em><em>optional</em>) – (experimental) the color modifier to be used to improve the <strong>kinkiness</strong></p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkCore.color.TTkColor.fgbg">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fgbg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_TTkColorModifier</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkCore/color.html#TTkColor.fgbg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkCore.color.TTkColor.fgbg" title="Permalink to this definition"></a></dt>
+<dd><p>Helper to generate a Background color</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">color_1</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fgbg</span><span class="p">(</span><span class="s1">&#39;#FF0000&#39;</span><span class="p">,</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">)</span>
+<span class="n">color_2</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fgbg</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;#00FF00&#39;</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">)</span>
+<span class="n">color_3</span> <span class="o">=</span> <span class="n">TTkColor</span><span class="o">.</span><span class="n">fgbg</span><span class="p">(</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span><span class="s1">&#39;#0000FF&#39;</span><span class="p">,</span> <span class="n">modifier</span><span class="o">=</span><span class="n">TTkColorGradient</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fg</strong> (<em>str</em>) – the foreground color representation in (str)HEX</p></li>
+<li><p><strong>bg</strong> (<em>str</em>) – the background color representation in (str)HEX</p></li>
+<li><p><strong>modifier</strong> (<em>TTkColorModifier</em><em>, </em><em>optional</em>) – (experimental) the color modifier to be used to improve the <strong>kinkiness</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#TermTk.TTkCore.color.TTkColor" title="TermTk.TTkCore.color.TTkColor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkColor</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

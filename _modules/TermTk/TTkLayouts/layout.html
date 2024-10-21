@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkLayouts.layout &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkLayouts.layout &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -152,7 +152,7 @@
     <span class="n">LAYER1</span>    <span class="o">=</span>  <span class="mh">0x40000000</span>
     <span class="n">LAYER2</span>    <span class="o">=</span>  <span class="mh">0x80000000</span>
     <span class="n">LAYER3</span>    <span class="o">=</span>  <span class="mh">0xC0000000</span>
-    <span class="n">LAYERMASK</span> <span class="o">=</span> <span class="o">~</span><span class="mh">0xC0000000</span>
+    <span class="n">LAYERMASK</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">LAYER0</span> <span class="o">|</span> <span class="n">LAYER1</span> <span class="o">|</span> <span class="n">LAYER2</span> <span class="o">|</span> <span class="n">LAYER3</span><span class="p">)</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">,</span> <span class="s1">&#39;_z&#39;</span><span class="p">,</span> <span class="s1">&#39;_w&#39;</span><span class="p">,</span> <span class="s1">&#39;_h&#39;</span><span class="p">,</span>
@@ -366,6 +366,7 @@
                 <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">repaint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updateLayout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TTkLayout.addWidget"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget">[docs]</a>    <span class="k">def</span> <span class="nf">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Add a widget to this Layout</span>

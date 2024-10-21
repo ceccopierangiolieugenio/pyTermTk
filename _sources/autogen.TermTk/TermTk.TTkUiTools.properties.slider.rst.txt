@@ -1,0 +1,8 @@
+
+TermTk.TTkUiTools.properties.slider
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkUiTools.properties.slider
+
+.. currentmodule:: TermTk.TTkUiTools.properties.slider
+

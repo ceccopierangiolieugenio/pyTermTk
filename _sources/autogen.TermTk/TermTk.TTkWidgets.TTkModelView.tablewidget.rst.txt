@@ -1,0 +1,24 @@
+
+TermTk.TTkWidgets.TTkModelView.tablewidget
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkModelView.tablewidget
+
+.. currentmodule:: TermTk.TTkWidgets.TTkModelView.tablewidget
+
+
+
+TTkHeaderView
+=============
+
+.. autoclass:: TTkHeaderView
+   :members:
+   :inherited-members:
+
+
+TTkTableWidget
+==============
+
+.. autoclass:: TTkTableWidget
+   :members:
+   :inherited-members:

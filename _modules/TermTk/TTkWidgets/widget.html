@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.widget &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.widget &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -186,6 +186,11 @@
 <span class="sd">    :param toolTip: This property holds the widget&#39;s tooltip</span>
 <span class="sd">    :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`</span>
 
+<span class="sd">    :param style: this field hold the custom style to be used by this widget</span>
+<span class="sd">    :type style: dict</span>
+<span class="sd">    :param addStyle: this field is required to override/merge the new style on top of the current one, useful if only few params need to be changed</span>
+<span class="sd">    :type addStyle: dict</span>
+
 <span class="sd">    :param bool,optional visible: the visibility, optional, defaults to True</span>
 <span class="sd">    :param bool,optional enabled: the ability to handle input events, optional, defaults to True</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -214,7 +219,7 @@
         <span class="c1">#Signals</span>
         <span class="s1">&#39;focusChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;sizeChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;currentStyleChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;closed&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1">#Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focusChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sizeChanged</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span>
@@ -258,6 +263,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span> <span class="o">=</span> <span class="n">TTkWidget</span><span class="o">.</span><span class="n">classStyle</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classStyle</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_processStyleEvent</span><span class="p">(</span><span class="n">TTkWidget</span><span class="o">.</span><span class="n">_S_DEFAULT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;style&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;style&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;addStyle&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mergeStyle</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;addStyle&#39;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">TTkCanvas</span><span class="p">(</span>
                             <span class="n">width</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span>  <span class="p">,</span>
@@ -632,7 +641,7 @@
     <span class="k">def</span> <span class="nf">hasFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_focus</span>
 
-    <span class="k">def</span> <span class="nf">getCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">getCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TTkCanvas</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span>
 
     <span class="k">def</span> <span class="nf">focusPolicy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -686,7 +695,7 @@
     <span class="n">_S_RELEASED</span> <span class="o">=</span> <span class="mh">0x40</span>
 
     <span class="k">def</span> <span class="nf">style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">currentStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span>
@@ -697,7 +706,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">currentStyleChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">style</span><span class="p">:</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classStyle</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="s1">&#39;default&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">style</span><span class="p">:</span>
             <span class="c1"># find the closest subclass/parent holding the style</span>
             <span class="n">styleType</span> <span class="o">=</span> <span class="n">TTkWidget</span>
@@ -715,6 +726,11 @@
 
     <span class="k">def</span> <span class="nf">mergeStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
         <span class="n">cs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># for field in style:</span>
+        <span class="c1">#     if field in self._style:</span>
+        <span class="c1">#         mergeStyle[field] = defaultStyle | self._style[field] | style[field]</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         mergeStyle[field] = defaultStyle</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_style</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currentStyle</span><span class="p">:</span>
                 <span class="n">cs</span> <span class="o">=</span> <span class="n">t</span>

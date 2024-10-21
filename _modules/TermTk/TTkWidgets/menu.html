@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.menu &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.menu &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -381,8 +381,7 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">curBtn</span><span class="p">:</span>
                     <span class="n">curBtn</span> <span class="o">=</span> <span class="n">btns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">:=</span> <span class="n">btns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">curBtn</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">curBtn</span> <span class="o">=</span> <span class="n">btns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">curBtn</span> <span class="o">=</span> <span class="n">btns</span><span class="p">[(</span><span class="n">btns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">curBtn</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="n">btns</span><span class="p">)]</span>
                 <span class="n">curBtn</span><span class="o">.</span><span class="n">setHighlight</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">elif</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">:</span>
@@ -390,8 +389,7 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">curBtn</span><span class="p">:</span>
                     <span class="n">curBtn</span> <span class="o">=</span> <span class="n">btns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">:=</span> <span class="n">btns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">curBtn</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">btns</span><span class="p">):</span>
-                        <span class="n">curBtn</span> <span class="o">=</span> <span class="n">btns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">curBtn</span> <span class="o">=</span> <span class="n">btns</span><span class="p">[(</span><span class="n">btns</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">curBtn</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="n">btns</span><span class="p">)]</span>
                 <span class="n">curBtn</span><span class="o">.</span><span class="n">setHighlight</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">elif</span> <span class="n">evt</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">Key_Left</span><span class="p">:</span>

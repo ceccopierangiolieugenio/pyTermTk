@@ -32,6 +32,7 @@ TermTk.TTkUiTools.properties
   TermTk.TTkUiTools.properties.resizableframe
   TermTk.TTkUiTools.properties.scrollarea
   TermTk.TTkUiTools.properties.scrollbar
+  TermTk.TTkUiTools.properties.slider
   TermTk.TTkUiTools.properties.spacer
   TermTk.TTkUiTools.properties.spinbox
   TermTk.TTkUiTools.properties.splitter

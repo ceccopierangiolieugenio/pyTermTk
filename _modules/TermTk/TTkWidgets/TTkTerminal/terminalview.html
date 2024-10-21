@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.TTkTerminal.terminalview &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.TTkTerminal.terminalview &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -272,7 +272,7 @@
     <span class="n">re_CSI_Ps_fu</span>    <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])&#39;</span><span class="p">)</span>
     <span class="n">re_CSI_Ps_Ps_fu</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\d*);(\d*)([Hf])&#39;</span><span class="p">)</span>
 
-    <span class="n">re_DEC_SET_RST</span>  <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\??)(\d+)([lh])&#39;</span><span class="p">)</span>
+    <span class="n">re_DEC_SET_RST</span>  <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\[(\??)([\d;]+)([lh])&#39;</span><span class="p">)</span>
     <span class="c1"># re_CURSOR_1    = re.compile(r&#39;^(\d+)([ABCDEFGIJKLMPSTXZHf])&#39;)</span>
 
     <span class="n">re_OSC_ps_Pt</span>    <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(\d*);(.*)$&#39;</span><span class="p">)</span>
@@ -316,24 +316,26 @@
 
                 <span class="c1">################################################</span>
                 <span class="c1"># CSI Modes</span>
-                <span class="c1">#   CSI Pm h</span>
+                <span class="c1">#   CSI Pm ; Pm ; ... h</span>
                 <span class="c1">#       Set Mode (SM).</span>
-                <span class="c1">#   CSI Pm l</span>
+                <span class="c1">#   CSI Pm ; Pm ; ... l</span>
                 <span class="c1">#       Reset Mode (RM).</span>
-                <span class="c1">#   CSI ? Pm h</span>
+                <span class="c1">#   CSI ? Pm ; Pm ; ... h</span>
                 <span class="c1">#      DEC Private Mode Set (DECSET).</span>
-                <span class="c1">#   CSI ? Pm l</span>
+                <span class="c1">#   CSI ? Pm ; Pm ; ... l</span>
                 <span class="c1">#      DEC Private Mode Reset (DECRST).</span>
                 <span class="c1">################################################</span>
                 <span class="k">if</span> <span class="n">m</span> <span class="o">:=</span> <span class="n">TTkTerminalView</span><span class="o">.</span><span class="n">re_DEC_SET_RST</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">slice</span><span class="p">):</span>
                     <span class="n">en</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
-                    <span class="n">qm</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;?&#39;</span>
-                    <span class="n">ps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                    <span class="n">qm</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;?&#39;</span><span class="p">)</span>
                     <span class="n">sr</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;h&#39;</span><span class="p">)</span>
+                    <span class="n">pms</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_pm</span><span class="p">)</span> <span class="k">for</span> <span class="n">_pm</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
                     <span class="k">if</span> <span class="n">qm</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_CSI_DEC_SET_RST</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="n">sr</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">pm</span> <span class="ow">in</span> <span class="n">pms</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_CSI_DEC_SET_RST</span><span class="p">(</span><span class="n">pm</span><span class="p">,</span><span class="n">sr</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_CSI_SM_RM</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="n">sr</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">pm</span> <span class="ow">in</span> <span class="n">pms</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_CSI_SM_RM</span><span class="p">(</span><span class="n">pm</span><span class="p">,</span><span class="n">sr</span><span class="p">)</span>
                     <span class="nb">slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">[</span><span class="n">en</span><span class="p">:]</span>
 
                 <span class="c1">################################################</span>

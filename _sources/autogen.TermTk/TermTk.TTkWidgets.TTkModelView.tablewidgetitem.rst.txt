@@ -1,0 +1,8 @@
+
+TermTk.TTkWidgets.TTkModelView.tablewidgetitem
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.TTkModelView.tablewidgetitem
+
+.. currentmodule:: TermTk.TTkWidgets.TTkModelView.tablewidgetitem
+

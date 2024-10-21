@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkCore.constant &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -185,7 +185,12 @@
     <span class="n">TIME_EVENT</span>   <span class="o">=</span> <span class="mh">0x10</span>
 
 <div class="viewcode-block" id="TTkConstant.Direction"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.Direction">[docs]</a>    <span class="k">class</span> <span class="nc">Direction</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;This class type is used to describe the direction&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;This class type is used to describe the direction</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          HORIZONTAL</span>
+<span class="sd">          VERTICAL</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">HORIZONTAL</span> <span class="o">=</span> <span class="mh">0x01</span> <span class="o">+</span> <span class="mh">0x02</span>
         <span class="sd">&#39;&#39;&#39;Horizontal direction&#39;&#39;&#39;</span>
         <span class="n">VERTICAL</span>   <span class="o">=</span> <span class="mh">0x04</span> <span class="o">+</span> <span class="mh">0x08</span>
@@ -212,8 +217,11 @@
 <span class="sd">          Checked</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">Unchecked</span>        <span class="o">=</span> <span class="mh">0x00</span>
+        <span class="sd">&#39;&#39;&#39;The item is unchecked.&#39;&#39;&#39;</span>
         <span class="n">PartiallyChecked</span> <span class="o">=</span> <span class="mh">0x01</span>
-        <span class="n">Checked</span>          <span class="o">=</span> <span class="mh">0x02</span></div>
+        <span class="sd">&#39;&#39;&#39;The item is partially checked. Items in hierarchical models may be partially checked if some, but not all, of their children are checked.&#39;&#39;&#39;</span>
+        <span class="n">Checked</span>          <span class="o">=</span> <span class="mh">0x02</span>
+        <span class="sd">&#39;&#39;&#39;The item is checked.&#39;&#39;&#39;</span></div>
 
     <span class="n">Unchecked</span>        <span class="o">=</span> <span class="n">CheckState</span><span class="o">.</span><span class="n">Unchecked</span>
     <span class="n">PartiallyChecked</span> <span class="o">=</span> <span class="n">CheckState</span><span class="o">.</span><span class="n">PartiallyChecked</span>
@@ -221,6 +229,11 @@
 
 <div class="viewcode-block" id="TTkConstant.InsertPolicy"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.InsertPolicy">[docs]</a>    <span class="k">class</span> <span class="nc">InsertPolicy</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoInsert</span>
+<span class="sd">          InsertAtTop</span>
+<span class="sd">          InsertAtBottom</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoInsert</span>               <span class="o">=</span> <span class="mh">0x00</span>
         <span class="sd">&#39;&#39;&#39;The string will not be inserted into the combobox.&#39;&#39;&#39;</span>
@@ -238,7 +251,14 @@
         <span class="c1"># &#39;&#39;&#39;The string is inserted in the alphabetic order in the combobox.&#39;&#39;&#39;</span>
 
 <div class="viewcode-block" id="TTkConstant.DragDropMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.DragDropMode">[docs]</a>    <span class="k">class</span> <span class="nc">DragDropMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Specifies the Drag and Drop mode allowed by this widget&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Specifies the Drag and Drop mode allowed by this widget</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoDragDrop</span>
+<span class="sd">          AllowDrag</span>
+<span class="sd">          AllowDrop</span>
+<span class="sd">          AllowDragDrop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoDragDrop</span> <span class="o">=</span> <span class="mh">0x00</span>
         <span class="sd">&#39;&#39;&#39;No Drag and Drop is allowed&#39;&#39;&#39;</span>
         <span class="n">AllowDrag</span>  <span class="o">=</span> <span class="mh">0x01</span>
@@ -262,8 +282,16 @@
     <span class="n">DontShowIndicatorWhenChildless</span> <span class="o">=</span> <span class="n">ChildIndicatorPolicy</span><span class="o">.</span><span class="n">DontShowIndicatorWhenChildless</span>
 
 <div class="viewcode-block" id="TTkConstant.SortOrder"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.SortOrder">[docs]</a>    <span class="k">class</span> <span class="nc">SortOrder</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This enum describes how the items in a widget are sorted.</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          AscendingOrder</span>
+<span class="sd">          DescendingOrder</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">AscendingOrder</span>  <span class="o">=</span> <span class="mh">0x00</span>
-        <span class="n">DescendingOrder</span> <span class="o">=</span> <span class="mh">0x01</span></div>
+        <span class="sd">&#39;&#39;&#39;The items are sorted ascending e.g. starts with &#39;AAA&#39; ends with &#39;ZZZ&#39; in Latin-1 locales&#39;&#39;&#39;</span>
+        <span class="n">DescendingOrder</span> <span class="o">=</span> <span class="mh">0x01</span>
+        <span class="sd">&#39;&#39;&#39;The items are sorted descending e.g. starts with &#39;ZZZ&#39; ends with &#39;AAA&#39; in Latin-1 locales&#39;&#39;&#39;</span></div>
 
     <span class="n">AscendingOrder</span>  <span class="o">=</span> <span class="n">SortOrder</span><span class="o">.</span><span class="n">AscendingOrder</span>
     <span class="n">DescendingOrder</span> <span class="o">=</span> <span class="n">SortOrder</span><span class="o">.</span><span class="n">DescendingOrder</span>
@@ -281,6 +309,15 @@
         <span class="sd">&#39;&#39;&#39;Input Mouse Key</span>
 
 <span class="sd">        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoButton</span>
+<span class="sd">          AllButtons</span>
+<span class="sd">          LeftButton</span>
+<span class="sd">          RightButton</span>
+<span class="sd">          MidButton</span>
+<span class="sd">          MiddleButton</span>
+<span class="sd">          Wheel</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoButton</span>      <span class="o">=</span> <span class="mh">0x00000000</span>
         <span class="sd">&#39;&#39;&#39;The button state does not refer to any button.&#39;&#39;&#39;</span>
@@ -306,7 +343,13 @@
     <span class="n">Wheel</span>         <span class="o">=</span> <span class="n">MouseKey</span><span class="o">.</span><span class="n">Wheel</span>
 
 <div class="viewcode-block" id="TTkConstant.WrapMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.WrapMode">[docs]</a>    <span class="k">class</span> <span class="nc">WrapMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Those constants describes how text is wrapped in a document.&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Those constants describes how text is wrapped in a document.</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          WordWrap</span>
+<span class="sd">          WrapAnywhere</span>
+<span class="sd">          WrapAtWordBoundaryOrAnywhere</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># NoWrap        = 0x00</span>
         <span class="c1"># &#39;&#39;&#39;Text is not wrapped at all.&#39;&#39;&#39;</span>
         <span class="n">WordWrap</span>      <span class="o">=</span> <span class="mh">0x01</span>
@@ -325,9 +368,19 @@
     <span class="n">WrapAtWordBoundaryOrAnywhere</span> <span class="o">=</span> <span class="n">WrapMode</span><span class="o">.</span><span class="n">WrapAtWordBoundaryOrAnywhere</span>
 
 <div class="viewcode-block" id="TTkConstant.LineWrapMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.LineWrapMode">[docs]</a>    <span class="k">class</span> <span class="nc">LineWrapMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Those constants describes which wrapping status is required in the document</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoWrapk</span>
+<span class="sd">          WidgetWidthk</span>
+<span class="sd">          FixedWidthk</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoWrap</span>       <span class="o">=</span>  <span class="mh">0x00</span>
+        <span class="sd">&#39;&#39;&#39;No Wrapping is applied&#39;&#39;&#39;</span>
         <span class="n">WidgetWidth</span>  <span class="o">=</span>  <span class="mh">0x01</span>
-        <span class="n">FixedWidth</span>   <span class="o">=</span>  <span class="mh">0x03</span></div>
+        <span class="sd">&#39;&#39;&#39;Wrapping around the Widget width&#39;&#39;&#39;</span>
+        <span class="n">FixedWidth</span>   <span class="o">=</span>  <span class="mh">0x03</span>
+        <span class="sd">&#39;&#39;&#39;Wrapping around a fixed width&#39;&#39;&#39;</span></div>
 
     <span class="n">NoWrap</span>      <span class="o">=</span> <span class="n">LineWrapMode</span><span class="o">.</span><span class="n">NoWrap</span>
     <span class="n">WidgetWidth</span> <span class="o">=</span> <span class="n">LineWrapMode</span><span class="o">.</span><span class="n">WidgetWidth</span>
@@ -339,6 +392,15 @@
         <span class="sd">&#39;&#39;&#39;Input Mouse Event</span>
 
 <span class="sd">        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoEvent</span>
+<span class="sd">          Press</span>
+<span class="sd">          Release</span>
+<span class="sd">          Drag</span>
+<span class="sd">          Move</span>
+<span class="sd">          WHEEL_Up</span>
+<span class="sd">          WHEEL_Down</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoEvent</span>    <span class="o">=</span> <span class="mh">0x00000000</span>
         <span class="n">Press</span>      <span class="o">=</span> <span class="mh">0x00010000</span>
@@ -398,7 +460,13 @@
     <span class="n">JUSTIFY</span>      <span class="o">=</span> <span class="n">Alignment</span><span class="o">.</span><span class="n">JUSTIFY</span>
 
 <div class="viewcode-block" id="TTkConstant.FileMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.FileMode">[docs]</a>    <span class="k">class</span> <span class="nc">FileMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;FileMode&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;FileMode</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          AnyFile</span>
+<span class="sd">          ExistingFile</span>
+<span class="sd">          Directory</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">AnyFile</span>        <span class="o">=</span> <span class="mi">0</span>
         <span class="sd">&#39;&#39;&#39;The name of a file, whether it exists or not.&#39;&#39;&#39;</span>
         <span class="n">ExistingFile</span>   <span class="o">=</span> <span class="mi">1</span>
@@ -413,15 +481,88 @@
     <span class="c1"># ExistingFiles = FileMode.ExistingFiles</span>
 
 <div class="viewcode-block" id="TTkConstant.AcceptMode"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.AcceptMode">[docs]</a>    <span class="k">class</span> <span class="nc">AcceptMode</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;AcceptMode&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;AcceptMode</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          AcceptOpen</span>
+<span class="sd">          AcceptSave</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">AcceptOpen</span>	<span class="o">=</span> <span class="mi">0</span>
         <span class="sd">&#39;&#39;&#39;Open&#39;&#39;&#39;</span>
         <span class="n">AcceptSave</span>	<span class="o">=</span> <span class="mi">1</span>
         <span class="sd">&#39;&#39;&#39;Save&#39;&#39;&#39;</span></div>
 
+<div class="viewcode-block" id="TTkConstant.TTkItemSelectionModel"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.TTkItemSelectionModel">[docs]</a>    <span class="k">class</span> <span class="nc">TTkItemSelectionModel</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;These values describes the way the selection model will be updated.</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoUpdate</span>
+<span class="sd">          Clear</span>
+<span class="sd">          Select</span>
+<span class="sd">          Deselect</span>
+<span class="sd">          Toggle</span>
+<span class="sd">          Current</span>
+<span class="sd">          Rows</span>
+<span class="sd">          Columns</span>
+<span class="sd">          SelectCurrent</span>
+<span class="sd">          ToggleCurrent</span>
+<span class="sd">          ClearAndSelect</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">NoUpdate</span> <span class="o">=</span> <span class="mh">0x0000</span>
+        <span class="sd">&#39;&#39;&#39;No selection will be made.&#39;&#39;&#39;</span>
+        <span class="n">Clear</span>    <span class="o">=</span> <span class="mh">0x0001</span>
+        <span class="sd">&#39;&#39;&#39;The complete selection will be cleared.&#39;&#39;&#39;</span>
+        <span class="n">Select</span>   <span class="o">=</span> <span class="mh">0x0002</span>
+        <span class="sd">&#39;&#39;&#39;All specified indexes will be selected.&#39;&#39;&#39;</span>
+        <span class="n">Deselect</span> <span class="o">=</span> <span class="mh">0x0004</span>
+        <span class="sd">&#39;&#39;&#39;All specified indexes will be deselected.&#39;&#39;&#39;</span>
+        <span class="n">Toggle</span>   <span class="o">=</span> <span class="mh">0x0008</span>
+        <span class="sd">&#39;&#39;&#39;All specified indexes will be selected or deselected depending on their current state.&#39;&#39;&#39;</span>
+        <span class="n">Current</span>  <span class="o">=</span> <span class="mh">0x0010</span>
+        <span class="sd">&#39;&#39;&#39;The current selection will be updated.&#39;&#39;&#39;</span>
+        <span class="n">Rows</span>     <span class="o">=</span> <span class="mh">0x0020</span>
+        <span class="sd">&#39;&#39;&#39;All indexes will be expanded to span rows.&#39;&#39;&#39;</span>
+        <span class="n">Columns</span>  <span class="o">=</span> <span class="mh">0x0040</span>
+        <span class="sd">&#39;&#39;&#39;All indexes will be expanded to span columns.&#39;&#39;&#39;</span>
+        <span class="n">SelectCurrent</span> <span class="o">=</span> <span class="n">Select</span> <span class="o">|</span> <span class="n">Current</span>
+        <span class="sd">&#39;&#39;&#39;A combination of Select and Current, provided for convenience.&#39;&#39;&#39;</span>
+        <span class="n">ToggleCurrent</span> <span class="o">=</span> <span class="n">Toggle</span> <span class="o">|</span> <span class="n">Current</span>
+        <span class="sd">&#39;&#39;&#39;A combination of Toggle and Current, provided for convenience.&#39;&#39;&#39;</span>
+        <span class="n">ClearAndSelect</span> <span class="o">=</span> <span class="n">Clear</span> <span class="o">|</span> <span class="n">Select</span>
+        <span class="sd">&#39;&#39;&#39;A combination of Clear and Select, provided for convenience.&#39;&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="TTkConstant.ItemFlag"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.ItemFlag">[docs]</a>    <span class="k">class</span> <span class="nc">ItemFlag</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;:class:`ItemFlag` describes the properties of an item</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoItemFlags</span>
+<span class="sd">          ItemIsSelectable</span>
+<span class="sd">          ItemIsEditable</span>
+<span class="sd">          ItemIsEnabled</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">NoItemFlags</span>          <span class="o">=</span> <span class="mh">0x0000</span>
+        <span class="sd">&#39;&#39;&#39;It does not have any properties set.&#39;&#39;&#39;</span>
+        <span class="n">ItemIsSelectable</span>     <span class="o">=</span> <span class="mh">0x0001</span>
+        <span class="sd">&#39;&#39;&#39;It can be selected.&#39;&#39;&#39;</span>
+        <span class="n">ItemIsEditable</span>       <span class="o">=</span> <span class="mh">0x0002</span>
+        <span class="sd">&#39;&#39;&#39;It can be edited.&#39;&#39;&#39;</span>
+        <span class="c1"># ItemIsDragEnabled    = 0x0004</span>
+        <span class="c1"># &#39;&#39;&#39;It can be dragged.&#39;&#39;&#39;</span>
+        <span class="c1"># ItemIsDropEnabled    = 0x0008</span>
+        <span class="c1"># &#39;&#39;&#39;It can be used as a drop target.&#39;&#39;&#39;</span>
+        <span class="c1"># ItemIsUserCheckable  = 0x0010</span>
+        <span class="c1"># &#39;&#39;&#39;It can be checked or unchecked by the user.&#39;&#39;&#39;</span>
+        <span class="n">ItemIsEnabled</span>        <span class="o">=</span> <span class="mh">0x0020</span>
+        <span class="sd">&#39;&#39;&#39;The user can interact with the item.&#39;&#39;&#39;</span></div>
+
     <span class="c1"># LayoutItem Types</span>
 <div class="viewcode-block" id="TTkConstant.LayoutItemTypes"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes">[docs]</a>    <span class="k">class</span> <span class="nc">LayoutItemTypes</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Types used internally in :mod:`~TermTk.TTkLayouts`&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Types used internally in :mod:`~TermTk.TTkLayouts`</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          LayoutItem</span>
+<span class="sd">          WidgetItem</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">LayoutItem</span> <span class="o">=</span> <span class="mh">0x01</span>
         <span class="sd">&#39;&#39;&#39;Item Type Layout&#39;&#39;&#39;</span>
         <span class="n">WidgetItem</span> <span class="o">=</span> <span class="mh">0x02</span>
@@ -432,6 +573,16 @@
     <span class="n">WidgetItem</span> <span class="o">=</span> <span class="n">LayoutItemTypes</span><span class="o">.</span><span class="n">WidgetItem</span>
 
 <div class="viewcode-block" id="TTkConstant.WindowFlag"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.WindowFlag">[docs]</a>    <span class="k">class</span> <span class="nc">WindowFlag</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Those flags are used to enable customization of the window controls.</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          WindowReduceButtonHint</span>
+<span class="sd">          WindowMinimizeButtonHint</span>
+<span class="sd">          WindowMaximizeButtonHint</span>
+<span class="sd">          WindowMinMaxButtonsHint</span>
+<span class="sd">          WindowCloseButtonHint</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># FramelessWindowHint         = 0x00000800</span>
         <span class="c1"># &#39;&#39;&#39; Produces a borderless window.&#39;&#39;&#39;</span>
         <span class="c1"># CustomizeWindowHint         = 0x02000000</span>
@@ -463,6 +614,10 @@
         <span class="sd">&#39;&#39;&#39;Input Key Types</span>
 
 <span class="sd">        Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          Character</span>
+<span class="sd">          SpecialKey</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">Character</span>  <span class="o">=</span> <span class="mh">0x0001</span>
         <span class="sd">&#39;&#39;&#39;Input Char Key&#39;&#39;&#39;</span>
@@ -477,6 +632,19 @@
         <span class="sd">&#39;&#39;&#39;Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers</span>
 
 <span class="sd">        Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -&gt; :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          NoModifier</span>
+<span class="sd">          ShiftModifier</span>
+<span class="sd">          ControlModifier</span>
+<span class="sd">          AltModifier</span>
+<span class="sd">          MetaModifier</span>
+<span class="sd">          KeypadModifier</span>
+<span class="sd">          GroupSwitchModifier</span>
+<span class="sd">          SHIFT</span>
+<span class="sd">          META</span>
+<span class="sd">          CTRL</span>
+<span class="sd">          ALT</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">NoModifier</span>          <span class="o">=</span> <span class="mh">0x00000000</span>
         <span class="sd">&#39;&#39;&#39;No modifier key is pressed.&#39;&#39;&#39;</span>
@@ -516,9 +684,17 @@
     <span class="n">ALT</span>   <span class="o">=</span> <span class="n">KeyModifier</span><span class="o">.</span><span class="n">ALT</span>
 
 <div class="viewcode-block" id="TTkConstant.ShortcutContext"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.ShortcutContext">[docs]</a>    <span class="k">class</span> <span class="nc">ShortcutContext</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,</span>
-<span class="sd">           the shortcut&#39;s key sequence must be entered by the user in a context where the shortcut is active.</span>
-<span class="sd">           The possible contexts are these:&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,</span>
+<span class="sd">        the shortcut&#39;s key sequence must be entered by the user in a context where the shortcut is active.</span>
+<span class="sd">        The possible contexts are these:</span>
+
+<span class="sd">        .. autosummary::</span>
+<span class="sd">          WidgetShortcut</span>
+<span class="sd">          WidgetWithChildrenShortcut</span>
+<span class="sd">          WindowShortcut</span>
+<span class="sd">          ApplicationShortcut</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">WidgetShortcut</span>             <span class="o">=</span> <span class="mh">0x00</span>
         <span class="sd">&#39;&#39;&#39;The shortcut is active when its parent widget has focus.&#39;&#39;&#39;</span>
         <span class="n">WidgetWithChildrenShortcut</span> <span class="o">=</span> <span class="mh">0x03</span>
@@ -810,7 +986,7 @@
     <span class="n">Key_Dead_e</span>                  <span class="o">=</span> <span class="mh">0x01001282</span>
     <span class="n">Key_Dead_E</span>                  <span class="o">=</span> <span class="mh">0x01001283</span>
     <span class="n">Key_Dead_i</span>                  <span class="o">=</span> <span class="mh">0x01001284</span>
-    <span class="n">Key_Dead_I</span>                  <span class="o">=</span> <span class="mh">0x01001285</span>
+    <span class="n">Key_Dead_I</span>                  <span class="o">=</span> <span class="mh">0x01001285dd3e612f3ca6f9971b2aa0f5e622e21244da98ff</span>
     <span class="n">Key_Dead_o</span>                  <span class="o">=</span> <span class="mh">0x01001286</span>
     <span class="n">Key_Dead_O</span>                  <span class="o">=</span> <span class="mh">0x01001287</span>
     <span class="n">Key_Dead_u</span>                  <span class="o">=</span> <span class="mh">0x01001288</span>

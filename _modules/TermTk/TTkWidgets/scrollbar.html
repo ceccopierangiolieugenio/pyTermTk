@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.scrollbar &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.scrollbar &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -243,11 +243,12 @@
 <div class="viewcode-block" id="TTkScrollBar.mousePressEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
             <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span>
-            <span class="n">mouse</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">mouse</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">evt</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span>
-            <span class="n">mouse</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">mouse</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">evt</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">mouse</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># left/up arrow pressed</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleStep</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">mouse</span> <span class="o">==</span> <span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># right/down arrow pressed</span>
@@ -261,19 +262,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maximum</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sliderMoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
-        <span class="c1"># TTkLog.debug(f&quot;m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}&quot;)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="TTkScrollBar.mouseDragEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.scrollbar.html#TermTk.TTkWidgets.scrollbar.TTkScrollBar.mouseDragEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mouseDragEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span><span class="p">:</span> <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="n">TTkK</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">:</span>
             <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span>
-            <span class="n">mouse</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">mouse</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">evt</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span>
-            <span class="n">mouse</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">mouse</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">evt</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
         <span class="n">aa</span> <span class="o">=</span> <span class="n">mouse</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseDelta</span>
 
         <span class="n">size2</span> <span class="o">=</span> <span class="n">size</span><span class="o">-</span><span class="mi">2</span>

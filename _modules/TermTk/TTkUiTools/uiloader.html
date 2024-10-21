@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkUiTools.uiloader &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkUiTools.uiloader &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -127,7 +127,7 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkUiLoader&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TTkUiLoader&#39;</span><span class="p">,</span><span class="s1">&#39;TTkUiSignature&#39;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
 
@@ -138,10 +138,12 @@
 <span class="kn">from</span> <span class="nn">TermTk.TTkTestWidgets</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">TermTk.TTkUiTools.uiproperties</span> <span class="kn">import</span> <span class="n">TTkUiProperties</span>
 
+<span class="n">TTkUiSignature</span> <span class="o">=</span> <span class="s2">&quot;TTkUi/Document&quot;</span>
+
 <div class="viewcode-block" id="TTkUiLoader"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkUiTools.uiloader.html#TermTk.TTkUiTools.uiloader.TTkUiLoader">[docs]</a><span class="k">class</span> <span class="nc">TTkUiLoader</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;TTkUiLoader</span>
 
-<span class="sd">    .. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner</span>
+<span class="sd">    .. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner</span>
 
 
 <span class="sd">    `ttkdesigner Tutorial &lt;https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit&gt;`_</span>
@@ -180,6 +182,20 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">loadDict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">baseWidget</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">_convert_2_0_1_to_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">TTkUiSignature</span><span class="p">,</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0.2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;connections&quot;</span> <span class="p">:</span> <span class="n">ui</span><span class="p">[</span><span class="s1">&#39;connections&#39;</span><span class="p">],</span>
+            <span class="s2">&quot;tui&quot;</span><span class="p">:</span> <span class="n">ui</span><span class="p">[</span><span class="s1">&#39;tui&#39;</span><span class="p">]</span> <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_convert_2_0_0_to_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">TTkUiSignature</span><span class="p">,</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0.2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;connections&quot;</span> <span class="p">:</span> <span class="n">ui</span><span class="p">[</span><span class="s1">&#39;connections&#39;</span><span class="p">],</span>
+            <span class="s2">&quot;tui&quot;</span><span class="p">:</span> <span class="n">ui</span><span class="p">[</span><span class="s1">&#39;tui&#39;</span><span class="p">]</span> <span class="p">}</span>
+
     <span class="k">def</span> <span class="nf">_convert_1_0_1_to_2_0_0</span><span class="p">(</span><span class="n">ui</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_processWidget</span><span class="p">(</span><span class="n">_wid</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="n">_wid</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]],</span><span class="n">TTkContainer</span><span class="p">):</span>
@@ -205,8 +221,23 @@
         <span class="n">ui</span> <span class="o">=</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_1_0_1_to_2_0_0</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_0</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_loadDict_2_0_0</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ui</span> <span class="o">=</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_2_0_0_to_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_loadDict_2_0_1</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ui</span> <span class="o">=</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_2_0_1_to_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_loadDict_2_0_0</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">baseWidget</span><span class="p">:</span><span class="n">TTkWidget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_loadDict_2_0_2</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">baseWidget</span><span class="p">:</span><span class="n">TTkWidget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">ui</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;2.0.2&#39;</span> <span class="ow">or</span>
+            <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ui</span> <span class="ow">or</span>
+            <span class="n">ui</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">TTkUiSignature</span><span class="p">):</span>
+            <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Ui Format not valid&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
         <span class="k">def</span> <span class="nf">_setMenuButton</span><span class="p">(</span><span class="n">_menuButtonProp</span><span class="p">,</span> <span class="n">_menuButton</span><span class="p">:</span><span class="n">TTkMenuButton</span><span class="p">):</span>
             <span class="k">if</span> <span class="s1">&#39;submenu&#39;</span> <span class="ow">in</span> <span class="n">_menuButtonProp</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">_sm</span> <span class="ow">in</span> <span class="n">_menuButtonProp</span><span class="p">[</span><span class="s1">&#39;submenu&#39;</span><span class="p">]:</span>
@@ -355,7 +386,7 @@
                         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">layout</span>
 
-        <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+        <span class="c1"># TTkLog.debug(ui)</span>
 
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">globals</span><span class="p">()[</span><span class="n">ui</span><span class="p">[</span><span class="s1">&#39;tui&#39;</span><span class="p">][</span><span class="s1">&#39;class&#39;</span><span class="p">]],</span><span class="n">TTkLayout</span><span class="p">):</span>
             <span class="n">widget</span> <span class="o">=</span>  <span class="n">_getLayout</span><span class="p">(</span><span class="n">ui</span><span class="p">[</span><span class="s1">&#39;tui&#39;</span><span class="p">],</span> <span class="n">baseWidget</span><span class="p">)</span>
@@ -365,7 +396,7 @@
         <span class="k">def</span> <span class="nf">_getSignal</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">sender</span><span class="p">)</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">TTkUiProperties</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">TTkUiProperties</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">][</span><span class="s1">&#39;signals&#39;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TTkUiProperties</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">][</span><span class="s1">&#39;signals&#39;</span><span class="p">]:</span>
                         <span class="k">continue</span>
                     <span class="n">signame</span> <span class="o">=</span> <span class="n">TTkUiProperties</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">][</span><span class="s1">&#39;signals&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
                     <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span><span class="n">signame</span><span class="p">)</span>
@@ -374,7 +405,7 @@
         <span class="k">def</span> <span class="nf">_getSlot</span><span class="p">(</span><span class="n">receiver</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">TTkUiProperties</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">TTkUiProperties</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">][</span><span class="s1">&#39;slots&#39;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TTkUiProperties</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">][</span><span class="s1">&#39;slots&#39;</span><span class="p">]:</span>
                         <span class="k">continue</span>
                     <span class="n">slotname</span> <span class="o">=</span> <span class="n">TTkUiProperties</span><span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="vm">__name__</span><span class="p">][</span><span class="s1">&#39;slots&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
                     <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">receiver</span><span class="p">,</span><span class="n">slotname</span><span class="p">)</span>
@@ -395,7 +426,9 @@
     <span class="k">def</span> <span class="nf">normalise</span><span class="p">(</span><span class="n">ui</span><span class="p">):</span>
         <span class="n">cb</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1.0.0&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_1_0_1_to_2_0_0</span><span class="p">,</span>
               <span class="s1">&#39;1.0.1&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_1_0_1_to_2_0_0</span><span class="p">,</span>
-              <span class="s1">&#39;2.0.0&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+              <span class="s1">&#39;2.0.0&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_2_0_0_to_2_0_2</span><span class="p">,</span>
+              <span class="s1">&#39;2.0.1&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_convert_2_0_1_to_2_0_2</span><span class="p">,</span>
+              <span class="s1">&#39;2.0.2&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
               <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ui</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cb</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
 
@@ -414,7 +447,9 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">cb</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1.0.0&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_1_0_0</span><span class="p">,</span>
               <span class="s1">&#39;1.0.1&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_1_0_0</span><span class="p">,</span>
-              <span class="s1">&#39;2.0.0&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_0</span>
+              <span class="s1">&#39;2.0.0&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_0</span><span class="p">,</span>
+              <span class="s1">&#39;2.0.1&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_1</span><span class="p">,</span>
+              <span class="s1">&#39;2.0.2&#39;</span> <span class="p">:</span> <span class="n">TTkUiLoader</span><span class="o">.</span><span class="n">_loadDict_2_0_2</span><span class="p">,</span>
               <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ui</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cb</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cb</span><span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">baseWidget</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.TTkPickers.messagebox &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.TTkPickers.messagebox &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -334,7 +334,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_widBtnLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">_btn</span> <span class="o">:=</span> <span class="n">TTkButton</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Yes&quot;</span><span class="p">))</span>
             <span class="n">_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">_genClickedSlot</span><span class="p">(</span><span class="n">sb</span><span class="p">))</span>
 
-        <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">fullWidgetAreaGeometry</span><span class="p">()</span>
+        <span class="c1"># _,_,w,h = self.layout().fullWidgetAreaGeometry()</span>
+        <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">minimumSize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">w</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">h</span><span class="o">+</span><span class="mi">4</span><span class="p">)</span></div>
 
     <span class="c1"># def setText(self, text):pass</span>

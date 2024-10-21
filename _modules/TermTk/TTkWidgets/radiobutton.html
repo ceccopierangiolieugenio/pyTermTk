@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.radiobutton &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.radiobutton &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -184,11 +184,12 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s1">&#39;_checked&#39;</span><span class="p">,</span> <span class="s1">&#39;_text&#39;</span><span class="p">,</span> <span class="s1">&#39;_radiogroup&#39;</span><span class="p">,</span>
         <span class="c1"># Signals</span>
-        <span class="s1">&#39;clicked&#39;</span>
+        <span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="s1">&#39;toggled&#39;</span>
         <span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Define Signals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggled</span> <span class="o">=</span> <span class="n">pyTTkSignal</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
         <span class="c1"># use name if radiogroup is not available for retrocompatibility</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radiogroup</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;DefaultGroup&#39;</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radiogroup</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;radiogroup&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radiogroup</span> <span class="p">)</span>
@@ -262,6 +263,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_checkEvent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checked</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TTkRadioButton.paintEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.paintEvent">[docs]</a>    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
@@ -282,9 +284,8 @@
         <span class="c1"># Uncheck the radio already checked;</span>
         <span class="k">for</span> <span class="n">radio</span> <span class="ow">in</span> <span class="n">TTkRadioButton</span><span class="o">.</span><span class="n">_radioLists</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_radiogroup</span><span class="p">]:</span>
             <span class="k">if</span> <span class="bp">self</span> <span class="o">!=</span> <span class="n">radio</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">radio</span><span class="o">.</span><span class="n">_checked</span><span class="p">:</span>
-                    <span class="n">radio</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="n">radio</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">radio</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                    <span class="n">radio</span><span class="o">.</span><span class="n">setCheckState</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">Unchecked</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checked</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_pressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -293,7 +294,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TTkRadioButton.mousePressEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.mousePressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pressEvent</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCheckState</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="TTkRadioButton.keyEvent"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkWidgets.radiobutton.html#TermTk.TTkWidgets.radiobutton.TTkRadioButton.keyEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.TTkModelView.tree &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.TTkModelView.tree &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -140,13 +140,16 @@
         <span class="s1">&#39;itemActivated&#39;</span><span class="p">,</span> <span class="s1">&#39;itemChanged&#39;</span><span class="p">,</span> <span class="s1">&#39;itemClicked&#39;</span><span class="p">,</span> <span class="s1">&#39;itemExpanded&#39;</span><span class="p">,</span> <span class="s1">&#39;itemCollapsed&#39;</span><span class="p">,</span> <span class="s1">&#39;itemDoubleClicked&#39;</span><span class="p">,</span>
         <span class="c1"># Forwarded Methods</span>
         <span class="s1">&#39;setHeaderLabels&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;setColumnWidth&#39;</span><span class="p">,</span> <span class="s1">&#39;resizeColumnToContents&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;sortColumn&#39;</span><span class="p">,</span> <span class="s1">&#39;sortItems&#39;</span><span class="p">,</span>
         <span class="c1"># &#39;appendItem&#39;, &#39;setAlignment&#39;, &#39;setColumnColors&#39;, &#39;setColumnSize&#39;, &#39;setHeader&#39;,</span>
         <span class="s1">&#39;addTopLevelItem&#39;</span><span class="p">,</span> <span class="s1">&#39;addTopLevelItems&#39;</span><span class="p">,</span> <span class="s1">&#39;takeTopLevelItem&#39;</span><span class="p">,</span> <span class="s1">&#39;topLevelItem&#39;</span><span class="p">,</span> <span class="s1">&#39;indexOfTopLevelItem&#39;</span><span class="p">,</span> <span class="s1">&#39;selectedItems&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span> <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;parent&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;treeWidget&#39;</span><span class="p">,</span><span class="n">TTkTreeWidget</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;visible&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="p">:</span><span class="n">TTkTreeWidget</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;treeWidget&#39;</span><span class="p">,</span><span class="n">TTkTreeWidget</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setViewport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">TTkK</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
 
@@ -159,6 +162,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">itemDoubleClicked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">itemDoubleClicked</span>
 
         <span class="c1"># Forwarded Methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sortColumn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">sortColumn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sortItems</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">sortItems</span>
         <span class="c1">#self.setAlignment    = self._treeView.setAlignment</span>
         <span class="c1">#self.setHeader       = self._treeView.setHeader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setHeaderLabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">setHeaderLabels</span>
@@ -171,6 +176,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItem</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">topLevelItem</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">indexOfTopLevelItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">indexOfTopLevelItem</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectedItems</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">selectedItems</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setColumnWidth</span>         <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">setColumnWidth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resizeColumnToContents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">resizeColumnToContents</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span>           <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_treeView</span><span class="o">.</span><span class="n">clear</span></div>
 </pre></div>

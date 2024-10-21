@@ -13,6 +13,11 @@ TermTk.TTkWidgets.TTkModelView
   TermTk.TTkWidgets.TTkModelView.filetree
   TermTk.TTkWidgets.TTkModelView.filetreewidget
   TermTk.TTkWidgets.TTkModelView.filetreewidgetitem
+  TermTk.TTkWidgets.TTkModelView.table
+  TermTk.TTkWidgets.TTkModelView.tablemodelcsv
+  TermTk.TTkWidgets.TTkModelView.tablemodellist
+  TermTk.TTkWidgets.TTkModelView.tablewidget
+  TermTk.TTkWidgets.TTkModelView.tablewidgetitem
   TermTk.TTkWidgets.TTkModelView.tree
   TermTk.TTkWidgets.TTkModelView.treewidget
   TermTk.TTkWidgets.TTkModelView.treewidgetitem

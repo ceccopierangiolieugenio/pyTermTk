@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.widget &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.widget &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
@@ -102,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.resizableframe.html">TermTk.TTkWidgets.resizableframe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollarea.html">TermTk.TTkWidgets.scrollarea</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.scrollbar.html">TermTk.TTkWidgets.scrollbar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.slider.html">TermTk.TTkWidgets.slider</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.spacer.html">TermTk.TTkWidgets.spacer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.spinbox.html">TermTk.TTkWidgets.spinbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.splitter.html">TermTk.TTkWidgets.splitter</a></li>
@@ -150,7 +151,7 @@
 <h2>TTkWidget<a class="headerlink" href="#ttkwidget" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="TermTk.TTkWidgets.widget.TTkWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/widget.html#TTkWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.widget.TTkWidget" title="Permalink to this definition"></a></dt>
 <dd><p>Widget sizes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Terminal area (i.e. XTerm) = TTk
 ┌─────────────────────────────────────────┐
@@ -185,6 +186,8 @@
 <li><p><strong>minHeight</strong> (<em>int</em>) – the minHeight of the widget, defaults to 0</p></li>
 <li><p><strong>minSize</strong> (<em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the minSize [width,height] of the widget, optional</p></li>
 <li><p><strong>toolTip</strong> (<a class="reference internal" href="TermTk.TTkCore.string.html#TermTk.TTkCore.string.TTkString" title="TermTk.TTkCore.string.TTkString"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkString</span></code></a>) – This property holds the widget’s tooltip</p></li>
+<li><p><strong>style</strong> (<em>dict</em>) – this field hold the custom style to be used by this widget</p></li>
+<li><p><strong>addStyle</strong> (<em>dict</em>) – this field is required to override/merge the new style on top of the current one, useful if only few params need to be changed</p></li>
 <li><p><strong>visible</strong> (<em>bool</em><em>,</em><em>optional</em>) – the visibility, optional, defaults to True</p></li>
 <li><p><strong>enabled</strong> (<em>bool</em><em>,</em><em>optional</em>) – the ability to handle input events, optional, defaults to True</p></li>
 </ul>

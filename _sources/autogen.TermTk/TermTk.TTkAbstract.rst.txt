@@ -13,3 +13,4 @@ TermTk.TTkAbstract
   TermTk.TTkAbstract.abstractitemmodel
   TermTk.TTkAbstract.abstractscrollarea
   TermTk.TTkAbstract.abstractscrollview
+  TermTk.TTkAbstract.abstracttablemodel

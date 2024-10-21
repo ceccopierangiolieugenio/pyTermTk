@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TermTk.TTkWidgets.TTkModelView.tablewidget &mdash; pyTermTk 0.40.0-a
+ documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/ttk.css" type="text/css" />
+    <link rel="shortcut icon" href="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TermTk.TTkWidgets.TTkModelView.tablewidgetitem" href="TermTk.TTkWidgets.TTkModelView.tablewidgetitem.html" />
+    <link rel="prev" title="TermTk.TTkWidgets.TTkModelView.tablemodellist" href="TermTk.TTkWidgets.TTkModelView.tablemodellist.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> pyTermTk
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/000-examples.html">pyTermTk - &lt; <strong>the Examples</strong> &gt;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/001-helloworld.html">pyTermTk - Hello World</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/002-layout.html">pyTermTk - Layouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/003-signalslots.html">pyTermTk - Signal &amp; Slots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/004-logging.html">pyTermTk - Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/005-calculator.html">pyTermTk - Your first Calculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/ttkDesigner/textEdit/README.html">ttkDesigner - Your first TextEditor</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/features/index.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/features/crosscompatible.html">Cross Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/features/widgets.html">Widgets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../info/installing.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/installing.html#quickstart">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/debug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../info/resources/index.html">Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkAbstract.html">TermTk.TTkAbstract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.html">TermTk.TTkCore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkCore.TTkTerm.html">TermTk.TTkCore.TTkTerm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkGui.html">TermTk.TTkGui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkLayouts.html">TermTk.TTkLayouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTemplates.html">TermTk.TTkTemplates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTestWidgets.html">TermTk.TTkTestWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTheme.html">TermTk.TTkTheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkTypes.html">TermTk.TTkTypes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkUiTools.html">TermTk.TTkUiTools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.filetree.html">TermTk.TTkWidgets.TTkModelView.filetree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.filetreewidget.html">TermTk.TTkWidgets.TTkModelView.filetreewidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.filetreewidgetitem.html">TermTk.TTkWidgets.TTkModelView.filetreewidgetitem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.table.html">TermTk.TTkWidgets.TTkModelView.table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.tablemodelcsv.html">TermTk.TTkWidgets.TTkModelView.tablemodelcsv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.tablemodellist.html">TermTk.TTkWidgets.TTkModelView.tablemodellist</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TermTk.TTkWidgets.TTkModelView.tablewidget</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ttkheaderview">TTkHeaderView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ttktablewidget">TTkTableWidget</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.tablewidgetitem.html">TermTk.TTkWidgets.TTkModelView.tablewidgetitem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.tree.html">TermTk.TTkWidgets.TTkModelView.tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.treewidget.html">TermTk.TTkWidgets.TTkModelView.treewidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TermTk.TTkWidgets.TTkModelView.treewidgetitem.html">TermTk.TTkWidgets.TTkModelView.treewidgetitem</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkPickers.html">TermTk.TTkWidgets.TTkPickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TermTk.TTkWidgets.TTkTerminal.html">TermTk.TTkWidgets.TTkTerminal</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyTermTk</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="TermTk.TTkWidgets.html">TermTk.TTkWidgets</a> &raquo;</li>
+          <li><a href="TermTk.TTkWidgets.TTkModelView.html">TermTk.TTkWidgets.TTkModelView</a> &raquo;</li>
+      <li>TermTk.TTkWidgets.TTkModelView.tablewidget</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/autogen.TermTk/TermTk.TTkWidgets.TTkModelView.tablewidget.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-TermTk.TTkWidgets.TTkModelView.tablewidget">
+<span id="termtk-ttkwidgets-ttkmodelview-tablewidget"></span><h1>TermTk.TTkWidgets.TTkModelView.tablewidget<a class="headerlink" href="#module-TermTk.TTkWidgets.TTkModelView.tablewidget" title="Permalink to this heading"></a></h1>
+<section id="ttkheaderview">
+<h2>TTkHeaderView<a class="headerlink" href="#ttkheaderview" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkHeaderView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkHeaderView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView" title="Permalink to this definition"></a></dt>
+<dd><p>This is a placeholder for a proper “TTkHeaderView”</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView.hide">
+<span class="sig-name descname"><span class="pre">hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkHeaderView.hide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView.hide" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView.setVisible">
+<span class="sig-name descname"><span class="pre">setVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkHeaderView.setVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView.setVisible" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkHeaderView.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView.show" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="ttktablewidget">
+<h2>TTkTableWidget<a class="headerlink" href="#ttktablewidget" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TTkTableWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tableModel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><span class="pre">TTkAbstractTableModel</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vSeparator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hSeparator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vHeader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hHeader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sortingEnabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPadding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget" title="Permalink to this definition"></a></dt>
+<dd><p>A <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkTableWidget</span></code></a> implements a table view that displays items from a model.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    Customer Id     ╿First Name ╿Last Name   ╿Company                         ╿City                ╿
+1  │DD37Cf93aecA6Dc │Sheryl     │Baxter      │Rasmussen Group                 │East Leonard        │
+╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+2  │1Ef7b82A4CAAD10 │Preston    │Lozano      │Vega-Gentry                     │East Jimmychester   │
+╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+3  │6F94879bDAfE5a6 │Roy        │Berry       │Murillo-Perry                   │Isabelborough       │
+╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+4  │5Cef8BFA16c5e3c │Linda      │Olsen       │Dominguez, Mcmillan and Donovan │Bensonview          │
+╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+5  │053d585Ab6b3159 │Joanna     │Bender      │Martin, Lang and Andrade        │West Priscilla      │
+╾╌╌┼────────────────┼───────────┼────────────┼────────────────────────────────┼────────────────────┤
+6  │2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                    │Chavezborough       │
+╾╌╌┴────────────────┴───────────┴────────────┴────────────────────────────────┴────────────────────┘
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkTableWidget</span></code></a> class is one of the Model/View Classes and is part of TermTk’s model/view framework.</p>
+<p><a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkTableWidget</span></code></a> implements the methods to allow it to display data provided by models derived from the <a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkAbstractTableModel</span></code></a> class.</p>
+<p><strong>Navigation</strong></p>
+<p>You can navigate the cells in the table by clicking on a cell with the mouse,
+or by using the arrow keys,
+you can also hit Tab and Backtab to move from cell to cell.</p>
+<p><strong>Visual Appearance</strong></p>
+<p>The table has a vertical header that can be obtained using the <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.verticalHeader" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.verticalHeader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verticalHeader()</span></code></a> function,
+and a horizontal header that is available through the <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.horizontalHeader" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.horizontalHeader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">horizontalHeader()</span></code></a> function.
+The height of each row in the table can be set using <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setRowHeight" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setRowHeight"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setRowHeight()</span></code></a>;
+similarly, the width of columns can be set using <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setColumnWidth" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setColumnWidth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setColumnWidth()</span></code></a>.</p>
+<p>They can be selected with <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectRow" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectRow"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectRow()</span></code></a> and <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectColumn" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectColumn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectColumn()</span></code></a>.
+The table will show a grid depending on the <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setHSeparatorVisibility" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setHSeparatorVisibility"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setHSeparatorVisibility()</span></code></a> <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVSeparatorVisibility" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVSeparatorVisibility"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setVSeparatorVisibility()</span></code></a> methods.</p>
+<p>The items shown in a table view, like those in the other item views, are rendered and edited using standard delegates.
+However, for some tasks it is sometimes useful to be able to insert widgets in a table instead.
+Widgets are set for particular indexes with the setIndexWidget() function, and later retrieved with indexWidget().</p>
+<p>By default, the cells in a table do not expand to fill the available space.
+You can make the cells fill the available space by stretching the last header section.</p>
+<p>To distribute the available space according to the space requirement of each column or row,
+call the view’s <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnsToContents" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnsToContents"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resizeColumnsToContents()</span></code></a> or <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowsToContents" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowsToContents"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resizeRowsToContents()</span></code></a> functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tableModel</strong> (<a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkAbstractTableModel</span></code></a>) – the model for the view to present.</p></li>
+<li><p><strong>vSeparator</strong> (<em>bool</em><em>, </em><em>optional</em>) – show the vertical separators, defaults to True</p></li>
+<li><p><strong>hSeparator</strong> (<em>bool</em><em>, </em><em>optional</em>) – show the horizontal separators, defaults to True</p></li>
+<li><p><strong>vHeader</strong> (<em>bool</em><em>, </em><em>optional</em>) – show the vertical header, defaults to True</p></li>
+<li><p><strong>hHeader</strong> (<em>bool</em><em>, </em><em>optional</em>) – show the horizontal header, defaults to True</p></li>
+<li><p><strong>sortingEnabled</strong> (<em>bool</em><em>, </em><em>optional</em>) – enable the column sorting, defaults to False</p></li>
+<li><p><strong>dataPadding</strong> (<em>int</em><em>, </em><em>optional</em>) – the right column padding, defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference external" href="https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html">Signals</a></p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellChanged">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellChanged" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever the data of the item in the cell specified by row and column has changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – the row</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – the column</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellClicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellClicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellClicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever a cell in the table is clicked.
+The row and column specified is the cell that was clicked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – the row</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – the column</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellDoubleClicked">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellDoubleClicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellDoubleClicked" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever a cell in the table is double clicked.
+The row and column specified is the cell that was double clicked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – the row</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – the column</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellEntered">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellEntered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cellEntered" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted when the mouse cursor enters a cell.
+The cell is specified by row and column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – the row</p></li>
+<li><p><strong>col</strong> (<em>int</em>) – the column</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentCellChanged">
+<em class="property"><span class="pre">signal</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">currentCellChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currRow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">currCol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prevRow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prevCol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentCellChanged" title="Permalink to this definition"></a></dt>
+<dd><p>This signal is emitted whenever the current cell changes.
+The cell specified by <strong>prevRow</strong> and <strong>prevCol</strong> is the cell that previously had the focus,
+the cell specified by <strong>currRow</strong> and <strong>currCol</strong> is the new current cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currRow</strong> (<em>int</em>) – the current row</p></li>
+<li><p><strong>currColumn</strong> (<em>int</em>) – the current column</p></li>
+<li><p><strong>prevRow</strong> (<em>int</em>) – the previous row</p></li>
+<li><p><strong>prevCol</strong> (<em>int</em>) – the previous column</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.addWidget">
+<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.addWidget" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.addWidget" title="TermTk.TTkLayouts.layout.TTkLayout.addWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">addWidget</span></code></a></p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.classStyle">
+<span class="sig-name descname"><span class="pre">classStyle</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'default':</span> <span class="pre">{'color':</span> <span class="pre">&lt;TermTk.TTkCore.color._TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'currentColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'headerColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'hoverColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'lineColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'selectedColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'separatorColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;},</span> <span class="pre">'disabled':</span> <span class="pre">{'color':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'currentColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'headerColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'hoverColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'lineColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'selectedColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;,</span> <span class="pre">'separatorColor':</span> <span class="pre">&lt;TermTk.TTkCore.color.TTkColor</span> <span class="pre">object&gt;}}</span></em><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.classStyle" title="Permalink to this definition"></a></dt>
+<dd><p>default style</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.clearSelection">
+<span class="sig-name descname"><span class="pre">clearSelection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.clearSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.clearSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Deselects all selected items.
+The current index will not be changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.close" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.columnCount">
+<span class="sig-name descname"><span class="pre">columnCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.columnCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.columnCount" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the number of columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Copies any selected cells to the clipboard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentColumn">
+<span class="sig-name descname"><span class="pre">currentColumn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.currentColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentColumn" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the column of the current item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentRow">
+<span class="sig-name descname"><span class="pre">currentRow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.currentRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentRow" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the row of the current item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cut" title="Permalink to this definition"></a></dt>
+<dd><p>Copies the selected ccells to the clipboard and deletes them from the table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dragEnterEvent">
+<span class="sig-name descname"><span class="pre">dragEnterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dragEnterEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dragLeaveEvent">
+<span class="sig-name descname"><span class="pre">dragLeaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dragLeaveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dragMoveEvent">
+<span class="sig-name descname"><span class="pre">dragMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dragMoveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dropEvent">
+<span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.dropEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TTkDropEvent</span></code>) – The drop event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.enterEvent">
+<span class="sig-name descname"><span class="pre">enterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.enterEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse enter events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.getPadding">
+<span class="sig-name descname"><span class="pre">getPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.getPadding" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve the widget padding sizes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list[top, bottom, left, right]: the 4 padding sizes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.hSeparatorVisibility">
+<span class="sig-name descname"><span class="pre">hSeparatorVisibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.hSeparatorVisibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.hSeparatorVisibility" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the visibility status of the horizontal separator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.hide">
+<span class="sig-name descname"><span class="pre">hide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.hide" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.horizontalHeader">
+<span class="sig-name descname"><span class="pre">horizontalHeader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView"><span class="pre">TTkHeaderView</span></a></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.horizontalHeader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.horizontalHeader" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the table view’s horizontal header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkHeaderView</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isRedoAvailable">
+<span class="sig-name descname"><span class="pre">isRedoAvailable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.isRedoAvailable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isRedoAvailable" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isSortingEnabled">
+<span class="sig-name descname"><span class="pre">isSortingEnabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.isSortingEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isSortingEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>This property holds whether sorting is enabled
+If this property is true, sorting is enabled for the table.
+If this property is false, sorting is not enabled. The default value is false.</p>
+<p><strong>Note</strong>: . Setting the property to true with <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSortingEnabled" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSortingEnabled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setSortingEnabled()</span></code></a>
+immediately triggers a call to <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sortByColumn()</span></code></a>
+with the current sort section and order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isUndoAvailable">
+<span class="sig-name descname"><span class="pre">isUndoAvailable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.isUndoAvailable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isUndoAvailable" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.keyEvent">
+<span class="sig-name descname"><span class="pre">keyEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.keyEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.keyEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.keyPressEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key press events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.keyReleaseEvent">
+<span class="sig-name descname"><span class="pre">keyReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.keyReleaseEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive key release events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputkey.html#TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent" title="TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkKeyEvent</span></code></a>) – The keyboard event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.layout">
+<span class="sig-name descname"><span class="pre">layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.layout" title="Permalink to this definition"></a></dt>
+<dd><p>Get the layout</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The layout used</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkLayout</span></code> or derived</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.leaveEvent">
+<span class="sig-name descname"><span class="pre">leaveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.leaveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.leaveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse leave events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.lowerWidget">
+<span class="sig-name descname"><span class="pre">lowerWidget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.lowerWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.model">
+<span class="sig-name descname"><span class="pre">model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><span class="pre">TTkAbstractTableModel</span></a></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.model" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the model that this view is presenting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkAbstractTableModel</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseDoubleClickEvent">
+<span class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.mouseDoubleClickEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseDoubleClickEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseDragEvent">
+<span class="sig-name descname"><span class="pre">mouseDragEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.mouseDragEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseDragEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse drag events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseEvent">
+<span class="sig-name descname"><span class="pre">mouseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseEvent" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Don’t touch this!</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseMoveEvent">
+<span class="sig-name descname"><span class="pre">mouseMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.mouseMoveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseMoveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse move events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mousePressEvent">
+<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mousePressEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.mouseReleaseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseReleaseEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse release events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseTapEvent">
+<span class="sig-name descname"><span class="pre">mouseTapEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.mouseTapEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.move" title="Permalink to this definition"></a></dt>
+<dd><p>Move the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>int</em>) – x position</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – y position</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.moveEvent">
+<span class="sig-name descname"><span class="pre">moveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.moveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Event Callback triggered after a successful move</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paintChildCanvas">
+<span class="sig-name descname"><span class="pre">paintChildCanvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paintChildCanvas" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Don’t touch this!</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paintEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Paint Event callback,
+this need to be overridden in the widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paste">
+<span class="sig-name descname"><span class="pre">paste</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paste" title="Permalink to this definition"></a></dt>
+<dd><p>Pastes the text/cells from the clipboard into the table at the current cursor position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.raiseWidget">
+<span class="sig-name descname"><span class="pre">raiseWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raiseParent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.raiseWidget" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.redo">
+<span class="sig-name descname"><span class="pre">redo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.redo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.redo" title="Permalink to this definition"></a></dt>
+<dd><p>Redoes the last operation if redo is available.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.removeWidget">
+<span class="sig-name descname"><span class="pre">removeWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.removeWidget" title="Permalink to this definition"></a></dt>
+<dd><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Method Deprecated,</p>
+<p>use <code class="xref py py-class docutils literal notranslate"><span class="pre">TTkWidget</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">layout</span></code> -&gt; <a class="reference internal" href="TermTk.TTkLayouts.layout.html#TermTk.TTkLayouts.layout.TTkLayout.removeWidget" title="TermTk.TTkLayouts.layout.TTkLayout.removeWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">removeWidget</span></code></a></p>
+<p>i.e.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parentWidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">childWidget</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resize">
+<span class="sig-name descname"><span class="pre">resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resize" title="Permalink to this definition"></a></dt>
+<dd><p>Resize the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> (<em>int</em>) – the new width</p></li>
+<li><p><strong>h</strong> (<em>int</em>) – the new height</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnToContents">
+<span class="sig-name descname"><span class="pre">resizeColumnToContents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.resizeColumnToContents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnToContents" title="Permalink to this definition"></a></dt>
+<dd><p>Resizes the given column based on the size hints of the delegate used to render each item in the column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>int</em>) – the column to be resized</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnsToContents">
+<span class="sig-name descname"><span class="pre">resizeColumnsToContents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.resizeColumnsToContents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnsToContents" title="Permalink to this definition"></a></dt>
+<dd><p>Resizes all columns based on the size hints of the delegate used to render each item in the columns.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Event Callback triggered after a successful resize</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowToContents">
+<span class="sig-name descname"><span class="pre">resizeRowToContents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.resizeRowToContents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowToContents" title="Permalink to this definition"></a></dt>
+<dd><p>Resizes the given row based on the size hints of the delegate used to render each item in the row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>row</strong> (<em>int</em>) – the row to be resized</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowsToContents">
+<span class="sig-name descname"><span class="pre">resizeRowsToContents</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.resizeRowsToContents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowsToContents" title="Permalink to this definition"></a></dt>
+<dd><p>Resizes all rows based on the size hints of the delegate used to render each item in the rows.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.rowCount">
+<span class="sig-name descname"><span class="pre">rowCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.rowCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.rowCount" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the number of rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectAll">
+<span class="sig-name descname"><span class="pre">selectAll</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.selectAll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectAll" title="Permalink to this definition"></a></dt>
+<dd><p>Selects all items in the view.
+This function will use the selection behavior set on the view when selecting.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectColumn">
+<span class="sig-name descname"><span class="pre">selectColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.selectColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectColumn" title="Permalink to this definition"></a></dt>
+<dd><p>Selects the given column in the table view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>col</strong> (<em>int</em>) – the column to be selected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectRow">
+<span class="sig-name descname"><span class="pre">selectRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.selectRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectRow" title="Permalink to this definition"></a></dt>
+<dd><p>Selects the given row in the table view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>row</strong> (<em>int</em>) – the row to be selected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setColumnWidth">
+<span class="sig-name descname"><span class="pre">setColumnWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setColumnWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setColumnWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the width of the given column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<em>int</em>) – the column</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – its width</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setDisabled">
+<span class="sig-name descname"><span class="pre">setDisabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setDisabled" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setEnabled" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setFocus">
+<span class="sig-name descname"><span class="pre">setFocus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setFocus" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setGeometry">
+<span class="sig-name descname"><span class="pre">setGeometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setGeometry" title="Permalink to this definition"></a></dt>
+<dd><p>Resize and move the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>int</em>) – x position</p></li>
+<li><p><strong>y</strong> (<em>int</em>) – y position</p></li>
+<li><p><strong>w</strong> (<em>int</em>) – the new width</p></li>
+<li><p><strong>h</strong> (<em>int</em>) – the new height</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setHSeparatorVisibility">
+<span class="sig-name descname"><span class="pre">setHSeparatorVisibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setHSeparatorVisibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setHSeparatorVisibility" title="Permalink to this definition"></a></dt>
+<dd><p>Set the the visibility of the horizontal separators (lines)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     Customer Id      First Name  Last Name   Company
+1  │ DD37Cf93aecA6Dc  Sheryl      Baxter      Rasmussen Group
+╾╌╌┼───────────────────────────────────────────────────────────
+2  │ 1Ef7b82A4CAAD10  Preston     Lozano      Vega-Gentry
+╾╌╌┼───────────────────────────────────────────────────────────
+3  │ 6F94879bDAfE5a6  Roy         Berry       Murillo-Perry
+╾╌╌┼───────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>visibility</strong> (<em>bool</em>) – the visibility status</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setModel">
+<span class="sig-name descname"><span class="pre">setModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><span class="pre">TTkAbstractTableModel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setModel" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the model for the view to present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="TermTk.TTkAbstract.abstracttablemodel.html#TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel" title="TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkAbstractTableModel</span></code></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setName" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setPadding">
+<span class="sig-name descname"><span class="pre">setPadding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setPadding" title="Permalink to this definition"></a></dt>
+<dd><p>Set the padding of the widget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top</strong> (<em>int</em>) – top padding</p></li>
+<li><p><strong>bottom</strong> (<em>int</em>) – bottom padding</p></li>
+<li><p><strong>left</strong> (<em>int</em>) – left padding</p></li>
+<li><p><strong>right</strong> (<em>int</em>) – right padding</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setRowHeight">
+<span class="sig-name descname"><span class="pre">setRowHeight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setRowHeight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setRowHeight" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the height of the given row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>int</em>) – the row</p></li>
+<li><p><strong>height</strong> (<em>int</em>) – its height</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSelection">
+<span class="sig-name descname"><span class="pre">setSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.TTkItemSelectionModel" title="TermTk.TTkCore.constant.TTkConstant.TTkItemSelectionModel"><span class="pre">TTkItemSelectionModel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Selects the items within the given rect and in accordance with the specified selection flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the x,y position of the rect</p></li>
+<li><p><strong>size</strong> (<em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – the width,height of the rect used for the selection</p></li>
+<li><p><strong>flags</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel" title="TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkItemSelectionModel</span></code></a>) – the selection model used (i.e. <a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select" title="TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select"><code class="xref py py-class docutils literal notranslate"><span class="pre">Select</span></code></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSortingEnabled">
+<span class="sig-name descname"><span class="pre">setSortingEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setSortingEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSortingEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>If enable is true, enables sorting for the table and immediately trigger a
+call to <a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sortByColumn()</span></code></a>
+with the current sort section and order</p>
+<p><strong>Note</strong>: Setter function for property sortingEnabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enable</strong> (<em>bool</em>) – the availability of undo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVSeparatorVisibility">
+<span class="sig-name descname"><span class="pre">setVSeparatorVisibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visibility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.setVSeparatorVisibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVSeparatorVisibility" title="Permalink to this definition"></a></dt>
+<dd><p>Set the the visibility of the vertical separators (lines)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     Customer Id     ╿First Name ╿Last Name   ╿Company                     ╿
+1  │ DD37Cf93aecA6Dc │Sheryl     │Baxter      │Rasmussen Group             │
+2  │ 1Ef7b82A4CAAD10 │Preston    │Lozano      │Vega-Gentry                 │
+3  │ 6F94879bDAfE5a6 │Roy        │Berry       │Murillo-Perry               │
+4  │ 5Cef8BFA16c5e3c │Linda      │Olsen       │Dominguez, Mcmillan and Don │
+5  │ 053d585Ab6b3159 │Joanna     │Bender      │Martin, Lang and Andrade    │
+6  │ 2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                │
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>visibility</strong> (<em>bool</em>) – the visibility status</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVisible">
+<span class="sig-name descname"><span class="pre">setVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVisible" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.show" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn">
+<span class="sig-name descname"><span class="pre">sortByColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkConstant.SortOrder" title="TermTk.TTkCore.constant.TTkConstant.SortOrder"><span class="pre">SortOrder</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.sortByColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn" title="Permalink to this definition"></a></dt>
+<dd><p>Sorts the model by the values in the given column and order.</p>
+<p>column may be -1, in which case no sort indicator will be shown and the model will return to its natural, unsorted order.
+Note that not all models support this and may even crash in this case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<em>bool</em>) – the column used for the sorting, -1 to keep the table unsorted</p></li>
+<li><p><strong>order</strong> (<a class="reference internal" href="TermTk.TTkCore.constant.html#TermTk.TTkCore.constant.TTkK.SortOrder" title="TermTk.TTkCore.constant.TTkK.SortOrder"><code class="xref py py-class docutils literal notranslate"><span class="pre">SortOrder</span></code></a>) – the sort order</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.undo">
+<span class="sig-name descname"><span class="pre">undo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.undo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.undo" title="Permalink to this definition"></a></dt>
+<dd><p>Undoes the last operation if undo is available.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.unselectColumn">
+<span class="sig-name descname"><span class="pre">unselectColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.unselectColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.unselectColumn" title="Permalink to this definition"></a></dt>
+<dd><p>Unselects the given column in the table view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>int</em>) – the column to be unselected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.unselectRow">
+<span class="sig-name descname"><span class="pre">unselectRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.unselectRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.unselectRow" title="Permalink to this definition"></a></dt>
+<dd><p>Unselects the given row in the table view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>row</strong> (<em>int</em>) – the row to be unselected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.vSeparatorVisibility">
+<span class="sig-name descname"><span class="pre">vSeparatorVisibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.vSeparatorVisibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.vSeparatorVisibility" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the visibility status of the vertical separator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.verticalHeader">
+<span class="sig-name descname"><span class="pre">verticalHeader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView"><span class="pre">TTkHeaderView</span></a></span></span><a class="reference internal" href="../_modules/TermTk/TTkWidgets/TTkModelView/tablewidget.html#TTkTableWidget.verticalHeader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.verticalHeader" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the table view’s vertical header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView" title="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkHeaderView</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.wheelEvent">
+<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.wheelEvent" title="Permalink to this definition"></a></dt>
+<dd><p>This event handler, can be reimplemented in a subclass to receive mouse wheel events for the widget.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reimplement this function to handle this event</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>evt</strong> (<a class="reference internal" href="TermTk.TTkCore.TTkTerm.inputmouse.html#TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent" title="TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TTkMouseEvent</span></code></a>) – The mouse event</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>True</strong> if the event has been handled</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="TermTk.TTkWidgets.TTkModelView.tablemodellist.html" class="btn btn-neutral float-left" title="TermTk.TTkWidgets.TTkModelView.tablemodellist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TermTk.TTkWidgets.TTkModelView.tablewidgetitem.html" class="btn btn-neutral float-right" title="TermTk.TTkWidgets.TTkModelView.tablewidgetitem" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Eugenio Parodi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

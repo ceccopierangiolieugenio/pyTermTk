@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkGui.clipboard &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkGui.clipboard &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -166,7 +166,24 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_loadClipboardManager</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;copykitten&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;pyodideProxy&#39;</span><span class="p">):</span>
+                <span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using &#39;pyodideProxy&#39; as clipboard manager&quot;</span><span class="p">)</span>
+                <span class="kn">import</span> <span class="nn">pyodideProxy</span>
+                <span class="kn">import</span> <span class="nn">asyncio</span>
+                <span class="k">async</span> <span class="k">def</span> <span class="nf">_async_co</span><span class="p">():</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pyodideProxy</span><span class="o">.</span><span class="n">paste</span><span class="p">()</span>
+                    <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ttkProxy paste_co: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">text</span>
+                <span class="k">def</span> <span class="nf">_paste</span><span class="p">():</span>
+                    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">_async_co</span><span class="p">())</span>
+                    <span class="c1"># text = loop.run_until_complete(pyodideProxy.paste())</span>
+                    <span class="n">TTkLog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ttkProxy paste: </span><span class="si">{</span><span class="n">text</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">_async_co</span><span class="p">()</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">text</span>
+                <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_manager</span> <span class="o">=</span> <span class="n">pyodideProxy</span>
+                <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_setText</span> <span class="o">=</span> <span class="n">pyodideProxy</span><span class="o">.</span><span class="n">copy</span>
+                <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">pyodideProxy</span><span class="o">.</span><span class="n">paste</span> <span class="c1"># _paste</span>
+            <span class="k">elif</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s1">&#39;copykitten&#39;</span><span class="p">):</span>
                 <span class="n">TTkLog</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using &#39;copykitten&#39; as clipboard manager&quot;</span><span class="p">)</span>
                 <span class="kn">import</span> <span class="nn">copykitten</span> <span class="k">as</span> <span class="nn">_c</span>
                 <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_manager</span> <span class="o">=</span> <span class="n">_c</span>
@@ -214,17 +231,22 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Clipboard error, try to export X11 if you are running this UI via SSH&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
-                    <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+                    <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TTkClipboard.text"><a class="viewcode-back" href="../../../autogen.TermTk/TermTk.TTkGui.clipboard.html#TermTk.TTkGui.clipboard.TTkClipboard.text">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">text</span><span class="p">():</span>
         <span class="sd">&#39;&#39;&#39;text&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
-            <span class="n">txt</span> <span class="o">=</span> <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_text</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">txt</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_clipboard</span><span class="p">):</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">txt</span> <span class="o">=</span> <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_text</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Clipboard error, try to export X11 if you are running this UI via SSH&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                    <span class="n">TTkLog</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">txt</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">txt</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_clipboard</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_clipboard</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_text</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">txt</span>
         <span class="k">return</span> <span class="n">TTkClipboard</span><span class="o">.</span><span class="n">_clipboard</span></div></div>
 </pre></div>
 

@@ -12,6 +12,7 @@ TermTk
 
   TermTk.TTkAbstract
   TermTk.TTkCore
+  TermTk.TTkCrossTools
   TermTk.TTkGui
   TermTk.TTkLayouts
   TermTk.TTkTemplates

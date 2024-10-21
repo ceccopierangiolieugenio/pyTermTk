@@ -34,6 +34,7 @@ TermTk.TTkWidgets
   TermTk.TTkWidgets.resizableframe
   TermTk.TTkWidgets.scrollarea
   TermTk.TTkWidgets.scrollbar
+  TermTk.TTkWidgets.slider
   TermTk.TTkWidgets.spacer
   TermTk.TTkWidgets.spinbox
   TermTk.TTkWidgets.splitter

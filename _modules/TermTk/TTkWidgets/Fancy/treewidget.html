@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkWidgets.Fancy.treewidget &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkWidgets.Fancy.treewidget &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -188,7 +188,8 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topLevelItems</span> <span class="o">=</span> <span class="n">TTkFancyTreeWidgetItem</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_doubleClickItem</span><span class="p">)</span>
-        <span class="c1"># if &#39;parent&#39; in kwargs: kwargs.pop(&#39;parent&#39;)</span>
+        <span class="c1"># kwargs.pop(&#39;parent&#39;,None)</span>
+        <span class="c1"># kwargs.pop(&#39;visible&#39;,None)</span>
 
     <span class="k">def</span> <span class="nf">_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
         <span class="n">item</span><span class="o">.</span><span class="n">setExpand</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>

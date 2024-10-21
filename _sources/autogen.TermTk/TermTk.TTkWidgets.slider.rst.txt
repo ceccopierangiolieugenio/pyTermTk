@@ -1,0 +1,16 @@
+
+TermTk.TTkWidgets.slider
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: TermTk.TTkWidgets.slider
+
+.. currentmodule:: TermTk.TTkWidgets.slider
+
+
+
+TTkSlider
+=========
+
+.. autoclass:: TTkSlider
+   :members:
+   :inherited-members:

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TermTk.TTkCore.helper &mdash; pyTermTk 0.39.0-a
+  <title>TermTk.TTkCore.helper &mdash; pyTermTk 0.40.0-a
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -275,12 +275,12 @@
             <span class="n">wx</span> <span class="o">+=</span> <span class="n">x</span>
             <span class="n">wy</span> <span class="o">+=</span> <span class="n">y</span>
 
+        <span class="n">wi</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
+        <span class="n">wi</span><span class="o">.</span><span class="n">setLayer</span><span class="p">(</span><span class="n">wi</span><span class="o">.</span><span class="n">LAYER1</span><span class="p">)</span>
         <span class="k">if</span>  <span class="n">toolWindow</span><span class="p">:</span>
             <span class="c1"># Forcing the layer to:</span>
             <span class="c1"># TTkLayoutItem.LAYER1    =  0x40000000</span>
             <span class="n">widget</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">wx</span><span class="p">,</span><span class="n">wy</span><span class="p">)</span>
-            <span class="n">wi</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
-            <span class="n">wi</span><span class="o">.</span><span class="n">setLayer</span><span class="p">(</span><span class="n">wi</span><span class="o">.</span><span class="n">LAYER1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">TTkHelper</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">_Overlay</span><span class="p">(</span><span class="n">wx</span><span class="p">,</span><span class="n">wy</span><span class="p">,</span><span class="n">widget</span><span class="p">,</span><span class="n">TTkHelper</span><span class="o">.</span><span class="n">_focusWidget</span><span class="p">,</span><span class="n">modal</span><span class="p">))</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">_rootWidget</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
@@ -634,6 +634,8 @@
             <span class="n">y</span> <span class="o">=</span> <span class="n">my</span><span class="o">+</span><span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span> <span class="c1"># Draw above the Mouse</span>
             <span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">my</span><span class="o">-</span><span class="n">th</span><span class="p">)</span>
+        <span class="n">wi</span> <span class="o">=</span> <span class="n">tt</span><span class="o">.</span><span class="n">widgetItem</span><span class="p">()</span>
+        <span class="n">wi</span><span class="o">.</span><span class="n">setLayer</span><span class="p">(</span><span class="n">wi</span><span class="o">.</span><span class="n">LAYER3</span><span class="p">)</span>
         <span class="n">tt</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
         <span class="n">TTkHelper</span><span class="o">.</span><span class="n">_rootWidget</span><span class="o">.</span><span class="n">rootLayout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">tt</span><span class="p">)</span>
         <span class="n">tt</span><span class="o">.</span><span class="n">raiseWidget</span><span class="p">()</span>
