@@ -173,6 +173,7 @@ class TTkProxy {
         this.pyodide = await loadPyodide();
         this.ttk_timer = (i) => console.log("ttk_timer unimplemented")
         this.term.write('Pyodide ('+this.pyodide.version+') - Loaded\n\r')
+        console.log('Pyodide ('+this.pyodide.version+') - Loaded\n\r' )
 
         this.pyodide.registerJsModule("pyodideProxy", this.pyodideProxy);
         this.term.write('Pyodide Proxy - Loaded\n\r')
