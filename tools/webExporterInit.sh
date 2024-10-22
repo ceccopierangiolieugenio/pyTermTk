@@ -47,9 +47,9 @@ ${_TOOLS_BASE_PATH}/prepareBuild.sh release
 mkdir -p ${_TMP_PATH}/bin \
          ${_TMP_PATH}/www/pyodide \
          ${_TMP_PATH}/www/xterm/ \
-         ${_TMP_PATH}/www/xterm-addon-fit \
-         ${_TMP_PATH}/www/xterm-addon-canvas \
-         ${_TMP_PATH}/www/xterm-addon-unicode11 \
+         ${_TMP_PATH}/www/xterm/addon-fit \
+         ${_TMP_PATH}/www/xterm/addon-canvas \
+         ${_TMP_PATH}/www/xterm/addon-unicode11 \
          ${_TMP_PATH}/www/file-saver\
          ${_TMP_PATH}/www/webfonts \
          ${_TMP_PATH}/www/fonts/nerdfonts \
@@ -72,21 +72,21 @@ _download ${_TMP_PATH}/www/pyodide/   www/pyodide/python_stdlib.zip
 _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.asm.js
 # _download ${_TMP_PATH}/www/pyodide/   www/pyodide/repodata.json
 _download ${_TMP_PATH}/www/pyodide/   www/pyodide/pyodide.asm.wasm
-_download ${_TMP_PATH}/www/pyodide/   www/pyodide/Pillow-10.0.0-cp311-cp311-emscripten_3_1_46_wasm32.whl
-_download ${_TMP_PATH}/www/pyodide/   www/pyodide/Pillow-10.0.0-cp311-cp311-emscripten_3_1_46_wasm32.whl.metadata
+_download ${_TMP_PATH}/www/pyodide/   www/pyodide/pillow-10.2.0-cp312-cp312-pyodide_2024_0_wasm32.whl
+_download ${_TMP_PATH}/www/pyodide/   www/pyodide/pillow-10.2.0-cp312-cp312-pyodide_2024_0_wasm32.whl.metadata
 
 _download ${_TMP_PATH}/www/xterm/    www/xterm/xterm.css
 _download ${_TMP_PATH}/www/xterm/    www/xterm/xterm.js
 _download ${_TMP_PATH}/www/xterm/    www/xterm/xterm.js.map
 
-_download ${_TMP_PATH}/www/xterm-addon-fit/   www/xterm-addon-fit/xterm-addon-fit.js
-_download ${_TMP_PATH}/www/xterm-addon-fit/   www/xterm-addon-fit/xterm-addon-fit.js.map
+_download ${_TMP_PATH}/www/xterm/addon-fit/   www/xterm/addon-fit/addon-fit.js
+_download ${_TMP_PATH}/www/xterm/addon-fit/   www/xterm/addon-fit/addon-fit.js.map
 
-_download ${_TMP_PATH}/www/xterm-addon-canvas/   www/xterm-addon-canvas/xterm-addon-canvas.js
-_download ${_TMP_PATH}/www/xterm-addon-canvas/   www/xterm-addon-canvas/xterm-addon-canvas.js.map
+_download ${_TMP_PATH}/www/xterm/addon-canvas/   www/xterm/addon-canvas/addon-canvas.js
+_download ${_TMP_PATH}/www/xterm/addon-canvas/   www/xterm/addon-canvas/addon-canvas.js.map
 
-_download ${_TMP_PATH}/www/xterm-addon-unicode11/   www/xterm-addon-unicode11/xterm-addon-unicode11.js
-_download ${_TMP_PATH}/www/xterm-addon-unicode11/   www/xterm-addon-unicode11/xterm-addon-unicode11.js.map
+_download ${_TMP_PATH}/www/xterm/addon-unicode11/   www/xterm/addon-unicode11/addon-unicode11.js
+_download ${_TMP_PATH}/www/xterm/addon-unicode11/   www/xterm/addon-unicode11/addon-unicode11.js.map
 
 _download ${_TMP_PATH}/www/file-saver/   www/file-saver/FileSaver.js
 

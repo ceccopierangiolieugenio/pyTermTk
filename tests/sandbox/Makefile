@@ -4,7 +4,12 @@ testSandbox:
 	python3 -m http.server --directory ./
 
 www:
-	mkdir -p www/pyodide www/xterm/ www/xterm-addon-fit www/codemirror www/codemirror/theme www/codemirror/modes www/fontawesome www/w2ui www/webfonts www/fonts/nerdfonts
+	mkdir -p \
+	    www/pyodide \
+		www/xterm/ www/xterm/addon-fit \
+		www/codemirror www/codemirror/theme www/codemirror/modes \
+		www/fontawesome www/webfonts www/fonts/nerdfonts \
+		www/w2ui
 
 	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js
 	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/python_stdlib.zip
@@ -16,10 +21,10 @@ www:
 	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js
 	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js.map
 
-	wget  -P www/xterm-addon-fit/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-fit/xterm-addon-fit.js
-	wget  -P www/xterm-addon-fit/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-fit/xterm-addon-fit.js.map
+	wget  -P www/xterm/addon-fit/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/addon-fit/addon-fit.js
+	wget  -P www/xterm/addon-fit/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/addon-fit/addon-fit.js.map
 
-	wget  -P www/xterm-addon-unicode11/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm-addon-unicode11/xterm-addon-unicode11.js
+	wget  -P www/xterm/addon-unicode11/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/addon-unicode11/addon-unicode11.js
 
 	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/fontawesome/regular.min.css
 	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/fontawesome/fontawesome.min.css
@@ -40,23 +45,24 @@ www:
 
 updateXterm: www
 	rm -rf node_modules package.json package-lock.json
-	npm install xterm
-	npm install xterm-addon-fit
-	npm install xterm-addon-unicode11
-	npm install xterm-addon-canvas
-	cp node_modules/xterm/css/xterm.css \
-	   node_modules/xterm/lib/xterm.js \
-	   node_modules/xterm/lib/xterm.js.map \
+	mkdir -p www/xterm/ www/xterm/addon-unicode11 www/xterm/addon-fit www/xterm/addon-canvas
+	npm install @xterm/xterm
+	npm install @xterm/addon-fit
+	npm install @xterm/addon-unicode11
+	npm install @xterm/addon-canvas
+	cp node_modules/@xterm/xterm/css/xterm.css \
+	   node_modules/@xterm/xterm/lib/xterm.js \
+	   node_modules/@xterm/xterm/lib/xterm.js.map \
 	   www/xterm/
-	cp node_modules/xterm-addon-unicode11/lib/xterm-addon-unicode11.js \
-	   node_modules/xterm-addon-unicode11/lib/xterm-addon-unicode11.js.map \
-	   www/xterm-addon-unicode11/
-	cp node_modules/xterm-addon-fit/lib/xterm-addon-fit.js \
-	   node_modules/xterm-addon-fit/lib/xterm-addon-fit.js.map \
-	   www/xterm-addon-fit/
-	cp node_modules/xterm-addon-canvas/lib/xterm-addon-canvas.js \
-	   node_modules/xterm-addon-canvas/lib/xterm-addon-canvas.js.map \
-	   www/xterm-addon-fit/
+	cp node_modules/@xterm/addon-unicode11/lib/addon-unicode11.js \
+	   node_modules/@xterm/addon-unicode11/lib/addon-unicode11.js.map \
+	   www/xterm/addon-unicode11/
+	cp node_modules/@xterm/addon-fit/lib/addon-fit.js \
+	   node_modules/@xterm/addon-fit/lib/addon-fit.js.map \
+	   www/xterm/addon-fit/
+	cp node_modules/@xterm/addon-canvas/lib/addon-canvas.js \
+	   node_modules/@xterm/addon-canvas/lib/addon-canvas.js.map \
+	   www/xterm/addon-canvas/
 	rm -rf node_modules package.json package-lock.json
 
 buildSandbox: www
