@@ -30,6 +30,7 @@ from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
+    '''TTkTreeWidgetItem'''
     __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
                  '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget',

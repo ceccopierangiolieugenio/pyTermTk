@@ -119,29 +119,27 @@ class TTkAbstractTableModel():
 
     :class:`~TermTk.TTkWidgets.TTkModelView.tablemodelcsv.TTkTableModelCSV` subclass of :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` including the api to import csv data
 
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
+    '''
 
-        .. py:method:: dataChanged(pos,size)
-            :signal:
-
-            This signal is emitted whenever the data in an existing item changes.
-
-            If more items are affected, the pos/size definne the minimum area including all of those changes.
-
-            When reimplementing the :meth:`setData` function, this signal must be emitted explicitly.
-
-            :param pos: the topLeft margin of the modified area
-            :type pos: tuple(int,int)
-
-            :param size: the size of the modified area
-            :type size: tuple(int,int)
-            '''
     __slots__ = (
         # Signals
         'dataChanged'
     )
+
+    dataChanged:pyTTkSignal[int,int]
+    '''
+        This signal is emitted whenever the data in an existing item changes.
+
+        If more items are affected, the pos/size definne the minimum area including all of those changes.
+
+        When reimplementing the :meth:`setData` function, this signal must be emitted explicitly.
+
+        :param pos: the topLeft margin of the modified area
+        :type pos: tuple(int,int)
+
+        :param size: the size of the modified area
+        :type size: tuple(int,int)
+    '''
     def __init__(self):
         self.dataChanged = pyTTkSignal(tuple[int,int],tuple[int,int])
 

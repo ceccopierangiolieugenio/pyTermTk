@@ -5,7 +5,7 @@
 	. .venv/bin/activate ; \
 	pip install -r docs/requirements.txt
 	# Add "Signal" option in the method domains
-	patch -p3 -d .venv/lib/python3*/ < docs/sphynx.001.signal.patch
+	# patch -p3 -d .venv/lib/python3*/ < docs/sphynx.001.signal.patch
 	#  Update/Regen
 	#    # Docs
 	#    pip install sphinx sphinx-epytext sphinx-autodocgen sphinx-rtd-theme

@@ -57,23 +57,23 @@ Methods
 
 __all__ = ['pyTTkSlot', 'pyTTkSignal']
 
+from typing import TypeVar, TypeVarTuple, Generic, List
 from inspect import getfullargspec
 from types import LambdaType
 from threading import Lock
 
-def pyTTkSlot(*args, **kwargs):
+def pyTTkSlot(*args):
     def pyTTkSlot_d(func):
         # Add signature attributes to the function
         func._TTkslot_attr = args
         return func
     return pyTTkSlot_d
 
-def pyTTkSignal(*args, **kwargs):
-    return _pyTTkSignal_obj(*args, **kwargs)
+Ts = TypeVarTuple("Ts")
 
-class _pyTTkSignal_obj():
+class pyTTkSignal(Generic[*Ts]):
     _signals = []
-    __slots__ = ('_types', '_name', '_revision', '_connected_slots', '_mutex')
+    __slots__ = ('_types', '_connected_slots', '_mutex')
     def __init__(self, *args, **kwargs):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
 
@@ -82,17 +82,13 @@ class _pyTTkSignal_obj():
 
         #    Parameters:
         #    types - the types that define the C++ signature of the signal. Each type may be a Python type object or a string that is the name of a C++ type. Alternatively each may be a sequence of type arguments. In this case each sequence defines the signature of a different signal overload. The first overload will be the default.
-        #    name - the name of the signal. If it is omitted then the name of the class attribute is used. This may only be given as a keyword argument.
-        #    revision - the revision of the signal that is exported to QML. This may only be given as a keyword argument.
         #    arguments - the sequence of the names of the signal's arguments that is exported to QML. This may only be given as a keyword argument.
         #    Return type:
         #        an unbound signal
         self._types = args
-        self._name = kwargs.get('name', None)
-        self._revision = kwargs.get('revision', 0)
         self._connected_slots = {}
         self._mutex = Lock()
-        _pyTTkSignal_obj._signals.append(self)
+        pyTTkSignal._signals.append(self)
 
     def connect(self, slot):
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#connect
@@ -148,7 +144,7 @@ class _pyTTkSignal_obj():
 
     @staticmethod
     def clearAll():
-        for s in _pyTTkSignal_obj._signals:
+        for s in pyTTkSignal._signals:
             s.clear()
 
     def forward(self):

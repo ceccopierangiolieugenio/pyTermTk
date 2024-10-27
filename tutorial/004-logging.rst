@@ -20,7 +20,7 @@ Example 1 - Log to file
 -----------------------
 
 From `example1.logtofile.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example1.logtofile.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example1.logtofile.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example1.logtofile.py>`__):
 
 .. code:: python
 
@@ -41,7 +41,7 @@ Example 2 - Log to stdout
 -------------------------
 
 From `example2.logtostdout.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example2.logtostdout.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example2.logtostdout.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example2.logtostdout.py>`__):
 
 .. code:: python
 
@@ -61,7 +61,7 @@ Example 3 - custom logging
 --------------------------
 
 From `example3.customlogging.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example3.customlogging.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example3.customlogging.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example3.customlogging.py>`__):
 
 .. code:: python
 
@@ -92,7 +92,7 @@ Example 4 - Use TTkLogViewer_ widget
 --------------------------------------------------
 
 From `example4.ttklogviewer.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/logging/example4.ttklogviewer.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example4.ttklogviewer.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/logging/example4.ttklogviewer.py>`__):
 
 .. code:: python
 

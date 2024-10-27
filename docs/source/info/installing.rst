@@ -95,9 +95,9 @@ Clone or `Download <https://github.com/ceccopierangiolieugenio/pyTermTk/releases
 Demos
 ~~~~~
 
-* Main demo        `demo.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/demo.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/demo.py>`_)
-* paint demo       `paint.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/paint.py>`_  (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/paint.py>`_)
-* ttkode prototype `ttkode.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/ttkode.py>`_ (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/ttkode.py>`_)
+* Main demo        `demo.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/demo.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/demo.py>`__)
+* paint demo       `paint.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/paint.py>`_  (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/paint.py>`__)
+* ttkode prototype `ttkode.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/ttkode.py>`_ (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/ttkode.py>`__)
 
 .. code:: bash
 
@@ -116,19 +116,19 @@ Showcase
 
 **Highlight:**
 
-* Text Editor   `textedit.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py>`_       (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`_)
-* Animation     `animation.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/animation.01.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/animation.01.py>`_)
-* color picker  `colorpicker.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/colorpicker.py>`_    (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/colorpicker.py>`_)
-* file picker   `filepicker.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py>`_     (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/filepicker.py>`_)
-* drag & drop   `dragndrop.py     <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/dragndrop.py>`_      (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/dragndrop.py>`_)
-* d&d with tabs `dndtabs.py       <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/dndtabs.py>`_        (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/dndtabs.py>`_)
-* d&d with list `list.py          <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/list.py>`_           (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/list.py>`_)
-* base widgets  `formwidgets02.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets02.py>`_  (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/formwidgets02.py>`_)
-* messagebox    `messagebox.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/messagebox.py>`_     (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/messagebox.py>`_)
-* splitter      `splitter.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_       (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/splitter.py>`_)
-* Windows       `windowsflags.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/windowsflags.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/windowsflags.py>`_)
-* AppTemplate   `apptemplate.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/apptemplate.py>`_    (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/apptemplate.py>`_)
-* Tooltip       `test.ui.026.toolTip.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.026.toolTip.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tests/t.ui/test.ui.026.toolTip.py>`_)
+* Text Editor   `textedit.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py>`_       (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`__)
+* Animation     `animation.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/animation.01.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/animation.01.py>`__)
+* color picker  `colorpicker.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/colorpicker.py>`_    (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/colorpicker.py>`__)
+* file picker   `filepicker.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py>`_     (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/filepicker.py>`__)
+* drag & drop   `dragndrop.py     <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/dragndrop.py>`_      (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/dragndrop.py>`__)
+* d&d with tabs `dndtabs.py       <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/dndtabs.py>`_        (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/dndtabs.py>`__)
+* d&d with list `list.py          <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/list.py>`_           (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/list.py>`__)
+* base widgets  `formwidgets02.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets02.py>`_  (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/formwidgets02.py>`__)
+* messagebox    `messagebox.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/messagebox.py>`_     (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/messagebox.py>`__)
+* splitter      `splitter.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_       (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/splitter.py>`__)
+* Windows       `windowsflags.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/windowsflags.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/windowsflags.py>`__)
+* AppTemplate   `apptemplate.py   <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/apptemplate.py>`_    (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/apptemplate.py>`__)
+* Tooltip       `test.ui.026.toolTip.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.026.toolTip.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tests/t.ui/test.ui.026.toolTip.py>`__)
 
 .. code:: bash
 

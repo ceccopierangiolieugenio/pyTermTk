@@ -170,70 +170,6 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     :param dataPadding: the right column padding, defaults to 1
     :type dataPadding: int, optional
-
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
-
-        .. py:method:: cellChanged(row, col)
-            :signal:
-
-            This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellClicked(row, col)
-            :signal:
-
-            This signal is emitted whenever a cell in the table is clicked.
-            The row and column specified is the cell that was clicked.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellDoubleClicked(row, col)
-            :signal:
-
-            This signal is emitted whenever a cell in the table is double clicked.
-            The row and column specified is the cell that was double clicked.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellEntered(row, col)
-            :signal:
-
-            This signal is emitted when the mouse cursor enters a cell.
-            The cell is specified by row and column.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: currentCellChanged(currRow, currCol, prevRow, prevCol)
-            :signal:
-
-            This signal is emitted whenever the current cell changes.
-            The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
-            the cell specified by **currRow** and **currCol** is the new current cell.
-
-            :param currRow: the current row
-            :type currRow: int
-            :param currColumn: the current column
-            :type currColumn: int
-            :param prevRow: the previous row
-            :type prevRow: int
-            :param prevCol: the previous column
-            :type prevCol: int
-
     '''
 
     classStyle = {
@@ -278,6 +214,61 @@ class TTkTableWidget(TTkAbstractScrollView):
                   'cellEntered', # 'cellPressed',
                   'currentCellChanged',
                   )
+    cellChanged:pyTTkSignal[int,int]
+    '''
+        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellClicked:pyTTkSignal[int,int]
+    '''
+        This signal is emitted whenever a cell in the table is clicked.
+        The row and column specified is the cell that was clicked.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellDoubleClicked:pyTTkSignal[int,int]
+    '''
+        This signal is emitted whenever a cell in the table is double clicked.
+        The row and column specified is the cell that was double clicked.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellEntered:pyTTkSignal[int,int]
+    '''
+        This signal is emitted when the mouse cursor enters a cell.
+        The cell is specified by row and column.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    # self.cellPressed       = pyTTkSignal(int,int)
+    currentCellChanged:pyTTkSignal[int,int,int,int]
+    '''
+        This signal is emitted whenever the current cell changes.
+        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+        the cell specified by **currRow** and **currCol** is the new current cell.
+
+        :param currRow: the current row
+        :type currRow: int
+        :param currColumn: the current column
+        :type currColumn: int
+        :param prevRow: the previous row
+        :type prevRow: int
+        :param prevCol: the previous column
+        :type prevCol: int
+    '''
 
     def __init__(self, *,
                  tableModel:TTkAbstractTableModel=None,
@@ -324,7 +315,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._vSeparatorSelected = None
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
-        self._tableModel = tableModel if tableModel else TTkTableModelList(list=[['']*10 for _ in range(10)])
+        self._tableModel = tableModel if tableModel else TTkTableModelList(data=[['']*10 for _ in range(10)])
         self._tableModel.dataChanged.connect(self.update)
         super().__init__(**kwargs)
         self._refreshLayout()
@@ -1897,8 +1888,4 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         # Draw Top/Left Corner
         canvas.drawText(pos=(0,0), text=' ', width=vhs, color=separatorColor.invertFgBg() )
-
-
-
-
 

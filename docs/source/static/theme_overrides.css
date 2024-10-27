@@ -3,6 +3,17 @@
 .wy-nav-content {
     max-width: none;
 }
+/* Temporary workaround for the sphinxawesome theme */
+@media (min-width: 1400px) {
+   .container {
+     max-width: 1400px;
+   }
+ }
+
+/* Temporary workaround for the https://sphinx-themes.org/sample-sites/sphinx-book-theme/ theme */
+.bd-page-width {
+  max-width: none;
+}
 
 
 /* Temporary workaround for RTD 0.4.3 bug https://github.com/readthedocs/sphinx_rtd_theme/issues/117 which will hopefully be fixed soon

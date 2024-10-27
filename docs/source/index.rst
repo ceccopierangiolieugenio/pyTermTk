@@ -1,7 +1,11 @@
 .. pyTermTk documentation master file, created by
-   sphinx-quickstart on Fri Apr  2 12:13:00 2021.
+   sphinx-quickstart on Wed Oct 23 16:32:12 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+
+.. Add your content using ``reStructuredText`` syntax. See the
+   https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html
+   documentation for details.
 
 Welcome to pyTermTk_'s documentation!
 =====================================
@@ -76,26 +80,49 @@ Intro
    info/debug
    info/resources/index
 
+.. currentmodule:: TermTk
 
-.. toctree::
+.. autosummary::
    :caption: API Reference
-   :maxdepth: 1
-   :hidden:
+   :toctree: _autosummary
+   :template: custom-module-template.01.rst
+   :recursive:
 
-   autogen.TermTk/TermTk.TTkAbstract
-   autogen.TermTk/TermTk.TTkCore
-   autogen.TermTk/TermTk.TTkCore.TTkTerm
-   autogen.TermTk/TermTk.TTkGui
-   autogen.TermTk/TermTk.TTkLayouts
-   autogen.TermTk/TermTk.TTkTemplates
-   autogen.TermTk/TermTk.TTkTestWidgets
-   autogen.TermTk/TermTk.TTkTheme
-   autogen.TermTk/TermTk.TTkTypes
-   autogen.TermTk/TermTk.TTkUiTools
-   autogen.TermTk/TermTk.TTkWidgets
-   autogen.TermTk/TermTk.TTkWidgets.TTkModelView
-   autogen.TermTk/TermTk.TTkWidgets.TTkPickers
-   autogen.TermTk/TermTk.TTkWidgets.TTkTerminal
+   TTkCore
+   TTkLayouts
+   TTkAbstract
+   TTkWidgets.TTkModelView
+
+
+| TermTk.TTkAbstract
+| TermTk.TTkCore
+| TermTk.TTkCore.TTkTerm
+| TermTk.TTkGui
+| TermTk.TTkLayouts
+| TermTk.TTkTemplates
+| TermTk.TTkTestWidgets
+| TermTk.TTkTheme
+| TermTk.TTkTypes
+| TermTk.TTkUiTools
+| TermTk.TTkWidgets
+| TermTk.TTkWidgets.TTkModelView
+| TermTk.TTkWidgets.TTkPickers
+| TermTk.TTkWidgets.TTkTerminal
+
+| TTkAbstract
+| TermTk.TTkCore
+| TermTk.TTkCore.TTkTerm
+| TermTk.TTkGui
+| TermTk.TTkLayouts
+| TermTk.TTkTemplates
+| TermTk.TTkTestWidgets
+| TermTk.TTkTheme
+| TermTk.TTkTypes
+| TermTk.TTkUiTools
+| TermTk.TTkWidgets
+| TermTk.TTkWidgets.TTkModelView
+| TermTk.TTkWidgets.TTkPickers
+| TermTk.TTkWidgets.TTkTerminal
 
 Indices and tables
 ==================
@@ -103,7 +130,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-
-
