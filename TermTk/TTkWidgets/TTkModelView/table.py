@@ -23,13 +23,14 @@
 __all__ = ['TTkTable']
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstracttablemodel import TTkAbstractTableModel
 
 class TTkTable(TTkAbstractScrollArea):
     '''
-    A :class:`TTkTable` implements a table view (:class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget`) that displays items from a model.
+    A :py:class:`TTkTable` implements a table view (:py:class:`TTkTableWidget`) that displays items from a model.
 
     ::
 
@@ -47,213 +48,212 @@ class TTkTable(TTkAbstractScrollArea):
         6  │2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                    │Chavezborough       │
         ╾╌╌┴────────────────┴───────────┴────────────┴────────────────────────────────┴────────────────────┘
 
-    please refer to :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget` for a detailed descriptoin of all the available methods and init params
+    please refer to :py:class:`TTkTableWidget` for a detailed descriptoin of all the available methods and init params
 
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
 
-        .. py:method:: cellChanged(row, col)
-            :signal:
-
-            This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellClicked(row, col)
-            :signal:
-
-            This signal is emitted whenever a cell in the table is clicked.
-            The row and column specified is the cell that was clicked.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellDoubleClicked(row, col)
-            :signal:
-
-            This signal is emitted whenever a cell in the table is double clicked.
-            The row and column specified is the cell that was double clicked.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellEntered(row, col)
-            :signal:
-
-            This signal is emitted when the mouse cursor enters a cell.
-            The cell is specified by row and column.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: currentCellChanged(currRow, currCol, prevRow, prevCol)
-            :signal:
-
-            This signal is emitted whenever the current cell changes.
-            The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
-            the cell specified by **currRow** and **currCol** is the new current cell.
-
-            :param currRow: the current row
-            :type currRow: int
-            :param currColumn: the current column
-            :type currColumn: int
-            :param prevRow: the previous row
-            :type prevRow: int
-            :param prevCol: the previous column
-            :type prevCol: int
 
     .. py:method:: undo()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.undo`
+        This method is forwarded to :meth:`TTkTableWidget.undo`
 
     .. py:method:: redo()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.redo`
+        This method is forwarded to :meth:`TTkTableWidget.redo`
 
     .. py:method:: isUndoAvailable()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isUndoAvailable`
+        This method is forwarded to :meth:`TTkTableWidget.isUndoAvailable`
 
     .. py:method:: isRedoAvailable()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isRedoAvailable`
+        This method is forwarded to :meth:`TTkTableWidget.isRedoAvailable`
 
     .. py:method:: copy()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.copy`
+        This method is forwarded to :meth:`TTkTableWidget.copy`
 
     .. py:method:: cut()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.cut`
+        This method is forwarded to :meth:`TTkTableWidget.cut`
 
     .. py:method:: paste()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.paste`
+        This method is forwarded to :meth:`TTkTableWidget.paste`
 
     .. py:method:: setSortingEnabled()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSortingEnabled`
+        This method is forwarded to :meth:`TTkTableWidget.setSortingEnabled`
 
     .. py:method:: isSortingEnabled()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.isSortingEnabled`
+        This method is forwarded to :meth:`TTkTableWidget.isSortingEnabled`
 
     .. py:method:: sortByColumn()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.sortByColumn`
+        This method is forwarded to :meth:`TTkTableWidget.sortByColumn`
 
     .. py:method:: clearSelection()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.clearSelection`
+        This method is forwarded to :meth:`TTkTableWidget.clearSelection`
 
     .. py:method:: selectAll()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectAll`
+        This method is forwarded to :meth:`TTkTableWidget.selectAll`
 
     .. py:method:: setSelection()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setSelection`
+        This method is forwarded to :meth:`TTkTableWidget.setSelection`
 
     .. py:method:: selectRow()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectRow`
+        This method is forwarded to :meth:`TTkTableWidget.selectRow`
 
     .. py:method:: selectColumn()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.selectColumn`
+        This method is forwarded to :meth:`TTkTableWidget.selectColumn`
 
     .. py:method:: unselectRow()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.unselectRow`
+        This method is forwarded to :meth:`TTkTableWidget.unselectRow`
 
     .. py:method:: unselectColumn()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.unselectColumn`
+        This method is forwarded to :meth:`TTkTableWidget.unselectColumn`
 
     .. py:method:: rowCount()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.rowCount`
+        This method is forwarded to :meth:`TTkTableWidget.rowCount`
 
     .. py:method:: currentRow()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentRow`
+        This method is forwarded to :meth:`TTkTableWidget.currentRow`
 
     .. py:method:: columnCount()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.columnCount`
+        This method is forwarded to :meth:`TTkTableWidget.columnCount`
 
     .. py:method:: currentColumn()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.currentColumn`
+        This method is forwarded to :meth:`TTkTableWidget.currentColumn`
 
     .. py:method:: verticalHeader()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.verticalHeader`
+        This method is forwarded to :meth:`TTkTableWidget.verticalHeader`
 
     .. py:method:: horizontalHeader()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.horizontalHeader`
+        This method is forwarded to :meth:`TTkTableWidget.horizontalHeader`
 
     .. py:method:: hSeparatorVisibility()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.hSeparatorVisibility`
+        This method is forwarded to :meth:`TTkTableWidget.hSeparatorVisibility`
 
     .. py:method:: vSeparatorVisibility()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.vSeparatorVisibility`
+        This method is forwarded to :meth:`TTkTableWidget.vSeparatorVisibility`
 
     .. py:method:: setHSeparatorVisibility()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setHSeparatorVisibility`
+        This method is forwarded to :meth:`TTkTableWidget.setHSeparatorVisibility`
 
     .. py:method:: setVSeparatorVisibility()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setVSeparatorVisibility`
+        This method is forwarded to :meth:`TTkTableWidget.setVSeparatorVisibility`
 
     .. py:method:: model()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.model`
+        This method is forwarded to :meth:`TTkTableWidget.model`
 
     .. py:method:: setModel()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setModel`
+        This method is forwarded to :meth:`TTkTableWidget.setModel`
 
     .. py:method:: setColumnWidth()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setColumnWidth`
+        This method is forwarded to :meth:`TTkTableWidget.setColumnWidth`
 
     .. py:method:: resizeColumnToContents()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnToContents`
+        This method is forwarded to :meth:`TTkTableWidget.resizeColumnToContents`
 
     .. py:method:: resizeColumnsToContents()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeColumnsToContents`
+        This method is forwarded to :meth:`TTkTableWidget.resizeColumnsToContents`
 
     .. py:method:: setRowHeight()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.setRowHeight`
+        This method is forwarded to :meth:`TTkTableWidget.setRowHeight`
 
     .. py:method:: resizeRowToContents()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowToContents`
+        This method is forwarded to :meth:`TTkTableWidget.resizeRowToContents`
 
     .. py:method:: resizeRowsToContents()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkTableWidget.resizeRowsToContents`
-
-
+        This method is forwarded to :meth:`TTkTableWidget.resizeRowsToContents`
     '''
+
+    # resizeRowsToContents:TTkTableWidget.resizeRowsToContents
+    # '''
+    #     This method is forwarded to :meth:`TTkTableWidget.resizeRowsToContents`
+    # '''
+
+    cellChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever a cell in the table is clicked.
+        The row and column specified is the cell that was clicked.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellDoubleClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever a cell in the table is double clicked.
+        The row and column specified is the cell that was double clicked.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellEntered:pyTTkSignal
+    '''
+        This signal is emitted when the mouse cursor enters a cell.
+        The cell is specified by row and column.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    # self.cellPressed       = pyTTkSignal(int,int)
+    currentCellChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the current cell changes.
+        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+        the cell specified by **currRow** and **currCol** is the new current cell.
+
+        :param currRow: the current row
+        :type currRow: int
+        :param currColumn: the current column
+        :type currColumn: int
+        :param prevRow: the previous row
+        :type prevRow: int
+        :param prevCol: the previous column
+        :type prevCol: int
+    '''
+
     __slots__ = (
         '_tableView',
         # Forwarded Signals

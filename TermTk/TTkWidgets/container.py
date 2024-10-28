@@ -56,7 +56,7 @@ class TTkContainer(TTkWidget):
     :param int paddingLeft: the Left padding, override Left padding if already defined, optional, default=padding
     :param int paddingRight: the Right padding, override Right padding if already defined, optional, default=padding
 
-    :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
+    :param layout: the layout of this widget, optional, defaults to :py:class:`TTkLayout`
     :type layout: :mod:`TermTk.TTkLayouts`
     '''
 
@@ -87,7 +87,7 @@ class TTkContainer(TTkWidget):
         .. warning::
             Method Deprecated,
 
-            use :class:`TTkWidget` -> :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :class:`~TermTk.TTkLayouts.layout.TTkLayout.addWidget`
+            use :py:class:`TTkWidget` -> :py:class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :py:class:`~TermTk.TTkLayouts.layout.TTkLayout.addWidget`
 
             i.e.
 
@@ -103,7 +103,7 @@ class TTkContainer(TTkWidget):
         .. warning::
             Method Deprecated,
 
-            use :class:`TTkWidget` -> :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :class:`~TermTk.TTkLayouts.layout.TTkLayout.removeWidget`
+            use :py:class:`TTkWidget` -> :py:class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :py:class:`~TermTk.TTkLayouts.layout.TTkLayout.removeWidget`
 
             i.e.
 
@@ -334,7 +334,7 @@ class TTkContainer(TTkWidget):
         ''' Get the layout
 
         :return: The layout used
-        :rtype: :class:`TTkLayout` or derived
+        :rtype: :py:class:`TTkLayout` or derived
         '''
         return self._layout.itemAt(0)
 

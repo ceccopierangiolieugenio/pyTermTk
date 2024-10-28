@@ -29,7 +29,7 @@ from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
 class TTkTableModelCSV(TTkTableModelList):
     '''
-    :class:`TTkTableModelCSV` extends :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` with cvs loading helpers.
+    :py:class:`TTkTableModelCSV` extends :py:class:`TTkTableModelList` with cvs loading helpers.
 
     You can address the csv file through the Filename (filename) or the FileDescriptor (fd).
 

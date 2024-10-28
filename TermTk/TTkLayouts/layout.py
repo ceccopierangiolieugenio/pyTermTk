@@ -29,16 +29,16 @@ __all__ = ['TTkLayoutItem', 'TTkLayout']
 from TermTk.TTkCore.constant import TTkK
 
 class TTkLayoutItem:
-    ''' :class:`~TTkLayoutItem` is the base class of layout Items inherited by :class:`~TTkLayout`, :class:`~TTkWidgetItem`, and all the derived layout managers.
+    ''' :py:class:`~TTkLayoutItem` is the base class of layout Items inherited by :py:class:`~TTkLayout`, :py:class:`~TTkWidgetItem`, and all the derived layout managers.
 
-    :param int row:     (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the row of the grid,   optional, defaults to None
-    :param int col:     (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the col of the grid,   optional, defaults to None
-    :param int rowspan: (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the rows used by this, optional, defaults to 1
-    :param int colspan: (used only in the :class:`~TermTk.TTkLayouts.gridlayout.TTkGridLayout`), the cols used by this, optional, defaults to 1
+    :param int row:     (used only in the :py:class:`TTkGridLayout`), the row of the grid,   optional, defaults to None
+    :param int col:     (used only in the :py:class:`TTkGridLayout`), the col of the grid,   optional, defaults to None
+    :param int rowspan: (used only in the :py:class:`TTkGridLayout`), the rows used by this, optional, defaults to 1
+    :param int colspan: (used only in the :py:class:`TTkGridLayout`), the cols used by this, optional, defaults to 1
     :param layoutItemType: The Type of this class, optional, defaults to TTkK.NONE
-    :type  layoutItemType: :class:`~TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes`
+    :type  layoutItemType: :py:class:`~TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes`
     :param alignment: The alignment of this item in the layout (not yet used)
-    :type  alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+    :type  alignment: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
     '''
 
     LAYER0    =  0x00000000
@@ -154,9 +154,9 @@ class TTkLayoutItem:
 
 class TTkLayout(TTkLayoutItem):
     '''
-    | The :class:`TTkLayout` class is the base class of geometry managers. <br/>
+    | The :py:class:`TTkLayout` class is the base class of geometry managers. <br/>
     | It allows free placement of the widgets in the layout area. <br/>
-    | Used mainly to have free range moving :class:`~TermTk.TTkWidgets.window.TTkWindow` because the widgets are not automatically rearranged after a layout event
+    | Used mainly to have free range moving :py:class:`TTkWindow` because the widgets are not automatically rearranged after a layout event
 
     ::
 
@@ -265,7 +265,7 @@ class TTkLayout(TTkLayoutItem):
         ''' Add a widget to this Layout
 
         :param widget: the widget to be added
-        :type widget: :class:`~TermTk.TTkWidgets`
+        :type widget: :py:class:`TTkWidgets`
         '''
         self.insertItems(len(self._items),[widget])
 
@@ -273,7 +273,7 @@ class TTkLayout(TTkLayoutItem):
         ''' Add a list of widgets to this Layout
 
         :param widgets: the widget to be added
-        :type widgets: list of :class:`~TermTk.TTkWidgets`
+        :type widgets: list of :py:class:`TTkWidgets`
         '''
         self.insertItems(len(self._items),widgets)
 
@@ -303,7 +303,7 @@ class TTkLayout(TTkLayoutItem):
         ''' Remove a widget from this Layout
 
         :param widget: the widget to be removed
-        :type widget: :class:`~TermTk.TTkWidgets`
+        :type widget: :py:class:`TTkWidgets`
         '''
         self.removeWidgets([widget])
 
@@ -311,7 +311,7 @@ class TTkLayout(TTkLayoutItem):
         ''' Remove a list of widget from this Layout
 
         :param widgets: the widget to be removed
-        :type widgets: list of :class:`~TermTk.TTkWidgets`
+        :type widgets: list of :py:class:`TTkWidgets`
         '''
         for item in reversed(self._items):
             if item._layoutItemType == TTkK.WidgetItem:

@@ -5,6 +5,7 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
 .. currentmodule:: {{ module }}
 
 .. autoclass:: {{ objname }}
+   :show-inheritance:
 
    {% if TTkStyle %}
    Style

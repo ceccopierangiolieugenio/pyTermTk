@@ -102,12 +102,29 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     modSub = {}
     modSubSorted = {}
     modStyles = {}
+    ttkAllSignals={}
+    ttkAllSlots={}
+
+    def _getSignals(_obj):
+        ret = []
+        for _name in (_th:=get_type_hints(_obj)):
+            print(f"{_th=}")
+            if _name.startswith('_'): continue
+            if 'pyTTkSignal' in str(_th[_name]):
+                ret.append(_name)
+            else:
+                print(ttk.TTkString(f"element not typed: {_name} - { _th[_name]}",ttk.TTkColor.BG_CYAN))
+        return ret
+
     def _parseModules(_mod):
         if _file:=getattr(_mod,'__file__',None):
             if '__init__.py' in _file and '/TermTk/' in _file:
                 print(_file)
                 for _name, _obj in inspect.getmembers(_mod):
+                    if _mod.__name__ == 'TermTk.TTkCore.drivers': continue
                     if inspect.isclass(_obj):
+                        if _name not in ttkAllSignals:
+                            ttkAllSignals[_name] = _getSignals(_obj)
                         if _name not in modStyles:
                             modStyles[_name] = _get_classStyleCode(_obj)
                         if _name not in modules:
@@ -121,6 +138,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     for x in modules.items():
         print(x)
         a,b = x
+        # if a == 'TermTk.TTkCore.drivers': continue
         if b not in modSorted:
             modSorted[b] = []
         modSorted[b].append(a)
@@ -167,8 +185,11 @@ def setup(app: Sphinx) -> ExtensionMetadata:
         print(f"{context=}")
         print(f"{modname=}")
         print(f"{qualname=}")
+
         ttkSignals = []
+        ttkSignalsImported = {}
         ttkSlots = []
+        ttkSlotsImported = {}
         ttkMethods = []
         ttkInheritedMethods = []
         ttkSubClasses = modSorted.get(name,[])
@@ -188,15 +209,16 @@ def setup(app: Sphinx) -> ExtensionMetadata:
         #     _name = member[0]
         #     if _name.startswith('_'): continue
         #     _hint = get_type_hints(obj)[_name]
-        print(f"{obj=} - {get_type_hints(obj)=}")
-        for _name in (_th:=get_type_hints(obj)):
-            print(f"{_th=}")
-            if _name.startswith('_'): continue
-            if 'pyTTkSignal' in str(_th[_name]):
-                ttkSignals.append(_name)
-            else:
-                print(ttk.TTkString(f"element not typed: {_name} - { _th[_name]}",ttk.TTkColor.BG_CYAN))
-        print(ttkSignals)
+
+        # print(f"{obj=} - {get_type_hints(obj)=}")
+        # for _name in (_th:=get_type_hints(obj)):
+        #     print(f"{_th=}")
+        #     if _name.startswith('_'): continue
+        #     if 'pyTTkSignal' in str(_th[_name]):
+        #         ttkSignals.append(_name)
+        #     else:
+        #         print(ttk.TTkString(f"element not typed: {_name} - { _th[_name]}",ttk.TTkColor.BG_CYAN))
+        # print(ttkSignals)
 
         def _hasmethod(obj, name):
             return hasattr(obj, name) and type(getattr(obj, name)) in (types.MethodType, types.FunctionType)
@@ -212,10 +234,10 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
         context |= {
             'TTkStyle':modStyles.get(qualname,''),
+            'TTkSignals':ttkAllSignals.get(qualname,''),
             'TTkSubClasses': ttkSubClasses,
             'TTkSubModules': ttkSubModules,
             'TTkMethods':ttkMethods,
-            'TTkSignals':ttkSignals,
             'TTkSlots':ttkSlots}
 
         print('\n'.join([f" * {x}={context[x]}" for x in context]))

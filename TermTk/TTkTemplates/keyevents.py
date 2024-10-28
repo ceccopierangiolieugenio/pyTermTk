@@ -28,7 +28,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
+        :type evt: :py:class:`TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -41,7 +41,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
+        :type evt: :py:class:`TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -55,7 +55,7 @@ class TKeyEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
+        :type evt: :py:class:`TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool

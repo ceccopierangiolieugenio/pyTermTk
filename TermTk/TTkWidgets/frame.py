@@ -78,7 +78,7 @@ class TTkFrame(TTkContainer):
         .. warning::
             Method Deprecated,
 
-            use :class:`~TermTk.TTkWidgets.frame.setMenuBar` instead
+            use :py:class:`~TermTk.TTkWidgets.frame.setMenuBar` instead
 
             i.e.
 

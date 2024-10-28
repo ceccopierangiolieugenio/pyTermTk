@@ -492,7 +492,7 @@ class TTkColor(_TTkColor):
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
 
-        :return: :class:`TTkColor`
+        :return: :py:class:`TTkColor`
         '''
         mod = kwargs.get('modifier', None )
         link = kwargs.get('link', '' )
@@ -519,7 +519,7 @@ class TTkColor(_TTkColor):
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
 
-        :return: :class:`TTkColor`
+        :return: :py:class:`TTkColor`
         '''
         mod = kwargs.get('modifier', None )
         link = kwargs.get('link', '' )
@@ -548,7 +548,7 @@ class TTkColor(_TTkColor):
         :param str modifier: (experimental) the color modifier to be used to improve the **kinkiness**
         :type modifier: TTkColorModifier, optional
 
-        :return: :class:`TTkColor`
+        :return: :py:class:`TTkColor`
         '''
         return TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier, link=link)
 

@@ -47,7 +47,7 @@ class _TTkModelIndexList(TTkModelIndex):
 
 class TTkTableModelList(TTkAbstractTableModel):
     '''
-    :class:`TTkTableModelList` extends :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`,
+    :py:class:`TTkTableModelList` extends :py:class:`TTkAbstractTableModel`,
     including a basic model with a 2d list data structure
 
     :param data: the 2D List model for the view to present.

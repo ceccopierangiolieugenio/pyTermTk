@@ -30,6 +30,8 @@ from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkAbstractScrollViewInterface():
+    '''TTkAbstractScrollViewInterface'''
+
     # Override this function
     def viewFullAreaSize(self) -> (int, int):
         raise NotImplementedError()
@@ -46,6 +48,34 @@ class TTkAbstractScrollViewInterface():
         return self._viewOffsetX, self._viewOffsetY
 
 class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
+    '''TTkAbstractScrollView'''
+
+    viewMovedTo:pyTTkSignal
+    '''
+    This signal is emitted when the view content move to a new position (x,y),
+
+    :param x: the new horizontal offset
+    :type x: int
+    :param y: the new vertical offset
+    :type y: int
+    '''
+    viewSizeChanged:pyTTkSignal
+    '''
+    This signal is emitted when the view content size changed
+
+    :param width: the new width
+    :type width: int
+    :param height: the new heighht
+    :type height: int
+    '''
+    viewChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever there is a change in the view content topology (size,pos)
+
+    .. note:: This signal must be implemented in any implementation
+              of :py:class:`TTkAbstractScrollView` to notify that the view content boudaries changed
+    '''
+
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
         # Signals
@@ -98,6 +128,34 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         return super().update(repaint, updateLayout, updateParent)
 
 class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
+    '''TTkAbstractScrollViewLayout'''
+
+    viewMovedTo:pyTTkSignal
+    '''
+    This signal is emitted when the view content move to a new position (x,y),
+
+    :param x: the new horizontal offset
+    :type x: int
+    :param y: the new vertical offset
+    :type y: int
+    '''
+    viewSizeChanged:pyTTkSignal
+    '''
+    This signal is emitted when the view content size changed
+
+    :param width: the new width
+    :type width: int
+    :param height: the new heighht
+    :type height: int
+    '''
+    viewChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever there is a change in the view content topology (size,pos)
+
+    .. note:: This signal must be implemented in any implementation
+              of :py:class:`TTkAbstractScrollView` to notify that the view content boudaries changed
+    '''
+
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
         # Signals
@@ -130,10 +188,39 @@ class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
         self.viewChanged.emit()
 
 class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterface):
+    '''TTkAbstractScrollViewGridLayout'''
+
+    viewMovedTo:pyTTkSignal
+    '''
+    This signal is emitted when the view content move to a new position (x,y),
+
+    :param x: the new horizontal offset
+    :type x: int
+    :param y: the new vertical offset
+    :type y: int
+    '''
+    viewSizeChanged:pyTTkSignal
+    '''
+    This signal is emitted when the view content size changed
+
+    :param width: the new width
+    :type width: int
+    :param height: the new heighht
+    :type height: int
+    '''
+    viewChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever there is a change in the view content topology (size,pos)
+
+    .. note:: This signal is normally emitted from any implementation
+              of :py:class:`TTkAbstractScrollView` to notify that the view content boudaries changed
+    '''
+
     __slots__ = (
         '_viewOffsetX', '_viewOffsetY',
+        '_excludeEvent',
         # Signals
-         'viewMovedTo', 'viewSizeChanged', 'viewChanged', '_excludeEvent')
+         'viewMovedTo', 'viewSizeChanged', 'viewChanged')
 
     def __init__(self, *args, **kwargs):
         # Signals

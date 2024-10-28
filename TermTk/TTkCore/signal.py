@@ -69,9 +69,9 @@ def pyTTkSlot(*args):
         return func
     return pyTTkSlot_d
 
-Ts = TypeVarTuple("Ts")
-
-class pyTTkSignal(Generic[*Ts]):
+# Ts = TypeVarTuple("Ts")
+# class pyTTkSignal(Generic[*Ts]):
+class pyTTkSignal():
     _signals = []
     __slots__ = ('_types', '_connected_slots', '_mutex')
     def __init__(self, *args, **kwargs):

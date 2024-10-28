@@ -173,30 +173,30 @@ class TTkGridLayout(TTkLayout):
 
     # addWidget(self, widget, row, col)
     def addWidget(self, widget, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
-        '''Add the widget to this :class:`TTkGridLayout`, this function uses :meth:`~addItem`
+        '''Add the widget to this :py:class:`TTkGridLayout`, this function uses :meth:`~addItem`
 
         :param widget: the widget to be added
-        :type widget: :class:`~TermTk.TTkWidgets.widget.TTkWidget`
+        :type widget: :py:class:`TTkWidget`
         :param int row:     the row of the grid, optional, defaults to None
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
-        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
         '''
         TTkGridLayout.addWidgets(self,[widget], row, col, rowspan, colspan, direction)
 
     def addWidgets(self, widgets, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
-        '''Add the widgets to this :class:`TTkGridLayout`, this function uses :meth:`~addItem`
+        '''Add the widgets to this :py:class:`TTkGridLayout`, this function uses :meth:`~addItem`
 
         :param widgets: the widgets to be added
-        :type widgets: list of :class:`~TermTk.TTkWidgets.widget.TTkWidget`
+        :type widgets: list of :py:class:`TTkWidget`
         :param int row:     the row of the grid, optional, defaults to None
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
-        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
         '''
         self.removeWidgets(widgets)
         items = [w.widgetItem() for w in widgets]
@@ -207,30 +207,30 @@ class TTkGridLayout(TTkLayout):
     def replaceItem(self, item, index): pass
 
     def addItem(self, item, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
-        '''Add the item to this :class:`TTkGridLayout`
+        '''Add the item to this :py:class:`TTkGridLayout`
 
         :param item: the item to be added
-        :type item: :class:`~TermTk.TTkLayouts.layout.TTkLayoutItem`
+        :type item: :py:class:`TTkLayoutItem`
         :param int row:     the row of the grid, optional, defaults to None
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
-        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
         '''
         self.addItems([item],row,col,rowspan,colspan,direction)
 
     def addItems(self, items, row=None, col=None, rowspan=1, colspan=1, direction=TTkK.HORIZONTAL):
-        '''Add the items to this :class:`TTkGridLayout`
+        '''Add the items to this :py:class:`TTkGridLayout`
 
         :param items: the items to be added
-        :type items: list of :class:`~TermTk.TTkLayouts.layout.TTkLayoutItem`
+        :type items: list of :py:class:`TTkLayoutItem`
         :param int row:     the row of the grid, optional, defaults to None
         :param int col:     the col of the grid, optional, defaults to None
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
-        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
+        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
         '''
         nitems = len(items)
         self.removeItems(items)

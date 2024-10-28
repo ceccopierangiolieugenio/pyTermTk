@@ -52,36 +52,30 @@ class TTkCheckbox(TTkWidget):
     :type text: str, optional
     :param bool checked: Checked status, defaults to "False"
     :type checked: bool, optional
+    '''
 
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
+    clicked:pyTTkSignal
+    '''
+    This signal is emitted when the button is activated
+    '''
 
-        .. py:method:: clicked(checked)
-            :signal:
+    toggled:pyTTkSignal
+    '''
+    This signal is emitted whenever the button state changes if checkeable,
+    i.e., whenever the user checks or unchecks it.
 
-            This signal is emitted when the button is activated
+    :param checked: True if checked otherwise False
+    :type checked: bool
+    '''
 
-            :param checked: True if checked otherwise False
-            :type checked: bool
+    stateChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the checkbox's state changes,
+    i.e., whenever the user checks or unchecks it.
 
-        .. py:method:: stateChanged(state)
-            :signal:
-
-            This signal is emitted whenever the checkbox's state changes, i.e., whenever the user checks or unchecks it.
-
-            :param state: state of the checkbox
-            :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
-
-        .. py:method:: toggled(checked)
-            :signal:
-
-            This signal is emitted whenever the checkbox's state changes, i.e., whenever the user checks or unchecks it.
-
-            :param checked: True if checked otherwise False
-            :type checked: bool
-
-     '''
+    :param state: state of the checkbox
+    :type state: :py:class:`TTkK.CheckState`
+    '''
 
     classStyle = {
                 'default':     {'color': TTkColor.RST,
@@ -121,7 +115,7 @@ class TTkCheckbox(TTkWidget):
     def text(self):
         ''' This property holds the text shown on the checkhox
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         return self._text
 
@@ -130,7 +124,7 @@ class TTkCheckbox(TTkWidget):
         ''' This property holds the text shown on the checkhox
 
         :param text:
-        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        :type text: :py:class:`TTkString`
         '''
         if self._text.sameAs(text): return
         self._text = TTkString(text)
@@ -157,7 +151,7 @@ class TTkCheckbox(TTkWidget):
     def isChecked(self):
         ''' This property holds whether the checkbox is checked
 
-        :return: bool - True if :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.Checked` or :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.PartiallyChecked`
+        :return: bool - True if :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.Checked` or :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState.PartiallyChecked`
         '''
         return self._checkStatus != TTkK.Unchecked
 
@@ -173,7 +167,7 @@ class TTkCheckbox(TTkWidget):
     def checkState(self):
         ''' Retrieve the state of the checkbox
 
-        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
+        :return: :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
         '''
         return self._checkStatus
 
@@ -182,7 +176,7 @@ class TTkCheckbox(TTkWidget):
         ''' Sets the checkbox's check state.
 
         :param state: state of the checkbox
-        :type state: :class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+        :type state: :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
         '''
         if self._checkStatus == state: return
         if state==TTkK.PartiallyChecked and not self._tristate: return

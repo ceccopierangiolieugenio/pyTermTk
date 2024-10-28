@@ -84,7 +84,7 @@ class TTkMenuButton(TTkWidget):
         return self.parentWidget().setFocus()
 
     def data(self):
-        ''' Returns the user data as set in the constructor or :class:`setData`.'''
+        ''' Returns the user data as set in the constructor or :py:class:`setData`.'''
         return self._data
 
     def setData(self, data):
@@ -140,7 +140,7 @@ class TTkMenuButton(TTkWidget):
     def text(self):
         ''' This property holds the text shown
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         return self._text
 
@@ -148,7 +148,7 @@ class TTkMenuButton(TTkWidget):
         ''' This property holds the text shown
 
         :param text:
-        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        :type text: :py:class:`TTkString`
         '''
         if self._text == text: return
         self._text = TTkString(text)

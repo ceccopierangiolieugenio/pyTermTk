@@ -108,41 +108,37 @@ class TTkFileDialogPicker(TTkWindow):
 
     :type filter: str, optional
 
+    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
+    :type fileMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
 
-    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
-    :type fileMode: :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
-
-    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
-    :type acceptMode: :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
-
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
-
-        .. py:method:: pathPicked(pathName)
-            :signal:
-
-            This signal is emitted whenever any path is picked (Files/Dir)
-
-            :param pathName: the name of the path
-            :type pathName: str
-
-        .. py:method:: filePicked(fileName)
-            :signal:
-
-            This signal is emitted whenever any file is picked
-
-            :param fileName: the name of the file
-            :type fileName: str
-
-        .. py:method:: folderPicked(dirName)
-            :signal:
-
-            This signal is emitted whenever any folder is picked
-
-            :param dirName: the name of the folder
-            :type dirName: str
+    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
+    :type acceptMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
     '''
+
+    pathPicked:pyTTkSignal
+    '''
+    This signal is emitted whenever any path is picked (Files/Dir)
+
+    :param pathName: the name of the path
+    :type pathName: str
+    '''
+
+    filePicked:pyTTkSignal
+    '''
+    This signal is emitted whenever any file is picked
+
+    :param fileName: the name of the file
+    :type fileName: str
+    '''
+
+    folderPicked:pyTTkSignal
+    '''
+    This signal is emitted whenever any folder is picked
+
+    :param dirName: the name of the folder
+    :type dirName: str
+    '''
+
     __slots__ = ('_path', '_fileName', '_recentPath', '_recentPathId', '_filters', '_filter', '_caption', '_fileMode', '_acceptMode',
                  # Widgets
                  '_fileTree', '_lookPath', '_btnPrev', '_btnNext', '_btnUp',
@@ -430,34 +426,31 @@ class TTkFileButtonPicker(TTkButton):
     :type filter: str, optional
 
 
-    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
-    :type fileMode: :class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
+    :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
+    :type fileMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
 
-    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
-    :type acceptMode: :class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
+    :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
+    :type acceptMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
 
     +-----------------------------------------------------------------------------------------------+
     | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
     +-----------------------------------------------------------------------------------------------+
 
-        .. py:method:: pathPicked(pathName)
-            :signal:
+        .. py:method:: pathPicked(pathName:pyTTkSignal
 
             This signal is emitted whenever any path is picked (Files/Dir)
 
             :param pathName: the name of the path
             :type pathName: str
 
-        .. py:method:: filePicked(fileName)
-            :signal:
+        .. py:method:: filePicked(fileName:pyTTkSignal
 
             This signal is emitted whenever any file is picked
 
             :param fileName: the name of the file
             :type fileName: str
 
-        .. py:method:: folderPicked(dirName)
-            :signal:
+        .. py:method:: folderPicked(dirName:pyTTkSignal
 
             This signal is emitted whenever any folder is picked
 

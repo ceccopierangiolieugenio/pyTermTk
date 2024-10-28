@@ -651,145 +651,147 @@ class TTkTextEdit(TTkAbstractScrollArea):
     :type multiLine: bool, optional
 
     :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py>`__, defaults to a new Document
-    :type document: :class:`~TermTk.TTkGui.textdocument.TTkTextDocument`, optional
+    :type document: :py:class:`TTkTextDocument`, optional
 
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
 
-        .. py:method:: currentColorChanged(color)
-            :signal:
-
-            This signal is emitted if the current character color has changed, for example caused by a change of the cursor position.
-
-            :param color: the new color
-            :type color: :class:`~TermTk.TTkCore.color.TTkColor`
-
-        .. py:method:: undoAvailable(available)
-            :signal:
-
-            This signal is emitted whenever undo operations become available (available is true) or unavailable (available is false).
-
-            :param available: the availability of undo
-            :type available: bool
-
-        .. py:method:: redoAvailable(available)
-            :signal:
-
-            This signal is emitted whenever redo operations become available (available is true) or unavailable (available is false).
-
-            :param available: the availability of redo
-            :type available: bool
-
-        .. py:method:: textChanged()
-            :signal:
-
-            This signal is emitted whenever the document's content changes; for example, when text is inserted or deleted, or when formatting is applied.
-
-        .. py:method:: toAnsi()
+    .. py:method:: toAnsi()
 
 
     .. py:method:: clear()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.clear`
+        This method is forwarded to :meth:`TTkTextEditView.clear`
 
     .. py:method:: setText(text)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setText`
+        This method is forwarded to :meth:`TTkTextEditView.setText`
 
     .. py:method:: append(text)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.append`
+        This method is forwarded to :meth:`TTkTextEditView.append`
 
     .. py:method:: isReadOnly()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isReadOnly`
+        This method is forwarded to :meth:`TTkTextEditView.isReadOnly`
 
     .. py:method:: setReadOnly(ro)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setReadOnly`
+        This method is forwarded to :meth:`TTkTextEditView.setReadOnly`
 
     .. py:method:: document()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.document`
+        This method is forwarded to :meth:`TTkTextEditView.document`
 
     .. py:method:: wrapWidth()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wrapWidth`
+        This method is forwarded to :meth:`TTkTextEditView.wrapWidth`
 
     .. py:method:: setWrapWidth(width)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWrapWidth`
+        This method is forwarded to :meth:`TTkTextEditView.setWrapWidth`
 
     .. py:method:: multiLine()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.multiLine`
+        This method is forwarded to :meth:`TTkTextEditView.multiLine`
 
     .. py:method:: lineWrapMode()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.lineWrapMode`
+        This method is forwarded to :meth:`TTkTextEditView.lineWrapMode`
 
     .. py:method:: setLineWrapMode(mode)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setLineWrapMode`
+        This method is forwarded to :meth:`TTkTextEditView.setLineWrapMode`
 
     .. py:method:: wordWrapMode()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.wordWrapMode`
+        This method is forwarded to :meth:`TTkTextEditView.wordWrapMode`
 
     .. py:method:: setWordWrapMode(mode)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setWordWrapMode`
+        This method is forwarded to :meth:`TTkTextEditView.setWordWrapMode`
 
     .. py:method:: textCursor()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.textCursor`
+        This method is forwarded to :meth:`TTkTextEditView.textCursor`
 
     .. py:method:: setColor(color)
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.setColor`
+        This method is forwarded to :meth:`TTkTextEditView.setColor`
 
     .. py:method:: cut()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.cut`
+        This method is forwarded to :meth:`TTkTextEditView.cut`
 
     .. py:method:: copy()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.copy`
+        This method is forwarded to :meth:`TTkTextEditView.copy`
 
     .. py:method:: paste()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.paste`
+        This method is forwarded to :meth:`TTkTextEditView.paste`
 
     .. py:method:: undo()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.undo`
+        This method is forwarded to :meth:`TTkTextEditView.undo`
 
     .. py:method:: redo()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.redo`
+        This method is forwarded to :meth:`TTkTextEditView.redo`
 
     .. py:method:: isUndoAvailable()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isUndoAvailable`
+        This method is forwarded to :meth:`TTkTextEditView.isUndoAvailable`
 
     .. py:method:: isRedoAvailable()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.isRedoAvailable`
+        This method is forwarded to :meth:`TTkTextEditView.isRedoAvailable`
 
     .. py:method:: toAnsi()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toAnsi`
+        This method is forwarded to :meth:`TTkTextEditView.toAnsi`
 
     .. py:method:: toRawText()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toRawText`
+        This method is forwarded to :meth:`TTkTextEditView.toRawText`
 
     .. py:method:: toPlainText()
 
-        This method is forwarded to :meth:`~TermTk.TTkWidgets.texedit.TTkTextEditView.toPlainText`
+        This method is forwarded to :meth:`TTkTextEditView.toPlainText`
 
     '''
+
+    currentColorChanged:pyTTkSignal
+    '''
+    This signal is emitted if the current character color has changed,
+    for example caused by a change of the cursor position.
+
+    :param color: the new color
+    :type color: :py:class:`TTkColor`
+    '''
+
+    undoAvailable:pyTTkSignal
+    '''
+    This signal is emitted whenever undo operations become available (available is true)
+    or unavailable (available is false).
+
+    :param available: the availability of undo
+    :type available: bool
+    '''
+
+    redoAvailable:pyTTkSignal
+    '''
+    This signal is emitted whenever redo operations become available (available is true)
+    or unavailable (available is false).
+
+    :param available: the availability of redo
+    :type available: bool
+    '''
+
+    textChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the document's content changes;
+    for example, when text is inserted or deleted, or when formatting is applied.
+    '''
+
     __slots__ = (
             '_textEditView',
             '_lineNumberView', '_lineNumber',

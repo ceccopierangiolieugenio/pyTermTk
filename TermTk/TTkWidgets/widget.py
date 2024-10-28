@@ -59,7 +59,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param name: the name of the widget, defaults to ""
     :type name: str, optional
     :param parent: the parent widget, defaults to None
-    :type parent: :class:`TTkWidget`, optional
+    :type parent: :py:class:`TTkWidget`, optional
 
     :param int x: the x position, defaults to 0
     :param int y: the y position, defaults to 0
@@ -77,7 +77,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param [int,int] minSize: the minSize [width,height] of the widget, optional
 
     :param toolTip: This property holds the widget's tooltip
-    :type toolTip: :class:`~TermTk.TTkCore.string.TTkString`
+    :type toolTip: :py:class:`TTkString`
 
     :param style: this field hold the custom style to be used by this widget
     :type style: dict
@@ -86,6 +86,38 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     :param bool,optional visible: the visibility, optional, defaults to True
     :param bool,optional enabled: the ability to handle input events, optional, defaults to True
+    '''
+
+    focusChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the focus status change
+    i.e. with the :meth:`setFocus` or :meth:`clearFocus` methods
+
+    :param status: the curent focus status
+    :type status: bool
+    '''
+    sizeChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the widget size change
+
+    :param width: the new widget width
+    :type width: int
+    :param height: the new widget height
+    :type height: int
+    '''
+    currentStyleChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the widget stye change
+
+    :param style: the new style applied
+    :type style: dict
+    '''
+    closed:pyTTkSignal
+    '''
+    This signal is emitted whenever the widget is closed
+
+    :param widget: the widget closed (=self)
+    :type widget: TTkWidget
     '''
 
     classStyle = {

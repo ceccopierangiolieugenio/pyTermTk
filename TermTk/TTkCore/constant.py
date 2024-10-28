@@ -121,7 +121,7 @@ class TTkConstant:
     Checked          = CheckState.Checked
 
     class InsertPolicy(int):
-        '''Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.
+        '''Specifies what the :py:class:`TTkComboBox` should do when a new string is entered by the user.
 
         .. autosummary::
           NoInsert
@@ -201,7 +201,7 @@ class TTkConstant:
     class MouseKey(int):
         '''Input Mouse Key
 
-        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
 
         .. autosummary::
           NoButton
@@ -248,7 +248,7 @@ class TTkConstant:
         WordWrap      = 0x01
         '''Text is wrapped at word boundaries.'''
         # ManualWrap    = 0x02
-        # '''Same as :class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
+        # '''Same as :py:class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
         WrapAnywhere  = 0x03
         '''Text can be wrapped at any point on a line, even if it occurs in the middle of a word.'''
         WrapAtWordBoundaryOrAnywhere = 0x04
@@ -284,7 +284,7 @@ class TTkConstant:
     class MouseEvent(int):
         '''Input Mouse Event
 
-        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
 
         .. autosummary::
           NoEvent
@@ -425,7 +425,7 @@ class TTkConstant:
         '''A combination of Clear and Select, provided for convenience.'''
 
     class ItemFlag(int):
-        ''':class:`ItemFlag` describes the properties of an item
+        ''':py:class:`ItemFlag` describes the properties of an item
 
         .. autosummary::
           NoItemFlags
@@ -506,7 +506,7 @@ class TTkConstant:
     class KeyType(int):
         '''Input Key Types
 
-        Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
+        Key type reported by :py:class:`TTkKeyEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
 
         .. autosummary::
           Character
@@ -522,9 +522,9 @@ class TTkConstant:
 
 
     class KeyModifier(int):
-        '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
+        '''Input :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
 
-        Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
+        Modifier reported by :py:class:`TTkKeyEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
 
         .. autosummary::
           NoModifier
@@ -578,7 +578,7 @@ class TTkConstant:
 
     class ShortcutContext(int):
         '''
-        For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,
+        For a :py:class:`TTkShortcut` event to occur,
         the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
         The possible contexts are these:
 

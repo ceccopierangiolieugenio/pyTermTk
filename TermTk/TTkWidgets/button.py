@@ -63,24 +63,20 @@ class TTkButton(TTkWidget):
     :type checked: bool, optional
     :param bool checkable: define if the button is checkable, defaults to "False"
     :type checkable: bool, optional
+    '''
 
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
+    clicked:pyTTkSignal
+    '''
+    This signal is emitted when the button is activated
+    '''
 
-        .. py:method:: clicked()
-            :signal:
+    toggled:pyTTkSignal
+    '''
+    This signal is emitted whenever the button state changes if checkeable,
+    i.e., whenever the user checks or unchecks it.
 
-            This signal is emitted when the button is activated
-
-        .. py:method:: toggled(checked)
-            :signal:
-
-            This signal is emitted whenever the button state changes if checkeable, i.e., whenever the user checks or unchecks it.
-
-            :param checked: True if checked otherwise False
-            :type checked: bool
-
+    :param checked: True if checked otherwise False
+    :type checked: bool
     '''
 
     classStyle = {
@@ -189,7 +185,7 @@ class TTkButton(TTkWidget):
     def text(self):
         ''' This property holds the text shown on the button
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         return TTkString('\n').join(self._text)
 
@@ -197,7 +193,7 @@ class TTkButton(TTkWidget):
         ''' This property holds the text shown on the button
 
         :param text:
-        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        :type text: :py:class:`TTkString`
         '''
         if self._text and self._text[0] == text: return
         self._text = TTkString(text).split('\n')

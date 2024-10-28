@@ -35,10 +35,10 @@ from dataclasses import dataclass
 class TTkTreeWidget(TTkAbstractScrollView):
     '''TTkTreeWidget
 
-    The :class:`TTkTreeWidget` class is a convenience class that provides a standard tree
+    The :py:class:`TTkTreeWidget` class is a convenience class that provides a standard tree
     widget with a classic item-based interface.
     This class is based on TTk's Model/View architecture and uses a default model to hold items,
-    each of which is a :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`.
+    each of which is a :py:class:`TTkTreeWidgetItem`.
 
     In its simplest form, a tree widget can be constructed in the following way:
 
@@ -68,60 +68,60 @@ class TTkTreeWidget(TTkAbstractScrollView):
     The isSortingEnabled() function indicates whether sorting is enabled.
     '''
 
-    itemActivated:pyTTkSignal[TTkTreeWidgetItem, int]
+    itemActivated:pyTTkSignal
     '''
     This signal is emitted when the user activates an item by double-clicking
     or pressing a special key (e.g., Enter).
 
     :param item: the item that was clicked.
-    :type item: :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`
+    :type item: :py:class:`TTkTreeWidgetItem`
     :param col: the item's column that was clicked.
     :type col: int
     '''
-    itemChanged:pyTTkSignal[TTkTreeWidgetItem, int]
+    itemChanged:pyTTkSignal
     '''
     This signal is emitted when the contents of the column in the specified item changes.
 
     :param item: the item reported by this signal
-    :type item: :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`
+    :type item: :py:class:`TTkTreeWidgetItem`
     :param col: the item's column
     :type col: int
     '''
-    itemClicked:pyTTkSignal[TTkTreeWidgetItem, int]
+    itemClicked:pyTTkSignal
     '''
     This signal is emitted when the user clicks inside the widget.
 
     If no item was clicked, no signal will be emitted.
 
     :param item: the item that was clicked.
-    :type item: :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`
+    :type item: :py:class:`TTkTreeWidgetItem`
     :param col: the item's column that was clicked.
     :type col: int
     '''
-    itemDoubleClicked:pyTTkSignal[TTkTreeWidgetItem, int]
+    itemDoubleClicked:pyTTkSignal
     '''
     This signal is emitted when the user double clicks inside the widget.
 
     If no item was double clicked, no signal will be emitted.
 
     :param item: the item that was clicked.
-    :type item: :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`
+    :type item: :py:class:`TTkTreeWidgetItem`
     :param col: the item's column that was clicked.
     :type col: int
     '''
-    itemExpanded:pyTTkSignal[TTkTreeWidgetItem]
+    itemExpanded:pyTTkSignal
     '''
     This signal is emitted when the specified item is expanded so that all of its children are displayed.
 
     :param item: the item reported by this signal
-    :type item: :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`
+    :type item: :py:class:`TTkTreeWidgetItem`
     '''
-    itemCollapsed:pyTTkSignal[TTkTreeWidgetItem]
+    itemCollapsed:pyTTkSignal
     '''
     This signal is emitted when the specified item is collapsed so that none of its children are displayed.
 
     :param item: the item reported by this signal
-    :type item: :class:`~TermTk.TTkWidgets.TTkModelView.treewidgetitem.TTkTreeWidgetItem`
+    :type item: :py:class:`TTkTreeWidgetItem`
     '''
 
     classStyle = {

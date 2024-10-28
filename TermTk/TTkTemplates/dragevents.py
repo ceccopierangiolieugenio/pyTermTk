@@ -28,7 +28,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -42,7 +42,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -56,7 +56,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -70,7 +70,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool

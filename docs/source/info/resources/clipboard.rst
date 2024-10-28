@@ -7,7 +7,7 @@ Clipboard
 .. _pyTermTk:  https://github.com/ceccopierangiolieugenio/pyTermTk
 
 
-pyTermTk_ include a clipboard wrapper :class:`~TermTk.TTkGui.clipboard.TTkClipboard`, around any of the following libraries:
+pyTermTk_ include a clipboard wrapper :py:class:`TTkClipboard`, around any of the following libraries:
 
 - `copykitten <https://github.com/klavionik/copykitten>`_ - Robust, dependency-free way to use the system clipboard in Python.
 - `pyperclip <https://github.com/asweigart/pyperclip>`_ - Python module for cross-platform clipboard functions.
@@ -46,7 +46,7 @@ i.e.
 Usage
 -----
 
-Once initialized the clipboard manager, 2 apis are provided that can be used to access the clipboard (:class:`~TermTk.TTkGui.clipboard.TTkClipboard.setText`, :class:`~TermTk.TTkGui.clipboard.TTkClipboard.text`)
+Once initialized the clipboard manager, 2 apis are provided that can be used to access the clipboard (:py:class:`TTkClipboard.setText`, :py:class:`TTkClipboard.text`)
 
 .. code:: python
 

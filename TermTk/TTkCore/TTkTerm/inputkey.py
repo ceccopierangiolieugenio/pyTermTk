@@ -30,18 +30,18 @@ class TTkKeyEvent:
     :Demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
 
     :param type: The key input type recorded
-    :type type: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType`
+    :type type: :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType`
     :param key: the key
     :type key: str
     :param code: The terminal code used to represent this input
     :type code: str
-    :param mod: The modifier used by the :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
-    :type mod: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier`
+    :param mod: The modifier used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
+    :type mod: :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier`
 
     .. py:attribute:: type
         :type: KeyType
 
-        The key input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType` recorded
+        The key input :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType` recorded
 
     .. py:attribute:: key
         :type: str
@@ -56,7 +56,7 @@ class TTkKeyEvent:
     .. py:attribute:: mod
         :type: KeyModifier
 
-        The :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier` used by the :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
+        The :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier` used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
 
     '''
     __slots__ = ('type', 'key', 'code', 'mod')

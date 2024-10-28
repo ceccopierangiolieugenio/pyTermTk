@@ -39,7 +39,12 @@ extensions = [
 	#'sphinx_epytext',
     'sphinx.ext.autodoc',  # Core library for html generation from docstrings
     #'sphinx.ext.autosummary',  # Create neat summary tables
+
+    # Personal extensions/hacks to overcome the
+    # FUCKNG unwritten idiotic sphinx rules
+    # Fuck you Sphinx!!!
     'sphinx_ext_autosummary_reworked',  # Create neat summary tables
+    'sphinx_PyRefRole_hacked',          # Resolve Domainless TermTk Classes
     'method_signal',
 ]
 

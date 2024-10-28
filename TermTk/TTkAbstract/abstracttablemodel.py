@@ -28,16 +28,16 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 class TTkModelIndex():
     '''
-    This class is used as an index into item models derived from :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`.
+    This class is used as an index into item models derived from :py:class:`TTkAbstractTableModel`.
     The index is used by item views, delegates, and selection models to locate an item in the model.
 
-    New :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex` objects are created by the model using the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` -> :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.index` function.
-    An invalid model index can be constructed with the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex` constructor.
+    New :py:class:`TTkModelIndex` objects are created by the model using the :py:class:`TTkAbstractTableModel` -> :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.index` function.
+    An invalid model index can be constructed with the :py:class:`TTkModelIndex` constructor.
 
     Model indexes refer to items in models, and contain all the information required to specify their locations in those models.
     Each index is located in a given row and column; use :meth:`row`, :meth:`column`, and :meth:`data` to obtain this information.
 
-    To obtain a model index that refers to an existing item in a model, call :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` -> :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.index` with the required row and column values.
+    To obtain a model index that refers to an existing item in a model, call :py:class:`TTkAbstractTableModel` -> :meth:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel.index` with the required row and column values.
     '''
     def __init__(self) -> None:
         pass
@@ -97,27 +97,27 @@ class _TTkModelIndexList(TTkModelIndex):
 
 class TTkAbstractTableModel():
     '''
-    :class:`TTkAbstractTableModel` provides a standard interface for
+    :py:class:`TTkAbstractTableModel` provides a standard interface for
     models that represent their data as a two-dimensional array of items.
     It is not used directly, but must be subclassed.
 
-    Since the model provides a more specialized interface than :class:`~TermTk.TTkAbstract.abstractitemmodel.TTkAbstractItemModel`,
+    Since the model provides a more specialized interface than :py:class:`TTkAbstractItemModel`,
     it is not suitable for use with tree views.
 
     The :meth:`rowCount` and :meth:`columnCount` functions return the dimensions of the table.
 
     **Subclassing**
 
-    When subclassing :class:`TTkAbstractTableModel`, you must implement :meth:`rowCount`, :meth:`columnCount`, and :meth:`data`.
+    When subclassing :py:class:`TTkAbstractTableModel`, you must implement :meth:`rowCount`, :meth:`columnCount`, and :meth:`data`.
     Well behaved models will also implement :meth:`headerData`.
 
     Editable models need to implement :meth:`setData`.
 
     **Built-In Implementation**
 
-    :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` basic subclass implementing a 2d list as data structure
+    :py:class:`TTkTableModelList` basic subclass implementing a 2d list as data structure
 
-    :class:`~TermTk.TTkWidgets.TTkModelView.tablemodelcsv.TTkTableModelCSV` subclass of :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` including the api to import csv data
+    :py:class:`TTkTableModelCSV` subclass of :py:class:`TTkTableModelList` including the api to import csv data
 
     '''
 
@@ -126,7 +126,7 @@ class TTkAbstractTableModel():
         'dataChanged'
     )
 
-    dataChanged:pyTTkSignal[int,int]
+    dataChanged:pyTTkSignal
     '''
         This signal is emitted whenever the data in an existing item changes.
 
@@ -168,7 +168,7 @@ class TTkAbstractTableModel():
         :param col: the column position of the index
         :type col: int
 
-        :return: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkModelIndex`
+        :return: :py:class:`TTkModelIndex`
         '''
         return _TTkModelIndexList(row,col,self)
 
@@ -208,14 +208,14 @@ class TTkAbstractTableModel():
 
     def ttkStringData(self, row:int, col:int) -> TTkString:
         '''
-        Returns the :class:`~TermTk.TTkCore.string.TTkString` reprsents the ddata stored in the row/column.
+        Returns the :py:class:`TTkString` reprsents the ddata stored in the row/column.
 
         :param row: the row position of the data
         :type row: int
         :param col: the column position of the data
         :type col: int
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         data = self.data(row,col)
         if isinstance(data,TTkString):
@@ -235,9 +235,9 @@ class TTkAbstractTableModel():
         :param pos: the position (col or row) of the header
         :type pos: int
         :param orientation: the orienttin of the header to be retrieved
-        :type orientation: :class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :type orientation: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         if orientation==TTkK.HORIZONTAL:
             return TTkString(str(pos))
@@ -250,15 +250,15 @@ class TTkAbstractTableModel():
         Returns the item flags for the given row,column.
 
         The base class implementation returns a combination of flags that
-        enables the item (:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag.ItemIsEnabled`)
-        and allows it to be selected (:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag.ItemIsSelectable`).
+        enables the item (:py:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag.ItemIsEnabled`)
+        and allows it to be selected (:py:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag.ItemIsSelectable`).
 
         :param row: the row position od the data
         :type row: int
         :param col: the column position of the data
         :type col: int
 
-        :return: :class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag`
+        :return: :py:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag`
         '''
         return (
             TTkK.ItemFlag.ItemIsEnabled  |
@@ -271,6 +271,6 @@ class TTkAbstractTableModel():
         :param column: The column index to be sorted, if -1 is provided the original unsorted order is used.
         :type column: int
         :param order: the sorting order
-        :type order: :class:`~TermTk.TTkCore.constant.TTkConstant.SortOrder`
+        :type order: :py:class:`~TermTk.TTkCore.constant.TTkConstant.SortOrder`
         '''
         pass

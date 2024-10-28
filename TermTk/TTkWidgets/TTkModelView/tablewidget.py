@@ -102,7 +102,7 @@ class _ClipboardTable(TTkString):
 
 class TTkTableWidget(TTkAbstractScrollView):
     '''
-    A :class:`TTkTableWidget` implements a table view that displays items from a model.
+    A :py:class:`TTkTableWidget` implements a table view that displays items from a model.
 
     ::
 
@@ -120,9 +120,9 @@ class TTkTableWidget(TTkAbstractScrollView):
         6  │2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                    │Chavezborough       │
         ╾╌╌┴────────────────┴───────────┴────────────┴────────────────────────────────┴────────────────────┘
 
-    The :class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
+    The :py:class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
 
-    :class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` class.
+    :py:class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :py:class:`TTkAbstractTableModel` class.
 
     **Navigation**
 
@@ -151,7 +151,7 @@ class TTkTableWidget(TTkAbstractScrollView):
     call the view's :meth:`resizeColumnsToContents` or :meth:`resizeRowsToContents` functions.
 
     :param tableModel: the model for the view to present.
-    :type tableModel: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+    :type tableModel: :py:class:`TTkAbstractTableModel`
 
     :param vSeparator: show the vertical separators, defaults to True
     :type vSeparator: bool, optional
@@ -170,6 +170,62 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     :param dataPadding: the right column padding, defaults to 1
     :type dataPadding: int, optional
+    '''
+
+    cellChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever a cell in the table is clicked.
+        The row and column specified is the cell that was clicked.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellDoubleClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever a cell in the table is double clicked.
+        The row and column specified is the cell that was double clicked.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellEntered:pyTTkSignal
+    '''
+        This signal is emitted when the mouse cursor enters a cell.
+        The cell is specified by row and column.
+
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    # self.cellPressed       = pyTTkSignal(int,int)
+    currentCellChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the current cell changes.
+        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+        the cell specified by **currRow** and **currCol** is the new current cell.
+
+        :param currRow: the current row
+        :type currRow: int
+        :param currColumn: the current column
+        :type currColumn: int
+        :param prevRow: the previous row
+        :type prevRow: int
+        :param prevCol: the previous column
+        :type prevCol: int
     '''
 
     classStyle = {
@@ -214,61 +270,6 @@ class TTkTableWidget(TTkAbstractScrollView):
                   'cellEntered', # 'cellPressed',
                   'currentCellChanged',
                   )
-    cellChanged:pyTTkSignal[int,int]
-    '''
-        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
-
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    cellClicked:pyTTkSignal[int,int]
-    '''
-        This signal is emitted whenever a cell in the table is clicked.
-        The row and column specified is the cell that was clicked.
-
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    cellDoubleClicked:pyTTkSignal[int,int]
-    '''
-        This signal is emitted whenever a cell in the table is double clicked.
-        The row and column specified is the cell that was double clicked.
-
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    cellEntered:pyTTkSignal[int,int]
-    '''
-        This signal is emitted when the mouse cursor enters a cell.
-        The cell is specified by row and column.
-
-        :param row: the row
-        :type row: int
-        :param col: the column
-        :type col: int
-    '''
-    # self.cellPressed       = pyTTkSignal(int,int)
-    currentCellChanged:pyTTkSignal[int,int,int,int]
-    '''
-        This signal is emitted whenever the current cell changes.
-        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
-        the cell specified by **currRow** and **currCol** is the new current cell.
-
-        :param currRow: the current row
-        :type currRow: int
-        :param currColumn: the current column
-        :type currColumn: int
-        :param prevRow: the previous row
-        :type prevRow: int
-        :param prevCol: the previous column
-        :type prevCol: int
-    '''
 
     def __init__(self, *,
                  tableModel:TTkAbstractTableModel=None,
@@ -510,7 +511,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type column: bool
 
         :param order: the sort order
-        :type order: :class:`~TermTk.TTkCore.constant.TTkK.SortOrder`
+        :type order: :py:class:`~TermTk.TTkCore.constant.TTkK.SortOrder`
         '''
         self._sortColumn = column
         self._sortOrder = order
@@ -599,8 +600,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type pos: tuple[int,int]
         :param size: the width,height of the rect used for the selection
         :type size: tuple[int,int]
-        :param flags: the selection model used (i.e. :class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select`)
-        :type flags: :class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel`
+        :param flags: the selection model used (i.e. :py:class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select`)
+        :type flags: :py:class:`TTkItemSelectionModel`
         '''
         x,y = pos
         w,h = size
@@ -710,7 +711,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Returns the table view's vertical header.
 
-        :return: :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView`
+        :return: :py:class:`TTkHeaderView`
         '''
         return self._verticalHeader
 
@@ -718,7 +719,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Returns the table view's horizontal header.
 
-        :return: :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView`
+        :return: :py:class:`TTkHeaderView`
         '''
         return self._horizontallHeader
 
@@ -791,7 +792,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Returns the model that this view is presenting.
 
-        :return: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+        :return: :py:class:`TTkAbstractTableModel`
         '''
         return self._tableModel
 
@@ -800,7 +801,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         Sets the model for the view to present.
 
         :param model:
-        :type model: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+        :type model: :py:class:`TTkAbstractTableModel`
         '''
         self._tableModel.dataChanged.disconnect(self.update)
         self._tableModel = model

@@ -18,7 +18,7 @@ Pippo CUSTOM_MODULE_TEMPLATE.001
    {% endif %}
 
 {% if TTkSubModules %}
-.. rubric:: Modules
+.. rubric:: {{ _('Modules') }}
 
 .. autosummary::
    :toctree: Modules:

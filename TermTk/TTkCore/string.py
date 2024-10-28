@@ -37,8 +37,8 @@ class TTkString():
 
     :param text: text of the string, defaults to ""
     :type text: str, optional
-    :param color: the color of the string, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-    :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
+    :param color: the color of the string, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+    :type color: :py:class:`TTkColor`, optional
 
     Example:
 
@@ -321,10 +321,10 @@ class TTkString():
 
         :param width: the new width
         :type width: int, optional
-        :param color: the color of the padding, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-        :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
-        :param alignment: the alignment of the text to the full width :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
-        :type alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
+        :param color: the color of the padding, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :type color: :py:class:`TTkColor`, optional
+        :param alignment: the alignment of the text to the full width :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
+        :type alignment: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
         '''
         lentxt = self.termWidth()
         if not width or width == lentxt: return self
@@ -450,8 +450,8 @@ class TTkString():
 
         If only the color is specified, the entire string is colorized
 
-        :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-        :type color: :class:`~TermTk.TTkCore.color.TTkColor`
+        :param color: the color to be used, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :type color: :py:class:`TTkColor`
         :param match: the match to colorize
         :type match: str, optional
         :param posFrom: the initial position of the color
@@ -489,8 +489,8 @@ class TTkString():
 
         If only the color is specified, the entire string is colorized
 
-        :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-        :type color: :class:`~TermTk.TTkCore.color.TTkColor`
+        :param color: the color to be used, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :type color: :py:class:`TTkColor`
         :param match: the match to colorize
         :type match: str, optional
         :param posFrom: the initial position of the color
