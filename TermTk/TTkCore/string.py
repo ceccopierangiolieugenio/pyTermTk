@@ -37,7 +37,7 @@ class TTkString():
 
     :param text: text of the string, defaults to ""
     :type text: str, optional
-    :param color: the color of the string, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+    :param color: the color of the string, defaults to :py:class:`TTkColor.RST`
     :type color: :py:class:`TTkColor`, optional
 
     Example:
@@ -321,10 +321,10 @@ class TTkString():
 
         :param width: the new width
         :type width: int, optional
-        :param color: the color of the padding, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :param color: the color of the padding, defaults to :py:class:`TTkColor.RST`
         :type color: :py:class:`TTkColor`, optional
         :param alignment: the alignment of the text to the full width :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
-        :type alignment: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
+        :type alignment: :py:class:`TTkConstant.Alignment`, optional
         '''
         lentxt = self.termWidth()
         if not width or width == lentxt: return self
@@ -450,7 +450,7 @@ class TTkString():
 
         If only the color is specified, the entire string is colorized
 
-        :param color: the color to be used, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :param color: the color to be used, defaults to :py:class:`TTkColor.RST`
         :type color: :py:class:`TTkColor`
         :param match: the match to colorize
         :type match: str, optional
@@ -489,7 +489,7 @@ class TTkString():
 
         If only the color is specified, the entire string is colorized
 
-        :param color: the color to be used, defaults to :py:class:`~TermTk.TTkCore.color.TTkColor.RST`
+        :param color: the color to be used, defaults to :py:class:`TTkColor.RST`
         :type color: :py:class:`TTkColor`
         :param match: the match to colorize
         :type match: str, optional

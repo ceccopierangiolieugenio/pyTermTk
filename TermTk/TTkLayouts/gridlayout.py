@@ -182,7 +182,7 @@ class TTkGridLayout(TTkLayout):
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
         :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :type direction: :py:class:`TTkConstant.Direction`
         '''
         TTkGridLayout.addWidgets(self,[widget], row, col, rowspan, colspan, direction)
 
@@ -196,7 +196,7 @@ class TTkGridLayout(TTkLayout):
         :param int rowspan: the rows used by the widget, optional, defaults to 1
         :param int colspan: the cols used by the widget, optional, defaults to 1
         :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :type direction: :py:class:`TTkConstant.Direction`
         '''
         self.removeWidgets(widgets)
         items = [w.widgetItem() for w in widgets]
@@ -216,7 +216,7 @@ class TTkGridLayout(TTkLayout):
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
         :param direction: The direction the new item will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :type direction: :py:class:`TTkConstant.Direction`
         '''
         self.addItems([item],row,col,rowspan,colspan,direction)
 
@@ -230,7 +230,7 @@ class TTkGridLayout(TTkLayout):
         :param int rowspan: the rows used by the item, optional, defaults to 1
         :param int colspan: the cols used by the item, optional, defaults to 1
         :param direction: The direction the new items will be added if row/col are not specified, defaults to defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction.HORIZONTAL`
-        :type direction: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :type direction: :py:class:`TTkConstant.Direction`
         '''
         nitems = len(items)
         self.removeItems(items)

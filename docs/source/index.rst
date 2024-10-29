@@ -80,49 +80,72 @@ Intro
    info/debug
    info/resources/index
 
+API Reference
+=============
+
 .. currentmodule:: TermTk
 
 .. autosummary::
    :caption: API Reference
    :toctree: _autosummary
    :template: custom-module-template.01.rst
-   :recursive:
 
-   TTkCore
-   TTkLayouts
    TTkAbstract
+   TTkCore
+   TTkGui
+   TTkLayouts
+   TTkTemplates
+   TTkTestWidgets
+   TTkUiTools
+   TTkWidgets
    TTkWidgets.TTkModelView
+   TTkWidgets.TTkPickers
+   TTkWidgets.TTkTerminal
 
+.. # .. autosummary::
+.. #    :caption: Classes:
+.. #    :toctree: _autosummary
+.. #    :template: custom-class-template.01.rst
+.. #
+.. #    TTkCore.TTkK
+.. #    TTkCore.TTkConstant
+.. #    TTkWidgets.TTkWidget
+.. #    TTkWidgets.TTkContainer
+.. #    TTkWidgets.TTkScrollBar
 
-| TermTk.TTkAbstract
-| TermTk.TTkCore
-| TermTk.TTkCore.TTkTerm
-| TermTk.TTkGui
-| TermTk.TTkLayouts
-| TermTk.TTkTemplates
-| TermTk.TTkTestWidgets
-| TermTk.TTkTheme
-| TermTk.TTkTypes
-| TermTk.TTkUiTools
-| TermTk.TTkWidgets
-| TermTk.TTkWidgets.TTkModelView
-| TermTk.TTkWidgets.TTkPickers
-| TermTk.TTkWidgets.TTkTerminal
-
-| TTkAbstract
-| TermTk.TTkCore
-| TermTk.TTkCore.TTkTerm
-| TermTk.TTkGui
-| TermTk.TTkLayouts
-| TermTk.TTkTemplates
-| TermTk.TTkTestWidgets
-| TermTk.TTkTheme
-| TermTk.TTkTypes
-| TermTk.TTkUiTools
-| TermTk.TTkWidgets
-| TermTk.TTkWidgets.TTkModelView
-| TermTk.TTkWidgets.TTkPickers
-| TermTk.TTkWidgets.TTkTerminal
+.. #    | TTkCore.TTk
+.. #    | TTkCore.TTkHelper
+.. #    | TTkCore.TTkColor
+.. #
+.. # | TermTk.TTkAbstract
+.. # | TermTk.TTkCore
+.. # | TermTk.TTkCore.TTkTerm
+.. # | TermTk.TTkGui
+.. # | TermTk.TTkLayouts
+.. # | TermTk.TTkTemplates
+.. # | TermTk.TTkTestWidgets
+.. # | TermTk.TTkTheme
+.. # | TermTk.TTkTypes
+.. # | TermTk.TTkUiTools
+.. # | TermTk.TTkWidgets
+.. # | TermTk.TTkWidgets.TTkModelView
+.. # | TermTk.TTkWidgets.TTkPickers
+.. # | TermTk.TTkWidgets.TTkTerminal
+.. #
+.. # | TTkAbstract
+.. # | TermTk.TTkCore
+.. # | TermTk.TTkCore.TTkTerm
+.. # | TermTk.TTkGui
+.. # | TermTk.TTkLayouts
+.. # | TermTk.TTkTemplates
+.. # | TermTk.TTkTestWidgets
+.. # | TermTk.TTkTheme
+.. # | TermTk.TTkTypes
+.. # | TermTk.TTkUiTools
+.. # | TermTk.TTkWidgets
+.. # | TermTk.TTkWidgets.TTkModelView
+.. # | TermTk.TTkWidgets.TTkPickers
+.. # | TermTk.TTkWidgets.TTkTerminal
 
 Indices and tables
 ==================

@@ -311,7 +311,7 @@ class TTk(TTkContainer):
         .. warning::
             Method Deprecated,
 
-            use :py:class:`TTkHelper` -> :py:class:`~TermTk.TTkCore.helper.TTkHelper.quit` instead
+            use :py:class:`TTkHelper` -> :py:class:`TTkHelper.quit` instead
 
             i.e.
 

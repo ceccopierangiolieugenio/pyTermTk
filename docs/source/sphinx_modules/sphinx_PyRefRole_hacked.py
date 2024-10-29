@@ -60,18 +60,25 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     for x in modules.items():
         print(x)
 
+    def _resolve(txt) -> str:
+        oldTxt = txt
+        if txt in modules:
+            txt = f"~{modules[txt]}.{txt}"
+            print(f"-----------> {oldTxt=} -> {txt=}")
+        else:
+            txts = txt.split('.')
+            if txts[0] in modules:
+                txts[0] = f"~{modules[txts[0]]}.{txts[0]}"
+                txt = '.'.join(txts)
+                print(f"-----------> {oldTxt=} -> {txt=}")
+        return txt
+
     _process_link_bk = sphinxPythonDomain.PyXRefRole.process_link
     def _hacked_process_link(self, env, refnode,
                      has_explicit_title, title: str, target, _process_link_bk=_process_link_bk) -> tuple[str, str]:
         print(f"-----------> HACKED !!! {title=} {target=}")
-        oldTitle = title
-        if title in modules:
-            title = f"~{modules[title]}.{title}"
-            print(f"-----------> {oldTitle=} -> {title=}")
-        oldTarget = target
-        if target in modules:
-            target = f"~{modules[target]}.{target}"
-            print(f"-----------> {oldTarget=} -> {target=}")
+        # title = _resolve(title)
+        target = _resolve(target)
         return _process_link_bk(self, env, refnode,
                      has_explicit_title, title, target)
 

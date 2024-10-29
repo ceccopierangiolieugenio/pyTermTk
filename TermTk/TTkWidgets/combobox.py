@@ -53,10 +53,10 @@ class TTkComboBox(TTkContainer):
     :type list: list(str), optional
 
     :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy.InsertAtBottom`
-    :type insertPolicy: :py:class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy`, optional
+    :type insertPolicy: :py:class:`TTkConstant.InsertPolicy`, optional
 
     :param textAlign: This enum type is used to define the text alignment, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN`
-    :tye textAlign: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
+    :tye textAlign: :py:class:`TTkConstant.Alignment`, optional
 
     :param editable: This property holds whether the combo box can be edited by the user, defaults to False
     :type editable: bool, optional
@@ -122,7 +122,7 @@ class TTkComboBox(TTkContainer):
     def textAlign(self):
         '''his property holds the displayed text alignment
 
-        :return: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+        :return: :py:class:`TTkConstant.Alignment`
         '''
         return self._textAlign
 
@@ -130,7 +130,7 @@ class TTkComboBox(TTkContainer):
         '''This property holds the displayed text alignment
 
         :param align:
-        :type align: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+        :type align: :py:class:`TTkConstant.Alignment`
         '''
         if self._textAlign != align:
             self._textAlign = align

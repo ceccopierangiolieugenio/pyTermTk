@@ -109,10 +109,10 @@ class TTkFileDialogPicker(TTkWindow):
     :type filter: str, optional
 
     :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
-    :type fileMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
+    :type fileMode: :py:class:`TTkConstant.FileMode`, optional
 
     :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
-    :type acceptMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
+    :type acceptMode: :py:class:`TTkConstant.AcceptMode`, optional
     '''
 
     pathPicked:pyTTkSignal
@@ -427,10 +427,10 @@ class TTkFileButtonPicker(TTkButton):
 
 
     :param fileMode: The file mode defines the number and type of items that the user is expected to select in the dialog, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode.Anyfile`
-    :type fileMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.FileMode`, optional
+    :type fileMode: :py:class:`TTkConstant.FileMode`, optional
 
     :param acceptMode: TThe action mode defines whether the dialog is for opening or saving files, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode.AcceptOpen`
-    :type acceptMode: :py:class:`~TermTk.TTkCore.constant.TTkConstant.AcceptMode`, optional
+    :type acceptMode: :py:class:`TTkConstant.AcceptMode`, optional
 
     +-----------------------------------------------------------------------------------------------+
     | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |

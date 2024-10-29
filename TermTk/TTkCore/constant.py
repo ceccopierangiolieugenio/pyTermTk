@@ -201,7 +201,7 @@ class TTkConstant:
     class MouseKey(int):
         '''Input Mouse Key
 
-        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`TTkMouseEvent.key`
 
         .. autosummary::
           NoButton
@@ -284,7 +284,7 @@ class TTkConstant:
     class MouseEvent(int):
         '''Input Mouse Event
 
-        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`TTkMouseEvent.evt`
 
         .. autosummary::
           NoEvent
@@ -506,7 +506,7 @@ class TTkConstant:
     class KeyType(int):
         '''Input Key Types
 
-        Key type reported by :py:class:`TTkKeyEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
+        Key type reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.key`
 
         .. autosummary::
           Character
@@ -524,7 +524,7 @@ class TTkConstant:
     class KeyModifier(int):
         '''Input :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
 
-        Modifier reported by :py:class:`TTkKeyEvent` -> :py:class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
+        Modifier reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.mod`
 
         .. autosummary::
           NoModifier
@@ -1074,4 +1074,6 @@ class TTkConstant:
 
 
 # Alias to TTkConstant
-class TTkK(TTkConstant): pass
+class TTkK(TTkConstant):
+  '''Class container of all the constants used in :mod:`~TermTk`'''
+  pass

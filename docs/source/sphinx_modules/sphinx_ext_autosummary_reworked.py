@@ -39,7 +39,7 @@ import inspect
 # From
 # https://stackoverflow.com/questions/3232024/introspection-to-get-decorator-names-on-a-method
 
-def get_decorators(cls):
+def _get_decorators(cls):
     target = cls
     decorators = {}
 
@@ -59,6 +59,11 @@ def get_decorators(cls):
     node_iter.visit(ast.parse(inspect.getsource(target)))
     return decorators
 
+def _get_attributes(obj,filter):
+    return sorted([item for item in (set(dir(obj)) - set(filter)) if not item.startswith('_') and not inspect.isclass(getattr(obj,item))])
+
+def _get_classes(obj,filter):
+    return sorted([item for item in (set(dir(obj)) - set(filter)) if not item.startswith('_') and inspect.isclass(getattr(obj,item))])
 
 _styleMatch = re.compile('^ *classStyle')
 _colorMatch = re.compile('^#[0-9a-fA-F]{6}')
@@ -83,11 +88,11 @@ def _get_classStyleCode(obj) -> list[str]:
         # print(line)
         # print(f"{_styleMatch.match(line)=}")
         if curlyBraket == 0 and _styleMatch.match(line):
-            print(line)
+            # print(line)
             ret.append(line)
             curlyBraket += _processLine(line)
         elif curlyBraket > 0:
-            print(line)
+            # print(line)
             ret.append(line)
             curlyBraket += _processLine(line)
             if curlyBraket == 0:
@@ -102,13 +107,45 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     modSub = {}
     modSubSorted = {}
     modStyles = {}
+
     ttkAllSignals={}
+    ttkAllMethods={}
     ttkAllSlots={}
+    ttkAllMembers={} # List all the member of a class
+    ttkInherited={}  # List of the inherited classes for each class
+
+    def _getMethodsAndSlots(_obj):
+        retSlots = []
+        retMethods = []
+        def _hasmethod(obj, name):
+            return hasattr(obj, name) and type(getattr(obj, name)) in (types.MethodType, types.FunctionType)
+
+        for _name in (_dec:=_get_decorators(_obj)):
+            if _name.startswith('_'): continue
+            if _hasmethod(_obj,_name):
+                retMethods.append(_name)
+            for _decorator in _dec[_name]:
+                if "pyTTkSlot"in _decorator:
+                    retSlots.append(_name)
+                    break
+        return retMethods,retSlots
+
+    def _getInherited(_obj):
+        ret = []
+        for cc in _obj.__mro__:
+            if cc==_obj: continue
+            # if hasattr(cc,'_ttkProperties'):
+            if issubclass(cc, ttk.TTkWidget) or issubclass(cc, ttk.TTkLayout):
+                ccName = cc.__name__
+                ret.append(ccName)
+                # print(ccName)
+        # print(f"_getInherited {ret}")
+        return ret
 
     def _getSignals(_obj):
         ret = []
         for _name in (_th:=get_type_hints(_obj)):
-            print(f"{_th=}")
+            # print(f"{_th=}")
             if _name.startswith('_'): continue
             if 'pyTTkSignal' in str(_th[_name]):
                 ret.append(_name)
@@ -119,12 +156,19 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     def _parseModules(_mod):
         if _file:=getattr(_mod,'__file__',None):
             if '__init__.py' in _file and '/TermTk/' in _file:
-                print(_file)
+                # print(_file)
                 for _name, _obj in inspect.getmembers(_mod):
                     if _mod.__name__ == 'TermTk.TTkCore.drivers': continue
                     if inspect.isclass(_obj):
+                        _meth,_slots = _getMethodsAndSlots(_obj)
+                        if _name not in ttkAllMethods:
+                            ttkAllMethods[_name] = _meth
+                        if _name not in ttkAllSlots:
+                            ttkAllSlots[_name] = _slots
                         if _name not in ttkAllSignals:
                             ttkAllSignals[_name] = _getSignals(_obj)
+                        if _name not in ttkInherited:
+                            ttkInherited[_name] = _getInherited(_obj)
                         if _name not in modStyles:
                             modStyles[_name] = _get_classStyleCode(_obj)
                         if _name not in modules:
@@ -164,81 +208,78 @@ def setup(app: Sphinx) -> ExtensionMetadata:
         for x in b:
             print (f" - {x}")
 
+    for (x,y) in ttkInherited.items():
+        print(f"Inherited {x} -> {y}")
+
     # print(modStyles)
 
     # raise Exception
 
-    def generate_autosummary_content(
+    def generate_autosummary_content_hack(
         name, obj, parent, template, template_name, imported_members,
         app, recursive, context, modname, qualname,
         generate_autosummary_content_old = seautogenerate.generate_autosummary_content
     ) -> str:
         print(f"-----------------> OVERRIDEEEEE!!! {type(context)}")
         print(f"{name=}")
-        print(f"{obj=}")
-        print(f"{parent=}")
-        print(f"{template=}")
-        print(f"{template_name=}")
-        print(f"{imported_members=}")
-        print(f"{app=}")
-        print(f"{recursive=}")
-        print(f"{context=}")
+        # print(f"{obj=}")
+        # print(f"{parent=}")
+        # print(f"{template=}")
+        # print(f"{template_name=}")
+        # print(f"{imported_members=}")
+        # print(f"{app=}")
+        # print(f"{recursive=}")
+        # print(f"{context=}")
         print(f"{modname=}")
         print(f"{qualname=}")
 
         ttkSignals = []
         ttkSignalsImported = {}
         ttkSlots = []
-        ttkSlotsImported = {}
+        ttkSlotsInherited = {}
         ttkMethods = []
         ttkInheritedMethods = []
         ttkSubClasses = modSorted.get(name,[])
         ttkSubModules = modSubSorted.get(name,[])
 
-        # ns['members'] = dir(obj)
-        # ns['inherited_members'] = set(dir(obj)) - set(obj.__dict__.keys())
-        # ns['methods'], ns['all_methods'] = _get_members(
-        #     doc, app, obj, {'method'}, include_public={'__init__'}
-        # )
-        # ns['attributes'], ns['all_attributes'] = _get_members(
-        #     doc, app, obj, {'attribute', 'property'}
-        # )
+        def _get_slots_in_obj(_name):
+            _slotsInherited = {_sub : sorted(ttkAllSlots.get(_sub,[])) for _sub in ttkInherited.get(_name,[])}
+            _slots = set(ttkAllSlots.get(_name,[])) - set([_sl for _subSl in _slotsInherited.values() for _sl in _subSl])
+            return sorted(list(_slots)), _slotsInherited
 
-        print(f"{obj=}")
-        # for member in inspect.getmembers(obj):
-        #     _name = member[0]
-        #     if _name.startswith('_'): continue
-        #     _hint = get_type_hints(obj)[_name]
+        ttkSlots, ttkSlotsInherited = _get_slots_in_obj(qualname)
 
-        # print(f"{obj=} - {get_type_hints(obj)=}")
-        # for _name in (_th:=get_type_hints(obj)):
-        #     print(f"{_th=}")
-        #     if _name.startswith('_'): continue
-        #     if 'pyTTkSignal' in str(_th[_name]):
-        #         ttkSignals.append(_name)
-        #     else:
-        #         print(ttk.TTkString(f"element not typed: {_name} - { _th[_name]}",ttk.TTkColor.BG_CYAN))
-        # print(ttkSignals)
+        def _get_attributes_in_obj(_obj,_name):
+            _allMethods = ttkAllMethods.get(_name,[])
+            _slots = ttkAllSlots.get(_name,[])
+            _signals = ttkAllSignals.get(_name,[])
+            _classes = _get_classes(_obj,[])
+            return _get_attributes(_obj,_allMethods+_slots+_signals+_classes)
 
-        def _hasmethod(obj, name):
-            return hasattr(obj, name) and type(getattr(obj, name)) in (types.MethodType, types.FunctionType)
+        def _get_simple_attributes(_obj):
+            return sorted(set(
+                    [item for item in dir(obj)
+                          if (
+                              not (
+                                item.startswith('_') or
+                                inspect.isclass(   _attr:=getattr(obj,item)) or
+                                inspect.ismethod(  _attr) or
+                                inspect.isfunction(_attr)
+                              ) ) ] ) )
 
-        for _name in (_dec:=get_decorators(obj)):
-            if _name.startswith('_'): continue
-            if _hasmethod(obj,_name):
-                ttkMethods.append(_name)
-            for _decorator in _dec[_name]:
-                if "pyTTkSlot"in _decorator:
-                    ttkSlots.append(_name)
-                    break
+        ttkAttributes = sorted(set(_get_simple_attributes(obj)) - set(ttkAllSignals.get(qualname,'')))
 
         context |= {
+            'TTkAttributes':ttkAttributes,
+            'TTkClasses':_get_classes(obj,ttkMethods+ttkSlots+ttkAllSignals.get(qualname,[])),
             'TTkStyle':modStyles.get(qualname,''),
             'TTkSignals':ttkAllSignals.get(qualname,''),
             'TTkSubClasses': ttkSubClasses,
             'TTkSubModules': ttkSubModules,
-            'TTkMethods':ttkMethods,
-            'TTkSlots':ttkSlots}
+            'TTkMethods':ttkAllMethods.get(qualname,''),
+            'TTkSlots':ttkSlots,
+            'TTkSlotsInherited':ttkSlotsInherited,
+            }
 
         print('\n'.join([f" * {x}={context[x]}" for x in context]))
 
@@ -246,6 +287,24 @@ def setup(app: Sphinx) -> ExtensionMetadata:
             name, obj, parent, template, template_name, imported_members,
             app, recursive, context, modname, qualname)
 
-    seautogenerate.generate_autosummary_content = generate_autosummary_content
+    # def get_import_prefixes_from_env_hack(env, get_import_prefixes_from_env_old=seauto.get_import_prefixes_from_env) -> list[str | None]:
+    #     pyClass = env.ref_context.get('py:class')
+    #     # env.ref_context.set('py:class')
+    #     prefixes = get_import_prefixes_from_env_old(env)
+    #     retPrefixes = []
+    #     for p in prefixes:
+    #         if not p:
+    #             retPrefixes.append(p)
+    #             continue
+    #         psplit = p.split('.')
+    #         cur = ret = psplit[0]
+    #         for pp in psplit[1:]:
+    #             print(f"SPLIT: {pp} - {pyClass=} - {prefixes}")
+    #             if cur != pp:
+    #                 ret += f".{pp}"
+    #         retPrefixes.append(ret)
+    #     return retPrefixes
 
+    seautogenerate.generate_autosummary_content = generate_autosummary_content_hack
+    # seauto.get_import_prefixes_from_env = get_import_prefixes_from_env_hack
     return seauto.setup(app)

@@ -235,7 +235,7 @@ class TTkAbstractTableModel():
         :param pos: the position (col or row) of the header
         :type pos: int
         :param orientation: the orienttin of the header to be retrieved
-        :type orientation: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Direction`
+        :type orientation: :py:class:`TTkConstant.Direction`
 
         :return: :py:class:`TTkString`
         '''
@@ -258,7 +258,7 @@ class TTkAbstractTableModel():
         :param col: the column position of the data
         :type col: int
 
-        :return: :py:class:`~TermTk.TTkCore.constant.TTkConstant.ItemFlag`
+        :return: :py:class:`TTkConstant.ItemFlag`
         '''
         return (
             TTkK.ItemFlag.ItemIsEnabled  |
@@ -271,6 +271,6 @@ class TTkAbstractTableModel():
         :param column: The column index to be sorted, if -1 is provided the original unsorted order is used.
         :type column: int
         :param order: the sorting order
-        :type order: :py:class:`~TermTk.TTkCore.constant.TTkConstant.SortOrder`
+        :type order: :py:class:`TTkConstant.SortOrder`
         '''
         pass

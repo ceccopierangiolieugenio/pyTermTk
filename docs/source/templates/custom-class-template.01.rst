@@ -1,4 +1,4 @@
-{{ objname | escape | underline}}
+{{ objname | escape | underline }}
 
 Pippo CUSTOM_CLASS_TEMPLATE.001
 
@@ -8,6 +8,9 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
    :show-inheritance:
 
    {% if TTkStyle %}
+
+   .. _{{ module }}.{{ objname }}.classStyle:
+
    Style
    -----
 
@@ -28,19 +31,33 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
    {%- endfor %}
    {% endif %}
 
-   {% if TTkSlots %}
+   {% if TTkSlots or TTkSlotsInherited %}
    :ref:`Slots <Signal and Slots>`
    -------------------------------
+   {% endif %}
 
+   {% if TTkSlots %}
    .. autosummary::
    {% for item in TTkSlots %}
       {{ item }}
    {%- endfor %}
    {% endif %}
 
+   {% if TTkSlotsInherited %}
+   {% for name in TTkSlotsInherited %}
+   Inherited from: :py:class:`{{ name }}`
+
+   .. autosummary::
+
+   {% for item in TTkSlotsInherited[name] %}
+      {{ item }}
+   {%- endfor %}
+
+   {%- endfor %}
+
+   {% endif %}
 
    {% if TTkSignals %}
-
    Members
    -------
 
@@ -50,7 +67,6 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
    {% endif %}
 
    {% if TTkMethods %}
-
    Methods
    -------
 
@@ -59,3 +75,38 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
    {%- endfor %}
 
    {% endif %}
+
+
+{% if TTkClasses %}
+
+{{ objname }} Classes
+---------------------
+{% for item in TTkClasses %}
+
+.. currentmodule::  {{ module }}.{{ objname }}
+
+.. autoclass::  {{ item }}
+   :show-inheritance:
+   :members:
+
+{%- endfor %}
+.. py:currentmodule::  {{ module }}
+{% endif %}
+
+{% if TTkAttributes %}
+
+{{ objname }} Attributes
+------------------------
+
+.. currentmodule::  {{ module }}.{{ objname }}
+
+.. autosummary::
+
+{% for item in TTkAttributes %}
+  {{ item }}
+{%- endfor %}
+
+.. currentmodule::  {{ module }}
+{% endif %}
+
+

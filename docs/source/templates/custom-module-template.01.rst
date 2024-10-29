@@ -1,7 +1,5 @@
 {{ fullname | escape | underline}}
 
-Pippo CUSTOM_MODULE_TEMPLATE.001
-
 .. automodule:: {{ fullname }}
 
    {% if TTkSubClasses %}
@@ -21,7 +19,7 @@ Pippo CUSTOM_MODULE_TEMPLATE.001
 .. rubric:: {{ _('Modules') }}
 
 .. autosummary::
-   :toctree: Modules:
+   :toctree:
    :template: custom-module-template.01.rst
    :recursive:
 

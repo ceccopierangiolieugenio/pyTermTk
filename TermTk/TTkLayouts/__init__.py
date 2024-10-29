@@ -2,7 +2,7 @@
 Layouts
 =======
 
-.. image:: /../_images/Layout.HLD.001.svg
+.. image:: ../_images/Layout.HLD.001.svg
 '''
 from .layout     import *
 from .gridlayout import *

@@ -167,7 +167,7 @@ class TTkCheckbox(TTkWidget):
     def checkState(self):
         ''' Retrieve the state of the checkbox
 
-        :return: :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
+        :return: :py:class:`TTkConstant.CheckState` : the checkbox status
         '''
         return self._checkStatus
 
@@ -176,7 +176,7 @@ class TTkCheckbox(TTkWidget):
         ''' Sets the checkbox's check state.
 
         :param state: state of the checkbox
-        :type state: :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+        :type state: :py:class:`TTkConstant.CheckState`
         '''
         if self._checkStatus == state: return
         if state==TTkK.PartiallyChecked and not self._tristate: return

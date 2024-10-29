@@ -21,11 +21,14 @@
 .. _Nested Layouts Example: https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example5.nested.layouts.py
 .. _`row/colspan Example`:  https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example6.grid.span.py
 
+
 =============================================================================
 pyTermTk_ - Signal & Slots
 =============================================================================
 
 Signals and slots are used for communication between objects.
+
+.. _Signal and Slots:
 
 Intro
 =====

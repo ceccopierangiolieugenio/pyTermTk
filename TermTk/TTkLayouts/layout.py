@@ -36,9 +36,9 @@ class TTkLayoutItem:
     :param int rowspan: (used only in the :py:class:`TTkGridLayout`), the rows used by this, optional, defaults to 1
     :param int colspan: (used only in the :py:class:`TTkGridLayout`), the cols used by this, optional, defaults to 1
     :param layoutItemType: The Type of this class, optional, defaults to TTkK.NONE
-    :type  layoutItemType: :py:class:`~TermTk.TTkCore.constant.TTkConstant.LayoutItemTypes`
+    :type  layoutItemType: :py:class:`TTkConstant.LayoutItemTypes`
     :param alignment: The alignment of this item in the layout (not yet used)
-    :type  alignment: :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`
+    :type  alignment: :py:class:`TTkConstant.Alignment`
     '''
 
     LAYER0    =  0x00000000

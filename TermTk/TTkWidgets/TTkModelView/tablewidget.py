@@ -511,7 +511,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type column: bool
 
         :param order: the sort order
-        :type order: :py:class:`~TermTk.TTkCore.constant.TTkK.SortOrder`
+        :type order: :py:class:`TTkK.SortOrder`
         '''
         self._sortColumn = column
         self._sortOrder = order
@@ -600,7 +600,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type pos: tuple[int,int]
         :param size: the width,height of the rect used for the selection
         :type size: tuple[int,int]
-        :param flags: the selection model used (i.e. :py:class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select`)
+        :param flags: the selection model used (i.e. :py:class:`TTkItemSelectionModel.Select`)
         :type flags: :py:class:`TTkItemSelectionModel`
         '''
         x,y = pos

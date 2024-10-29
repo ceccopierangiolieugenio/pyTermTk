@@ -87,7 +87,7 @@ class TTkContainer(TTkWidget):
         .. warning::
             Method Deprecated,
 
-            use :py:class:`TTkWidget` -> :py:class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :py:class:`~TermTk.TTkLayouts.layout.TTkLayout.addWidget`
+            use :py:class:`TTkWidget` -> :py:class:`TTkWidget.layout` -> :py:class:`TTkLayout.addWidget`
 
             i.e.
 
@@ -103,7 +103,7 @@ class TTkContainer(TTkWidget):
         .. warning::
             Method Deprecated,
 
-            use :py:class:`TTkWidget` -> :py:class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :py:class:`~TermTk.TTkLayouts.layout.TTkLayout.removeWidget`
+            use :py:class:`TTkWidget` -> :py:class:`TTkWidget.layout` -> :py:class:`TTkLayout.removeWidget`
 
             i.e.
 

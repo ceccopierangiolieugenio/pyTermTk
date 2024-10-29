@@ -71,6 +71,8 @@ html_css_files = [
 ]
 
 html_favicon = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"
+# html_favicon = "_images/favicon.ico"
+# html_favicon = "../images/favicon.ico"
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-toc_object_entries_show_parents
 # Use 'hide' to only show the name of the element without any parents (i.e. method()).
@@ -122,6 +124,9 @@ toc_object_entries_show_parents='hide'
 # html_theme = 'sphinxawesome_theme'
 
 html_theme = 'sphinx_book_theme'
+html_permalinks_icon = '<span>🌶️</span>'
+# html_permalinks_icon = '<span><image src="/_images/favicon.png"></span>'
+# html_permalinks_icon = '<span><image src="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"></span>'
 html_theme_options = {
     "home_page_in_toc": True,
     "use_fullscreen_button": True,
@@ -129,7 +134,7 @@ html_theme_options = {
     "repository_url": "https://github.com/ceccopierangiolieugenio/pyTermTk",
 }
 
-add_module_names = True
+add_module_names = False
 autosummary_generate = True
 autosummary_generate_overwrite = True
 autosummary_imported_members = False

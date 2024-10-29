@@ -14,7 +14,15 @@
 .bd-page-width {
   max-width: none;
 }
-
+html[data-theme="dark"] .bd-content img:not(.only-dark, .dark-light) {
+   background-color: transparent;
+   border-radius: 0;
+}
+@media (min-width: 992px) {
+   .bd-sidebar-primary {
+     flex-basis: 18%;
+   }
+ }
 
 /* Temporary workaround for RTD 0.4.3 bug https://github.com/readthedocs/sphinx_rtd_theme/issues/117 which will hopefully be fixed soon
 */

@@ -267,6 +267,8 @@ class _TTkColorModifier():
     def copy(self): return self
 
 class TTkColorGradient(_TTkColorModifier):
+    '''TTkColorGradient'''
+
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
     _increment: int; _val: int
     def __init__(self, *args, **kwargs):
@@ -317,6 +319,8 @@ class TTkColorGradient(_TTkColorModifier):
         return self
 
 class TTkLinearGradient(_TTkColorModifier):
+    '''TTkLinearGradient'''
+
     __slots__ = (
         '_direction', '_direction_squaredlength',
         '_base_pos', '_target_color')
@@ -553,6 +557,8 @@ class TTkColor(_TTkColor):
         return TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier, link=link)
 
 class TTkAlternateColor(_TTkColorModifier):
+    '''TTkAlternateColor'''
+
     __slots__ = ('_alternateColor')
     def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs):
         super().__init__(**kwargs)

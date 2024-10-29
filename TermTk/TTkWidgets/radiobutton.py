@@ -132,7 +132,7 @@ class TTkRadioButton(TTkWidget):
     def checkState(self):
         ''' Retrieve the state of the radiobutton
 
-        :return: :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState` : the checkbox status
+        :return: :py:class:`TTkConstant.CheckState` : the checkbox status
         '''
         if self._checked:
             return TTkK.Checked
@@ -143,7 +143,7 @@ class TTkRadioButton(TTkWidget):
         ''' Sets the radiobutton's check state.
 
         :param state: state of the checkbox
-        :type state: :py:class:`~TermTk.TTkCore.constant.TTkConstant.CheckState`
+        :type state: :py:class:`TTkConstant.CheckState`
         '''
         if not self._checked and state == TTkK.Unchecked: return
         if self._checked and state != TTkK.Unchecked: return
