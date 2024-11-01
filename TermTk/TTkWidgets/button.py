@@ -27,6 +27,9 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.canvas import TTkCanvas
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkButton(TTkWidget):
@@ -144,17 +147,21 @@ class TTkButton(TTkWidget):
 
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-    def border(self):
+    def border(self) -> bool:
+        ''' This property holds whether the button has a border
+
+        :return: bool
+        '''
         return self._border
 
-    def isCheckable(self):
+    def isCheckable(self) -> bool:
         ''' This property holds whether the button is checkable
 
         :return: bool
         '''
         return self._checkable
 
-    def setCheckable(self, ch):
+    def setCheckable(self, ch:bool) -> None:
         ''' Enable/Disable the checkable property
 
         :param ch: Checkable
@@ -163,7 +170,7 @@ class TTkButton(TTkWidget):
         self._checkable = ch
         self.update()
 
-    def isChecked(self):
+    def isChecked(self) -> bool:
         ''' This property holds whether the button is checked
 
         Only checkable buttons can be checked. By default, the button is unchecked.
@@ -172,7 +179,7 @@ class TTkButton(TTkWidget):
         '''
         return self._checked
 
-    def setChecked(self, ch):
+    def setChecked(self, ch:bool) -> None:
         ''' Set the checked status
 
         :param ch: Checked
@@ -182,14 +189,14 @@ class TTkButton(TTkWidget):
         self.toggled.emit(self._checked)
         self.update()
 
-    def text(self):
+    def text(self) -> TTkString:
         ''' This property holds the text shown on the button
 
         :return: :py:class:`TTkString`
         '''
         return TTkString('\n').join(self._text)
 
-    def setText(self, text):
+    def setText(self, text:TTkString) -> None:
         ''' This property holds the text shown on the button
 
         :param text:
@@ -205,12 +212,13 @@ class TTkButton(TTkWidget):
             self.setMaximumHeight(len(self._text))
         self.update()
 
-    def mousePressEvent(self, evt):
+
+    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         if self._checkable:
             self._checked = not self._checked
@@ -219,7 +227,7 @@ class TTkButton(TTkWidget):
         self.clicked.emit()
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             if self._checkable:
@@ -230,7 +238,7 @@ class TTkButton(TTkWidget):
             return True
         return False
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         if self.isEnabled() and self._checkable:
             if self._checked:
                 style = self.style()['checked']

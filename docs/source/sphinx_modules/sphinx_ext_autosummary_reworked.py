@@ -135,7 +135,12 @@ def setup(app: Sphinx) -> ExtensionMetadata:
         for cc in _obj.__mro__:
             if cc==_obj: continue
             # if hasattr(cc,'_ttkProperties'):
-            if issubclass(cc, ttk.TTkWidget) or issubclass(cc, ttk.TTkLayout):
+            if (
+                issubclass(cc, ttk.TTkTemplates.dragevents.TDragEvents) or
+                issubclass(cc, ttk.TTkTemplates.mouseevents.TMouseEvents) or
+                issubclass(cc, ttk.TTkTemplates.keyevents.TKeyEvents) or
+                issubclass(cc, ttk.TTkWidget) or
+                issubclass(cc, ttk.TTkLayout) ) :
                 ccName = cc.__name__
                 ret.append(ccName)
                 # print(ccName)
@@ -238,6 +243,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
         ttkSlots = []
         ttkSlotsInherited = {}
         ttkMethods = []
+        ttkMethodsInherited = {}
         ttkInheritedMethods = []
         ttkSubClasses = modSorted.get(name,[])
         ttkSubModules = modSubSorted.get(name,[])
@@ -248,6 +254,13 @@ def setup(app: Sphinx) -> ExtensionMetadata:
             return sorted(list(_slots)), _slotsInherited
 
         ttkSlots, ttkSlotsInherited = _get_slots_in_obj(qualname)
+
+        def _get_methods_in_obj(_name):
+            _methodsInherited = {_sub : sorted(ttkAllMethods.get(_sub,[])) for _sub in ttkInherited.get(_name,[])}
+            _methods = set(ttkAllMethods.get(_name,[])) - set([_sl for _subSl in _methodsInherited.values() for _sl in _subSl])
+            return sorted(list(_methods)), _methodsInherited
+
+        ttkMethods, ttkInheritedMethods = _get_methods_in_obj(qualname)
 
         def _get_attributes_in_obj(_obj,_name):
             _allMethods = ttkAllMethods.get(_name,[])
@@ -270,15 +283,16 @@ def setup(app: Sphinx) -> ExtensionMetadata:
         ttkAttributes = sorted(set(_get_simple_attributes(obj)) - set(ttkAllSignals.get(qualname,'')))
 
         context |= {
-            'TTkAttributes':ttkAttributes,
-            'TTkClasses':_get_classes(obj,ttkMethods+ttkSlots+ttkAllSignals.get(qualname,[])),
-            'TTkStyle':modStyles.get(qualname,''),
-            'TTkSignals':ttkAllSignals.get(qualname,''),
-            'TTkSubClasses': ttkSubClasses,
-            'TTkSubModules': ttkSubModules,
-            'TTkMethods':ttkAllMethods.get(qualname,''),
-            'TTkSlots':ttkSlots,
-            'TTkSlotsInherited':ttkSlotsInherited,
+            'TTkAttributes':       sorted( ttkAttributes ),
+            'TTkClasses':          sorted( _get_classes(obj,ttkMethods+ttkSlots+ttkAllSignals.get(qualname,[])) ),
+            'TTkSignals':          sorted( ttkAllSignals.get(qualname,'') ),
+            'TTkSubClasses':       sorted( ttkSubClasses ),
+            'TTkSubModules':       sorted( ttkSubModules ),
+            'TTkSlots':            sorted( ttkSlots ),
+            'TTkMethods':          sorted( ttkMethods ),
+            'TTkStyle':                    modStyles.get(qualname,'') ,
+            'TTkSlotsInherited':           ttkSlotsInherited ,
+            'TTkMethodsInherited':         ttkInheritedMethods ,
             }
 
         print('\n'.join([f" * {x}={context[x]}" for x in context]))

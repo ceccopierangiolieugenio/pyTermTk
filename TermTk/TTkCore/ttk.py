@@ -42,6 +42,7 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.timer import TTkTimer
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.shortcut import TTkShortcut
+from TermTk.TTkWidgets.about import TTkAbout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
@@ -369,3 +370,13 @@ class TTk(TTkContainer):
 
     def isVisibleAndParent(self):
         return self.isVisible()
+
+    @pyTTkSlot()
+    def aboutTermTk(self):
+        '''
+        Displays a simple message box about `pyTermTk <https://github.com/ceccopierangiolieugenio/pyTermTk>`__.
+        The message includes the version number of TermTk being used by the application.
+
+        This is useful for inclusion in the Help menu of an application, as shown in the Menus example.
+        '''
+        TTkHelper.overlay(None, TTkAbout(), 30,10)

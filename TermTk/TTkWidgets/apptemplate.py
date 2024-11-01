@@ -23,11 +23,12 @@
 __all__ = ['TTkAppTemplate']
 
 from dataclasses import dataclass
-from TermTk.TTkCore.canvas import TTkCanvas
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts import TTkLayout, TTkGridLayout
 from TermTk.TTkWidgets.container import TTkWidget, TTkContainer
 from TermTk.TTkWidgets.menubar import TTkMenuBarLayout
@@ -55,14 +56,52 @@ class TTkAppTemplate(TTkContainer):
                   R              L
     '''
 
-    MAIN   = TTkK.CENTER
-    TOP    = TTkK.TOP
-    BOTTOM = TTkK.BOTTOM
-    LEFT   = TTkK.LEFT
-    RIGHT  = TTkK.RIGHT
-    CENTER = TTkK.CENTER
-    HEADER = TTkK.HEADER
-    FOOTER = TTkK.FOOTER
+    class Position(int):
+        ''' This Class enumerate the different panels available in the layout of :py:class:`TTkAppTemplate`
+
+        .. autosummary::
+          MAIN
+          TOP
+          BOTTOM
+          LEFT
+          RIGHT
+          CENTER
+          HEADER
+          FOOTER
+        '''
+        MAIN   = TTkK.CENTER
+        '''Main'''
+        TOP    = TTkK.TOP
+        '''Top'''
+        BOTTOM = TTkK.BOTTOM
+        '''Bottom'''
+        LEFT   = TTkK.LEFT
+        '''Left'''
+        RIGHT  = TTkK.RIGHT
+        '''Right'''
+        CENTER = TTkK.CENTER
+        '''Center'''
+        HEADER = TTkK.HEADER
+        '''Header'''
+        FOOTER = TTkK.FOOTER
+        '''Footer'''
+
+    MAIN   =  Position.MAIN
+    ''':py:class:`Position.MAIN`'''
+    TOP    =  Position.TOP
+    ''':py:class:`Position.TOP`'''
+    BOTTOM =  Position.BOTTOM
+    ''':py:class:`Position.BOTTOM`'''
+    LEFT   =  Position.LEFT
+    ''':py:class:`Position.LEFT`'''
+    RIGHT  =  Position.RIGHT
+    ''':py:class:`Position.RIGHT`'''
+    CENTER =  Position.CENTER
+    ''':py:class:`Position.CENTER`'''
+    HEADER =  Position.HEADER
+    ''':py:class:`Position.HEADER`'''
+    FOOTER =  Position.FOOTER
+    ''':py:class:`Position.FOOTER`'''
 
     @dataclass(frozen=False)
     class _Panel:
@@ -162,7 +201,26 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries(force=True)
         self.setFocusPolicy(TTkK.ClickFocus)
 
-    def setWidget(self, widget, position=MAIN, size=None, title="", border=None, fixed=None):
+    def setWidget(self,
+                  widget:TTkWidget, position:Position=Position.MAIN,
+                  size:int=None, title:TTkString="",
+                  border:bool=None, fixed:bool=None) -> None:
+        '''
+        Place the :py:class:`TTkWidget` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
+
+        :param widget:
+        :type widget: :py:class:`TTkWidget`
+        :param position: defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        :param size: defaults to None
+        :type size: int, optional
+        :param title: defaults to ""
+        :type title: :py:class:`TTkString`, optional
+        :param border: defaults to True
+        :type border: bool, optional
+        :param fixed: defaults to False
+        :type fixed: bool, optional
+        '''
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         if wid:=self._panels[position].widget:
@@ -184,7 +242,26 @@ class TTkAppTemplate(TTkContainer):
                                             widget.minimumHeight() )
         self._updateGeometries(force=True)
 
-    def setItem(self, item, position=MAIN, size=None, title="", border=None, fixed=None):
+    def setItem(self,
+                item:TTkLayout, position:Position=Position.MAIN,
+                size:int=None, title:TTkString="",
+                border:bool=None, fixed:bool=None) -> None:
+        '''
+        Place the :py:class:`TTkLayout` in the :py:class:`TTkAppTemplate`'s panel identified by its :py:class:`Position`
+
+        :param item:
+        :type item: :py:class:`TTkLayout`
+        :param position: defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        :param size: defaults to None
+        :type size: int, optional
+        :param title: defaults to ""
+        :type title: :py:class:`TTkString`, optional
+        :param border: defaults to True
+        :type border: bool, optional
+        :param fixed: defaults to False
+        :type fixed: bool, optional
+        '''
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         if wid:=self._panels[position].widget:
@@ -206,15 +283,28 @@ class TTkAppTemplate(TTkContainer):
                                             item.minimumHeight() )
         self._updateGeometries(force=True)
 
-    def setTitle(self, position=MAIN, title=""):
+    def setTitle(self, position:Position=Position.MAIN, title:str=""):
+        '''Set the title of the panel identified by the "position"
+
+        :param position: defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        :param title: defaults to ""
+        :type title: :py:class:`TTkString`, optional
+        '''
         if not self._panels[position]: return
         self._panels[position].title = TTkString(title) if title else ""
         self._updateGeometries(force=True)
 
-    def menuBar(self, position=MAIN):
+    def menuBar(self, position:Position=MAIN) -> TTkMenuBarLayout:
+        '''
+        Retrieve the :py:class:`TTkMenuBarLayout` in the panel identified by the position.
+
+        :param position: defaults to :py:class:`Position.MAIN`
+        :type position: :py:class:`Position`, optional
+        '''
         return None if not self._panels[position] else self._panels[position].menubar
 
-    def setMenuBar(self, menuBar, position=MAIN):
+    def setMenuBar(self, menuBar:TTkMenuBarLayout, position:Position=MAIN) -> None:
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         p = self._panels[position]
@@ -226,31 +316,31 @@ class TTkAppTemplate(TTkContainer):
             self.rootLayout().addItem(p.menubar)
         self._updateGeometries(force=True)
 
-    def setBorder(self, border=True, position=MAIN):
+    def setBorder(self, border=True, position=MAIN) -> None:
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         self._panels[position].border = border
         self._updateGeometries(force=True)
 
-    def setFixed(self, fixed=False, position=MAIN):
+    def setFixed(self, fixed=False, position=MAIN) -> None:
         if not self._panels[position]:
             self._panels[position] = TTkAppTemplate._Panel()
         self._panels[position].fixed = fixed
         self._updateGeometries(force=True)
 
-    def resizeEvent(self, w, h):
+    def resizeEvent(self, width: int, height: int) -> None:
         self._updateGeometries()
 
-    def focusOutEvent(self):
+    def focusOutEvent(self) -> None:
         self._selected = None
         self.update()
 
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
         self._selected = None
         self.update()
         return True
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
         self._selected = []
         self._updateGeometries()
         spl = self._splitters
@@ -263,7 +353,7 @@ class TTkAppTemplate(TTkContainer):
                 self._selected.append(loc)
         return True
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt: TTkMouseEvent) -> bool:
         if not self._selected: return False
         pns = self._panels
         for loc in self._selected:
@@ -279,7 +369,7 @@ class TTkAppTemplate(TTkContainer):
         self._updateGeometries()
         return True
 
-    def minimumWidth(self):
+    def minimumWidth(self) -> int:
         pns = self._panels
 
         # Header and Footer sizes
@@ -301,7 +391,7 @@ class TTkAppTemplate(TTkContainer):
 
         return max(mh, mf, mcr+mcl+max(mct, mcb, mcm)) + (2 if p.border else 0)
 
-    def maximumWidth(self):
+    def maximumWidth(self) -> int:
         pns = self._panels
 
         # Header and Footer sizes
@@ -323,7 +413,7 @@ class TTkAppTemplate(TTkContainer):
 
         return min(mh, mf, mcr+mcl+min(mct, mcb, mcm)) + (2 if p.border else 0)
 
-    def minimumHeight(self):
+    def minimumHeight(self) -> int:
         pns = self._panels
 
         # Retrieve all the panels parameters and hide the menubar if required
@@ -352,7 +442,7 @@ class TTkAppTemplate(TTkContainer):
 
         return mh+mf+max(mr ,ml, mm+mt+mb ) + ( 2 if bm else 0 )
 
-    def maximumHeight(self):
+    def maximumHeight(self) -> int:
         pns = self._panels
 
         # Retrieve all the panels parameters and hide the menubar if required
@@ -386,7 +476,7 @@ class TTkAppTemplate(TTkContainer):
 
         return mh+mf+min(mr ,ml, mm+mt+mb ) + ( 2 if bm else 0 )
 
-    def _updateGeometries(self, force=False):
+    def _updateGeometries(self, force:bool=False) -> None:
         w,h = self.size()
         if w<=0 or h<=0 or (not force and not self.isVisibleAndParent()): return
         pns = self._panels
@@ -513,7 +603,7 @@ class TTkAppTemplate(TTkContainer):
 
         self.update()
 
-    def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
+    def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False) -> None:
         if updateLayout:
             self._updateGeometries()
         super().update(repaint=repaint,updateLayout=updateLayout,updateParent=updateParent)
@@ -524,7 +614,7 @@ class TTkAppTemplate(TTkContainer):
     #def setLayout(self, layout):
     #    self._panels[TTkAppTemplate.MAIN].item = layout
 
-    def paintEvent(self, canvas: TTkCanvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         w,h = self.size()
         pns = self._panels
         spl = self._splitters

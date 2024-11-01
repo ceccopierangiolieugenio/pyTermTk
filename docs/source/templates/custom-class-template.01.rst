@@ -1,7 +1,5 @@
 {{ objname | escape | underline }}
 
-Pippo CUSTOM_CLASS_TEMPLATE.001
-
 .. currentmodule:: {{ module }}
 
 .. autoclass:: {{ objname }}
@@ -45,16 +43,17 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
 
    {% if TTkSlotsInherited %}
    {% for name in TTkSlotsInherited %}
-   Inherited from: :py:class:`{{ name }}`
+   {% if TTkSlotsInherited[name] %}
+   Slots Inherited from: :py:class:`{{ name }}`
 
    .. autosummary::
 
    {% for item in TTkSlotsInherited[name] %}
       {{ item }}
-   {%- endfor %}
 
    {%- endfor %}
-
+   {% endif %}
+   {%- endfor %}
    {% endif %}
 
    {% if TTkSignals %}
@@ -66,14 +65,32 @@ Pippo CUSTOM_CLASS_TEMPLATE.001
    {%- endfor %}
    {% endif %}
 
-   {% if TTkMethods %}
+   {% if TTkMethods or TTkMethodsInherited %}
    Methods
    -------
+   {% endif %}
+
+   {% if TTkMethods %}
 
    {% for item in TTkMethods %}
    .. automethod:: {{ item }}
    {%- endfor %}
 
+   {% endif %}
+
+   {% if TTkMethodsInherited %}
+   {% for name in TTkMethodsInherited %}
+   {% if TTkMethodsInherited[name] %}
+   Methods Inherited from: :py:class:`{{ name }}`
+
+   .. autosummary::
+
+   {% for item in TTkMethodsInherited[name] %}
+      {{ item }}
+
+   {%- endfor %}
+   {% endif %}
+   {%- endfor %}
    {% endif %}
 
 

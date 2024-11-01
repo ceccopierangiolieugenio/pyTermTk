@@ -20,8 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 class TMouseEvents():
-    def mouseTapEvent(self, evt) -> bool :
+    def mouseTapEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.
 
@@ -35,7 +37,7 @@ class TMouseEvents():
         '''
         return True
 
-    def mouseDoubleClickEvent(self, evt) -> bool :
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.
 
@@ -49,7 +51,7 @@ class TMouseEvents():
         '''
         return False
 
-    def mouseMoveEvent(self, evt) -> bool :
+    def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse move events for the widget.
 
@@ -63,7 +65,7 @@ class TMouseEvents():
         '''
         return False
 
-    def mouseDragEvent(self, evt) -> bool :
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse drag events for the widget.
 
@@ -77,7 +79,7 @@ class TMouseEvents():
         '''
         return False
 
-    def mousePressEvent(self, evt) -> bool :
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse press events for the widget.
 
@@ -91,7 +93,7 @@ class TMouseEvents():
         '''
         return False
 
-    def mouseReleaseEvent(self, evt) -> bool :
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse release events for the widget.
 
@@ -105,7 +107,7 @@ class TMouseEvents():
         '''
         return False
 
-    def wheelEvent(self, evt) -> bool :
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse wheel events for the widget.
 
@@ -119,7 +121,7 @@ class TMouseEvents():
         '''
         return False
 
-    def enterEvent(self, evt) -> bool :
+    def enterEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse enter events for the widget.
 
@@ -133,7 +135,7 @@ class TMouseEvents():
         '''
         return self._processStyleEvent(self._S_HOVER)
 
-    def leaveEvent(self, evt) -> bool :
+    def leaveEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse leave events for the widget.
 

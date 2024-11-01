@@ -20,35 +20,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+
 class TKeyEvents():
-    def keyPressEvent(self, evt) -> bool :
-        '''
-        This event handler, can be reimplemented in a subclass to receive key press events for the widget.
+#    def keyPressEvent(self, evt:TTkKeyEvent) -> bool :
+#        '''
+#        This event handler, can be reimplemented in a subclass to receive key press events for the widget.
+#
+#        .. note:: Reimplement this function to handle this event
+#
+#        :param evt: The keyboard event
+#        :type evt: :py:class:`TTkKeyEvent`
+#
+#        :return: **True** if the event has been handled
+#        :rtype: bool
+#        '''
+#        return False
+#    def keyReleaseEvent(self, evt:TTkKeyEvent) -> bool :
+#        '''
+#        This event handler, can be reimplemented in a subclass to receive key release events for the widget.
+#
+#        .. note:: Reimplement this function to handle this event
+#
+#        :param evt: The keyboard event
+#        :type evt: :py:class:`TTkKeyEvent`
+#
+#        :return: **True** if the event has been handled
+#        :rtype: bool
+#        '''
+#        return False
 
-        .. note:: Reimplement this function to handle this event
-
-        :param evt: The keyboard event
-        :type evt: :py:class:`TTkKeyEvent`
-
-        :return: **True** if the event has been handled
-        :rtype: bool
-        '''
-        return False
-    def keyReleaseEvent(self, evt) -> bool :
-        '''
-        This event handler, can be reimplemented in a subclass to receive key release events for the widget.
-
-        .. note:: Reimplement this function to handle this event
-
-        :param evt: The keyboard event
-        :type evt: :py:class:`TTkKeyEvent`
-
-        :return: **True** if the event has been handled
-        :rtype: bool
-        '''
-        return False
-
-    def keyEvent(self, evt) -> bool :
+    def keyEvent(self, evt:TTkKeyEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive key events for the widget.
 

@@ -42,12 +42,37 @@ class TTkConstant:
     Background = ColorType.Background
     Modifier   = ColorType.Modifier
 
-    # Focus Policies
-    NoFocus     = 0x0000
-    ClickFocus  = 0x0001
-    WheelFocus  = 0x0002
-    TabFocus    = 0x0004
-    ParentFocus = 0x0101
+    class FocusPolicy(int):
+        '''
+        This Class type defines the various policies a widget
+        can have with respect to acquiring keyboard focus.
+
+        .. autosummary::
+          NoFocus
+          ClickFocus
+          WheelFocus
+          TabFocus
+          ParentFocus
+        '''
+        NoFocus     = 0x0000
+        '''The widget does not accept focus.'''
+        ClickFocus  = 0x0001
+        '''The widget accepts focus by clicking.'''
+        WheelFocus  = 0x0002
+        '''The widget accepts focus by using the mouse wheel.'''
+        TabFocus    = 0x0004
+        '''The widget accepts focus by tabbing.'''
+        ParentFocus = 0x0101
+        '''The parent widget forward the focus to this widget'''
+        StrongFocus	= TabFocus | ClickFocus | 0x8
+        '''the widget accepts focus by both tabbing and clicking.'''
+
+    NoFocus     = FocusPolicy.NoFocus
+    ClickFocus  = FocusPolicy.ClickFocus
+    WheelFocus  = FocusPolicy.WheelFocus
+    TabFocus    = FocusPolicy.TabFocus
+    ParentFocus = FocusPolicy.ParentFocus
+    StrongFocus = FocusPolicy.StrongFocus
 
     # positions
     NONE   = 0x0000
