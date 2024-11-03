@@ -25,10 +25,21 @@ import ttkDesigner.app.superobj as so
 
 class SuperWidgetRadioButton(so.SuperWidget):
     def getSuperProperties(self):
+        def _setRadioGroup(_wid:ttk.TTkRadioButton, value:str):
+            _wid._radiogroup = value
+            _rl = ttk.TTkRadioButton._radioLists
+            for _rg in _rl:
+                if _wid in _rl[_rg]:
+                    _rl[_rg].remove(_wid)
+            if value not in _rl:
+                _rl[value] = [_wid]
+            else:
+                _rl[value].append(_wid)
+
         additions, exceptions, exclude = super().getSuperProperties()
         exceptions |= {
             'RadioGroup' : {
                 'init': {'name':'radiogroup',            'type':str } ,
                 'get':  {'cb':ttk.TTkRadioButton.radioGroup, 'type':str } ,
-                'set':  {'cb':lambda w,l: setattr(w,'_radiogroup',l), 'type':str } } }
+                'set':  {'cb':_setRadioGroup, 'type':str } } }
         return additions, exceptions, exclude

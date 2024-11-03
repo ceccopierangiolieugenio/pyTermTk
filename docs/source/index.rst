@@ -102,10 +102,20 @@ API Reference
    TTkWidgets.TTkPickers
    TTkWidgets.TTkTerminal
 
-.. # .. autosummary::
-.. #    :caption: Classes:
-.. #    :toctree: _autosummary
-.. #    :template: custom-class-template.01.rst
+.. #.. autosummary::
+.. #   :caption: Classes:
+.. #   :toctree: _autosummary
+.. #   :template: custom-class-template.01.rst
+.. #
+.. #   TTkCore.TTkK
+.. #   TTkWidgets.TTkAppTemplate
+.. #   TTkWidgets.TTkMenuBar
+.. #   TTkWidgets.TTkMenuBarLayout
+.. #   TTkWidgets.TTkWidget
+.. #   TTkWidgets.TTkLineEdit
+.. #   TTkWidgets.TTkScrollBar
+.. #   TTkWidgets.TTkModelView.TTkTable
+
 .. #
 .. #    TTkCore.TTkK
 .. #    TTkCore.TTkConstant

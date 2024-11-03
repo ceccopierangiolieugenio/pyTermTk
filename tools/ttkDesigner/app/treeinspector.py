@@ -30,10 +30,13 @@ from .superobj.superwidgetmenubutton import SuperWidgetMenuButton
 
 class _TTkTomTreeWidgetItem(ttk.TTkTreeWidgetItem):
     __slots__ = ('_tomWidget','_tomSuperWidget')
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._tomWidget = kwargs.get('tomWidget')
-        self._tomSuperWidget = kwargs.get('tomSuperWidget')
+    def __init__(self, *argv,
+                 tomWidget=None,
+                 tomSuperWidget=None,
+                 **kwargs) -> None:
+        super().__init__(*argv, **kwargs)
+        self._tomWidget = tomWidget
+        self._tomSuperWidget = tomSuperWidget
     def tomWidget(self):
         return self._tomWidget
     def tomSuperWidget(self):

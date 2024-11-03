@@ -44,10 +44,15 @@ class TTkLineEdit(TTkWidget):
     '''TTkLineEdit'''
 
     class EchoMode(int):
-        Normal             = 0x00 # Display characters as they are entered. This is the default.
-        NoEcho             = 0x01 # Do not display anything. This may be appropriate for passwords where even the length of the password should be kept secret.
-        Password           = 0x02 # Display asterisks instead of the characters actually entered.
-        PasswordEchoOnEdit = 0x03 # Display characters as they are entered while editing otherwise display asterisks.
+        '''EchoMode'''
+        Normal             = 0x00
+        '''Display characters as they are entered. This is the default.'''
+        NoEcho             = 0x01
+        '''Do not display anything. This may be appropriate for passwords where even the length of the password should be kept secret.'''
+        Password           = 0x02
+        '''Display asterisks instead of the characters actually entered.'''
+        PasswordEchoOnEdit = 0x03
+        '''Display characters as they are entered while editing otherwise display asterisks.'''
 
     classStyle = {
                 'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),

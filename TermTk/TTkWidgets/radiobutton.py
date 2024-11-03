@@ -49,6 +49,8 @@ class TTkRadioButton(TTkWidget):
     :type radiogroup: str, optional
     :param bool checked: Checked status, defaults to "False"
     :type checked: bool, optional
+    :param checkStatus: If defined, override the option defined in the 'checked' field otherwise defaults to :py:class:`TTkK.CheckState.Checked` or :py:class:`TTkK.CheckState.Unchecked` based on the checked status
+    :type checkStatus: :py:class:`TTkK.CheckState` , optional
     '''
 
     clicked:pyTTkSignal
@@ -77,6 +79,7 @@ class TTkRadioButton(TTkWidget):
     def __init__(self, *,
                  radiogroup:str='DefaultGroup',
                  checked:bool=False,
+                 checkStatus:TTkK.CheckState = None,
                  text:TTkString='',
                  **kwargs) -> None:
         # Define Signals
@@ -86,6 +89,10 @@ class TTkRadioButton(TTkWidget):
         self._radiogroup = radiogroup
         # self.checked = pyTTkSignal()
         self._checked = checked
+        if checkStatus != None :
+            self._checked = checkStatus==TTkK.Checked
+        else:
+            self._checked = checked
         self._text = TTkString(text)
 
         TTkWidget.__init__(self, **kwargs)

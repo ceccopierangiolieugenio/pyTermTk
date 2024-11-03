@@ -39,6 +39,7 @@ class TTkLabel(TTkWidget):
     __slots__ = ('_text', '_alignment')
     def __init__(self, *,
                  text:TTkString="",
+                 color:TTkColor=None,
                  alignment:TTkK.Alignment=TTkK.LEFT_ALIGN,
                  **kwargs) -> None:
         if issubclass(type(text), TTkString):
@@ -49,6 +50,8 @@ class TTkLabel(TTkWidget):
 
         self.setDefaultSize(kwargs, max(t.termWidth() for t in  self._text), len(self._text))
         super().__init__(**kwargs)
+        if color:
+            self.setColor(color)
         self._textUpdated()
 
     def alignment(self):

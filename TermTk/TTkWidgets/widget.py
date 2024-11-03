@@ -63,31 +63,45 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param parent: the parent widget, defaults to None
     :type parent: :py:class:`TTkWidget`, optional
 
-    :param (int,int) pos: the [x,y] position (override the previously defined x, y), optional, default=(0,0)
-    :param int x: the x position, defaults to 0
-    :param int y: the y position, defaults to 0
+    :param x: the x position, defaults to 0
+    :type x: int, optional
+    :param y: the y position, defaults to 0
+    :type y: int, optional
+    :param pos: the [x,y] position (override the previously defined x, y), defaults to (x,y)
+    :type pos: (int,int), optional
 
-    :param (int,int) size: the size [width, height] of the widget (override the previously defined sizes), optional, default=(0,0)
-    :param int width: the width of the widget, defaults to 0
-    :param int height: the height of the widget, defaults to 0
+    :param width: the width of the widget, defaults to 0
+    :type width: int, optional
+    :param height: the height of the widget, defaults to 0
+    :type height: int, optional
+    :param size: the size [width, height] of the widget (override the previously defined sizes), defaults to (width,height)
+    :type size: (int,int), optional
 
-    :param int maxWidth: the maxWidth of the widget, optional, defaults to 0x10000
-    :param int maxHeight: the maxHeight of the widget, optional, defaults to 0x10000
-    :param (int,int) maxSize: the max [width,height] of the widget, optional, defaults to (maxWidth,maxHeight)
-    :param int minWidth: the minWidth of the widget, defaults to 0
-    :param int minHeight: the minHeight of the widget, defaults to 0
-    :param (int,int) minSize: the minSize [width,height] of the widget, optional, defaults to (minWidth,minHeight)
+    :param maxWidth: the maxWidth of the widget, defaults to 0x10000
+    :type maxWidth: int, optional
+    :param maxHeight: the maxHeight of the widget, defaults to 0x10000
+    :type maxHeight: int, optional
+    :param maxSize: the max [width,height] of the widget, optional, defaults to (maxWidth,maxHeight)
+    :type maxSize: (int,int), optional
+    :param minWidth: the minWidth of the widget, defaults to 0
+    :type minWidth: int, optional
+    :param minHeight: the minHeight of the widget, defaults to 0
+    :type minHeight: int, optional
+    :param minSize: the minSize [width,height] of the widget, optional, defaults to (minWidth,minHeight)
+    :type minSize: (int,int), optional
 
     :param toolTip: This property holds the widget's tooltip, defaults to ''
-    :type toolTip: :py:class:`TTkString`
+    :type toolTip: :py:class:`TTkString`, optional
 
     :param style: this field hold the custom style to be used by this widget
-    :type style: dict
+    :type style: dict, optional
     :param addStyle: this field is required to override/merge the new style on top of the current one, useful if only few params need to be changed
-    :type addStyle: dict
+    :type addStyle: dict, optional
 
-    :param bool,optional visible: the visibility, optional, defaults to True
-    :param bool,optional enabled: the ability to handle input events, optional, defaults to True
+    :param visible: the visibility, optional, defaults to True
+    :type visible: bool, optional
+    :param enabled: the ability to handle input events, optional, defaults to True
+    :type enabled: bool, optional
     '''
 
     focusChanged:pyTTkSignal
