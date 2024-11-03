@@ -22,6 +22,8 @@
 
 __all__ = ['TTkWidget']
 
+from typing import Self
+
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
@@ -145,7 +147,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         'focusChanged', 'sizeChanged', 'currentStyleChanged', 'closed')
 
     def __init__(self,
-                 parent = None,
+                 parent:Self = None,
                  x:int=0,     y:int=0,
                  width:int=0, height:int=0,
                  pos  : tuple = None,
@@ -162,8 +164,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                  toolTip  : TTkString = '',
                  style    : dict = None,
                  addStyle : dict = None,
-                 **kwargs
-                ):
+                 **kwargs) -> None:
 
         if kwargs:
             TTkLog.warn(f"Unhandled init params {self.__class__.__name__} -> {kwargs}")

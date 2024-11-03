@@ -74,7 +74,7 @@ def pyTTkSlot(*args):
 class pyTTkSignal():
     _signals = []
     __slots__ = ('_types', '_connected_slots', '_mutex')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
 
         # PyQt5.QtCore.pyqtSignal(types[, name[, revision=0[, arguments=[]]]])
@@ -125,12 +125,12 @@ class pyTTkSignal():
         if slot not in self._connected_slots:
             self._connected_slots[slot]=slice(nargs)
 
-    def disconnect(self, *args, **kwargs):
+    def disconnect(self, *args, **kwargs) -> None:
         for slot in args:
             if slot in self._connected_slots:
                 del self._connected_slots[slot]
 
-    def emit(self, *args, **kwargs):
+    def emit(self, *args, **kwargs) -> None:
         if not self._mutex.acquire(False): return
         if len(args) != len(self._types):
             error = "func"+str(self._types)+" signal has "+str(len(self._types))+" argument(s) but "+str(len(args))+" provided"
@@ -148,6 +148,6 @@ class pyTTkSignal():
             s.clear()
 
     def forward(self):
-        def _ret(*args, **kwargs):
+        def _ret(*args, **kwargs) -> None:
             self.emit(*args, **kwargs)
         return _ret

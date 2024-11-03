@@ -35,6 +35,7 @@ from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
@@ -52,7 +53,7 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
             }
 
     __slots__ = ('_textWrap','_startingNumber')
-    def __init__(self, startingNumber=0, **kwargs):
+    def __init__(self, startingNumber=0, **kwargs) -> None:
         self._startingNumber = startingNumber
         self._textWrap = None
         super().__init__(**kwargs)
@@ -142,14 +143,18 @@ class TTkTextEditView(TTkAbstractScrollView):
                      [ (line, (posFrom, posTo)), ... ]
                      This is required to support the wrap feature
     '''
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *,
+                 readOnly:bool=False,
+                 multiLine:bool=True,
+                 document:TTkTextDocument=None,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
         self.currentColorChanged = pyTTkSignal(TTkColor)
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self.textChanged = pyTTkSignal()
-        self._readOnly = kwargs.get('readOnly', False)
-        self._multiLine = kwargs.get('multiLine', True)
+        self._readOnly = readOnly
+        self._multiLine = multiLine
         self._multiCursor = True
         self._hsize = 0
         self._lastWrapUsed  = 0
@@ -161,7 +166,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textWrap = None
         self._clipboard = TTkClipboard()
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
-        self.setDocument(kwargs.get('document', TTkTextDocument()))
+        self.setDocument(document if document else TTkTextDocument())
         self.disableWidgetCursor(self._readOnly)
         self._updateSize()
         self.viewChanged.connect(self._pushCursor)
@@ -243,10 +248,10 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textWrap.wrapChanged.connect(self.update)
 
     # forward textWrap Methods
-    def wrapWidth(self, *args, **kwargs):       return self._textWrap.wrapWidth(*args, **kwargs)
-    def setWrapWidth(self, *args, **kwargs):    return self._textWrap.setWrapWidth(*args, **kwargs)
-    def wordWrapMode(self, *args, **kwargs):    return self._textWrap.wordWrapMode(*args, **kwargs)
-    def setWordWrapMode(self, *args, **kwargs): return self._textWrap.setWordWrapMode(*args, **kwargs)
+    def wrapWidth(self, *args, **kwargs) -> None:       return self._textWrap.wrapWidth(*args, **kwargs)
+    def setWrapWidth(self, *args, **kwargs) -> None:    return self._textWrap.setWrapWidth(*args, **kwargs)
+    def wordWrapMode(self, *args, **kwargs) -> None:    return self._textWrap.wordWrapMode(*args, **kwargs)
+    def setWordWrapMode(self, *args, **kwargs) -> None: return self._textWrap.setWordWrapMode(*args, **kwargs)
 
     def textCursor(self) -> TTkTextCursor:
         return self._textCursor
@@ -811,11 +816,23 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'undoAvailable', 'redoAvailable',
             'textChanged'
         )
-    def __init__(self, textEditView=None, lineNumber=False, lineNumberStarting=0, **kwargs):
-        super().__init__(**kwargs)
-        kwargs.pop('parent', None)
-        kwargs.pop('visible', None)
-        self._textEditView = textEditView if textEditView else TTkTextEditView(**kwargs)
+    def __init__(self, *,
+                 # TTkWidget init
+                 parent:TTkWidget=None,
+                 visible:bool=True,
+
+                 # TTkTextEditView init
+                 readOnly:bool=False,
+                 multiLine:bool=True,
+                 document:TTkTextDocument=None,
+
+                 # TTkText init
+                 textEditView:TTkTextEditView=None,
+                 lineNumber:bool=False,
+                 lineNumberStarting:int=0,
+                 **kwargs) -> None:
+        super().__init__(parent=parent, visible=visible, **kwargs)
+        self._textEditView = textEditView if textEditView else TTkTextEditView(readOnly=readOnly, multiLine=multiLine, document=document)
         # self.setFocusPolicy(self._textEditView.focusPolicy())
         # self._textEditView.setFocusPolicy(TTkK.ParentFocus)
         self._lineNumber = lineNumber

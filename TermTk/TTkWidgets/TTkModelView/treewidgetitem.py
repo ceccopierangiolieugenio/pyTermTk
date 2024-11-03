@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTreeWidgetItem']
 
+from typing import Self
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -39,35 +41,40 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         'heightChanged'
         )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args,
+                 parent:Self=None,
+                 expanded:bool=False,
+                 selected:bool=False,
+                 hidden:bool=False,
+                 icon:TTkString=None,
+                 childIndicatorPolicy:TTkK.ChildIndicatorPolicy =TTkK.ChildIndicatorPolicy.DontShowIndicatorWhenChildless,
+                 **kwargs) -> None:
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
         self.heightChanged = pyTTkSignal(int)
-        super().__init__(*args, **kwargs)
         self._hasWidgets = False
         self._children = []
         self._parentWidget = None
         self._height = 1
         data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
         # self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
-        self._data, self._widgets = self._processDataInput(data)
-        self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
-        self._parent = kwargs.get('parent', None)
-        self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
-
+        self._parent = parent
+        self._childIndicatorPolicy = childIndicatorPolicy
         self._defaultIcon = True
-        self._expanded = kwargs.get('expanded', False)
-        self._selected = kwargs.get('selected', False)
-        self._hidden = kwargs.get('hidden', False)
-        self._parent = kwargs.get("parent", None)
-
+        self._expanded = expanded
+        self._selected = selected
+        self._hidden = hidden
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
 
+        super().__init__(**kwargs)
+        self._data, self._widgets = self._processDataInput(data)
+        self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
+
         self._icon = ['']*len(self._data)
         self._setDefaultIcon()
-        if 'icon' in kwargs:
-            self._icon[0] = kwargs['icon']
+        if icon:
+            self._icon[0] = icon
             self._defaultIcon = False
 
     def _processDataInputWidget(self, widget, index):

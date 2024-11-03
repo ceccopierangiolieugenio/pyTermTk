@@ -30,5 +30,5 @@ class TTkAbstractItemModel():
         # Signals
         'dataChanged'
     )
-    def __init__(self, *args, **kwargs):
+    def __init__(self) -> None:
         self.dataChanged = pyTTkSignal()

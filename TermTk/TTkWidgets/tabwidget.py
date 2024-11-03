@@ -573,13 +573,15 @@ class TTkTabWidget(TTkFrame):
         'tabData', 'setTabData', 'currentData',
         'currentIndex', 'setCurrentIndex', 'tabCloseRequested')
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, *,
+                 closable:bool=False,
+                 **kwargs) -> None:
         self._tabWidgets = []
         self._tabBarTopLayout = TTkGridLayout()
 
         super().__init__(forwardStyle=False, **kwargs)
 
-        self._tabBar = TTkTabBar(small = not self.border(), closable=kwargs.get('closable', False))
+        self._tabBar = TTkTabBar(small = not self.border(), closable=closable)
         self._topLeftLayout   = None
         self._topRightLayout  = None
         self._tabBarTopLayout.addWidget(self._tabBar,0,1,3 if self.border() else 2,1)

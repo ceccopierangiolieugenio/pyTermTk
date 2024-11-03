@@ -81,14 +81,15 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         # Signals
          'viewMovedTo', 'viewSizeChanged', 'viewChanged')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Signals
         self.viewMovedTo = pyTTkSignal(int, int) # x, y
         self.viewSizeChanged = pyTTkSignal(int, int) # w, h
         self.viewChanged = pyTTkSignal()
         self._viewOffsetX = 0
         self._viewOffsetY = 0
-        TTkContainer.__init__(self, *args, **kwargs)
+        # Do NOT use super()
+        TTkContainer.__init__(self, **kwargs)
 
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
@@ -161,7 +162,7 @@ class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
         # Signals
          'viewMovedTo', 'viewSizeChanged', 'viewChanged', '_excludeEvent')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # Signals
         self.viewMovedTo = pyTTkSignal(int, int) # x, y
         self.viewSizeChanged = pyTTkSignal(int, int) # w, h
@@ -222,7 +223,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         # Signals
          'viewMovedTo', 'viewSizeChanged', 'viewChanged')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # Signals
         self.viewMovedTo = pyTTkSignal(int, int) # x, y
         self.viewSizeChanged = pyTTkSignal(int, int) # w, h

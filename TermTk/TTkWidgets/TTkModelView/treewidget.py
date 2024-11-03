@@ -163,19 +163,19 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self.itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
-        super().__init__(**kwargs)
         self._selected = None
         self._selectedId = None
         self._separatorSelected = None
-        self._header = kwargs.get('header',[])
+        self._header = header
         self._columnsPos = []
         self._cache = []
         self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
+        self._rootItem = TTkTreeWidgetItem(expanded=True)
+        super().__init__(**kwargs)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
-        self._rootItem = TTkTreeWidgetItem(expanded=True)
         self.clear()
         self.setPadding(1,0,0,0)
         self.viewChanged.connect(self._viewChangedHandler)

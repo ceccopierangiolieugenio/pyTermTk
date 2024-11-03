@@ -29,18 +29,22 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 
-class TTkCanvas:
+class TTkCanvas():
     ''' Init the Canvas object
 
-    :param  width: the width of the Canvas
-    :param  height: the height of the Canvas
+    :param width: the width of the Canvas
+    :type width: int
+    :param height: the height of the Canvas
+    :type height: int
     '''
     __slots__ = (
         '_width', '_height', '_newWidth', '_newHeight',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
-    def __init__(self, *args, **kwargs):
+    def __init__(self,
+                 width:int=0,
+                 height:int=0) -> None:
         self._visible = True
         self._transparent = False
         self._doubleBuffer = False
@@ -48,8 +52,8 @@ class TTkCanvas:
         self._height = 0
         self._data = [[]]
         self._colors = [[]]
-        self._newWidth = kwargs.get('width', 0 )
-        self._newHeight = kwargs.get('height', 0 )
+        self._newWidth = width
+        self._newHeight = height
         self.updateSize()
         # self.resize(self._width, self._height)
         # TTkLog.debug((self._width, self._height))

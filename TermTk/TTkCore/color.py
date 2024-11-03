@@ -63,8 +63,14 @@ from TermTk.TTkCore.helper import TTkHelper
 
 class _TTkColor:
     __slots__ = ('_fg','_bg','_mod', '_colorMod', '_link', '_buffer', '_clean')
-    _fg: tuple; _bg: tuple; _mod: int
-    def __init__(self, fg:tuple=None, bg:tuple=None, mod:int=0, colorMod=None, link:str='', clean=False):
+    _fg: tuple[int]; _bg: tuple[int]; _mod: int
+    def __init__(self,
+                 fg:tuple[int]=None,
+                 bg:tuple[int]=None,
+                 mod:int=0,
+                 colorMod=None,
+                 link:str='',
+                 clean=False) -> None:
         self._fg  = fg
         self._bg  = bg
         self._mod = mod
@@ -240,7 +246,7 @@ class _TTkColor:
             return ret
         return self
 
-    def modParam(self, *args, **kwargs):
+    def modParam(self, *args, **kwargs) -> None:
         if not self._colorMod: return self
         ret = self.copy()
         ret._colorMod.setParam(*args, **kwargs)
@@ -262,8 +268,8 @@ class _TTkColor:
         return ret
 
 class _TTkColorModifier():
-    def __init__(self, *args, **kwargs): pass
-    def setParam(self, *args, **kwargs): pass
+    def __init__(self, *args, **kwargs) -> None: pass
+    def setParam(self, *args, **kwargs) -> None: pass
     def copy(self): return self
 
 class TTkColorGradient(_TTkColorModifier):
@@ -271,7 +277,7 @@ class TTkColorGradient(_TTkColorModifier):
 
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
     _increment: int; _val: int
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if "increment" in kwargs:
             self._fgincrement = kwargs.get("increment")
@@ -284,7 +290,7 @@ class TTkColorGradient(_TTkColorModifier):
         self._step = 1
         self._buffer = {}
 
-    def setParam(self, *args, **kwargs):
+    def setParam(self, *args, **kwargs) -> None:
         self._val = kwargs.get("val",0)
         self._step = kwargs.get("step",1)
 
@@ -327,14 +333,14 @@ class TTkLinearGradient(_TTkColorModifier):
 
     default_target_color = _TTkColor(fg=(0,255,0), bg=(255,0,0))
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._base_pos = (0, 0)
         self._direction = (30, 30)
         self._target_color = self.default_target_color
         self.setParam(*args, **kwargs)
 
-    def setParam(self, *args, **kwargs):
+    def setParam(self, *args, **kwargs) -> None:
         self._base_pos = tuple(kwargs.get('base_pos', self._base_pos))
         direct = tuple(kwargs.get('direction', self._direction))
         self._direction = direct
@@ -480,7 +486,7 @@ class TTkColor(_TTkColor):
         return TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
     @staticmethod
-    def fg(*args, **kwargs):
+    def fg(*args, **kwargs) -> None:
         ''' Helper to generate a Foreground color
 
         Example:
@@ -507,7 +513,7 @@ class TTkColor(_TTkColor):
         return TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod, link=link)
 
     @staticmethod
-    def bg(*args, **kwargs):
+    def bg(*args, **kwargs) -> None:
         ''' Helper to generate a Background color
 
         Example:
@@ -560,7 +566,7 @@ class TTkAlternateColor(_TTkColorModifier):
     '''TTkAlternateColor'''
 
     __slots__ = ('_alternateColor')
-    def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs):
+    def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs) -> None:
         super().__init__(**kwargs)
         self.setParam(alternateColor)
 

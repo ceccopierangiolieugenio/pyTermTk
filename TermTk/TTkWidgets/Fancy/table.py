@@ -23,6 +23,8 @@
 __all__ = ['TTkFancyTable']
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
@@ -35,11 +37,19 @@ class TTkFancyTable(TTkAbstractScrollArea):
 
 
 
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        kwargs.pop('parent',None)
-        kwargs.pop('visible',None)
-        self._tableView = TTkFancyTableView(*args, **kwargs)
+    def __init__(self, *,
+                 # TTkWidget init
+                 parent:TTkWidget=None,
+                 visible:bool=True,
+                 # TTkFancyTableView init
+                 columns:list[int]=None,
+                 columnColors:list[TTkColor]=None,
+                 selectColor:TTkColor=TTkColor.BOLD,
+                 headerColor:TTkColor=TTkColor.BOLD,
+                 showHeader:bool=True,
+                 **kwargs) -> None:
+        super().__init__(parent=parent, visible=visible, **kwargs)
+        self._tableView = TTkFancyTableView(columns=columns, columnColors=columnColors, selectColor=selectColor, headerColor=headerColor, showHeader=showHeader, **kwargs)
         # Forward the signal
         self.activated = self._tableView.activated
 

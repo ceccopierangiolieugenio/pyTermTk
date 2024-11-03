@@ -38,7 +38,7 @@ class A():
 
     def __str__(self) -> str:
         return f"A: {id(self)} -> {self.a=}, {self.b=}, {self.c}"
-        self.c=c
+        # self.c=c
 
 class B():
     __slots__ = ('a','b','c')

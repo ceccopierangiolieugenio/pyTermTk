@@ -32,12 +32,15 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbst
 
 class _TTkFancyTableViewHeader(TTkAbstractScrollView):
     __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._columns = kwargs.get('columns' , [-1] )
+    def __init__(self, *,
+                 columns:list[int]=None,
+                 headerColor:TTkColor=TTkColor.BOLD,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
+        self._columns = columns if columns else [-1]
         self._header = [TTkString()]*len(self._columns)
         self._alignments = [TTkK.NONE]*len(self._columns)
-        self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
+        self._headerColor = headerColor
         self.setMaximumHeight(1)
         self.setMinimumHeight(1)
 
@@ -100,22 +103,27 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             '_tableWidth',
             # Signals
             'activated', 'doubleClicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 columns:list[int]=None,
+                 columnColors:list[TTkColor]=None,
+                 selectColor:TTkColor=TTkColor.BOLD,
+                 headerColor:TTkColor=TTkColor.BOLD,
+                 **kwargs) -> None:
         self._tableDataId = []
         self._tableDataText = []
         self._tableDataWidget = []
         self._shownWidgets = []
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         # define signals
         self.activated = pyTTkSignal(int) # Value
         self.doubleClicked = pyTTkSignal(int) # Value
 
         self._tableWidth = 0
-        self._columns = kwargs.get('columns' , [-1] )
+        self._columns = columns if columns else [-1]
         self._alignments = [TTkK.NONE]*len(self._columns)
-        self._columnColors = kwargs.get('columnColors' , [TTkColor.RST]*len(self._columns) )
-        self._selectColor = kwargs.get('selectColor' , TTkColor.BOLD )
-        self._headerColor = kwargs.get('headerColor' , TTkColor.BOLD )
+        self._columnColors = columnColors if columnColors else [TTkColor.RST]*len(self._columns)
+        self._selectColor = selectColor
+        self._headerColor = headerColor
         self._selected = -1
         self.setFocusPolicy(TTkK.ClickFocus)
         self.viewChanged.connect(self._viewChangedHandler)
@@ -373,14 +381,20 @@ class TTkFancyTableView(TTkAbstractScrollView):
         'setHeader', 'setColumnColors', 'appendItem', 'itemAt', 'dataAt', 'indexOf', 'insertItem',
         'removeItem', 'removeItemAt', 'removeItemsFrom', 'doubleClicked')
 
-    def __init__(self, **kwargs):
+    def __init__(self, *,
+                 # _TTkFancyTableView init
+                 columns:list[int]=None,
+                 columnColors:list[TTkColor]=None,
+                 selectColor:TTkColor=TTkColor.BOLD,
+                 headerColor:TTkColor=TTkColor.BOLD,
+                 # TTkFancyTableView init
+                 showHeader:bool=True,
+                 **kwargs) -> None:
         self._excludeEvent = False
-        super().__init__(**(kwargs|{'layout':TTkGridLayout()}))
-        kwargs.pop('parent',None)
-        kwargs.pop('visible',None)
-        self._showHeader = kwargs.get('showHeader', True)
-        self._tableView = _TTkFancyTableView(**kwargs)
-        self._header = _TTkFancyTableViewHeader(**kwargs)
+        super().__init__(**kwargs|{'layout':TTkGridLayout()})
+        self._showHeader = showHeader
+        self._tableView = _TTkFancyTableView(columns=columns, columnColors=columnColors, selectColor=selectColor, headerColor=headerColor, **kwargs)
+        self._header = _TTkFancyTableViewHeader(columns=columns, headerColor=headerColor, **kwargs)
         self.layout().addWidget(self._header,0,0)
         self.layout().addWidget(self._tableView,1,0)
         self._tableView.viewChanged.connect(self._viewChanged)
