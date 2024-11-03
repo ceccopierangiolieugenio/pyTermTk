@@ -104,8 +104,8 @@ class TTkAbout(TTkWindow):
         "    ▌    ▐  ╚═╝                  ╚═╝       ",
         "      ▚▄▄▘                                 "]
 
-    def __init__(self, *args, **kwargs):
-        TTkWindow.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        TTkWindow.__init__(self,**kwargs)
         TTkLabel(parent=self, pos=( 0, 0), text=_peppered_image)
         TTkLabel(parent=self, pos=(20, 6),text=TTkString(f"  Version: {TTkCfg.version}", color=TTkColor.fg('#AAAAFF')))
         TTkLabel(parent=self, pos=(12, 8),text=TTkString("Powered By, Eugenio Parodi"))

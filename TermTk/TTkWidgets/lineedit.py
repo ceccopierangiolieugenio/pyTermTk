@@ -63,7 +63,11 @@ class TTkLineEdit(TTkWidget):
         '_clipboard',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
-    def __init__(self, text='', inputType:int=TTkK.Input_Text, echoMode:EchoMode=EchoMode.Normal, **kwargs):
+    def __init__(self, *,
+                 text:TTkString='',
+                 inputType:int=TTkK.Input_Text,
+                 echoMode:EchoMode=EchoMode.Normal,
+                 **kwargs) -> None:
         # Signals
         self.returnPressed = pyTTkSignal()
         self.textChanged =  pyTTkSignal(str)

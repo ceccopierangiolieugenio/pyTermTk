@@ -53,8 +53,13 @@ class TTkCheckbox(TTkWidget):
 
     :param str text: the text shown on the checkbox, defaults to ""
     :type text: str, optional
-    :param bool checked: Checked status, defaults to "False"
+
+    :param checked: Checked status, defaults to "False"
     :type checked: bool, optional
+    :param checkStatus: If defined, override the option defined in the 'checked' field otherwise defaults to :py:class:`TTkK.CheckState.Checked` or :py:class:`TTkK.CheckState.Unchecked` based on the checked status
+    :type checkStatus: :py:class:`TTkK.CheckState` , optional
+    :param tristate: Tristate status, if enabled the checkbox is able to assume the :py:class:`TTkK.CheckState.PartiallyChecked` status, defaults to "False"
+    :type tristate: bool, optional
     '''
 
     clicked:pyTTkSignal
@@ -97,20 +102,27 @@ class TTkCheckbox(TTkWidget):
         # Signals
         'clicked', 'stateChanged', 'toggled'
         )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 text:TTkString='',
+                 checked:bool=False,
+                 checkStatus:TTkK.CheckState = None,
+                 tristate:bool=False,
+                 **kwargs) -> None:
         # Define Signals
         self.stateChanged = pyTTkSignal(TTkK.CheckState)
         self.clicked = pyTTkSignal(bool)
         self.toggled = pyTTkSignal(bool)
 
-        TTkWidget.__init__(self, *args, **kwargs)
+        self._text = TTkString(text)
 
-        if 'checkStatus' in kwargs:
-            self._checkStatus = kwargs.get('checkStatus', TTkK.Unchecked )
+        if checkStatus != None :
+            self._checkStatus = checkStatus
         else:
-            self._checkStatus = TTkK.Checked if kwargs.get('checked', False ) else TTkK.Unchecked
-        self._tristate = kwargs.get('tristate', False)
-        self._text = TTkString(kwargs.get('text', '' ))
+            self._checkStatus = TTkK.Checked if checked else TTkK.Unchecked
+        self._tristate = tristate
+
+        super().__init__(**kwargs)
+
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)

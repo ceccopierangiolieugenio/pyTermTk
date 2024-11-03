@@ -120,13 +120,27 @@ class TTkContainer(TTkWidget):
         '_forwardStyle',
         '_layout')
 
-    def __init__(self, *, layout:TTkLayout=None, padding:TTkPadding=(0,0,0,0), forwardStyle=False, **kwargs):
+    def __init__(self, *,
+                 layout:TTkLayout=None,
+                 padding:TTkPadding = None,
+                 paddingTop:int = 0,
+                 paddingBottom:int = 0,
+                 paddingLeft:int = 0,
+                 paddingRight:int = 0,
+                 forwardStyle:bool = False,
+                 **kwargs) -> None:
 
         self._forwardStyle = forwardStyle
-        self._padt = kwargs.get('paddingTop',    padding[0] )
-        self._padb = kwargs.get('paddingBottom', padding[1] )
-        self._padl = kwargs.get('paddingLeft',   padding[2] )
-        self._padr = kwargs.get('paddingRight',  padding[3] )
+        if padding:
+            self._padt = padding[0]
+            self._padb = padding[1]
+            self._padl = padding[2]
+            self._padr = padding[3]
+        else:
+            self._padt = paddingTop
+            self._padb = paddingBottom
+            self._padl = paddingLeft
+            self._padr = paddingRight
 
         self._layout = TTkLayout() # root layout
         self._layout.addItem(layout if layout else TTkLayout()) # main layout

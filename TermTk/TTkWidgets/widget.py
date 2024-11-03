@@ -61,22 +61,22 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
     :param parent: the parent widget, defaults to None
     :type parent: :py:class:`TTkWidget`, optional
 
+    :param (int,int) pos: the [x,y] position (override the previously defined x, y), optional, default=(0,0)
     :param int x: the x position, defaults to 0
     :param int y: the y position, defaults to 0
-    :param [int,int] pos: the [x,y] position (override the previously defined x, y), optional, default=[0,0]
 
+    :param (int,int) size: the size [width, height] of the widget (override the previously defined sizes), optional, default=(0,0)
     :param int width: the width of the widget, defaults to 0
     :param int height: the height of the widget, defaults to 0
-    :param [int,int] size: the size [width, height] of the widget (override the previously defined sizes), optional, default=[0,0]
 
     :param int maxWidth: the maxWidth of the widget, optional, defaults to 0x10000
     :param int maxHeight: the maxHeight of the widget, optional, defaults to 0x10000
-    :param [int,int] maxSize: the max [width,height] of the widget, optional
+    :param (int,int) maxSize: the max [width,height] of the widget, optional, defaults to (maxWidth,maxHeight)
     :param int minWidth: the minWidth of the widget, defaults to 0
     :param int minHeight: the minHeight of the widget, defaults to 0
-    :param [int,int] minSize: the minSize [width,height] of the widget, optional
+    :param (int,int) minSize: the minSize [width,height] of the widget, optional, defaults to (minWidth,minHeight)
 
-    :param toolTip: This property holds the widget's tooltip
+    :param toolTip: This property holds the widget's tooltip, defaults to ''
     :type toolTip: :py:class:`TTkString`
 
     :param style: this field hold the custom style to be used by this widget
@@ -144,7 +144,30 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         #Signals
         'focusChanged', 'sizeChanged', 'currentStyleChanged', 'closed')
 
-    def __init__(self, **kwargs):
+    def __init__(self,
+                 parent = None,
+                 x:int=0,     y:int=0,
+                 width:int=0, height:int=0,
+                 pos  : tuple = None,
+                 size : tuple = None,
+                 maxSize  : tuple = None,
+                 maxWidth : int   = 0x10000,
+                 maxHeight: int   = 0x10000,
+                 minSize  : tuple = None,
+                 minWidth : int   = 0x00000,
+                 minHeight: int   = 0x00000,
+                 name     : str = None,
+                 visible  : bool = True,
+                 enabled  : bool = True,
+                 toolTip  : TTkString = '',
+                 style    : dict = None,
+                 addStyle : dict = None,
+                 **kwargs
+                ):
+
+        if kwargs:
+            TTkLog.warn(f"Unhandled init params {self.__class__.__name__} -> {kwargs}")
+
         #Signals
         self.focusChanged = pyTTkSignal(bool)
         self.sizeChanged = pyTTkSignal(int,int)
@@ -156,42 +179,34 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self._widgetCursorEnabled = False
         self._widgetCursorType = TTkK.Cursor_Blinking_Bar
 
-        self._name = kwargs.get('name', self.__class__.__name__)
-        self._parent = kwargs.get('parent', None )
+        self._name = name if name else self.__class__.__name__
+        self._parent:TTkWidget = parent
 
         self._pendingMouseRelease = False
 
-        self._x = kwargs.get('x', 0 )
-        self._y = kwargs.get('y', 0 )
-        self._x, self._y = kwargs.get('pos', (self._x, self._y))
-        self._width  = kwargs.get('width' , 0 )
-        self._height = kwargs.get('height', 0 )
-        self._width, self._height = kwargs.get('size', (self._width, self._height))
+        self._x, self._y = pos if pos else (x,y)
+        self._width, self._height = size if size else (width,height)
 
-        self._maxw = kwargs.get('maxWidth',  0x10000)
-        self._maxh = kwargs.get('maxHeight', 0x10000)
-        self._maxw, self._maxh = kwargs.get('maxSize', (self._maxw, self._maxh))
-        self._minw = kwargs.get('minWidth',  0x00000)
-        self._minh = kwargs.get('minHeight', 0x00000)
-        self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
+        self._maxw, self._maxh = maxSize if maxSize else (maxWidth,maxHeight)
+        self._minw, self._minh = minSize if minSize else (minWidth,minHeight)
 
         self._focus = False
         self._focus_policy = TTkK.NoFocus
 
-        self._visible = kwargs.get('visible', True)
-        self._enabled = kwargs.get('enabled', True)
+        self._visible = visible
+        self._enabled = enabled
 
-        self._toolTip = TTkString(kwargs.get('toolTip',''))
+        self._toolTip = TTkString(toolTip)
 
         self._widgetItem = TTkWidgetItem(widget=self)
 
         self._currentStyle = TTkWidget.classStyle['default']
         self.setStyle(self.classStyle)
         self._processStyleEvent(TTkWidget._S_DEFAULT)
-        if 'style' in kwargs:
-            self.setStyle(kwargs['style'])
-        if 'addStyle' in kwargs:
-            self.mergeStyle(kwargs['addStyle'])
+        if style:
+            self.setStyle(style)
+        if addStyle:
+            self.mergeStyle(addStyle)
 
         self._canvas = TTkCanvas(
                             width  = self._width  ,
@@ -605,7 +620,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         .. code-block:: python
 
             class NewLabel(TTkWidget):
-                def __init__(self,**kwargs):
+                def __init__(self,**kwargs) -> None:
                     self.text = ""
                     super().__init__(**kwargs)
 

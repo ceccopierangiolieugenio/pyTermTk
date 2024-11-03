@@ -112,22 +112,27 @@ class TTkButton(TTkWidget):
         # Signals
         'clicked', 'toggled'
         )
-    def __init__(self, *args, **kwargs):
-        self._text = TTkString(kwargs.get('text', "")).split('\n')
+    def __init__(self, *,
+                 text:TTkString="",
+                 border:bool=False,
+                 checked:bool=False,
+                 checkable:bool=False,
+                 **kwargs) -> None:
+        self._text = TTkString(text).split('\n')
         textWidth = max(t.termWidth() for t in self._text)
-        self._border = kwargs.get('border', False )
+        self._border = border
         if self._border:
             self.setDefaultSize(kwargs, textWidth+2, len(self._text)+2)
         else:
             self.setDefaultSize(kwargs, textWidth+2, len(self._text))
 
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         # Define Signals
         self.clicked = pyTTkSignal()
         self.toggled = pyTTkSignal(bool)
 
-        self._checked = kwargs.get('checked', False )
-        self._checkable = kwargs.get('checkable', False )
+        self._checked = checked
+        self._checkable = checkable
 
         if self._border:
             if 'minSize' not in kwargs:

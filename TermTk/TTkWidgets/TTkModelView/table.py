@@ -254,6 +254,8 @@ class TTkTable(TTkAbstractScrollArea):
         :type prevCol: int
     '''
 
+    classStyle = TTkTableWidget.classStyle
+
     __slots__ = (
         '_tableView',
         # Forwarded Signals
@@ -279,11 +281,26 @@ class TTkTable(TTkAbstractScrollArea):
         )
 
     def __init__(self, *,
-                 parent=None, visible=True,
-                 **kwargs):
+                 tableWidget:TTkTableWidget=None,
+                 tableModel:TTkAbstractTableModel=None,
+                 vSeparator:bool=True,
+                 hSeparator:bool=True,
+                 vHeader:bool=True,
+                 hHeader:bool=True,
+                 sortingEnabled=False,
+                 dataPadding=1,
+                 **kwargs) -> None:
         self._tableView = None
-        super().__init__(parent=parent, visible=visible, **kwargs)
-        self._tableView:TTkTableWidget = kwargs.get('TableWidget',TTkTableWidget(**kwargs))
+        self._tableView:TTkTableWidget = tableWidget if tableWidget else TTkTableWidget(
+                                                                                tableModel=tableModel,
+                                                                                vSeparator=vSeparator,
+                                                                                hSeparator=hSeparator,
+                                                                                vHeader=vHeader,
+                                                                                hHeader=hHeader,
+                                                                                sortingEnabled=sortingEnabled,
+                                                                                dataPadding=dataPadding,
+                                                                                **kwargs|{'parent':None,'visible':True})
+        super().__init__(**kwargs)
         self.setViewport(self._tableView)
         # self.setFocusPolicy(TTkK.ClickFocus)
 

@@ -22,6 +22,7 @@
 
 __all__ = ['TTkList']
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.listwidget import TTkListWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
@@ -38,11 +39,16 @@ class TTkList(TTkAbstractScrollArea):
         'selectionMode', 'setSelectionMode', 'selectedItems', 'selectedLabels',
         'setCurrentRow', 'setCurrentItem',  )
 
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        kwargs.pop('parent',None)
-        kwargs.pop('visible',None)
-        self._listView = kwargs.get('listWidget',TTkListWidget(*args, **kwargs))
+    def __init__(self, *,
+                 listWidget:TTkListWidget=None,
+                 selectionMode:int=TTkK.SingleSelection,
+                 dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
+                 **kwargs) -> None:
+        TTkAbstractScrollArea.__init__(self, **kwargs)
+        self._listView = listWidget if listWidget else TTkListWidget(
+                                                            selectionMode=selectionMode,
+                                                            dragDropMode=dragDropMode,
+                                                            **kwargs|{'parent':None,'visible':True})
         self.setViewport(self._listView)
         self.itemClicked = self._listView.itemClicked
         self.textClicked = self._listView.textClicked

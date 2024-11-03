@@ -45,7 +45,9 @@ class TTkFrame(TTkContainer):
     Demo2: `splitter.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_
 
     :param title: the title displayed at the top border of the frame, defaults to ""
-    :type title: str, optional
+    :type title: TTkString, optional
+    :param titleAlign: the position of the title, defaults to :py:class:`TTkK.Alignment.CENTER_ALIGN`
+    :type titleAlign: :py:class:`TTkK.Alignment`, optional
     :param border: Enable/Disable the border, defaults to **True**
     :type border: bool, optional
 
@@ -61,15 +63,19 @@ class TTkFrame(TTkContainer):
     __slots__ = (
         '_border','_title', '_titleAlign',
         '_menubarTop', '_menubarTopPosition', '_menubarBottom', '_menubarBottomPosition')
-    def __init__(self, *args, **kwargs):
-        self._titleAlign = kwargs.get('titleAlign' , TTkK.CENTER_ALIGN )
-        self._title = TTkString(kwargs.get('title' , '' ))
-        self._border = kwargs.get('border', True )
+    def __init__(self, *,
+                 title:TTkString='',
+                 border:bool=True,
+                 titleAlign:TTkK.Alignment=TTkK.CENTER_ALIGN,
+                 **kwargs) -> None:
+        self._titleAlign = titleAlign
+        self._title = TTkString(title)
+        self._border = border
         self._menubarTopPosition = 0
         self._menubarBottomPosition = 0
         self._menubarTop = None
         self._menubarBottom = None
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         self.setBorder(self._border)
 
     def newMenubarTop(self):

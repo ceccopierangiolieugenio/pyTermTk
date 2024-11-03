@@ -170,7 +170,9 @@ class TTkAppTemplate(TTkContainer):
     __slots__ = ('_panels', '_splitters', '_menubarLines', '_selected'
                  #Signals
                  )
-    def __init__(self, border=False, **kwargs):
+    def __init__(self,
+                 border=False,
+                 **kwargs) -> None:
         self._panels = {
             TTkAppTemplate.MAIN   : TTkAppTemplate._Panel(item=TTkLayout(), border=border) ,
             TTkAppTemplate.TOP    : None ,

@@ -49,7 +49,7 @@ class TTkAbstractListItem(TTkWidget):
 
     __slots__ = ('_text', '_selected', '_highlighted', '_data',
                  'listItemClicked')
-    def __init__(self, *, text='', data=None, **kwargs):
+    def __init__(self, *, text='', data=None, **kwargs) -> None:
         self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
 
         self._selected = False
@@ -118,19 +118,22 @@ class TTkListWidget(TTkAbstractScrollView):
                  '_selectedItems', '_selectionMode',
                  '_highlighted', '_items',
                  '_dragPos', '_dndMode')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 selectionMode:int=TTkK.SingleSelection,
+                 dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
+                 **kwargs) -> None:
         # Default Class Specific Values
-        self._selectionMode = kwargs.get("selectionMode", TTkK.SingleSelection)
+        self._selectionMode = selectionMode
         self._selectedItems = []
         self._items = []
         self._highlighted = None
         self._dragPos = None
-        self._dndMode = kwargs.get("dragDropMode", TTkK.DragDropMode.NoDragDrop)
+        self._dndMode = dragDropMode
         # Signals
         self.itemClicked = pyTTkSignal(TTkAbstractListItem)
         self.textClicked = pyTTkSignal(str)
         # Init Super
-        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        super().__init__(**kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 

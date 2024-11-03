@@ -74,20 +74,26 @@ class TTkRadioButton(TTkWidget):
         # Signals
         'clicked', 'toggled'
         )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 radiogroup:str='DefaultGroup',
+                 checked:bool=False,
+                 text:TTkString='',
+                 **kwargs) -> None:
         # Define Signals
         self.clicked = pyTTkSignal()
         self.toggled = pyTTkSignal(bool)
         # use name if radiogroup is not available for retrocompatibility
-        self._radiogroup = kwargs.get('name', 'DefaultGroup' )
-        self._radiogroup = kwargs.get('radiogroup', self._radiogroup )
-        TTkWidget.__init__(self, *args, **kwargs)
+        self._radiogroup = radiogroup
         # self.checked = pyTTkSignal()
-        self._checked = kwargs.get('checked', False )
-        self._text = TTkString(kwargs.get('text', '' ))
+        self._checked = checked
+        self._text = TTkString(text)
+
+        TTkWidget.__init__(self, **kwargs)
+
         self.setMinimumSize(3 + len(self._text), 1)
         self.setMaximumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
+
         if self._radiogroup not in TTkRadioButton._radioLists:
             TTkRadioButton._radioLists[self._radiogroup] = [self]
         else:

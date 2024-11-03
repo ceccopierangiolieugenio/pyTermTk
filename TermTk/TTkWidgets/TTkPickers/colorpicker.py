@@ -42,7 +42,7 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class _TTkHueCanvas(TTkWidget):
     __slots__ = ('_hueList', '_selected', 'colorPicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # signals
         self.colorPicked=pyTTkSignal(int)
 
@@ -96,7 +96,7 @@ class _TTkHueCanvas(TTkWidget):
 
 class _TTkColorCanvas(TTkWidget):
     __slots__ = ('_hue', 'colorPicked', '_selected')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # signals
         self.colorPicked=pyTTkSignal(int)
         self._selected=(-1,-1)
@@ -148,9 +148,11 @@ class _TTkColorCanvas(TTkWidget):
 
 class _TTkShowColor(TTkWidget):
     __slots__ = ('_color')
-    def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._color = kwargs.get('color', TTkColor.RST )
+    def __init__(self, *,
+                 color:TTkColor=TTkColor.RST,
+                 **kwargs) -> None:
+        self._color = color
+        TTkWidget.__init__(self, **kwargs)
 
     def color(self):
         return self._color
@@ -174,11 +176,16 @@ class _TTkShowColor(TTkWidget):
 class _TTkColorButton(TTkButton):
     lastClicked = None
     __slots__ = ('colorClicked','_custom','_color')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 color:TTkColor=TTkColor.RST,
+                 custom:bool=False,
+                 **kwargs) -> None:
+        # Signals
         self.colorClicked = pyTTkSignal(TTkColor)
-        TTkButton.__init__(self, *args, **kwargs)
-        self._color = kwargs.get('color', TTkColor.RST )
-        self._custom = kwargs.get('custom', False)
+
+        self._color = color
+        self._custom = custom
+        super().__init__(**kwargs)
         self.clicked.connect(self._clicked)
         self.setColor(self._color)
 
@@ -256,11 +263,13 @@ class TTkColorDialogPicker(TTkWindow):
         # Signals
         'colorSelected'
         )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 color:TTkColor=TTkColor.RST,
+                 **kwargs) -> None:
         # Signals
         self.colorSelected = pyTTkSignal(TTkColor)
-        super().__init__(*args, **kwargs)
-        self._color = kwargs.get('color', TTkColor.RST )
+        self._color = color
+        super().__init__(**kwargs)
         self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
         self.setLayout(TTkGridLayout())
 
@@ -453,11 +462,11 @@ class TTkColorDialogPicker(TTkWindow):
 
 class TTkColorButtonPicker(_TTkColorButton):
     __slots__ = ('_type', 'colorSelected', 'colorSelectedBG')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # Signals
         self.colorSelected   = pyTTkSignal(TTkColor)
         self.colorSelectedBG = pyTTkSignal(TTkColor)
-        _TTkColorButton.__init__(self, *args, **kwargs)
+        super().__init__(**kwargs)
         self._custom = False
         self.clicked.connect(self._colorClicked)
         self._type = self.color().colorType()

@@ -273,9 +273,12 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     def __init__(self, *,
                  tableModel:TTkAbstractTableModel=None,
-                 vSeparator:bool=True, hSeparator:bool=True,
-                 vHeader:bool=True, hHeader:bool=True,
-                 sortingEnabled=False, dataPadding=1,
+                 vSeparator:bool=True,
+                 hSeparator:bool=True,
+                 vHeader:bool=True,
+                 hHeader:bool=True,
+                 sortingEnabled=False,
+                 dataPadding=1,
                  **kwargs) -> None:
         # Signals
         # self.itemActivated     = pyTTkSignal(TTkTableWidgetItem, int)

@@ -55,10 +55,10 @@ class TTkComboBox(TTkContainer):
     :param list: the list of the items selectable by this combobox, defaults to "[]"
     :type list: list(str), optional
 
-    :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.InsertPolicy.InsertAtBottom`
+    :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`TTkConstant.InsertPolicy.InsertAtBottom`
     :type insertPolicy: :py:class:`TTkConstant.InsertPolicy`, optional
 
-    :param textAlign: This enum type is used to define the text alignment, defaults to :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.CENTER_ALIGN`
+    :param textAlign: This enum type is used to define the text alignment, defaults to :py:class:`TTkConstant.Alignment.CENTER_ALIGN`
     :tye textAlign: :py:class:`TTkConstant.Alignment`, optional
 
     :param editable: This property holds whether the combo box can be edited by the user, defaults to False
@@ -77,21 +77,27 @@ class TTkComboBox(TTkContainer):
     __slots__ = ('_list', '_id', '_lineEdit', '_editable', '_insertPolicy', '_textAlign', '_popupFrame',
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 list:list = [],
+                 index:int = -1,
+                 insertPolicy:TTkK.InsertPolicy = TTkK.InsertAtBottom,
+                 textAlign:TTkK.Alignment = TTkK.CENTER_ALIGN,
+                 editable:bool = False,
+                 **kwargs) -> None:
         # Define Signals
         self.currentIndexChanged = pyTTkSignal(int)
         self.currentTextChanged  = pyTTkSignal(str)
         self.editTextChanged     = pyTTkSignal(str)
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         # self.checked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
-        self._list = kwargs.get('list', [] )
-        self._insertPolicy = kwargs.get('insertPolicy', TTkK.InsertAtBottom )
+        self._list = list
+        self._insertPolicy = insertPolicy
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
-        self._textAlign = kwargs.get('textAlign', TTkK.CENTER_ALIGN)
-        self._id = kwargs.get('index', -1 )
+        self._textAlign = textAlign
+        self._id = index
         self._popupFrame = None
-        self.setEditable(kwargs.get('editable', False ))
+        self.setEditable(editable)
         self.setMinimumSize(5, 1)
         self.setMaximumHeight(1)
 

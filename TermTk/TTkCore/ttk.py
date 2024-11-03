@@ -88,7 +88,12 @@ class TTk(TTkContainer):
         '_lastMultiTap',
         'paintExecuted')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 title:str='TermTk',
+                 sigmask:TTkTerm.Sigmask=TTkK.NONE,
+                 mouseTrack:bool=False,
+                 mouseCursor:bool=False,
+                 **kwargs) -> None:
         # If the "TERMTK_FILE_LOG" env variable is defined
         # logs are saved in the file identified by this variable
         # i.e.
@@ -97,18 +102,18 @@ class TTk(TTkContainer):
             TTkLog.use_default_file_logging(_logFile)
 
         self._timer = None
+        self._title = title
+        self._sigmask = sigmask
         self.paintExecuted = pyTTkSignal()
-        super().__init__(*args, **kwargs)
         self._termMouse = True
-        self._termDirectMouse = kwargs.get('mouseTrack',False)
+        self._termDirectMouse = mouseTrack
+        self._showMouseCursor = os.environ.get("TTK_MOUSE",mouseCursor)
+        super().__init__(**kwargs)
         TTkInput.inputEvent.connect(self._processInput)
         TTkInput.pasteEvent.connect(self._processPaste)
         TTkSignalDriver.sigStop.connect(self._SIGSTOP)
         TTkSignalDriver.sigCont.connect(self._SIGCONT)
         TTkSignalDriver.sigInt.connect( self._SIGINT)
-        self._title = kwargs.get('title','TermTk')
-        self._sigmask = kwargs.get('sigmask', TTkK.NONE)
-        self._showMouseCursor = os.environ.get("TTK_MOUSE",kwargs.get('mouseCursor', False))
         self._drawMutex = threading.Lock()
         self._paintEvent = threading.Event()
         self._paintEvent.set()

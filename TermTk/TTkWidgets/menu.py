@@ -38,8 +38,8 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
 class _TTkMenuSpacer(TTkWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     def paintEvent(self, canvas):
         canvas.drawText(pos=(0,0), text="-"*self.width())
@@ -60,8 +60,11 @@ class TTkMenuButton(TTkWidget):
         # Signals
         'menuButtonClicked', 'triggered', 'toggled', 'dataChanged', 'textChanged')
     def __init__(self, *,
-            text=TTkString(), data=None, checkable=False, checked=False,
-            **kwargs):
+            text:TTkString=TTkString(),
+            data:object=None,
+            checked:bool=False,
+            checkable:bool=False,
+            **kwargs) -> None:
         self.dataChanged = pyTTkSignal(object)
         self.textChanged = pyTTkSignal(TTkString)
         self.menuButtonClicked = pyTTkSignal(TTkMenuButton)
@@ -236,7 +239,9 @@ class TTkMenuButton(TTkWidget):
 
 class _TTkMenuAreaWidget(TTkAbstractScrollView):
     __slots__ = ('_submenu','_minWith','_caller')
-    def __init__(self, caller=None, **kwargs):
+    def __init__(self, *,
+                 caller=None,
+                 **kwargs) -> None:
         self._submenu = []
         self._minWidth = 0
         self._caller = caller
@@ -354,7 +359,9 @@ class TTkMenu(TTkResizableFrame):
     __slots__ = ('_scrollView',
                  #Forwarded Methods
                  'addSpacer','addMenuItem')
-    def __init__(self, caller=None, **kwargs):
+    def __init__(self,
+                 caller=None,
+                 **kwargs) -> None:
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         sa =TTkScrollArea(parent=self)
         self._scrollView = _TTkMenuAreaWidget(caller)
@@ -365,7 +372,7 @@ class TTkMenu(TTkResizableFrame):
         self.addSpacer   = self._scrollView.addSpacer
         self.addMenuItem = self._scrollView.addMenuItem
 
-    def addMenu(self, *args, **kwargs):
+    def addMenu(self, *args, **kwargs) -> None:
         ret = self._scrollView.addMenu(*args, **kwargs)
         w,h = self._scrollView.viewFullAreaSize()
         self.resize(w+3,h+2)
