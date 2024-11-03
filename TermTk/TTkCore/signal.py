@@ -57,7 +57,7 @@ Methods
 
 __all__ = ['pyTTkSlot', 'pyTTkSignal']
 
-from typing import TypeVar, TypeVarTuple, Generic, List
+# from typing import TypeVar, TypeVarTuple, Generic, List
 from inspect import getfullargspec
 from types import LambdaType
 from threading import Lock
