@@ -22,7 +22,10 @@
 
 __all__ = ['TTkTextCursor']
 
-from typing import Self
+try:
+    from typing import Self
+except:
+    from typing_extensions import Self
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor

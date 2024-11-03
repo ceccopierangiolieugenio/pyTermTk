@@ -22,7 +22,10 @@
 
 __all__ = ['TTkWidget']
 
-from typing import Self
+try:
+    from typing import Self
+except:
+    from typing_extensions import Self
 
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK

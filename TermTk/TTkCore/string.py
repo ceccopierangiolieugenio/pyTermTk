@@ -25,7 +25,12 @@ __all__ = ['TTkString']
 import re
 import unicodedata
 from types import GeneratorType
-from typing import Self,Any
+from typing import Any
+
+try:
+    from typing import Self
+except:
+    from typing_extensions import Self
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
