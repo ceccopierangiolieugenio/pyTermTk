@@ -108,10 +108,13 @@ API Reference
 .. #   :template: custom-class-template.01.rst
 .. #
 .. #   TTkCore.TTkK
+.. #
 .. #   TTkWidgets.TTkAppTemplate
 .. #   TTkWidgets.TTkMenuBar
 .. #   TTkWidgets.TTkMenuBarLayout
+
 .. #   TTkWidgets.TTkWidget
+
 .. #   TTkWidgets.TTkLineEdit
 .. #   TTkWidgets.TTkScrollBar
 .. #   TTkWidgets.TTkModelView.TTkTable

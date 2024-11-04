@@ -160,7 +160,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
     def _parseModules(_mod):
         if _file:=getattr(_mod,'__file__',None):
-            if '__init__.py' in _file and '/TermTk/' in _file:
+            if ('__init__.py' in _file and '/TermTk/' in _file ):
                 # print(_file)
                 for _name, _obj in inspect.getmembers(_mod):
                     if _mod.__name__ == 'TermTk.TTkCore.drivers': continue

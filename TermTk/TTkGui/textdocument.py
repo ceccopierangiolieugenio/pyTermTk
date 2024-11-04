@@ -31,12 +31,18 @@ class TTkTextDocument():
         Undo,Redo Logic
 
         Old:
+
+        ::
+
             _snapshotId: = last saved/undo/redo state
                                    3 = doc4
             _snapshots:
                 [doc1, doc2, doc3, doc4, doc5, doc6, . . .]
 
         New:
+
+        ::
+
             SnapshotId:
                               2
             Snapshots:                  _lastSnap     _dataLines (unstaged)
@@ -50,6 +56,8 @@ class TTkTextDocument():
                 [   d10,  d21,  d32,  d43   ] = Backward Diffs
             Slices: = common txt slices between snapshots
                 [   s01,  s12,  s23,  s34   ]
+
+        ::
 
             Data Structure
                         ╔═══════════════╗                         ╔═══════════════╗
@@ -67,6 +75,7 @@ class TTkTextDocument():
                 ╚═══════════════╝  │  ╚═══════════════╝   ╚═══════════════╝
                                    │                             │
                                    └─────────────────────────────┘
+
     '''
     class _snapDiff():
         '''

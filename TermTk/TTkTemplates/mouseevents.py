@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TMouseEvents']
+
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TMouseEvents():
