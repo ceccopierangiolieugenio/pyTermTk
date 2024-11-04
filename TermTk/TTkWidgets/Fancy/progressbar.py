@@ -91,7 +91,7 @@ class TTkFancyProgressBar(TTkWidget):
                  lookAndFeel:TTkLookAndFeelFPBar=None,
                  **kwargs) -> None:
         self.valueChanged = pyTTkSignal(float)
-        TTkWidget.__init__(self, *args, **kwargs)
+        super().__init__(**kwargs)
         self._lookAndFeel = lookAndFeel if lookAndFeel else TTkLookAndFeelFPBar()
         self._lookAndFeel.modified.connect(self.update)
         self._value_min, self._value_max, self._value = 0.0, 1.0, 0.0
