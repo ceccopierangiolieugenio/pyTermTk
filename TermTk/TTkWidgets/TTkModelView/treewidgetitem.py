@@ -25,7 +25,7 @@ __all__ = ['TTkTreeWidgetItem']
 try:
     from typing import Self
 except:
-    from typing_extensions import Self
+    class Self(): pass
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK

@@ -43,7 +43,12 @@ class TTkMenuBarButton(TTkMenuButton):
             }
 
     __slots__=('_shortcut')
-    def __init__(self, *, text=..., data=None, checkable=False, checked=False, **kwargs):
+    def __init__(self, *,
+                 text:TTkString=...,
+                 data:object=None,
+                 checkable:bool=False,
+                 checked:bool=False,
+                 **kwargs) -> None:
         self._shortcut = []
         super().__init__(text=text, data=data, checkable=checkable, checked=checked, **kwargs)
         self.setCheckable(self.isCheckable())
@@ -81,9 +86,9 @@ class TTkMenuBarButton(TTkMenuButton):
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''
     __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self._buttons = []
-        TTkHBoxLayout.__init__(self, *args, **kwargs)
+        super().__init__(**kwargs)
         self._itemsLeft   = TTkHBoxLayout()
         self._itemsCenter = TTkHBoxLayout()
         self._itemsRight  = TTkHBoxLayout()

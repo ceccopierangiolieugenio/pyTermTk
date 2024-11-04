@@ -177,7 +177,7 @@ class TTkComboBox(TTkContainer):
         self._id = -1
         self.update()
 
-    def lineEdit(self) -> TTkLineEdit|None:
+    def lineEdit(self) -> TTkLineEdit:
         '''
         Returns the :py:class:`TTkLineEdit` widget used if the editable flag is enabled
 

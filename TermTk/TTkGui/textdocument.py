@@ -119,7 +119,7 @@ class TTkTextDocument():
         'undoAvailable', 'redoAvailable', 'undoCommandAdded',
         'modificationChanged'
         )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *, text:TTkString=" ") -> None:
         from TermTk.TTkGui.textcursor import TTkTextCursor
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
@@ -128,7 +128,7 @@ class TTkTextDocument():
         self.redoAvailable = pyTTkSignal(bool)
         self.undoCommandAdded = pyTTkSignal()
         self.modificationChanged = pyTTkSignal(bool)
-        text =  kwargs.get('text'," ")
+        text = text
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False
         # Cumulative changes since the lasrt snapshot

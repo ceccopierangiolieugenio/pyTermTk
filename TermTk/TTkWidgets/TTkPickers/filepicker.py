@@ -146,20 +146,26 @@ class TTkFileDialogPicker(TTkWindow):
                  # Signals
                  'pathPicked', 'filePicked', 'filesPicked', 'folderPicked')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 path:str='.',
+                 filter:str='All Files (*)',
+                 caption:str='File Dialog',
+                 fileMode:TTkK.FileMode=TTkK.FileMode.AnyFile,
+                 acceptMode:TTkK.AcceptMode=TTkK.AcceptMode.AcceptOpen,
+                 **kwargs) -> None:
         # Signals
         self.pathPicked = pyTTkSignal(str)
         self.filePicked = pyTTkSignal(str)
         self.filesPicked = pyTTkSignal(list)
         self.folderPicked = pyTTkSignal(str)
 
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         self.setWindowFlag(TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
 
         self._recentPathId = -1
         self._recentPath = []
 
-        self._path     = os.path.abspath(kwargs.get('path','.'))
+        self._path     = os.path.abspath(path)
         if os.path.isdir(self._path):
             self._fileName = ''
             if self._path[-1]!='/':
@@ -168,10 +174,10 @@ class TTkFileDialogPicker(TTkWindow):
             self._fileName = os.path.basename(self._path)
             self._path     = os.path.dirname(self._path)+'/'
         self._filter   = '*'
-        self._filters  = kwargs.get('filter','All Files (*)')
-        self._caption  = kwargs.get('caption','File Dialog')
-        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.AnyFile)
-        self._acceptMode = kwargs.get('acceptMode',TTkK.AcceptMode.AcceptOpen)
+        self._filters  = filter
+        self._caption  = caption
+        self._fileMode = fileMode
+        self._acceptMode = acceptMode
 
         self.setTitle(self._caption)
         self.setLayout(TTkGridLayout())
@@ -460,18 +466,24 @@ class TTkFileButtonPicker(TTkButton):
     __slots__ = ('_filter', '_caption', '_fileMode', '_acceptMode', '_path'
                  # Signals
                  'pathPicked', 'filePicked', 'filesPicked', 'folderPicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 path:str='.',
+                 filter:str='All Files (*)',
+                 caption:str='File Dialog',
+                 fileMode:TTkK.FileMode=TTkK.FileMode.AnyFile,
+                 acceptMode:TTkK.AcceptMode=TTkK.AcceptMode.AcceptOpen,
+                 **kwargs) -> None:
         # Signals
         self.pathPicked = pyTTkSignal(str)
         self.filePicked = pyTTkSignal(str)
         self.filesPicked = pyTTkSignal(list)
         self.folderPicked = pyTTkSignal(str)
-        super().__init__(*args, **kwargs)
-        self._path  = kwargs.get('path','.')
-        self._filter   = kwargs.get('filter','All Files (*)')
-        self._caption  = kwargs.get('caption','File Dialog')
-        self._fileMode = kwargs.get('fileMode',TTkK.FileMode.AnyFile)
-        self._acceptMode = kwargs.get('acceptMode',TTkK.AcceptMode.AcceptOpen)
+        super().__init__(**kwargs)
+        self._path  = path
+        self._filter   = filter
+        self._caption  = caption
+        self._fileMode = fileMode
+        self._acceptMode = acceptMode
         self.clicked.connect(self._fileButtonClicked)
 
     def filter(self): return self._filter

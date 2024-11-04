@@ -71,11 +71,12 @@ class TTkFrame(TTkContainer):
         self._titleAlign = titleAlign
         self._title = TTkString(title)
         self._border = border
-        self._menubarTopPosition = 0
         self._menubarBottomPosition = 0
         self._menubarTop = None
         self._menubarBottom = None
         super().__init__(**kwargs)
+        # This is a little hack used in TTKWindow to define the placement of the TOP menubar inside TTKFrame
+        self._menubarTopPosition = 0
         self.setBorder(self._border)
 
     def newMenubarTop(self):

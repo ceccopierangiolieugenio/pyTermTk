@@ -34,7 +34,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkLookAndFeel():
     __slots__ = ('modified')
-    def __init__(self, *args, **kwargs):
+    def __init__(self) -> None:
         self.modified = pyTTkSignal()
 
 class TTkLookAndFeelFPBar(TTkLookAndFeel):
@@ -86,13 +86,16 @@ class TTkFancyProgressBar(TTkWidget):
         # Signals
         'valueChanged')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 value:float=0.0,
+                 lookAndFeel:TTkLookAndFeelFPBar=None,
+                 **kwargs) -> None:
         self.valueChanged = pyTTkSignal(float)
         TTkWidget.__init__(self, *args, **kwargs)
-        self._lookAndFeel = kwargs.get('lookAndFeel',TTkLookAndFeelFPBar())
+        self._lookAndFeel = lookAndFeel if lookAndFeel else TTkLookAndFeelFPBar()
         self._lookAndFeel.modified.connect(self.update)
         self._value_min, self._value_max, self._value = 0.0, 1.0, 0.0
-        self.setValue(kwargs.get('value', 0.0))
+        self.setValue(value)
         self.setMinimumSize(3, 1)
 
     def value(self):

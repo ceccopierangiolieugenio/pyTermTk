@@ -28,11 +28,15 @@ from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
     ID = 1
     __slots__ = ('_areaPos','_areaSize')
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._name = kwargs.get('name' , f"TTkTestAbstractScrollWidget-{TTkTestAbstractScrollWidget.ID}" )
-        self._areaSize = kwargs.get('areaSize',(10,10))
-        self._areaPos = kwargs.get('areaPos',(0,0))
+    def __init__(self, *,
+                 name:str=None,
+                 areaSize:tuple=(10,10),
+                 areaPos:tuple=(0,0),
+                 **kwargs) -> None:
+        name = name if name else f"TTkTestAbstractScrollWidget-{TTkTestAbstractScrollWidget.ID}"
+        self._areaSize = areaSize
+        self._areaPos = areaPos
+        super().__init__(name=name, **kwargs)
         TTkTestAbstractScrollWidget.ID+=1
         self.viewChanged.connect(self._viewChangedHandler)
 

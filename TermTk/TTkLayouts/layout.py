@@ -26,9 +26,10 @@
 
 __all__ = ['TTkLayoutItem', 'TTkLayout']
 
+from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 
-class TTkLayoutItem:
+class TTkLayoutItem():
     ''' :py:class:`~TTkLayoutItem` is the base class of layout Items inherited by :py:class:`~TTkLayout`, :py:class:`~TTkWidgetItem`, and all the derived layout managers.
 
     :param int row:     (used only in the :py:class:`TTkGridLayout`), the row of the grid,   optional, defaults to None
@@ -57,34 +58,46 @@ class TTkLayoutItem:
         '_sMax', '_sMaxVal',
         '_sMin', '_sMinVal',
         '_parent',
-        '_alignment',
         '_layoutItemType')
 
-    def __init__(self, *args, **kwargs):
-        self._x = kwargs.get('x', 0 )
-        self._y = kwargs.get('y', 0 )
-        self._x, self._y = kwargs.get('pos', (self._x, self._y))
-        self._w  = kwargs.get('width' , 0 )
-        self._h = kwargs.get('height', 0 )
-        self._w, self._h = kwargs.get('size', (self._w, self._h))
-        self._z = kwargs.get('z',0)
+    def __init__(self, *,
+                 x:int=0,
+                 y:int=0,
+                 z:int=0,
+                 pos:tuple=None,
+                 width:int=0,
+                 height:int=0,
+                 size:tuple=None,
+                 row:int=0,
+                 col:int=0,
+                 rowspan:int=1,
+                 colspan:int=1,
+                 layoutItemType:TTkK.LayoutItemTypes=TTkK.NONE,
+                 maxWidth:int=0x10000,
+                 maxHeight:int=0x10000,
+                 maxSize:tuple=None,
+                 minWidth:int=0,
+                 minHeight:int=0,
+                 minSize:tuple=None,
+                 **kwargs) -> None:
+        if kwargs:
+            TTkLog.warn(f"Unhandled init params {self.__class__.__name__} -> {kwargs}")
+
+        self._x, self._y = pos  if pos  else (x,y)
+        self._w, self._h = size if size else (width,height)
+        self._z = z
         self._layer = TTkLayoutItem.LAYER0
         self._xOffset = 0
         self._yOffset = 0
-        self._row = kwargs.get('row', 0)
-        self._col = kwargs.get('col', 0)
-        self._rowspan = kwargs.get('rowspan', 1)
-        self._colspan = kwargs.get('colspan', 1)
-        self._layoutItemType = kwargs.get('layoutItemType', TTkK.NONE)
-        self._alignment =  kwargs.get('alignment', TTkK.NONE)
+        self._row = row
+        self._col = col
+        self._rowspan = rowspan
+        self._colspan = colspan
+        self._layoutItemType = layoutItemType
         self._sMax,    self._sMin    = False, False
         self._sMaxVal, self._sMinVal = 0, 0
-        self._maxw = kwargs.get('maxWidth',  0x10000)
-        self._maxh = kwargs.get('maxHeight', 0x10000)
-        self._maxw, self._maxh = kwargs.get('maxSize', (self._maxw, self._maxh))
-        self._minw = kwargs.get('minWidth',  0x00000)
-        self._minh = kwargs.get('minHeight', 0x00000)
-        self._minw, self._minh = kwargs.get('minSize', (self._minw, self._minh))
+        self._maxw, self._maxh = maxSize if maxSize else (maxWidth,maxHeight)
+        self._minw, self._minh = minSize if minSize else (minWidth,minHeight)
         self._parent = None
 
 
@@ -172,11 +185,10 @@ class TTkLayout(TTkLayoutItem):
         ╚════════════════════════════╝
     '''
     __slots__ = ('_items', '_zSortedItems')
-    def __init__(self, *args, **kwargs):
-        TTkLayoutItem.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        TTkLayoutItem.__init__(self, layoutItemType=TTkK.LayoutItemTypes.LayoutItem, **kwargs)
         self._items = []
         self._zSortedItems = []
-        self._layoutItemType = TTkK.LayoutItem
 
     def children(self):
         return self._items
@@ -365,7 +377,7 @@ class TTkLayout(TTkLayoutItem):
             maxy = max(maxy,y+h)
         return minx, miny, maxx-minx, maxy-miny
 
-    def update(self, *args, **kwargs):
+    def update(self, *args, **kwargs) -> None:
         ret = False
         for i in self._items:
             if i._layoutItemType == TTkK.WidgetItem and (_wid:=i._widget):
@@ -376,10 +388,11 @@ class TTkLayout(TTkLayoutItem):
 
 class TTkWidgetItem(TTkLayoutItem):
     __slots__ = ('_widget')
-    def __init__(self, *args, **kwargs):
-        TTkLayoutItem.__init__(self, *args, **kwargs)
-        self._widget = kwargs.get('widget', None)
-        self._layoutItemType = TTkK.WidgetItem
+    def __init__(self, *,
+                 widget=None,
+                 **kwargs) -> None:
+        TTkLayoutItem.__init__(self, layoutItemType=TTkK.LayoutItemTypes.WidgetItem, **kwargs)
+        self._widget = widget
 
     def widget(self): return self._widget
 
@@ -403,5 +416,5 @@ class TTkWidgetItem(TTkLayoutItem):
     def setGeometry(self, x, y, w, h):
         self._widget.setGeometry(x, y, w, h)
 
-    #def update(self, *args, **kwargs):
+    #def update(self, *args, **kwargs) -> None:
     #    self.widget().update(*args, **kwargs)

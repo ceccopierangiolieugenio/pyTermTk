@@ -25,7 +25,7 @@ __all__ = ['TTkTextCursor']
 try:
     from typing import Self
 except:
-    from typing_extensions import Self
+    class Self(): pass
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor

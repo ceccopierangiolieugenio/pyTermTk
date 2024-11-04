@@ -25,7 +25,7 @@ __all__ = ['TTkWidget']
 try:
     from typing import Self
 except:
-    from typing_extensions import Self
+    class Self(): pass
 
 from TermTk.TTkCore.cfg       import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant  import TTkK
@@ -38,7 +38,7 @@ from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
 from TermTk.TTkTemplates.dragevents import TDragEvents
 from TermTk.TTkTemplates.mouseevents import TMouseEvents
 from TermTk.TTkTemplates.keyevents import TKeyEvents
-from TermTk.TTkLayouts.layout import TTkLayout, TTkWidgetItem
+from TermTk.TTkLayouts.layout import TTkWidgetItem
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):

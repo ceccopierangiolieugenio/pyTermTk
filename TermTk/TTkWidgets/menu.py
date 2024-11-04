@@ -364,7 +364,7 @@ class TTkMenu(TTkResizableFrame):
                  **kwargs) -> None:
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         sa =TTkScrollArea(parent=self)
-        self._scrollView = _TTkMenuAreaWidget(caller)
+        self._scrollView = _TTkMenuAreaWidget(caller=caller)
         sa.setViewport(self._scrollView)
 
         # Forwarded Methods

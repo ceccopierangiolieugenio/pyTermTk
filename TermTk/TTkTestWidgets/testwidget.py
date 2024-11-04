@@ -59,9 +59,11 @@ class _TestContent(TTkWidget):
 class TTkTestWidget(TTkFrame):
     ID = 1
     __slots__ = ('_l')
-    def __init__(self, *args, **kwargs):
-        TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , f"TestWidget-{TTkTestWidget.ID}" )
+    def __init__(self, *,
+                 name:str=None,
+                 **kwargs) -> None:
+        name = name if name else f"TestWidget-{TTkTestWidget.ID}"
+        super().__init__(name=name, **kwargs)
         TTkButton(parent=self, width=15, height=3, border=True, text=' Test Button')
         label = TTkLabel(parent=self,pos=(20, 1), size=(50,1))
         label.setText(TTkString("test \033[42;1;30mANSI\033[44;1;33m TTkString",TTkColor.bg('#440099')+TTkColor.UNDERLINE))

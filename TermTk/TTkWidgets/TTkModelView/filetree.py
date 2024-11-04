@@ -33,12 +33,13 @@ class TTkFileTree(TTkTree):
                  # Forwarded Signals
                  'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
         wkwargs = kwargs.copy()
-        if 'parent' in wkwargs: wkwargs.pop('parent')
-        self._fileTreeWidget = TTkFileTreeWidget(*args, **wkwargs)
+        wkwargs.pop('parent',None)
+        wkwargs.pop('visible',None)
+        self._fileTreeWidget = TTkFileTreeWidget(**wkwargs)
 
-        TTkTree.__init__(self, *args, **kwargs, treeWidget=self._fileTreeWidget)
+        super().__init__(**kwargs, treeWidget=self._fileTreeWidget)
 
         # Forward Signals
         self.fileClicked         = self._fileTreeWidget.fileClicked

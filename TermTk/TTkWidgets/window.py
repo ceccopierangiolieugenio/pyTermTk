@@ -71,8 +71,9 @@ class TTkWindow(TTkResizableFrame):
         self._flags = TTkK.NONE
         self._mouseDelta = (0,0)
         self._draggable = False
-        self._menubarTopPosition = 2
         super().__init__(**kwargs)
+        # This is a little hack used in TTKWindow to define the placement of the TOP menubar inside TTKFrame
+        self._menubarTopPosition = 2
         self.setPadding(3,1,1,1)
         self.setFocusPolicy(TTkK.ClickFocus)
 

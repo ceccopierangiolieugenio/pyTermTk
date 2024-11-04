@@ -51,7 +51,7 @@ from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
 class _DetailGridView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._gridLayout = TTkGridLayout()
         self.rootLayout().addItem(self._gridLayout)
@@ -78,7 +78,7 @@ class _DetailGridView(TTkAbstractScrollView):
 
 class _DetailLazyFormView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout', '_lazyRows', '_lastRow')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.setPadding(1,0,0,0)
         self._lastRow = 0
@@ -139,7 +139,7 @@ class _DetailLazyFormView(TTkAbstractScrollView):
 
 class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     __slots__ = ('_domWidget')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._domWidget = kwargs.get('domWidget')
     def domWidget(self):
@@ -147,7 +147,7 @@ class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
 
 class TTkTomInspector(TTkContainer):
     __slots__ = ('_domTree','_detail','_splitter')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         layout = TTkGridLayout()

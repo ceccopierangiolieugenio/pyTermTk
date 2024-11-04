@@ -110,15 +110,15 @@ class TTkUiLoader():
             "tui": tui }
 
     @staticmethod
-    def _loadDict_1_0_0(ui, *args, **kwargs):
+    def _loadDict_1_0_0(ui, *args, **kwargs) -> None:
         ui = TTkUiLoader._convert_1_0_1_to_2_0_0(ui)
         return TTkUiLoader._loadDict_2_0_0(ui, *args, **kwargs)
 
-    def _loadDict_2_0_0(ui, *args, **kwargs):
+    def _loadDict_2_0_0(ui, *args, **kwargs) -> None:
         ui = TTkUiLoader._convert_2_0_0_to_2_0_2(ui)
         return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
 
-    def _loadDict_2_0_1(ui, *args, **kwargs):
+    def _loadDict_2_0_1(ui, *args, **kwargs) -> None:
         ui = TTkUiLoader._convert_2_0_1_to_2_0_2(ui)
         return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
 

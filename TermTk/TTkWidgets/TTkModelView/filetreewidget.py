@@ -38,7 +38,9 @@ class TTkFileTreeWidget(TTkTreeWidget):
     __slots__ = ('_path', '_filter',
                  # Signals
                  'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
-    def __init__(self, *args, **kwargs):
+    def __init__(self,
+                 path:str='.',
+                 **kwargs) -> None:
         # Signals
         self.fileClicked         = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderClicked       = pyTTkSignal(TTkFileTreeWidgetItem)
@@ -46,9 +48,9 @@ class TTkFileTreeWidget(TTkTreeWidget):
         self.folderDoubleClicked = pyTTkSignal(TTkFileTreeWidgetItem)
         self.fileActivated       = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderActivated     = pyTTkSignal(TTkFileTreeWidgetItem)
-        TTkTreeWidget.__init__(self, *args, **kwargs)
-        self._path   = kwargs.get('path','.')
+        self._path   = path
         self._filter = '*'
+        super().__init__(**kwargs)
         self.setHeaderLabels(["Name", "Size", "Type", "Date Modified"])
         self.openPath(self._path)
         self.resizeColumnToContents(0)

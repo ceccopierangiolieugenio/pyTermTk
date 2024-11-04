@@ -88,7 +88,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             'bell',
             'titleChanged', 'terminalClosed', 'textSelected',
             'termData','termResized')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self.bell = pyTTkSignal()
         self.terminalClosed = pyTTkSignal()
         self.titleChanged = pyTTkSignal(str)
@@ -114,7 +114,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         next(self._termLoop)
         self._termLoop.send("")
 
-        super().__init__(*args, **kwargs)
+        TTkAbstractScrollView.__init__(self, **kwargs)
 
         w,h = self.size()
         self._screen_alt.resize(w,h)

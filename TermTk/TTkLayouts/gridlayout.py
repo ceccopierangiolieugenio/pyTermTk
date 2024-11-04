@@ -54,15 +54,18 @@ class TTkGridLayout(TTkLayout):
     '''
 
     __slots__ = ('_gridItems','_columnMinWidth','_rowMinHeight', '_rows', '_cols', '_horSizes', '_verSizes')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 columnMinWidth:int=0,
+                 rowMinHeight:int=0,
+                 **kwargs) -> None:
         self._rows = 0
         self._cols = 0
-        TTkLayout.__init__(self, *args, **kwargs)
         self._gridItems = [[]]
         self._horSizes = []
         self._verSizes = []
-        self._columnMinWidth = kwargs.get('columnMinWidth',0)
-        self._rowMinHeight = kwargs.get('rowMinHeight',0)
+        self._columnMinWidth = columnMinWidth
+        self._rowMinHeight = rowMinHeight
+        TTkLayout.__init__(self, **kwargs)
 
     def _gridUsedsize(self):
         rows = 0
@@ -399,7 +402,7 @@ class TTkGridLayout(TTkLayout):
         return maxh
 
 
-    def update(self, *args, **kwargs):
+    def update(self, *args, **kwargs) -> None:
         _, _, w, h = self.geometry()
         newx, newy = 0, 0
 

@@ -38,11 +38,13 @@ class TTkTree(TTkAbstractScrollArea):
         # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
         'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *,
+                 treeWidget:TTkTreeWidget=None,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
-        self._treeView:TTkTreeWidget = kwargs.get('treeWidget',TTkTreeWidget(*args, **kwargs))
+        self._treeView:TTkTreeWidget = treeWidget if treeWidget else TTkTreeWidget(**kwargs)
         self.setViewport(self._treeView)
         self.setFocusPolicy(TTkK.ClickFocus)
 

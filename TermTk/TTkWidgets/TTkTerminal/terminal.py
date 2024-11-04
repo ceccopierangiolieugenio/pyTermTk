@@ -42,11 +42,11 @@ class TTkTerminal(TTkAbstractScrollArea):
                  # Exported Signals
                  'titleChanged', 'bell', 'terminalClosed', 'textSelected',
                  'termData', 'termResized')
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
-        self._terminalView = TTkTerminalView(*args, **kwargs)
+        self._terminalView = TTkTerminalView(**kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._terminalView)
 

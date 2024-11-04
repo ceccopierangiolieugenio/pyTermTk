@@ -36,9 +36,11 @@ from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class _KolorFrame(TTkFrame):
     __slots__ = ('_fillColor')
-    def __init__(self, *args, **kwargs):
-        TTkFrame.__init__(self, *args, **kwargs)
-        self._fillColor = kwargs.get('fillColor', TTkColor.RST)
+    def __init__(self, *,
+                 fillColor:TTkColor=TTkColor.RST,
+                 **kwargs) -> None:
+        self._fillColor = fillColor
+        super().__init__(*kwargs)
 
     def setFillColor(self, color):
         self._fillColor = color
@@ -52,10 +54,12 @@ class _KolorFrame(TTkFrame):
 class _TTkKodeTab(TTkTabWidget):
     __slots__ = (
         '_frameOverlay','_baseWidget')
-    def __init__(self, baseWidget, *args, **kwargs):
+    def __init__(self, *,
+                 baseWidget:TTkWidget=None,
+                 **kwargs) -> None:
         self._baseWidget = baseWidget
-        TTkTabWidget.__init__(self, *args, **kwargs)
         self._frameOverlay = None
+        super().__init__(**kwargs)
         self.tabBarClicked.connect(    lambda i:self._baseWidget.tabBarClicked.emit(    self, i, self.widget(i), self.tabData(i)))
         self.currentChanged.connect(   lambda i:self._baseWidget.currentChanged.emit(   self, i, self.widget(i), self.tabData(i)))
         self.tabCloseRequested.connect(lambda i:self._baseWidget.tabCloseRequested.emit(self, i))
@@ -185,7 +189,7 @@ class TTkKodeTab(TTkSplitter):
         # Signals
         'currentChanged','tabBarClicked','tabCloseRequested' )
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self.currentChanged    = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabBarClicked     = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabCloseRequested = pyTTkSignal(TTkTabWidget,int)
@@ -203,10 +207,10 @@ class TTkKodeTab(TTkSplitter):
         return item if type(item)==_TTkKodeTab else None
 
     @pyTTkSlot(TTkWidget)
-    def setCurrentWidget(self, *args, **kwargs):
+    def setCurrentWidget(self, *args, **kwargs) -> None:
         return self._lastKodeTabWidget.setCurrentWidget(*args, **kwargs)
 
-    def addTab(self, *args, **kwargs):
+    def addTab(self, *args, **kwargs) -> None:
         if not TTkHelper.isParent(self._lastKodeTabWidget, self):
             for w in self.layout().iterWidgets():
                 if type(w) is _TTkKodeTab:
