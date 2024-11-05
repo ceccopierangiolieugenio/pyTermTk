@@ -23,6 +23,7 @@
 __all__ = ['TTkColor',
            'TTkColorGradient', 'TTkLinearGradient', 'TTkAlternateColor']
 
+from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.helper import TTkHelper
 
@@ -92,19 +93,19 @@ class _TTkColor:
             return None
 
     def bold(self) -> bool:
-        return  self._mod & TTkHelper.Color.BOLD
+        return  self._mod & TTkTermColor.BOLD
 
     def italic(self) -> bool:
-        return  self._mod & TTkHelper.Color.ITALIC
+        return  self._mod & TTkTermColor.ITALIC
 
     def underline(self) -> bool:
-        return  self._mod & TTkHelper.Color.UNDERLINE
+        return  self._mod & TTkTermColor.UNDERLINE
 
     def strikethrough(self) -> bool:
-        return  self._mod & TTkHelper.Color.STRIKETROUGH
+        return  self._mod & TTkTermColor.STRIKETROUGH
 
     def blinking(self) -> bool:
-        return  self._mod & TTkHelper.Color.BLINKING
+        return  self._mod & TTkTermColor.BLINKING
 
     def colorType(self):
         return \
@@ -189,7 +190,7 @@ class _TTkColor:
 
     def __str__(self):
         if not self._buffer:
-            self._buffer = TTkHelper.Color.rgb2ansi(
+            self._buffer = TTkTermColor.rgb2ansi(
                                 fg=self._fg, bg=self._bg, mod=self._mod,
                                 link=self._link, clean=self._clean)
         return self._buffer
@@ -461,16 +462,16 @@ class TTkColor(_TTkColor):
     '''(bg) #FFFF00 - Yellow'''
 
     # Modifiers:
-    BOLD         = _TTkColor(mod=TTkHelper.Color.BOLD)
+    BOLD         = _TTkColor(mod=TTkTermColor.BOLD)
     '''**Bold** modifier'''
-    ITALIC       = _TTkColor(mod=TTkHelper.Color.ITALIC)
+    ITALIC       = _TTkColor(mod=TTkTermColor.ITALIC)
     '''*Italic* modifier'''
-    UNDERLINE    = _TTkColor(mod=TTkHelper.Color.UNDERLINE)
+    UNDERLINE    = _TTkColor(mod=TTkTermColor.UNDERLINE)
     ''':underline:`Underline` modifier'''
-    STRIKETROUGH = _TTkColor(mod=TTkHelper.Color.STRIKETROUGH)
+    STRIKETROUGH = _TTkColor(mod=TTkTermColor.STRIKETROUGH)
     ''':strike:`Striketrough` modifier'''
 
-    BLINKING     = _TTkColor(mod=TTkHelper.Color.BLINKING)
+    BLINKING     = _TTkColor(mod=TTkTermColor.BLINKING)
     '''"Blinking" modifier'''
 
     @staticmethod
@@ -482,7 +483,7 @@ class TTkColor(_TTkColor):
 
     @staticmethod
     def ansi(ansi):
-        fg,bg,mod,clean = TTkHelper.Color.ansi2rgb(ansi)
+        fg,bg,mod,clean = TTkTermColor.ansi2rgb(ansi)
         return TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
     @staticmethod
