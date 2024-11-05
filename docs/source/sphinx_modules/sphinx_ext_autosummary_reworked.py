@@ -109,7 +109,9 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     modStyles = {}
 
     ttkAllSignals={}
+    ttkAllSignalsForwarded={}
     ttkAllMethods={}
+    ttkAllMethodsForwarded={}
     ttkAllSlots={}
     ttkAllMembers={} # List all the member of a class
     ttkInherited={}  # List of the inherited classes for each class
@@ -158,6 +160,20 @@ def setup(app: Sphinx) -> ExtensionMetadata:
                 print(ttk.TTkString(f"element not typed: {_name} - { _th[_name]}",ttk.TTkColor.BG_CYAN))
         return ret
 
+    def _getSignalsForwarded(_obj):
+        ret = {}
+        if hasattr(_obj,'_forwardedSignals'):
+            ret['baseClass'] = _obj._forwardWidget.__name__
+            ret['signals'] = sorted(_obj._forwardedSignals)
+        return ret
+
+    def _getMethodsForwarded(_obj):
+        ret = {}
+        if hasattr(_obj,'_forwardedMethods'):
+            ret['baseClass'] = _obj._forwardWidget.__name__
+            ret['methods'] = sorted(_obj._forwardedMethods)
+        return ret
+
     def _parseModules(_mod):
         if _file:=getattr(_mod,'__file__',None):
             if ('__init__.py' in _file and '/TermTk/' in _file ):
@@ -172,6 +188,10 @@ def setup(app: Sphinx) -> ExtensionMetadata:
                             ttkAllSlots[_name] = _slots
                         if _name not in ttkAllSignals:
                             ttkAllSignals[_name] = _getSignals(_obj)
+                        if _name not in ttkAllSignalsForwarded:
+                            ttkAllSignalsForwarded[_name] = _getSignalsForwarded(_obj)
+                        if _name not in ttkAllMethodsForwarded:
+                            ttkAllMethodsForwarded[_name] = _getMethodsForwarded(_obj)
                         if _name not in ttkInherited:
                             ttkInherited[_name] = _getInherited(_obj)
                         if _name not in modStyles:
@@ -260,6 +280,24 @@ def setup(app: Sphinx) -> ExtensionMetadata:
             _methods = set(ttkAllMethods.get(_name,[])) - set([_sl for _subSl in _methodsInherited.values() for _sl in _subSl])
             return sorted(list(_methods)), _methodsInherited
 
+        def _get_forwarded_methods_slots(_name):
+            _allForwarded = ttkAllMethodsForwarded.get(_name,[])
+            if not _allForwarded:
+                return {},{}
+            _baseClass = _allForwarded['baseClass']
+            _allSlots = set(ttkAllSlots.get(_baseClass,[]))
+            _allMethods = set(ttkAllMethods.get(_baseClass,[]))
+            print(f"{_name=} {_baseClass=}\n{_allForwarded=}\n{_allSlots=}\n{_allMethods=}")
+            _fwSlots =  {
+                'baseClass': _baseClass,
+                'methods':   sorted([_m for _m in _allForwarded['methods'] if _m in _allSlots])}
+            _fwMethods =  {
+                'baseClass': _baseClass,
+                'methods':   sorted([_m for _m in _allForwarded['methods'] if _m in _allMethods])}
+            _fwSlots   = _fwSlots   if _fwSlots[  'methods'] else []
+            _fwMethods = _fwMethods if _fwMethods['methods'] else []
+            return _fwSlots,_fwMethods
+
         ttkMethods, ttkInheritedMethods = _get_methods_in_obj(qualname)
 
         def _get_attributes_in_obj(_obj,_name):
@@ -282,14 +320,19 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
         ttkAttributes = sorted(set(_get_simple_attributes(obj)) - set(ttkAllSignals.get(qualname,'')))
 
+        ttkSlotsForwarded, ttkMethodsForwarded = _get_forwarded_methods_slots(qualname)
+
         context |= {
             'TTkAttributes':       sorted( ttkAttributes ),
             'TTkClasses':          sorted( _get_classes(obj,ttkMethods+ttkSlots+ttkAllSignals.get(qualname,[])) ),
             'TTkSignals':          sorted( ttkAllSignals.get(qualname,'') ),
+            'TTkSignalsForwarded':         ttkAllSignalsForwarded.get(qualname,''),
             'TTkSubClasses':       sorted( ttkSubClasses ),
             'TTkSubModules':       sorted( ttkSubModules ),
             'TTkSlots':            sorted( ttkSlots ),
+            'TTkSlotsForwarded':           ttkSlotsForwarded ,
             'TTkMethods':          sorted( ttkMethods ),
+            'TTkMethodsForwarded':         ttkMethodsForwarded ,
             'TTkStyle':                    modStyles.get(qualname,'') ,
             'TTkSlotsInherited':           ttkSlotsInherited ,
             'TTkMethodsInherited':         ttkInheritedMethods ,

@@ -26,12 +26,22 @@ from TermTk.TTkWidgets.TTkModelView.tree import TTkTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidget import TTkFileTreeWidget
 
 class TTkFileTree(TTkTree):
-    __slots__ = ('_fileTreeWidget',
-                 # Forwarded Methods
+    __doc__ = '''
+    :py:class:`TTkFileTree` is a container widget which place :py:class:`TTkFileTreeWidget` in a scrolling area with on-demand scroll bars.
+
+    ''' + TTkFileTreeWidget.__doc__
+
+    __slots__ = tuple(
+        ['_fileTreeWidget'] +
+        (_forwardedSignals:=[# Forwarded Signals from TTkFileTreeWidget
+                  *TTkTree._forwardedSignals,
+                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated']) +
+        (_forwardedMethods:=[# Forwarded Methods From TTkTreeWidget
+                  *TTkTree._forwardedMethods,
                  'openPath', 'getOpenPath',
-                 'setFilter',
-                 # Forwarded Signals
-                 'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
+                 'setFilter'])
+    )
+    _forwardWidget = TTkFileTreeWidget
 
     def __init__(self, **kwargs) -> None:
         wkwargs = kwargs.copy()
@@ -41,15 +51,5 @@ class TTkFileTree(TTkTree):
 
         super().__init__(**kwargs, treeWidget=self._fileTreeWidget)
 
-        # Forward Signals
-        self.fileClicked         = self._fileTreeWidget.fileClicked
-        self.folderClicked       = self._fileTreeWidget.folderClicked
-        self.fileDoubleClicked   = self._fileTreeWidget.fileDoubleClicked
-        self.folderDoubleClicked = self._fileTreeWidget.folderDoubleClicked
-        self.fileActivated       = self._fileTreeWidget.fileActivated
-        self.folderActivated     = self._fileTreeWidget.folderActivated
-
-        # Forward Methods
-        self.openPath            = self._fileTreeWidget.openPath
-        self.getOpenPath         = self._fileTreeWidget.getOpenPath
-        self.setFilter           = self._fileTreeWidget.setFilter
+        for _attr in self._forwardedSignals+self._forwardedMethods:
+            setattr(self,_attr,getattr(self._fileTreeWidget,_attr))

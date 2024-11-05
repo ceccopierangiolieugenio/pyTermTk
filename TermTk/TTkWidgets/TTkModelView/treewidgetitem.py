@@ -35,7 +35,31 @@ from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
-    '''TTkTreeWidgetItem'''
+    '''
+    The :py:class:`TTkTreeWidgetItem` class provides an item for use with the :py:class:'TTkTree' convenience class.
+
+    Tree widget items are used to hold rows of information for tree widgets.
+    Rows usually contain several columns of data, each of which can contain a :py:class:`TTkString` label and an icon or a :py:class:`TTkWidget`.
+
+    Items are usually constructed with a parent that is :py:class:`TTkTreeWidgetItem` (for items on lower levels of the tree). For example,
+    the following code constructs a top-level item to represent cities of the world, and adds a entry
+    for Oslo as a child item:
+
+    .. code-block:: python
+
+        cities = TTkWidgetItem(["Cities"])
+        osloItem = TTkWidgetItem(["Oslo"], parent=cities)
+
+    or
+
+    .. code-block:: python
+
+        cities = TTkWidgetItem(["Cities"])
+        osloItem = TTkWidgetItem(["Oslo"]
+        cities.addChild(osloItem)
+
+    '''
+
     __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
                  '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget',
@@ -61,7 +85,7 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         self._height = 1
         data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
         # self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
-        self._parent = parent
+        self._parent = None
         self._childIndicatorPolicy = childIndicatorPolicy
         self._defaultIcon = True
         self._expanded = expanded
@@ -79,6 +103,8 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         if icon:
             self._icon[0] = icon
             self._defaultIcon = False
+        if parent:
+            parent.addChild(self)
 
     def _processDataInputWidget(self, widget, index):
         self._hasWidgets = True

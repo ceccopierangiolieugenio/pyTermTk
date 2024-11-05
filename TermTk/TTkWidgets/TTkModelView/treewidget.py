@@ -33,10 +33,10 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from dataclasses import dataclass
 
 class TTkTreeWidget(TTkAbstractScrollView):
-    '''TTkTreeWidget
-
+    '''
     The :py:class:`TTkTreeWidget` class is a convenience class that provides a standard tree
     widget with a classic item-based interface.
+
     This class is based on TTk's Model/View architecture and uses a default model to hold items,
     each of which is a :py:class:`TTkTreeWidgetItem`.
 
@@ -44,7 +44,11 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     .. code-block:: python
 
-        tree = ttk.TTkTree(parent=root)
+        import TermTk as ttk
+
+        root = ttk.TTk()
+
+        tree = ttk.TTkTree(parent=root,size=(80,24))
         tree.setHeaderLabels(["Column 1", "Column 2", "Column 3"])
 
         top = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"])
@@ -54,6 +58,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
         for i in range(5):
             child = ttk.TTkTreeWidgetItem(["Child A" + str(i), "Child B" + str(i), "Child C" + str(i)])
             top.addChild(child)
+
+        root.mainloop()
 
     Before items can be added to the tree widget,
     the number of columns must be set with :meth:`setHeaderLabels`.

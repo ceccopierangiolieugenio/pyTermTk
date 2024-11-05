@@ -23,20 +23,28 @@
 __all__ = ['TTkTree']
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkWidgets.TTkModelView.treewidget import TTkTreeWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkTree(TTkAbstractScrollArea):
-    __slots__ = (
-        '_treeView',
-        # Forwarded Signals
-        'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked',
-        # Forwarded Methods
-        'setHeaderLabels',
-        'setColumnWidth', 'resizeColumnToContents',
-        'sortColumn', 'sortItems',
-        # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
-        'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear' )
+    __doc__ = '''
+    :py:class:`TTkTree` is a container widget which place :py:class:`TTkTreeWidget` in a scrolling area with on-demand scroll bars.
+
+    ''' + TTkTreeWidget.__doc__
+
+    __slots__ = tuple(
+        ['_treeView'] +
+        (_forwardedSignals:=[# Forwarded Signals From TTkTreeWidget
+            'itemActivated', 'itemChanged', 'itemClicked', 'itemExpanded', 'itemCollapsed', 'itemDoubleClicked']) +
+        (_forwardedMethods:=[# Forwarded Methods From TTkTreeWidget
+            'setHeaderLabels',
+            'setColumnWidth', 'resizeColumnToContents',
+            'sortColumn', 'sortItems',
+            # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
+            'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear'])
+        )
+    _forwardWidget = TTkTreeWidget
 
     def __init__(self, *,
                  treeWidget:TTkTreeWidget=None,
@@ -48,30 +56,5 @@ class TTkTree(TTkAbstractScrollArea):
         self.setViewport(self._treeView)
         self.setFocusPolicy(TTkK.ClickFocus)
 
-        # Forward the signal
-        self.itemActivated     = self._treeView.itemActivated
-        self.itemChanged       = self._treeView.itemChanged
-        self.itemClicked       = self._treeView.itemClicked
-        self.itemExpanded      = self._treeView.itemExpanded
-        self.itemCollapsed     = self._treeView.itemCollapsed
-        self.itemDoubleClicked = self._treeView.itemDoubleClicked
-
-        # Forwarded Methods
-        self.sortColumn = self._treeView.sortColumn
-        self.sortItems  = self._treeView.sortItems
-        #self.setAlignment    = self._treeView.setAlignment
-        #self.setHeader       = self._treeView.setHeader
-        self.setHeaderLabels = self._treeView.setHeaderLabels
-        #self.setColumnSize   = self._treeView.setColumnSize
-        #self.setColumnColors = self._treeView.setColumnColors
-        #self.appendItem      = self._treeView.appendItem
-        self.addTopLevelItem     = self._treeView.addTopLevelItem
-        self.addTopLevelItems    = self._treeView.addTopLevelItems
-        self.takeTopLevelItem    = self._treeView.takeTopLevelItem
-        self.topLevelItem        = self._treeView.topLevelItem
-        self.indexOfTopLevelItem = self._treeView.indexOfTopLevelItem
-        self.selectedItems       = self._treeView.selectedItems
-        self.setColumnWidth         = self._treeView.setColumnWidth
-        self.resizeColumnToContents = self._treeView.resizeColumnToContents
-
-        self.clear           = self._treeView.clear
+        for _attr in self._forwardedSignals+self._forwardedMethods:
+            setattr(self,_attr,getattr(self._treeView,_attr))

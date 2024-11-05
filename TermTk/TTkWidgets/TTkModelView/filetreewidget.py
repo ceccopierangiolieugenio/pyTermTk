@@ -35,6 +35,46 @@ from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetI
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 
 class TTkFileTreeWidget(TTkTreeWidget):
+    '''
+    A :py:class:`TTkFileTreeWidget` provide a widget that allow users to select files or directories.
+
+    The :py:class:`TTkFileTree` class enables a user to traverse the file system in order to select one or many files or a directory.
+
+    ::
+
+        Name                                 ▼╿Size         ╿Type        ╿Date Modified       ╿▲
+         ∙ Makefile                           │      3.80 KB│File        │2024-11-04 20:37:22 │┊
+         ∙ README.md                          │      7.50 KB│File        │2024-06-08 15:34:09 │┊
+         - TermTk/                            │             │Folder      │2024-06-08 15:34:12 │┊
+           + TTkAbstract/                     │             │Folder      │2024-11-04 20:37:22 │▓
+           + TTkCore/                         │             │Folder      │2024-11-04 20:37:22 │▓
+           + TTkCrossTools/                   │             │Folder      │2024-06-08 15:34:12 │▓
+           + TTkGui/                          │             │Folder      │2024-11-04 20:37:22 │▓
+           + TTkLayouts/                      │             │Folder      │2024-11-04 20:37:22 │▓
+           - TTkTemplates/                    │             │Folder      │2024-11-04 20:37:22 │┊
+             ∙ __init__.py                    │    120 bytes│File        │2024-11-04 20:37:22 │┊
+             + __pycache__/                   │             │Folder      │2024-11-05 08:47:38 │┊
+             ∙ dragevents.py                  │      2.79 KB│File        │2024-11-04 20:37:22 │┊
+             ∙ keyevents.py                   │      2.52 KB│File        │2024-11-04 20:37:22 │┊
+             ∙ mouseevents.py                 │      5.16 KB│File        │2024-11-04 20:37:22 │┊
+           + TTkTestWidgets/                  │             │Folder      │2024-11-04 20:37:22 │┊
+           + TTkTheme/                        │             │Folder      │2024-06-08 15:34:12 │┊
+           + TTkTypes/                        │             │Folder      │2024-06-08 15:34:12 │┊
+           + TTkUiTools/                      │             │Folder      │2024-11-04 20:37:22 │┊
+           + TTkWidgets/                      │             │Folder      │2024-11-04 20:37:22 │┊
+           ∙ __init__.py                      │    327 bytes│File        │2024-11-04 19:56:26 │▼
+
+    .. code-block:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(layout=ttk.TTkGridLayout())
+
+        fileTree = ttk.TTkFileTree(parent=root, path='.')
+
+        root.mainloop()
+    '''
+
     __slots__ = ('_path', '_filter',
                  # Signals
                  'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
