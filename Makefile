@@ -85,17 +85,20 @@ deployDoc: pyTermTk-Docs
 	cd pyTermTk-Docs ; \
 	git checkout main ; \
 	git pull ; \
-	rm -rf _* info tutorial ; \
-	cp -a ../docs/source/_build/html/* \
-	      ../docs/source/_build/html/.buildinfo \
-	      ../docs/source/_build/html/.nojekyll \
-		  . ; \
+	rm -rf _* info tutorial ;
+
+	cp -a docs/source/_build/html/* \
+	      docs/source/_build/html/.buildinfo \
+	      docs/source/_build/html/.nojekyll \
+		  pyTermTk-Docs ; \
+	cd pyTermTk-Docs ; \
 	git add . ; \
 	git commit -m "Updated Docs" ; \
 	git push origin main ; \
 	git checkout gh-pages ; \
 	git merge main ; \
-	git push origin gh-pages ; \
+	git push origin gh-pages ;
+
 	echo "Docs Deployed!!!"
 
 deploySandbox:

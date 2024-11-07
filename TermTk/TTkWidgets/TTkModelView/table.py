@@ -38,7 +38,7 @@ class TTkTable(TTkAbstractScrollArea):
 
     __slots__ = tuple(
         ['_tableView'] +
-        (_forwardedSignals:=[ # Forwarded Signals
+        (_forwardedSignals:=[ # Forwarded Signals From TTkTable
             # 'cellActivated',
             'cellChanged',
             'cellClicked', 'cellDoubleClicked',
@@ -70,6 +70,10 @@ class TTkTable(TTkAbstractScrollArea):
                  sortingEnabled=False,
                  dataPadding=1,
                  **kwargs) -> None:
+        '''
+        :param tableWidget: a custom Table Widget to be used instead of the default one.
+        :type tableWidget: :py:class:`TTkTableWidget`, optional
+        '''
         self._tableView = None
         self._tableView:TTkTableWidget = tableWidget if tableWidget else TTkTableWidget(
                                                                                 tableModel=tableModel,

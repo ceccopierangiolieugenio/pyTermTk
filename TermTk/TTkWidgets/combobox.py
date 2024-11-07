@@ -52,17 +52,6 @@ class TTkComboBox(TTkContainer):
 
          [ Text       [^]
 
-    :param list: the list of the items selectable by this combobox, defaults to "[]"
-    :type list: list(str), optional
-
-    :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`TTkConstant.InsertPolicy.InsertAtBottom`
-    :type insertPolicy: :py:class:`TTkConstant.InsertPolicy`, optional
-
-    :param textAlign: This enum type is used to define the text alignment, defaults to :py:class:`TTkConstant.Alignment.CENTER_ALIGN`
-    :tye textAlign: :py:class:`TTkConstant.Alignment`, optional
-
-    :param editable: This property holds whether the combo box can be edited by the user, defaults to False
-    :type editable: bool, optional
     '''
 
     classStyle = {
@@ -84,6 +73,20 @@ class TTkComboBox(TTkContainer):
                  textAlign:TTkK.Alignment = TTkK.CENTER_ALIGN,
                  editable:bool = False,
                  **kwargs) -> None:
+        '''
+        :param list: the list of the items selectable by this combobox, defaults to "[]"
+        :type list: list(str), optional
+
+        :param insertPolicy: the policy used to determine where user-inserted items should appear in the combobox, defaults to :py:class:`TTkConstant.InsertPolicy.InsertAtBottom`
+        :type insertPolicy: :py:class:`TTkConstant.InsertPolicy`, optional
+
+        :param textAlign: This enum type is used to define the text alignment, defaults to :py:class:`TTkConstant.Alignment.CENTER_ALIGN`
+        :tye textAlign: :py:class:`TTkConstant.Alignment`, optional
+
+        :param editable: This property holds whether the combo box can be edited by the user, defaults to False
+        :type editable: bool, optional
+        '''
+
         # Define Signals
         self.currentIndexChanged = pyTTkSignal(int)
         self.currentTextChanged  = pyTTkSignal(str)

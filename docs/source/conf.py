@@ -130,7 +130,8 @@ html_permalinks_icon = '<span>🌶️</span>'
 html_theme_options = {
     "home_page_in_toc": True,
     "use_fullscreen_button": True,
-    "show_toc_level": 2,
+    # "toc_title": "{your-title}",
+    "show_toc_level": 3,
     "repository_url": "https://github.com/ceccopierangiolieugenio/pyTermTk",
 }
 

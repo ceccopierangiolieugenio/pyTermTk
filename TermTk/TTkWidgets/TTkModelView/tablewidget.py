@@ -150,26 +150,6 @@ class TTkTableWidget(TTkAbstractScrollView):
     To distribute the available space according to the space requirement of each column or row,
     call the view's :meth:`resizeColumnsToContents` or :meth:`resizeRowsToContents` functions.
 
-    :param tableModel: the model for the view to present.
-    :type tableModel: :py:class:`TTkAbstractTableModel`
-
-    :param vSeparator: show the vertical separators, defaults to True
-    :type vSeparator: bool, optional
-
-    :param hSeparator: show the horizontal separators, defaults to True
-    :type hSeparator: bool, optional
-
-    :param vHeader: show the vertical header, defaults to True
-    :type vHeader: bool, optional
-
-    :param hHeader: show the horizontal header, defaults to True
-    :type hHeader: bool, optional
-
-    :param sortingEnabled: enable the column sorting, defaults to False
-    :type sortingEnabled: bool, optional
-
-    :param dataPadding: the right column padding, defaults to 1
-    :type dataPadding: int, optional
     '''
 
     cellChanged:pyTTkSignal
@@ -280,6 +260,28 @@ class TTkTableWidget(TTkAbstractScrollView):
                  sortingEnabled=False,
                  dataPadding=1,
                  **kwargs) -> None:
+        '''
+        :param tableModel: the model for the view to present.
+        :type tableModel: :py:class:`TTkAbstractTableModel`
+
+        :param vSeparator: show the vertical separators, defaults to True
+        :type vSeparator: bool, optional
+
+        :param hSeparator: show the horizontal separators, defaults to True
+        :type hSeparator: bool, optional
+
+        :param vHeader: show the vertical header, defaults to True
+        :type vHeader: bool, optional
+
+        :param hHeader: show the horizontal header, defaults to True
+        :type hHeader: bool, optional
+
+        :param sortingEnabled: enable the column sorting, defaults to False
+        :type sortingEnabled: bool, optional
+
+        :param dataPadding: the right column padding, defaults to 1
+        :type dataPadding: int, optional
+        '''
         # Signals
         # self.itemActivated     = pyTTkSignal(TTkTableWidgetItem, int)
         # self.itemChanged       = pyTTkSignal(TTkTableWidgetItem, int)
@@ -568,10 +570,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         w = vhs+self._colsPos[-1]+1
         h = hhs+self._rowsPos[-1]+1
         return w,h
-
-    # Overridden function
-    def viewDisplayedSize(self) -> tuple[int, int]:
-        return self.size()
 
     def clearSelection(self) -> None:
         '''

@@ -48,10 +48,6 @@ class _TTkFancyTableViewHeader(TTkAbstractScrollView):
     def viewFullAreaSize(self) -> (int, int):
         return self.size()
 
-    # Override this function
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
         pass
@@ -196,9 +192,6 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
     def viewFullAreaSize(self) -> (int, int):
         return self._tableWidth, len(self._tableDataText)
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     # def items(self): return self._tableDataText
 

@@ -30,25 +30,104 @@ from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
 class TTkAbstractScrollViewInterface():
-    '''TTkAbstractScrollViewInterface'''
+    '''
+    The :py:class:`TTkAbstractScrollViewInterface` provide the basic interface that can be used in :py:class:`TTkAbstractScrollArea` to enable on-demand scroll bars.
+
+    When subclassing :py:class:`TTkAbstractScrollViewInterface`,
+    you must implement :meth:`viewFullAreaSize`, :meth:`viewDisplayedSize`, :meth:`getViewOffsets`, and :meth:`viewMoveTo`.
+
+    This interface is implemented in the following specialised classes:
+
+    * :py:class:`TTkAbstractScrollView`
+    * :py:class:`TTkAbstractScrollViewLayout`
+    * :py:class:`TTkAbstractScrollViewGridLayout`
+    '''
+
+    def __init__(self) -> None: pass
 
     # Override this function
     def viewFullAreaSize(self) -> (int, int):
+        '''
+        This method returns the full widget area size of the :py:class:`TTkAbstractScrollViewInterface` implementation.
+
+        This is required to `TTkAbstractScrollArea` implementation to handle the on-demand scroll bars.
+
+        .. note:: Reimplement this function to handle this event
+
+        :return: the full area size as a tuple of 2 int elements (width,height)
+        :rtype: tuple[int,int]
+        '''
         raise NotImplementedError()
 
     # Override this function
     def viewDisplayedSize(self) -> (int, int):
+        '''
+        This method returns the displayed size of the :py:class:`TTkAbstractScrollViewInterface` implementation.
+
+        .. note::
+
+            Reimplement this function to handle this event
+
+            This method is already implemented in the following classes:
+
+            * :py:class:`TTkAbstractScrollView`
+            * :py:class:`TTkAbstractScrollViewLayout`
+            * :py:class:`TTkAbstractScrollViewGridLayout`
+
+        Unless a different iplementation is required, by default it should return :py:meth:`TTkWidget.size`
+
+        :return: the displayed size as a tuple of 2 int elements (width,height)
+        :rtype: tuple[int,int]
+        '''
         raise NotImplementedError()
 
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
+        '''
+        This method is used to set the vertical and horizontal offsets of the :py:class:`TTkAbstractScrollViewInterface`
+
+        .. note::
+
+            Reimplement this function to handle this event
+
+            This method is already implemented in the following classes:
+             * :py:class:`TTkAbstractScrollView`
+             * :py:class:`TTkAbstractScrollViewLayout`
+             * :py:class:`TTkAbstractScrollViewGridLayout`
+
+        :param x: the horizontal position
+        :type x: int
+        :param y: the vertical position
+        :type y: int
+        '''
         raise NotImplementedError()
 
-    def getViewOffsets(self):
+    def getViewOffsets(self) -> tuple:
+        '''
+        Retrieve the vertical and horizontal offsets of the :py:class:`TTkAbstractScrollViewInterface`
+
+        .. note::
+
+            Reimplement this function to handle this event
+
+            This method is already implemented in the following classes:
+             * :py:class:`TTkAbstractScrollView`
+             * :py:class:`TTkAbstractScrollViewLayout`
+             * :py:class:`TTkAbstractScrollViewGridLayout`
+
+        :return: the (x,y) offset
+        :rtype: tuple[int,int]
+        '''
         return self._viewOffsetX, self._viewOffsetY
 
 class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
-    '''TTkAbstractScrollView'''
+    '''
+    The :py:class:`TTkAbstractScrollView` is a :py:class:`TTkContainer` widget that incude :py:class:`TTkAbstractScrollViewInterface` api.
+
+    The placement of any widget inside this container will change accordingly to the offset of this view.
+
+    This class is used in the convenience widget :py:class:`TTkScrollArea`
+    '''
 
     viewMovedTo:pyTTkSignal
     '''
@@ -91,6 +170,9 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         # Do NOT use super()
         TTkContainer.__init__(self, **kwargs)
 
+    def viewDisplayedSize(self) -> (int, int):
+        return self.size()
+
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()
@@ -109,6 +191,9 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         self.viewMovedTo.emit(x,y)
         self.viewChanged.emit()
         self.update()
+
+    def getViewOffsets(self) -> tuple:
+        return self._viewOffsetX, self._viewOffsetY
 
     def wheelEvent(self, evt):
         delta = TTkCfg.scrollDelta
@@ -129,7 +214,9 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         return super().update(repaint, updateLayout, updateParent)
 
 class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
-    '''TTkAbstractScrollViewLayout'''
+    '''
+    :py:class:`TTkAbstractScrollViewLayout`
+    '''
 
     viewMovedTo:pyTTkSignal
     '''
@@ -184,12 +271,17 @@ class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
     def viewMoveTo(self, x: int, y: int):
         self.setOffset(-x,-y)
 
+    def getViewOffsets(self) -> tuple:
+        return self._viewOffsetX, self._viewOffsetY
+
     def setGeometry(self, x, y, w, h):
         TTkLayout.setGeometry(self, x, y, w, h)
         self.viewChanged.emit()
 
 class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterface):
-    '''TTkAbstractScrollViewGridLayout'''
+    '''
+    :py:class:`TTkAbstractScrollViewGridLayout`
+    '''
 
     viewMovedTo:pyTTkSignal
     '''
@@ -255,6 +347,9 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         self.viewMovedTo.emit(x,y)
         self.viewChanged.emit()
         self.update()
+
+    def getViewOffsets(self) -> tuple:
+        return self._viewOffsetX, self._viewOffsetY
 
     def setGeometry(self, x, y, w, h):
         TTkGridLayout.setGeometry(self, x, y, w, h)

@@ -115,6 +115,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     ttkAllSlots={}
     ttkAllMembers={} # List all the member of a class
     ttkInherited={}  # List of the inherited classes for each class
+    ttkClasses={}
 
     def _getMethodsAndSlots(_obj):
         retSlots = []
@@ -198,6 +199,8 @@ def setup(app: Sphinx) -> ExtensionMetadata:
                             modStyles[_name] = _get_classStyleCode(_obj)
                         if _name not in modules:
                             modules[_name] = _mod.__name__
+                        if _name not in ttkClasses:
+                            ttkClasses[_name] = _obj
                         modules[_name] = _mod.__name__ if len(_mod.__name__)>len(modules[_name]) else modules[_name]
                         print(f" * {_name=} = {_obj}")
 
@@ -235,6 +238,55 @@ def setup(app: Sphinx) -> ExtensionMetadata:
 
     for (x,y) in ttkInherited.items():
         print(f"Inherited {x} -> {y}")
+
+    ###############################################
+    # Rework inherited init params in the __doc__ #
+    ###############################################
+    # ttk.TTkTemplates.dragevents.TDragEvents.__init__.__doc__=''
+    # ttk.TTkTemplates.mouseevents.TMouseEvents.__init__.__doc__=''
+    # ttk.TTkTemplates.keyevents.TKeyEvents.__init__.__doc__=''
+    for _name in ttkClasses:
+        def _mergeDoc(_da,_db,_title=''):
+            if not _da and not _db:
+                return ''
+            if not _da:
+                return _db
+            if not _db:
+                return _da
+            _dal = _da.split('\n')
+            _dbl = _db.split('\n')
+            _mina = min(len(_l) - len(_l.lstrip()) for _l in _dal if _l and _l.lstrip())
+            _minb = min(len(_l) - len(_l.lstrip()) for _l in _dbl if _l and _l.lstrip())
+            if _title:
+                _dbl = [' '*_minb+_l for _l in _title.split('\n')] + _dbl
+            if _mina<_minb:
+                _diff = _minb-_mina
+                _dc = '\n'.join([(' '*_diff)+_l for _l in _dal]+_dbl)
+            else:
+                _diff = _mina-_minb
+                _dc = '\n'.join(_dal + [(' '*_diff)+_l for _l in _dbl])
+            # for _l in _dal+_dbl:
+            #     print(f"--{_l}--")
+            # print(f"{_mina=} {_minb=}")
+            # print(_dc)
+            return _dc
+
+
+        _obj = ttkClasses[_name]
+        if _obj.__doc__ and ":param" in _obj.__doc__:
+            print(ttk.TTkString(f"[{_name}] Params in the class docstring", ttk.TTkColor.BG_RED + ttk.TTkColor.FG_YELLOW).toAnsi())
+        if hasattr(_obj,'__init__'):
+            _obj.__doc__ = _mergeDoc(_obj.__doc__, _obj.__init__.__doc__)
+        if hasattr(_obj,'_forwardWidget') and hasattr(_obj._forwardWidget,'__init__'):
+            _obj.__doc__ = _mergeDoc(_obj.__doc__,
+                                     _obj._forwardWidget.__init__.__doc__,
+                                     f"\n:py:class:`{_obj._forwardWidget.__name__}`'s forwarded init params:\n")
+        for _iname in ttkInherited[_name]:
+            if _iname not in ttkClasses:
+                continue
+            _iobj = ttkClasses[_iname]
+            if hasattr(_iobj,'__init__'):
+                _obj.__doc__ = _mergeDoc(_obj.__doc__, _iobj.__init__.__doc__, f"\n:py:class:`{_iname}`'s inherited init params:\n")
 
     # print(modStyles)
 
@@ -287,7 +339,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
             _baseClass = _allForwarded['baseClass']
             _allSlots = set(ttkAllSlots.get(_baseClass,[]))
             _allMethods = set(ttkAllMethods.get(_baseClass,[]))
-            print(f"{_name=} {_baseClass=}\n{_allForwarded=}\n{_allSlots=}\n{_allMethods=}")
+            # print(f"{_name=} {_baseClass=}\n{_allForwarded=}\n{_allSlots=}\n{_allMethods=}")
             _fwSlots =  {
                 'baseClass': _baseClass,
                 'methods':   sorted([_m for _m in _allForwarded['methods'] if _m in _allSlots])}
@@ -338,7 +390,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
             'TTkMethodsInherited':         ttkInheritedMethods ,
             }
 
-        print('\n'.join([f" * {x}={context[x]}" for x in context]))
+        # print('\n'.join([f" * {x}={context[x]}" for x in context]))
 
         return generate_autosummary_content_old(
             name, obj, parent, template, template_name, imported_members,

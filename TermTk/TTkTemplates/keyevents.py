@@ -25,6 +25,8 @@ __all__ = ['TKeyEvents']
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 
 class TKeyEvents():
+    def __init__(self) -> None: pass
+
 #    def keyPressEvent(self, evt:TTkKeyEvent) -> bool :
 #        '''
 #        This event handler, can be reimplemented in a subclass to receive key press events for the widget.

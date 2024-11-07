@@ -44,15 +44,7 @@ class TTkFrame(TTkContainer):
 
     Demo2: `splitter.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_
 
-    :param title: the title displayed at the top border of the frame, defaults to ""
-    :type title: TTkString, optional
-    :param titleAlign: the position of the title, defaults to :py:class:`TTkK.Alignment.CENTER_ALIGN`
-    :type titleAlign: :py:class:`TTkK.Alignment`, optional
-    :param border: Enable/Disable the border, defaults to **True**
-    :type border: bool, optional
-
     '''
-
     classStyle = {
                 'default':     {'color': TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
                                 'borderColor': TTkColor.RST},
@@ -68,6 +60,15 @@ class TTkFrame(TTkContainer):
                  border:bool=True,
                  titleAlign:TTkK.Alignment=TTkK.CENTER_ALIGN,
                  **kwargs) -> None:
+        '''
+        :param title: the title displayed at the top border of the frame, defaults to ""
+        :type title: TTkString, optional
+        :param titleAlign: the position of the title, defaults to :py:class:`TTkK.Alignment.CENTER_ALIGN`
+        :type titleAlign: :py:class:`TTkK.Alignment`, optional
+        :param border: Enable/Disable the border, defaults to **True**
+        :type border: bool, optional
+        '''
+
         self._titleAlign = titleAlign
         self._title = TTkString(title)
         self._border = border

@@ -73,9 +73,6 @@ class _DetailGridView(TTkAbstractScrollView):
         _,_,w,h = self._gridLayout.fullWidgetAreaGeometry()
         return w , h
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
 class _DetailLazyFormView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout', '_lazyRows', '_lastRow')
     def __init__(self, *args, **kwargs) -> None:
@@ -121,9 +118,6 @@ class _DetailLazyFormView(TTkAbstractScrollView):
     def viewFullAreaSize(self) -> (int, int):
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h+1
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def paintEvent(self, canvas):
         x,y = self.getViewOffsets()

@@ -160,7 +160,10 @@ class TTkTreeWidget(TTkAbstractScrollView):
         widgets: list
         firstLine: bool
 
-    def __init__(self, *, header=[], sortingEnabled=True, **kwargs) -> None:
+    def __init__(self, *,
+                 header=[],
+                 sortingEnabled=True,
+                 **kwargs) -> None:
         # Signals
         self.itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
         self.itemChanged       = pyTTkSignal(TTkTreeWidgetItem, int)
@@ -197,11 +200,6 @@ class TTkTreeWidget(TTkAbstractScrollView):
         h = self._rootItem.size()
         # TTkLog.debug(f"{w=} {h=}")
         return w,h
-
-    # Overridden function
-    def viewDisplayedSize(self) -> tuple[int, int]:
-        # TTkLog.debug(f"{self.size()=}")
-        return self.size()
 
     def clear(self) -> None:
         '''clear'''

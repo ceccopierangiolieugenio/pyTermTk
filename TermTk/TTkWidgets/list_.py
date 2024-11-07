@@ -27,51 +27,42 @@ from TermTk.TTkWidgets.listwidget import TTkListWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 
 class TTkList(TTkAbstractScrollArea):
-    '''TTkList'''
-    __slots__ = (
-        '_listView', 'itemClicked', 'textClicked',
-        # Forwarded Methods
-        'items',
-        'dragDropMode', 'setDragDropMode',
-        'addItem', 'addItemAt', 'addItems', 'addItemsAt',
-        'indexOf', 'itemAt', 'moveItem',
-        'removeAt', 'removeItem', 'removeItems',
-        'selectionMode', 'setSelectionMode', 'selectedItems', 'selectedLabels',
-        'setCurrentRow', 'setCurrentItem',  )
+    __doc__ = '''
+    :py:class:`TTkList` is a container widget which place :py:class:`TTkListWidget` in a scrolling area with on-demand scroll bars.
+
+    ''' + TTkListWidget.__doc__
+
+    __slots__ = tuple(
+        ['_listView'] +
+        (_forwardedSignals:=[ # Forwarded Signals From TTkTable
+            'itemClicked', 'textClicked']) +
+        (_forwardedMethods:=[ # Forwarded Methods From TTkTable
+            'items',
+            'dragDropMode', 'setDragDropMode',
+            'addItem', 'addItemAt', 'addItems', 'addItemsAt',
+            'indexOf', 'itemAt', 'moveItem',
+            'removeAt', 'removeItem', 'removeItems',
+            'selectionMode', 'setSelectionMode', 'selectedItems', 'selectedLabels',
+            'setCurrentRow', 'setCurrentItem'])
+        )
+    _forwardWidget = TTkListWidget
 
     def __init__(self, *,
                  listWidget:TTkListWidget=None,
                  selectionMode:int=TTkK.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
                  **kwargs) -> None:
-        TTkAbstractScrollArea.__init__(self, **kwargs)
+        '''
+        :param listWidget: a custom List Widget to be used instead of the default one.
+        :type listWidget: :py:class:`TTkListWidget`, optional
+        '''
         self._listView = listWidget if listWidget else TTkListWidget(
                                                             selectionMode=selectionMode,
                                                             dragDropMode=dragDropMode,
                                                             **kwargs|{'parent':None,'visible':True})
+        super().__init__(**kwargs)
         self.setViewport(self._listView)
-        self.itemClicked = self._listView.itemClicked
-        self.textClicked = self._listView.textClicked
-        # self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-        # Forwearded Methods
-        self.items            = self._listView.items
-        self.indexOf          = self._listView.indexOf
-        self.itemAt           = self._listView.itemAt
-        self.moveItem         = self._listView.moveItem
-        self.removeAt         = self._listView.removeAt
-        self.removeItem       = self._listView.removeItem
-        self.removeItems      = self._listView.removeItems
-        self.addItem          = self._listView.addItem
-        self.addItems         = self._listView.addItems
-        self.addItemAt        = self._listView.addItemAt
-        self.addItemsAt       = self._listView.addItemsAt
-        self.selectionMode    = self._listView.selectionMode
-        self.setSelectionMode = self._listView.setSelectionMode
-        self.selectedItems    = self._listView.selectedItems
-        self.selectedLabels   = self._listView.selectedLabels
-        self.setCurrentRow    = self._listView.setCurrentRow
-        self.setCurrentItem   = self._listView.setCurrentItem
-        self.dragDropMode     = self._listView.dragDropMode
-        self.setDragDropMode  = self._listView.setDragDropMode
+        for _attr in self._forwardedSignals+self._forwardedMethods:
+            setattr(self,_attr,getattr(self._listView,_attr))
 

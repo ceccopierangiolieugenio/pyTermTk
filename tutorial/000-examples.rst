@@ -40,6 +40,8 @@ Events
 `TTkLineEdit/SetGet.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkLineEdit/Events.01.py>`_ -
 (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkLineEdit/Events.01.py>`__):
 
+.. _Examples-Terminal:
+
 TTkTerminal
 ===========
 

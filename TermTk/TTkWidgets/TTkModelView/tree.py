@@ -49,6 +49,10 @@ class TTkTree(TTkAbstractScrollArea):
     def __init__(self, *,
                  treeWidget:TTkTreeWidget=None,
                  **kwargs) -> None:
+        '''
+        :param treeWidget: a custom Tree Widget to be used instead of the default one.
+        :type treeWidget: :py:class:`TTkTreeWidget`, optional
+        '''
         super().__init__(**kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)

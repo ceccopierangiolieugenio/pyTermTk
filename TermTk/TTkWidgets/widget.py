@@ -61,50 +61,6 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
 
     The TTkWidget class is the base class of all user interface objects
 
-    :param name: the name of the widget, defaults to ""
-    :type name: str, optional
-    :param parent: the parent widget, defaults to None
-    :type parent: :py:class:`TTkWidget`, optional
-
-    :param x: the x position, defaults to 0
-    :type x: int, optional
-    :param y: the y position, defaults to 0
-    :type y: int, optional
-    :param pos: the [x,y] position (override the previously defined x, y), defaults to (x,y)
-    :type pos: (int,int), optional
-
-    :param width: the width of the widget, defaults to 0
-    :type width: int, optional
-    :param height: the height of the widget, defaults to 0
-    :type height: int, optional
-    :param size: the size [width, height] of the widget (override the previously defined sizes), defaults to (width,height)
-    :type size: (int,int), optional
-
-    :param maxWidth: the maxWidth of the widget, defaults to 0x10000
-    :type maxWidth: int, optional
-    :param maxHeight: the maxHeight of the widget, defaults to 0x10000
-    :type maxHeight: int, optional
-    :param maxSize: the max [width,height] of the widget, optional, defaults to (maxWidth,maxHeight)
-    :type maxSize: (int,int), optional
-    :param minWidth: the minWidth of the widget, defaults to 0
-    :type minWidth: int, optional
-    :param minHeight: the minHeight of the widget, defaults to 0
-    :type minHeight: int, optional
-    :param minSize: the minSize [width,height] of the widget, optional, defaults to (minWidth,minHeight)
-    :type minSize: (int,int), optional
-
-    :param toolTip: This property holds the widget's tooltip, defaults to ''
-    :type toolTip: :py:class:`TTkString`, optional
-
-    :param style: this field hold the custom style to be used by this widget
-    :type style: dict, optional
-    :param addStyle: this field is required to override/merge the new style on top of the current one, useful if only few params need to be changed
-    :type addStyle: dict, optional
-
-    :param visible: the visibility, optional, defaults to True
-    :type visible: bool, optional
-    :param enabled: the ability to handle input events, optional, defaults to True
-    :type enabled: bool, optional
     '''
 
     focusChanged:pyTTkSignal
@@ -182,7 +138,52 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                  style    : dict = None,
                  addStyle : dict = None,
                  **kwargs) -> None:
+        '''
+        :param name: the name of the widget, defaults to ""
+        :type name: str, optional
+        :param parent: the parent widget, defaults to None
+        :type parent: :py:class:`TTkWidget`, optional
 
+        :param x: the x position, defaults to 0
+        :type x: int, optional
+        :param y: the y position, defaults to 0
+        :type y: int, optional
+        :param pos: the [x,y] position (override the previously defined x, y), defaults to (x,y)
+        :type pos: (int,int), optional
+
+        :param width: the width of the widget, defaults to 0
+        :type width: int, optional
+        :param height: the height of the widget, defaults to 0
+        :type height: int, optional
+        :param size: the size [width, height] of the widget (override the previously defined sizes), defaults to (width,height)
+        :type size: (int,int), optional
+
+        :param maxWidth: the maxWidth of the widget, defaults to 0x10000
+        :type maxWidth: int, optional
+        :param maxHeight: the maxHeight of the widget, defaults to 0x10000
+        :type maxHeight: int, optional
+        :param maxSize: the max [width,height] of the widget, optional, defaults to (maxWidth,maxHeight)
+        :type maxSize: (int,int), optional
+        :param minWidth: the minWidth of the widget, defaults to 0
+        :type minWidth: int, optional
+        :param minHeight: the minHeight of the widget, defaults to 0
+        :type minHeight: int, optional
+        :param minSize: the minSize [width,height] of the widget, optional, defaults to (minWidth,minHeight)
+        :type minSize: (int,int), optional
+
+        :param toolTip: This property holds the widget's tooltip, defaults to ''
+        :type toolTip: :py:class:`TTkString`, optional
+
+        :param style: this field hold the custom style to be used by this widget
+        :type style: dict, optional
+        :param addStyle: this field is required to override/merge the new style on top of the current one, useful if only few params need to be changed
+        :type addStyle: dict, optional
+
+        :param visible: the visibility, optional, defaults to True
+        :type visible: bool, optional
+        :param enabled: the ability to handle input events, optional, defaults to True
+        :type enabled: bool, optional
+        '''
         if kwargs:
             TTkLog.warn(f"Unhandled init params {self.__class__.__name__} -> {kwargs}")
 

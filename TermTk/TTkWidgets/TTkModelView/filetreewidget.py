@@ -64,6 +64,8 @@ class TTkFileTreeWidget(TTkTreeWidget):
            + TTkWidgets/                      │             │Folder      │2024-11-04 20:37:22 │┊
            ∙ __init__.py                      │    327 bytes│File        │2024-11-04 19:56:26 │▼
 
+    Quickstart:
+
     .. code-block:: python
 
         import TermTk as ttk

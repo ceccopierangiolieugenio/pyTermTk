@@ -84,12 +84,32 @@ class TTkConstant:
     HEADER = 0x0020
     FOOTER = 0x0040
 
+    class SelectionMode(int):
+        '''
+        This class type indicates how the view responds to user selections.
+
+        .. autosummary::
+          NoSelection
+          SingleSelection
+          MultiSelection
+        '''
+        NoSelection         = 0x00
+        '''Items cannot be selected.'''
+        SingleSelection     = 0x01
+        '''When the user selects an item, any already-selected item becomes unselected. It is possible for the user to deselect the selected item by pressing the Ctrl key when clicking the selected item.'''
+        # ContiguousSelection = 0x04
+        # '''When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item.'''
+        # ExtendedSelection   = 0x03
+        # '''When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item. Multiple items can be selected by dragging the mouse over them.'''
+        MultiSelection      = 0x02
+        '''When the user selects an item in the usual way, the selection status of that item is toggled and the other items are left alone. Multiple items can be toggled by dragging the mouse over them.'''
+
     # SelectionMode
-    NoSelection         = 0x00
-    SingleSelection     = 0x01
-    MultiSelection      = 0x02
-    ExtendedSelection   = 0x03
-    ContiguousSelection = 0x04
+    NoSelection         = SelectionMode.NoSelection
+    SingleSelection     = SelectionMode.SingleSelection
+    # ExtendedSelection   = SelectionMode.ExtendedSelection
+    # ContiguousSelection = SelectionMode.ContiguousSelection
+    MultiSelection      = SelectionMode.MultiSelection
 
     # Graph types
     FILLED = 0x0001

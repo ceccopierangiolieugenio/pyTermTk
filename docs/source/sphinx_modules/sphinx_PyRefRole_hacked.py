@@ -57,20 +57,20 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     for _module in sys.modules:
         _parseModules(sys.modules[_module])
 
-    for x in modules.items():
-        print(x)
+    # for x in modules.items():
+    #     print(x)
 
     def _resolve(txt) -> str:
         oldTxt = txt
         if txt in modules:
             txt = f"~{modules[txt]}.{txt}"
-            print(f"-----------> {oldTxt=} -> {txt=}")
+            # print(f"-----------> {oldTxt=} -> {txt=}")
         else:
             txts = txt.split('.')
             if txts[0] in modules:
                 txts[0] = f"~{modules[txts[0]]}.{txts[0]}"
                 txt = '.'.join(txts)
-                print(f"-----------> {oldTxt=} -> {txt=}")
+                # print(f"-----------> {oldTxt=} -> {txt=}")
         return txt
 
     _process_link_bk = sphinxPythonDomain.PyXRefRole.process_link

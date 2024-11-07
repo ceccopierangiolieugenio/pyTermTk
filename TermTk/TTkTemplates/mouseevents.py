@@ -25,6 +25,8 @@ __all__ = ['TMouseEvents']
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class TMouseEvents():
+    def __init__(self) -> None: pass
+
     def mouseTapEvent(self, evt:TTkMouseEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive mouse click events for the widget.

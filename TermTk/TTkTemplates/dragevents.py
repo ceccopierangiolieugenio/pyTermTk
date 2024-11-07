@@ -23,6 +23,8 @@
 __all__ = ['TDragEvents']
 
 class TDragEvents():
+    def __init__(self) -> None: pass
+
     def dragEnterEvent(self, evt)  -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.

@@ -20,7 +20,8 @@ html[data-theme="dark"] .bd-content img:not(.only-dark, .dark-light) {
 }
 @media (min-width: 992px) {
    .bd-sidebar-primary {
-     flex-basis: 18%;
+     flex-basis: 17%;
+     padding: 0.5rem;
    }
  }
 

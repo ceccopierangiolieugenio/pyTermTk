@@ -63,7 +63,5 @@ class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
     def viewFullAreaSize(self) -> (int, int):
         return self._areaSize
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
 

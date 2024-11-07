@@ -43,14 +43,6 @@ class TTkRadioButton(TTkWidget):
 
     Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
 
-    :param str text: the text shown on the radio button, defaults to ""
-    :type text: str, optional
-    :param str radiogroup: the text used to group the RadioButtons, only one checked status is allowed in between all the radio buttons with the same radiogroup, defaults to "DefaultGroup"
-    :type radiogroup: str, optional
-    :param bool checked: Checked status, defaults to "False"
-    :type checked: bool, optional
-    :param checkStatus: If defined, override the option defined in the 'checked' field otherwise defaults to :py:class:`TTkK.CheckState.Checked` or :py:class:`TTkK.CheckState.Unchecked` based on the checked status
-    :type checkStatus: :py:class:`TTkK.CheckState` , optional
     '''
 
     clicked:pyTTkSignal
@@ -82,6 +74,17 @@ class TTkRadioButton(TTkWidget):
                  checkStatus:TTkK.CheckState = None,
                  text:TTkString='',
                  **kwargs) -> None:
+        '''
+        :param str text: the text shown on the radio button, defaults to ""
+        :type text: str, optional
+        :param str radiogroup: the text used to group the RadioButtons, only one checked status is allowed in between all the radio buttons with the same radiogroup, defaults to "DefaultGroup"
+        :type radiogroup: str, optional
+        :param bool checked: Checked status, defaults to "False"
+        :type checked: bool, optional
+        :param checkStatus: If defined, override the option defined in the 'checked' field otherwise defaults to :py:class:`TTkK.CheckState.Checked` or :py:class:`TTkK.CheckState.Unchecked` based on the checked status
+        :type checkStatus: :py:class:`TTkK.CheckState` , optional
+        '''
+
         # Define Signals
         self.clicked = pyTTkSignal()
         self.toggled = pyTTkSignal(bool)

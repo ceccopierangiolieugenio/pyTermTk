@@ -111,9 +111,6 @@ class _emojiPickerView(TTkAbstractScrollView):
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
     def minimumWidth(self):   return 0

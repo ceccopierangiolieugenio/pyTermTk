@@ -53,9 +53,6 @@ class _TTkLogViewer(TTkAbstractScrollView):
         h = len(self._messages)
         return w , h
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
     def loggingCallback(self, mode, context, message):
         logType = "NONE"
         if mode == TTkLog.InfoMsg:       logType = TTkString("INFO "   ,TTkColor.fg("#00ff00"))

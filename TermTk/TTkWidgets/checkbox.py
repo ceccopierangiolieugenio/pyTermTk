@@ -50,16 +50,6 @@ class TTkCheckbox(TTkWidget):
         [/]CheckBox
 
     :Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
-
-    :param str text: the text shown on the checkbox, defaults to ""
-    :type text: str, optional
-
-    :param checked: Checked status, defaults to "False"
-    :type checked: bool, optional
-    :param checkStatus: If defined, override the option defined in the 'checked' field otherwise defaults to :py:class:`TTkK.CheckState.Checked` or :py:class:`TTkK.CheckState.Unchecked` based on the checked status
-    :type checkStatus: :py:class:`TTkK.CheckState` , optional
-    :param tristate: Tristate status, if enabled the checkbox is able to assume the :py:class:`TTkK.CheckState.PartiallyChecked` status, defaults to "False"
-    :type tristate: bool, optional
     '''
 
     clicked:pyTTkSignal
@@ -108,6 +98,18 @@ class TTkCheckbox(TTkWidget):
                  checkStatus:TTkK.CheckState = None,
                  tristate:bool=False,
                  **kwargs) -> None:
+        '''
+        :param str text: the text shown on the checkbox, defaults to ""
+        :type text: str, optional
+
+        :param checked: Checked status, defaults to "False"
+        :type checked: bool, optional
+        :param checkStatus: If defined, override the option defined in the 'checked' field otherwise defaults to :py:class:`TTkK.CheckState.Checked` or :py:class:`TTkK.CheckState.Unchecked` based on the checked status
+        :type checkStatus: :py:class:`TTkK.CheckState` , optional
+        :param tristate: Tristate status, if enabled the checkbox is able to assume the :py:class:`TTkK.CheckState.PartiallyChecked` status, defaults to "False"
+        :type tristate: bool, optional
+        '''
+
         # Define Signals
         self.stateChanged = pyTTkSignal(TTkK.CheckState)
         self.clicked = pyTTkSignal(bool)

@@ -55,17 +55,6 @@ class TTkButton(TTkWidget):
          ╽  Line  ╽
 
     Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
-
-    :param str text: the text shown on the button, defaults to ""
-    :type text: str, optional
-
-    :param bool border: the border of the button, defaults to "False"
-    :type border: bool, optional
-
-    :param bool checked: checked status if the button is checkable, defaults to "False"
-    :type checked: bool, optional
-    :param bool checkable: define if the button is checkable, defaults to "False"
-    :type checkable: bool, optional
     '''
 
     clicked:pyTTkSignal
@@ -118,6 +107,18 @@ class TTkButton(TTkWidget):
                  checked:bool=False,
                  checkable:bool=False,
                  **kwargs) -> None:
+        '''
+        :param str text: the text shown on the button, defaults to ""
+        :type text: str, optional
+
+        :param bool border: the border of the button, defaults to "False"
+        :type border: bool, optional
+
+        :param bool checked: checked status if the button is checkable, defaults to "False"
+        :type checked: bool, optional
+        :param bool checkable: define if the button is checkable, defaults to "False"
+        :type checkable: bool, optional
+        '''
         self._text = TTkString(text).split('\n')
         textWidth = max(t.termWidth() for t in self._text)
         self._border = border

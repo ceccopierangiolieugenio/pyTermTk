@@ -96,23 +96,6 @@ class TTkContainer(TTkWidget):
 
         root.mainloop()
 
-    :param layout: the layout of this widget, optional, defaults to :py:class:`TTkLayout`
-    :type layout: :mod:`TermTk.TTkLayouts`
-
-    :param padding: the padding (top, bottom, left, right) of the widget, defaults to (0,0,0,0)
-    :type padding: :py:class:`TTkPadding`
-
-    :param paddingTop: the Top padding, override Top padding if already defined, optional, default=0 if padding is not defined
-    :type paddingTop: int
-    :param paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=0 if padding is not defined
-    :type paddingBottom: int
-    :param paddingLeft: the Left padding, override Left padding if already defined, optional, default=0 if padding is not defined
-    :type paddingLeft: int
-    :param paddingRight: the Right padding, override Right padding if already defined, optional, default=0 if padding is not defined
-    :type paddingRight: int
-
-    :param bool forwardStyle: [**Experimental**] any change of style will reflect the children, defaults to False
-    :type forwardStyle: bool
     '''
 
     __slots__ = (
@@ -129,7 +112,25 @@ class TTkContainer(TTkWidget):
                  paddingRight:int = 0,
                  forwardStyle:bool = False,
                  **kwargs) -> None:
+        '''
+        :param layout: the layout of this widget, optional, defaults to :py:class:`TTkLayout`
+        :type layout: :mod:`TermTk.TTkLayouts`
 
+        :param padding: the padding (top, bottom, left, right) of the widget, defaults to (0,0,0,0)
+        :type padding: :py:class:`TTkPadding`
+
+        :param paddingTop: the Top padding, override Top padding if already defined, optional, default=0 if padding is not defined
+        :type paddingTop: int
+        :param paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=0 if padding is not defined
+        :type paddingBottom: int
+        :param paddingLeft: the Left padding, override Left padding if already defined, optional, default=0 if padding is not defined
+        :type paddingLeft: int
+        :param paddingRight: the Right padding, override Right padding if already defined, optional, default=0 if padding is not defined
+        :type paddingRight: int
+
+        :param bool forwardStyle: [**Experimental**] any change of style will reflect the children, defaults to False
+        :type forwardStyle: bool
+        '''
         self._forwardStyle = forwardStyle
         if padding:
             self._padt = padding[0]
