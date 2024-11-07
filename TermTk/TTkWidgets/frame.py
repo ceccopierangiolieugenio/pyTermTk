@@ -44,13 +44,7 @@ class TTkFrame(TTkContainer):
 
     Demo2: `splitter.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/splitter.py>`_
 
-    :param title: the title displayed at the top border of the frame, defaults to ""
-    :type title: str, optional
-    :param border: Enable/Disable the border, defaults to **True**
-    :type border: bool, optional
-
     '''
-
     classStyle = {
                 'default':     {'color': TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
                                 'borderColor': TTkColor.RST},
@@ -61,15 +55,29 @@ class TTkFrame(TTkContainer):
     __slots__ = (
         '_border','_title', '_titleAlign',
         '_menubarTop', '_menubarTopPosition', '_menubarBottom', '_menubarBottomPosition')
-    def __init__(self, *args, **kwargs):
-        self._titleAlign = kwargs.get('titleAlign' , TTkK.CENTER_ALIGN )
-        self._title = TTkString(kwargs.get('title' , '' ))
-        self._border = kwargs.get('border', True )
-        self._menubarTopPosition = 0
+    def __init__(self, *,
+                 title:TTkString='',
+                 border:bool=True,
+                 titleAlign:TTkK.Alignment=TTkK.CENTER_ALIGN,
+                 **kwargs) -> None:
+        '''
+        :param title: the title displayed at the top border of the frame, defaults to ""
+        :type title: TTkString, optional
+        :param titleAlign: the position of the title, defaults to :py:class:`TTkK.Alignment.CENTER_ALIGN`
+        :type titleAlign: :py:class:`TTkK.Alignment`, optional
+        :param border: Enable/Disable the border, defaults to **True**
+        :type border: bool, optional
+        '''
+
+        self._titleAlign = titleAlign
+        self._title = TTkString(title)
+        self._border = border
         self._menubarBottomPosition = 0
         self._menubarTop = None
         self._menubarBottom = None
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
+        # This is a little hack used in TTKWindow to define the placement of the TOP menubar inside TTKFrame
+        self._menubarTopPosition = 0
         self.setBorder(self._border)
 
     def newMenubarTop(self):
@@ -78,7 +86,7 @@ class TTkFrame(TTkContainer):
         .. warning::
             Method Deprecated,
 
-            use :class:`~TermTk.TTkWidgets.frame.setMenuBar` instead
+            use :py:class:`~TermTk.TTkWidgets.frame.setMenuBar` instead
 
             i.e.
 

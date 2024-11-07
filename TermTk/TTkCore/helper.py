@@ -94,6 +94,20 @@ class TTkHelper:
             TTkHelper._rootWidget._quit()
 
     @staticmethod
+    @pyTTkSlot()
+    def aboutTermTk():
+        '''
+        Displays a simple message box about `pyTermTk <https://github.com/ceccopierangiolieugenio/pyTermTk>`__.
+        The message includes the version number of TermTk being used by the application.
+
+        This is useful for inclusion in the Help menu of an application, as shown in the Menus example.
+
+        This function is a convenience slot for :py:meth:`TTk.aboutTermTk`.
+        '''
+        if TTkHelper._rootWidget:
+            TTkHelper._rootWidget.aboutTermTk()
+
+    @staticmethod
     def getTerminalSize():
         return TTkGlbl.term_w, TTkGlbl.term_h
 
@@ -369,7 +383,7 @@ class TTkHelper:
         return layout.parentWidget()
 
     @staticmethod
-    def absPos(widget) -> (int,int):
+    def absPos(widget) -> tuple[int,int]:
         wx, wy = 0,0
         layout = widget.widgetItem()
         while layout:
@@ -471,8 +485,6 @@ class TTkHelper:
     @staticmethod
     def cursorWidget():
         return TTkHelper._cursorWidget
-
-    class Color(TTkTermColor): pass
 
     # Drag and Drop related helper routines
     _dnd = None

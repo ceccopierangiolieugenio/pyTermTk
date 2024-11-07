@@ -22,10 +22,61 @@
 
 __all__ = ['TTkTextCursor']
 
+try:
+    from typing import Self
+except:
+    class Self(): pass
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textdocument import TTkTextDocument
+
+
+class _CP():
+    # The Cursor Position is based on the
+    # document data structure, where the
+    # the entire document is divided in lines
+    # instead of considering it a massive string
+    __slots__ = ('line','pos')
+    line:int
+    pos:int
+    def __init__(self, l:int=0, p:int=0) -> None:
+        self.set(l,p)
+    def copy(self) -> Self:
+        return _CP(self.line, self.pos)
+    def set(self, l, p) -> None:
+        self.pos  = p
+        self.line = l
+    def toNum(self) -> int:
+        return self.pos | self.line << 16
+
+class _Prop():
+    __slots__ = ('anchor', 'position')
+    anchor:_CP
+    position:_CP
+    def __init__(self, anchor:_CP, position:_CP) -> None:
+        self.anchor:_CP = anchor
+        self.position:_CP = position
+
+    def copy(self) -> Self:
+        return _Prop(self.anchor.copy(), self.position.copy())
+
+    def selectionStart(self) -> _CP:
+        if self.position.toNum() > self.anchor.toNum():
+            return self.anchor
+        else:
+            return self.position
+
+    def selectionEnd(self) -> _CP:
+        if self.position.toNum() >= self.anchor.toNum():
+            return self.position
+        else:
+            return self.anchor
+
+    def hasSelection(self) -> bool:
+        return not (self.position.line == self.anchor.line and self.position.pos == self.anchor.pos)
 
 class TTkTextCursor():
     class MoveMode():
@@ -127,56 +178,14 @@ class TTkTextCursor():
     NextRow           = MoveOperation.NextRow
     PreviousRow       = MoveOperation.PreviousRow
 
-    class _prop():
-        __slots__ = ('anchor', 'position')
-        def __init__(self, anchor, position):
-            self.anchor = anchor
-            self.position = position
-
-        def copy(self):
-            return TTkTextCursor._prop(self.anchor.copy(), self.position.copy())
-
-        def selectionStart(self):
-            if self.position.toNum() > self.anchor.toNum():
-                return self.anchor
-            else:
-                return self.position
-
-        def selectionEnd(self):
-            if self.position.toNum() >= self.anchor.toNum():
-                return self.position
-            else:
-                return self.anchor
-
-        def hasSelection(self):
-            return not (self.position.line == self.anchor.line and self.position.pos == self.anchor.pos)
-
-    class _CP():
-        # The Cursor Position is based on the
-        # document data structure, where the
-        # the entire document is divided in lines
-        # instead of considering it a massive string
-        __slots__ = ('line','pos')
-        def __init__(self, l=0, p=0):
-            self.set(l,p)
-        def copy(self):
-            return TTkTextCursor._CP(self.line, self.pos)
-        def set(self, l, p):
-            self.pos  = p
-            self.line = l
-        def toNum(self):
-            return self.pos | self.line << 16
-
     __slots__ = ('_document', '_properties', '_cID', '_color', '_autoChanged')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, document:TTkTextDocument=None) -> None:
         self._color = None
         self._cID = 0
         self._autoChanged = False
-        self._properties = [TTkTextCursor._prop(
-                                TTkTextCursor._CP(),
-                                TTkTextCursor._CP())]
-        if 'document' in kwargs:
-            self._document = kwargs.get('document')
+        self._properties = [_Prop(_CP(),_CP())]
+        if document:
+            self._document = document
             self._document.contentsChanged.connect(self._documentContentChanged)
 
     def _documentContentChanged(self):
@@ -184,7 +193,7 @@ class TTkTextCursor():
         self.clearCursors()
         self.clearSelection()
 
-    def copy(self):
+    def copy(self) -> Self:
         ret = TTkTextCursor()
         ret._document = self._document
         ret._properties = [p.copy() for p in self._properties]
@@ -193,7 +202,7 @@ class TTkTextCursor():
         ret._autoChanged = self._autoChanged
         return ret
 
-    def restore(self, cursor):
+    def restore(self, cursor:Self) -> None:
         self._document = cursor._document
         self._properties = [p.copy() for p in cursor._properties]
         self._cID = cursor._cID
@@ -201,36 +210,33 @@ class TTkTextCursor():
         self._autoChanged = cursor._autoChanged
         self._document.cursorPositionChanged.emit(self)
 
-    def setColor(self, color):
+    def setColor(self, color:TTkColor) -> None:
         self._color = color
 
-    def clearColor(self):
+    def clearColor(self) -> None:
         self._color = None
 
-    def anchor(self):
+    def anchor(self) -> _CP:
         return self._properties[self._cID].anchor
 
-    def position(self):
+    def position(self) -> _CP:
         return self._properties[self._cID].position
 
-    def addCursor(self, line, pos):
+    def addCursor(self, line:int, pos:int) -> None:
         self._cID = 0
-        self._properties.insert(0,
-                        TTkTextCursor._prop(
-                                TTkTextCursor._CP(line, pos),
-                                TTkTextCursor._CP(line, pos)))
+        self._properties.insert(0, _Prop( _CP(line, pos), _CP(line, pos)))
         self._checkCursors(notify=True)
 
-    def clearCursors(self):
+    def clearCursors(self) -> None:
         p = self._properties[self._cID]
         self._cID = 0
         self._properties = [p]
 
-    def clearSelection(self):
+    def clearSelection(self) -> None:
         for p in self._properties:
             p.anchor.line,p.anchor.pos = p.position.line,p.position.pos
 
-    def positionChar(self, cID=-1):
+    def positionChar(self, cID:int=-1) -> str:
         cID = self._cID if cID==-1 else cID
         p = self._properties[cID].position
         l = self._document._dataLines[p.line]
@@ -241,7 +247,7 @@ class TTkTextCursor():
             ch = ' '
         return ch
 
-    def positionColor(self, cID=-1):
+    def positionColor(self, cID:int=-1) -> TTkColor:
         cID = self._cID if cID==-1 else cID
         p = self._properties[cID].position
         l = self._document._dataLines[p.line]
@@ -252,16 +258,16 @@ class TTkTextCursor():
             color = TTkColor()
         return color
 
-    def setPosition(self, line, pos, moveMode=MoveMode.MoveAnchor, cID=0):
+    def setPosition(self, line:int, pos:int, moveMode:MoveMode=MoveMode.MoveAnchor, cID:int=0) -> None:
         self._properties[cID].position.set(line,pos)
         if moveMode==TTkTextCursor.MoveAnchor:
             self._properties[cID].anchor.set(line,pos)
         self._document.cursorPositionChanged.emit(self)
 
-    def getLinesUnderCursor(self):
+    def getLinesUnderCursor(self) -> TTkString:
         return [ self._document._dataLines[p.position.line] for p in self._properties ]
 
-    def _checkCursors(self, notify=False):
+    def _checkCursors(self, notify:bool=False) -> None:
         currCurs = self._properties[self._cID]
         currPos = currCurs.position.toNum()
         # Sort the cursors based on the starting position
@@ -289,7 +295,7 @@ class TTkTextCursor():
         if notify or currPos != currCurs.position.toNum():
             self._document.cursorPositionChanged.emit(self)
 
-    def movePosition(self, operation, moveMode=MoveMode.MoveAnchor, n=1, textWrap=None):
+    def movePosition(self, operation:MoveOperation, moveMode:MoveMode=MoveMode.MoveAnchor, n=1, textWrap:TTkTextWrap=None) -> None:
         currPos = self.position().toNum()
         def moveRight(cID,p,_):
             if p.pos < len(self._document._dataLines[p.line]):
@@ -336,10 +342,10 @@ class TTkTextCursor():
 
         self._checkCursors(notify=self.position().toNum()!=currPos)
 
-    def document(self):
+    def document(self) -> TTkTextDocument:
         return self._document
 
-    def replaceText(self, text, moveCursor=False):
+    def replaceText(self, text:TTkString, moveCursor:bool=False) -> None:
         # if there is no selection, just select the next n chars till the end of the line
         # the newline is not replaced
         for p in self._properties:
@@ -354,7 +360,7 @@ class TTkTextCursor():
                 p.anchor.set(line,pos)
         return self.insertText(text, moveCursor)
 
-    def insertText(self, text, moveCursor=False):
+    def insertText(self, text:TTkString, moveCursor:bool=False) -> None:
         _lineFirst = -1
         if self.hasSelection():
             _lineFirst, _lineRem, _lineAdd = self._removeSelectedText()
@@ -445,13 +451,13 @@ class TTkTextCursor():
         self._autoChanged = False
         self._document.cursorPositionChanged.emit(self)
 
-    def selectionStart(self):
+    def selectionStart(self) -> _CP:
         return self._properties[self._cID].selectionStart()
 
-    def selectionEnd(self):
+    def selectionEnd(self) -> _CP:
         return self._properties[self._cID].selectionEnd()
 
-    def select(self, selection):
+    def select(self, selection:SelectionType) -> None:
         currPos = self.position().toNum()
         for p in self._properties:
             if   selection == TTkTextCursor.SelectionType.Document:
@@ -482,7 +488,7 @@ class TTkTextCursor():
                 p.anchor.pos   = xFrom
         self._checkCursors(notify=self.position().toNum()!=currPos)
 
-    def selectedText(self):
+    def selectedText(self) -> TTkString:
         def _getText(p):
             _ret = []
             selSt = p.selectionStart()
@@ -498,13 +504,13 @@ class TTkTextCursor():
             ret += _getText(p)
         return TTkString('\n').join(ret)
 
-    def hasSelection(self):
+    def hasSelection(self) -> bool:
         for p in self._properties:
             if p.hasSelection():
                 return True
         return False
 
-    def _removeSelectedText(self):
+    def _removeSelectedText(self) -> None:
         currPos = self.position().toNum()
 
         lineFirst = self._properties[0].selectionStart().line
@@ -544,7 +550,7 @@ class TTkTextCursor():
 
         return lineFirst, lineRem, lineAdd
 
-    def removeSelectedText(self):
+    def removeSelectedText(self) -> None:
         if not self.hasSelection(): return
         a,b,c = self._removeSelectedText()
         self._autoChanged = True
@@ -553,7 +559,7 @@ class TTkTextCursor():
         self._document.contentsChange.emit(a,b,c)
         self._autoChanged = False
 
-    def applyColor(self, color):
+    def applyColor(self, color:TTkColor) -> None:
         for p in self._properties:
             selSt = p.selectionStart()
             selEn = p.selectionEnd()
@@ -568,7 +574,7 @@ class TTkTextCursor():
         # self._document.contentsChange.emit(0,0,0)
         self._autoChanged = True
 
-    def getHighlightedLines(self, fr, to, color):
+    def getHighlightedLines(self, fr:int, to:int, color:TTkColor) -> list[TTkString]:
         # Create a list of cursors (filtering out the ones which
         # position/selection is outside the screen boundaries)
         sel = []

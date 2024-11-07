@@ -28,16 +28,19 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkLogViewer(TTkAbstractScrollView):
     __slots__ = ('_messages', '_cwd', '_follow')
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollView.__init__(self, *args, **kwargs)
-        self._messages = [TTkString()]
+    def __init__(self, *,
+                 follow:bool=False,
+                 **kwargs) -> None:
         self._cwd = os.getcwd()
-        self._follow = kwargs.get('follow' , False )
+        self._messages = [TTkString()]
+        self._follow = follow
+        super().__init__(**kwargs)
         TTkLog.installMessageHandler(self.loggingCallback)
         self.viewChanged.connect(self._viewChangedHandler)
 
@@ -45,13 +48,10 @@ class _TTkLogViewer(TTkAbstractScrollView):
     def _viewChangedHandler(self):
         self.update()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         w = max( m.termWidth() for m in self._messages)
         h = len(self._messages)
         return w , h
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def loggingCallback(self, mode, context, message):
         logType = "NONE"
@@ -78,10 +78,14 @@ class _TTkLogViewer(TTkAbstractScrollView):
 
 class TTkLogViewer(TTkAbstractScrollArea):
     __slots__ = ('_logView')
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        kwargs.pop('parent',None)
-        kwargs.pop('visible',None)
-        self._logView = _TTkLogViewer(*args, **kwargs)
+    def __init__(self, *,
+                 # TTkWidget init
+                 parent:TTkWidget=None,
+                 visible:bool=True,
+                 # TTkLogViewer init
+                 follow:bool=False,
+                 **kwargs) -> None:
+        self._logView = _TTkLogViewer(follow=follow)
+        super().__init__(parent=parent, visible=visible, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._logView)

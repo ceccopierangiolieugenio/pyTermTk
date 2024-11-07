@@ -88,7 +88,10 @@ class _TTkTabColorButton(TTkContainer):
         # Signals
         'clicked'
         )
-    def __init__(self, *, text="", border=True, **kwargs):
+    def __init__(self, *,
+                 text:TTkString='',
+                 border:bool=True,
+                 **kwargs) -> None:
         self.clicked = pyTTkSignal()
 
         self._text = TTkString(text.replace('\n',''))
@@ -116,7 +119,10 @@ class _TTkTabColorButton(TTkContainer):
 class TTkTabButton(_TTkTabColorButton):
     '''TTkTabButton'''
     __slots__ = ('_data','_sideEnd', '_tabStatus', '_closable', 'closeClicked', '_closeButtonPressed','_data')
-    def __init__(self, *, data=None, closable=False, **kwargs):
+    def __init__(self, *,
+                 data:object=None,
+                 closable:bool=False,
+                 **kwargs) -> None:
         self._sideEnd = TTkK.NONE
         self._tabStatus = TTkK.Unchecked
         self._data = data
@@ -228,10 +234,12 @@ class _TTkTabMenuButton(TTkMenuBarButton):
 class _TTkTabScrollerButton(_TTkTabColorButton):
     classStyle = _tabStyle
     __slots__ = ('_side', '_sideEnd')
-    def __init__(self, *args, **kwargs):
-        self._side = kwargs.get('side',TTkK.LEFT)
+    def __init__(self, *,
+                 side:int=TTkK.LEFT,
+                 **kwargs) -> None:
+        self._side = side
         self._sideEnd = self._side
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         if self._border:
             self.resize(2, 3)
             self.setMinimumSize(2, 3)
@@ -316,15 +324,18 @@ class TTkTabBar(TTkContainer):
         #Signals
         'currentChanged', 'tabBarClicked', 'tabCloseRequested')
 
-    def __init__(self, **kwargs):
+    def __init__(self, *,
+                 closable:bool=False,
+                 small:bool=True,
+                 **kwargs) -> None:
         self._tabButtons = []
         self._currentIndex = -1
         self._lastIndex = -1
         self._highlighted = -1
         self._tabMovable = False
-        self._tabClosable = kwargs.get('closable',False)
+        self._tabClosable = closable
         self._sideEnd = TTkK.LEFT | TTkK.RIGHT
-        self._small = kwargs.get('small',True)
+        self._small = small
         self._leftScroller =  _TTkTabScrollerButton(border=not self._small,side=TTkK.LEFT)
         self._rightScroller = _TTkTabScrollerButton(border=not self._small,side=TTkK.RIGHT)
         self._leftScroller.clicked.connect( self._moveToTheLeft)
@@ -562,13 +573,15 @@ class TTkTabWidget(TTkFrame):
         'tabData', 'setTabData', 'currentData',
         'currentIndex', 'setCurrentIndex', 'tabCloseRequested')
 
-    def __init__(self, **kwargs):
+    def __init__(self, *,
+                 closable:bool=False,
+                 **kwargs) -> None:
         self._tabWidgets = []
         self._tabBarTopLayout = TTkGridLayout()
 
         super().__init__(forwardStyle=False, **kwargs)
 
-        self._tabBar = TTkTabBar(small = not self.border(), closable=kwargs.get('closable', False))
+        self._tabBar = TTkTabBar(small = not self.border(), closable=closable)
         self._topLeftLayout   = None
         self._topRightLayout  = None
         self._tabBarTopLayout.addWidget(self._tabBar,0,1,3 if self.border() else 2,1)

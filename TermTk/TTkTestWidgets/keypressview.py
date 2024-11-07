@@ -37,8 +37,8 @@ from TermTk.TTkTestWidgets.keypressviewfont import TTkKeyPressViewFont
 class TTkKeyPressView(TTkWidget):
     __slots__ = ('_fadeDuration','_keys','_anim')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         TTkInput.inputEvent.connect(self._processInput)
         self._keys = []
         self._fadeDuration = 2.5

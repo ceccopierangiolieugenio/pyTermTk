@@ -28,38 +28,31 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkWidgets.TTkTerminal.terminalview import TTkTerminalView
 
 class TTkTerminal(TTkAbstractScrollArea):
-    '''TTkTerminal
+    __doc__ = '''
+    :py:class:`TTkTerminal` is a container widget which place :py:class:`TTkTerminalView` in a scrolling area with on-demand scroll bars.
 
-    This is a terminal emulator fot TermTk
+    ''' + TTkTerminalView.__doc__
 
-    .. warning::
-        This is an Alpha feature, it is not optimized and the API definition may change in the future
+    __slots__ = tuple(
+        ['_terminalView'] +
+        (_forwardedSignals:=[# Forwarded Signals From TTkTreeWidget
+            'bell', 'titleChanged', 'terminalClosed', 'textSelected',
+            'termData', 'termResized']) +
+        (_forwardedMethods:=[# Forwarded Methods From TTkTreeWidget
+            'termWrite', 'termSize'])
+        )
+    _forwardWidget = TTkTerminalView
 
-    '''
-    __slots__ = ('_terminalView',
-                 # Exported methods
-                 'termWrite', 'termSize',
-                 # Exported Signals
-                 'titleChanged', 'bell', 'terminalClosed', 'textSelected',
-                 'termData', 'termResized')
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
-        self._terminalView = TTkTerminalView(*args, **kwargs)
+        self._terminalView = TTkTerminalView(**kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._terminalView)
 
-        # Export Methods
-        self.termSize  = self._terminalView.termSize
-        self.termWrite = self._terminalView.termWrite
-
-        # Export Signals
-        self.bell         = self._terminalView.bell
-        self.termData     = self._terminalView.termData
-        self.termResized  = self._terminalView.termResized
-        self.titleChanged = self._terminalView.titleChanged
-        self.textSelected = self._terminalView.textSelected
+        for _attr in self._forwardedSignals+self._forwardedMethods:
+            setattr(self,_attr,getattr(self._terminalView,_attr))
 
         self.terminalClosed = pyTTkSignal(TTkTerminal)
         self._terminalView.terminalClosed.connect(lambda : self.terminalClosed.emit(self))

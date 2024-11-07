@@ -21,11 +21,14 @@
 .. _Nested Layouts Example: https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example5.nested.layouts.py
 .. _`row/colspan Example`:  https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/layout/example6.grid.span.py
 
+
 =============================================================================
 pyTermTk_ - Signal & Slots
 =============================================================================
 
 Signals and slots are used for communication between objects.
+
+.. _Signal and Slots:
 
 Intro
 =====
@@ -53,7 +56,7 @@ Example 1 - basic signal slots
 ------------------------------
 
 From `example1.basic.signalslots.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/signalslots/example1.basic.signalslots.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/signalslots/example1.basic.signalslots.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/signalslots/example1.basic.signalslots.py>`__):
 
 .. code:: python
 
@@ -108,7 +111,7 @@ Example 2 - Use widgets signals and slots
 -----------------------------------------
 
 From `example2.widgets.signalslots.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/signalslots/example2.widgets.signalslots.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/signalslots/example2.widgets.signalslots.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/signalslots/example2.widgets.signalslots.py>`__):
 
 .. code:: python
 

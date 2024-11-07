@@ -30,18 +30,18 @@ class TTkKeyEvent:
     :Demo: `test.input.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/test.input.py>`_
 
     :param type: The key input type recorded
-    :type type: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType`
+    :type type: :py:class:`TTkConstant.KeyType`
     :param key: the key
     :type key: str
     :param code: The terminal code used to represent this input
     :type code: str
-    :param mod: The modifier used by the :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
-    :type mod: :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier`
+    :param mod: The modifier used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
+    :type mod: :py:class:`TTkConstant.KeyModifier`
 
     .. py:attribute:: type
         :type: KeyType
 
-        The key input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType` recorded
+        The key input :py:class:`TTkConstant.KeyType` recorded
 
     .. py:attribute:: key
         :type: str
@@ -56,7 +56,7 @@ class TTkKeyEvent:
     .. py:attribute:: mod
         :type: KeyModifier
 
-        The :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier` used by the :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
+        The :py:class:`TTkConstant.KeyModifier` used by the :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` type
 
     '''
     __slots__ = ('type', 'key', 'code', 'mod')
@@ -403,8 +403,7 @@ def mod2str(k):
     if ret: return ",".join(ret)
     return "NONE!!!"
 
-def key2str(k):
-    return {
+_def_hey_map= {
         TTkK.Key_Escape                   :  "Key_Escape" ,
         TTkK.Key_Tab                      :  "Key_Tab" ,
         TTkK.Key_Backtab                  :  "Key_Backtab" ,
@@ -875,4 +874,7 @@ def key2str(k):
         TTkK.Key_Zoom                     :  "Key_Zoom" ,
         TTkK.Key_Exit                     :  "Key_Exit" ,
         TTkK.Key_Cancel                   :  "Key_Cancel"
-    }.get(k, "NONE!!!")
+    }
+
+def key2str(k):
+    return _def_hey_map.get(k, "NONE!!!")

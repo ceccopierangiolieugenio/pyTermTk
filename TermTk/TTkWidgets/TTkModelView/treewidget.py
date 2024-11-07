@@ -33,7 +33,102 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from dataclasses import dataclass
 
 class TTkTreeWidget(TTkAbstractScrollView):
-    '''TTkTreeWidget'''
+    '''
+    The :py:class:`TTkTreeWidget` class is a convenience class that provides a standard tree
+    widget with a classic item-based interface.
+
+    This class is based on TTk's Model/View architecture and uses a default model to hold items,
+    each of which is a :py:class:`TTkTreeWidgetItem`.
+
+    In its simplest form, a tree widget can be constructed in the following way:
+
+    .. code-block:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk()
+
+        tree = ttk.TTkTree(parent=root,size=(80,24))
+        tree.setHeaderLabels(["Column 1", "Column 2", "Column 3"])
+
+        top = ttk.TTkTreeWidgetItem(["String A", "String B", "String C"])
+
+        tree.addTopLevelItem(top)
+
+        for i in range(5):
+            child = ttk.TTkTreeWidgetItem(["Child A" + str(i), "Child B" + str(i), "Child C" + str(i)])
+            top.addChild(child)
+
+        root.mainloop()
+
+    Before items can be added to the tree widget,
+    the number of columns must be set with :meth:`setHeaderLabels`.
+    This allows each item to have one label.
+
+    The tree can have a header that contains a section for each column in the widget.
+    It is easiest to set up the labels for each section by supplying a list of strings with :meth:`setHeaderLabels`.
+
+    The items in the tree can be sorted by column according to a predefined sort order.
+    If sorting is enabled, the user can sort the items by clicking on a column header.
+    Sorting can be enabled or disabled by calling setSortingEnabled().
+    The isSortingEnabled() function indicates whether sorting is enabled.
+    '''
+
+    itemActivated:pyTTkSignal
+    '''
+    This signal is emitted when the user activates an item by double-clicking
+    or pressing a special key (e.g., Enter).
+
+    :param item: the item that was clicked.
+    :type item: :py:class:`TTkTreeWidgetItem`
+    :param col: the item's column that was clicked.
+    :type col: int
+    '''
+    itemChanged:pyTTkSignal
+    '''
+    This signal is emitted when the contents of the column in the specified item changes.
+
+    :param item: the item reported by this signal
+    :type item: :py:class:`TTkTreeWidgetItem`
+    :param col: the item's column
+    :type col: int
+    '''
+    itemClicked:pyTTkSignal
+    '''
+    This signal is emitted when the user clicks inside the widget.
+
+    If no item was clicked, no signal will be emitted.
+
+    :param item: the item that was clicked.
+    :type item: :py:class:`TTkTreeWidgetItem`
+    :param col: the item's column that was clicked.
+    :type col: int
+    '''
+    itemDoubleClicked:pyTTkSignal
+    '''
+    This signal is emitted when the user double clicks inside the widget.
+
+    If no item was double clicked, no signal will be emitted.
+
+    :param item: the item that was clicked.
+    :type item: :py:class:`TTkTreeWidgetItem`
+    :param col: the item's column that was clicked.
+    :type col: int
+    '''
+    itemExpanded:pyTTkSignal
+    '''
+    This signal is emitted when the specified item is expanded so that all of its children are displayed.
+
+    :param item: the item reported by this signal
+    :type item: :py:class:`TTkTreeWidgetItem`
+    '''
+    itemCollapsed:pyTTkSignal
+    '''
+    This signal is emitted when the specified item is collapsed so that none of its children are displayed.
+
+    :param item: the item reported by this signal
+    :type item: :py:class:`TTkTreeWidgetItem`
+    '''
 
     classStyle = {
                 'default':     {
@@ -53,7 +148,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     __slots__ = ( '_rootItem', '_cache',
                   '_header', '_columnsPos',
                   '_selectedId', '_selected', '_separatorSelected',
-                  '_sortColumn', '_sortOrder',
+                  '_sortColumn', '_sortOrder', '_sortingEnabled',
                   # Signals
                   'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
                   )
@@ -65,7 +160,10 @@ class TTkTreeWidget(TTkAbstractScrollView):
         widgets: list
         firstLine: bool
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, *,
+                 header=[],
+                 sortingEnabled=True,
+                 **kwargs) -> None:
         # Signals
         self.itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
         self.itemChanged       = pyTTkSignal(TTkTreeWidgetItem, int)
@@ -74,18 +172,19 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self.itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
-        super().__init__(**kwargs)
         self._selected = None
         self._selectedId = None
         self._separatorSelected = None
-        self._header = kwargs.get('header',[])
+        self._header = header
         self._columnsPos = []
         self._cache = []
+        self._sortingEnabled=sortingEnabled
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
+        self._rootItem = TTkTreeWidgetItem(expanded=True)
+        super().__init__(**kwargs)
         self.setMinimumHeight(1)
         self.setFocusPolicy(TTkK.ClickFocus)
-        self._rootItem = TTkTreeWidgetItem(expanded=True)
         self.clear()
         self.setPadding(1,0,0,0)
         self.viewChanged.connect(self._viewChangedHandler)
@@ -102,12 +201,8 @@ class TTkTreeWidget(TTkAbstractScrollView):
         # TTkLog.debug(f"{w=} {h=}")
         return w,h
 
-    # Overridden function
-    def viewDisplayedSize(self) -> tuple[int, int]:
-        # TTkLog.debug(f"{self.size()=}")
-        return self.size()
-
     def clear(self) -> None:
+        '''clear'''
         # Remove all the widgets
         for ri in self._rootItem.children():
             ri.setTreeItemParent(None)
@@ -121,6 +216,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def addTopLevelItem(self, item:TTkTreeWidgetItem) -> None:
+        '''addTopLevelItem'''
         self._rootItem.addChild(item)
         item.setTreeItemParent(self)
         self._refreshCache()
@@ -128,6 +224,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def addTopLevelItems(self, items:TTkTreeWidgetItem) -> None:
+        '''addTopLevelItems'''
         self._rootItem.addChildren(items)
         self._rootItem.setTreeItemParent(self)
         #for item in items:
@@ -137,46 +234,64 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def takeTopLevelItem(self, index) -> None:
+        '''takeTopLevelItem'''
         self._rootItem.takeChild(index)
         self._refreshCache()
         self.viewChanged.emit()
         self.update()
 
     def topLevelItem(self, index) -> TTkTreeWidgetItem:
+        '''topLevelItem'''
         return self._rootItem.child(index)
 
     def indexOfTopLevelItem(self, item:TTkTreeWidgetItem) -> int:
+        '''indexOfTopLevelItem'''
         return self._rootItem.indexOfChild(item)
 
     def selectedItems(self) -> list[TTkTreeWidgetItem]:
+        '''selectedItems'''
         if self._selected:
             return [self._selected]
         return None
 
-    def setHeaderLabels(self, labels:str):
+    def setHeaderLabels(self, labels:str) -> None:
+        '''setHeaderLabels'''
         self._header = labels
         # Set 20 as default column size
         self._columnsPos = [20+x*20 for x in range(len(labels))]
         self.viewChanged.emit()
         self.update()
 
+    def isSortingEnabled(self) -> bool:
+        'isSortingEnabled'
+        return self._sortingEnabled
+
+    def setSortingEnabled(self, enabled) -> None:
+        'setSortingEnabled'
+        if enabled != self._sortingEnabled:
+            self._sortingEnabled = enabled
+            self.update()
+
     def sortColumn(self):
         '''Returns the column used to sort the contents of the widget.'''
         return self._sortColumn
 
-    def sortItems(self, col:int, order:TTkK.SortOrder):
+    def sortItems(self, col:int, order:TTkK.SortOrder) -> None:
         '''Sorts the items in the widget in the specified order by the values in the given column.'''
+        if not self._sortingEnabled: return
         self._sortColumn = col
         self._sortOrder = order
         self._rootItem.sortChildren(col, order)
 
     def columnWidth(self, column:int) -> int:
+        '''columnWidth'''
         if column==0:
             return self._columnsPos[column]
         else:
             return self._columnsPos[column]-self._columnsPos[column-1]-1
 
     def setColumnWidth(self, column:int, width: int) -> None:
+        '''setColumnWidth'''
         i = column
         newSize = ((1+self._columnsPos[i-1]) if i>0 else 0) + width
         oldSize = self._columnsPos[i]
@@ -187,6 +302,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.update()
 
     def resizeColumnToContents(self, column:int) -> None:
+        '''resizeColumnToContents'''
         contentSize = max(row.data[column].termWidth() for row in self._cache)
         self.setColumnWidth(column, contentSize)
 
@@ -283,18 +399,13 @@ class TTkTreeWidget(TTkAbstractScrollView):
         return True
 
     def mouseDragEvent(self, evt) -> bool:
-        '''
-        ::
-
-            columnPos       (Selected = 2)
-                0       1        2          3   4
-            ----|-------|--------|----------|---|
-            Mouse (Drag) Pos
-                                    ^
-            I consider at least 4 char (3+1) as spacing
-            Min Selected Pos = (Selected+1) * 4
-
-        '''
+        #    columnPos       (Selected = 2)
+        #        0       1        2          3   4
+        #    ----|-------|--------|----------|---|
+        #    Mouse (Drag) Pos
+        #                            ^
+        #    I consider at least 4 char (3+1) as spacing
+        #    Min Selected Pos = (Selected+1) * 4
         if self._separatorSelected is not None:
             x,y = evt.x, evt.y
             ox, oy = self.getViewOffsets()
@@ -329,13 +440,12 @@ class TTkTreeWidget(TTkAbstractScrollView):
 
     @pyTTkSlot()
     def _refreshCache(self) -> None:
-        ''' I save a representation of the displayed tree in a cache array
-            to avoid eccessve recursion over the items and
-            identify quickly the nth displayed line to improve the interaction
-
-            _cache is an array of TTkTreeWidget._Cache:
-            [ item, level, data=[txtCol1, txtCol2, txtCol3, ... ]]
-        '''
+        # I save a representation of the displayed tree in a cache array
+        # to avoid eccessve recursion over the items and
+        # identify quickly the nth displayed line to improve the interaction
+        #
+        # _cache is an array of TTkTreeWidget._Cache:
+        # [ item, level, data=[txtCol1, txtCol2, txtCol3, ... ]]
         self._cache = []
         def _addToCache(_child, _level:int) -> None:
             _data = []
@@ -401,7 +511,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             hx  = 0 if i==0 else self._columnsPos[i-1]+1
             hx1 = self._columnsPos[i]
             canvas.drawText(pos=(hx-x,0), text=l, width=hx1-hx, color=headerColor)
-            if i == self._sortColumn:
+            if self._sortingEnabled and i == self._sortColumn:
                 s = tt[6] if self._sortOrder == TTkK.AscendingOrder else tt[7]
                 canvas.drawText(pos=(hx1-x-1,0), text=s, color=headerColor)
         # Draw header separators

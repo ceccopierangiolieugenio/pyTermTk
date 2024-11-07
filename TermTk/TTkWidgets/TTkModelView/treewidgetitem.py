@@ -22,6 +22,11 @@
 
 __all__ = ['TTkTreeWidgetItem']
 
+try:
+    from typing import Self
+except:
+    class Self(): pass
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -30,6 +35,31 @@ from TermTk.TTkWidgets import TTkWidget
 from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 
 class TTkTreeWidgetItem(TTkAbstractItemModel):
+    '''
+    The :py:class:`TTkTreeWidgetItem` class provides an item for use with the :py:class:'TTkTree' convenience class.
+
+    Tree widget items are used to hold rows of information for tree widgets.
+    Rows usually contain several columns of data, each of which can contain a :py:class:`TTkString` label and an icon or a :py:class:`TTkWidget`.
+
+    Items are usually constructed with a parent that is :py:class:`TTkTreeWidgetItem` (for items on lower levels of the tree). For example,
+    the following code constructs a top-level item to represent cities of the world, and adds a entry
+    for Oslo as a child item:
+
+    .. code-block:: python
+
+        cities = TTkWidgetItem(["Cities"])
+        osloItem = TTkWidgetItem(["Oslo"], parent=cities)
+
+    or
+
+    .. code-block:: python
+
+        cities = TTkWidgetItem(["Cities"])
+        osloItem = TTkWidgetItem(["Oslo"]
+        cities.addChild(osloItem)
+
+    '''
+
     __slots__ = ('_parent', '_data', '_widgets', '_height', '_alignment', '_children', '_expanded', '_selected', '_hidden',
                  '_childIndicatorPolicy', '_icon', '_defaultIcon',
                  '_sortColumn', '_sortOrder', '_hasWidgets', '_parentWidget',
@@ -38,36 +68,43 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
         'heightChanged'
         )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args,
+                 parent:Self=None,
+                 expanded:bool=False,
+                 selected:bool=False,
+                 hidden:bool=False,
+                 icon:TTkString=None,
+                 childIndicatorPolicy:TTkK.ChildIndicatorPolicy =TTkK.ChildIndicatorPolicy.DontShowIndicatorWhenChildless,
+                 **kwargs) -> None:
         # Signals
         # self.refreshData = pyTTkSignal(TTkTreeWidgetItem)
         self.heightChanged = pyTTkSignal(int)
-        super().__init__(*args, **kwargs)
         self._hasWidgets = False
         self._children = []
         self._parentWidget = None
         self._height = 1
         data = args[0] if len(args)>0 and type(args[0])==list else [TTkString()]
         # self._data = [i if issubclass(type(i), TTkString) else TTkString(i) if isinstance(i,str) else TTkString() for i in data]
-        self._data, self._widgets = self._processDataInput(data)
-        self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
-        self._parent = kwargs.get('parent', None)
-        self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
-
+        self._parent = None
+        self._childIndicatorPolicy = childIndicatorPolicy
         self._defaultIcon = True
-        self._expanded = kwargs.get('expanded', False)
-        self._selected = kwargs.get('selected', False)
-        self._hidden = kwargs.get('hidden', False)
-        self._parent = kwargs.get("parent", None)
-
+        self._expanded = expanded
+        self._selected = selected
+        self._hidden = hidden
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
 
+        super().__init__(**kwargs)
+        self._data, self._widgets = self._processDataInput(data)
+        self._alignment = [TTkK.LEFT_ALIGN]*len(self._data)
+
         self._icon = ['']*len(self._data)
         self._setDefaultIcon()
-        if 'icon' in kwargs:
-            self._icon[0] = kwargs['icon']
+        if icon:
+            self._icon[0] = icon
             self._defaultIcon = False
+        if parent:
+            parent.addChild(self)
 
     def _processDataInputWidget(self, widget, index):
         self._hasWidgets = True

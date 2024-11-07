@@ -30,8 +30,8 @@ import TermTk as ttk
 
 # Testing Window with a checkbox to enable/disable any control button
 class WindowFlagsTest(ttk.TTkWindow):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         rb   = ttk.TTkCheckbox(
                     parent=self, pos=(0,0), size=(20,1), text='Reduce   Button',
                     checked=bool(self.windowFlag()&ttk.TTkK.WindowFlag.WindowReduceButtonHint))

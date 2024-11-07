@@ -29,14 +29,17 @@ class TTkFancyTreeWidgetItem():
     __slots__ = ('_parent', '_data', '_children', '_expand', '_childIndicatorPolicy',
         # Signals
         'refreshData')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args,
+                 parent=None,
+                 childIndicatorPolicy:TTkK.ChildIndicatorPolicy=TTkK.ChildIndicatorPolicy.DontShowIndicatorWhenChildless
+                 ) -> None:
         # Signals
         self.refreshData = pyTTkSignal(TTkFancyTreeWidgetItem)
         self._data = args[0]
         self._children = []
-        self._childIndicatorPolicy = kwargs.get('childIndicatorPolicy', TTkK.DontShowIndicatorWhenChildless)
+        self._childIndicatorPolicy = childIndicatorPolicy
         self._expand = False
-        self._parent = kwargs.get("parent", None)
+        self._parent = parent
 
     def childIndicatorPolicy(self):
         return self._childIndicatorPolicy

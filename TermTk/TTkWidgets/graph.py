@@ -34,14 +34,19 @@ from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkGraph(TTkWidget):
     __slots__ = ('_data', '_maxData', '_offset', '_direction', '_align', '_color')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 color:TTkColor=TTkColor.RST,
+                 maxData:int=0x1000,
+                 direction:int=TTkK.RIGHT,
+                 align:TTkK.Alignment=TTkK.LEFT_ALIGN,
+                 **kwargs) -> None:
         self._data = [[0]]
         self._offset = 0
-        super().__init__(*args, **kwargs)
-        self._color = kwargs.get('color', TTkColor.RST )
-        self._maxData = kwargs.get('maxData', 0x1000)
-        self._direction = kwargs.get('direction', TTkK.RIGHT)
-        self._align = kwargs.get('align', TTkK.CENTER)
+        self._color = color
+        self._align = align
+        self._maxData = maxData
+        self._direction = direction
+        super().__init__(**kwargs)
 
     def color(self):
         return self._color

@@ -45,9 +45,9 @@ def _setCursor(cur, prop):
     cur._properties = []
     for p in prop:
         cur._properties.append(
-            ttk.TTkTextCursor._prop(
-                ttk.TTkTextCursor._CP(p[0][0], p[0][1]),
-                ttk.TTkTextCursor._CP(p[1][0], p[1][1])))
+            ttk.TTkGui.textcursor._Prop(
+                ttk.TTkGui.textcursor._CP(p[0][0], p[0][1]),
+                ttk.TTkGui.textcursor._CP(p[1][0], p[1][1])))
     cur._checkCursors()
 
 def test_demo1():

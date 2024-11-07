@@ -29,7 +29,7 @@ from TermTk.TTkWidgets.TTkModelView.tablemodellist import TTkTableModelList
 
 class TTkTableModelCSV(TTkTableModelList):
     '''
-    :class:`TTkTableModelCSV` extends :class:`~TermTk.TTkWidgets.TTkModelView.tablemodellist.TTkTableModelList` with cvs loading helpers.
+    :py:class:`TTkTableModelCSV` extends :py:class:`TTkTableModelList` with cvs loading helpers.
 
     You can address the csv file through the Filename (filename) or the FileDescriptor (fd).
 
@@ -44,14 +44,18 @@ class TTkTableModelCSV(TTkTableModelList):
         with open('path/file.csv') as fd:
             tm2 = ttk.TTkTableModelCSV(fd=fd)
 
-    :param filename: the csv filename, if missing the file descriptor is used instead.
-    :type filename: str, optional
-
-    :param fd: the FileDescriptor
-    :type fd: io, optional
     '''
 
-    def __init__(self, *, filename:str=None, fd=None):
+    def __init__(self, *,
+                 filename:str=None,
+                 fd=None) -> None:
+        '''
+        :param filename: the csv filename, if missing the file descriptor is used instead.
+        :type filename: str, optional
+
+        :param fd: the FileDescriptor
+        :type fd: io, optional
+        '''
         data, head, idx = [[]], [], []
         if filename:
             with open(filename, "r") as fd:

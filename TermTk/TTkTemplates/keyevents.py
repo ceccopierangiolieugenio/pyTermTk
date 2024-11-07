@@ -20,42 +20,48 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TKeyEvents']
+
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+
 class TKeyEvents():
-    def keyPressEvent(self, evt) -> bool :
-        '''
-        This event handler, can be reimplemented in a subclass to receive key press events for the widget.
+    def __init__(self) -> None: pass
 
-        .. note:: Reimplement this function to handle this event
+#    def keyPressEvent(self, evt:TTkKeyEvent) -> bool :
+#        '''
+#        This event handler, can be reimplemented in a subclass to receive key press events for the widget.
+#
+#        .. note:: Reimplement this function to handle this event
+#
+#        :param evt: The keyboard event
+#        :type evt: :py:class:`TTkKeyEvent`
+#
+#        :return: **True** if the event has been handled
+#        :rtype: bool
+#        '''
+#        return False
+#    def keyReleaseEvent(self, evt:TTkKeyEvent) -> bool :
+#        '''
+#        This event handler, can be reimplemented in a subclass to receive key release events for the widget.
+#
+#        .. note:: Reimplement this function to handle this event
+#
+#        :param evt: The keyboard event
+#        :type evt: :py:class:`TTkKeyEvent`
+#
+#        :return: **True** if the event has been handled
+#        :rtype: bool
+#        '''
+#        return False
 
-        :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
-
-        :return: **True** if the event has been handled
-        :rtype: bool
-        '''
-        return False
-    def keyReleaseEvent(self, evt) -> bool :
-        '''
-        This event handler, can be reimplemented in a subclass to receive key release events for the widget.
-
-        .. note:: Reimplement this function to handle this event
-
-        :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
-
-        :return: **True** if the event has been handled
-        :rtype: bool
-        '''
-        return False
-
-    def keyEvent(self, evt) -> bool :
+    def keyEvent(self, evt:TTkKeyEvent) -> bool :
         '''
         This event handler, can be reimplemented in a subclass to receive key events for the widget.
 
         .. note:: Reimplement this function to handle this event
 
         :param evt: The keyboard event
-        :type evt: :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent`
+        :type evt: :py:class:`TTkKeyEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool

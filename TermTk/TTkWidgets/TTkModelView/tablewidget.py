@@ -102,7 +102,7 @@ class _ClipboardTable(TTkString):
 
 class TTkTableWidget(TTkAbstractScrollView):
     '''
-    A :class:`TTkTableWidget` implements a table view that displays items from a model.
+    A :py:class:`TTkTableWidget` implements a table view that displays items from a model.
 
     ::
 
@@ -120,9 +120,9 @@ class TTkTableWidget(TTkAbstractScrollView):
         6  │2d08FB17EE273F4 │Aimee      │Downs       │Steele Group                    │Chavezborough       │
         ╾╌╌┴────────────────┴───────────┴────────────┴────────────────────────────────┴────────────────────┘
 
-    The :class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
+    The :py:class:`TTkTableWidget` class is one of the Model/View Classes and is part of TermTk's model/view framework.
 
-    :class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel` class.
+    :py:class:`TTkTableWidget` implements the methods to allow it to display data provided by models derived from the :py:class:`TTkAbstractTableModel` class.
 
     **Navigation**
 
@@ -150,90 +150,62 @@ class TTkTableWidget(TTkAbstractScrollView):
     To distribute the available space according to the space requirement of each column or row,
     call the view's :meth:`resizeColumnsToContents` or :meth:`resizeRowsToContents` functions.
 
-    :param tableModel: the model for the view to present.
-    :type tableModel: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+    '''
 
-    :param vSeparator: show the vertical separators, defaults to True
-    :type vSeparator: bool, optional
+    cellChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
 
-    :param hSeparator: show the horizontal separators, defaults to True
-    :type hSeparator: bool, optional
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever a cell in the table is clicked.
+        The row and column specified is the cell that was clicked.
 
-    :param vHeader: show the vertical header, defaults to True
-    :type vHeader: bool, optional
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellDoubleClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever a cell in the table is double clicked.
+        The row and column specified is the cell that was double clicked.
 
-    :param hHeader: show the horizontal header, defaults to True
-    :type hHeader: bool, optional
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    cellEntered:pyTTkSignal
+    '''
+        This signal is emitted when the mouse cursor enters a cell.
+        The cell is specified by row and column.
 
-    :param sortingEnabled: enable the column sorting, defaults to False
-    :type sortingEnabled: bool, optional
+        :param row: the row
+        :type row: int
+        :param col: the column
+        :type col: int
+    '''
+    # self.cellPressed       = pyTTkSignal(int,int)
+    currentCellChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the current cell changes.
+        The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
+        the cell specified by **currRow** and **currCol** is the new current cell.
 
-    :param dataPadding: the right column padding, defaults to 1
-    :type dataPadding: int, optional
-
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
-
-        .. py:method:: cellChanged(row, col)
-            :signal:
-
-            This signal is emitted whenever the data of the item in the cell specified by row and column has changed.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellClicked(row, col)
-            :signal:
-
-            This signal is emitted whenever a cell in the table is clicked.
-            The row and column specified is the cell that was clicked.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellDoubleClicked(row, col)
-            :signal:
-
-            This signal is emitted whenever a cell in the table is double clicked.
-            The row and column specified is the cell that was double clicked.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: cellEntered(row, col)
-            :signal:
-
-            This signal is emitted when the mouse cursor enters a cell.
-            The cell is specified by row and column.
-
-            :param row: the row
-            :type row: int
-            :param col: the column
-            :type col: int
-
-        .. py:method:: currentCellChanged(currRow, currCol, prevRow, prevCol)
-            :signal:
-
-            This signal is emitted whenever the current cell changes.
-            The cell specified by **prevRow** and **prevCol** is the cell that previously had the focus,
-            the cell specified by **currRow** and **currCol** is the new current cell.
-
-            :param currRow: the current row
-            :type currRow: int
-            :param currColumn: the current column
-            :type currColumn: int
-            :param prevRow: the previous row
-            :type prevRow: int
-            :param prevCol: the previous column
-            :type prevCol: int
-
+        :param currRow: the current row
+        :type currRow: int
+        :param currColumn: the current column
+        :type currColumn: int
+        :param prevRow: the previous row
+        :type prevRow: int
+        :param prevCol: the previous column
+        :type prevCol: int
     '''
 
     classStyle = {
@@ -281,10 +253,35 @@ class TTkTableWidget(TTkAbstractScrollView):
 
     def __init__(self, *,
                  tableModel:TTkAbstractTableModel=None,
-                 vSeparator:bool=True, hSeparator:bool=True,
-                 vHeader:bool=True, hHeader:bool=True,
-                 sortingEnabled=False, dataPadding=1,
+                 vSeparator:bool=True,
+                 hSeparator:bool=True,
+                 vHeader:bool=True,
+                 hHeader:bool=True,
+                 sortingEnabled=False,
+                 dataPadding=1,
                  **kwargs) -> None:
+        '''
+        :param tableModel: the model for the view to present.
+        :type tableModel: :py:class:`TTkAbstractTableModel`
+
+        :param vSeparator: show the vertical separators, defaults to True
+        :type vSeparator: bool, optional
+
+        :param hSeparator: show the horizontal separators, defaults to True
+        :type hSeparator: bool, optional
+
+        :param vHeader: show the vertical header, defaults to True
+        :type vHeader: bool, optional
+
+        :param hHeader: show the horizontal header, defaults to True
+        :type hHeader: bool, optional
+
+        :param sortingEnabled: enable the column sorting, defaults to False
+        :type sortingEnabled: bool, optional
+
+        :param dataPadding: the right column padding, defaults to 1
+        :type dataPadding: int, optional
+        '''
         # Signals
         # self.itemActivated     = pyTTkSignal(TTkTableWidgetItem, int)
         # self.itemChanged       = pyTTkSignal(TTkTableWidgetItem, int)
@@ -324,7 +321,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._vSeparatorSelected = None
         self._sortColumn = -1
         self._sortOrder = TTkK.AscendingOrder
-        self._tableModel = tableModel if tableModel else TTkTableModelList(list=[['']*10 for _ in range(10)])
+        self._tableModel = tableModel if tableModel else TTkTableModelList(data=[['']*10 for _ in range(10)])
         self._tableModel.dataChanged.connect(self.update)
         super().__init__(**kwargs)
         self._refreshLayout()
@@ -519,7 +516,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type column: bool
 
         :param order: the sort order
-        :type order: :class:`~TermTk.TTkCore.constant.TTkK.SortOrder`
+        :type order: :py:class:`TTkK.SortOrder`
         '''
         self._sortColumn = column
         self._sortOrder = order
@@ -574,10 +571,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         h = hhs+self._rowsPos[-1]+1
         return w,h
 
-    # Overridden function
-    def viewDisplayedSize(self) -> tuple[int, int]:
-        return self.size()
-
     def clearSelection(self) -> None:
         '''
         Deselects all selected items.
@@ -608,8 +601,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         :type pos: tuple[int,int]
         :param size: the width,height of the rect used for the selection
         :type size: tuple[int,int]
-        :param flags: the selection model used (i.e. :class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel.Select`)
-        :type flags: :class:`~TermTk.TTkCore.constant.TTkK.TTkItemSelectionModel`
+        :param flags: the selection model used (i.e. :py:class:`TTkItemSelectionModel.Select`)
+        :type flags: :py:class:`TTkItemSelectionModel`
         '''
         x,y = pos
         w,h = size
@@ -719,7 +712,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Returns the table view's vertical header.
 
-        :return: :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView`
+        :return: :py:class:`TTkHeaderView`
         '''
         return self._verticalHeader
 
@@ -727,7 +720,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Returns the table view's horizontal header.
 
-        :return: :class:`~TermTk.TTkWidgets.TTkModelView.tablewidget.TTkHeaderView`
+        :return: :py:class:`TTkHeaderView`
         '''
         return self._horizontallHeader
 
@@ -800,7 +793,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         '''
         Returns the model that this view is presenting.
 
-        :return: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+        :return: :py:class:`TTkAbstractTableModel`
         '''
         return self._tableModel
 
@@ -809,7 +802,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         Sets the model for the view to present.
 
         :param model:
-        :type model: :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`
+        :type model: :py:class:`TTkAbstractTableModel`
         '''
         self._tableModel.dataChanged.disconnect(self.update)
         self._tableModel = model
@@ -1897,8 +1890,4 @@ class TTkTableWidget(TTkAbstractScrollView):
 
         # Draw Top/Left Corner
         canvas.drawText(pos=(0,0), text=' ', width=vhs, color=separatorColor.invertFgBg() )
-
-
-
-
 

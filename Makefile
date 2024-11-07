@@ -5,7 +5,7 @@
 	. .venv/bin/activate ; \
 	pip install -r docs/requirements.txt
 	# Add "Signal" option in the method domains
-	patch -p3 -d .venv/lib/python3*/ < docs/sphynx.001.signal.patch
+	# patch -p3 -d .venv/lib/python3*/ < docs/sphynx.001.signal.patch
 	#  Update/Regen
 	#    # Docs
 	#    pip install sphinx sphinx-epytext sphinx-autodocgen sphinx-rtd-theme
@@ -22,21 +22,13 @@
 	pip install pyperclip Pillow
 
 doc: .venv
-	# old doc gen, using pdoc3 ; \
-	# . .venv/bin/activate ; \
-	# rm -rf docs/html ; \
-	# pdoc --html TermTk -o docs/html ; \
 	. .venv/bin/activate ; \
 	tools/prepareBuild.sh doc ; \
-	rm -rf docs/build ; \
-	rm -rf docs/source/autogen.* ; \
-	# sphinx-apidoc -o docs/source/TermTk/ -e TermTk/ ; \
-	make -C docs/ clean ; \
-	make -C docs/ html ; \
-	cp -a docs/images docs/build/html/_images ;
+	make -C docs/source/ clean ; \
+	make -C docs/source/ html ;
 
 testDoc:
-	python3 -m http.server --directory docs/build/html/
+	python3 -m http.server --directory docs/source/_build/html/
 
 runTtkDesigner: .venv.ttkDesigner
 	. .venv.ttkDesigner/bin/activate ; \
@@ -86,17 +78,28 @@ deployTTkDesigner: .venv
 	. .venv/bin/activate ; \
 	python3 -m twine upload tmp/dist/*
 
-deployDoc:
-	git checkout gh-pages
+pyTermTk-Docs:
+	git clone git@github.com:ceccopierangiolieugenio/pyTermTk-Docs.git
 
-	# Update the doc files
-	rm -rf *.inv *.html *.js _* autogen.* tutorial info
-	cp -a docs/build/html/* .
-	find *.html *.inv *.js autogen.TermTk _* tutorial info | xargs git add
+deployDoc: pyTermTk-Docs
+	cd pyTermTk-Docs ; \
+	git checkout main ; \
+	git pull ; \
+	rm -rf _* info tutorial ;
 
-	git commit -m "Doc Updated"
-	git push origin gh-pages
-	git checkout main
+	cp -a docs/source/_build/html/* \
+	      docs/source/_build/html/.buildinfo \
+	      docs/source/_build/html/.nojekyll \
+		  pyTermTk-Docs ; \
+	cd pyTermTk-Docs ; \
+	git add . ; \
+	git commit -m "Updated Docs" ; \
+	git push origin main ; \
+	git checkout gh-pages ; \
+	git merge main ; \
+	git push origin gh-pages ;
+
+	echo "Docs Deployed!!!"
 
 deploySandbox:
 	rm -rf tmp/sandbox

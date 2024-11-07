@@ -65,7 +65,7 @@ emoji = {
 
 class _emojiPickerView(TTkAbstractScrollView):
     __slots__ = ('_btns', '_labels', 'emojiClicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.emojiClicked = pyTTkSignal(str)
         super().__init__(*args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
@@ -107,12 +107,9 @@ class _emojiPickerView(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
@@ -121,7 +118,7 @@ class _emojiPickerView(TTkAbstractScrollView):
 
 class _emojiPickerArea(TTkAbstractScrollArea):
     __slots__ = ('_areaView')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
@@ -131,14 +128,14 @@ class _emojiPickerArea(TTkAbstractScrollArea):
 
 class _emojiPicker(TTkResizableFrame):
     __slots__ = ('emojiClicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs|{'layout':TTkGridLayout()})
         self.layout().addWidget(epa := _emojiPickerArea())
         self.emojiClicked = epa.viewport().emojiClicked
 
 class TTkTextDialogPicker(TTkWindow):
     __slots__ = ('_textEdit', '_autoSize')
-    def __init__(self, *, autoSize=False, multiLine=True, wrapMode=TTkK.WidgetWidth, **kwargs):
+    def __init__(self, *, autoSize=False, multiLine=True, wrapMode=TTkK.WidgetWidth, **kwargs) -> None:
         self._autoSize = autoSize
         super().__init__(**kwargs)
         fontLayout = TTkGridLayout(columnMinWidth=1)
@@ -264,7 +261,7 @@ class TTkTextPicker(TTkContainer):
               And I've no idea what I am doing
     '''
     __slots__ = ('_teButton','_textEdit', 'documentViewChanged', 'textChanged', '_autoSize')
-    def __init__(self, *, text='', autoSize=False, multiLine=True, wrapMode=TTkK.WidgetWidth, **kwargs):
+    def __init__(self, *, text='', autoSize=False, multiLine=True, wrapMode=TTkK.WidgetWidth, **kwargs) -> None:
         self.documentViewChanged = pyTTkSignal(int,int)
         self._autoSize = autoSize
         super().__init__(**kwargs|{'layout':TTkHBoxLayout()})
@@ -273,9 +270,10 @@ class TTkTextPicker(TTkContainer):
         self._textEdit.setReadOnly(False)
         self._textEdit.setLineWrapMode(wrapMode)
         self.textChanged = self._textEdit.textChanged
-        self._teButton = TTkButton(border=True, text='◉', borderColor=TTkColor.fg("#AAAAFF")+TTkColor.bg("#002244") ,
-                            pos=(self.width()-2,0),
-                            size=(2,self.height()), minSize=(3,1),maxWidth=3)
+        self._teButton = TTkButton(border=True, text='◉',
+                                   addStyle={'default':{'borderColor':TTkColor.fg("#AAAAFF")+TTkColor.bg("#002244")}} ,
+                                   pos=(self.width()-2,0),
+                                   size=(2,self.height()), minSize=(3,1),maxWidth=3)
         self.layout().addWidget(self._textEdit)
         self.layout().addWidget(self._teButton)
 

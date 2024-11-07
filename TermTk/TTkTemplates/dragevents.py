@@ -20,7 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TDragEvents']
+
 class TDragEvents():
+    def __init__(self) -> None: pass
+
     def dragEnterEvent(self, evt)  -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
@@ -28,7 +32,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -42,7 +46,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -56,7 +60,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
@@ -70,7 +74,7 @@ class TDragEvents():
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :class:`~TermTk.TTkGui.drag.TTkDropEvent`
+        :type evt: :py:class:`TTkDropEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool

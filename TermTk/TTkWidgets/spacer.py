@@ -27,5 +27,5 @@ from TermTk.TTkWidgets.widget import TTkWidget
 class TTkSpacer(TTkWidget):
     '''TTkSpacer'''
     __slots__ = ()
-    def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        TTkWidget.__init__(self, **kwargs)

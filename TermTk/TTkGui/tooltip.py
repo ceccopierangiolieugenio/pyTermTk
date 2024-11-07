@@ -30,21 +30,25 @@ from TermTk.TTkCore.color     import TTkColor
 from TermTk.TTkCore.timer     import TTkTimer
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.string    import TTkString
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkCore.signal    import pyTTkSlot
 
 class _TTkToolTipDisplayWidget(TTkWidget):
     __slots__ = ('_toolTip', '_x', '_y')
-    def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
-        self._toolTip = kwargs.get('toolTip',TTkString()).split('\n')
+    def __init__(self, *,
+                 toolTip:TTkString="",
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
+        self._toolTip = TTkString(toolTip).split('\n')
         w = 2+max([s.termWidth() for s in self._toolTip])
         h = 2+len(self._toolTip)
         self.resize(w,h)
 
-    def mouseEvent(self, evt): return False
+    def mouseEvent(self, evt: TTkMouseEvent) -> bool:
+        return False
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         w,h = self.size()
         borderColor = TTkColor.fg("#888888")
         canvas.drawBox(pos=(0,0),size=(w,h), color=borderColor)
@@ -56,23 +60,23 @@ class _TTkToolTipDisplayWidget(TTkWidget):
             canvas.drawTTkString(pos=(1,i), text=s)
 
 class TTkToolTip():
-    toolTipTimer = TTkTimer()
-    toolTip = TTkString()
+    toolTipTimer:TTkTimer = TTkTimer()
+    toolTip:TTkString = TTkString()
 
     @pyTTkSlot()
     @staticmethod
-    def _toolTipShow():
+    def _toolTipShow() -> None:
         # TTkLog.debug(f"TT:{TTkToolTip.toolTip}")
         TTkHelper.toolTipShow(_TTkToolTipDisplayWidget(toolTip=TTkToolTip.toolTip))
 
     @staticmethod
-    def trigger(toolTip):
+    def trigger(toolTip) -> None:
         # TTkToolTip.toolTipTimer.stop()
         TTkToolTip.toolTip = toolTip
         TTkToolTip.toolTipTimer.start(TTkCfg.toolTipTime)
 
     @staticmethod
-    def reset():
+    def reset() -> None:
         TTkToolTip.toolTipTimer.stop()
 
 TTkToolTip.toolTipTimer.timeout.connect(TTkToolTip._toolTipShow)

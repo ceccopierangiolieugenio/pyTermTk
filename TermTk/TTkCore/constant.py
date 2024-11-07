@@ -42,12 +42,37 @@ class TTkConstant:
     Background = ColorType.Background
     Modifier   = ColorType.Modifier
 
-    # Focus Policies
-    NoFocus     = 0x0000
-    ClickFocus  = 0x0001
-    WheelFocus  = 0x0002
-    TabFocus    = 0x0004
-    ParentFocus = 0x0101
+    class FocusPolicy(int):
+        '''
+        This Class type defines the various policies a widget
+        can have with respect to acquiring keyboard focus.
+
+        .. autosummary::
+          NoFocus
+          ClickFocus
+          WheelFocus
+          TabFocus
+          ParentFocus
+        '''
+        NoFocus     = 0x0000
+        '''The widget does not accept focus.'''
+        ClickFocus  = 0x0001
+        '''The widget accepts focus by clicking.'''
+        WheelFocus  = 0x0002
+        '''The widget accepts focus by using the mouse wheel.'''
+        TabFocus    = 0x0004
+        '''The widget accepts focus by tabbing.'''
+        ParentFocus = 0x0101
+        '''The parent widget forward the focus to this widget'''
+        StrongFocus	= TabFocus | ClickFocus | 0x8
+        '''the widget accepts focus by both tabbing and clicking.'''
+
+    NoFocus     = FocusPolicy.NoFocus
+    ClickFocus  = FocusPolicy.ClickFocus
+    WheelFocus  = FocusPolicy.WheelFocus
+    TabFocus    = FocusPolicy.TabFocus
+    ParentFocus = FocusPolicy.ParentFocus
+    StrongFocus = FocusPolicy.StrongFocus
 
     # positions
     NONE   = 0x0000
@@ -59,12 +84,32 @@ class TTkConstant:
     HEADER = 0x0020
     FOOTER = 0x0040
 
+    class SelectionMode(int):
+        '''
+        This class type indicates how the view responds to user selections.
+
+        .. autosummary::
+          NoSelection
+          SingleSelection
+          MultiSelection
+        '''
+        NoSelection         = 0x00
+        '''Items cannot be selected.'''
+        SingleSelection     = 0x01
+        '''When the user selects an item, any already-selected item becomes unselected. It is possible for the user to deselect the selected item by pressing the Ctrl key when clicking the selected item.'''
+        # ContiguousSelection = 0x04
+        # '''When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item.'''
+        # ExtendedSelection   = 0x03
+        # '''When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item. Multiple items can be selected by dragging the mouse over them.'''
+        MultiSelection      = 0x02
+        '''When the user selects an item in the usual way, the selection status of that item is toggled and the other items are left alone. Multiple items can be toggled by dragging the mouse over them.'''
+
     # SelectionMode
-    NoSelection         = 0x00
-    SingleSelection     = 0x01
-    MultiSelection      = 0x02
-    ExtendedSelection   = 0x03
-    ContiguousSelection = 0x04
+    NoSelection         = SelectionMode.NoSelection
+    SingleSelection     = SelectionMode.SingleSelection
+    # ExtendedSelection   = SelectionMode.ExtendedSelection
+    # ContiguousSelection = SelectionMode.ContiguousSelection
+    MultiSelection      = SelectionMode.MultiSelection
 
     # Graph types
     FILLED = 0x0001
@@ -121,7 +166,7 @@ class TTkConstant:
     Checked          = CheckState.Checked
 
     class InsertPolicy(int):
-        '''Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.
+        '''Specifies what the :py:class:`TTkComboBox` should do when a new string is entered by the user.
 
         .. autosummary::
           NoInsert
@@ -201,7 +246,7 @@ class TTkConstant:
     class MouseKey(int):
         '''Input Mouse Key
 
-        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`TTkMouseEvent.key`
 
         .. autosummary::
           NoButton
@@ -248,7 +293,7 @@ class TTkConstant:
         WordWrap      = 0x01
         '''Text is wrapped at word boundaries.'''
         # ManualWrap    = 0x02
-        # '''Same as :class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
+        # '''Same as :py:class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
         WrapAnywhere  = 0x03
         '''Text can be wrapped at any point on a line, even if it occurs in the middle of a word.'''
         WrapAtWordBoundaryOrAnywhere = 0x04
@@ -284,7 +329,7 @@ class TTkConstant:
     class MouseEvent(int):
         '''Input Mouse Event
 
-        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`TTkMouseEvent.evt`
 
         .. autosummary::
           NoEvent
@@ -425,7 +470,7 @@ class TTkConstant:
         '''A combination of Clear and Select, provided for convenience.'''
 
     class ItemFlag(int):
-        ''':class:`ItemFlag` describes the properties of an item
+        ''':py:class:`ItemFlag` describes the properties of an item
 
         .. autosummary::
           NoItemFlags
@@ -506,7 +551,7 @@ class TTkConstant:
     class KeyType(int):
         '''Input Key Types
 
-        Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
+        Key type reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.key`
 
         .. autosummary::
           Character
@@ -522,9 +567,9 @@ class TTkConstant:
 
 
     class KeyModifier(int):
-        '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
+        '''Input :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
 
-        Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
+        Modifier reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.mod`
 
         .. autosummary::
           NoModifier
@@ -578,7 +623,7 @@ class TTkConstant:
 
     class ShortcutContext(int):
         '''
-        For a :class:`~TermTk.TTkCore.shortcut.TTkShortcut` event to occur,
+        For a :py:class:`TTkShortcut` event to occur,
         the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
         The possible contexts are these:
 
@@ -1074,4 +1119,6 @@ class TTkConstant:
 
 
 # Alias to TTkConstant
-class TTkK(TTkConstant): pass
+class TTkK(TTkConstant):
+  '''Class container of all the constants used in :mod:`~TermTk`'''
+  pass

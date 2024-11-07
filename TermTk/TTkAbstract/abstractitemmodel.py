@@ -25,9 +25,10 @@ __all__ = ['TTkAbstractItemModel']
 from TermTk.TTkCore.signal import pyTTkSignal
 
 class TTkAbstractItemModel():
+    '''TTkAbstractItemModel'''
     __slots__ = (
         # Signals
         'dataChanged'
     )
-    def __init__(self, *args, **kwargs):
+    def __init__(self) -> None:
         self.dataChanged = pyTTkSignal()

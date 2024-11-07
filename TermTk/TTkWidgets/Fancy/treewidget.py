@@ -33,7 +33,7 @@ from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 from TermTk.TTkWidgets.Fancy.treewidgetitem import TTkFancyTreeWidgetItem
 
 class _TTkDisplayedTreeItemControl(TTkCheckbox):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.setMinimumSize(1, 1)
 
@@ -46,15 +46,20 @@ class _TTkDisplayedTreeItemControl(TTkCheckbox):
 
 class _TTkDisplayedTreeItem(TTkContainer):
     __slots__ = ('_depth', '_control', '_text', '_id', '_clicked', '_treeWidgetItem', '_isLeaf' )
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *,
+                  id:int=0,
+                  text:TTkString='',
+                  depth:int=0,
+                  treeWidgetItem:TTkFancyTreeWidgetItem=None,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
         #Signals
         self._clicked = pyTTkSignal(bool, _TTkDisplayedTreeItem, TTkFancyTreeWidgetItem)
 
-        self._depth = kwargs.get('depth' , 0 )
-        self._text = TTkString(kwargs.get('text' , "" ))
-        self._id = kwargs.get('id' , 0 )
-        self._treeWidgetItem = kwargs.get('treeWidgetItem', None)
+        self._depth = depth
+        self._text = TTkString(text)
+        self._id = id
+        self._treeWidgetItem = treeWidgetItem
         self._isLeaf  = self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicator
         self._isLeaf |= self._treeWidgetItem.childIndicatorPolicy() == TTkK.DontShowIndicatorWhenChildless and not self._treeWidgetItem.children()
         if self._isLeaf:
@@ -77,8 +82,8 @@ class _TTkDisplayedTreeItem(TTkContainer):
 class TTkFancyTreeWidget(TTkFancyTableView):
     __slots__ = ( '_topLevelItems')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         self._topLevelItems = TTkFancyTreeWidgetItem(None)
         self.doubleClicked.connect(self._doubleClickItem)
         # kwargs.pop('parent',None)

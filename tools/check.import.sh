@@ -3,6 +3,7 @@
 __check(){
     grep -r -e "^import" -e "^from" TermTk |
         grep -v -e "from TermTk" -e "import TermTk" |
+        grep -v "from typing import" |
         grep -v "__init__.py:from \.[^ ]* *import" |
         grep -v -e "import re" -e "import os" -e "import datetime" |
         grep -v \

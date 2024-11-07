@@ -46,17 +46,19 @@ class TTkSplitter(TTkContainer):
         '_orientation', '_separators', '_refSizes',
         '_items', '_titles', '_separatorSelected',
         '_border')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 border:bool=False,
+                 orientation:TTkK.Direction=TTkK.HORIZONTAL,
+                 **kwargs) -> None:
         self._items = []
         self._titles = []
         self._separators = []
         self._refSizes = []
-        self._border = False
+        self._border = border
+        self._orientation = orientation
         self._separatorSelected = None
-        self._orientation = TTkK.HORIZONTAL
-        super().__init__(*args, **kwargs)
-        self._orientation = kwargs.get('orientation', TTkK.HORIZONTAL)
-        self.setBorder(kwargs.get('border' , False))
+        super().__init__(**kwargs)
+        self.setBorder(border)
         self.setFocusPolicy(TTkK.ClickFocus)
 
         class _SplitterLayout(TTkLayout):

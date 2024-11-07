@@ -1,14 +1,14 @@
---- .venv/lib/python3.X/site-packages/sphinx/domains/python.py	2022-03-08 11:00:06.152347159 +0000
-+++ .venv/lib/python3.X/site-packages/sphinx/domains/python.py	2022-03-08 11:03:07.292940495 +0000
-@@ -768,6 +768,7 @@
-
-     option_spec: OptionSpec = PyObject.option_spec.copy()
+--- .venv/lib/python3.11/site-packages/sphinx/domains/python/__init__.py.old	2024-10-23 10:51:56.882646206 +0100
++++ .venv/lib/python3.11/site-packages/sphinx/domains/python/__init__.py	2024-10-23 10:53:16.557626613 +0100
+@@ -204,6 +204,7 @@
+ 
+     option_spec: ClassVar[OptionSpec] = PyObject.option_spec.copy()
      option_spec.update({
 +        'signal': directives.flag,
          'abstractmethod': directives.flag,
          'async': directives.flag,
          'classmethod': directives.flag,
-@@ -787,6 +788,9 @@
+@@ -219,6 +220,9 @@
          if 'final' in self.options:
              prefix.append(nodes.Text('final'))
              prefix.append(addnodes.desc_sig_space())

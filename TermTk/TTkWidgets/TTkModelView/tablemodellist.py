@@ -47,22 +47,27 @@ class _TTkModelIndexList(TTkModelIndex):
 
 class TTkTableModelList(TTkAbstractTableModel):
     '''
-    :class:`TTkTableModelList` extends :class:`~TermTk.TTkAbstract.abstracttablemodel.TTkAbstractTableModel`,
+    :py:class:`TTkTableModelList` extends :py:class:`TTkAbstractTableModel`,
     including a basic model with a 2d list data structure
 
-    :param data: the 2D List model for the view to present.
-    :type data: list[list]
-
-    :param header: the header labels, defaults to the column number.
-    :type header: list[str], optional
-
-    :param indexes: the index labels, defaults to the line number.
-    :type indexes: list[str], optional
     '''
 
     __slots__ = ('_data','_dataOriginal', '_hheader', '_vheader')
 
-    def __init__(self, *, data:list[list[object]]=[], header:list[str]=[], indexes:list[str]=[]) -> None:
+    def __init__(self, *,
+                 data:list[list[object]]=[],
+                 header:list[str]=[],
+                 indexes:list[str]=[]) -> None:
+        '''
+        :param data: the 2D List model for the view to present.
+        :type data: list[list]
+
+        :param header: the header labels, defaults to the column number.
+        :type header: list[str], optional
+
+        :param indexes: the index labels, defaults to the line number.
+        :type indexes: list[str], optional
+        '''
         self._data = self._dataOriginal = data if data else [['']]
         self._hheader = header
         self._vheader = indexes

@@ -32,11 +32,11 @@ class TTkFancyTree(TTkAbstractScrollArea):
         # Forwarded Methods
         'setAlignment', 'setHeader', 'setHeaderLabels', 'setColumnSize', 'setColumnColors', 'appendItem', 'addTopLevelItem' )
 
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        TTkAbstractScrollArea.__init__(self, **kwargs)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
-        self._treeView = TTkFancyTreeWidget(*args, **kwargs)
+        self._treeView = TTkFancyTreeWidget(**kwargs)
         # Forward the signal
         self.activated = self._treeView.activated
 

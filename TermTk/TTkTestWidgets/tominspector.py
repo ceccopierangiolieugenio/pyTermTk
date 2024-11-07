@@ -51,7 +51,7 @@ from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
 
 class _DetailGridView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._gridLayout = TTkGridLayout()
         self.rootLayout().addItem(self._gridLayout)
@@ -69,16 +69,13 @@ class _DetailGridView(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self._gridLayout.setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self._gridLayout.fullWidgetAreaGeometry()
         return w , h
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
-
 class _DetailLazyFormView(TTkAbstractScrollView):
     __slots__ = ('_gridLayout', '_lazyRows', '_lastRow')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.setPadding(1,0,0,0)
         self._lastRow = 0
@@ -118,12 +115,9 @@ class _DetailLazyFormView(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h+1
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def paintEvent(self, canvas):
         x,y = self.getViewOffsets()
@@ -139,7 +133,7 @@ class _DetailLazyFormView(TTkAbstractScrollView):
 
 class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
     __slots__ = ('_domWidget')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._domWidget = kwargs.get('domWidget')
     def domWidget(self):
@@ -147,7 +141,7 @@ class _TTkDomTreeWidgetItem(TTkTreeWidgetItem):
 
 class TTkTomInspector(TTkContainer):
     __slots__ = ('_domTree','_detail','_splitter')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         layout = TTkGridLayout()

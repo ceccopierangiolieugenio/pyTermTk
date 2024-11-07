@@ -26,9 +26,11 @@ from TermTk.TTkWidgets.frame import TTkFrame
 
 class TTkTestWidgetSizes(TTkFrame):
     ID = 1
-    def __init__(self, *args, **kwargs):
-        TTkFrame.__init__(self, *args, **kwargs)
-        self._name = kwargs.get('name' , f"TestWidgetSizes-{TTkTestWidgetSizes.ID}" )
+    def __init__(self, *,
+                 name:str=None,
+                 **kwargs) -> None:
+        name = name if name else f"TestWidgetSizes-{TTkTestWidgetSizes.ID}"
+        super().__init__(name=name, **kwargs)
         TTkTestWidgetSizes.ID+=1
 
     def paintEvent(self, canvas):

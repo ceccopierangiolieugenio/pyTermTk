@@ -25,6 +25,8 @@
 pyTermTk_ - Layouts
 =============================================================================
 
+.. _Layout-Tutorial_Intro:
+
 Intro
 =====
 
@@ -118,7 +120,7 @@ Examples
 1 - Simple TTkLayout_
 ---------------------
 
-Following is the code to execute `Layout Example`_ in pyTermTk_ (`tryItOnline <web-LayoutEx_>`_)
+Following is the code to execute `Layout Example`_ in pyTermTk_ (`tryItOnline <web-LayoutEx_>`__)
 
 .. code:: python
 
@@ -153,7 +155,7 @@ The above code produces the following output:
 2 - Simple TTkVBoxLayout_
 -------------------------
 
-Following is the code to execute `VBox Example`_ in pyTermTk_ (`tryItOnline <web-VBoxEx_>`_)
+Following is the code to execute `VBox Example`_ in pyTermTk_ (`tryItOnline <web-VBoxEx_>`__)
 
 .. code:: python
 
@@ -199,7 +201,7 @@ The above code produces the following output:
 3 - Simple TTkHBoxLayout_
 -------------------------
 
-Following is the code to execute `HBox Example`_ in pyTermTk_ (`tryItOnline <web-HBoxEx_>`_)
+Following is the code to execute `HBox Example`_ in pyTermTk_ (`tryItOnline <web-HBoxEx_>`__)
 
 .. code:: python
 
@@ -246,7 +248,7 @@ The above code produces the following output
 4 - Simple TTkGridLayout_
 -------------------------
 
-Following is the code to execute `Grid Example`_ in pyTermTk_ (`tryItOnline <web-GridEx_>`_)
+Following is the code to execute `Grid Example`_ in pyTermTk_ (`tryItOnline <web-GridEx_>`__)
 
 
 .. code:: python
@@ -291,7 +293,7 @@ The above code produces the following output
 5 - Nested Layouts
 ------------------
 
-Following is the code to execute `Nested Layouts Example`_ in pyTermTk_ (`tryItOnline <web-NestedEx_>`_)
+Following is the code to execute `Nested Layouts Example`_ in pyTermTk_ (`tryItOnline <web-NestedEx_>`__)
 
 .. code:: python
 
@@ -346,7 +348,7 @@ The above code produces the following output
 6 - Rowspan/Colspan in Grid Layout
 ----------------------------------
 
-Following is the code to execute `row/colspan Example`_ in pyTermTk_ (`tryItOnline <web-SpanEx_>`_)
+Following is the code to execute `row/colspan Example`_ in pyTermTk_ (`tryItOnline <web-SpanEx_>`__)
 
 
 .. code:: python
