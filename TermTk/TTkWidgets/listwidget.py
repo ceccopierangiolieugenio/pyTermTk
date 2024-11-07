@@ -262,7 +262,7 @@ class TTkListWidget(TTkAbstractScrollView):
             item.setGeometry(x,y,maxw,h)
         TTkAbstractScrollView.resizeEvent(self, w, h)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w, h
 

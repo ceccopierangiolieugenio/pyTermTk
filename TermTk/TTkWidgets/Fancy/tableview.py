@@ -45,7 +45,7 @@ class _TTkFancyTableViewHeader(TTkAbstractScrollView):
         self.setMinimumHeight(1)
 
     # Override this function
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         return self.size()
 
     @pyTTkSlot(int, int)
@@ -190,7 +190,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
 
 
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         return self._tableWidth, len(self._tableDataText)
 
     # def items(self): return self._tableDataText
@@ -446,10 +446,10 @@ class TTkFancyTableView(TTkAbstractScrollView):
     def getViewOffsets(self):
         return self._tableView.getViewOffsets()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         return self._tableView.viewFullAreaSize()
 
-    def viewDisplayedSize(self) -> (int, int):
+    def viewDisplayedSize(self) -> tuple[int,int]:
         return self._tableView.viewDisplayedSize()
 
     def setAlignment(self, *args, **kwargs)   :

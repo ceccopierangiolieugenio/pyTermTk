@@ -46,7 +46,7 @@ class TTkAbstractScrollViewInterface():
     def __init__(self) -> None: pass
 
     # Override this function
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         '''
         This method returns the full widget area size of the :py:class:`TTkAbstractScrollViewInterface` implementation.
 
@@ -60,7 +60,7 @@ class TTkAbstractScrollViewInterface():
         raise NotImplementedError()
 
     # Override this function
-    def viewDisplayedSize(self) -> (int, int):
+    def viewDisplayedSize(self) -> tuple[int,int]:
         '''
         This method returns the displayed size of the :py:class:`TTkAbstractScrollViewInterface` implementation.
 
@@ -170,7 +170,7 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         # Do NOT use super()
         TTkContainer.__init__(self, **kwargs)
 
-    def viewDisplayedSize(self) -> (int, int):
+    def viewDisplayedSize(self) -> tuple[int,int]:
         return self.size()
 
     @pyTTkSlot(int, int)
@@ -259,11 +259,11 @@ class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
         self._excludeEvent = False
         TTkLayout.__init__(self, *args, **kwargs)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.fullWidgetAreaGeometry()
         return w,h
 
-    def viewDisplayedSize(self) -> (int, int):
+    def viewDisplayedSize(self) -> tuple[int,int]:
         _,_,w,h = self.geometry()
         return w,h
 
@@ -378,7 +378,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         return TTkGridLayout.addItem(self, item, row, col, rowspan, colspan)
 
     # Override this function
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         w,h=0,0
         for widget in self.iterWidgets(recurse=False):
             ww,wh = widget.viewFullAreaSize()
@@ -387,7 +387,7 @@ class TTkAbstractScrollViewGridLayout(TTkGridLayout, TTkAbstractScrollViewInterf
         return w,h
 
     # Override this function
-    def viewDisplayedSize(self) -> (int, int):
+    def viewDisplayedSize(self) -> tuple[int,int]:
         w,h=0,0
         for widget in self.iterWidgets(recurse=False):
             ww,wh = widget.viewDisplayedSize()

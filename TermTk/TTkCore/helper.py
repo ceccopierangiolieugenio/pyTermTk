@@ -383,7 +383,7 @@ class TTkHelper:
         return layout.parentWidget()
 
     @staticmethod
-    def absPos(widget) -> (int,int):
+    def absPos(widget) -> tuple[int,int]:
         wx, wy = 0,0
         layout = widget.widgetItem()
         while layout:

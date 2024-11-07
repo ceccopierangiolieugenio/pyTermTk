@@ -71,7 +71,7 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         tw.wrapChanged.connect(self._wrapChanged)
         self._wrapChanged()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         if self._textWrap:
             return 5, self._textWrap.size()
         else:
@@ -427,7 +427,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def _updateSize(self):
         self._hsize = max( len(l) for l in self._textDocument._dataLines ) + 1
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         if self.lineWrapMode() == TTkK.NoWrap:
             return self._hsize, self._textWrap.size()
         elif self.lineWrapMode() == TTkK.WidgetWidth:

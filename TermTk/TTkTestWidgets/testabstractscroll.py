@@ -60,7 +60,7 @@ class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
     def mousePressEvent(self, evt): return True
     def mouseReleaseEvent(self, evt): return True
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         return self._areaSize
 
 

@@ -48,7 +48,7 @@ class _TTkLogViewer(TTkAbstractScrollView):
     def _viewChangedHandler(self):
         self.update()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         w = max( m.termWidth() for m in self._messages)
         h = len(self._messages)
         return w , h

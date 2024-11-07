@@ -246,7 +246,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def _viewChangedHandler(self):
         self.update()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         w,h = self.size()
         h += len(self._screen_current._bufferedLines)
         return w,h
