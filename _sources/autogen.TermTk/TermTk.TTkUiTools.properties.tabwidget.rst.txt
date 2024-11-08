@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.tabwidget
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.tabwidget
-
-.. currentmodule:: TermTk.TTkUiTools.properties.tabwidget
-

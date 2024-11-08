@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.signal
-~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.signal
-
-.. currentmodule:: TermTk.TTkCore.signal
-

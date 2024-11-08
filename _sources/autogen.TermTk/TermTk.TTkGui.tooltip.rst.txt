@@ -1,8 +1,0 @@
-
-TermTk.TTkGui.tooltip
-~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkGui.tooltip
-
-.. currentmodule:: TermTk.TTkGui.tooltip
-

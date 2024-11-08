@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.frame
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.frame
-
-.. currentmodule:: TermTk.TTkUiTools.properties.frame
-

@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.timer\_pyodide
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.timer_pyodide
-
-.. currentmodule:: TermTk.TTkCore.timer_pyodide
-

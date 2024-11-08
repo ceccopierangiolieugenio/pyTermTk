@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.drivers.unix
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.drivers.unix
-
-.. currentmodule:: TermTk.TTkCore.drivers.unix
-

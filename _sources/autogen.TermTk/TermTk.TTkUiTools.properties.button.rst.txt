@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.button
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.button
-
-.. currentmodule:: TermTk.TTkUiTools.properties.button
-

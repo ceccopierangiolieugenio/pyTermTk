@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.widget
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.widget
-
-.. currentmodule:: TermTk.TTkUiTools.properties.widget
-

@@ -1,8 +1,0 @@
-
-TermTk.TTkWidgets.TTkTerminal.terminal\_screen
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkWidgets.TTkTerminal.terminal_screen
-
-.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.terminal_screen
-

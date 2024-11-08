@@ -1,8 +1,0 @@
-
-TermTk.TTkTestWidgets.keypressviewfont
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTestWidgets.keypressviewfont
-
-.. currentmodule:: TermTk.TTkTestWidgets.keypressviewfont
-

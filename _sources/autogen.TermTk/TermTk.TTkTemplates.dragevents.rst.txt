@@ -1,8 +1,0 @@
-
-TermTk.TTkTemplates.dragevents
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTemplates.dragevents
-
-.. currentmodule:: TermTk.TTkTemplates.dragevents
-

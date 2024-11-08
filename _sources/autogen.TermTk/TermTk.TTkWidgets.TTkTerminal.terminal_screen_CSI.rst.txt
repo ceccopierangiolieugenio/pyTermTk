@@ -1,8 +1,0 @@
-
-TermTk.TTkWidgets.TTkTerminal.terminal\_screen\_CSI
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkWidgets.TTkTerminal.terminal_screen_CSI
-
-.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.terminal_screen_CSI
-

@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.combobox
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.combobox
-
-.. currentmodule:: TermTk.TTkUiTools.properties.combobox
-

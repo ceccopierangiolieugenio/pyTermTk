@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.timer
-~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.timer
-
-.. currentmodule:: TermTk.TTkCore.timer
-

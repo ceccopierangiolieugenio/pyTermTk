@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.graph
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.graph
-
-.. currentmodule:: TermTk.TTkUiTools.properties.graph
-

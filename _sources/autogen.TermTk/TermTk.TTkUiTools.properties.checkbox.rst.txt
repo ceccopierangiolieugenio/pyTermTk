@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.checkbox
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.checkbox
-
-.. currentmodule:: TermTk.TTkUiTools.properties.checkbox
-

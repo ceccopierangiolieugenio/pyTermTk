@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.menu
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.menu
-
-.. currentmodule:: TermTk.TTkUiTools.properties.menu
-

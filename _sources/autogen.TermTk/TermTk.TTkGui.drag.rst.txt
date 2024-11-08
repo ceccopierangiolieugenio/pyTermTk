@@ -1,8 +1,0 @@
-
-TermTk.TTkGui.drag
-~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkGui.drag
-
-.. currentmodule:: TermTk.TTkGui.drag
-

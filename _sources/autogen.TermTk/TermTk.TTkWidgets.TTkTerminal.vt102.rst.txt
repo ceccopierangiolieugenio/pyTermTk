@@ -1,8 +1,0 @@
-
-TermTk.TTkWidgets.TTkTerminal.vt102
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkWidgets.TTkTerminal.vt102
-
-.. currentmodule:: TermTk.TTkWidgets.TTkTerminal.vt102
-

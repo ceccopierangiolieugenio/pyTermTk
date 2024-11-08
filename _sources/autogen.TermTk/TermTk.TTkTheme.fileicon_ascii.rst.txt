@@ -1,8 +1,0 @@
-
-TermTk.TTkTheme.fileicon\_ascii
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTheme.fileicon_ascii
-
-.. currentmodule:: TermTk.TTkTheme.fileicon_ascii
-

@@ -1,8 +1,0 @@
-
-TermTk.TTkTypes.viewitem
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTypes.viewitem
-
-.. currentmodule:: TermTk.TTkTypes.viewitem
-

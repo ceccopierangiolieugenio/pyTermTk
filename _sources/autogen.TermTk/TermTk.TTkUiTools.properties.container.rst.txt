@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.container
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.container
-
-.. currentmodule:: TermTk.TTkUiTools.properties.container
-

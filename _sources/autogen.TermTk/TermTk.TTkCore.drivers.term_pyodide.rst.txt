@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.drivers.term\_pyodide
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.drivers.term_pyodide
-
-.. currentmodule:: TermTk.TTkCore.drivers.term_pyodide
-

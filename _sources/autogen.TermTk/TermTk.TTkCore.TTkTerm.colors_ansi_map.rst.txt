@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.TTkTerm.colors\_ansi\_map
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.TTkTerm.colors_ansi_map
-
-.. currentmodule:: TermTk.TTkCore.TTkTerm.colors_ansi_map
-

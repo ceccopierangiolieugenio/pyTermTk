@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.spinbox
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.spinbox
-
-.. currentmodule:: TermTk.TTkUiTools.properties.spinbox
-

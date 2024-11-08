@@ -1,8 +1,0 @@
-
-TermTk.TTkCore.TTkTerm.input\_mono
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkCore.TTkTerm.input_mono
-
-.. currentmodule:: TermTk.TTkCore.TTkTerm.input_mono
-

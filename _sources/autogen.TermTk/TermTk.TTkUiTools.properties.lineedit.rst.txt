@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.lineedit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.lineedit
-
-.. currentmodule:: TermTk.TTkUiTools.properties.lineedit
-

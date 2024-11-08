@@ -1,8 +1,0 @@
-
-TermTk.TTkGui.textcursor
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkGui.textcursor
-
-.. currentmodule:: TermTk.TTkGui.textcursor
-

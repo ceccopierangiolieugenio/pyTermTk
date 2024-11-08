@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.texedit
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.texedit
-
-.. currentmodule:: TermTk.TTkUiTools.properties.texedit
-

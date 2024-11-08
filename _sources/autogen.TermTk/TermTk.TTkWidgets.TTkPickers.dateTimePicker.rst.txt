@@ -1,8 +1,0 @@
-
-TermTk.TTkWidgets.TTkPickers.dateTimePicker
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkWidgets.TTkPickers.dateTimePicker
-
-.. currentmodule:: TermTk.TTkWidgets.TTkPickers.dateTimePicker
-

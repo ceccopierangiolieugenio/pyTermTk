@@ -1,8 +1,0 @@
-
-TermTk.TTkTemplates.keyevents
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkTemplates.keyevents
-
-.. currentmodule:: TermTk.TTkTemplates.keyevents
-

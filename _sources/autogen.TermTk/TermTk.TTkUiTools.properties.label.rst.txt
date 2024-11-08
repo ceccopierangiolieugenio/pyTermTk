@@ -1,8 +1,0 @@
-
-TermTk.TTkUiTools.properties.label
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: TermTk.TTkUiTools.properties.label
-
-.. currentmodule:: TermTk.TTkUiTools.properties.label
-
