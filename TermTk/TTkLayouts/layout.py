@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 '''
-**Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttklayout>`__]
+**Layout** [:ref:`Tutorial <Layout-Tutorial_Intro>`]
 '''
 
 __all__ = ['TTkLayoutItem', 'TTkLayout']

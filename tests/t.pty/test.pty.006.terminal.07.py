@@ -61,7 +61,7 @@ te = ttk.TTkTextEdit(parent=winT, readOnly=False, lineNumber=True)
 
 clipboard = ttk.TTkClipboard()
 
-@ttk.pyTTkSlot(str)
+@ttk.pyTTkSlot(ttk.TTkString)
 def _textSelected(text, te=te):
     te.setText("Selected Text in the terminal:")
     te.append( "------------------------------\n")

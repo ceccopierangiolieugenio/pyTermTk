@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 '''
-**Grid Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkgridlayout>`__]
+**Grid Layout** [:ref:`Tutorial <Layout-Tutorial_Intro>`]
 '''
 
 __all__ = ['TTkGridLayout']

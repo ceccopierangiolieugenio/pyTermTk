@@ -29,13 +29,57 @@ from select import select
 from TermTk.TTkCore.signal import pyTTkSignal,pyTTkSlot
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkWidgets.TTkTerminal.terminal import TTkTerminal
 
 class TTkTerminalHelper():
+    '''
+    :py:class:`TTkTerminalHelper` is a convenience class that simplify the initilization and the handling of a `pty <https://docs.python.org/3/library/pty.html>`__ terminal session
+
+    .. note::
+        This helper is available only on Linux and Mac
+
+    Quickstart:
+
+    .. code-block:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(mouseTrack=True)
+
+        win = ttk.TTkWindow(parent=root, title="Terminal", size=(80+2,24+4), layout=ttk.TTkGridLayout())
+
+        term = ttk.TTkTerminal(parent=win)
+
+        th = ttk.TTkTerminalHelper(term=term)
+        th.runShell()
+
+        root.mainloop()
+
+    '''
+
+    dataOut:pyTTkSignal
+    '''
+    This signal is emitted when some data is available in the pty interface
+
+    :param data: the pty data
+    :type data: str
+    '''
+
+    terminalClosed:pyTTkSignal
+    '''
+    This signal is emitted when the pty session ends
+    '''
+
     __slots__ = ('_shell', '_fd', '_inout', '_pid',
                  '_quit_pipe', '_size', '_term',
                  #Signals
                  'terminalClosed', 'dataOut')
-    def __init__(self, term=None) -> None:
+    def __init__(self, *,
+                 term:TTkTerminal=None) -> None:
+        '''
+        :param term: The terminal handled by this helper.
+        :type term: :py:class:`TTkTerminal`
+        '''
         self.dataOut = pyTTkSignal(str)
         self.terminalClosed = pyTTkSignal()
         self._shell = [os.environ.get('SHELL', 'sh')]
@@ -49,14 +93,27 @@ class TTkTerminalHelper():
         if term:
             self.attachTTkTerminal(term)
 
-    def attachTTkTerminal(self, term):
+    def attachTTkTerminal(self, term:TTkTerminal) -> None:
+        '''
+        Attach a :py:class:`TTkTerminal` to this helper.
+
+        :param term: The terminal handled by this helper.
+        :type term: :py:class:`TTkTerminal`
+        '''
+
         self._term = term
         self.dataOut.connect(term.termWrite)
         term.termData.connect(self.push)
         term.termResized.connect(self.resize)
         term.closed.connect(self._quit)
 
-    def runShell(self, program=None):
+    def runShell(self, program:str=None) -> None:
+        '''
+        Run a "program" attaching it the the pty session linked to this terminal.
+
+        :param program: The program required to run, defaults to the cmd defined bu the "SHELL" env variable or "sh" if missing
+        :type program: str, optional
+        '''
         self._shell = program if program else self._shell
         if isinstance(self._shell, str):
             self._shell = [self._shell]
@@ -88,19 +145,33 @@ class TTkTerminalHelper():
                 self._term = None
 
     @pyTTkSlot(int, int)
-    def resize(self, w: int, h: int):
+    def resize(self, width: int, height: int) -> None:
+        '''
+        Send a resize "`TIOCSWINSZ <https://docs.python.org/3/library/termios.html#termios.tcgetwinsize>`__" ioctl to the pty session
+
+        :param width: the new width
+        :type width: int
+        :param height: the new height
+        :type height: int
+        '''
         # if w<=0 or h<=0: return
         # if self._fd:
         #     s = struct.pack('HHHH', h, w, 0, 0)
         #     t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
-        if self._fd and self._size != (w,h):
-            self._size = (w,h)
-            if w<=0 or h<=0: return
-            s = struct.pack('HHHH', h, w, 0, 0)
+        if self._fd and self._size != (width,height):
+            self._size = (width,height)
+            if width<=0 or height<=0: return
+            s = struct.pack('HHHH', height, width, 0, 0)
             t = fcntl.ioctl(self._fd, termios.TIOCSWINSZ, s)
 
     @pyTTkSlot(str)
-    def push(self, data:str):
+    def push(self, data:str) -> None:
+        '''
+        Send the data to the pty session
+
+        :param data: the data
+        :type data: str
+        '''
         self._inout.write(data)
 
     @pyTTkSlot()
@@ -118,7 +189,22 @@ class TTkTerminalHelper():
             except:
                 pass
 
-    def loop(self):
+    def loop(self) -> None:
+        '''
+        This is the main loop routine responsible of handling the pty and terminal events,
+        for example, forwarding the input codes to the pty session and the pty output to the terminal emulator.
+
+        ::
+
+            TTkTerminal
+            ╔═══════╗                                                       pty
+            ║ C:\   ║ --[ KeyPresses, MouseEvents, ResizeSignal, ... ]--> ┌────┈┄╶
+            ║       ║ <---------[ Output, Ansi escape codes, ... ]------- │ bash, sh, ...
+            ╚═══════╝                                                     └────┈┄╶
+
+        .. caution:: Do not touch this! (unless you know what you are doing)
+        '''
+
         while rs := select( [self._inout,self._quit_pipe[0]], [], [])[0]:
             if self._quit_pipe[0] in rs:
                 # os.close(self._quit_pipe[0])

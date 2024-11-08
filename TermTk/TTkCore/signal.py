@@ -24,7 +24,7 @@
 #      https://github.com/ceccopierangiolieugenio/pyCuT/blob/master/cupy/CuTCore/CuSignal.py
 
 '''
-Signals & Slots [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`__]
+Signals & Slots [:ref:`Tutorial <Signal and Slots>`]
 =========================================================================================================================
 
   Signals and slots are used for communication between objects.

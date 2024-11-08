@@ -62,7 +62,6 @@ class _termLog():
 
 class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     '''
-
     :py:class:`TTkTerminalView` is a terminal emulator fot TermTk
 
     .. warning::
@@ -145,7 +144,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
     terminalClosed:pyTTkSignal
     '''
-    This signal is emitted when the terminl is closed.
+    This signal is emitted when the terminal is closed.
     '''
 
     titleChanged:pyTTkSignal

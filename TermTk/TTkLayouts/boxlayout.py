@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 '''
-**Box Layout** [`Tutorial <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html#simple-ttkvboxlayout>`__]
+**Box Layout** [:ref:`Tutorial <Layout-Tutorial_Intro>`]
 '''
 
 __all__ = ['TTkHBoxLayout', 'TTkVBoxLayout']

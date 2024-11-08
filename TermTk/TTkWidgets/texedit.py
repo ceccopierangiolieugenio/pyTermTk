@@ -121,8 +121,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     Demo: `textedit.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py>`_
     (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py>`__)
 
-    `ttkdesigner Tutorial <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit>`_
-
+    :ref:`ttkdesigner Tutorial <TextEdit_ttkDesigner-Tutorial_Intro>`
     '''
 
     currentColorChanged:pyTTkSignal
