@@ -25,6 +25,17 @@ import TermTk as ttk
 from .cfg  import *
 from .about import *
 
+
+_dummyTextSingle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+_dummyTextMulti = (
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n"
+    "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n"
+    "Ut enim ad minim veniam,\n"
+    "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n"
+    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n"
+    "Excepteur sint occaecat cupidatat non proident,\n"
+    "sunt in culpa qui officia deserunt mollit anim id est laborum.\n")
+
 dWidgets = {
     'Layouts':{
         "Layout"       : { "class":ttk.TTkLayout    , "params":{'size':(30,10)}},
@@ -47,9 +58,9 @@ dWidgets = {
     },
     'Input Widgets':{
         "ComboBox"    : { "class":ttk.TTkComboBox,  "params":{'size':(20,1)} },
-        "LineEdit"    : { "class":ttk.TTkLineEdit,  "params":{'size':(20,1)} },
-        "TextEdit"    : { "class":ttk.TTkTextEdit,  "params":{'size':(25,8), 'readOnly':False, 'multiline':True } },
-        "TextEditLine": { "class":ttk.TTkTextEdit,  "params":{'size':(20,1), 'readOnly':False, 'multiLine':False, 'maxHeight':1 } },
+        "LineEdit"    : { "class":ttk.TTkLineEdit,  "params":{'size':(20,1), 'text':_dummyTextSingle } },
+        "TextEdit"    : { "class":ttk.TTkTextEdit,  "params":{'size':(25,8), 'document':ttk.TTkTextDocument(text=_dummyTextMulti),  'readOnly':False, 'multiline':True } },
+        "TextEditLine": { "class":ttk.TTkTextEdit,  "params":{'size':(20,1), 'document':ttk.TTkTextDocument(text=_dummyTextSingle), 'readOnly':False, 'multiLine':False, 'maxHeight':1 } },
         "SpinBox"     : { "class":ttk.TTkSpinBox,   "params":{'size':(20,1)} },
         "H ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(10,1), "orientation":ttk.TTkK.HORIZONTAL} },
         "V ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(1,5),  "orientation":ttk.TTkK.VERTICAL} },
@@ -126,7 +137,15 @@ class DragDesignItem(ttk.TTkWidget):
 
         drag = ttk.TTkDrag()
         data = wc['class'](**(wc['params']|{'name':name}))
-        if issubclass(wc['class'], ttk.TTkWidget):
+        if issubclass(wc['class'], ttk.TTkContainer):
+            for child in  data.rootLayout().iterWidgets():
+                child.getCanvas().updateSize()
+                child.paintEvent(child.getCanvas())
+            data.getCanvas().updateSize()
+            data.paintChildCanvas()
+            data.paintEvent(data.getCanvas())
+            drag.setPixmap(data)
+        elif issubclass(wc['class'], ttk.TTkWidget):
             drag.setPixmap(data)
         else:
             w,h = wc['params']['size']

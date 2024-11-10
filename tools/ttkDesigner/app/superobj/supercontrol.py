@@ -101,7 +101,7 @@ class SuperControlWidget(ttk.TTkResizableFrame):
 
     def paintEvent(self, canvas):
         w,h = self.size()
-        self._wid.paintEvent(canvas)
+        self._wid.paintEvent(self._wid.getCanvas())
         self._wid.paintChildCanvas()
         canvas.paintCanvas(
                 self._wid.getCanvas(),

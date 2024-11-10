@@ -114,7 +114,11 @@ class SuperWidgetContainer(so.SuperWidget):
             # canvas.fill(color=self._layoutColor)
             # canvas.fill(pos=(l,t), size=(w-r-l,h-b-t), color=self._layoutPadColor)
         else:
+            for child in  self._wid.rootLayout().iterWidgets():
+                child.getCanvas().updateSize()
+                child.paintEvent(child.getCanvas())
             self._wid.getCanvas().updateSize()
+            self._wid.paintChildCanvas()
             self._wid.paintEvent(self._wid.getCanvas())
             canvas.paintCanvas(
                     self._wid.getCanvas(),
