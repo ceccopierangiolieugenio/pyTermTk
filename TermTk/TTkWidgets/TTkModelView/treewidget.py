@@ -164,6 +164,12 @@ class TTkTreeWidget(TTkAbstractScrollView):
                  header=[],
                  sortingEnabled=True,
                  **kwargs) -> None:
+        '''
+        :param header: define the header labels of each column, defaults to []
+        :type header: list[TTkString], optional
+        :param sortingEnabled: enable the column sorting, defaults to False
+        :type sortingEnabled: bool, optional
+        '''
         # Signals
         self.itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
         self.itemChanged       = pyTTkSignal(TTkTreeWidgetItem, int)
@@ -254,7 +260,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             return [self._selected]
         return None
 
-    def setHeaderLabels(self, labels:str) -> None:
+    def setHeaderLabels(self, labels:TTkString) -> None:
         '''setHeaderLabels'''
         self._header = labels
         # Set 20 as default column size

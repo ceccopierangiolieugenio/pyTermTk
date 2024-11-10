@@ -77,12 +77,59 @@ class TTkFileTreeWidget(TTkTreeWidget):
         root.mainloop()
     '''
 
+    fileClicked:pyTTkSignal
+    '''
+    This signal is emitted when a file is clicked
+
+    :param file:
+    :type  file: :py:class:`TTkFileTreeWidgetItem`
+    '''
+    folderClicked:pyTTkSignal
+    '''
+    This signal is emitted when a folder is clicked
+
+    :param folder:
+    :type  folder: :py:class:`TTkFileTreeWidgetItem`
+    '''
+    fileDoubleClicked:pyTTkSignal
+    '''
+    This signal is emitted when a file is doubleclicked
+
+    :param file:
+    :type  file: :py:class:`TTkFileTreeWidgetItem`
+    '''
+    folderDoubleClicked:pyTTkSignal
+    '''
+    This signal is emitted when a folder is doubleclicked
+
+    :param folder:
+    :type  folder: :py:class:`TTkFileTreeWidgetItem`
+    '''
+    fileActivated:pyTTkSignal
+    '''
+    This signal is emitted when a file is activated
+
+    :param file:
+    :type  file: :py:class:`TTkFileTreeWidgetItem`
+    '''
+    folderActivated:pyTTkSignal
+    '''
+    This signal is emitted when a fiilder is activated
+
+    :param folder:
+    :type  folder: :py:class:`TTkFileTreeWidgetItem`
+    '''
+
     __slots__ = ('_path', '_filter',
                  # Signals
                  'fileClicked', 'folderClicked', 'fileDoubleClicked', 'folderDoubleClicked', 'fileActivated', 'folderActivated')
     def __init__(self,
                  path:str='.',
                  **kwargs) -> None:
+        '''
+        :param path: the starting path opened by the :py:class:`TTkFileTreeWidget`, defaults to the current path ('.')
+        :type  path: str, optional
+        '''
         # Signals
         self.fileClicked         = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderClicked       = pyTTkSignal(TTkFileTreeWidgetItem)
@@ -113,6 +160,7 @@ class TTkFileTreeWidget(TTkTreeWidget):
         return self._path
 
     def openPath(self, path):
+        if not os.path.exists(path): return
         self._path = path
 
         self.clear()

@@ -48,7 +48,7 @@ dWidgets = {
     'Input Widgets':{
         "ComboBox"    : { "class":ttk.TTkComboBox,  "params":{'size':(20,1)} },
         "LineEdit"    : { "class":ttk.TTkLineEdit,  "params":{'size':(20,1)} },
-        "TextEdit"    : { "class":ttk.TTkTextEdit,  "params":{'size':(20,5), 'readOnly':False, 'multiline':True } },
+        "TextEdit"    : { "class":ttk.TTkTextEdit,  "params":{'size':(25,8), 'readOnly':False, 'multiline':True } },
         "TextEditLine": { "class":ttk.TTkTextEdit,  "params":{'size':(20,1), 'readOnly':False, 'multiLine':False, 'maxHeight':1 } },
         "SpinBox"     : { "class":ttk.TTkSpinBox,   "params":{'size':(20,1)} },
         "H ScrollBar" : { "class":ttk.TTkScrollBar, "params":{'size':(10,1), "orientation":ttk.TTkK.HORIZONTAL} },
@@ -66,7 +66,9 @@ dWidgets = {
         "Widget"          : { "class":ttk.TTkWidget,         "params":{'size':(20,5)}},
     },
     'Model View':{
-        "Table" : { "class":ttk.TTkTable, "params":{'size':( 20,5)}},
+        "Table"    : { "class":ttk.TTkTable,    "params":{'size':( 25,8)}},
+        "Tree"     : { "class":ttk.TTkTree,     "params":{'size':( 25,8)}},
+        "FileTree" : { "class":ttk.TTkFileTree, "params":{'size':( 25,8)}},
     },
     'Pickers':{
         "Color Picker"     : { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,3), 'border':True}},
