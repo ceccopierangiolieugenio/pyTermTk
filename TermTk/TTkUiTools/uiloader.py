@@ -75,6 +75,13 @@ class TTkUiLoader():
         '''
         return TTkUiLoader.loadDict(json.loads(text), baseWidget, kwargs)
 
+    def _convert_2_0_2_to_2_1_0(ui):
+        return {
+            "type": TTkUiSignature,
+            "version": "2.1.0",
+            "connections" : ui['connections'],
+            "tui": ui['tui'] }
+
     def _convert_2_0_1_to_2_0_2(ui):
         return {
             "type": TTkUiSignature,
@@ -122,10 +129,14 @@ class TTkUiLoader():
         ui = TTkUiLoader._convert_2_0_1_to_2_0_2(ui)
         return TTkUiLoader._loadDict_2_0_2(ui, *args, **kwargs)
 
+    def _loadDict_2_0_2(ui, *args, **kwargs) -> None:
+        ui = TTkUiLoader._convert_2_0_2_to_2_1_0(ui)
+        return TTkUiLoader._loadDict_2_1_0(ui, *args, **kwargs)
+
     @staticmethod
-    def _loadDict_2_0_2(ui, baseWidget:TTkWidget=None, args=None):
+    def _loadDict_2_1_0(ui, baseWidget:TTkWidget=None, args=None):
         if (
-            ui['version'] != '2.0.2' or
+            ui['version'] != '2.1.0' or
             'type' not in ui or
             ui['type'] != TTkUiSignature):
             TTkLog.error("Ui Format not valid")
@@ -321,7 +332,8 @@ class TTkUiLoader():
               '1.0.1' : TTkUiLoader._convert_1_0_1_to_2_0_0,
               '2.0.0' : TTkUiLoader._convert_2_0_0_to_2_0_2,
               '2.0.1' : TTkUiLoader._convert_2_0_1_to_2_0_2,
-              '2.0.2' : lambda x: x
+              '2.0.2' : TTkUiLoader._convert_2_0_2_to_2_1_0,
+              '2.1.0' : lambda x: x
               }.get(ui['version'], lambda x: x)
         return cb(ui)
 
@@ -343,6 +355,7 @@ class TTkUiLoader():
               '2.0.0' : TTkUiLoader._loadDict_2_0_0,
               '2.0.1' : TTkUiLoader._loadDict_2_0_1,
               '2.0.2' : TTkUiLoader._loadDict_2_0_2,
+              '2.1.0' : TTkUiLoader._loadDict_2_1_0,
               }.get(ui['version'], None)
         if cb:
             return cb(ui, baseWidget, kwargs)

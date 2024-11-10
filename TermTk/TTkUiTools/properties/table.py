@@ -24,16 +24,24 @@ __all__ = ['TTkTableProperties']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkWidgets.TTkModelView.table import TTkTable
-from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget
+from TermTk.TTkWidgets.TTkModelView.tablewidget import TTkTableWidget, TTkHeaderView
 
 
 TTkTableProperties = {
     'properties'  : {
-        'H-Separator' : {
+        'H Header' : {
+                'init': {'name':'hHeader',                             'type':bool } ,
+                'get':  { 'cb':TTkHeaderView.isVisible,  'type':bool, 'fw_obj':lambda _obj: _obj.viewport().horizontalHeader() } ,
+                'set':  { 'cb':TTkHeaderView.setVisible, 'type':bool, 'fw_obj':lambda _obj: _obj.viewport().horizontalHeader() } },
+        'V Header' : {
+                'init': {'name':'vHeader',                             'type':bool } ,
+                'get':  { 'cb':TTkHeaderView.isVisible,  'type':bool, 'fw_obj':lambda _obj: _obj.viewport().verticalHeader() } ,
+                'set':  { 'cb':TTkHeaderView.setVisible, 'type':bool, 'fw_obj':lambda _obj: _obj.viewport().verticalHeader() } },
+        'H Separator' : {
                 'init': {'name':'hSeparator',                          'type':bool } ,
                 'get':  { 'cb':TTkTableWidget.hSeparatorVisibility,    'type':bool, 'fw_obj':TTkTable.viewport } ,
                 'set':  { 'cb':TTkTableWidget.setHSeparatorVisibility, 'type':bool, 'fw_obj':TTkTable.viewport } },
-        'V-Separator' : {
+        'V Separator' : {
                 'init': {'name':'vSeparator',                          'type':bool } ,
                 'get':  { 'cb':TTkTableWidget.vSeparatorVisibility,    'type':bool, 'fw_obj':TTkTable.viewport } ,
                 'set':  { 'cb':TTkTableWidget.setVSeparatorVisibility, 'type':bool, 'fw_obj':TTkTable.viewport } },

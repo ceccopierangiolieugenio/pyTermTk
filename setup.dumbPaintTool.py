@@ -43,7 +43,7 @@ setup(
     package_data={'dumbPaintTool': ['tui/*']},
     python_requires=">=3.9",
     install_requires=[
-        'pyTermTk>=0.40.0a1',
+        'pyTermTk>=0.41.0a1',
         'pyperclip',
         'Pillow'],
     entry_points={

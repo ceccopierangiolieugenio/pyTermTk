@@ -223,7 +223,8 @@ class TTkDesigner(TTkAppTemplate):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         data = {
-            'version':'2.0.0',
+            'type': TTkUiSignature,
+            'version':'2.1.0',
             'tui':tui,
             'connections':connections}
         TTkLog.debug(f"{len(pickle.dumps(data))=} {len(self._snapshot)=}")
@@ -307,7 +308,8 @@ class TTkDesigner(TTkAppTemplate):
         tui = self._windowEditor.dumpDict()
         connections = self._sigslotEditor.dumpDict()
         data = {
-            'version':'2.0.0',
+            'type': TTkUiSignature,
+            'version':'2.1.0',
             'tui':tui,
             'connections':connections}
 
@@ -340,7 +342,8 @@ class TTkDesigner(TTkAppTemplate):
         # for line in jj.split('\n'):
         #     TTkLog.debug(f"{line}")
         newUI = {
-            'version':'2.0.0',
+            'type': TTkUiSignature,
+            'version':'2.1.0',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)
@@ -456,7 +459,7 @@ class TTkDesigner(TTkAppTemplate):
         connections = self._sigslotEditor.dumpDict()
         newUI = {
             'type': TTkUiSignature,
-            'version':'2.0.2',
+            'version':'2.1.0',
             'tui':tui,
             'connections':connections}
         jj =  json.dumps(newUI, indent=1)

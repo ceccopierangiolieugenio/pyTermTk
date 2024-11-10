@@ -307,8 +307,8 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._snapshotId = 0
         self._dataPadding = dataPadding
         self._sortingEnabled = sortingEnabled
-        self._showHSeparators = vSeparator
-        self._showVSeparators = hSeparator
+        self._showHSeparators = hSeparator
+        self._showVSeparators = vSeparator
         self._verticalHeader    = TTkHeaderView(visible=vHeader)
         self._horizontallHeader = TTkHeaderView(visible=hHeader)
         self._selected = None
