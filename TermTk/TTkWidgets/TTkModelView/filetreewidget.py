@@ -126,6 +126,10 @@ class TTkFileTreeWidget(TTkTreeWidget):
     def __init__(self,
                  path:str='.',
                  **kwargs) -> None:
+        '''
+        :param path: the starting path opened by the :py:class:`TTkFileTreeWidget`, defaults to the current path ('.')
+        :type  path: str, optional
+        '''
         # Signals
         self.fileClicked         = pyTTkSignal(TTkFileTreeWidgetItem)
         self.folderClicked       = pyTTkSignal(TTkFileTreeWidgetItem)
@@ -156,6 +160,7 @@ class TTkFileTreeWidget(TTkTreeWidget):
         return self._path
 
     def openPath(self, path):
+        if not os.path.exists(path): return
         self._path = path
 
         self.clear()
