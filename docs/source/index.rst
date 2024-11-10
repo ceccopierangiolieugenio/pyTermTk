@@ -107,7 +107,8 @@ API Reference
 .. #   :toctree: _autosummary
 .. #   :template: custom-class-template.01.rst
 .. #
-.. #   TTkCore.TTkK
+.. #   TTkCore.pyTTkSignal
+.. #   TTkCore.pyTTkSlot
 .. #
 .. #   TTkWidgets.TTkAppTemplate
 .. #   TTkWidgets.TTkMenuBar

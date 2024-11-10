@@ -53,6 +53,10 @@ from .properties.texedit import *
 from .properties.widget import *
 from .properties.window import *
 
+from .properties.table import *
+# from .properties.tree import *
+# from .properties.terminal import *
+
 # Pickers
 from .properties.colorpicker import *
 from .properties.filepicker import *
@@ -84,4 +88,6 @@ TTkUiProperties = {
         TTkFileButtonPicker.__name__  : TTkFileButtonPickerProperties,
     # Layouts
         TTkLayout.__name__:         TTkLayoutProperties,
+    # Models
+        TTkTable.__name__:          TTkTableProperties,
 }

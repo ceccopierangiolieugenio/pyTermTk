@@ -65,19 +65,22 @@ class SuperObject():
                         prop = ttk.TTkUiProperties[ccName]['properties'][p]
                         propType = prop['get']['type']
                         propCb = prop['get']['cb']
+                        objCb = obj
+                        if 'fw_obj' in prop['get']:
+                            objCb = prop['get']['fw_obj'](objCb)
                         # ttk.TTkLog.debug(ccName)
                         if propType in (int,str,float,bool):
-                            params |= {p: _dumpPrimitive(propCb(obj))}
+                            params |= {p: _dumpPrimitive(propCb(objCb))}
                         elif type(propType) in (list,tuple):
-                            params |= {p: _dumpList(propCb(obj), propType)}
+                            params |= {p: _dumpList(propCb(objCb), propType)}
                         elif propType is ttk.TTkLayout:
-                            params |= {p: _dumpTTkLayout(propCb(obj))}
+                            params |= {p: _dumpTTkLayout(propCb(objCb))}
                         elif propType in (ttk.TTkString,'singleLineTTkString'):
-                            params |= {p: _dumpTTkString(propCb(obj))}
+                            params |= {p: _dumpTTkString(propCb(objCb))}
                         elif propType is ttk.TTkColor:
-                            params |= {p: _dumpTTkColor(propCb(obj))}
+                            params |= {p: _dumpTTkColor(propCb(objCb))}
                         elif propType in ('singleflag','multiflags'):
-                            params |= {p: _dumpFlag(propCb(obj))}
+                            params |= {p: _dumpFlag(propCb(objCb))}
                         else:
                             ttk.TTkLog.warn("Type not Recognised")
         return params

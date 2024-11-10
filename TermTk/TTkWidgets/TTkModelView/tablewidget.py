@@ -819,7 +819,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return super().leaveEvent(evt)
 
-    @pyTTkSlot(int)
+    @pyTTkSlot(int,int)
     def setColumnWidth(self, column:int, width: int) -> None:
         '''
         Sets the width of the given column.

@@ -198,9 +198,9 @@ class TTkTerminalHelper():
 
             TTkTerminal
             ╔═══════╗                                                       pty
-            ║ C:\   ║ --[ KeyPresses, MouseEvents, ResizeSignal, ... ]--> ┌────┈┄╶
+            ║ C:\   ║ --[ KeyPresses, MouseEvents, ResizeSignal, ... ]--> ┌──── ── ─  ─
             ║       ║ <---------[ Output, Ansi escape codes, ... ]------- │ bash, sh, ...
-            ╚═══════╝                                                     └────┈┄╶
+            ╚═══════╝                                                     └──── ── ─  ─
 
         .. caution:: Do not touch this! (unless you know what you are doing)
         '''

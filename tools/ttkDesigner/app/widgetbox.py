@@ -65,6 +65,9 @@ dWidgets = {
         "Tab Widget"      : { "class":ttk.TTkTabWidget,      "params":{'size':(20,3)}, "disabled": True},
         "Widget"          : { "class":ttk.TTkWidget,         "params":{'size':(20,5)}},
     },
+    'Model View':{
+        "Table" : { "class":ttk.TTkTable, "params":{'size':( 20,5)}},
+    },
     'Pickers':{
         "Color Picker"     : { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,3), 'border':True}},
         "Color Picker Slim": { "class":ttk.TTkColorButtonPicker, "params":{'size':( 6,1), 'border':False}},
