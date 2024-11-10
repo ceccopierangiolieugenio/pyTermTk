@@ -39,6 +39,6 @@ class SuperWidgetAbstractScrollArea(so.SuperWidgetContainer):
         wid = self._wid
         ret = {
             'class'  : wid.__class__.__name__,
-            'params' : SuperObject.dumpParams(wid,exclude=['Layout','Padding']),
+            'params' : SuperObject.dumpParams(obj=wid, exclude=['Layout','Padding']),
         }
         return ret

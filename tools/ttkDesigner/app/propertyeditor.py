@@ -41,7 +41,7 @@ class PropertyEditor(ttk.TTkGridLayout):
 
         self._makeDetail(widget, *superWidget.getSuperProperties())
 
-    def _makeDetail(self, domw, additions, exceptions, exclude):
+    def _makeDetail(self, domwBase, additions, exceptions, exclude):
         def _boundValue(_f,_w,_v):
             def _ret():
                 _f(_w,_v)
@@ -77,7 +77,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         #   • Text         │[X] 0x0001
         #   • Number       │[ ] 0x0002
         #   • Password     │[ ] 0x0004
-        def _processMultiFlag(name, prop):
+        def _processMultiFlag(name, prop, domw):
             flags = prop['get']['flags']
             ret = ttk.TTkTreeWidgetItem([name,f" - (0x{prop['get']['cb'](domw):04X})"],expanded=True)
             # value = ttk.TTkFrame(layout=ttk.TTkVBoxLayout(), height=len(flags), border=False)
@@ -99,7 +99,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         #                ││Unchecked          │   │
         #                ││Partially Checked  │   │
         #                │└───────────────────┘   │
-        def _processSingleFlag(name, prop):
+        def _processSingleFlag(name, prop, domw):
             flags = prop['get']['flags']
             items = [(k,v) for k,v in flags.items()]
             if 'set' in prop:
@@ -123,7 +123,7 @@ class PropertyEditor(ttk.TTkGridLayout):
         #                            { 'name': 'x', 'type':int } ,
         #                            { 'name': 'y', 'type':int } ] } },
         #
-        def _processList(name, prop):
+        def _processList(name, prop, domw):
             def _getter(_i, _p):
                 def _ret(_w):
                     return _p['get']['cb'](_w)[_i]
@@ -146,42 +146,42 @@ class PropertyEditor(ttk.TTkGridLayout):
                     'set' : { 'cb': _setter(_i, prop), 'type':_prop['type'] }
                 }
                 # ret.addChild(ttk.TTkTreeWidgetItem([_prop['name'],f"{curVal[_i]}"]))
-                ret.addChild(_processProp(_prop['name'], _newProp))
+                ret.addChild(_processProp(_prop['name'], _newProp, domw))
             return ret
 
         # Dict Fields
-        def _processDict(name, prop):
+        def _processDict(name, prop, domw):
             curVal = prop['get']['cb'](domw)
             value = ttk.TTkLabel(text=f"{curVal} - TBD")
             ret = ttk.TTkTreeWidgetItem([name,value])
             return ret
 
         # Boolean Fields
-        def _processBool(name, prop):
+        def _processBool(name, prop, domw):
             getval = prop['get']['cb'](domw)
             value = ttk.TTkCheckbox(text=f" {p}", checked=getval, height=1)
             value.stateChanged.connect(_bound(prop['set']['cb'],domw, lambda v:v==ttk.TTkK.Checked))
             return ttk.TTkTreeWidgetItem([name,value])
         # Integer Fields
-        def _processInt(name, prop):
+        def _processInt(name, prop, domw):
             getval = prop['get']['cb'](domw)
             value = ttk.TTkSpinBox(value=getval, height=1, maximum=0x10000, minimum=-0x10000)
             value.valueChanged.connect(_bound(prop['set']['cb'],domw,lambda v:v))
             return ttk.TTkTreeWidgetItem([name,value])
         # String Fields
-        def _processStr(name, prop):
+        def _processStr(name, prop, domw):
             getval = prop['get']['cb'](domw)
             value = ttk.TTkLineEdit(text=getval, height=len(getval.split('\n')))
             value.textChanged.connect(_boundLineEdit(prop['set']['cb'],domw,value))
             return ttk.TTkTreeWidgetItem([name,value])
         # String Fields
-        def _processTTkString(name, prop, multiLine=True):
+        def _processTTkString(name, prop, domw, multiLine=True):
             getval = prop['get']['cb'](domw)
             value = ttk.TTkTextPicker(text=getval, height=len(getval.split('\n')), autoSize=True, multiLine=multiLine)
             value.textChanged.connect(_boundTextEdit(prop['set']['cb'],domw,value))
             return ttk.TTkTreeWidgetItem([name,value])
         # Color Fields
-        def _processTTkColor(name, prop):
+        def _processTTkColor(name, prop, domw):
             getval = prop['get']['cb'](domw)
             value = ttk.TTkContainer(layout=ttk.TTkHBoxLayout(), height=1)
             value.layout().addWidget(_cb := ttk.TTkColorButtonPicker(color=getval, height=1))
@@ -191,19 +191,19 @@ class PropertyEditor(ttk.TTkGridLayout):
             _rc.clicked.connect(lambda :_cb.setColor(ttk.TTkColor.RST))
             return ttk.TTkTreeWidgetItem([name,value])
         # Layout field
-        def _processTTkLayout(name, prop):
+        def _processTTkLayout(name, prop, domw):
             value = ttk.TTkComboBox(list=['TTkLayout','TTkGridLayout','TTkHBoxLayout','TTkVBoxLayout'], height=1)
             value.setCurrentText(prop['get']['cb'](domw).__class__.__name__)
             value.currentTextChanged.connect(_bound(prop['set']['cb'],domw, lambda v:globals()[v]()))
             return ttk.TTkTreeWidgetItem([name,value])
         # Add a button Control
-        def _processButton(name, prop):
+        def _processButton(name, prop, domw):
             value = ttk.TTkButton(text=f" {prop['get']['text']}", border=False)
             value.clicked.connect(lambda :prop['get']['cb'](domw))
             return ttk.TTkTreeWidgetItem([name,value])
 
         # Unrecognised Field
-        def _processUnknown(name, prop):
+        def _processUnknown(name, prop, domw):
             getval = prop['get']['cb'](domw)
             if type(prop['get']['type']) == str:
                 getval = f"{prop['get']['type']} = {getval}"
@@ -212,38 +212,40 @@ class PropertyEditor(ttk.TTkGridLayout):
             value = ttk.TTkLabel(minSize=(30,1), maxHeight=1, text=f"{getval}", height=1)
             return ttk.TTkTreeWidgetItem([name,value])
 
-        def _processProp(name, prop):
+        def _processProp(name, prop, domw):
+            if 'fw_obj' in prop['get']:
+                domw = prop['get']['fw_obj'](domw)
             if 'get' in prop:
                 if prop['get']['type'] == 'multiflags':
-                    return _processMultiFlag(name, prop)
+                    return _processMultiFlag(name, prop, domw)
                 elif prop['get']['type'] == 'singleflag':
-                    return _processSingleFlag(name, prop)
+                    return _processSingleFlag(name, prop, domw)
                 elif prop['get']['type'] == bool and 'set' in prop:
-                    return _processBool(name, prop)
+                    return _processBool(name, prop, domw)
                 elif prop['get']['type'] == int and 'set' in prop:
-                    return _processInt(name, prop)
+                    return _processInt(name, prop, domw)
                 elif prop['get']['type'] == str and 'set' in prop:
-                    return _processStr(name, prop)
+                    return _processStr(name, prop, domw)
                 elif prop['get']['type'] == ttk.TTkString and 'set' in prop:
-                    return _processTTkString(p,prop,multiLine=True)
+                    return _processTTkString(p,prop,domw,multiLine=True)
                 elif prop['get']['type'] == 'singleLineTTkString':
-                    return _processTTkString(p,prop,multiLine=False)
+                    return _processTTkString(p,prop,domw,multiLine=False)
                 elif prop['get']['type'] == ttk.TTkColor and 'set' in prop:
-                    return _processTTkColor(name, prop)
+                    return _processTTkColor(name, prop, domw)
                 elif prop['get']['type'] == ttk.TTkLayout and 'set' in prop:
-                    return _processTTkLayout(name, prop)
+                    return _processTTkLayout(name, prop, domw)
                 elif type(prop['get']['type']) == list:
-                    return _processList(name, prop)
+                    return _processList(name, prop, domw)
                 elif type(prop['get']['type']) == dict:
-                    return _processDict(name, prop)
+                    return _processDict(name, prop, domw)
                 elif prop['get']['type'] == 'button':
-                    return _processButton(p,prop)
+                    return _processButton(p, prop, domw)
                 else:
-                    return _processUnknown(name, prop)
+                    return _processUnknown(name, prop, domw)
 
         proplist = exclude
         self._detail.clear()
-        for cc in reversed(type(domw).__mro__):
+        for cc in reversed(type(domwBase).__mro__):
             # if hasattr(cc,'_ttkProperties'):
             if issubclass(cc, ttk.TTkWidget) or issubclass(cc, ttk.TTkLayout):
                 ccName = cc.__name__
@@ -254,7 +256,7 @@ class PropertyEditor(ttk.TTkGridLayout):
                         for p in additions[ccName]:
                             if p not in proplist:
                                 proplist.append(p)
-                                classItem.addChild(_processProp(p, additions[ccName][p]))
+                                classItem.addChild(_processProp(p, additions[ccName][p], domwBase))
                     for p in ttk.TTkUiProperties[ccName]['properties']:
                         if p in exceptions:
                             prop = exceptions[p]
@@ -262,4 +264,4 @@ class PropertyEditor(ttk.TTkGridLayout):
                             prop = ttk.TTkUiProperties[ccName]['properties'][p]
                         if p not in proplist:
                             proplist.append(p)
-                            classItem.addChild(_processProp(p, prop))
+                            classItem.addChild(_processProp(p, prop, domwBase))
