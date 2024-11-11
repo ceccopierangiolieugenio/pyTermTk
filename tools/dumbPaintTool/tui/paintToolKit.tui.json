@@ -1,6 +1,6 @@
 {
  "type": "TTkUi/Document",
- "version": "2.0.2",
+ "version": "2.1.0",
  "tui": {
   "class": "TTkContainer",
   "params": {
@@ -176,7 +176,8 @@
       "Border": false,
       "Checkable": false,
       "Checked": false,
-      "Color": "\u001b[48;2;0;0;0m"
+      "Color": "\u001b[48;2;0;0;0m",
+      "Return Type": 0
      },
      "row": 0,
      "col": 0,
@@ -206,7 +207,8 @@
       "Border": false,
       "Checkable": false,
       "Checked": false,
-      "Color": "\u001b[48;2;0;0;0m"
+      "Color": "\u001b[48;2;0;0;0m",
+      "Return Type": 2
      },
      "row": 0,
      "col": 0,
@@ -236,7 +238,8 @@
       "Border": false,
       "Checkable": false,
       "Checked": false,
-      "Color": "\u001b[48;2;0;0;0m"
+      "Color": "\u001b[38;2;0;0;0m",
+      "Return Type": 1
      },
      "row": 0,
      "col": 0,

@@ -55,10 +55,10 @@ class NotePad(ttk.TTkGridLayout):
 
         # Char Fg/Bg buttons
         fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
-        fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3)),1,0)
+        fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkColorDialogPicker.ColorReturnType.Foreground),1,0)
 
         fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
-        fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7   ,3)),1,2)
+        fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkColorDialogPicker.ColorReturnType.Background),1,2)
 
         fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
 

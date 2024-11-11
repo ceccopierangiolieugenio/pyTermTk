@@ -23,16 +23,33 @@
 __all__ = ['TTkColorButtonPickerProperties']
 
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
+from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker,TTkColorDialogPicker
 
 TTkColorButtonPickerProperties = {
     'properties' : {
         'Color' : {
                 'init': {'name':'color',                     'type':TTkColor },
                 'get':  {'cb':TTkColorButtonPicker.color,    'type':TTkColor } ,
-                'set':  {'cb':TTkColorButtonPicker.setColor, 'type':TTkColor } },    },
+                'set':  {'cb':TTkColorButtonPicker.setColor, 'type':TTkColor } },
+        'Return Type' : {
+                'init': {'name':'returnType',                     'type':'singleflag',
+                    'flags': {
+                        'Default'    : TTkColorDialogPicker.ColorReturnType.Default    ,
+                        'Foreground' : TTkColorDialogPicker.ColorReturnType.Foreground ,
+                        'Background' : TTkColorDialogPicker.ColorReturnType.Background } },
+                'get':  {'cb':TTkColorButtonPicker.returnType,    'type':'singleflag',
+                    'flags': {
+                        'Default'    : TTkColorDialogPicker.ColorReturnType.Default    ,
+                        'Foreground' : TTkColorDialogPicker.ColorReturnType.Foreground ,
+                        'Background' : TTkColorDialogPicker.ColorReturnType.Background } } ,
+                'set':  {'cb':TTkColorButtonPicker.setReturnType, 'type':'singleflag',
+                    'flags': {
+                        'Default'    : TTkColorDialogPicker.ColorReturnType.Default    ,
+                        'Foreground' : TTkColorDialogPicker.ColorReturnType.Foreground ,
+                        'Background' : TTkColorDialogPicker.ColorReturnType.Background } } } },
     'signals' : {
         'colorSelected(TTkColor)'   : {'name': 'colorSelected',   'type' : TTkColor},
+        'colorSelectedFG(TTkColor)' : {'name': 'colorSelectedFG', 'type' : TTkColor},
         'colorSelectedBG(TTkColor)' : {'name': 'colorSelectedBG', 'type' : TTkColor},
     },
     'slots' : {

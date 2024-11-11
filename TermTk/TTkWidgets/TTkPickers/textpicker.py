@@ -47,7 +47,7 @@ from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
-from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
+from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker, TTkColorDialogPicker
 
 class _superSimpleHorizontalLine(TTkWidget):
     def paintEvent(self, canvas):
@@ -141,10 +141,10 @@ class TTkTextDialogPicker(TTkWindow):
         fontLayout = TTkGridLayout(columnMinWidth=1)
         # Char Fg/Bg buttons
         fontLayout.addWidget(cb_fg := TTkCheckbox(text=" FG"),0,0)
-        fontLayout.addWidget(btn_fgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3)),1,0)
+        fontLayout.addWidget(btn_fgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkColorDialogPicker.ColorReturnType.Foreground),1,0)
 
         fontLayout.addWidget(cb_bg := TTkCheckbox(text=" BG"),0,2)
-        fontLayout.addWidget(btn_bgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3)),1,2)
+        fontLayout.addWidget(btn_bgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkColorDialogPicker.ColorReturnType.Background),1,2)
 
         # Char style buttons
         fontLayout.addWidget(btn_bold          := TTkButton(border=True, maxSize=(5,3), minSize=(5,3), checkable=True, text=TTkString( 'a' , TTkColor.BOLD)        ),1,4)
@@ -172,11 +172,11 @@ class TTkTextDialogPicker(TTkWindow):
         btn_emoji.clicked.connect(_showEmojiPicker)
 
         @pyTTkSlot(TTkColor)
-        def _currentColorChangedCB(format):
+        def _currentColorChangedCB(format:TTkColor):
             if fg := format.foreground():
                 cb_fg.setCheckState(TTkK.Checked)
                 btn_fgColor.setEnabled()
-                btn_fgColor.setColor(fg.invertFgBg())
+                btn_fgColor.setColor(fg)
             else:
                 cb_fg.setCheckState(TTkK.Unchecked)
                 btn_fgColor.setDisabled()
@@ -195,12 +195,14 @@ class TTkTextDialogPicker(TTkWindow):
             btn_strikethrough.setChecked(format.strikethrough())
             # TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
 
+        _currentColorChangedCB(self._textEdit.textCursor().positionColor())
         self._textEdit.currentColorChanged.connect(_currentColorChangedCB)
+
 
         def _setStyle():
             color = TTkColor()
             if cb_fg.checkState() == TTkK.Checked:
-                color += btn_fgColor.color().invertFgBg()
+                color += btn_fgColor.color()
             if cb_bg.checkState() == TTkK.Checked:
                 color += btn_bgColor.color()
             if btn_bold.isChecked():

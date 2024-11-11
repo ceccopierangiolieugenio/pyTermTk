@@ -404,7 +404,7 @@ class ImportImage(ttk.TTkWindow):
         propertiesFrame.layout().addWidget(ttk.TTkLabel(text='Resolution:',maxWidth=11), 0,0)
         propertiesFrame.layout().addWidget(cb_resolution := ttk.TTkComboBox(),           0,1,1,2)
         propertiesFrame.layout().addWidget(ttk.TTkLabel(text='AlphaColor:'),             1,0)
-        propertiesFrame.layout().addWidget(b_color  := ttk.TTkColorButtonPicker(color=ttk.TTkColor.fg("#000000")),  1,1,1,2)
+        propertiesFrame.layout().addWidget(b_color  := ttk.TTkColorButtonPicker(color=ttk.TTkColor.bg("#000000")),  1,1,1,2)
         propertiesFrame.layout().addWidget(b_export := ttk.TTkButton(text="Export"),     3,0,1,3)
         # propertiesFrame.layout().addItem(ttk.TTkLayout(),3,0,1,2)
 

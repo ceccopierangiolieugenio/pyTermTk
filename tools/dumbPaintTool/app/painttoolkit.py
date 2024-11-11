@@ -136,7 +136,7 @@ class PaintToolKit(ttk.TTkContainer):
     def color(self):
         color = ttk.TTkColor()
         if self._cbFg.checkState() == ttk.TTkK.Checked:
-            color += self._bpFg.color().invertFgBg()
+            color += self._bpFg.color()
         if self._cbBg.checkState() == ttk.TTkK.Checked:
            color += self._bpBg.color()
         return color
@@ -146,7 +146,7 @@ class PaintToolKit(ttk.TTkContainer):
         if fg := color.foreground():
             self._cbFg.setCheckState(ttk.TTkK.Checked)
             self._bpFg.setEnabled()
-            self._bpFg.setColor(fg.invertFgBg())
+            self._bpFg.setColor(fg)
         else:
             self._cbFg.setCheckState(ttk.TTkK.Unchecked)
             self._bpFg.setDisabled()

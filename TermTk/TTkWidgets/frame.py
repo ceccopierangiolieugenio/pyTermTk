@@ -47,8 +47,10 @@ class TTkFrame(TTkContainer):
     '''
     classStyle = {
                 'default':     {'color': TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
+                                'fillColor': TTkColor.RST,
                                 'borderColor': TTkColor.RST},
                 'disabled':    {'color': TTkColor.fg('#888888'),
+                                'fillColor': TTkColor.RST,
                                 'borderColor':TTkColor.fg('#888888')}
             }
 
@@ -180,8 +182,11 @@ class TTkFrame(TTkContainer):
     def paintEvent(self, canvas):
         style = self.currentStyle()
         color = style['color']
+        fillColor = style['fillColor']
         borderColor = style['borderColor']
 
+        if fillColor != TTkColor.RST:
+            canvas.fill(color=fillColor)
         if self._border:
             canvas.drawBox(pos=(0,0),size=(self._width,self._height), color=borderColor)
             if len(self._title) != 0:

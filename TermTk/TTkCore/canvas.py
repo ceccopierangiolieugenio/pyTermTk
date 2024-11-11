@@ -153,9 +153,14 @@ class TTkCanvas():
         fyb = min(h,fyb)
 
         fillCh    = [char]*(fxb-fxa)
-        fillColor = [color]*(fxb-fxa)
         for iy in range(fya,fyb):
             self._data[iy][fxa:fxb]   = fillCh
+        if color.colorType() & TTkK.Modifier:
+            for iy in range(fya,fyb):
+                for ix in range(fxa,fxb):
+                    self._colors[iy][ix] = color.mod(fxa+ix,fya+iy)
+        else:
+            fillColor = [color]*(fxb-fxa)
             self._colors[iy][fxa:fxb] = fillColor
 
     def drawVLine(self, pos, size, color=TTkColor.RST):

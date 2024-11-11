@@ -45,6 +45,7 @@ from  showcase.list          import demoList
 from  showcase.menubar       import demoMenuBar
 from  showcase.filepicker    import demoFilePicker
 from  showcase.colorpicker   import demoColorPicker
+from  showcase.textpicker    import demoTextPicker
 from  showcase.tree          import demoTree
 from  showcase.table         import demoTTkTable
 from  showcase.fancytable    import demoFancyTable
@@ -183,6 +184,7 @@ def demoShowcase(root=None, border=True):
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabPickers.addTab(demoFilePicker(),  " File Picker ",  'showcase/filepicker.py')
     tabPickers.addTab(demoColorPicker(), " Color Picker ", 'showcase/colorpicker.py')
+    tabPickers.addTab(demoTextPicker(), " Text Picker ",  'showcase/textpicker.py')
     tabPickers.addMenu("sources", ttk.TTkK.RIGHT, tabPickers).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Graphs")

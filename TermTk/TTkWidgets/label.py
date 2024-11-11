@@ -68,6 +68,7 @@ class TTkLabel(TTkWidget):
         '''color'''
         return self.style()['default']['color']
 
+    @pyTTkSlot(TTkColor)
     def setColor(self, color):
         '''setColor'''
         self.mergeStyle({'default':{'color':color}})

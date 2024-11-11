@@ -62,6 +62,7 @@ TTkLabelProperties = {
     },'signals' : {
     },'slots' : {
         'setText(str)'            : {'name': 'setText',      'type':str},
+        'setColor(TTkColor)'      : {'name': 'setColor',     'type':TTkColor},
         'setAlignment(Alignment)' : {'name': 'setAlignment', 'type':TTkK.Alignment},
     }
 }
