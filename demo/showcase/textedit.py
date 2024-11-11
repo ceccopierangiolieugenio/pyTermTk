@@ -130,10 +130,10 @@ def demoTextEdit(root=None, document=None):
 
     # Char Fg/Bg buttons
     fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
-    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkColorDialogPicker.ColorReturnType.Foreground),1,0)
+    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Foreground),1,0)
 
     fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
-    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkColorDialogPicker.ColorReturnType.Background),1,2)
+    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Background),1,2)
 
     fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
     fontLayout.addWidget(sb_linenumber := ttk.TTkSpinBox(value=1, maxWidth=5, maximum=10000, minimum=-10000, enabled=True),0,7,1,1)

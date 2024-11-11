@@ -141,10 +141,10 @@ class TTkTextDialogPicker(TTkWindow):
         fontLayout = TTkGridLayout(columnMinWidth=1)
         # Char Fg/Bg buttons
         fontLayout.addWidget(cb_fg := TTkCheckbox(text=" FG"),0,0)
-        fontLayout.addWidget(btn_fgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkColorDialogPicker.ColorReturnType.Foreground),1,0)
+        fontLayout.addWidget(btn_fgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkK.ColorPickerReturnType.Foreground),1,0)
 
         fontLayout.addWidget(cb_bg := TTkCheckbox(text=" BG"),0,2)
-        fontLayout.addWidget(btn_bgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkColorDialogPicker.ColorReturnType.Background),1,2)
+        fontLayout.addWidget(btn_bgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkK.ColorPickerReturnType.Background),1,2)
 
         # Char style buttons
         fontLayout.addWidget(btn_bold          := TTkButton(border=True, maxSize=(5,3), minSize=(5,3), checkable=True, text=TTkString( 'a' , TTkColor.BOLD)        ),1,4)

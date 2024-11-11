@@ -188,7 +188,7 @@ class _TTkColorButton(TTkButton):
     __slots__ = ('colorClicked','_custom','_color','_returnType')
     def __init__(self, *,
                  color:TTkColor=TTkColor.RST,
-                 returnType=0x00,
+                 returnType:TTkK.ColorPickerReturnType=TTkK.ColorPickerReturnType.Default,
                  custom:bool=False,
                  **kwargs) -> None:
         # Signals
@@ -216,12 +216,18 @@ class _TTkColorButton(TTkButton):
         self.setStyle(style)
         self.update()
 
+    def returnType(self) -> TTkK.ColorPickerReturnType:
+        return self._returnType
+
+    def setReturnType(self, returnType:TTkK.ColorPickerReturnType) -> None:
+        self._returnType = returnType
+
     def color(self) -> TTkColor:
         fg = self._color.foreground()
         bg = self._color.background()
-        if self._returnType==TTkColorDialogPicker.ColorReturnType.Foreground:
+        if self._returnType==TTkK.ColorPickerReturnType.Foreground:
             return fg if fg else bg.invertFgBg() if bg else TTkColor.RST
-        if self._returnType==TTkColorDialogPicker.ColorReturnType.Background:
+        if self._returnType==TTkK.ColorPickerReturnType.Background:
             return bg if bg else fg.invertFgBg() if fg else TTkColor.RST
         return self._color
 
@@ -314,17 +320,6 @@ class TTkColorDialogPicker(TTkWindow):
     #     │└──────────────────────┘└──────────────────────┘│
     #     └────────────────────────────────────────────────┘
 
-    class ColorReturnType(int):
-        '''
-        This class identify the return color type
-        '''
-        Default=0x00
-        '''The color type returned (fg or bg) is compliant of the type used in the initialization or 'Foreground' in case is missing or :py:class:`TTKColor.RST`'''
-        Foreground=0x01
-        '''The color type returned is Foreground'''
-        Background=0x02
-        '''The color type returned is Background'''
-
     classStyle = {
                 'default':     {'color': TTkColor.RST,
                                 'borderColor': TTkColor.RST,
@@ -356,13 +351,13 @@ class TTkColorDialogPicker(TTkWindow):
         )
     def __init__(self, *,
                  color:TTkColor=TTkColor.RST,
-                 returnType:ColorReturnType=ColorReturnType.Default,
+                 returnType:TTkK.ColorPickerReturnType=TTkK.ColorPickerReturnType.Default,
                  **kwargs) -> None:
         '''
         :param color: the current color
         :type  color: :py:class:`TTkColor`
         :param returnType: the type of the returuning color
-        :type  returnType: :py:class:`TTkColorDialogPicker.ColorReturnType`
+        :type  returnType: :py:class:`TTkK.ColorPickerReturnType`
         '''
         # Signals
         self.colorSelected = pyTTkSignal(TTkColor)
@@ -556,9 +551,9 @@ class TTkColorDialogPicker(TTkWindow):
         '''
         fg = self._color.foreground()
         bg = self._color.background()
-        if self._returnType==TTkColorDialogPicker.ColorReturnType.Foreground:
+        if self._returnType==TTkK.ColorPickerReturnType.Foreground:
             return fg if fg else bg.invertFgBg() if bg else TTkColor.RST
-        if self._returnType==TTkColorDialogPicker.ColorReturnType.Background:
+        if self._returnType==TTkK.ColorPickerReturnType.Background:
             return bg if bg else fg.invertFgBg() if fg else TTkColor.RST
         return self._color
 
@@ -649,7 +644,7 @@ class TTkColorButtonPicker(_TTkColorButton):
         :param color: the current color
         :type  color: :py:class:`TTkColor`
         :param returnType: the type of the returuning color
-        :type  returnType: :py:class:`TTkColorDialogPicker.ColorReturnType`
+        :type  returnType: :py:class:`TTkK.ColorPickerReturnType`
         '''
         # Signals
         self.colorSelected   = pyTTkSignal(TTkColor)
@@ -658,12 +653,6 @@ class TTkColorButtonPicker(_TTkColorButton):
         super().__init__(**kwargs)
         self._custom = False
         self.clicked.connect(self._colorClicked)
-
-    def returnType(self) -> TTkColorDialogPicker.ColorReturnType:
-        return self._returnType
-
-    def setReturnType(self, returnType:TTkColorDialogPicker.ColorReturnType) -> None:
-        self._returnType = returnType
 
     @pyTTkSlot()
     def _colorClicked(self):

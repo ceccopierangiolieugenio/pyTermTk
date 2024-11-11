@@ -146,6 +146,22 @@ class TTkConstant:
     ScrollBarAlwaysOff = ScrollBarPolicy.ScrollBarAlwaysOff
     ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
 
+    class ColorPickerReturnType(int):
+        '''
+        This class identify the return color type used in :py:class:`TTkColorDialogPicker` or :py:class:`TTkColorButtonPicker`
+
+        .. autosummary::
+          Default
+          Foreground
+          Background
+        '''
+        Default=0x00
+        '''The color type returned (fg or bg) is compliant of the type used in the initialization or 'Foreground' in case is missing or :py:class:`TTKColor.RST`'''
+        Foreground=0x01
+        '''The color type returned is Foreground'''
+        Background=0x02
+        '''The color type returned is Background'''
+
     class CheckState(int):
         ''' This class type is used to describe the check status.
 

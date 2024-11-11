@@ -116,10 +116,10 @@ class TextArea(ttk.TTkGridLayout):
 
         # Char Fg/Bg buttons
         fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
-        fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkColorDialogPicker.ColorReturnType.Foreground),1,0)
+        fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Foreground),1,0)
 
         fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
-        fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkColorDialogPicker.ColorReturnType.Background),1,2)
+        fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Background),1,2)
 
         fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
 
@@ -137,7 +137,7 @@ class TextArea(ttk.TTkGridLayout):
             if fg := format.foreground():
                 cb_fg.setCheckState(ttk.TTkK.Checked)
                 btn_fgColor.setEnabled()
-                btn_fgColor.setColor(fg.invertFgBg())
+                btn_fgColor.setColor(fg)
             else:
                 cb_fg.setCheckState(ttk.TTkK.Unchecked)
                 btn_fgColor.setDisabled()
@@ -155,7 +155,7 @@ class TextArea(ttk.TTkGridLayout):
         def _setStyle():
             color = ttk.TTkColor()
             if cb_fg.checkState() == ttk.TTkK.Checked:
-                color += btn_fgColor.color().invertFgBg()
+                color += btn_fgColor.color()
             if cb_bg.checkState() == ttk.TTkK.Checked:
                 color += btn_bgColor.color()
             cursor = self._te.textCursor()

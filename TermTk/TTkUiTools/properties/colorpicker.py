@@ -22,6 +22,7 @@
 
 __all__ = ['TTkColorButtonPickerProperties']
 
+from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker,TTkColorDialogPicker
 
@@ -34,19 +35,19 @@ TTkColorButtonPickerProperties = {
         'Return Type' : {
                 'init': {'name':'returnType',                     'type':'singleflag',
                     'flags': {
-                        'Default'    : TTkColorDialogPicker.ColorReturnType.Default    ,
-                        'Foreground' : TTkColorDialogPicker.ColorReturnType.Foreground ,
-                        'Background' : TTkColorDialogPicker.ColorReturnType.Background } },
+                        'Default'    : TTkK.ColorPickerReturnType.Default    ,
+                        'Foreground' : TTkK.ColorPickerReturnType.Foreground ,
+                        'Background' : TTkK.ColorPickerReturnType.Background } },
                 'get':  {'cb':TTkColorButtonPicker.returnType,    'type':'singleflag',
                     'flags': {
-                        'Default'    : TTkColorDialogPicker.ColorReturnType.Default    ,
-                        'Foreground' : TTkColorDialogPicker.ColorReturnType.Foreground ,
-                        'Background' : TTkColorDialogPicker.ColorReturnType.Background } } ,
+                        'Default'    : TTkK.ColorPickerReturnType.Default    ,
+                        'Foreground' : TTkK.ColorPickerReturnType.Foreground ,
+                        'Background' : TTkK.ColorPickerReturnType.Background } } ,
                 'set':  {'cb':TTkColorButtonPicker.setReturnType, 'type':'singleflag',
                     'flags': {
-                        'Default'    : TTkColorDialogPicker.ColorReturnType.Default    ,
-                        'Foreground' : TTkColorDialogPicker.ColorReturnType.Foreground ,
-                        'Background' : TTkColorDialogPicker.ColorReturnType.Background } } } },
+                        'Default'    : TTkK.ColorPickerReturnType.Default    ,
+                        'Foreground' : TTkK.ColorPickerReturnType.Foreground ,
+                        'Background' : TTkK.ColorPickerReturnType.Background } } } },
     'signals' : {
         'colorSelected(TTkColor)'   : {'name': 'colorSelected',   'type' : TTkColor},
         'colorSelectedFG(TTkColor)' : {'name': 'colorSelectedFG', 'type' : TTkColor},
