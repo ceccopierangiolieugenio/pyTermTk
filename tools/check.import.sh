@@ -89,7 +89,9 @@ __check(){
             -e "TTkTerminal/__init__.py:import importlib.util" \
             -e "TTkTerminal/__init__.py:import platform" |
         grep -v \
-            -e "TTkModelView/tablemodelcsv.py:import csv"
+            -e "TTkModelView/tablemodelcsv.py:import csv" \
+            -e "TTkModelView/tablemodelsqlite3.py:import sqlite3" \
+            -e "TTkModelView/tablemodelsqlite3.py:import threading"
 } ;
 
 if __check ;  then
