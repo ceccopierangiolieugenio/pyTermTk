@@ -1,3 +1,5 @@
+from importlib.util import find_spec
+
 from .tree                import *
 from .treewidget          import *
 from .treewidgetitem      import *
@@ -9,4 +11,6 @@ from .tablewidget         import *
 from .tablewidgetitem     import *
 from .tablemodellist      import *
 from .tablemodelcsv       import *
-from .tablemodelsqlite3   import *
+
+if find_spec('sqlite3'):
+    from .tablemodelsqlite3   import *
