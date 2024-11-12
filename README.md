@@ -16,7 +16,7 @@
 Evolved from the discontinued project [pyCuT](https://github.com/ceccopierangiolieugenio/pyCuT)
 and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/),[GTK](https://pygobject.readthedocs.io/en/latest/), and [tkinter](https://docs.python.org/3/library/tkinter.html) api definition with a touch of personal interpretation
 
-[pyTermTk.Showcase.002.webm](https://user-images.githubusercontent.com/8876552/206490679-2bbdc909-c9bc-41c1-9a50-339b06dabecd.webm)
+https://github.com/user-attachments/assets/888e745a-ea00-4d03-b6ec-273319d54ea7
 
 ## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
 - [Self Contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external lib required), Python 3.9 or above required.
