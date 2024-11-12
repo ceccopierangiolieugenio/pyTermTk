@@ -119,6 +119,8 @@ class TTkAbstractTableModel():
 
     :py:class:`TTkTableModelCSV` subclass of :py:class:`TTkTableModelList` including the api to import csv data
 
+    :py:class:`TTkTableModelSQLite3` subclass of :py:class:`TTkTableModelList` including support for `sqlite3 <https://www.sqlite.org>`__ databases
+
     '''
 
     __slots__ = (
