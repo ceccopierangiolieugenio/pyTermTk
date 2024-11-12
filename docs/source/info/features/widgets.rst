@@ -10,11 +10,11 @@ Base Widgets
 
 * Label :py:class:`TTkLabel`
 * Button :py:class:`TTkButton`
-* ComboBox :py:class:`TTkCombobox`
-* Line Edit :py:class:`TTkLineedit`
-* Spinbox :py:class:`TTkSpinbox`
+* ComboBox :py:class:`TTkComboBox`
+* Line Edit :py:class:`TTkLineEdit`
+* Spinbox :py:class:`TTkSpinBox`
 * Checkbox :py:class:`TTkCheckbox`
-* Radio Button :py:class:`TTkRadiobutton`
+* Radio Button :py:class:`TTkRadioButton`
 * Scrollbar :py:class:`TTkScrollBar`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Base.gif
