@@ -161,7 +161,8 @@ class TTkCanvas():
                     self._colors[iy][ix] = color.mod(fxa+ix,fya+iy)
         else:
             fillColor = [color]*(fxb-fxa)
-            self._colors[iy][fxa:fxb] = fillColor
+            for iy in range(fya,fyb):
+                self._colors[iy][fxa:fxb] = fillColor
 
     def drawVLine(self, pos, size, color=TTkColor.RST):
         if size == 0: return
