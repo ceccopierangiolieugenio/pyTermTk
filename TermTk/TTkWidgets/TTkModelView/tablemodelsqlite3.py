@@ -57,7 +57,7 @@ class TTkTableModelSQLite3(TTkAbstractTableModel):
 
     In This example i assume i have a database named **sqlite.database.db** which contain a table **users**
 
-    Please refer to `test.ui.032.table.10.sqlite.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.026.toolTip.py>`_   (`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/tests/t.ui/test.ui.032.table.10.sqlite.py>`__) for  working eample.
+    Please refer to `test.ui.032.table.10.sqlite.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.ui/test.ui.032.table.10.sqlite.py>`_ for  working eample.
 
     .. code-block:: python
 
