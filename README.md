@@ -18,15 +18,15 @@ and inspired by a mix of [Qt5](https://www.riverbankcomputing.com/static/Docs/Py
 
 [pyTermTk.Showcase.002.webm](https://user-images.githubusercontent.com/8876552/206490679-2bbdc909-c9bc-41c1-9a50-339b06dabecd.webm)
 
-## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/index.html)
-- [Self Contained](https://ceccopierangiolieugenio.github.io/pyTermTk/info/installing.html) (no external lib required), Python 3.9 or above required.
-- [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
-- [Basic widgets](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/widgets.html#base-widgets) for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
-- [Specialized widgets](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/widgets.html#specialised-widgets) to improve the usability (Windows, Frames, Tables, ...)
+## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
+- [Self Contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external lib required), Python 3.9 or above required.
+- [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
+- [Basic widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#base-widgets) for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
+- [Specialized widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#specialised-widgets) to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
 - True color support
 - Ful/Half/Zero sized Unicode characters 😎
-- I am pretty sure there is [something else...](https://ceccopierangiolieugenio.github.io/pyTermTk/info/features/index.html)
+- I am pretty sure there is [something else...](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
 
 ---
 
@@ -41,8 +41,8 @@ Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) 
 ## [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 Be inspired by [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial) and [the Examples](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tutorial/000-examples.rst)
 
-## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk/)
-Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk/)
+## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
+Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
 
 ## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner)
 Smell deliciousness with the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
@@ -52,7 +52,7 @@ Unravel your inner artist with [The Terminal ASCII Photoshop](https://ceccopiera
 
 ---
 
-## [Install/Upgrade](https://ceccopierangiolieugenio.github.io/pyTermTk/info/installing.html)
+## [Install/Upgrade](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html)
 [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) is available on [PyPI](https://pypi.org/project/pyTermTk/)
 ```bash
 pip3 install --upgrade pyTermTk

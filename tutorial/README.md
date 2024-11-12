@@ -14,14 +14,14 @@ pip3 install --upgrade pyTermTk
 
 A list of frequently used modules is given below:
 
- - [TTkCore](https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkCore.html) − Core classes used by other modules
- - [TTkGui](https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkGui.html) − Themes collection
- - [TTkWidgets](https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.html) − Classes for creating classic desktop-style UIs
- - [TTkTestWidgets](https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkTestWidgets.html) − Classes with basic testing widgets
+ - [TTkCore](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/_autosummary/TermTk.TTkCore.html) − Core classes used by other modules
+ - [TTkGui](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/_autosummary/TermTk.TTkGui.html) − Themes collection
+ - [TTkWidgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/_autosummary/TermTk.TTkWidgets.html) − Classes for creating classic desktop-style UIs
+ - [TTkTestWidgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/_autosummary/TermTk.TTkTestWidgets.html) − Classes with basic testing widgets
 
 ## Tutorials
-- **[Hello World](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/001-helloworld.html)**
-- **[Logging](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/004-logging.html)**
-- **[Layout](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/002-layout.html)**
-- **[Signals and Slots](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html)**
-- **[Your first Calculator](https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/005-calculator.html)**
+- **[Hello World](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/tutorial/001-helloworld.html)**
+- **[Logging](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/tutorial/004-logging.html)**
+- **[Layout](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/tutorial/002-layout.html)**
+- **[Signals and Slots](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/tutorial/003-signalslots.html)**
+- **[Your first Calculator](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/tutorial/005-calculator.html)**
