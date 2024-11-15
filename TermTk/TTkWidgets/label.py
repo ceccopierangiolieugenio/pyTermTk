@@ -24,6 +24,7 @@ __all__ = ['TTkLabel']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -58,27 +59,27 @@ class TTkLabel(TTkWidget):
         return self._alignment
 
     @pyTTkSlot(TTkK.Alignment)
-    def setAlignment(self, alignment: TTkK.Alignment):
+    def setAlignment(self, alignment: TTkK.Alignment) -> None:
         if self._alignment == alignment:
             return
         self._alignment = alignment
         self.update()
 
-    def color(self):
+    def color(self) ->TTkColor:
         '''color'''
         return self.style()['default']['color']
 
     @pyTTkSlot(TTkColor)
-    def setColor(self, color):
+    def setColor(self, color:TTkColor):
         '''setColor'''
         self.mergeStyle({'default':{'color':color}})
 
-    def text(self):
+    def text(self) -> TTkString:
         '''text'''
         return TTkString('\n').join(self._text)
 
     @pyTTkSlot(str)
-    def setText(self, text):
+    def setText(self, text:TTkString):
         '''setText'''
         if self.text().sameAs(text): return
         if issubclass(type(text), TTkString):
@@ -87,7 +88,7 @@ class TTkLabel(TTkWidget):
             self._text  = TTkString(text).split('\n')
         self._textUpdated()
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         style = self.currentStyle()
         color = style['color']
 
