@@ -71,10 +71,15 @@ cd pyTermTk
 # Press CTRL-C to exit (CTRL-Break on Windows)
 
 # Showcase Demo
-python3 demo/demo.py -f
+python3 demo/demo.py -f -t
 
 # run the ttkDesigner
-python3 -m ttkDesigner
+run.ttkDesigner.sh
+
+# run The Dumb Paint Tool
+# it require pillow
+#   pip install pillow
+run.dumbPaintTool.sh
 
 # Text edit with "Pygments" highlight integrated
 # it require pygments
