@@ -42,17 +42,17 @@ class TTkMouseEvent:
     .. py:attribute:: key
         :type: MouseKey
 
-        The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton`)
+        The :py:class:`TTkConstant.MouseKey` reported in this event (i.e. :py:class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.LeftButton`)
 
     .. py:attribute:: mod
         :type: KeyModifier
 
-        The :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier` used, default :class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier`
+        The :py:class:`TTkConstant.KeyModifier` used, default :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyModifier.NoModifier`
 
     .. py:attribute:: evt
         :type: MouseEvent
 
-        The :class:`~TermTk.TTkCore.constant.TTkConstant.MouseEvent` reported in this event (i.e. :class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.Press`)
+        The :py:class:`TTkConstant.MouseEvent` reported in this event (i.e. :py:class:`~TermTk.TTkCore.constant.TTkConstant.MouseKey.Press`)
 
     .. py:attribute:: tap
         :type: int

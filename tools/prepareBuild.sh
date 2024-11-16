@@ -73,10 +73,17 @@ case $1 in
                 ;;
         ttkDesigner)
                 _NAME='ttkDesigner'
-                _BUILD_LIB='ttkDesigner'
+                _BUILD_LIB='tools/ttkDesigner'
                 _SETUP='setup.ttkDesigner.py'
-                _README='ttkDesigner/README.md'
+                _README='tools/ttkDesigner/README.md'
                 _CFG='ttkDesigner/app/cfg.py'
+                ;;
+        dumbPaintTool)
+                _NAME='dumbPaintTool'
+                _BUILD_LIB='tools/dumbPaintTool'
+                _SETUP='setup.dumbPaintTool.py'
+                _README='tools/dumbPaintTool/README.md'
+                _CFG='dumbPaintTool/app/cfg.py'
                 ;;
         doc)
                 rm -rf ${_TMP_PATH}

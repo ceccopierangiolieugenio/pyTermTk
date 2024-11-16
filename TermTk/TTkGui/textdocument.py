@@ -31,12 +31,18 @@ class TTkTextDocument():
         Undo,Redo Logic
 
         Old:
+
+        ::
+
             _snapshotId: = last saved/undo/redo state
                                    3 = doc4
             _snapshots:
                 [doc1, doc2, doc3, doc4, doc5, doc6, . . .]
 
         New:
+
+        ::
+
             SnapshotId:
                               2
             Snapshots:                  _lastSnap     _dataLines (unstaged)
@@ -50,6 +56,8 @@ class TTkTextDocument():
                 [   d10,  d21,  d32,  d43   ] = Backward Diffs
             Slices: = common txt slices between snapshots
                 [   s01,  s12,  s23,  s34   ]
+
+        ::
 
             Data Structure
                         ╔═══════════════╗                         ╔═══════════════╗
@@ -67,6 +75,7 @@ class TTkTextDocument():
                 ╚═══════════════╝  │  ╚═══════════════╝   ╚═══════════════╝
                                    │                             │
                                    └─────────────────────────────┘
+
     '''
     class _snapDiff():
         '''
@@ -119,7 +128,7 @@ class TTkTextDocument():
         'undoAvailable', 'redoAvailable', 'undoCommandAdded',
         'modificationChanged'
         )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *, text:TTkString=" ") -> None:
         from TermTk.TTkGui.textcursor import TTkTextCursor
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
@@ -128,7 +137,7 @@ class TTkTextDocument():
         self.redoAvailable = pyTTkSignal(bool)
         self.undoCommandAdded = pyTTkSignal()
         self.modificationChanged = pyTTkSignal(bool)
-        text =  kwargs.get('text'," ")
+        text = text
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False
         # Cumulative changes since the lasrt snapshot
@@ -210,6 +219,8 @@ class TTkTextDocument():
 
     def setText(self, text):
         remLines = len(self._dataLines)
+        if not isinstance(text, str) and not isinstance(text,TTkString):
+            text=str(text)
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False
         self._lastSnap = self._dataLines.copy()

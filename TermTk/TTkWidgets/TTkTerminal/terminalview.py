@@ -61,6 +61,65 @@ class _termLog():
     mouse = lambda _:None
 
 class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
+    '''
+    :py:class:`TTkTerminalView` is a terminal emulator fot TermTk
+
+    .. warning::
+        This is an Alpha feature, it is not optimized and the API definition may change in the future
+
+
+    TermShot from: `tests/t.pty/test.pty.006.terminal.07.py           <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tests/t.pty/test.pty.006.terminal.07.py>`_
+
+    ::
+
+        ╔════════════════════════════════════════════════════════════════════════════════════╗
+        ║ Terminello n.1                                                            [_][^][x]║
+        ╟────────────────────────────────────────────────────────────────────────────────────╢
+        ║ $ neofetch                                                                        ▲║
+        ║`.-::---..                     PierCecco@FrankenstOne                              ┊║
+        ║      .:++++ooooosssoo:.       ---------------------------                         ┊║
+        ║    .+o++::.      `.:oos+.     OS: LMDE 6 (faye) x86_64                            ┊║
+        ║   :oo:.`             -+oo:    Host: Lemur Pro lemp11                              ┊║
+        ║ `+o/`    .::::::-.    .++-`   Kernel: 6.1.0-26-amd64                              ▓║
+        ║`/s/    .yyyyyyyyyyo:   +o-`   Uptime: 27 days, 2 hours, 33 mins                   ▓║
+        ║`so     .ss       ohyo` :s-:   Packages: 2787 (dpkg), 38 (flatpak)                 ▓║
+        ║`s/     .ss  h  m  myy/ /s``   Shell: bash 5.2.15                                  ▓║
+        ║`s:     `oo  s  m  Myy+-o:`    Resolution: 1920x1080, 3440x1440                    ▓║
+        ║`oo      :+sdoohyoydyso/.      DE: Cinnamon 6.2.9                                  ▓║
+        ║ :o.      .:////////++:        WM: Mutter (Muffin)                                 ▓║
+        ║ `/++        -:::::-           WM Theme: Mint-Y-Dark-Orange (Mint-Y)               ▓║
+        ║  `++-                         Theme: Mint-L-Dark [GTK2/3]                         ▓║
+        ║   `/+-                        Icons: Mint-X-Orange [GTK2/3]                       ▓║
+        ║     .+/.                      Terminal: tmux                                      ▓║
+        ║       .:+-.                   CPU: 12th Gen Intel i7-1255U (12) @ 4.700GHz        ▓║
+        ║          `--.``               GPU: Intel Alder Lake-UP3 GT2 [Iris Xe Graphics]    ▓║
+        ║                               Memory: 32111MiB / 39956MiB                         ▓║
+        ║                                                                                   ▓║
+        ║23 PierCecco FrankenstOne < 12:24 > (1052) ~/github/Varie/pyTermTk                 ▓║
+        ║ $                                                                                 ▼║
+        ╚════════════════════════════════════════════════════════════════════════════════════╝
+
+    Quickstart:
+
+    .. code-block:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(mouseTrack=True)
+
+        win = ttk.TTkWindow(parent=root, title="Terminal", size=(80+2,24+4), layout=ttk.TTkGridLayout())
+
+        term = ttk.TTkTerminal(parent=win)
+
+        th = ttk.TTkTerminalHelper(term=term)
+        th.runShell()
+
+        root.mainloop()
+
+    More examples are available :ref:`here <Examples-Terminal>`.
+
+    '''
+
     @dataclass
     class _Terminal():
         bracketedMode: bool = False
@@ -78,6 +137,55 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         reportMove:  bool = False
         sgrMode:     bool = False
 
+    bell:pyTTkSignal
+    '''
+    This signal is emitted when the `bell <https://en.wikipedia.org/wiki/Bell_character>`__ is received.
+    '''
+
+    terminalClosed:pyTTkSignal
+    '''
+    This signal is emitted when the terminal is closed.
+    '''
+
+    titleChanged:pyTTkSignal
+    '''
+    This signal is emitted when the terminal title change through OSC "ESC ]0;"
+
+    :param title: the new title
+    :type title: str
+    '''
+
+    textSelected:pyTTkSignal
+    '''
+    This signal is emitted when a text is selected.
+
+    :param text: the selected text
+    :type text: :py:class:`ttkString`
+    '''
+
+    termData:pyTTkSignal
+    '''
+    This signal is emitted when data event fires.
+
+    This happens for example when the user types or pastes into the terminal.
+    The event value is whatever 'str' results, in a typical setup,
+    this should be passed on to the backing pty.
+
+    This signal is used in :py:class:`TTkTerminalHelper` through :py:meth:`TTkTerminalHelper.attachTTkTerminal`
+    to frward all the terminal events to the pty interface.
+
+    :param data: the event data
+    :type data: str
+    '''
+
+    termResized:pyTTkSignal
+    '''
+    This signal is emitted when the terminal is resized.
+
+    :param size: the new size [width, height] of the terminal
+    :type size: (int,int)
+    '''
+
     __slots__ = (
             '_termLoop', '_newSize',
             '_clipboard', '_selecting',
@@ -88,14 +196,15 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             'bell',
             'titleChanged', 'terminalClosed', 'textSelected',
             'termData','termResized')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
+        #Signals
         self.bell = pyTTkSignal()
         self.terminalClosed = pyTTkSignal()
         self.titleChanged = pyTTkSignal(str)
-        self.textSelected = pyTTkSignal(str)
-
+        self.textSelected = pyTTkSignal(TTkString)
         self.termData = pyTTkSignal(str)
         self.termResized = pyTTkSignal(int,int)
+
         self._newSize = None
         self._terminal = TTkTerminalView._Terminal()
         self._keyboard = TTkTerminalView._Keyboard()
@@ -114,7 +223,8 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         next(self._termLoop)
         self._termLoop.send("")
 
-        super().__init__(*args, **kwargs)
+        # Do NOT use super() due to the multiple imports
+        TTkAbstractScrollView.__init__(self, **kwargs)
 
         w,h = self.size()
         self._screen_alt.resize(w,h)
@@ -135,18 +245,18 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     def _viewChangedHandler(self):
         self.update()
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         w,h = self.size()
         h += len(self._screen_current._bufferedLines)
         return w,h
 
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
+    def termSize(self) -> tuple[int,int]:
+        '''
+        This property holds the size of the terminal
 
-    def close(self):
-        self._quit()
-
-    def termSize(self):
+        :return: a tuple of 2 integers (width, height)
+        :rtype: tuple
+        '''
         return self.size()
 
     def resizeEvent(self, w: int, h: int):
@@ -168,14 +278,20 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
     re_CSI_Ps_fu    = re.compile(r'^\[(\d*)([@ABCDEFGIJKLMPSTXZ^`abcdeghinqx])')
     re_CSI_Ps_Ps_fu = re.compile(r'^\[(\d*);(\d*)([Hf])')
 
-    re_DEC_SET_RST  = re.compile(r'^\[(\??)(\d+)([lh])')
+    re_DEC_SET_RST  = re.compile(r'^\[(\??)([\d;]+)([lh])')
     # re_CURSOR_1    = re.compile(r'^(\d+)([ABCDEFGIJKLMPSTXZHf])')
 
     re_OSC_ps_Pt    = re.compile(r'^(\d*);(.*)$')
 
     re_XTWINOPS     = re.compile(r'^')
 
-    def termWrite(self, data):
+    def termWrite(self, data:str) -> None:
+        '''
+        Write data to the terminal.
+
+        :params data: the data to write
+        :type data: str
+        '''
         if data:
             self._termLoop.send(data)
 
@@ -212,24 +328,26 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
 
                 ################################################
                 # CSI Modes
-                #   CSI Pm h
+                #   CSI Pm ; Pm ; ... h
                 #       Set Mode (SM).
-                #   CSI Pm l
+                #   CSI Pm ; Pm ; ... l
                 #       Reset Mode (RM).
-                #   CSI ? Pm h
+                #   CSI ? Pm ; Pm ; ... h
                 #      DEC Private Mode Set (DECSET).
-                #   CSI ? Pm l
+                #   CSI ? Pm ; Pm ; ... l
                 #      DEC Private Mode Reset (DECRST).
                 ################################################
                 if m := TTkTerminalView.re_DEC_SET_RST.match(slice):
                     en = m.end()
-                    qm = m.group(1) == '?'
-                    ps = int(m.group(2))
+                    qm = (m.group(1) == '?')
                     sr = (m.group(3) == 'h')
+                    pms = [int(_pm) for _pm in m.group(2).split(';')]
                     if qm:
-                        self._CSI_DEC_SET_RST(ps,sr)
+                        for pm in pms:
+                            self._CSI_DEC_SET_RST(pm,sr)
                     else:
-                        self._CSI_SM_RM(ps,sr)
+                        for pm in pms:
+                            self._CSI_SM_RM(pm,sr)
                     slice = slice[en:]
 
                 ################################################

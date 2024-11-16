@@ -1,0 +1,286 @@
+#!/usr/bin/env python3
+
+# MIT License
+#
+# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Demo inspired from:
+# https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
+
+import os
+import sys
+import argparse
+import operator
+import json
+import random
+
+sys.path.append(os.path.join(sys.path[0],'../..'))
+import TermTk as ttk
+
+imagesFile = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../ansi.images.json')
+with open(imagesFile) as f:
+    d = json.load(f)
+    # Image exported by the Dumb Paint Tool - Removing the extra '\n' at the end
+    diamond  = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['diamond' ])[0:-1])
+    fire     = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['fire'    ])[0:-1])
+    fireMini = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['fireMini'])[0:-1])
+    key      = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['key'     ])[0:-1])
+    peach    = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['peach'   ])[0:-1])
+    pepper   = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['pepper'  ])[0:-1])
+    python   = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['python'  ])[0:-1])
+    ring     = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['ring'    ])[0:-1])
+    sword    = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['sword'   ])[0:-1])
+    whip     = ttk.TTkString(ttk.TTkUtil.base64_deflate_2_obj(d['compressed']['whip'    ])[0:-1])
+    tiles  = [diamond,fire,key,peach,ring,sword,whip]
+    images = [fireMini,pepper,python]
+
+
+class CustomColorModifier(ttk.TTkAlternateColor):
+    colors = (
+        [ ttk.TTkColor.bg("#000066"), ttk.TTkColor.bg("#0000FF") ] * 3 +
+        [ ttk.TTkColor.bg("#003300"), ttk.TTkColor.bg("#006600") ] +
+        [ ttk.TTkColor.bg("#000066"), ttk.TTkColor.bg("#0000FF") ] * 3 +
+        [ttk.TTkColor.RST] * 5 +
+        [ #Rainbow-ish
+            ttk.TTkColor.fgbg("#00FFFF","#880000") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#00FFFF","#FF0000") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#0000FF","#FFFF00") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#FF00FF","#00FF00") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#FF0000","#00FFFF") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#FFFF00","#0000FF") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#00FF00","#FF00FF") + ttk.TTkColor.BOLD,
+            ttk.TTkColor.fgbg("#00FF00","#880088") + ttk.TTkColor.BOLD] +
+        [ttk.TTkColor.RST] * 3 +
+        [ttk.TTkColor.bg("#0000FF")] +
+        [ttk.TTkColor.RST] * 2 +
+        [ttk.TTkColor.bg("#0000FF")] +
+        [ttk.TTkColor.RST] +
+        [ttk.TTkColor.bg("#0000FF")] +
+        [ttk.TTkColor.RST] +
+        [ttk.TTkColor.bg("#0000FF")] * 2 +
+        [ttk.TTkColor.RST] * 3 +
+        [ttk.TTkColor.bg("#0000FF")] * 3 +
+        [ttk.TTkColor.RST] * 5 +
+        #Rainbow-ish 2
+        [ttk.TTkColor.fgbg("#00FF00","#880088")] * 2 +
+        [ttk.TTkColor.fgbg("#00FF00","#FF00FF")] * 2 +
+        [ttk.TTkColor.fgbg("#FFFF00","#0000FF")] * 2 +
+        [ttk.TTkColor.fgbg("#FF0000","#00FFFF")] * 2 +
+        [ttk.TTkColor.fgbg("#FF00FF","#00FF00")] * 2 +
+        [ttk.TTkColor.fgbg("#0000FF","#FFFF00")] * 2 +
+        [ttk.TTkColor.fgbg("#00FFFF","#FF0000")] * 2 +
+        [ttk.TTkColor.fgbg("#00FFFF","#880000")] * 2 +
+        [ttk.TTkColor.RST] * 2
+    )
+    def __init__(self):
+        super().__init__()
+
+    def exec(self, x:int, y:int, base_color:ttk.TTkColor) -> ttk.TTkColor:
+        c =  CustomColorModifier.colors
+        return c[y%len(c)]
+
+
+class MyTableModel(ttk.TTkAbstractTableModel):
+    def __init__(self, mylist, size=None):
+        self.mylist = mylist
+        self.size=size
+        super().__init__()
+
+    def rowCount(self):        return len(self.mylist)    if not self.size else self.size[0]
+    def columnCount(self):     return len(self.mylist[0]) if not self.size else self.size[1]
+    def data(self, row, col):  return self.mylist[row][col]
+    def setData(self, row, col, data):  self.mylist[row][col] = data
+    def headerData(self, num, orientation):
+        if orientation == ttk.TTkK.HORIZONTAL:
+            prefix = ['H-aa','H-bb','H-cc','H-dd','H-ee','H-ff','H-gg','Parodi','H-hh',]
+            return f"{prefix[num%len(prefix)]}:{num:03}"
+        if orientation == ttk.TTkK.VERTICAL:
+            prefix = ['aa','bb','cc','dd','ee','ff','gg','Euge']
+            return f"{prefix[num%len(prefix)]}:{num:03}"
+        return super().headerData(num, orientation)
+
+txt1 = "Text"
+txt2 = txt1*5
+txt3 = 'M1: '+' -M1\n'.join([txt1*2]*3)
+txt4 = 'M2: '+' -M2\n'.join([txt1*5]*5)
+txt5 = ttk.TTkString(txt4, ttk.TTkColor.RED + ttk.TTkColor.BG_YELLOW)
+
+# use numbers for numeric data to sort properly
+p1 = 4
+p2 = 2
+p3 = 2
+p4 = 2
+
+data_list1 = [
+    [f"{x:04}"]+
+    [txt1,txt2,txt3,txt4,txt5]+
+    [random.choice(tiles*p1+images*p2+[txt1,txt2]*p3+[123,234,345,567,890,123.001,234.02,345.3,567.04,890.01020304,1]*p4)]+
+    [random.choice(tiles*p1+images*p2+[txt1,txt2]*p3+[123,234,345,567,890,123.001,234.02,345.3,567.04,890.01020304,1]*p4)]+
+    [random.choice(tiles*p1+images*p2+[txt1,txt2]*p3+[123,234,345,567,890,123.001,234.02,345.3,567.04,890.01020304,1]*p4)]+
+    [random.choice(tiles*p1+images*p2+[txt1,txt2]*p3+[123,234,345,567,890,123.001,234.02,345.3,567.04,890.01020304,1]*p4)]+
+    [random.choice(tiles*p1+images*p2+[txt1,txt2]*p3+[123,234,345,567,890,123.001,234.02,345.3,567.04,890.01020304,1]*p4)]+
+    [y       for y in range(10)]+
+    [y+0.123 for y in range(10)]
+                 for x in range(5000)]
+
+data_list2 = [
+    [txt1,txt2,txt3]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [y       for y in range(10)]+
+    [y+0.123 for y in range(10)]
+                 for x in range(1000)]
+
+data_list3 = [
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]+
+    [random.choice(tiles*p1)]
+                 for x in range(30)]
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', help='Full Screen (default)', action='store_true')
+parser.add_argument('-w', help='Windowed',    action='store_true')
+parser.add_argument('-t', help='Track Mouse', action='store_true')
+args = parser.parse_args()
+
+fullScreen = not args.w
+mouseTrack = args.t
+
+
+root = ttk.TTk(title="pyTermTk Table Demo", mouseTrack=mouseTrack)
+if fullScreen:
+    rootTable = root
+    root.setLayout(ttk.TTkGridLayout())
+else:
+    rootTable = ttk.TTkWindow(parent=root,pos = (0,0), size=(150,40), title="Test Table 1", layout=ttk.TTkGridLayout(), border=True)
+
+splitter = ttk.TTkSplitter(parent=rootTable,orientation=ttk.TTkK.VERTICAL)
+
+
+
+table_model1 = MyTableModel(data_list1)
+table_model2 = MyTableModel(data_list2)
+table_model3 = MyTableModel(data_list3)
+# table_model = MyTableModel(data_list, size=(15,10))
+
+table = ttk.TTkTable(parent=splitter, tableModel=table_model1)
+
+# # set column width to fit contents (set font first!)
+# table.resizeColumnsToContents()
+# # enable sorting
+# table.setSortingEnabled(True)
+
+table.setSelection((0,0),(2,2),1)
+table.setSelection((3,0),(1,2),1)
+
+table.setSelection((1,3),(2,4),1)
+table.setSelection((2,5),(2,4),1)
+table.setSelection((0,9),(2,3),1)
+
+table.setSelection((1,59),(1,2),1)
+table.setSelection((3,59),(1,2),1)
+
+controlAndLogsSplitter = ttk.TTkSplitter()
+
+splitter.addWidget(controlAndLogsSplitter,size=8,title="LOGS")
+
+controls = ttk.TTkContainer()
+
+defaultStyle = table.style()['default']
+
+tableStyle1 = {'default': defaultStyle|{'color': ttk.TTkColor.RST} }
+tableStyle2 = {'default': defaultStyle|{'color': ttk.TTkColor.bg("#000066", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.BG_BLUE))} }
+tableStyle3 = {'default': defaultStyle|{
+                    'color': ttk.TTkColor.bg("#006600", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.bg("#003300"))),
+                    'selectedColor': ttk.TTkColor.bg("#00AA00"),
+                    'hoverColor':    ttk.TTkColor.bg("#00AAAA")} }
+tableStyle4 = {'default': defaultStyle|{'color': ttk.TTkColor.bg("#660066", modifier=ttk.TTkAlternateColor(alternateColor=ttk.TTkColor.RST))} }
+tableStyle5 = {'default': defaultStyle|{
+                    'color': ttk.TTkColor.bg("#000000", modifier=CustomColorModifier()),
+                    'lineColor':      ttk.TTkColor.fg("#FFFF00"),
+                    'headerColor':    ttk.TTkColor.fg("#FFFF00")+ttk.TTkColor.bg("#660066"),
+                    'hoverColor':     ttk.TTkColor.bg("#AAAAAA"),
+                    'selectedColor':  ttk.TTkColor.bg("#FFAA66"),
+                    'separatorColor': ttk.TTkColor.fg("#330055")+ttk.TTkColor.bg("#660066")} }
+
+# Header Checkboxes
+ht = ttk.TTkCheckbox(parent=controls, pos=(1,1), size=(15,1), text=' Top  Header',checked=True)
+hl = ttk.TTkCheckbox(parent=controls, pos=(1,2), size=(15,1), text=' Left Header',checked=True)
+
+ht.toggled.connect(table.horizontalHeader().setVisible)
+hl.toggled.connect(table.verticalHeader().setVisible)
+
+# Lines/Separator Checkboxes
+vli = ttk.TTkCheckbox(parent=controls, pos=(1,4), size=(15,1), text=' V Lines',checked=True)
+hli = ttk.TTkCheckbox(parent=controls, pos=(1,5), size=(15,1), text=' H Lines',checked=True)
+
+vli.toggled.connect(table.setVSeparatorVisibility)
+hli.toggled.connect(table.setHSeparatorVisibility)
+
+
+# Themes Control
+t1 = ttk.TTkRadioButton(parent=controls, pos=(20,1), size=(11,1), text=' Theme 1', radiogroup='Themes', checked=True)
+t2 = ttk.TTkRadioButton(parent=controls, pos=(20,2), size=(11,1), text=' Theme 2', radiogroup='Themes')
+t3 = ttk.TTkRadioButton(parent=controls, pos=(20,3), size=(11,1), text=' Theme 3', radiogroup='Themes')
+t4 = ttk.TTkRadioButton(parent=controls, pos=(20,4), size=(11,1), text=' Theme 4', radiogroup='Themes')
+t5 = ttk.TTkRadioButton(parent=controls, pos=(20,5), size=(11,1), text=' Theme 5', radiogroup='Themes')
+
+t1.clicked.connect(lambda : table.mergeStyle(tableStyle1))
+t2.clicked.connect(lambda : table.mergeStyle(tableStyle2))
+t3.clicked.connect(lambda : table.mergeStyle(tableStyle3))
+t4.clicked.connect(lambda : table.mergeStyle(tableStyle4))
+t5.clicked.connect(lambda : table.mergeStyle(tableStyle5))
+
+
+# Model Picker
+m1 = ttk.TTkRadioButton(parent=controls, pos=(33,1), size=(11,1), text=' Model 1', radiogroup='Models', checked=True)
+m2 = ttk.TTkRadioButton(parent=controls, pos=(33,2), size=(11,1), text=' Model 2', radiogroup='Models')
+m3 = ttk.TTkRadioButton(parent=controls, pos=(33,3), size=(11,1), text=' Model 3', radiogroup='Models')
+
+m1.clicked.connect(lambda : table.setModel(table_model1))
+m2.clicked.connect(lambda : table.setModel(table_model2))
+m3.clicked.connect(lambda : table.setModel(table_model3))
+
+# Resize Button
+rb = ttk.TTkButton(parent=controls, pos=(33,5), size=(11,1), text="resize", border=False)
+
+rb.clicked.connect(table.resizeRowsToContents)
+rb.clicked.connect(table.resizeColumnsToContents)
+
+controlAndLogsSplitter.addWidget(controls, size=50)
+controlAndLogsSplitter.addWidget(ttk.TTkLogViewer())
+
+# winKey = ttk.TTkWindow(title="KeyPress",layout=ttk.TTkGridLayout(), size=(30,7))
+# winKey.layout().addWidget(ttk.TTkKeyPressView(maxHeight=3))
+# ttk.TTkHelper.overlay(None, winKey, 10, 4, toolWindow=True)
+
+root.mainloop()

@@ -9,8 +9,8 @@
 
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
-    <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
-    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
+    <script src="www/xterm/addon-fit/addon-fit.js"></script>
+    <script src="www/xterm/addon-unicode11/addon-unicode11.js"></script>
 
     <link href="www/fontawesome/fontawesome.min.css" rel="stylesheet">
     <link href="www/fontawesome/regular.min.css" rel="stylesheet">
@@ -29,9 +29,9 @@
       /*
       @font-face {
         font-family: "NerdFont";
-        src: url(www/nerdfonts/HurmitNerdFontMono-Regular.otf) format("opentype");
-        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
-        src: url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
+        src: url(www/fonts/nerdfonts/HurmitNerdFontMono-Regular.otf) format("opentype");
+        src: url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
+        src: url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf) format("truetype");
       }
       */
     </style>
@@ -76,15 +76,16 @@
                               and <a href="https://w2ui.com/">w2ui</a>
                              </div>`},
                   { type: 'right', size: 1000, resizable: true, style: pstyle,
-                    html: '<div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
+                    html: '<div id="terminal" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
               ]
           });
           new w2field({ el: query('#fpsCap')[0], type: 'int', autoFormat: false })
     </script>
+    <input type="file" id="file-input" hidden />
 
     <script type="text/javascript">
       // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
-      const font = new FontFace("NerdFont", "url(www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
+      const font = new FontFace("NerdFont", "url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
       document.fonts.add(font);
       font.load();
       document.fonts.ready.then(() => {main()});
@@ -118,6 +119,9 @@
         await ttkProxy.loadLib("bin/tutorial.tgz");
         term.write('Tutorials - Loaded\n\r')
 
+        await ttkProxy.loadLib("bin/tests.tgz");
+        term.write('Tests - Loaded\n\r')
+
         /* Sidebar
           Fetch all the files in the pyodide.FS
           And push them in the sidebar
@@ -147,7 +151,7 @@
         fileUri  = urlParams.get("fileUri")
         filePath = urlParams.get("filePath")
         if (fileUri != null){
-          ttkProxy.loadFile(fileUri, "test_file.py");
+          await ttkProxy.loadFile(fileUri, "test_file.py");
           loadFile("test_file.py")
         }else if (filePath != null){
           loadFile(filePath)
@@ -174,9 +178,9 @@
               allowProposedApi: true,
               fontFamily: 'NerdFont'});
 
-        /* https://www.npmjs.com/package/xterm-addon-fit */
+        /* https://www.npmjs.com/package/@xterm/addon-fit */
         const fitAddon = new FitAddon.FitAddon();
-        /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+        /* https://www.npmjs.com/package/@xterm/addon-unicode11 */
         const unicode11Addon = new Unicode11Addon.Unicode11Addon();
 
         term.loadAddon(fitAddon);

@@ -3,6 +3,7 @@
 __check(){
     grep -r -e "^import" -e "^from" TermTk |
         grep -v -e "from TermTk" -e "import TermTk" |
+        grep -v "from typing import" |
         grep -v "__init__.py:from \.[^ ]* *import" |
         grep -v -e "import re" -e "import os" -e "import datetime" |
         grep -v \
@@ -29,6 +30,7 @@ __check(){
             -e "filebuffer.py:import threading" \
             -e "texedit.py:from math import log10, floor" \
             -e "string.py:import unicodedata" \
+            -e "string.py:from types import GeneratorType" \
             -e "progressbar.py:import math" \
             -e "uiloader.py:import json" \
             -e "uiproperties.py:from .properties.* import" \
@@ -36,7 +38,8 @@ __check(){
             -e "propertyanimation.py:from inspect import getfullargspec" \
             -e "propertyanimation.py:from types import LambdaType" \
             -e "propertyanimation.py:import time, math" \
-            -e "terminal.py:from select import select" |
+            -e "savetools.py:import importlib.util" \
+            -e "savetools.py:import json" |
         grep -v \
             -e "TTkTerm/input_mono.py:from time import time" \
             -e "TTkTerm/input_mono.py:import platform" \
@@ -71,6 +74,7 @@ __check(){
             -e "drivers/__init__.py:import platform" |
         grep -v \
             -e "TTkTerminal/debugterminal.py:import struct, fcntl, termios" \
+            -e "TTkTerminal/debugterminal.py:from select import select" \
             -e "TTkTerminal/terminalview.py:import struct, fcntl, termios" \
             -e "TTkTerminal/terminalview.py:from select import select" \
             -e "TTkTerminal/terminalview.py:from .terminalview_CSI_DEC import _TTkTerminal_CSI_DEC" \
@@ -83,8 +87,12 @@ __check(){
             -e "TTkTerminal/terminalhelper.py:import struct, fcntl, termios" \
             -e "TTkTerminal/terminalhelper.py:from select import select" \
             -e "TTkTerminal/__init__.py:import importlib.util" \
-            -e "TTkTerminal/__init__.py:import platform"
-
+            -e "TTkTerminal/__init__.py:import platform" |
+        grep -v \
+            -e "TTkModelView/__init__.py:from importlib.util import find_spec" \
+            -e "TTkModelView/tablemodelcsv.py:import csv" \
+            -e "TTkModelView/tablemodelsqlite3.py:import sqlite3" \
+            -e "TTkModelView/tablemodelsqlite3.py:import threading"
 } ;
 
 if __check ;  then

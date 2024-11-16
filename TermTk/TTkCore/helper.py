@@ -53,26 +53,6 @@ class TTkHelper:
             widget.move(x,y)
     _overlay = []
 
-    class _Shortcut():
-        __slots__ = ('_letter','_widget')
-        def __init__(self, letter, widget):
-            self._letter = letter.lower()
-            self._widget = widget
-    _shortcut = []
-
-    @staticmethod
-    def addShortcut(widget, letter):
-        TTkHelper._shortcut.append(TTkHelper._Shortcut(letter, widget))
-
-    @staticmethod
-    def execShortcut(letter, widget=None):
-        if not isinstance(letter, str): return
-        for sc in TTkHelper._shortcut:
-            if sc._letter == letter.lower() and sc._widget.isVisibleAndParent():
-                if not widget or TTkHelper.isParent(widget, sc._widget):
-                    sc._widget.shortcutEvent()
-                    return
-
     @staticmethod
     def updateAll():
         if TTkHelper._rootWidget:
@@ -112,6 +92,20 @@ class TTkHelper:
         TTkHelper.quitEvent.emit()
         if TTkHelper._rootWidget:
             TTkHelper._rootWidget._quit()
+
+    @staticmethod
+    @pyTTkSlot()
+    def aboutTermTk():
+        '''
+        Displays a simple message box about `pyTermTk <https://github.com/ceccopierangiolieugenio/pyTermTk>`__.
+        The message includes the version number of TermTk being used by the application.
+
+        This is useful for inclusion in the Help menu of an application, as shown in the Menus example.
+
+        This function is a convenience slot for :py:meth:`TTk.aboutTermTk`.
+        '''
+        if TTkHelper._rootWidget:
+            TTkHelper._rootWidget.aboutTermTk()
 
     @staticmethod
     def getTerminalSize():
@@ -169,7 +163,8 @@ class TTkHelper:
         return TTkHelper.rootOverlay(widget) is not None
 
     @staticmethod
-    def overlay(caller, widget, x, y, modal=False, forceBoundaries=True, toolWindow=False):
+    def overlay(caller, widget, x:int, y:int, modal:bool=False, forceBoundaries:bool=True, toolWindow:bool=False):
+        '''overlay'''
         if not caller:
             caller = TTkHelper._rootWidget
         wx, wy = TTkHelper.absPos(caller)
@@ -187,12 +182,12 @@ class TTkHelper:
             wx += x
             wy += y
 
+        wi = widget.widgetItem()
+        wi.setLayer(wi.LAYER1)
         if  toolWindow:
             # Forcing the layer to:
             # TTkLayoutItem.LAYER1    =  0x40000000
             widget.move(wx,wy)
-            wi = widget.widgetItem()
-            wi.setLayer(wi.LAYER1)
         else:
             TTkHelper._overlay.append(TTkHelper._Overlay(wx,wy,widget,TTkHelper._focusWidget,modal))
         TTkHelper._rootWidget.rootLayout().addWidget(widget)
@@ -291,8 +286,8 @@ class TTkHelper:
         # Build a list of buffers to be repainted
         updateWidgetsBk = TTkHelper._updateWidget.copy()
         updateBuffers = TTkHelper._updateBuffer.copy()
-        TTkHelper._updateWidget = set()
-        TTkHelper._updateBuffer = set()
+        TTkHelper._updateWidget.clear()
+        TTkHelper._updateBuffer.clear()
         updateWidgets = set()
 
         # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
@@ -388,7 +383,7 @@ class TTkHelper:
         return layout.parentWidget()
 
     @staticmethod
-    def absPos(widget) -> (int,int):
+    def absPos(widget) -> tuple[int,int]:
         wx, wy = 0,0
         layout = widget.widgetItem()
         while layout:
@@ -491,8 +486,6 @@ class TTkHelper:
     def cursorWidget():
         return TTkHelper._cursorWidget
 
-    class Color(TTkTermColor): pass
-
     # Drag and Drop related helper routines
     _dnd = None
 
@@ -546,6 +539,8 @@ class TTkHelper:
             y = my+1
         else: # Draw above the Mouse
             y = max(0,my-th)
+        wi = tt.widgetItem()
+        wi.setLayer(wi.LAYER3)
         tt.move(x,y)
         TTkHelper._rootWidget.rootLayout().addWidget(tt)
         tt.raiseWidget()

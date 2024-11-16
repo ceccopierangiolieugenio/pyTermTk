@@ -11,7 +11,7 @@
       https://stackoverflow.com/questions/68412744/count-length-of-value-within-a-cell-with-full-width-characters
   - [ ] Handle Zero Width Joiner (i.e.👩🔧 -> 👩‍🔧👩🏻‍🔧👩🏻‍🔧👩🏼‍🔧👩🏽‍🔧👩🏾‍🔧👩🏿‍🔧):
         https://github.com/luchr/WidthInTerminals
-- [ ] Support Hyperlink: (gnome-terminal)
+- [/] Support Hyperlink: (gnome-terminal)
       https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 - [x] Process child events before parent
 - [ ] Rewrite the way focus is handled
@@ -177,6 +177,6 @@
  - [x] Events (Signal/Slots)
  - [x] Themes
 #### Yes/No Ok/Cancel Picker
- - [ ] Basic Implementation
- - [ ] Events (Signal/Slots)
- - [ ] Themes
+ - [x] Basic Implementation
+ - [x] Events (Signal/Slots)
+ - [x] Themes

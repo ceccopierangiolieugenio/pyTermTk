@@ -23,11 +23,55 @@
 __all__ = ['TTkAbout']
 
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.util import TTkUtil
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
 from TermTk.TTkWidgets.window import TTkWindow
-from TermTk.TTkWidgets.image import TTkImage
+from TermTk.TTkWidgets.label import TTkLabel
+
+_peppered_image = TTkUtil.base64_deflate_2_obj(
+    "eJxtVktyFDEMZcEKjsCGE1CW/C9dhCrOkAuwClUsWWQBk4SE4m6cBMmW23K7p3rysd7o8/Qkz/3bX9/ev2mvz1/5jw9f3N1HfvFv8oWQQqGYCeLdv9vrcQjOEUCiEMTO" +
+    "oEwxElQG/TYgz6DCRj6+ieN33fuBKOTIsfHxOMFAgCTB/h5nsVCOFFBDBYmGiSEPB4Tt1UmeDRIdpcCGxQsgJxiBcuqgEqgyVFJ+OkAJ1X6Eqj3Uj5kzn1TJM/QaiSuU" +
+    "SN9N3VEOYT31TCLhcuS0/MnN9AGKNtQgUPQUNTJXKMHd4hGlC61dSgVwjalQqisMWj6+KsgDBUcBGHQ/Qb6T7juoekqnQls0z032g43MXHgqeYX52EKA1xYi8IFjhpyk" +
+    "9Wz8ecpZHk0rCdUe96Bckrw7jNvEZCQRzZ8V5hK/8wiaW8156SYw0cwFn72YtnCuSsWpLVwJtrY8mOpYDY7dTy4dnZiUGQpH56BGbfyEQGxnql/21WbAREGpWJ5ejAN1" +
+    "8WoqDpQdZU0Eo1DDz5oKg4qTJ4x/OXPEEyjK0A0NIQ/B8PRkMs6NqQbJnlgmC7M1KFUvO41D+LNdafrajSypw+q90ju5YRlJx5S7MWY3kylObnnst/aAn/beiBMAswHk" +
+    "i+6VZAAeNw/ABAGp/Ms+26Ln9pHnuSZneLVNQnKYhOAwG0IyTDvg2LJGTX29KIDXCJ4pK8UUFHD3gJazOtRolmC2HnjfhJM+hPWmKoUU1txp8XeqRx2QlNbpI1Vjr8rD" +
+    "5U2DXq3mDsvOfNqlvUa+RyTDOIh2FzT0BTmKSF6LuBkvvDOKPDpMvEXbHn1c6vRN2kpFuMgl9u2lXnzdyIBqxgR8Vh+GLZhjEoz1rDe3NTPOD+7TKdv/iBsvaPR+fnxK" +
+    "xQDE4uRREkUJ66XbtrnsPzh2UpZrPsLpiuSfWR4dVb7jqa6eZJnJVIxboW48rdJF2ABxDMxk73q1GcaMFpv7wcfOF+RqZ89t+64LcTjIw8OTYYtVm3J7H3cB43I6aSq0" +
+    "4Zf9GYaCzmMK1e6+dLH7AkxADRtZ3ojHUrmNqNtco9mqF7pzbppx0GQSQ3Op8FcJ2G5ltCNVLuI74ZeG5vr8rDHAaP/o5bQnnOawWcPyRePnp/8KRQkp")
 
 class TTkAbout(TTkWindow):
+    '''
+    This is a basic window widget that displays a simple message box about TermTk.
+    The message includes the version number of TermTk being used by the application.
+
+    This is useful for inclusion in the Help menu of an application, as shown in the Menus example.
+
+    :py:class:`TTk` provides this functionality as a slot (:py:meth:`TTk.aboutTermTk`).
+
+    .. code-block:: python
+
+        import TermTk
+
+        root = TermTk.TTk()
+
+        TermTk.TTkAbout(parent=root)
+
+        root.mainloop()
+
+
+    .. code-block:: python
+
+        from TermTk import TTk, TTkButton
+
+        root = TTk()
+
+        btn = TTkButton(parent=root, size=(15,3), border=True,  text="About!!!")
+        btn.clicked.connect(root.aboutTermTk)
+
+        root.mainloop()
+
+    '''
     peppered=[
         [(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x01,0x00),(0x39,0x61,0x00),(0x76,0x9e,0x17),(0x87,0x9f,0x3a),(0x3d,0x4c,0x14),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00)],
         [(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x02,0x11,0x00),(0x21,0x44,0x01),(0x99,0xc1,0x33),(0x4e,0x71,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00)],
@@ -50,6 +94,7 @@ class TTkAbout(TTkWindow):
         [(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x0b,0x00,0x00),(0x29,0x00,0x00),(0x30,0x00,0x00),(0x4c,0x00,0x00),(0x95,0x00,0x00),(0xa0,0x00,0x00),(0x61,0x00,0x00),(0x1a,0x00,0x00),(0x10,0x00,0x00),(0x03,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00)],
         [(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00),(0x00,0x00,0x00)]]
 
+
     pyTermTk = [
         "         ████████╗            ████████╗    ",
         "         ╚══██╔══╝            ╚══██╔══╝    ",
@@ -59,10 +104,12 @@ class TTkAbout(TTkWindow):
         "    ▌    ▐  ╚═╝                  ╚═╝       ",
         "      ▚▄▄▘                                 "]
 
-    __slots__=('_image')
-    def __init__(self, *args, **kwargs):
-        TTkWindow.__init__(self, *args, **kwargs)
-        self._image = TTkImage(parent=self, pos=(0,0), data=TTkAbout.peppered)
+    def __init__(self, **kwargs) -> None:
+        TTkWindow.__init__(self,**kwargs)
+        TTkLabel(parent=self, pos=( 0, 0), text=_peppered_image)
+        TTkLabel(parent=self, pos=(20, 6),text=TTkString(f"  Version: {TTkCfg.version}", color=TTkColor.fg('#AAAAFF')))
+        TTkLabel(parent=self, pos=(12, 8),text=TTkString("Powered By, Eugenio Parodi"))
+        TTkLabel(parent=self, pos=( 2,10),text=TTkString("https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF')))
         if not self.title():
             self.setTitle('About...')
         self.resize(55,15)
@@ -72,8 +119,6 @@ class TTkAbout(TTkWindow):
         for y, line in enumerate(TTkAbout.pyTermTk):
             canvas.drawText(pos=(9,3+y),text=line, color=TTkColor.fg(f'#{c[0]:02X}{c[1]:02X}{c[2]:02X}'))
             c[2]-=0x11
-        canvas.drawText(pos=(20,9),text=f"  Version: {TTkCfg.version}", color=TTkColor.fg('#AAAAFF'))
-        canvas.drawText(pos=(12,11),text="Powered By, Eugenio Parodi")
-        canvas.drawText(pos=(2,13),text="https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
+
 
         TTkWindow.paintEvent(self, canvas)

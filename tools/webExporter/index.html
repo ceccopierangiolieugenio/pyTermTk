@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="www/favicon.ico">
+
+    <script src="www/pyodide/pyodide.js"></script>
+
+    <link  href="www/xterm/xterm.css" rel="stylesheet" />
+    <script src="www/xterm/xterm.js"></script>
+    <script src="www/xterm/addon-fit/addon-fit.js"></script>
+    <!--
+      <script src="www/xterm/addon-canvas/addon-canvas.js"></script>
+    -->
+    <script src="www/xterm/addon-unicode11/addon-unicode11.js"></script>
+    <script src="www/file-saver/FileSaver.js"></script>
+
+    <script src="js/ttkproxy.js"></script>
+    <style>
+      body {
+        height: 100%;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
+      .xterm .xterm-viewport {overflow-y: hidden;}
+    </style>
+  </head>
+  <body>
+
+    <div id="terminal" contenteditable="true" onpaste="pasteFunction()" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
+    <input type="file" id="file-input" hidden />
+
+    <script type="text/javascript">
+
+      function pasteFunction(abc) {
+            text = abc.clipboardData.getData("Text")
+            console.log(`Pasted: ${text}`);
+      }
+
+      // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
+      // const font = new FontFace("pyTermTkFont", "url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
+      // const font = new FontFace("pyTermTkFont", "url(www/fonts/opentype/3270SemiCondensed-Regular.otf)");
+      const font = new FontFace("pyTermTkFont", "url(www/fonts/opentype/3270-Regular.otf)");
+      // const font = new FontFace("pyTermTkFont", "url(www/fonts/unifont/unifont_upper.ttf)");
+      document.fonts.add(font);
+      font.load();
+      document.fonts.ready.then(() => {fetchData()});
+
+      function fetchData(){
+        fetch("web.ttk.package.json")
+        .then(response => response.json())
+        .then(json => fetchHero(json));
+      }
+
+      function fetchHero(json){
+        fetch("eumigo.Ansi.txt")
+        .then(response => response.text())
+        .then(hero => processAndStart(json,hero));
+      }
+
+      function processAndStart(json,hero){
+        console.log(json)
+        main(json,hero)
+      }
+
+      async function paste(){
+        if(navigator.clipboard){
+            try {
+              // let text = null
+              let text = await navigator.clipboard.readText().then((clipText) => clipText)
+              console.log('Pasted content: ', text)
+              return text
+            } catch (err) {
+              console.error('Failed to read clipboard contents: ', err);
+            }
+          }
+          return null
+      }
+
+      /* pyodide demo */
+      async function mainTTk(term,json){
+        ttkProxy = new TTkProxy(term)
+        await ttkProxy.init()
+
+        for (lib of json['libs']){
+          await ttkProxy.loadLib(lib['pkg']);
+          term.write(`${lib['name']} - Loaded\n\r`)
+        }
+
+        for (pkg of json['pkgs']){
+          await ttkProxy.loadPackage(pkg);
+          term.write(`${pkg} - Loaded\n\r`)
+        }
+
+        term.write('Starting...\n\r')
+
+        ttkProxy.preRun()
+
+        let file = json['main']
+        let content = ttkProxy.readFile(file)
+
+        ttkProxy.run(content, file, 60)
+      }
+
+      function main(json,hero){
+        /* xterm.js */
+        var term = new Terminal({
+            allowProposedApi: true,
+            fontSize: 17,
+            // fontFamily: 'FreeSerif Regular'});
+            fontFamily: 'pyTermTkFont'});
+
+        /* https://www.npmjs.com/package/@xterm/addon-fit */
+        const fitAddon = new FitAddon.FitAddon();
+        /* https://www.npmjs.com/package/@xterm/addon-unicode11 */
+        const unicode11Addon = new Unicode11Addon.Unicode11Addon();
+
+        term.loadAddon(fitAddon);
+        // term.loadAddon(new CanvasAddon.CanvasAddon());
+        term.loadAddon(unicode11Addon);
+
+        term.unicode.activeVersion = '11';
+
+        term.open(document.getElementById('terminal'));
+
+        fitAddon.fit()
+
+        // start observing the terminal for resize
+        const resize_ob = new ResizeObserver(function(entries) {fitAddon.fit();});
+        resize_ob.observe(document.querySelector("#terminal"));
+
+        let cols = term.cols
+        let rows = term.rows
+        let hx = (cols-hero.split("\n")[0].replace(/\x1b[^m]*m/g,'').length)>>1
+        let hy = (rows-hero.split("\n").length)>>1
+        // term.write('\x1b[48;5;7m') // Set White BG Color
+        // term.write('\x1b[48;5;15m') // Set White BG Color
+        term.write('\x1b[0;48;2;255;255;255m') // Set White BG Color
+        // term.write(' '.repeat(cols*rows))
+        term.write(` \x1b[${cols*rows}b`)
+        term.write('\x1b[0m') // Set White BG Color
+        // term.write(`---->>>[${hy};${hx}f<---- \n\r`)
+        term.write(`\x1b[${hy};${hx}f`)
+        term.write(hero.split("\n").join(`\n\r\x1b[${hx-1}C`))
+        term.write(`\x1b[1;1f`)
+
+        term.write('\n\rxterm.js - Loaded\n\r')
+        mainTTk(term,json)
+      }
+    </script>
+
+  </body>
+</html>

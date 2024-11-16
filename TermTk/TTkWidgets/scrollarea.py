@@ -24,12 +24,13 @@ __all__ = ['TTkScrollArea']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkAreaWidget(TTkAbstractScrollView):
     __slots__ = ()
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         TTkAbstractScrollView.__init__(self, *args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
 
@@ -38,12 +39,9 @@ class _TTkAreaWidget(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
@@ -53,9 +51,15 @@ class _TTkAreaWidget(TTkAbstractScrollView):
 class TTkScrollArea(TTkAbstractScrollArea):
     '''TTkScrollArea'''
     __slots__ = ('_areaView')
-    def __init__(self, *args, **kwargs):
-        TTkAbstractScrollArea.__init__(self, *args, **kwargs)
-        if 'parent' in kwargs: kwargs.pop('parent')
-        self._areaView = _TTkAreaWidget(*args, **kwargs)
+    def __init__(self, *,
+                 # TTkWidget init
+                 parent:TTkWidget=None,
+                 visible:bool=True,
+                 # TTkAbstractScrollArea init
+                 verticalScrollBarPolicy:TTkK.ScrollBarPolicy=TTkK.ScrollBarPolicy.ScrollBarAsNeeded,
+                 horizontalScrollBarPolicy:TTkK.ScrollBarPolicy=TTkK.ScrollBarPolicy.ScrollBarAsNeeded,
+                 **kwargs) -> None:
+        self._areaView = _TTkAreaWidget(**kwargs)
+        TTkAbstractScrollArea.__init__(self, parent=parent, visible=visible, verticalScrollBarPolicy=verticalScrollBarPolicy, horizontalScrollBarPolicy=horizontalScrollBarPolicy, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._areaView)

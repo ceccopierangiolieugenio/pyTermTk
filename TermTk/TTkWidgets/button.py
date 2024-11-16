@@ -27,6 +27,9 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.canvas import TTkCanvas
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkWidgets.widget import TTkWidget
 
 class TTkButton(TTkWidget):
@@ -52,35 +55,20 @@ class TTkButton(TTkWidget):
          ╽  Line  ╽
 
     Demo: `formwidgets.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/formwidgets.py>`_
+    '''
 
-    :param str text: the text shown on the button, defaults to ""
-    :type text: str, optional
+    clicked:pyTTkSignal
+    '''
+    This signal is emitted when the button is activated
+    '''
 
-    :param bool border: the border of the button, defaults to "False"
-    :type border: bool, optional
+    toggled:pyTTkSignal
+    '''
+    This signal is emitted whenever the button state changes if checkeable,
+    i.e., whenever the user checks or unchecks it.
 
-    :param bool checked: checked status if the button is checkable, defaults to "False"
-    :type checked: bool, optional
-    :param bool checkable: define if the button is checkable, defaults to "False"
-    :type checkable: bool, optional
-
-    +-----------------------------------------------------------------------------------------------+
-    | `Signals <https://ceccopierangiolieugenio.github.io/pyTermTk/tutorial/003-signalslots.html>`_ |
-    +-----------------------------------------------------------------------------------------------+
-
-        .. py:method:: clicked()
-            :signal:
-
-            This signal is emitted when the button is activated
-
-        .. py:method:: toggled(checked)
-            :signal:
-
-            This signal is emitted whenever the button state changes if checkeable, i.e., whenever the user checks or unchecks it.
-
-            :param checked: True if checked otherwise False
-            :type checked: bool
-
+    :param checked: True if checked otherwise False
+    :type checked: bool
     '''
 
     classStyle = {
@@ -113,22 +101,39 @@ class TTkButton(TTkWidget):
         # Signals
         'clicked', 'toggled'
         )
-    def __init__(self, *args, **kwargs):
-        self._text = TTkString(kwargs.get('text', "")).split('\n')
+    def __init__(self, *,
+                 text:TTkString="",
+                 border:bool=False,
+                 checked:bool=False,
+                 checkable:bool=False,
+                 **kwargs) -> None:
+        '''
+        :param str text: the text shown on the button, defaults to ""
+        :type text: str, optional
+
+        :param bool border: the border of the button, defaults to "False"
+        :type border: bool, optional
+
+        :param bool checked: checked status if the button is checkable, defaults to "False"
+        :type checked: bool, optional
+        :param bool checkable: define if the button is checkable, defaults to "False"
+        :type checkable: bool, optional
+        '''
+        self._text = TTkString(text).split('\n')
         textWidth = max(t.termWidth() for t in self._text)
-        self._border = kwargs.get('border', False )
+        self._border = border
         if self._border:
             self.setDefaultSize(kwargs, textWidth+2, len(self._text)+2)
         else:
             self.setDefaultSize(kwargs, textWidth+2, len(self._text))
 
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         # Define Signals
         self.clicked = pyTTkSignal()
         self.toggled = pyTTkSignal(bool)
 
-        self._checked = kwargs.get('checked', False )
-        self._checkable = kwargs.get('checkable', False )
+        self._checked = checked
+        self._checkable = checkable
 
         if self._border:
             if 'minSize' not in kwargs:
@@ -148,17 +153,21 @@ class TTkButton(TTkWidget):
 
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
-    def border(self):
+    def border(self) -> bool:
+        ''' This property holds whether the button has a border
+
+        :return: bool
+        '''
         return self._border
 
-    def isCheckable(self):
+    def isCheckable(self) -> bool:
         ''' This property holds whether the button is checkable
 
         :return: bool
         '''
         return self._checkable
 
-    def setCheckable(self, ch):
+    def setCheckable(self, ch:bool) -> None:
         ''' Enable/Disable the checkable property
 
         :param ch: Checkable
@@ -167,7 +176,7 @@ class TTkButton(TTkWidget):
         self._checkable = ch
         self.update()
 
-    def isChecked(self):
+    def isChecked(self) -> bool:
         ''' This property holds whether the button is checked
 
         Only checkable buttons can be checked. By default, the button is unchecked.
@@ -176,7 +185,7 @@ class TTkButton(TTkWidget):
         '''
         return self._checked
 
-    def setChecked(self, ch):
+    def setChecked(self, ch:bool) -> None:
         ''' Set the checked status
 
         :param ch: Checked
@@ -186,18 +195,18 @@ class TTkButton(TTkWidget):
         self.toggled.emit(self._checked)
         self.update()
 
-    def text(self):
+    def text(self) -> TTkString:
         ''' This property holds the text shown on the button
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         return TTkString('\n').join(self._text)
 
-    def setText(self, text):
+    def setText(self, text:TTkString) -> None:
         ''' This property holds the text shown on the button
 
         :param text:
-        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        :type text: :py:class:`TTkString`
         '''
         if self._text and self._text[0] == text: return
         self._text = TTkString(text).split('\n')
@@ -209,12 +218,13 @@ class TTkButton(TTkWidget):
             self.setMaximumHeight(len(self._text))
         self.update()
 
-    def mousePressEvent(self, evt):
+
+    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         if self._checkable:
             self._checked = not self._checked
@@ -223,7 +233,7 @@ class TTkButton(TTkWidget):
         self.clicked.emit()
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             if self._checkable:
@@ -234,7 +244,7 @@ class TTkButton(TTkWidget):
             return True
         return False
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         if self.isEnabled() and self._checkable:
             if self._checked:
                 style = self.style()['checked']

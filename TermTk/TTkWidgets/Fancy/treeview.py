@@ -27,5 +27,5 @@ from TermTk.TTkWidgets.Fancy.tableview import TTkFancyTableView
 class TTkFancyTreeView(TTkFancyTableView):
     __slots__ = ( '_header', '_treeView', '_showHeader', 'activated')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)

@@ -1,19 +1,17 @@
 # Configuration file for the Sphinx documentation builder.
 #
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
+# For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('sphinx_modules'))
 
+import TermTk
 
 # -- Project information -----------------------------------------------------
 
@@ -29,57 +27,42 @@ else:
     release = 'X.XX.X-a'
 
 # -- General configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    # 'sphinx.ext.linkcode', # Create a link to the source through linkcode_resolve
     'sphinx.ext.githubpages',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.autosectionlabel',
-	'sphinx_epytext',
-    'sphinxcontrib_autodocgen',
-    #'sphinxcontrib.fulltoc',
+    #'sphinx.ext.intersphinx',
+    #'sphinx.ext.ifconfig',
+    #'sphinx.ext.autosectionlabel',
+	#'sphinx_epytext',
+    'sphinx.ext.autodoc',  # Core library for html generation from docstrings
+    #'sphinx.ext.autosummary',  # Create neat summary tables
+
+    # Personal extensions/hacks to overcome the
+    # FUCKNG unwritten idiotic sphinx rules
+    # Fuck you Sphinx!!!
+    'sphinx_ext_autosummary_reworked',  # Create neat summary tables
+    'sphinx_PyRefRole_hacked',          # Resolve Domainless TermTk Classes
+    'method_signal',
 ]
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['templates']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-
-html_theme = 'sphinx_rtd_theme' # read-the-docs theme looks better than the default "classic" one but has bugs e.g. no table wrapping
-
-html_theme_options = {
-    'display_version': True,
-    #'prev_next_buttons_location': 'bottom',
-    #'style_external_links': False,
-    #'vcs_pageview_mode': '',
-    #'style_nav_header_background': 'white',
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    #'navigation_depth': 4,
-    'includehidden': True,
-    #'titles_only': False
-}
+# html_theme = 'alabaster'
+# html_static_path = ['_static']
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['static']
 
 html_css_files = [
     # Workaround for RTD 0.4.3 bug https://github.com/readthedocs/sphinx_rtd_theme/issues/117
@@ -88,63 +71,81 @@ html_css_files = [
 ]
 
 html_favicon = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"
+# html_favicon = "_images/favicon.ico"
+# html_favicon = "../images/favicon.ico"
+
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-toc_object_entries_show_parents
+# Use 'hide' to only show the name of the element without any parents (i.e. method()).
+toc_object_entries_show_parents='hide'
+
+# read-the-docs theme looks better than the default "classic" one but has bugs e.g. no table wrapping
+# html_theme = 'sphinx_rtd_theme'
+# html_theme_options = {
+#     'display_version': True,
+#     #'prev_next_buttons_location': 'bottom',
+#     #'style_external_links': False,
+#     #'vcs_pageview_mode': '',
+#     #'style_nav_header_background': 'white',
+#     # Toc options
+#     'collapse_navigation': True,
+#     'sticky_navigation': True,
+#     #'navigation_depth': 4,
+#     'includehidden': True,
+#     #'titles_only': False
+#     'flyout_display': 'attached',
+# }
 
 # html_theme = 'bizstyle'
+# html_theme_options = {
+#     "sidebar_width": '240px',
+#     "stickysidebar": True,
+#     "stickysidebarscrollable": True,
+#     "contribute": True,
+#     "github_fork": "useblocks/groundwork",
+#     "github_user": "useblocks",
+# }
 
-#html_theme_options = {
-#    "sidebar_width": '240px',
-#    "stickysidebar": True,
-#    "stickysidebarscrollable": True,
-#    "contribute": True,
-#    "github_fork": "useblocks/groundwork",
-#    "github_user": "useblocks",
-#}
+# Nice theme but it does not allows full-width
+# html_theme = 'furo'
+# html_theme_options = {}
 
+# html_theme = 'press'
+# html_theme_options = {}
 
-# import m2r
-#
-# def docstring(app, what, name, obj, options, lines):
-#     md  = '\n'.join(lines)
-#     rst = m2r.convert(md)
-#     lines.clear()
-#     lines += rst.splitlines()
-#
-# def setup(app):
-#     app.connect('autodoc-process-docstring', docstring)
+# html_theme = 'piccolo_theme'
+# html_theme_options = {}
 
-import TermTk
+# extensions.append("sphinx_wagtail_theme")
+# html_theme = 'sphinx_wagtail_theme'
+
+# html_theme = 'sphinx_material'
+
+# html_permalinks_icon = '<span>#</span>'
+# html_theme = 'sphinxawesome_theme'
+
+html_theme = 'sphinx_book_theme'
+html_permalinks_icon = '<span>🌶️</span>'
+# html_permalinks_icon = '<span><image src="/_images/favicon.png"></span>'
+# html_permalinks_icon = '<span><image src="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"></span>'
+html_theme_options = {
+    "home_page_in_toc": True,
+    "use_fullscreen_button": True,
+    # "toc_title": "{your-title}",
+    "show_toc_level": 3,
+    "repository_url": "https://github.com/ceccopierangiolieugenio/pyTermTk",
+}
 
 add_module_names = False
 autosummary_generate = True
-autosummary_generate_overwrite = False
-
-autodocgen_config = {
-        'modules':[TermTk],
-        'generated_source_dir': os.path.abspath('.')+'/autogen.TermTk/',
-        #'add_module_names': False,
-
-        # if module matches this then it and any of its submodules will be skipped
-        # 'skip_module_regex': '(.*[.]__|myskippedmodule)',
-        'skip_module_regex': '(.*[.]__|myskippedmodule)',
-
-        # produce a text file containing a list of everything documented. you can use this in a test to notice when you've
-        # intentionally added/removed/changed a documented API
-        'write_documented_items_output_file': 'autodocgen_documented_items.txt',
-
-        # customize autodoc on a per-module basis
-        # 'autodoc_options_decider': {},
-        # 'autodoc_options_decider': {'members':True, 'inherited-members':True},
-        # Can you believe I had to debug autodoc to figure out this FUCKING thing?
-        # People are complainig to the lack of documentation of pyTermTk
-        # but aat least i hacve examples that cover most use cases
-        'autodoc_options_decider': lambda app, what, fullname, obj, docstring, defaultOptions, extra: {'members': True, 'inherited-members':True},
-
-        # choose a different title for specific modules, e.g. the toplevel one
-        #'module_title_decider': lambda modulename: 'API Reference' if modulename=='TermTk' else modulename,
-}
+autosummary_generate_overwrite = True
+autosummary_imported_members = False
 
 # autodoc_default_options = { 'inherited-members':True }
-autodoc_default_options = {}
+autodoc_default_options = {
+    'exclude-members': ('as_integer_ratio , bit_count , bit_length , '
+                        'conjugate , denominator , from_bytes , imag , '
+                        'numerator , real , to_bytes')
+}
 
 # Mock pyodide to avoid autogen failure
 class pyodideProxy(): pass
@@ -155,3 +156,14 @@ sys.modules['pyodide'] = pyodide
 
 class windll(): pass
 sys.modules['ctypes.windll'] = windll
+
+
+def linkcode_resolve(domain, info):
+    if domain != 'py':
+        return None
+    if not info['module']:
+        return None
+    filename = info['module'].replace('.', '/')
+    # print(f"{domain=} {info=}")
+    # print(f"https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/{filename}.py")
+    return f"https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/{filename}.py"

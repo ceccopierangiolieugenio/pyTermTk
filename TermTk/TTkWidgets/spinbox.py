@@ -44,13 +44,17 @@ class TTkSpinBox(TTkContainer):
         '_mouseDelta', '_valueDelta', '_draggable',
         # Signals
         'valueChanged')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 value:int=0,
+                 minimum:int=0,
+                 maximum:int=99,
+                 **kwargs) -> None:
         # Signals
         self.valueChanged=pyTTkSignal(int)
-        super().__init__(*args, **kwargs)
-        self._value = kwargs.get("value",0)
-        self._maximum = kwargs.get("maximum",99)
-        self._minimum = kwargs.get("minimum",0)
+        super().__init__(**kwargs)
+        self._value = value
+        self._minimum = minimum
+        self._maximum = maximum
         self.setLayout(TTkGridLayout())
         self.setPadding(0,0,0,2)
         self.setMinimumSize(4,1)
@@ -100,9 +104,20 @@ class TTkSpinBox(TTkContainer):
         self._maximum = maximum
         self.setValue(self._value)
 
+    @staticmethod
+    def _isFloat(num):
+        try:
+            float(str(num))
+            return True
+        except:
+            return False
+
     @pyTTkSlot(str)
     def _textEdited(self, text):
-        self.setValue(int(str(text)))
+        if self._isFloat(text):
+            self.setValue(float(str(text)))
+        else:
+            self.setValue(int(str(text)))
         self._lineEdit.setText(str(self._value))
 
     def wheelEvent(self, evt):

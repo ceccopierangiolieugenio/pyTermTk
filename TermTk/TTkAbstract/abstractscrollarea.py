@@ -38,15 +38,18 @@ class TTkAbstractScrollArea(TTkContainer):
         '_verticalScrollBar',   '_verticalScrollBarPolicy',
         '_horizontalScrollBar', '_horizontalScrollBarPolicy',)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 verticalScrollBarPolicy:TTkK.ScrollBarPolicy=TTkK.ScrollBarPolicy.ScrollBarAsNeeded,
+                 horizontalScrollBarPolicy:TTkK.ScrollBarPolicy=TTkK.ScrollBarPolicy.ScrollBarAsNeeded,
+                 **kwargs) -> None:
         self._processing = False
         self._viewport = None
         # self.setLayout(TTkGridLayout())
         self._verticalScrollBar = TTkScrollBar(orientation=TTkK.VERTICAL, visible=False)
         self._horizontalScrollBar = TTkScrollBar(orientation=TTkK.HORIZONTAL, visible=False)
-        self._verticalScrollBarPolicy   = kwargs.get("verticalScrollBarPolicy",  TTkK.ScrollBarAsNeeded)
-        self._horizontalScrollBarPolicy = kwargs.get("horizontalScrollBarPolicy",TTkK.ScrollBarAsNeeded)
-        super().__init__(*args, **kwargs)
+        self._verticalScrollBarPolicy   = verticalScrollBarPolicy
+        self._horizontalScrollBarPolicy = horizontalScrollBarPolicy
+        super().__init__(**kwargs)
         self.layout().addWidget(self._verticalScrollBar)
         self.layout().addWidget(self._horizontalScrollBar)
 
@@ -159,5 +162,5 @@ class TTkAbstractScrollArea(TTkContainer):
 
     def update(self, repaint=True, updateLayout=False, updateParent=False):
         if self._viewport:
-            self._viewport.update(repaint, updateLayout, updateParent)
+            self._viewport.update(repaint, updateLayout, updateParent=False)
         return super().update(repaint, updateLayout, updateParent)

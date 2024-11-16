@@ -1,6 +1,6 @@
 .. _pyTermTk:    https://github.com/ceccopierangiolieugenio/pyTermTk
 .. _TermTk:      https://github.com/ceccopierangiolieugenio/pyTermTk
-.. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/ttkDesigner
+.. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner
 
 .. _Widget:        https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.widget.html
 .. _Textedit:      https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.texedit.html
@@ -19,6 +19,9 @@
 .. _TTkUILoader:    https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkUiTools.uiloader.html#TermTk.TTkUiTools.uiloader.TTkUiLoader
 
 .. contents::
+
+
+.. _TextEdit_ttkDesigner-Tutorial_Intro:
 
 
 ===================
@@ -166,7 +169,7 @@ Preview and Quick Export
         controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" ></video>
 
 Exported: `texteditor.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.01.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.01.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.01.py>`__):
 
 .. code:: bash
 
@@ -187,7 +190,7 @@ Option 1) Include the Open/Save routine and link them to the widget
 Once (quick)exported the code, we need to define the appropriate routines and link them to the file(open/save) pickers `signals <https://ceccopierangiolieugenio.github.io/pyTermTk/autogen.TermTk/TermTk.TTkWidgets.TTkPickers.filepicker.html#TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker.filePicked>`__
 
 `texteditor.02.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.02.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.02.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.02.py>`__):
 
 .. code:: bash
 
@@ -228,7 +231,7 @@ Option 2) Extend a custom widget including the open/save methods
 ----------------------------------------------------------------
 
 `texteditor.03.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit/texteditor.03.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.03.py>`_):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/ttkDesigner/textEdit/texteditor.03.py>`__):
 
 .. code:: bash
 

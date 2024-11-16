@@ -4,16 +4,17 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
         },{
             "name": "Python: Test Player",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
@@ -21,29 +22,57 @@
             "args": ["-p", "tmp/test.input.bin"]
         },{
             "name": "Python: TTk Designer",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "ttkDesigner",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "./tools"
+            }
+
         },{
             "name": "Python: TTk Designer Quick",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "ttkDesigner",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["experiments/MenuBar.03.tui.json"]
+            "env": {
+                "PYTHONPATH": "./tools"
+            },
+            "args": ["ttkDesigner/tui/newWindow.tui.json"]
+        },{
+            "name": "Python: DumbPaintTool",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "tools/dumbPaintTool.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "./tools"
+            }
+        },{
+            "name": "Python: DumbPaintTool File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "tools/dumbPaintTool.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "./tools"
+            },
+            "args":["experiments/untitled.DPT.json"]
         },{
             "name": "Python: Demo",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "demo/demo.py",
             "console": "integratedTerminal",
             "justMyCode": true
         },{
             "name": "Python: Demo Mouse tracking",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "demo/demo.py",
             "console": "integratedTerminal",

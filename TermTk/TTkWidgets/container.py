@@ -20,44 +20,82 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkContainer']
+__all__ = ['TTkContainer', 'TTkPadding']
+
+from typing import NamedTuple
 
 from TermTk.TTkCore.constant  import TTkK
 from TermTk.TTkCore.log       import TTkLog
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.signal    import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 
+class TTkPadding(NamedTuple):
+    top    : int = 0
+    bottom : int = 0
+    left   : int = 0
+    right  : int = 0
+
 class TTkContainer(TTkWidget):
-    ''' TTkContainer Layout sizes:
+    '''
+    :py:class:`TTkContainer` include the layout management through :py:class:`TTkLayout` or one of its implementations.
+
+    It is the base class of all the composite widgets like :py:class:`TTkSpinBox`
+    where a :py:class:`TTkLineEdit` is placed and shown when edited, or in the :py:class:`TTkFrame` and
+    its extension :py:class:`TTkWindow` where the :py:class:`TTkLayout` is used for the child
+    widgets placements or the :py:class:`TTkMenuBarLayout`,
+    the main root widget :py:class:`TTk` inherit the layout capabilities of :py:class:`TTkContainer` for any widget placed in the `pyTermTk <https://github.com/ceccopierangiolieugenio/pyTermTk>`__ app.
+
+    Main widgets subclassing :py:class:`TTkContainer`:
+
+    #. :py:class:`TTk`
+    #. :py:class:`TTkFrame`
+    #. :py:class:`TTkWindow`
+    #. :py:class:`TTkSplitter`
+    #. :py:class:`TTkAppTemplate`
+    #. :py:class:`TTkTabWidget`
+    #. :py:class:`TTkTreeWidget`
+
+    More info and examples are available in the :ref:`Tutorial <Layout-Tutorial_Intro>`
+
+    .. _Container-Layout-Topology:
+
+    :py:class:`TTkContainer` Layout topology:
 
     ::
 
         Terminal area (i.e. XTerm) = TTk
-        ┌─────────────────────────────────────────┐
-        │                                         │
-        │    TTkContainer   width                 │
-        │ (x,y)┌─────────────────────────┐        │
-        │      │      padt (Top Padding) │        │
-        │      │    ┌───────────────┐    │ height │
-        │      │padl│ Layout/child  │padr│        │
-        │      │    └───────────────┘    │        │
-        │      │      padb (Bottom Pad.) │        │
-        │      └─────────────────────────┘        │
-        └─────────────────────────────────────────┘
+        ┌────────────────────────────────────────────┐
+        │                                            │
+        │   TTkContainer                             │
+        │       < --------  width  ----->            │
+        │ (x,y)╔═════════════════════════╗  ^        │
+        │      ║      padt (Top Padding) ║  |        │
+        │      ║    ┌───────────────┐    ║  | height │
+        │      ║padl│ Layout        │padr║  |        │
+        │      ║    └───────────────┘    ║  |        │
+        │      ║      padb (Bottom Pad.) ║  |        │
+        │      ╚═════════════════════════╝  v        │
+        └────────────────────────────────────────────┘
 
-    :param bool forwardStyle: any change of style will reflect the children, defaults to False
-    :type forwardStyle: bool
+    Example:
 
-    :param int padding: the padding (top, bottom, left, right) of the widget, defaults to 0
-    :param int paddingTop: the Top padding, override Top padding if already defined, optional, default=padding
-    :param int paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=padding
-    :param int paddingLeft: the Left padding, override Left padding if already defined, optional, default=padding
-    :param int paddingRight: the Right padding, override Right padding if already defined, optional, default=padding
+    .. code-block:: python
 
-    :param layout: the layout of this widget, optional, defaults to :class:`~TermTk.TTkLayouts.layout.TTkLayout`
-    :type layout: :mod:`TermTk.TTkLayouts`
+        from TermTk import TTk, TTkButton, TTkHBoxLayout
+
+        # The class TTk, that could be referred as the terminal layout, is a subclass of TTkContainer
+        root = TTk( layout=TTkHBoxLayout(), padding=(1,2,4,8))
+
+        TTkButton(parent=root, border=True,  text="Btn 1!")
+        TTkButton(parent=root, border=True,  text="Btn 2!")
+        TTkButton(parent=root, border=True,  text="Btn 3!")
+        TTkButton(parent=root, border=True,  text="Btn 4!")
+
+        root.mainloop()
+
     '''
 
     __slots__ = (
@@ -65,28 +103,60 @@ class TTkContainer(TTkWidget):
         '_forwardStyle',
         '_layout')
 
-    def __init__(self, *, padding=(0,0,0,0), forwardStyle=False,**kwargs):
+    def __init__(self, *,
+                 layout:TTkLayout=None,
+                 padding:TTkPadding = None,
+                 paddingTop:int = 0,
+                 paddingBottom:int = 0,
+                 paddingLeft:int = 0,
+                 paddingRight:int = 0,
+                 forwardStyle:bool = False,
+                 **kwargs) -> None:
+        '''
+        :param layout: the layout of this widget, optional, defaults to :py:class:`TTkLayout`
+        :type layout: :mod:`TermTk.TTkLayouts`
 
+        :param padding: the padding (top, bottom, left, right) of the widget, defaults to (0,0,0,0)
+        :type padding: :py:class:`TTkPadding`
+
+        :param paddingTop: the Top padding, override Top padding if already defined, optional, default=0 if padding is not defined
+        :type paddingTop: int
+        :param paddingBottom: the Bottom padding, override Bottom padding if already defined, optional, default=0 if padding is not defined
+        :type paddingBottom: int
+        :param paddingLeft: the Left padding, override Left padding if already defined, optional, default=0 if padding is not defined
+        :type paddingLeft: int
+        :param paddingRight: the Right padding, override Right padding if already defined, optional, default=0 if padding is not defined
+        :type paddingRight: int
+
+        :param bool forwardStyle: [**Experimental**] any change of style will reflect the children, defaults to False
+        :type forwardStyle: bool
+        '''
         self._forwardStyle = forwardStyle
-        padding = kwargs.get('padding', 0 )
-        self._padt = kwargs.get('paddingTop',    padding )
-        self._padb = kwargs.get('paddingBottom', padding )
-        self._padl = kwargs.get('paddingLeft',   padding )
-        self._padr = kwargs.get('paddingRight',  padding )
+        if padding:
+            self._padt = padding[0]
+            self._padb = padding[1]
+            self._padl = padding[2]
+            self._padr = padding[3]
+        else:
+            self._padt = paddingTop
+            self._padb = paddingBottom
+            self._padl = paddingLeft
+            self._padr = paddingRight
 
         self._layout = TTkLayout() # root layout
-        self._layout.addItem(kwargs.get('layout',TTkLayout())) # main layout
+        self._layout.addItem(layout if layout else TTkLayout()) # main layout
 
         super().__init__(**kwargs)
 
         self._layout.setParent(self)
+        self.update(updateLayout=True)
 
-    def addWidget(self, widget):
+    def addWidget(self, widget:TTkWidget) -> None:
         '''
         .. warning::
             Method Deprecated,
 
-            use :class:`TTkWidget` -> :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :class:`~TermTk.TTkLayouts.layout.TTkLayout.addWidget`
+            use :py:class:`TTkContainer` -> :py:meth:`layout` -> :py:class:`TTkLayout.addWidget`
 
             i.e.
 
@@ -97,12 +167,12 @@ class TTkContainer(TTkWidget):
         TTkLog.error("<TTkWidget>.addWidget(...) is deprecated, use <TTkWidget>.layout().addWidget(...)")
         if self.layout(): self.layout().addWidget(widget)
 
-    def removeWidget(self, widget):
+    def removeWidget(self, widget:TTkWidget) -> None:
         '''
         .. warning::
             Method Deprecated,
 
-            use :class:`TTkWidget` -> :class:`~TermTk.TTkWidgets.widget.TTkWidget.layout` -> :class:`~TermTk.TTkLayouts.layout.TTkLayout.removeWidget`
+            use :py:class:`TTkContainer` -> :py:meth:`layout` -> :py:class:`TTkLayout.removeWidget`
 
             i.e.
 
@@ -117,7 +187,7 @@ class TTkContainer(TTkWidget):
     #     widget._currentStyle |= self._currentStyle
     #     widget.update()
 
-    def _processForwardStyle(self):
+    def _processForwardStyle(self) -> None:
         if not self._forwardStyle: return
         def _getChildren():
             for w in self.rootLayout().iterWidgets(onlyVisible=True, recurse=False):
@@ -130,7 +200,7 @@ class TTkContainer(TTkWidget):
             if issubclass(type(w),TTkContainer):
                 w._processForwardStyle()
 
-    def setCurrentStyle(self, *args, **kwargs):
+    def setCurrentStyle(self, *args, **kwargs) -> None:
         super().setCurrentStyle(*args, **kwargs)
         self._processForwardStyle()
 
@@ -166,19 +236,19 @@ class TTkContainer(TTkWidget):
                 bh = min(iy+ih,ly+lh)-by
                 TTkContainer._paintChildCanvas(canvas, child, (bx,by,bw,bh), (ix+iox,iy+ioy))
 
-    def paintChildCanvas(self):
+    def paintChildCanvas(self) -> None:
         ''' .. caution:: Don't touch this! '''
         TTkContainer._paintChildCanvas(self._canvas, self.rootLayout(), self.rootLayout().geometry(), self.rootLayout().offset())
 
-    def getPadding(self) -> (int, int, int, int):
-        ''' Retrieve the widget padding sizes
+    def getPadding(self) -> TTkPadding:
+        ''' Retrieve the :py:class:`TTkContainer`'s paddings sizes as shown in :ref:`Layout Topology <Container-Layout-Topology>`
 
-        :return: list[top, bottom, left, right]: the 4 padding sizes
+        :return: :py:class:`TTkPadding` the NamedTuple representing a 4 int values tuple (top,bottom,left,right)
         '''
-        return self._padt, self._padb, self._padl, self._padr
+        return TTkPadding(self._padt, self._padb, self._padl, self._padr)
 
-    def setPadding(self, top: int, bottom: int, left: int, right: int):
-        ''' Set the padding of the widget
+    def setPadding(self, top: int, bottom: int, left: int, right: int) -> None:
+        ''' Set the :py:class:`TTkContainer`'s paddings sizes as shown in :ref:`Layout Topology <Container-Layout-Topology>`
 
         :param int top: top padding
         :param int bottom: bottom padding
@@ -225,7 +295,7 @@ class TTkContainer(TTkWidget):
     _mouseOver = None
     _mouseOverTmp = None
     _mouseOverProcessed = False
-    def mouseEvent(self, evt):
+    def mouseEvent(self, evt: TTkMouseEvent) -> bool:
         ''' .. caution:: Don't touch this! '''
         if not self._enabled: return False
 
@@ -324,29 +394,44 @@ class TTkContainer(TTkWidget):
 
         return False
 
-    def setLayout(self, layout):
+    def setLayout(self, layout:TTkLayout) -> None:
+        '''
+        Set the :ref:`Layout <Layout-Tutorial_Intro>` used by this widget to place all the child widgets.
+
+        :param layout:
+        :type layout: :py:class:`TTkLayout`
+        '''
         self._layout.replaceItem(layout, 0)
         #self.layout().setParent(self)
         self.update(repaint=True, updateLayout=True)
 
-    def layout(self):
-        ''' Get the layout
+    def layout(self) -> TTkLayout:
+        '''
+        Get the :ref:`Layout <Layout-Tutorial_Intro>`
 
-        :return: The layout used
-        :rtype: :class:`TTkLayout` or derived
+        :return: The :ref:`Layout <Layout-Tutorial_Intro>` used
+        :rtype: :py:class:`TTkLayout` or derived
         '''
         return self._layout.itemAt(0)
 
-    def rootLayout(self): return self._layout
+    def rootLayout(self) -> TTkLayout:
+        '''
+        This is a root layout mainly used to place items that are not supposed to be inside the main layout (i.e. the menu elements)
 
-    def maximumHeight(self):
+        .. caution:: Use this layout only if you know what you are doing
+
+        :return: :py:class:``TTkLayout`
+        '''
+        return self._layout
+
+    def maximumHeight(self) -> int:
         wMaxH = self._maxh
         if self.layout() is not None:
             lMaxH = self.layout().maximumHeight() + self._padt + self._padb
             if lMaxH < wMaxH:
                 return lMaxH
         return wMaxH
-    def maximumWidth(self):
+    def maximumWidth(self) -> int:
         wMaxW = self._maxw
         if self.layout() is not None:
             lMaxW = self.layout().maximumWidth() + self._padl + self._padr
@@ -354,21 +439,14 @@ class TTkContainer(TTkWidget):
                 return lMaxW
         return wMaxW
 
-    def minimumSize(self):
-        return self.minimumWidth(), self.minimumHeight()
-    def minDimension(self, orientation) -> int:
-        if orientation == TTkK.HORIZONTAL:
-            return self.minimumWidth()
-        else:
-            return self.minimumHeight()
-    def minimumHeight(self):
+    def minimumHeight(self) -> int:
         wMinH = self._minh
         if self.layout() is not None:
             lMinH = self.layout().minimumHeight() + self._padt + self._padb
             if lMinH > wMinH:
                 return lMinH
         return wMinH
-    def minimumWidth(self):
+    def minimumWidth(self) -> int:
         wMinW = self._minw
         if self.layout() is not None:
             lMinW = self.layout().minimumWidth() + self._padl + self._padr
@@ -377,8 +455,7 @@ class TTkContainer(TTkWidget):
         return wMinW
 
     @pyTTkSlot()
-    def show(self):
-        '''show'''
+    def show(self) -> None:
         if self._visible: return
         self._visible = True
         self._canvas.show()
@@ -387,16 +464,15 @@ class TTkContainer(TTkWidget):
             w.update()
 
     @pyTTkSlot()
-    def hide(self):
-        '''hide'''
+    def hide(self) -> None:
         if not self._visible: return
         self._visible = False
         self._canvas.hide()
         self.update(repaint=False, updateParent=True)
 
-    def update(self, repaint: bool =True, updateLayout: bool =False, updateParent: bool =False):
+    def update(self, repaint: bool = True, updateLayout: bool = False, updateParent: bool = False) -> None:
         super().update(repaint=repaint, updateLayout=updateLayout, updateParent=updateParent)
-        if updateLayout and self.rootLayout() is not None:
+        if updateLayout and self.rootLayout() is not None and self.size() != (0,0):
             self.rootLayout().setGeometry(0,0,self._width,self._height)
             self.layout().setGeometry(
                         self._padl, self._padt,
@@ -404,7 +480,15 @@ class TTkContainer(TTkWidget):
                         self._height  - self._padt - self._padb)
             self.rootLayout().update()
 
-    def getWidgetByName(self, name: str):
+    def getWidgetByName(self, name: str) -> TTkWidget:
+        '''
+        Return the widget from its name.
+
+        :param name: the widget's name, normally defined in the constructor or through :py:meth:`TTkWidget.setName`
+        :type name:
+
+        :return: :py:class:`TTkWidget`
+        '''
         if name == self._name:
             return self
         for w in self.rootLayout().iterWidgets(onlyVisible=False, recurse=True):

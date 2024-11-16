@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['DebugTTkTerminal']
+
 import os, pty, threading
 import struct, fcntl, termios
 
@@ -55,7 +57,7 @@ from TermTk.TTkCore.TTkTerm.colors_ansi_map import ansiMap16, ansiMap256
 
 class DebugTTkTerminal(TTkWidget):
     __slots__ = ('_terminal')
-    def __init__(self, terminal, **kwargs):
+    def __init__(self, terminal, **kwargs) -> None:
         super().__init__(**kwargs)
 
     def paintEvent(self, canvas: TTkCanvas):

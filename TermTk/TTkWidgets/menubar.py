@@ -28,27 +28,29 @@ from TermTk.TTkCore.color import TTkColor
 # from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.shortcut import TTkShortcut
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkWidgets.menu import TTkMenuButton
 
 class TTkMenuBarButton(TTkMenuButton):
     classStyle = TTkMenuButton.classStyle | {
-                'default': TTkMenuButton.classStyle['default'] | {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE},
-                'clicked': TTkMenuButton.classStyle['clicked'] | {'color': TTkColor.fg("#ffff88")},
+                'default': TTkMenuButton.classStyle['default'] |
+                           {'borderColor':TTkColor.RST, 'shortcutColor': TTkColor.fg("#dddddd") + TTkColor.UNDERLINE,
+                            'glyphs':('├','─','┤','┄','┄','▶')},
+                'clicked': TTkMenuButton.classStyle['clicked'] |
+                           {'color': TTkColor.fg("#ffff88")},
             }
 
     __slots__=('_shortcut')
-    def __init__(self, *, text=..., data=None, checkable=False, checked=False, **kwargs):
+    def __init__(self, *,
+                 text:TTkString=...,
+                 data:object=None,
+                 checkable:bool=False,
+                 checked:bool=False,
+                 **kwargs) -> None:
         self._shortcut = []
         super().__init__(text=text, data=data, checkable=checkable, checked=checked, **kwargs)
-        while self.text().find('&') != -1:
-            index = self.text().find('&')
-            shortcut = self.text().charAt(index+1)
-            TTkHelper.addShortcut(self, shortcut)
-            self._shortcut.append(index)
-            self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
-        txtlen = self.text().termWidth()
         self.setCheckable(self.isCheckable())
 
     def setCheckable(self, ch):
@@ -66,30 +68,27 @@ class TTkMenuBarButton(TTkMenuButton):
     def paintEvent(self, canvas):
         style = self.currentStyle()
         borderColor = style['borderColor']
+        glyphs      = style['glyphs']
         textColor   = style['color']
         scColor     = style['shortcutColor']
         if self._checkable:
             text = ('▣ ' if self._checked else '□ ') + self.text()
-            width = self.width()+2
         else:
             text = self.text()
-            width = self.width()
-        canvas.drawMenuBarButton(
-                        pos=(0,0),text=text,
-                        width=width,
-                        shortcuts=self._shortcut,
-                        border=True,
-                        submenu=len(self._submenu)>0,
-                        color=textColor,
-                        borderColor=borderColor,
-                        shortcutColor=scColor )
+
+        canvas.drawText(pos=(0,0), color=borderColor ,text=glyphs[2])
+        canvas.drawText(pos=(1+text.termWidth(),0), color=borderColor ,text=glyphs[0])
+        canvas.drawText(pos=(1,0), color=textColor ,text=text)
+
+        for sc in self._shortcut:
+            canvas.drawChar(pos=(0,sc+1), char=text.charAt(sc), color=scColor)
 
 class TTkMenuBarLayout(TTkHBoxLayout):
     '''TTkMenuBarLayout'''
     __slots__ = ('_itemsLeft', '_itemsCenter', '_itemsRight', '_buttons')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self._buttons = []
-        TTkHBoxLayout.__init__(self, *args, **kwargs)
+        super().__init__(**kwargs)
         self._itemsLeft   = TTkHBoxLayout()
         self._itemsCenter = TTkHBoxLayout()
         self._itemsRight  = TTkHBoxLayout()
@@ -101,7 +100,12 @@ class TTkMenuBarLayout(TTkHBoxLayout):
 
     def addMenu(self,text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, alignment=TTkK.LEFT_ALIGN):
         '''addMenu'''
+        text = text if issubclass(type(text),TTkString) else TTkString(text)
+        text, shortcuts = text.extractShortcuts()
         button = TTkMenuBarButton(text=text, data=data, checkable=checkable, checked=checked)
+        for ch in shortcuts:
+            shortcut = TTkShortcut(key=TTkK.ALT | ord(ch.upper()))
+            shortcut.activated.connect(button.shortcutEvent)
         self._mbItems(alignment).addWidget(button)
         self._buttons.append(button)
         self.update()

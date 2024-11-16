@@ -8,75 +8,113 @@ Widgets
 Base Widgets
 ------------
 
+* Label :py:class:`TTkLabel`
+* Button :py:class:`TTkButton`
+* ComboBox :py:class:`TTkComboBox`
+* Line Edit :py:class:`TTkLineEdit`
+* Spinbox :py:class:`TTkSpinBox`
+* Checkbox :py:class:`TTkCheckbox`
+* Radio Button :py:class:`TTkRadioButton`
+* Scrollbar :py:class:`TTkScrollBar`
+
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Base.gif
 
-* Label :class:`~TermTk.TTkWidgets.label.TTkLabel`
-* Button :class:`~TermTk.TTkWidgets.button.TTkButton`
-* ComboBox :class:`~TermTk.TTkWidgets.combobox.TTkCombobox`
-* Line Edit :class:`~TermTk.TTkWidgets.lineedit.TTkLineedit`
-* Spinbox :class:`~TermTk.TTkWidgets.spinbox.TTkSpinbox`
-* Checkbox :class:`~TermTk.TTkWidgets.checkbox.TTkCheckbox`
-* Radio Button :class:`~TermTk.TTkWidgets.radiobutton.TTkRadiobutton`
-* Scrollbar :class:`~TermTk.TTkWidgets.scrollbar.TTkScrollBar`
+
+* List :py:class:`TTkList`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.List.gif
-* List :class:`~TermTk.TTkWidgets.list_.TTkList`
+
+
+* Menu :py:class:`TTkMenu`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Menu.gif
-* Menu :class:`~TermTk.TTkWidgets.menu.TTkMenu`
+
+
+* Tab :py:class:`TTkTabWidget`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Tab.gif
-* Tab :class:`~TermTk.TTkWidgets.tabwidget.TTkTabWidget`
 
 
 Specialised Widgets
 -------------------
 
+* TextEdit :py:class:`TTkTextEdit`
+
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TextEdit.gif
-* TextEdit :class:`~TermTk.TTkWidgets.texedit.TTkTextEdit`
+
+
+* KodeTab :py:class:`TTkKodeTab`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.KodeTab.gif
-* KodeTab :class:`~TermTk.TTkWidgets.kodetab.TTkKodeTab`
+
+
+* Terminal :py:class:`TTkTerminal`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.Terminal.gif
-* Terminal :class:`~TermTk.TTkWidgets.TTkTerminal.terminal.TTkTerminal`
+
+
+* Image :py:class:`TTkImage`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TTkImage.gif
-* Image :class:`~TermTk.TTkWidgets.image.TTkImage`
 
-.. _widgets-pickers:
 
 Model View
 ----------
 
+* Tree Widget :py:class:`TTkTree`
+
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TreeWidget.Demo.gif
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TreeWidget.ttkDesigner.gif
-* Tree Widget :class:`~TermTk.TTkWidgets.TTkModelView.tree.TTkTree`
+
+
+* Table Widget :py:class:`TTkTable`
+
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TableWidget.01.gif
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TableWidget.02.gif
+
+
+* File Tree   :py:class:`TTkFileTree`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.FileTree.gif
-* File Tree   :class:`~TermTk.TTkWidgets.TTkModelView.filetree.TTkFileTree`
+
+
+.. _widgets-pickers:
 
 Pickers
 -------
+
+* Text Picker :py:class:`TTkTextPicker`
+
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.TextPicker.gif
-* Text Picker :class:`~TermTk.TTkWidgets.TTkPickers.textpicker.TTkTextPicker`
+
+
+* File Picker :py:class:`TTkFileButtonPicker`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.FilePicker.gif
-* File Picker :class:`~TermTk.TTkWidgets.TTkPickers.filepicker.TTkFileButtonPicker`
+
+
+* Color Picker :py:class:`TTkColorButtonPicker`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.ColorPicker.gif
-* Color Picker :class:`~TermTk.TTkWidgets.TTkPickers.colorpicker.TTkColorButtonPicker`
+
+
+* Message Box :py:class:`TTkMessageBox`
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.MessageBox.gif
-* Message Box :class:`~TermTk.TTkWidgets.TTkPickers.messagebox.TTkMessageBox`
+
 
 .. _widgets-layout:
 
 Layout
 ------
 
-* Frame :class:`~TermTk.TTkWidgets.frame.TTkFrame`
-* Resizable Frame :class:`~TermTk.TTkWidgets.resizableframe.TTkResizableFrame`
-* Window :class:`~TermTk.TTkWidgets.window.TTkWindow`
-* Splitter :class:`~TermTk.TTkWidgets.splitter.TTkSplitter`
-* Scroll Area :class:`~TermTk.TTkWidgets.scrollarea.TTkScrollArea`
+* Frame :py:class:`TTkFrame`
+* Resizable Frame :py:class:`TTkResizableFrame`
+* Window :py:class:`TTkWindow`
+* Splitter :py:class:`TTkSplitter`
+* Scroll Area :py:class:`TTkScrollArea`
+
+
+* App Template :py:class:`TTkAppTemplate`
+
+.. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.Widgets.AppTemplate.gif

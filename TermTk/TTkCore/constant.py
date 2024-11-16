@@ -42,12 +42,37 @@ class TTkConstant:
     Background = ColorType.Background
     Modifier   = ColorType.Modifier
 
-    # Focus Policies
-    NoFocus     = 0x0000
-    ClickFocus  = 0x0001
-    WheelFocus  = 0x0002
-    TabFocus    = 0x0004
-    ParentFocus = 0x0101
+    class FocusPolicy(int):
+        '''
+        This Class type defines the various policies a widget
+        can have with respect to acquiring keyboard focus.
+
+        .. autosummary::
+          NoFocus
+          ClickFocus
+          WheelFocus
+          TabFocus
+          ParentFocus
+        '''
+        NoFocus     = 0x0000
+        '''The widget does not accept focus.'''
+        ClickFocus  = 0x0001
+        '''The widget accepts focus by clicking.'''
+        WheelFocus  = 0x0002
+        '''The widget accepts focus by using the mouse wheel.'''
+        TabFocus    = 0x0004
+        '''The widget accepts focus by tabbing.'''
+        ParentFocus = 0x0101
+        '''The parent widget forward the focus to this widget'''
+        StrongFocus	= TabFocus | ClickFocus | 0x8
+        '''the widget accepts focus by both tabbing and clicking.'''
+
+    NoFocus     = FocusPolicy.NoFocus
+    ClickFocus  = FocusPolicy.ClickFocus
+    WheelFocus  = FocusPolicy.WheelFocus
+    TabFocus    = FocusPolicy.TabFocus
+    ParentFocus = FocusPolicy.ParentFocus
+    StrongFocus = FocusPolicy.StrongFocus
 
     # positions
     NONE   = 0x0000
@@ -56,13 +81,35 @@ class TTkConstant:
     LEFT   = 0x0004
     RIGHT  = 0x0008
     CENTER = 0x0010
+    HEADER = 0x0020
+    FOOTER = 0x0040
+
+    class SelectionMode(int):
+        '''
+        This class type indicates how the view responds to user selections.
+
+        .. autosummary::
+          NoSelection
+          SingleSelection
+          MultiSelection
+        '''
+        NoSelection         = 0x00
+        '''Items cannot be selected.'''
+        SingleSelection     = 0x01
+        '''When the user selects an item, any already-selected item becomes unselected. It is possible for the user to deselect the selected item by pressing the Ctrl key when clicking the selected item.'''
+        # ContiguousSelection = 0x04
+        # '''When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item.'''
+        # ExtendedSelection   = 0x03
+        # '''When the user selects an item in the usual way, the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item are selected or unselected, depending on the state of the clicked item. Multiple items can be selected by dragging the mouse over them.'''
+        MultiSelection      = 0x02
+        '''When the user selects an item in the usual way, the selection status of that item is toggled and the other items are left alone. Multiple items can be toggled by dragging the mouse over them.'''
 
     # SelectionMode
-    NoSelection         = 0x00
-    SingleSelection     = 0x01
-    MultiSelection      = 0x02
-    ExtendedSelection   = 0x03
-    ContiguousSelection = 0x04
+    NoSelection         = SelectionMode.NoSelection
+    SingleSelection     = SelectionMode.SingleSelection
+    # ExtendedSelection   = SelectionMode.ExtendedSelection
+    # ContiguousSelection = SelectionMode.ContiguousSelection
+    MultiSelection      = SelectionMode.MultiSelection
 
     # Graph types
     FILLED = 0x0001
@@ -76,7 +123,12 @@ class TTkConstant:
     TIME_EVENT   = 0x10
 
     class Direction(int):
-        '''This class type is used to describe the direction'''
+        '''This class type is used to describe the direction
+
+        .. autosummary::
+          HORIZONTAL
+          VERTICAL
+        '''
         HORIZONTAL = 0x01 + 0x02
         '''Horizontal direction'''
         VERTICAL   = 0x04 + 0x08
@@ -94,6 +146,22 @@ class TTkConstant:
     ScrollBarAlwaysOff = ScrollBarPolicy.ScrollBarAlwaysOff
     ScrollBarAlwaysOn  = ScrollBarPolicy.ScrollBarAlwaysOn
 
+    class ColorPickerReturnType(int):
+        '''
+        This class identify the return color type used in :py:class:`TTkColorDialogPicker` or :py:class:`TTkColorButtonPicker`
+
+        .. autosummary::
+          Default
+          Foreground
+          Background
+        '''
+        Default=0x00
+        '''The color type returned (fg or bg) is compliant of the type used in the initialization or 'Foreground' in case is missing or :py:class:`TTKColor.RST`'''
+        Foreground=0x01
+        '''The color type returned is Foreground'''
+        Background=0x02
+        '''The color type returned is Background'''
+
     class CheckState(int):
         ''' This class type is used to describe the check status.
 
@@ -103,15 +171,23 @@ class TTkConstant:
           Checked
         '''
         Unchecked        = 0x00
+        '''The item is unchecked.'''
         PartiallyChecked = 0x01
+        '''The item is partially checked. Items in hierarchical models may be partially checked if some, but not all, of their children are checked.'''
         Checked          = 0x02
+        '''The item is checked.'''
 
     Unchecked        = CheckState.Unchecked
     PartiallyChecked = CheckState.PartiallyChecked
     Checked          = CheckState.Checked
 
     class InsertPolicy(int):
-        '''Specifies what the :class:`~TermTk.TTkWidgets.combobox.TTkComboBox` should do when a new string is entered by the user.
+        '''Specifies what the :py:class:`TTkComboBox` should do when a new string is entered by the user.
+
+        .. autosummary::
+          NoInsert
+          InsertAtTop
+          InsertAtBottom
         '''
         NoInsert               = 0x00
         '''The string will not be inserted into the combobox.'''
@@ -129,7 +205,14 @@ class TTkConstant:
         # '''The string is inserted in the alphabetic order in the combobox.'''
 
     class DragDropMode(int):
-        '''Specifies the Drag and Drop mode allowed by this widget'''
+        '''Specifies the Drag and Drop mode allowed by this widget
+
+        .. autosummary::
+          NoDragDrop
+          AllowDrag
+          AllowDrop
+          AllowDragDrop
+        '''
         NoDragDrop = 0x00
         '''No Drag and Drop is allowed'''
         AllowDrag  = 0x01
@@ -153,8 +236,16 @@ class TTkConstant:
     DontShowIndicatorWhenChildless = ChildIndicatorPolicy.DontShowIndicatorWhenChildless
 
     class SortOrder(int):
+        '''This enum describes how the items in a widget are sorted.
+
+        .. autosummary::
+          AscendingOrder
+          DescendingOrder
+        '''
         AscendingOrder  = 0x00
+        '''The items are sorted ascending e.g. starts with 'AAA' ends with 'ZZZ' in Latin-1 locales'''
         DescendingOrder = 0x01
+        '''The items are sorted descending e.g. starts with 'ZZZ' ends with 'AAA' in Latin-1 locales'''
 
     AscendingOrder  = SortOrder.AscendingOrder
     DescendingOrder = SortOrder.DescendingOrder
@@ -171,7 +262,16 @@ class TTkConstant:
     class MouseKey(int):
         '''Input Mouse Key
 
-        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.key`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`TTkMouseEvent.key`
+
+        .. autosummary::
+          NoButton
+          AllButtons
+          LeftButton
+          RightButton
+          MidButton
+          MiddleButton
+          Wheel
         '''
         NoButton      = 0x00000000
         '''The button state does not refer to any button.'''
@@ -197,13 +297,19 @@ class TTkConstant:
     Wheel         = MouseKey.Wheel
 
     class WrapMode(int):
-        '''Those constants describes how text is wrapped in a document.'''
+        '''Those constants describes how text is wrapped in a document.
+
+        .. autosummary::
+          WordWrap
+          WrapAnywhere
+          WrapAtWordBoundaryOrAnywhere
+        '''
         # NoWrap        = 0x00
         # '''Text is not wrapped at all.'''
         WordWrap      = 0x01
         '''Text is wrapped at word boundaries.'''
         # ManualWrap    = 0x02
-        # '''Same as :class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
+        # '''Same as :py:class:`~TermTk.TTkCore.constant.TTkConstant.WrapMode.NoWrap`'''
         WrapAnywhere  = 0x03
         '''Text can be wrapped at any point on a line, even if it occurs in the middle of a word.'''
         WrapAtWordBoundaryOrAnywhere = 0x04
@@ -216,9 +322,19 @@ class TTkConstant:
     WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
 
     class LineWrapMode(int):
+        '''Those constants describes which wrapping status is required in the document
+
+        .. autosummary::
+          NoWrapk
+          WidgetWidthk
+          FixedWidthk
+        '''
         NoWrap       =  0x00
+        '''No Wrapping is applied'''
         WidgetWidth  =  0x01
+        '''Wrapping around the Widget width'''
         FixedWidth   =  0x03
+        '''Wrapping around a fixed width'''
 
     NoWrap      = LineWrapMode.NoWrap
     WidgetWidth = LineWrapMode.WidgetWidth
@@ -229,7 +345,16 @@ class TTkConstant:
     class MouseEvent(int):
         '''Input Mouse Event
 
-        Events reported by :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputmouse.TTkMouseEvent.evt`
+        Events reported by :py:class:`TTkMouseEvent` -> :py:class:`TTkMouseEvent.evt`
+
+        .. autosummary::
+          NoEvent
+          Press
+          Release
+          Drag
+          Move
+          WHEEL_Up
+          WHEEL_Down
         '''
         NoEvent    = 0x00000000
         Press      = 0x00010000
@@ -289,7 +414,13 @@ class TTkConstant:
     JUSTIFY      = Alignment.JUSTIFY
 
     class FileMode(int):
-        '''FileMode'''
+        '''FileMode
+
+        .. autosummary::
+          AnyFile
+          ExistingFile
+          Directory
+        '''
         AnyFile        = 0
         '''The name of a file, whether it exists or not.'''
         ExistingFile   = 1
@@ -304,15 +435,88 @@ class TTkConstant:
     # ExistingFiles = FileMode.ExistingFiles
 
     class AcceptMode(int):
-        '''AcceptMode'''
+        '''AcceptMode
+
+        .. autosummary::
+          AcceptOpen
+          AcceptSave
+        '''
         AcceptOpen	= 0
         '''Open'''
         AcceptSave	= 1
         '''Save'''
 
+    class TTkItemSelectionModel(int):
+        '''These values describes the way the selection model will be updated.
+
+        .. autosummary::
+          NoUpdate
+          Clear
+          Select
+          Deselect
+          Toggle
+          Current
+          Rows
+          Columns
+          SelectCurrent
+          ToggleCurrent
+          ClearAndSelect
+        '''
+        NoUpdate = 0x0000
+        '''No selection will be made.'''
+        Clear    = 0x0001
+        '''The complete selection will be cleared.'''
+        Select   = 0x0002
+        '''All specified indexes will be selected.'''
+        Deselect = 0x0004
+        '''All specified indexes will be deselected.'''
+        Toggle   = 0x0008
+        '''All specified indexes will be selected or deselected depending on their current state.'''
+        Current  = 0x0010
+        '''The current selection will be updated.'''
+        Rows     = 0x0020
+        '''All indexes will be expanded to span rows.'''
+        Columns  = 0x0040
+        '''All indexes will be expanded to span columns.'''
+        SelectCurrent = Select | Current
+        '''A combination of Select and Current, provided for convenience.'''
+        ToggleCurrent = Toggle | Current
+        '''A combination of Toggle and Current, provided for convenience.'''
+        ClearAndSelect = Clear | Select
+        '''A combination of Clear and Select, provided for convenience.'''
+
+    class ItemFlag(int):
+        ''':py:class:`ItemFlag` describes the properties of an item
+
+        .. autosummary::
+          NoItemFlags
+          ItemIsSelectable
+          ItemIsEditable
+          ItemIsEnabled
+        '''
+        NoItemFlags          = 0x0000
+        '''It does not have any properties set.'''
+        ItemIsSelectable     = 0x0001
+        '''It can be selected.'''
+        ItemIsEditable       = 0x0002
+        '''It can be edited.'''
+        # ItemIsDragEnabled    = 0x0004
+        # '''It can be dragged.'''
+        # ItemIsDropEnabled    = 0x0008
+        # '''It can be used as a drop target.'''
+        # ItemIsUserCheckable  = 0x0010
+        # '''It can be checked or unchecked by the user.'''
+        ItemIsEnabled        = 0x0020
+        '''The user can interact with the item.'''
+
     # LayoutItem Types
     class LayoutItemTypes(int):
-        '''Types used internally in :mod:`~TermTk.TTkLayouts`'''
+        '''Types used internally in :mod:`~TermTk.TTkLayouts`
+
+        .. autosummary::
+          LayoutItem
+          WidgetItem
+        '''
         LayoutItem = 0x01
         '''Item Type Layout'''
         WidgetItem = 0x02
@@ -323,6 +527,16 @@ class TTkConstant:
     WidgetItem = LayoutItemTypes.WidgetItem
 
     class WindowFlag(int):
+        '''
+        Those flags are used to enable customization of the window controls.
+
+        .. autosummary::
+          WindowReduceButtonHint
+          WindowMinimizeButtonHint
+          WindowMaximizeButtonHint
+          WindowMinMaxButtonsHint
+          WindowCloseButtonHint
+        '''
         # FramelessWindowHint         = 0x00000800
         # ''' Produces a borderless window.'''
         # CustomizeWindowHint         = 0x02000000
@@ -353,7 +567,11 @@ class TTkConstant:
     class KeyType(int):
         '''Input Key Types
 
-        Key type reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.key`
+        Key type reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.key`
+
+        .. autosummary::
+          Character
+          SpecialKey
         '''
         Character  = 0x0001
         '''Input Char Key'''
@@ -365,9 +583,22 @@ class TTkConstant:
 
 
     class KeyModifier(int):
-        '''Input :class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
+        '''Input :py:class:`~TermTk.TTkCore.constant.TTkConstant.KeyType.SpecialKey` modifiers
 
-        Modifier reported by :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent` -> :class:`~TermTk.TTkCore.TTkTerm.inputkey.TTkKeyEvent.mod`
+        Modifier reported by :py:class:`TTkKeyEvent` -> :py:class:`TTkKeyEvent.mod`
+
+        .. autosummary::
+          NoModifier
+          ShiftModifier
+          ControlModifier
+          AltModifier
+          MetaModifier
+          KeypadModifier
+          GroupSwitchModifier
+          SHIFT
+          META
+          CTRL
+          ALT
         '''
         NoModifier          = 0x00000000
         '''No modifier key is pressed.'''
@@ -384,6 +615,15 @@ class TTkConstant:
         GroupSwitchModifier = 0x40000000
         '''X11 only (unless activated on Windows by a command line argument). A Mode_switch key on the keyboard is pressed.'''
 
+        SHIFT = ShiftModifier
+        '''The Shift keys provided on all standard keyboards.'''
+        META  = MetaModifier
+        '''The Meta keys.'''
+        CTRL  = ControlModifier
+        '''The Ctrl keys.'''
+        ALT   = AltModifier
+        '''The normal Alt keys, but not keys like AltGr.'''
+
     NoModifier          = KeyModifier.NoModifier
     ShiftModifier       = KeyModifier.ShiftModifier
     ControlModifier     = KeyModifier.ControlModifier
@@ -392,6 +632,36 @@ class TTkConstant:
     KeypadModifier      = KeyModifier.KeypadModifier
     GroupSwitchModifier = KeyModifier.GroupSwitchModifier
 
+    SHIFT = KeyModifier.SHIFT
+    META  = KeyModifier.META
+    CTRL  = KeyModifier.CTRL
+    ALT   = KeyModifier.ALT
+
+    class ShortcutContext(int):
+        '''
+        For a :py:class:`TTkShortcut` event to occur,
+        the shortcut's key sequence must be entered by the user in a context where the shortcut is active.
+        The possible contexts are these:
+
+        .. autosummary::
+          WidgetShortcut
+          WidgetWithChildrenShortcut
+          WindowShortcut
+          ApplicationShortcut
+        '''
+        WidgetShortcut             = 0x00
+        '''The shortcut is active when its parent widget has focus.'''
+        WidgetWithChildrenShortcut = 0x03
+        '''The shortcut is active when its parent widget, or any of its children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.'''
+        WindowShortcut             = 0x01
+        '''The shortcut is active when its parent widget is a logical subwidget of the active top-level window.'''
+        ApplicationShortcut        = 0x02
+        '''The shortcut is active when one of the applications windows are active.'''
+
+    WidgetShortcut             = ShortcutContext.WidgetShortcut
+    WidgetWithChildrenShortcut = ShortcutContext.WidgetWithChildrenShortcut
+    WindowShortcut             = ShortcutContext.WindowShortcut
+    ApplicationShortcut        = ShortcutContext.ApplicationShortcut
 
     Key_Escape                  = 0x01000000
     Key_Tab                     = 0x01000001
@@ -670,7 +940,7 @@ class TTkConstant:
     Key_Dead_e                  = 0x01001282
     Key_Dead_E                  = 0x01001283
     Key_Dead_i                  = 0x01001284
-    Key_Dead_I                  = 0x01001285
+    Key_Dead_I                  = 0x01001285dd3e612f3ca6f9971b2aa0f5e622e21244da98ff
     Key_Dead_o                  = 0x01001286
     Key_Dead_O                  = 0x01001287
     Key_Dead_u                  = 0x01001288
@@ -865,4 +1135,6 @@ class TTkConstant:
 
 
 # Alias to TTkConstant
-class TTkK(TTkConstant): pass
+class TTkK(TTkConstant):
+  '''Class container of all the constants used in :mod:`~TermTk`'''
+  pass

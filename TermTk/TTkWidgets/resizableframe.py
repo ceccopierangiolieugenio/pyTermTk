@@ -28,8 +28,8 @@ from TermTk.TTkWidgets.frame import TTkFrame
 class TTkResizableFrame(TTkFrame):
     '''TTkResizableFrame'''
     __slots__ = ('_mouseDelta', '_resizable')
-    def __init__(self, *args, **kwargs):
-        TTkFrame.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        TTkFrame.__init__(self, **kwargs)
         self.setBorder(True)
         self._mouseDelta = (0,0)
         self._resizable = TTkK.NONE

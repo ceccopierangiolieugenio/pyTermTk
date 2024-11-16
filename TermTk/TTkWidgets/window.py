@@ -31,7 +31,7 @@ from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
 class _MinimizedButton(TTkButton):
     __slots__ = ('_windowWidget')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._windowWidget = kwargs.get('windowWidget')
         def _cb():
@@ -64,15 +64,18 @@ class TTkWindow(TTkResizableFrame):
             '_btnClose', '_btnMax', '_btnMin', '_btnReduce',
             '_flags', '_winTopLayout',
             '_maxBk', '_redBk' )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 flags:TTkK.WindowFlag=TTkK.WindowFlag.WindowCloseButtonHint,
+                 **kwargs) -> None:
         self._winTopLayout = TTkGridLayout()
-        super().__init__(*args, **kwargs)
         self._flags = TTkK.NONE
-        self.setPadding(3,1,1,1)
         self._mouseDelta = (0,0)
-        self.setFocusPolicy(TTkK.ClickFocus)
         self._draggable = False
+        super().__init__(**kwargs)
+        # This is a little hack used in TTKWindow to define the placement of the TOP menubar inside TTKFrame
         self._menubarTopPosition = 2
+        self.setPadding(3,1,1,1)
+        self.setFocusPolicy(TTkK.ClickFocus)
 
         # Add the top Layout to keep the windows action buttons
         # self._winTopLayout = TTkGridLayout()
@@ -100,17 +103,17 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.setGeometry(1,1,self.width()-2,1)
         self._winTopLayout.update()
 
-        self.setWindowFlag(kwargs.get('flags', TTkK.WindowFlag.WindowCloseButtonHint))
+        self.setWindowFlag(flags)
         self.focusChanged.connect(self._focusChanged)
 
     def _maximize(self):
-        if not (pw := self.parentWidget()): return
+        if not (pl := self.widgetItem().parent()): return
         if self._maxBk:
             self.setGeometry(*self._maxBk)
             self._maxBk = None
         else:
             bk = self.geometry()
-            maxw,maxh = pw.layout().size()
+            maxw,maxh = pl.size()
             self.setGeometry(0,0,maxw,maxh)
             self._maxBk = bk
 
@@ -124,20 +127,19 @@ class TTkWindow(TTkResizableFrame):
             self._redBk = bk
 
     def _minimize(self):
-        if not (pw := self.parentWidget()): return
+        if not (pl := self.widgetItem().parent()): return
         stack = []
-        for li in pw.rootLayout().children():
+        for li in pl.children():
             if li.layoutItemType() == TTkK.WidgetItem and issubclass(type(w:=li.widget()),_MinimizedButton):
                 stack.append(w.y())
         stack = sorted(stack)
-        lx,ly = pw.layout().pos()
-        pos = ly
+        pos = 0
         for v in stack:
             if (pos+2) < v or (v+2) < pos:
                 break
             pos += 3
-        mb = _MinimizedButton(windowWidget=self,text=self._title,border=True,pos=(lx,pos),size=(15,3))
-        pw.rootLayout().addWidget(mb)
+        mb = _MinimizedButton(windowWidget=self,text=self._title,border=True,pos=(0,pos),size=(15,3))
+        pl.addWidget(mb)
         self.hide()
 
     def windowFlag(self):

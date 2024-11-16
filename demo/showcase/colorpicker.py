@@ -31,20 +31,35 @@ import TermTk as ttk
 def demoColorPicker(root=None):
     frame = ttk.TTkFrame(parent=root, border=False)
 
-    winCP = ttk.TTkWindow(parent=frame,pos = (0,0), size=(30,16), title="Test Color Pickers", border=True)
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,0), size=(8,3), border=True, color=ttk.TTkColor.bg('#88ffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,3), size=(8,3), border=True, color=ttk.TTkColor.bg('#ff88ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,6), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffff88') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,9), size=(8,3), border=True, color=ttk.TTkColor.bg('#8888ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,0), size=(8,3), border=True, color=ttk.TTkColor.fg('#00ffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,3), size=(8,3), border=True, color=ttk.TTkColor.fg('#ff00ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,6), size=(8,3), border=True, color=ttk.TTkColor.fg('#ffff00') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(10,9), size=(8,3), border=True, color=ttk.TTkColor.fg('#0000ff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,0), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,3), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,6), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
-    ttk.TTkColorButtonPicker(parent=winCP, pos=(20,9), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') )
+    lcol = ttk.TTkLabel(parent=frame, pos=(0,0), text="Test ░▒▓█▁▂▃▄▅▆▇█ Color")
+    lfg  = ttk.TTkLabel(parent=frame, pos=(0,1), text="Test ░▒▓█▁▂▃▄▅▆▇█ Color FG")
+    lbg  = ttk.TTkLabel(parent=frame, pos=(0,2), text="Test ░▒▓█▁▂▃▄▅▆▇█ Color BG")
 
+    winCP = ttk.TTkWindow(parent=frame,pos = (0,3), size=(30,17), title="Test Color Pickers", border=True)
+    ttk.TTkLabel(parent=winCP, pos=( 1,0), text="BG")
+    ttk.TTkLabel(parent=winCP, pos=(11,0), text="FG")
+    cbp01 = ttk.TTkColorButtonPicker(parent=winCP, pos=( 0, 1), size=(8,3), border=True, color=ttk.TTkColor.bg('#88ffff') )
+    cbp02 = ttk.TTkColorButtonPicker(parent=winCP, pos=( 0, 4), size=(8,3), border=True, color=ttk.TTkColor.bg('#ff88ff') ,returnType=ttk.TTkK.ColorPickerReturnType.Default)
+    cbp03 = ttk.TTkColorButtonPicker(parent=winCP, pos=( 0, 7), size=(8,3), border=True, color=ttk.TTkColor.fg('#ffff88') ,returnType=ttk.TTkK.ColorPickerReturnType.Background)
+    cbp04 = ttk.TTkColorButtonPicker(parent=winCP, pos=( 0,10), size=(8,3), border=True, color=ttk.TTkColor.bg('#8888ff') ,returnType=ttk.TTkK.ColorPickerReturnType.Background)
+
+    cbp05 = ttk.TTkColorButtonPicker(parent=winCP, pos=(10, 1), size=(8,3), border=True, color=ttk.TTkColor.fg('#00ffff') )
+    cbp06 = ttk.TTkColorButtonPicker(parent=winCP, pos=(10, 4), size=(8,3), border=True, color=ttk.TTkColor.fg('#ff00ff') ,returnType=ttk.TTkK.ColorPickerReturnType.Default)
+    cbp07 = ttk.TTkColorButtonPicker(parent=winCP, pos=(10, 7), size=(8,3), border=True, color=ttk.TTkColor.fg('#ffff00') ,returnType=ttk.TTkK.ColorPickerReturnType.Foreground)
+    cbp08 = ttk.TTkColorButtonPicker(parent=winCP, pos=(10,10), size=(8,3), border=True, color=ttk.TTkColor.bg('#0000ff') ,returnType=ttk.TTkK.ColorPickerReturnType.Foreground)
+
+    cbp09 = ttk.TTkColorButtonPicker(parent=winCP, pos=(20, 1), size=(8,3), border=True, color=ttk.TTkColor.fg('#ffffff') ,returnType=ttk.TTkK.ColorPickerReturnType.Foreground)
+    cbp10 = ttk.TTkColorButtonPicker(parent=winCP, pos=(20, 4), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') ,returnType=ttk.TTkK.ColorPickerReturnType.Foreground)
+    cbp11 = ttk.TTkColorButtonPicker(parent=winCP, pos=(20, 7), size=(8,3), border=True, color=ttk.TTkColor.fg('#ffffff') ,returnType=ttk.TTkK.ColorPickerReturnType.Background)
+    cbp12 = ttk.TTkColorButtonPicker(parent=winCP, pos=(20,10), size=(8,3), border=True, color=ttk.TTkColor.bg('#ffffff') ,returnType=ttk.TTkK.ColorPickerReturnType.Background)
+
+    def _register(cbp:ttk.TTkColorButtonPicker):
+        cbp.colorSelected.connect(lcol.setColor)
+        cbp.colorSelectedFG.connect(lfg.setColor)
+        cbp.colorSelectedBG.connect(lbg.setColor)
+
+    for cbp in [cbp01,cbp02,cbp03,cbp04,cbp05,cbp06,cbp07,cbp08,cbp09,cbp10,cbp11,cbp12]:
+        _register(cbp)
 
     # win2_1 = ttk.TTkColorDialogPicker(parent=frame,pos = (3,3), size=(110,40), title="Test Color Picker", border=True)
 

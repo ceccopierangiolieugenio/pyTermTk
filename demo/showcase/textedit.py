@@ -130,10 +130,10 @@ def demoTextEdit(root=None, document=None):
 
     # Char Fg/Bg buttons
     fontLayout.addWidget(cb_fg := ttk.TTkCheckbox(text=" FG"),0,0)
-    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3)),1,0)
+    fontLayout.addWidget(btn_fgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Foreground),1,0)
 
     fontLayout.addWidget(cb_bg := ttk.TTkCheckbox(text=" BG"),0,2)
-    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7   ,3)),1,2)
+    fontLayout.addWidget(btn_bgColor := ttk.TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), returnType=ttk.TTkK.ColorPickerReturnType.Background),1,2)
 
     fontLayout.addWidget(cb_linenumber := ttk.TTkCheckbox(text=" LineNumber", checked=True),0,4,1,3)
     fontLayout.addWidget(sb_linenumber := ttk.TTkSpinBox(value=1, maxWidth=5, maximum=10000, minimum=-10000, enabled=True),0,7,1,1)
@@ -161,7 +161,7 @@ def demoTextEdit(root=None, document=None):
         if fg := format.foreground():
             cb_fg.setCheckState(ttk.TTkK.Checked)
             btn_fgColor.setEnabled()
-            btn_fgColor.setColor(fg.invertFgBg())
+            btn_fgColor.setColor(fg)
         else:
             cb_fg.setCheckState(ttk.TTkK.Unchecked)
             btn_fgColor.setDisabled()
@@ -185,7 +185,7 @@ def demoTextEdit(root=None, document=None):
     def _setStyle():
         color = ttk.TTkColor()
         if cb_fg.checkState() == ttk.TTkK.Checked:
-            color += btn_fgColor.color().invertFgBg()
+            color += btn_fgColor.color()
         if cb_bg.checkState() == ttk.TTkK.Checked:
             color += btn_bgColor.color()
         if btn_bold.isChecked():
@@ -201,17 +201,17 @@ def demoTextEdit(root=None, document=None):
         cursor.setColor(color)
         te.setFocus()
 
-    cb_fg.stateChanged.connect(lambda x: btn_fgColor.setEnabled(x==ttk.TTkK.Checked))
-    cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==ttk.TTkK.Checked))
-    cb_fg.clicked.connect(lambda _: _setStyle())
-    cb_bg.clicked.connect(lambda _: _setStyle())
+    cb_fg.toggled.connect(btn_fgColor.setEnabled)
+    cb_bg.toggled.connect(btn_bgColor.setEnabled)
+    cb_fg.clicked.connect(_setStyle)
+    cb_bg.clicked.connect(_setStyle)
 
     cb_linenumber.toggled.connect(te.setLineNumber)
     cb_linenumber.toggled.connect(sb_linenumber.setEnabled)
     sb_linenumber.valueChanged.connect(te.setLineNumberStarting)
 
-    btn_fgColor.colorSelected.connect(lambda _: _setStyle())
-    btn_bgColor.colorSelected.connect(lambda _: _setStyle())
+    btn_fgColor.colorSelected.connect(_setStyle)
+    btn_bgColor.colorSelected.connect(_setStyle)
 
     btn_bold.clicked.connect(_setStyle)
     btn_italic.clicked.connect(_setStyle)

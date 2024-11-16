@@ -32,14 +32,18 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
     DIR  = 0x01
 
     __slots__ = ('_path', '_type', '_raw')
-    def __init__(self, *args, **kwargs):
-        TTkTreeWidgetItem.__init__(self, *args, **kwargs)
-        self._path   = kwargs.get('path', '.')
-        self._type   = kwargs.get('type', TTkFileTreeWidgetItem.FILE)
-        self._raw    = kwargs.get('raw')
+    def __init__(self, *args,
+                 path:str='.',
+                 type:int=FILE,
+                 raw:list=None,
+                 **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._path   = path
+        self._type   = type
+        self._raw    = raw
         self.setTextAlignment(1, TTkK.RIGHT_ALIGN)
 
-    def setFilter(self, filter):
+    def setFilter(self, filter:str) -> None:
         for c in self._children:
             c.dataChanged.disconnect(self.emitDataChanged)
             c._processFilter(filter)
@@ -47,15 +51,15 @@ class TTkFileTreeWidgetItem(TTkTreeWidgetItem):
             c.dataChanged.connect(self.emitDataChanged)
         self.dataChanged.emit()
 
-    def _processFilter(self, filter):
+    def _processFilter(self, filter:str) -> None:
         if self.getType() == TTkFileTreeWidgetItem.FILE:
-            filterRe = "^"+filter.replace('.',r'\.').replace('*','.*')+"$"
+            filterRe = '|'.join("^"+f.replace('.',r'\.').replace('*','.*')+"$" for f in filter.split(' ') if f)
             if re.match(filterRe, self._raw[0]):
                 self.setHidden(False)
             else:
                 self.setHidden(True)
 
-    def sortData(self, col):
+    def sortData(self, col:int):
         return self._raw[col]
 
     def path(self):

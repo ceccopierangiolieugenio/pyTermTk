@@ -28,9 +28,10 @@
 # Extension/Matches list from:
 #  https://github.com/ryanoasis/vim-devicons/blob/master/plugin/webdevicons.vim
 
+__all__ = ['FileIcon']
+
 import re
 import os
-
 
 class FileIcon():
     folderClose = ''

@@ -10,7 +10,7 @@
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
 
-    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
+    <script src="www/xterm/addon-unicode11/addon-unicode11.js"></script>
     <!--
       <link  href="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css" rel="stylesheet" />
       <script src="https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js"></script>
@@ -19,10 +19,10 @@
   </head>
   <body>
 
-    <div id="terminal" style="float: left"></div>
+    <div id="terminal" oncontextmenu="return false;" style="float: left"></div>
 
     <script type="text/javascript">
-      /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+      /* https://www.npmjs.com/package/@xterm/addon-unicode11 */
       const unicode11Addon = new Unicode11Addon.Unicode11Addon();
 
       var term = new Terminal({allowProposedApi: true});

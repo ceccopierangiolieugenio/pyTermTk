@@ -38,8 +38,8 @@ from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
 class _TTkMenuSpacer(TTkWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
     def paintEvent(self, canvas):
         canvas.drawText(pos=(0,0), text="-"*self.width())
@@ -60,8 +60,11 @@ class TTkMenuButton(TTkWidget):
         # Signals
         'menuButtonClicked', 'triggered', 'toggled', 'dataChanged', 'textChanged')
     def __init__(self, *,
-            text=TTkString(), data=None, checkable=False, checked=False,
-            **kwargs):
+            text:TTkString=TTkString(),
+            data:object=None,
+            checked:bool=False,
+            checkable:bool=False,
+            **kwargs) -> None:
         self.dataChanged = pyTTkSignal(object)
         self.textChanged = pyTTkSignal(TTkString)
         self.menuButtonClicked = pyTTkSignal(TTkMenuButton)
@@ -74,12 +77,6 @@ class TTkMenuButton(TTkWidget):
         self._checkable = checkable
         self._shortcuts = []
         self._highlighted = False
-        while self._text.find('&') != -1:
-            index = self.text().find('&')
-            shortcut = self.text().charAt(index+1)
-            TTkHelper.addShortcut(self, shortcut)
-            self._shortcuts.append(index)
-            self.setText(self.text().substring(to=index)+self.text().substring(fr=index+1))
         super().__init__(**kwargs)
         width = self._text.termWidth() + (3 if self._checkable else 1)
         self.setMinimumWidth(width)
@@ -90,7 +87,7 @@ class TTkMenuButton(TTkWidget):
         return self.parentWidget().setFocus()
 
     def data(self):
-        ''' Returns the user data as set in the constructor or :class:`setData`.'''
+        ''' Returns the user data as set in the constructor or :py:class:`setData`.'''
         return self._data
 
     def setData(self, data):
@@ -146,7 +143,7 @@ class TTkMenuButton(TTkWidget):
     def text(self):
         ''' This property holds the text shown
 
-        :return: :class:`~TermTk.TTkCore.string.TTkString`
+        :return: :py:class:`TTkString`
         '''
         return self._text
 
@@ -154,13 +151,14 @@ class TTkMenuButton(TTkWidget):
         ''' This property holds the text shown
 
         :param text:
-        :type text: :class:`~TermTk.TTkCore.string.TTkString`
+        :type text: :py:class:`TTkString`
         '''
         if self._text == text: return
         self._text = TTkString(text)
         self.textChanged.emit(self._text)
         self.update()
 
+    @pyTTkSlot()
     def shortcutEvent(self):
         self._triggerButton()
 
@@ -213,7 +211,10 @@ class TTkMenuButton(TTkWidget):
 
     def addMenu(self, text:TTkString, data:object=None, checkable:bool=False, checked:bool=False):
         '''addMenu'''
+        text = text if issubclass(type(text),TTkString) else TTkString(text)
+        text, shortcuts = text.extractShortcuts()
         button = TTkMenuButton(text=text, data=data, checkable=checkable, checked=checked)
+        button._shortcuts = [ch.upper() for ch in shortcuts]
         self._submenu.append(button)
         return button
 
@@ -235,12 +236,12 @@ class TTkMenuButton(TTkWidget):
         if self._submenu:
             canvas._set(0, w-1, '▶', style['color'])
         off = 0
-        for i in self._shortcuts:
-            canvas._set(0,i+off, self._text.charAt(i), TTkColor.UNDERLINE)
 
 class _TTkMenuAreaWidget(TTkAbstractScrollView):
     __slots__ = ('_submenu','_minWith','_caller')
-    def __init__(self, caller=None, **kwargs):
+    def __init__(self, *,
+                 caller=None,
+                 **kwargs) -> None:
         self._submenu = []
         self._minWidth = 0
         self._caller = caller
@@ -269,17 +270,16 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
 
     def keyEvent(self, evt) -> bool:
         if not self._submenu: return False
+        btns = [b for b in self._submenu if type(b)==TTkMenuButton]
         if evt.type == TTkK.SpecialKey:
             # Retrieve the current highlighted button
-            btns = [b for b in self._submenu if type(b)==TTkMenuButton]
             curBtn = _b[0] if (_b := [b for b in btns if b._highlighted]) else None
             if evt.key == TTkK.Key_Up:
                 self._cleanHighlight()
                 if not curBtn:
                     curBtn = btns[0]
                 else:
-                    if (i := btns.index(curBtn)-1) >= 0:
-                        curBtn = btns[i]
+                    curBtn = btns[(btns.index(curBtn)-1)%len(btns)]
                 curBtn.setHighlight(True)
                 return True
             elif evt.key == TTkK.Key_Down:
@@ -287,8 +287,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if not curBtn:
                     curBtn = btns[0]
                 else:
-                    if (i := btns.index(curBtn)+1) < len(btns):
-                        curBtn = btns[i]
+                    curBtn = btns[(btns.index(curBtn)+1)%len(btns)]
                 curBtn.setHighlight(True)
                 return True
             elif evt.key == TTkK.Key_Left:
@@ -300,6 +299,22 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
                 if curBtn:
                     curBtn._triggerSubmenu()
                 return True
+            elif evt.key == TTkK.Key_Enter:
+                if curBtn:
+                    curBtn.shortcutEvent()
+                    return True
+        else:
+            # Handle shortcuts
+            if evt.key == " ":
+                curBtn = _b[0] if (_b := [b for b in btns if b._highlighted]) else None
+                if curBtn:
+                    curBtn.shortcutEvent()
+                    return True
+            ch = evt.key.upper()
+            for btn in btns:
+                if ch in btn._shortcuts:
+                    btn.shortcutEvent()
+                    return True
         return super().keyEvent(evt)
 
     def resizeEvent(self, w, h):
@@ -331,9 +346,6 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h
 
-    def viewDisplayedSize(self) -> tuple:
-        return self.size()
-
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
     def minimumWidth(self):   return 0
@@ -344,10 +356,12 @@ class TTkMenu(TTkResizableFrame):
     __slots__ = ('_scrollView',
                  #Forwarded Methods
                  'addSpacer','addMenuItem')
-    def __init__(self, caller=None, **kwargs):
+    def __init__(self,
+                 caller=None,
+                 **kwargs) -> None:
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         sa =TTkScrollArea(parent=self)
-        self._scrollView = _TTkMenuAreaWidget(caller)
+        self._scrollView = _TTkMenuAreaWidget(caller=caller)
         sa.setViewport(self._scrollView)
 
         # Forwarded Methods
@@ -355,7 +369,7 @@ class TTkMenu(TTkResizableFrame):
         self.addSpacer   = self._scrollView.addSpacer
         self.addMenuItem = self._scrollView.addMenuItem
 
-    def addMenu(self, *args, **kwargs):
+    def addMenu(self, *args, **kwargs) -> None:
         ret = self._scrollView.addMenu(*args, **kwargs)
         w,h = self._scrollView.viewFullAreaSize()
         self.resize(w+3,h+2)

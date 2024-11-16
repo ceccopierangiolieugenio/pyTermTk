@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__all__ = ['TTkTerminalModes']
+
 class TTkTerminalModes(int):
     # define masks for keyboard flags
     MODE_KAM     = 0x01 # mode 2: keyboard action mode

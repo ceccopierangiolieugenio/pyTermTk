@@ -138,14 +138,20 @@ class TTkMessageBox(TTkWindow):
                '_widImage', '_widLabel', '_widBtnLayout',
                # Signal
                'buttonSelected')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 icon:Icon=Icon.NoIcon,
+                 text:TTkString='',
+                 detailedText:TTkString='',
+                 standardButtons:StandardButton=StandardButton.Ok,
+                 defaultButton:StandardButton=StandardButton.NoButton,
+                 **kwargs) -> None:
         self.buttonSelected = pyTTkSignal(TTkMessageBox.StandardButton)
-        TTkWindow.__init__(self, *args, **kwargs|{'layout':TTkGridLayout()})
-        self._icon = kwargs.get('icon', TTkMessageBox.Icon.NoIcon)
-        self._text = TTkString(kwargs.get('text', ''))
-        self._detailedText = TTkString(kwargs.get('detailedText', ''))
-        self._standardButtons = kwargs.get('standardButtons', TTkMessageBox.StandardButton.Ok)
-        self._defaultButton = kwargs.get('defaultButton', TTkMessageBox.StandardButton.NoButton)
+        super().__init__(**kwargs|{'layout':TTkGridLayout()})
+        self._icon = icon
+        self._text = TTkString(text)
+        self._detailedText = TTkString(detailedText)
+        self._standardButtons = standardButtons
+        self._defaultButton = defaultButton
 
         compressedData = TTkMessageBox._compressed_data.get(self._icon,'')
         self._widImage = TTkImage(rasteriser=TTkImage.HALFBLOCK)
@@ -227,7 +233,8 @@ class TTkMessageBox(TTkWindow):
             self._widBtnLayout.addWidget(_btn := TTkButton(border=True, text="Yes"))
             _btn.clicked.connect(_genClickedSlot(sb))
 
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        # _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        w,h = self.layout().minimumSize()
         self.resize(w+2,h+4)
 
     # def setText(self, text):pass

@@ -7,6 +7,7 @@ from .frame           import *
 from .resizableframe  import *
 from .window          import *
 from .splitter        import *
+from .apptemplate     import *
 
 # Everything else
 from .about           import *
@@ -24,6 +25,7 @@ from .menu            import *
 from .radiobutton     import *
 from .scrollarea      import *
 from .scrollbar       import *
+from .slider          import *
 from .spacer          import *
 from .spinbox         import *
 from .tabwidget       import *

@@ -45,13 +45,16 @@ from  showcase.list          import demoList
 from  showcase.menubar       import demoMenuBar
 from  showcase.filepicker    import demoFilePicker
 from  showcase.colorpicker   import demoColorPicker
+from  showcase.textpicker    import demoTextPicker
 from  showcase.tree          import demoTree
+from  showcase.table         import demoTTkTable
 from  showcase.fancytable    import demoFancyTable
 from  showcase.fancytree     import demoFancyTree
 from  showcase.textedit      import demoTextEdit
 from  showcase.dragndrop     import demoDnD
 from  showcase.dndtabs       import demoDnDTabs
 from  showcase.sigmask       import demoSigmask
+from  showcase.apptemplate   import demoAppTemplate
 
 def stupidPythonHighlighter(txt):
     def _colorize(regex, txt, color):
@@ -157,6 +160,7 @@ def demoShowcase(root=None, border=True):
     tabLayouts.addTab(demoLayoutNested()," Nested Layout Test ", 'showcase/layout_nested.py')
     tabLayouts.addTab(demoLayoutSpan(),  " Layout Span Test ",   'showcase/layout_span.py')
     tabLayouts.addTab(demoSplitter(),    " Splitter Test ",      'showcase/splitter.py')
+    tabLayouts.addTab(demoAppTemplate(), " App Template ",       'showcase/apptemplate.py')
     tabLayouts.addMenu("sources", ttk.TTkK.RIGHT, tabLayouts).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"MenuBar")
@@ -170,6 +174,7 @@ def demoShowcase(root=None, border=True):
     tabWidgets.addTab(demoTextEdit(),    " Text Edit ", 'showcase/textedit.py')
     tabWidgets.addTab(demoList(),        " List Test ", 'showcase/list.py')
     tabWidgets.addTab(demoTree(),        " Tree Test",  'showcase/tree.py')
+    tabWidgets.addTab(demoTTkTable(),    " Table Test", 'showcase/table.py')
     tabWidgets.addTab(demoTab(),         " Tab Test ",  'showcase/tab.py')
     tabWidgets.addTab(demoFancyTable(),  " Old Table ", 'showcase/fancytable.py')
     tabWidgets.addTab(demoFancyTree(),   " Old Tree ",  'showcase/fancytree.py')
@@ -179,6 +184,7 @@ def demoShowcase(root=None, border=True):
     tabPickers = ttk.TTkTabWidget(parent=mainFrame, border=False, visible=False)
     tabPickers.addTab(demoFilePicker(),  " File Picker ",  'showcase/filepicker.py')
     tabPickers.addTab(demoColorPicker(), " Color Picker ", 'showcase/colorpicker.py')
+    tabPickers.addTab(demoTextPicker(), " Text Picker ",  'showcase/textpicker.py')
     tabPickers.addMenu("sources", ttk.TTkK.RIGHT, tabPickers).menuButtonClicked.connect(lambda _menuButton : showSource(_menuButton.data().currentData()))
 
     listMenu.addItem(f"Graphs")

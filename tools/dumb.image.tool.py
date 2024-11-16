@@ -24,9 +24,8 @@
 
 import os
 from PIL import Image
-import zlib, pickle, base64
 
-import sys, os, argparse, math, random
+import sys, os
 
 sys.path.append(os.path.join(sys.path[0],'..'))
 import TermTk as ttk
@@ -318,7 +317,7 @@ def _resize():
                 'HAMMING' : Image.HAMMING,
                 'BICUBIC' : Image.BICUBIC,
                 'LANCZOS' : Image.LANCZOS}.get(
-                    cb_resample.currentText,Image.NEAREST)
+                    cb_resample.currentText(),Image.NEAREST)
     pilImage = pilImage.resize((width,height),resample)
     data = list(pilImage.getdata())
     # rgbList = [(r,g,b) for r,g,b,a in data]

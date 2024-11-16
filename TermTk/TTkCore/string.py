@@ -24,6 +24,13 @@ __all__ = ['TTkString']
 
 import re
 import unicodedata
+from types import GeneratorType
+from typing import Any
+
+try:
+    from typing import Self
+except:
+    class Self(): pass
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
@@ -36,8 +43,8 @@ class TTkString():
 
     :param text: text of the string, defaults to ""
     :type text: str, optional
-    :param color: the color of the string, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-    :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
+    :param color: the color of the string, defaults to :py:class:`TTkColor.RST`
+    :type color: :py:class:`TTkColor`, optional
 
     Example:
 
@@ -62,7 +69,9 @@ class TTkString():
 
     __slots__ = ('_text','_colors','_baseColor','_hasTab','_hasSpecialWidth')
 
-    def __init__(self, text="", color=None):
+    def __init__(self,
+                 text:str="",
+                 color:TTkColor=None) -> None:
         if issubclass(type(text), TTkString):
             self._text      = text._text
             self._colors    = text._colors if color is None else [color]*len(self._text)
@@ -101,16 +110,16 @@ class TTkString():
         colret += [color]*(len(text)-pos)
         return txtret, colret
 
-    def termWidth(self):
+    def termWidth(self) -> int:
         return self._hasSpecialWidth if self._hasSpecialWidth is not None else len(self)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._text)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._text
 
-    def __add__(self, other):
+    def __add__(self, other:Self) -> Self:
         ret = TTkString()
         ret._baseColor = self._baseColor
         if   isinstance(other, TTkString):
@@ -132,7 +141,7 @@ class TTkString():
             ret._baseColor = other
         return ret
 
-    def __radd__(self, other):
+    def __radd__(self, other:Self) -> Self:
         ret = TTkString()
         ret._baseColor = self._baseColor
         if  isinstance(other, TTkString):
@@ -147,17 +156,17 @@ class TTkString():
             ret._checkWidth()
         return ret
 
-    def __setitem__(self, index, value):
+    def __setitem__(self, index:int, value:Any):
         raise NotImplementedError()
 
-    def __getitem__(self, index):
+    def __getitem__(self, index:int):
         raise NotImplementedError()
 
-    def __int__(self):
+    def __int__(self) -> int:
         return int(self._text)
-    def __float__(self):
+    def __float__(self) -> float:
         return float(self._text)
-    def __complex__(self):
+    def __complex__(self) -> complex:
         return complex(self._text)
 
     # Operators
@@ -168,40 +177,40 @@ class TTkString():
     def __gt__(self, other): return self._text >  other._text if issubclass(type(other),TTkString) else self._text >  other
     def __ge__(self, other): return self._text >= other._text if issubclass(type(other),TTkString) else self._text >= other
 
-    def sameAs(self, other):
+    def sameAs(self, other:Self) -> bool:
         if not issubclass(type(other),TTkString): return False
         return (
             self==other and
             len(self._colors) == len(other._colors) and
             all(s==o for s,o in zip(self._colors,other._colors)) )
 
-    def isdigit(self):
+    def isdigit(self) -> bool:
         return self._text.isdigit()
 
-    def lstrip(self, ch):
+    def lstrip(self, ch:str) -> Self:
         ret = TTkString()
         ret._text = self._text.lstrip(ch)
         ret._colors = self._colors[-len(ret._text):]
         return ret
 
-    def charAt(self, pos):
+    def charAt(self, pos:int) -> str:
         return self._text[pos]
 
-    def setCharAt(self, pos, char):
+    def setCharAt(self, pos:int, char:str) -> Self:
         self._text = self._text[:pos]+char+self._text[pos+1:]
         self._checkWidth()
         return self
 
-    def colorAt(self, pos):
+    def colorAt(self, pos:int) -> TTkColor:
         if pos >= len(self._colors):
             return TTkColor()
         return self._colors[pos]
 
-    def setColorAt(self, pos, color):
+    def setColorAt(self, pos, color) -> Self:
         self._colors[pos] = color
         return self
 
-    def tab2spaces(self, tabSpaces=4):
+    def tab2spaces(self, tabSpaces=4) -> Self:
         '''Return the string representation with the tabs (converted in spaces) trimmed and aligned'''
         if not self._hasTab: return self
         ret = TTkString()
@@ -219,7 +228,7 @@ class TTkString():
             pos+=len(s)+1
         return ret
 
-    def tabCharPos(self, pos, tabSpaces=4, alignTabRight=False):
+    def tabCharPos(self, pos, tabSpaces=4, alignTabRight=False) -> int:
         '''Return the char position in the string from the position in its representation with the tab and variable char sizes are solved
 
         i.e.
@@ -288,7 +297,11 @@ class TTkString():
                 return i
         return len(self._text)
 
-    def toAscii(self):
+    def isPlainText(self) -> bool:
+        ''' Return True if the string does not include colors or modifications '''
+        return all(TTkColor.RST == c for c in self._colors)
+
+    def toAscii(self) -> str:
         ''' Return the ascii representation of the string '''
         return self._text
 
@@ -311,15 +324,15 @@ class TTkString():
             return out
         return out+str(TTkColor.RST)
 
-    def align(self, width=None, color=TTkColor.RST, alignment=TTkK.NONE):
+    def align(self, width=None, color=TTkColor.RST, alignment=TTkK.NONE) -> Self:
         ''' Align the string
 
         :param width: the new width
         :type width: int, optional
-        :param color: the color of the padding, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-        :type color: :class:`~TermTk.TTkCore.color.TTkColor`, optional
-        :param alignment: the alignment of the text to the full width :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
-        :type alignment: :class:`~TermTk.TTkCore.constant.TTkConstant.Alignment`, optional
+        :param color: the color of the padding, defaults to :py:class:`TTkColor.RST`
+        :type color: :py:class:`TTkColor`, optional
+        :param alignment: the alignment of the text to the full width :py:class:`~TermTk.TTkCore.constant.TTkConstant.Alignment.NONE`
+        :type alignment: :py:class:`TTkConstant.Alignment`, optional
         '''
         lentxt = self.termWidth()
         if not width or width == lentxt: return self
@@ -373,7 +386,24 @@ class TTkString():
 
         return ret
 
-    def replace(self, *args, **kwargs):
+    def extractShortcuts(self) -> Self:
+        def _chGenerator():
+            for ch,color in zip(self._text,self._colors):
+                yield ch,color
+        _newText   = ""
+        _newColors = []
+        _ret = []
+        _gen = _chGenerator()
+        for ch,color in _gen:
+            if ch == '&':
+                ch,color = next(_gen)
+                _ret.append(ch)
+                color += TTkColor.UNDERLINE
+            _newText += ch
+            _newColors.append(color)
+        return TTkString._importString1(_newText,_newColors), _ret
+
+    def replace(self, *args, **kwargs) -> Self:
         ''' **replace** (*old*, *new*, *count*)
 
         Replace "**old**" match with "**new**" string for "**count**" times
@@ -421,15 +451,15 @@ class TTkString():
 
         return ret
 
-    def completeColor(self, color, match=None, posFrom=None, posTo=None):
+    def completeColor(self, color, match=None, posFrom=None, posTo=None) -> Self:
         ''' Complete the color of the entire string or a slice of it
 
         The Fg and/or Bg of the string is replaced with the selected Fg/Bg color only if missing
 
         If only the color is specified, the entire string is colorized
 
-        :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-        :type color: :class:`~TermTk.TTkCore.color.TTkColor`
+        :param color: the color to be used, defaults to :py:class:`TTkColor.RST`
+        :type color: :py:class:`TTkColor`
         :param match: the match to colorize
         :type match: str, optional
         :param posFrom: the initial position of the color
@@ -462,13 +492,13 @@ class TTkString():
         return ret
 
 
-    def setColor(self, color, match=None, posFrom=None, posTo=None):
+    def setColor(self, color, match=None, posFrom=None, posTo=None) -> Self:
         ''' Set the color of the entire string or a slice of it
 
         If only the color is specified, the entire string is colorized
 
-        :param color: the color to be used, defaults to :class:`~TermTk.TTkCore.color.TTkColor.RST`
-        :type color: :class:`~TermTk.TTkCore.color.TTkColor`
+        :param color: the color to be used, defaults to :py:class:`TTkColor.RST`
+        :type color: :py:class:`TTkColor`
         :param match: the match to colorize
         :type match: str, optional
         :param posFrom: the initial position of the color
@@ -484,7 +514,7 @@ class TTkString():
             ret._colors += self._colors
             start=0
             lenMatch = len(match)
-            while pos := self._text.index(match, start) if match in self._text[start:] else None:
+            while None != (pos := self._text.index(match, start) if match in self._text[start:] else None):
                 start = pos+lenMatch
                 ret._colors[pos: pos+lenMatch] = [color]*lenMatch
         elif posFrom == posTo == None:
@@ -498,7 +528,7 @@ class TTkString():
             ret._colors += self._colors
         return ret
 
-    def substring(self, fr=None, to=None):
+    def substring(self, fr=None, to=None) -> Self:
         ''' Return the substring
 
         :param fr: the starting of the slice, defaults to 0
@@ -513,7 +543,7 @@ class TTkString():
         ret._fastCheckWidth(self._hasSpecialWidth)
         return ret
 
-    def split(self, separator ):
+    def split(self, separator ) -> list[Self]:
         ''' Split the string using a separator
 
         .. note:: Only a one char separator is currently supported
@@ -550,7 +580,7 @@ class TTkString():
         '''
         return re.search(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
 
-    def find(self, *args, **kwargs):
+    def find(self, *args, **kwargs) -> None:
         return self._text.find(*args, **kwargs)
 
     def findall(self, regexp, ignoreCase=False):
@@ -566,7 +596,7 @@ class TTkString():
     def getIndexes(self, char):
         return [i for i,c in enumerate(self._text) if c==char]
 
-    def join(self, strings):
+    def join(self, strings:list[Self]) -> Self:
         ''' Join the input strings using the current as separator
 
         :param strings: the list of strings to be joined
@@ -574,6 +604,8 @@ class TTkString():
         '''
         if not strings:
             return TTkString()
+        if isinstance(strings, GeneratorType):
+            strings = [s for s in strings]
         ret = TTkString(strings[0])
         for s in strings[1:]:
             ret += self + s
@@ -581,7 +613,7 @@ class TTkString():
 
     # Unicode Zero/Half/Normal sized chars helpers:
     @staticmethod
-    def _isWideCharData(ch):
+    def _isWideCharData(ch:str):
         if len(ch) == 1:
             return unicodedata.east_asian_width(ch)=='W'
         if len(ch) > 1:
@@ -607,7 +639,7 @@ class TTkString():
     def nextPos(self, pos):
         pos += 1
         for i,ch in enumerate(self._text[pos:]):
-            if not unicodedata.category(ch) in ('Me','Mn'):
+            if unicodedata.category(ch) not in ('Me','Mn'):
                 return pos+i
         return len(self._text)
 
@@ -617,7 +649,7 @@ class TTkString():
         # TTkLog.debug(f"{str(reversed(self._text[:pos]))} {pos=}")
         for i,ch in enumerate(reversed(self._text[:pos])):
             # TTkLog.debug(f"{i}---> {ch}    ")
-            if not unicodedata.category(ch) in ('Me','Mn'):
+            if unicodedata.category(ch) not in ('Me','Mn'):
                 return pos-i-1
         return 0
 

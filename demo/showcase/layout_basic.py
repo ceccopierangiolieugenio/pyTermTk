@@ -29,10 +29,10 @@ import TermTk as ttk
 
 
 def demoLayout(root=None):
-    rightframe = ttk.TTkFrame(parent=root, border=True, title="V Box Layout", titleColor=ttk.TTkColor.BOLD+ttk.TTkColor.fg('#8888dd'))
+    rightframe = ttk.TTkFrame(parent=root, border=True, titleAlign=ttk.TTkK.Alignment.LEFT_ALIGN, title=ttk.TTkString("V Box Layout (Left Align)", ttk.TTkColor.BOLD+ttk.TTkColor.fg('#8888dd')))
     rightframe.setLayout(ttk.TTkVBoxLayout())
 
-    gridFrame = ttk.TTkFrame(parent=rightframe, border=True, title="Grid Layout", titleColor=ttk.TTkColor.fg('#88dd88'))
+    gridFrame = ttk.TTkFrame(parent=rightframe, border=True, title=ttk.TTkString("Grid Layout", ttk.TTkColor.fg('#88dd88')))
     gridFrame.setLayout(ttk.TTkGridLayout())
     ttk.TTkButton(parent=gridFrame, border=True, text="Button1")
     ttk.TTkButton(parent=gridFrame, border=True, text="Button2")
@@ -50,9 +50,9 @@ def demoLayout(root=None):
     gridFrame.layout().addWidget(ttk.TTkFrame(border=True,title="Frame4"),5,1)
 
 
-    centerrightframe=ttk.TTkFrame(parent=rightframe, border=True, title="H Box Layout", titleColor=ttk.TTkColor.fg('#dd88dd'))
+    centerrightframe=ttk.TTkFrame(parent=rightframe, border=True, titleAlign=ttk.TTkK.Alignment.RIGHT_ALIGN, title=ttk.TTkString("H Box Layout (Right Align)", ttk.TTkColor.fg('#dd88dd')))
     centerrightframe.setLayout(ttk.TTkHBoxLayout())
-    ttk.TTkTestWidget(parent=rightframe, border=True, title="Test Widget", titleColor=ttk.TTkColor.fg('#dddddd'))
+    ttk.TTkTestWidget(parent=rightframe, border=True, title=ttk.TTkString("Test Widget", ttk.TTkColor.fg('#dddddd')))
 
 
     smallframe = ttk.TTkFrame(parent=centerrightframe, border=True)

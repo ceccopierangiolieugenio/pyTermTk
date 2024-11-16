@@ -24,6 +24,7 @@ __all__ = ['TTkLabel']
 
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot
 from TermTk.TTkWidgets.widget import TTkWidget
@@ -37,42 +38,48 @@ class TTkLabel(TTkWidget):
             }
 
     __slots__ = ('_text', '_alignment')
-    def __init__(self, *args, **kwargs):
-        text = kwargs.get('text', TTkString() )
+    def __init__(self, *,
+                 text:TTkString="",
+                 color:TTkColor=None,
+                 alignment:TTkK.Alignment=TTkK.LEFT_ALIGN,
+                 **kwargs) -> None:
         if issubclass(type(text), TTkString):
             self._text = text.split('\n')
         else:
             self._text = TTkString(text).split('\n')
-        self._alignment = kwargs.get('alignment', TTkK.Alignment.NONE)
+        self._alignment = alignment
 
         self.setDefaultSize(kwargs, max(t.termWidth() for t in  self._text), len(self._text))
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
+        if color:
+            self.setColor(color)
         self._textUpdated()
 
     def alignment(self):
         return self._alignment
 
     @pyTTkSlot(TTkK.Alignment)
-    def setAlignment(self, alignment: TTkK.Alignment):
+    def setAlignment(self, alignment: TTkK.Alignment) -> None:
         if self._alignment == alignment:
             return
         self._alignment = alignment
         self.update()
 
-    def color(self):
+    def color(self) ->TTkColor:
         '''color'''
         return self.style()['default']['color']
 
-    def setColor(self, color):
+    @pyTTkSlot(TTkColor)
+    def setColor(self, color:TTkColor):
         '''setColor'''
         self.mergeStyle({'default':{'color':color}})
 
-    def text(self):
+    def text(self) -> TTkString:
         '''text'''
         return TTkString('\n').join(self._text)
 
     @pyTTkSlot(str)
-    def setText(self, text):
+    def setText(self, text:TTkString):
         '''setText'''
         if self.text().sameAs(text): return
         if issubclass(type(text), TTkString):
@@ -81,7 +88,7 @@ class TTkLabel(TTkWidget):
             self._text  = TTkString(text).split('\n')
         self._textUpdated()
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         style = self.currentStyle()
         color = style['color']
 

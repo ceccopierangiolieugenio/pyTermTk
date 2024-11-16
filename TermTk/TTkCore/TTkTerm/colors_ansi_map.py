@@ -26,6 +26,8 @@
 # https://www.calmar.ws/vim/256-xterm-24bit-rgb-color-chart.html
 # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 
+__all__ = ['ansiMap16', 'ansiMap256']
+
 ansiMap16 = {
     # xterm Color Map
     # fg

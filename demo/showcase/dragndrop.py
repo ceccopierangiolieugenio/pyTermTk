@@ -34,17 +34,17 @@ class DragThing(ttk.TTkFrame):
     def __init__(self, *args, **kwargs):
         ttk.TTkFrame.__init__(self, *args, **kwargs)
         # Define and place 4 images with different Hue Color rotation
-        ttk.TTkImage(parent=self, pos=( 0, 0), data=ttk.TTkAbout.peppered)
-        ttk.TTkImage(parent=self, pos=( 0,10), data=ttk.TTkAbout.peppered).rotHue(60)
-        ttk.TTkImage(parent=self, pos=(15, 0), data=ttk.TTkAbout.peppered).rotHue(90)
-        ttk.TTkImage(parent=self, pos=(15,10), data=ttk.TTkAbout.peppered).rotHue(200)
+        ttk.TTkImage(parent=self, pos=( 0, 0), data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK)
+        ttk.TTkImage(parent=self, pos=( 0,10), data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK).rotHue(60)
+        ttk.TTkImage(parent=self, pos=(15, 0), data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK).rotHue(90)
+        ttk.TTkImage(parent=self, pos=(15,10), data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK).rotHue(200)
         self.setMaximumWidth(30)
         self.setMinimumWidth(30)
 
     def mouseDragEvent(self, evt) -> bool:
         ttk.TTkLog.debug("Start DnD")
         drag = ttk.TTkDrag()
-        data = ttk.TTkImage(data=ttk.TTkAbout.peppered)
+        data = ttk.TTkImage(data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK)
         # Change color if the drag start over the side images,
         # based on the same Hue rotation defined in the init
         if   evt.x <= 15 and evt.y >  10: data.rotHue(60)

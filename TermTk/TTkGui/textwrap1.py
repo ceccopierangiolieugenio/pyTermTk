@@ -25,7 +25,6 @@ __all__ = ['TTkTextWrap']
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
 
 class TTkTextWrap():
@@ -36,7 +35,7 @@ class TTkTextWrap():
         # Signals
         'wrapChanged'
         )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, document:TTkTextDocument=None) -> None:
         # signals
         self.wrapChanged = pyTTkSignal()
 
@@ -45,7 +44,9 @@ class TTkTextWrap():
         self._tabSpaces = 4
         self._wrapWidth     = 80
         self._wordWrapMode = TTkK.WrapAnywhere
-        self.setDocument(kwargs.get('document',TTkTextDocument()))
+        if not document:
+            document = TTkTextDocument()
+        self.setDocument(document)
 
     def setDocument(self, document):
         self._textDocument = document

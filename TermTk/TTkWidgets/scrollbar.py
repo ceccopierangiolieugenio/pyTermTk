@@ -55,30 +55,39 @@ class TTkScrollBar(TTkWidget):
         'valueChanged', 'rangeChanged', 'sliderMoved'
         )
 
-    def __init__(self, *args, **kwargs):
-        TTkWidget.__init__(self, *args, **kwargs)
+    def __init__(self, *,
+                 value:int=0,
+                 minimum:int=0,
+                 maximum:int=99,
+                 singleStep:int=1,
+                 pageStep:int=10,
+                 orientation:TTkK.Direction=TTkK.VERTICAL,
+                 **kwargs) -> None:
         # Define Signals
         self.valueChanged = pyTTkSignal(int) #  Value
         self.rangeChanged = pyTTkSignal(int, int) # Min, Max
         self.sliderMoved  = pyTTkSignal(int) # Value
 
-        self._orientation = kwargs.get('orientation' , TTkK.VERTICAL )
+        self._minimum = minimum
+        self._maximum = maximum
+        self._singleStep = singleStep
+        self._pageStep = pageStep
+        self._value = value
+        self._screenPgDown = (0,0)
+        self._screenPgUp = (0,0)
+        self._screenScroller = (0,0)
+        self._draggable = False
+        self._mouseDelta = 0
+        self._orientation = orientation
+
+        TTkWidget.__init__(self, **kwargs)
+
         if self._orientation == TTkK.VERTICAL:
             self.setMaximumWidth(1)
             self.setMinimumSize(1,3)
         else:
             self.setMaximumHeight(1)
             self.setMinimumSize(3,1)
-        self._minimum = kwargs.get('minimum' , 0 )
-        self._maximum = kwargs.get('maximum' , 99 )
-        self._singleStep = kwargs.get('singleStep' , 1 )
-        self._pageStep = kwargs.get('pageStep' , 10 )
-        self._value = kwargs.get('value' , 0 )
-        self._screenPgDown = (0,0)
-        self._screenPgUp = (0,0)
-        self._screenScroller = (0,0)
-        self._draggable = False
-        self._mouseDelta = 0
         self.setFocusPolicy(TTkK.ClickFocus)
 
     def orientation(self):
@@ -136,11 +145,12 @@ class TTkScrollBar(TTkWidget):
     def mousePressEvent(self, evt):
         if self._orientation == TTkK.VERTICAL:
             size=self._height
-            mouse = evt.y
+            mouse = max(0,min(size,evt.y))
         else:
             size=self._width
-            mouse = evt.x
+            mouse = max(0,min(size,evt.x))
 
+        self._draggable = False
         if mouse == 0: # left/up arrow pressed
             self.setValue(self._value - self._singleStep)
         elif mouse == size-1: # right/down arrow pressed
@@ -154,19 +164,17 @@ class TTkScrollBar(TTkWidget):
             self._draggable = True
         else:
             return False
-        self.setValue(max(self._minimum,min(self._maximum,self._value)))
         self.sliderMoved.emit(self._value)
-        # TTkLog.debug(f"m={mouse}, md:{self._mouseDelta}, d:{self._screenPgDown},u:{self._screenPgUp},s:{self._screenScroller}")
         return True
 
     def mouseDragEvent(self, evt):
         if not self._draggable: return False
         if self._orientation == TTkK.VERTICAL:
             size=self._height
-            mouse = evt.y
+            mouse = max(0,min(size,evt.y))
         else:
             size=self._width
-            mouse = evt.x
+            mouse = max(0,min(size,evt.x))
         aa = mouse-self._mouseDelta
 
         size2 = size-2

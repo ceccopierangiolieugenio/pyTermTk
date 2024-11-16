@@ -47,7 +47,7 @@ from TermTk.TTkWidgets.checkbox import TTkCheckbox
 from TermTk.TTkWidgets.window import TTkWindow
 from TermTk.TTkWidgets.TTkModelView.filetree import TTkFileTree
 from TermTk.TTkWidgets.TTkModelView.filetreewidgetitem import TTkFileTreeWidgetItem
-from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker
+from TermTk.TTkWidgets.TTkPickers.colorpicker import TTkColorButtonPicker, TTkColorDialogPicker
 
 class _superSimpleHorizontalLine(TTkWidget):
     def paintEvent(self, canvas):
@@ -65,7 +65,7 @@ emoji = {
 
 class _emojiPickerView(TTkAbstractScrollView):
     __slots__ = ('_btns', '_labels', 'emojiClicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.emojiClicked = pyTTkSignal(str)
         super().__init__(*args, **kwargs)
         self.viewChanged.connect(self._viewChangedHandler)
@@ -107,12 +107,9 @@ class _emojiPickerView(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w , h
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
@@ -121,33 +118,33 @@ class _emojiPickerView(TTkAbstractScrollView):
 
 class _emojiPickerArea(TTkAbstractScrollArea):
     __slots__ = ('_areaView')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        if 'parent' in kwargs: kwargs.pop('parent')
+        kwargs.pop('parent',None)
+        kwargs.pop('visible',None)
         self._areaView = _emojiPickerView(*args, **kwargs)
         self.setFocusPolicy(TTkK.ClickFocus)
         self.setViewport(self._areaView)
 
 class _emojiPicker(TTkResizableFrame):
     __slots__ = ('emojiClicked')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs|{'layout':TTkGridLayout()})
         self.layout().addWidget(epa := _emojiPickerArea())
         self.emojiClicked = epa.viewport().emojiClicked
 
 class TTkTextDialogPicker(TTkWindow):
-    __slots__ = ('_textEdit', '_autoSize', '_multiLine')
-    def __init__(self, *args, **kwargs):
-        self._autoSize = kwargs.get('autoSize',False)
-        self._multiLine = kwargs.get('multiLine',True)
-        super().__init__(*args, **kwargs)
+    __slots__ = ('_textEdit', '_autoSize')
+    def __init__(self, *, autoSize=False, multiLine=True, wrapMode=TTkK.WidgetWidth, **kwargs) -> None:
+        self._autoSize = autoSize
+        super().__init__(**kwargs)
         fontLayout = TTkGridLayout(columnMinWidth=1)
         # Char Fg/Bg buttons
         fontLayout.addWidget(cb_fg := TTkCheckbox(text=" FG"),0,0)
-        fontLayout.addWidget(btn_fgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3)),1,0)
+        fontLayout.addWidget(btn_fgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkK.ColorPickerReturnType.Foreground),1,0)
 
         fontLayout.addWidget(cb_bg := TTkCheckbox(text=" BG"),0,2)
-        fontLayout.addWidget(btn_bgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3)),1,2)
+        fontLayout.addWidget(btn_bgColor := TTkColorButtonPicker(border=True, enabled=False, maxSize=(7,3), minSize=(7,3), returnType=TTkK.ColorPickerReturnType.Background),1,2)
 
         # Char style buttons
         fontLayout.addWidget(btn_bold          := TTkButton(border=True, maxSize=(5,3), minSize=(5,3), checkable=True, text=TTkString( 'a' , TTkColor.BOLD)        ),1,4)
@@ -159,9 +156,9 @@ class TTkTextDialogPicker(TTkWindow):
 
         fontLayout.addWidget(_superSimpleHorizontalLine(),0,10,2,1)
 
-        self._textEdit = TTkTextEdit(document=kwargs.get('document',TTkTextDocument()),multiLine=self._multiLine)
+        self._textEdit = TTkTextEdit(document=kwargs.get('document',TTkTextDocument()),multiLine=multiLine)
         self._textEdit.setReadOnly(False)
-        self._textEdit.setLineWrapMode(TTkK.WidgetWidth)
+        self._textEdit.setLineWrapMode(wrapMode)
         self._textEdit.setLineNumber('\n' in self._textEdit.toPlainText())
 
         @pyTTkSlot()
@@ -175,11 +172,11 @@ class TTkTextDialogPicker(TTkWindow):
         btn_emoji.clicked.connect(_showEmojiPicker)
 
         @pyTTkSlot(TTkColor)
-        def _currentColorChangedCB(format):
+        def _currentColorChangedCB(format:TTkColor):
             if fg := format.foreground():
                 cb_fg.setCheckState(TTkK.Checked)
                 btn_fgColor.setEnabled()
-                btn_fgColor.setColor(fg.invertFgBg())
+                btn_fgColor.setColor(fg)
             else:
                 cb_fg.setCheckState(TTkK.Unchecked)
                 btn_fgColor.setDisabled()
@@ -198,12 +195,14 @@ class TTkTextDialogPicker(TTkWindow):
             btn_strikethrough.setChecked(format.strikethrough())
             # TTkLog.debug(f"{fg=} {bg=} {bold=} {italic=} {underline=} {strikethrough=   }")
 
+        _currentColorChangedCB(self._textEdit.textCursor().positionColor())
         self._textEdit.currentColorChanged.connect(_currentColorChangedCB)
+
 
         def _setStyle():
             color = TTkColor()
             if cb_fg.checkState() == TTkK.Checked:
-                color += btn_fgColor.color().invertFgBg()
+                color += btn_fgColor.color()
             if cb_bg.checkState() == TTkK.Checked:
                 color += btn_bgColor.color()
             if btn_bold.isChecked():
@@ -219,13 +218,13 @@ class TTkTextDialogPicker(TTkWindow):
             cursor.setColor(color)
             self._textEdit.setFocus()
 
-        cb_fg.stateChanged.connect(lambda x: btn_fgColor.setEnabled(x==TTkK.Checked))
-        cb_bg.stateChanged.connect(lambda x: btn_bgColor.setEnabled(x==TTkK.Checked))
-        cb_fg.clicked.connect(lambda _: _setStyle())
-        cb_bg.clicked.connect(lambda _: _setStyle())
+        cb_fg.toggled.connect(btn_fgColor.setEnabled)
+        cb_bg.toggled.connect(btn_bgColor.setEnabled)
+        cb_fg.clicked.connect(_setStyle)
+        cb_bg.clicked.connect(_setStyle)
 
-        btn_fgColor.colorSelected.connect(lambda _: _setStyle())
-        btn_bgColor.colorSelected.connect(lambda _: _setStyle())
+        btn_fgColor.colorSelected.connect(_setStyle)
+        btn_bgColor.colorSelected.connect(_setStyle)
 
         btn_bold.clicked.connect(_setStyle)
         btn_italic.clicked.connect(_setStyle)
@@ -263,33 +262,38 @@ class TTkTextPicker(TTkContainer):
               Do not use it unless you know what you are doing
               And I've no idea what I am doing
     '''
-    __slots__ = ('_teButton','_textEdit', 'documentViewChanged', 'textChanged', '_autoSize', '_multiLine')
-    def __init__(self, *args, **kwargs):
+    __slots__ = ('_teButton','_textEdit', 'documentViewChanged', 'textChanged', '_autoSize')
+    def __init__(self, *, text='', autoSize=False, multiLine=True, wrapMode=TTkK.WidgetWidth, **kwargs) -> None:
         self.documentViewChanged = pyTTkSignal(int,int)
-        self._autoSize = kwargs.get('autoSize',False)
-        self._multiLine = kwargs.get('multiLine',True)
-        super().__init__(*args, **kwargs|{'layout':TTkHBoxLayout()})
-        self._textEdit = TTkTextEdit(pos=(0,0), size=(self.width()-2,self.height()),multiLine=self._multiLine)
-        self._textEdit.setText(kwargs.get('text',''))
+        self._autoSize = autoSize
+        super().__init__(**kwargs|{'layout':TTkHBoxLayout()})
+        self._textEdit = TTkTextEdit(pos=(0,0), size=(self.width()-2,self.height()),multiLine=multiLine)
+        self._textEdit.setText(text)
         self._textEdit.setReadOnly(False)
-        self._textEdit.setLineWrapMode(TTkK.WidgetWidth)
+        self._textEdit.setLineWrapMode(wrapMode)
         self.textChanged = self._textEdit.textChanged
-        self._teButton = TTkButton(border=True, text='◉', borderColor=TTkColor.fg("#AAAAFF")+TTkColor.bg("#002244") ,
-                            pos=(self.width()-2,0),
-                            size=(2,self.height()), minSize=(3,1),maxWidth=3)
+        self._teButton = TTkButton(border=True, text='◉',
+                                   addStyle={'default':{'borderColor':TTkColor.fg("#AAAAFF")+TTkColor.bg("#002244")}} ,
+                                   pos=(self.width()-2,0),
+                                   size=(2,self.height()), minSize=(3,1),maxWidth=3)
         self.layout().addWidget(self._textEdit)
         self.layout().addWidget(self._teButton)
 
         @pyTTkSlot()
         def _showTextDialogPicker():
             w,h = self.size()
-            tdp = TTkTextDialogPicker(size=(50,8+h), document=self._textEdit.document(), autoSize=self._autoSize, multiLine=self._multiLine)
+            tdp = TTkTextDialogPicker(size=(50,8+h),
+                                      document=self._textEdit.document(),
+                                      autoSize=autoSize, multiLine=multiLine, wrapMode=wrapMode)
             TTkHelper.overlay(self, tdp, -1, -7, modal=True)
             tdp.focusTextEdit()
 
         self._teButton.clicked.connect(_showTextDialogPicker)
 
         self._textEdit.viewport().viewChanged.connect(self._textPickerViewChanged)
+
+    def setFocus(self):
+        return self._textEdit.setFocus()
 
     def getTTkString(self):
         return self._textEdit.toRawText()

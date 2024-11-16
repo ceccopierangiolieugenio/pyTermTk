@@ -1,0 +1,134 @@
+{
+ "version": "2.0.0",
+ "tui": {
+  "class": "TTkWindow",
+  "params": {
+   "Name": "MainWindow",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    84,
+    26
+   ],
+   "Min Width": 0,
+   "Min Height": 0,
+   "Max Width": 65536,
+   "Max Height": 65536,
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "",
+   "Padding": [
+    3,
+    1,
+    1,
+    1
+   ],
+   "Layout": "TTkGridLayout",
+   "Border": true,
+   "Title": "Mr Import \ud83c\udf81",
+   "Window Flags": 134250496
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     82,
+     22
+    ]
+   },
+   "children": [
+    {
+     "class": "TTkButton",
+     "params": {
+      "Name": "BtnDict",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       82,
+       3
+      ],
+      "Min Width": 13,
+      "Min Height": 3,
+      "Max Width": 65536,
+      "Max Height": 3,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Import Dict",
+      "Border": true,
+      "Checkable": false,
+      "Checked": false
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkTextEdit",
+     "params": {
+      "Name": "TextEdit",
+      "Position": [
+       0,
+       4
+      ],
+      "Size": [
+       82,
+       18
+      ],
+      "Min Width": 0,
+      "Min Height": 0,
+      "Max Width": 65536,
+      "Max Height": 65536,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Line Number": true,
+      "Line Number Starting": 0,
+      "Read Only": false,
+      "Multi Line": true
+     },
+     "row": 2,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkLabel",
+     "params": {
+      "Name": "TTkLabel",
+      "Position": [
+       0,
+       3
+      ],
+      "Size": [
+       82,
+       1
+      ],
+      "Min Width": 30,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Paste here the Dict definition",
+      "Color": "\u001b[0m",
+      "Alignment": 0
+     },
+     "row": 1,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    }
+   ]
+  }
+ },
+ "connections": []
+}

@@ -29,18 +29,22 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
 
-class TTkCanvas:
+class TTkCanvas():
     ''' Init the Canvas object
 
-    :param  width: the width of the Canvas
-    :param  height: the height of the Canvas
+    :param width: the width of the Canvas
+    :type width: int
+    :param height: the height of the Canvas
+    :type height: int
     '''
     __slots__ = (
         '_width', '_height', '_newWidth', '_newHeight',
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
-    def __init__(self, *args, **kwargs):
+    def __init__(self,
+                 width:int=0,
+                 height:int=0) -> None:
         self._visible = True
         self._transparent = False
         self._doubleBuffer = False
@@ -48,17 +52,18 @@ class TTkCanvas:
         self._height = 0
         self._data = [[]]
         self._colors = [[]]
-        self._newWidth = kwargs.get('width', 0 )
-        self._newHeight = kwargs.get('height', 0 )
+        self._newWidth = width
+        self._newHeight = height
         self.updateSize()
         # self.resize(self._width, self._height)
         # TTkLog.debug((self._width, self._height))
 
-    def transparent(self):
+    def transparent(self) -> bool:
         return self._transparent
 
-    def setTransparent(self, tr):
+    def setTransparent(self, tr=True):
         self._transparent = tr
+        self.clean()
 
     def enableDoubleBuffer(self):
         self._doubleBuffer = True
@@ -147,11 +152,17 @@ class TTkCanvas:
         fxb = min(w,fxb)
         fyb = min(h,fyb)
 
-        fillCh    = [char]*fw
-        fillColor = [color]*fw
+        fillCh    = [char]*(fxb-fxa)
         for iy in range(fya,fyb):
             self._data[iy][fxa:fxb]   = fillCh
-            self._colors[iy][fxa:fxb] = fillColor
+        if color.colorType() & TTkK.Modifier:
+            for iy in range(fya,fyb):
+                for ix in range(fxa,fxb):
+                    self._colors[iy][ix] = color.mod(fxa+ix,fya+iy)
+        else:
+            fillColor = [color]*(fxb-fxa)
+            for iy in range(fya,fyb):
+                self._colors[iy][fxa:fxb] = fillColor
 
     def drawVLine(self, pos, size, color=TTkColor.RST):
         if size == 0: return
@@ -190,7 +201,7 @@ class TTkCanvas:
             color = colors[i]
             align = alignments[i]
             if w > 0:
-                self.drawTTkString(pos=(x,y), text=txt, width=w, color=color, alignment=align)
+                self.drawText(pos=(x,y), text=txt, width=w, color=color, alignment=align)
                 x += w + 1
 
     def drawChar(self, pos, char, color=TTkColor.RST):
@@ -227,6 +238,8 @@ class TTkCanvas:
             self._data[y][x+i] = txt[i]
             if colors[i] == TTkColor.RST != color:
                 self._colors[y][x+i] =  color.mod(x+i,y)
+            elif (not colors[i].background()) and color.background():
+                self._colors[y][x+i] = (color + colors[i]).mod(x+i,y)
             else:
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)
         # Check the full wide chars on the edge of the two canvasses
@@ -590,22 +603,6 @@ class TTkCanvas:
         mb = TTkCfg.theme.menuBar
         self.drawText(pos=pos, text=f"{mb[3]}{mb[1]*(size-2)}{mb[4]}", color=color)
 
-    def drawMenuBarButton(self, width, text, pos=(0,0), border=True, submenu=False, shortcuts=[], color=TTkColor.RST, borderColor=TTkColor.RST, shortcutColor=TTkColor.UNDERLINE ):
-        mb = TTkCfg.theme.menuBar
-        x,y = pos
-        if border:
-            self.drawText(pos=(x,y), color=borderColor ,text=mb[2])
-            self.drawText(pos=(x+1+len(text),y), color=borderColor ,text=mb[0])
-            self.drawText(pos=(x+1,y), color=color ,text=text)
-            off = 1
-        else:
-            self.drawText(pos=(x,y), width=width, color=color ,text=text)
-            if submenu:
-                self._set(y,x+width-1, mb[5], color)
-            off = 0
-        for i in shortcuts:
-            self._set(y,x+i+off, text.charAt(i), shortcutColor)
-
     def execPaint(self, winw, winh):
         pass
 
@@ -687,9 +684,10 @@ class TTkCanvas:
     def toAnsi(self):
         # TTkLog.debug("pushToTerminal")
         ret = ""
+        rstColor = str(TTkColor.RST)
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
-            ansi = str(TTkColor.RST)
+            ansi = str(lastcolor)
             for x in range(0, self._width):
                 ch = self._data[y][x]
                 color = self._colors[y][x]
@@ -697,14 +695,17 @@ class TTkCanvas:
                     ansi += str(color-lastcolor)
                     lastcolor = color
                 ansi+=ch
-            ret += ansi + '\n'
+            if lastcolor != TTkColor.RST:
+                ret += ansi + rstColor + '\n'
+            else:
+                ret += ansi + '\n'
         return ret
 
     def pushToTerminal(self, x, y, w, h):
         # TTkLog.debug("pushToTerminal")
         lastcolor = TTkColor.RST
         for y in range(0, self._height):
-            ansi = TTkColor.RST+TTkTerm.Cursor.moveTo(y+1,1)
+            ansi = lastcolor+TTkTerm.Cursor.moveTo(y+1,1)
             for x in range(0, self._width):
                 ch = self._data[y][x]
                 color = self._colors[y][x]

@@ -9,8 +9,8 @@
 
     <link  href="www/xterm/xterm.css" rel="stylesheet" />
     <script src="www/xterm/xterm.js"></script>
-    <script src="www/xterm-addon-fit/xterm-addon-fit.js"></script>
-    <script src="www/xterm-addon-unicode11/xterm-addon-unicode11.js"></script>
+    <script src="www/xterm/addon-fit/addon-fit.js"></script>
+    <script src="www/xterm/addon-unicode11/addon-unicode11.js"></script>
 
     <link href="www/fontawesome/fontawesome.min.css" rel="stylesheet">
     <link href="www/fontawesome/regular.min.css" rel="stylesheet">
@@ -69,7 +69,7 @@
                               and <a href="https://w2ui.com/">w2ui</a>
                              </div>`},
                   { type: 'right', size: 1000, resizable: true, style: pstyle,
-                    html: '<div id="terminal" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
+                    html: '<div id="terminal" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
               ]
           });
           new w2field({ el: query('#fpsCap')[0], type: 'int', autoFormat: false })
@@ -77,9 +77,9 @@
 
     <script type="text/javascript">
       /* xterm.js demo */
-      /* https://www.npmjs.com/package/xterm-addon-fit */
+      /* https://www.npmjs.com/package/@xterm/addon-fit */
       const fitAddon = new FitAddon.FitAddon();
-      /* https://www.npmjs.com/package/xterm-addon-unicode11 */
+      /* https://www.npmjs.com/package/@xterm/addon-unicode11 */
       const unicode11Addon = new Unicode11Addon.Unicode11Addon();
 
       var term = new Terminal({allowProposedApi: true});
@@ -157,7 +157,7 @@
         fileUri  = urlParams.get("fileUri")
         filePath = urlParams.get("filePath")
         if (fileUri != null){
-          ttkProxy.loadFile(fileUri, "test_file.py");
+          await ttkProxy.loadFile(fileUri, "test_file.py");
           loadFile("test_file.py")
         }else if (filePath != null){
           loadFile(filePath)

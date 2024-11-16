@@ -1,0 +1,394 @@
+{
+ "type": "TTkUi/Document",
+ "version": "2.0.2",
+ "tui": {
+  "class": "TTkContainer",
+  "params": {
+   "Name": "MainWindow",
+   "Position": [
+    4,
+    2
+   ],
+   "Size": [
+    46,
+    7
+   ],
+   "Min Width": 0,
+   "Min Height": 0,
+   "Max Width": 65536,
+   "Max Height": 65536,
+   "Visible": true,
+   "Enabled": true,
+   "ToolTip": "",
+   "Padding": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "Layout": "TTkGridLayout"
+  },
+  "layout": {
+   "class": "TTkGridLayout",
+   "params": {
+    "Geometry": [
+     0,
+     0,
+     46,
+     7
+    ]
+   },
+   "children": [
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_move",
+      "Position": [
+       0,
+       0
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 11,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Sel/Move",
+      "RadioGroup": "tools",
+      "Checked": true,
+      "Check State": 2
+     },
+     "row": 0,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_brush",
+      "Position": [
+       0,
+       1
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 8,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Brush",
+      "RadioGroup": "tools",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 1,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_line",
+      "Position": [
+       0,
+       2
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 7,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Line",
+      "RadioGroup": "tools",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 2,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_rect",
+      "Position": [
+       0,
+       3
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 7,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Rect",
+      "RadioGroup": "tools",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 3,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_rect_f",
+      "Position": [
+       16,
+       3
+      ],
+      "Size": [
+       15,
+       1
+      ],
+      "Min Width": 7,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Fill",
+      "RadioGroup": "rect",
+      "Checked": true,
+      "Check State": 2
+     },
+     "row": 3,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_rect_e",
+      "Position": [
+       31,
+       3
+      ],
+      "Size": [
+       15,
+       1
+      ],
+      "Min Width": 8,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Empty",
+      "RadioGroup": "rect",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 3,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_brush_g",
+      "Position": [
+       16,
+       1
+      ],
+      "Size": [
+       15,
+       1
+      ],
+      "Min Width": 8,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Glyph",
+      "RadioGroup": "brush",
+      "Checked": true,
+      "Check State": 2
+     },
+     "row": 1,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_brush_a",
+      "Position": [
+       31,
+       1
+      ],
+      "Size": [
+       15,
+       1
+      ],
+      "Min Width": 7,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Area",
+      "RadioGroup": "brush",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 1,
+     "col": 2,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkCheckbox",
+     "params": {
+      "Name": "cb_move_r",
+      "Position": [
+       16,
+       0
+      ],
+      "Size": [
+       15,
+       1
+      ],
+      "Min Width": 9,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": true,
+      "ToolTip": "",
+      "Text": "Resize",
+      "Tristate": false,
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 0,
+     "col": 1,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "TTkRadioButton",
+      "Position": [
+       0,
+       6
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 11,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Gradient",
+      "RadioGroup": "tools",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 6,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "ra_oval",
+      "Position": [
+       0,
+       4
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 7,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Oval",
+      "RadioGroup": "tools",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 4,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    },
+    {
+     "class": "TTkRadioButton",
+     "params": {
+      "Name": "TTkRadioButton-1",
+      "Position": [
+       0,
+       5
+      ],
+      "Size": [
+       16,
+       1
+      ],
+      "Min Width": 7,
+      "Min Height": 1,
+      "Max Width": 65536,
+      "Max Height": 1,
+      "Visible": true,
+      "Enabled": false,
+      "ToolTip": "",
+      "Text": "Fill",
+      "RadioGroup": "tools",
+      "Checked": false,
+      "Check State": 0
+     },
+     "row": 5,
+     "col": 0,
+     "rowspan": 1,
+     "colspan": 1
+    }
+   ]
+  }
+ },
+ "connections": []
+}

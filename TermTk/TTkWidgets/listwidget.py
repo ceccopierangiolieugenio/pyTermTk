@@ -49,7 +49,7 @@ class TTkAbstractListItem(TTkWidget):
 
     __slots__ = ('_text', '_selected', '_highlighted', '_data',
                  'listItemClicked')
-    def __init__(self, *, text='', data=None, **kwargs):
+    def __init__(self, *, text='', data=None, **kwargs) -> None:
         self.listItemClicked = pyTTkSignal(TTkAbstractListItem)
 
         self._selected = False
@@ -108,29 +108,91 @@ class TTkAbstractListItem(TTkWidget):
         canvas.drawTTkString(pos=(0,0), width=w, color=color ,text=self._text)
 
 class TTkListWidget(TTkAbstractScrollView):
+    '''
+    A :py:class:`TTkListWidget` implements a list view that displays a set of selectable items.
+
+    ::
+
+        ╔════════════════════════════════╗
+        ║S-0) --Zero-3- officia         ▲║
+        ║S-1) ad ipsum                  ▓║
+        ║S-2) irure nisi                ┊║
+        ║S-3) minim --Zero-3-           ┊║
+        ║S-4) ea sunt                   ┊║
+        ║S-5) qui mollit                ┊║
+        ║S-6) magna sunt                ┊║
+        ║S-7) sunt officia              ▼║
+        ╚════════════════════════════════╝
+
+    Quickstart:
+
+    .. code-block:: python
+
+        import TermTk as ttk
+
+        root = ttk.TTk(layout=ttk.TTkHBoxLayout(), mouseTrack=True)
+
+        ttk.TTkList(parent=root, items=["Item 1","Item 2","Item 3"])
+        ttk.TTkList(parent=root, items=[f"Item 0x{i:03X}" for i in range(100)])
+
+        ttkList = ttk.TTkList(parent=root)
+        ttkList.addItems([f"Item 0x{i:04X}" for i in range(200)])
+
+        root.mainloop()
+
+    '''
+
+    itemClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever an item is clicked.
+
+        :param item: the item selected
+        :type item: :py:class:`TTkAbstractListItem`
+    '''
+    textClicked:pyTTkSignal
+    '''
+        This signal is emitted whenever an item is clicked.
+
+        :param text: the text of the item selected
+        :type text: str
+    '''
+
     @dataclass(frozen=True)
     class _DropListData:
         widget: TTkAbstractScrollView
         items: list
 
-    '''TTkListWidget'''
     __slots__ = ('itemClicked', 'textClicked',
                  '_selectedItems', '_selectionMode',
                  '_highlighted', '_items',
                  '_dragPos', '_dndMode')
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *,
+                 items:list[str]=[],
+                 selectionMode:int=TTkK.SelectionMode.SingleSelection,
+                 dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
+                 **kwargs) -> None:
+        '''
+        :param items: Use this field to intialize the :py:class:`TTkListWidget` with the entries in the items list, defaults to "[]"
+        :type items: list[str], optional
+        :param selectionMode: This property controls whether the user can select one or many items, defaults to :py:class:`TTkK.SelectionMode.SingleSelection`.
+        :type selectionMode: :py:class:`TTkK.SelectionMode`, optional
+        :param dragDropMode: This property holds the drag and drop event the view will act upon, defaults to :py:class:`TTkK.DragDropMode.NoDragDrop`.
+        :type dragDropMode: :py:class:`TTkK.DragDropMode`, optional
+        '''
+        # Signals
+        self.itemClicked = pyTTkSignal(TTkAbstractListItem)
+        self.textClicked = pyTTkSignal(str)
+
         # Default Class Specific Values
-        self._selectionMode = kwargs.get("selectionMode", TTkK.SingleSelection)
+        self._selectionMode = selectionMode
         self._selectedItems = []
         self._items = []
         self._highlighted = None
         self._dragPos = None
-        self._dndMode = kwargs.get("dragDropMode", TTkK.DragDropMode.NoDragDrop)
-        # Signals
-        self.itemClicked = pyTTkSignal(TTkAbstractListItem)
-        self.textClicked = pyTTkSignal(str)
+        self._dndMode = dragDropMode
         # Init Super
-        TTkAbstractScrollView.__init__(self, *args, **kwargs)
+        super().__init__(**kwargs)
+        self.addItems(items)
         self.viewChanged.connect(self._viewChangedHandler)
         self.setFocusPolicy(TTkK.ClickFocus + TTkK.TabFocus)
 
@@ -200,12 +262,9 @@ class TTkListWidget(TTkAbstractScrollView):
             item.setGeometry(x,y,maxw,h)
         TTkAbstractScrollView.resizeEvent(self, w, h)
 
-    def viewFullAreaSize(self) -> (int, int):
+    def viewFullAreaSize(self) -> tuple[int,int]:
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w, h
-
-    def viewDisplayedSize(self) -> (int, int):
-        return self.size()
 
     def addItem(self, item, data=None):
         '''addItem'''
@@ -213,7 +272,8 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def addItems(self, items):
         '''addItems'''
-        self.addItemAt(items, len(self._items))
+        for item in items:
+            self.addItem(item)
 
     def _placeItems(self):
         minw = self.width()

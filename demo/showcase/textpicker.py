@@ -28,13 +28,15 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 def demoTextPicker(root=None):
-    frame = ttk.TTkFrame(parent=root, border=False)
+    frame = ttk.TTkFrame(
+        parent=root, border=False,
+        addStyle={'default':{'fillColor':ttk.TTkColor.bg('#004400', modifier=ttk.TTkColorGradient(increment=-6))}})
 
-    ttk.TTkLabel(parent=frame, pos=(0,0),text="No Autosize")
+    ttk.TTkLabel(parent=frame, pos=(0,0),text="[ No Autosize ]")
     ttk.TTkTextPicker(parent=frame, pos=( 0,1), size=(20, 1),autoSize=False, multiLine=False)
-    ttk.TTkLabel(parent=frame, pos=(0,2),text="Multiline")
+    ttk.TTkLabel(parent=frame, pos=(0,2),text="[ Multiline ]")
     ttk.TTkTextPicker(parent=frame, pos=( 0,3), size=(20, 1),autoSize=False, multiLine=True)
-    ttk.TTkLabel(parent=frame, pos=(0,4),text="Autosize")
+    ttk.TTkLabel(parent=frame, pos=(0,4),text="[ Autosize ]")
     ttk.TTkTextPicker(parent=frame, pos=( 0,5), size=(20, 1),autoSize=True, multiLine=True)
 
     ttk.TTkTextPicker(parent=frame, pos=(25,0), size=(20, 5),autoSize=True, multiLine=True)

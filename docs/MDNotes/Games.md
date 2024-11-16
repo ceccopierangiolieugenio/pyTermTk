@@ -6,7 +6,7 @@ Full mouse support and key presses, full glyphs set available on a standard term
 
 ## Limitation
 Any game cannot take advantage of the keyboard events up/down
-For this reason games like MarioBros are not technically possible on a terminal where the release of the key is required for the interaztion 
+For this reason games like MarioBros are not technically possible on a terminal where the release of the key is required for the interaztion
 
 
 # Released
@@ -21,9 +21,21 @@ For this reason games like MarioBros are not technically possible on a terminal 
 * Syndicate
 * Lemmings
 * Puzzle bobble
-* Minesweeper
+* Minesweeper - CrapSweeper
 * Any terminal roguelike
 * Whac-A-Mole
 * Dungeon Master
 * Flappy Bird
-* 
+* Pacman (Does not require long keypresses)
+* Nibbles (Does not require long keypresses)
+* Canabalt (Mouse Press)
+* Plants VS Zombies (the table prototype with green theme and icons looks very similar)
+
+# 7DRL
+https://itch.io/jam/7drl-challenge-2024
+https://www.youtube.com/watch?v=g8VZq7gv9jY
+Theme: Roguelike
+
+* Idea1:
+  "**Rogue Likes a plane filled with zombies and snakes**"
+ Jumping from plane to plane Multiple times until you get the cabin key (or you manage to reach it) and you can safely land (multiple endings if the plane still has zombies or snakes)

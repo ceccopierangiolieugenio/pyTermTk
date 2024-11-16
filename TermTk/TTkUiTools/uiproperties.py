@@ -44,6 +44,7 @@ from .properties.radiobutton import *
 from .properties.resizableframe import *
 # from .properties.scrollarea import
 from .properties.scrollbar import *
+from .properties.slider import *
 # from .properties.spacer import
 from .properties.spinbox import *
 from .properties.splitter import *
@@ -51,6 +52,11 @@ from .properties.splitter import *
 from .properties.texedit import *
 from .properties.widget import *
 from .properties.window import *
+
+from .properties.table import *
+from .properties.tree import *
+from .properties.filetree import *
+# from .properties.terminal import *
 
 # Pickers
 from .properties.colorpicker import *
@@ -61,26 +67,30 @@ from .properties.layout import *
 
 TTkUiProperties = {
     # Widgets
-        TTkButton.__name__:         TTkButtonProperties,
-        TTkCheckbox.__name__:       TTkCheckboxProperties,
-        TTkContainer.__name__:      TTkContainerProperties,
-        TTkComboBox.__name__:       TTkComboBoxProperties,
-        TTkFrame.__name__:          TTkFrameProperties,
-        TTkLabel.__name__:          TTkLabelProperties,
-        TTkLineEdit.__name__:       TTkLineEditProperties,
-        TTkList.__name__:           TTkListProperties,
-        TTkMenuButton.__name__:     TTkMenuButtonProperties,
-        TTkRadioButton.__name__:    TTkRadioButtonProperties,
-        TTkResizableFrame.__name__: TTkResizableFrameProperties,
-        TTkScrollBar.__name__:      TTkScrollBarProperties,
-        TTkSpinBox.__name__:        TTkSpinBoxProperties,
-        TTkSplitter.__name__:       TTkSplitterProperties,
-        TTkTextEdit.__name__:       TTkTextEditProperties,
-        TTkWidget.__name__:         TTkWidgetProperties,
-        TTkWindow.__name__:         TTkWindowProperties,
+        TTkButton.__name__         : TTkButtonProperties,
+        TTkCheckbox.__name__       : TTkCheckboxProperties,
+        TTkContainer.__name__      : TTkContainerProperties,
+        TTkComboBox.__name__       : TTkComboBoxProperties,
+        TTkFrame.__name__          : TTkFrameProperties,
+        TTkLabel.__name__          : TTkLabelProperties,
+        TTkLineEdit.__name__       : TTkLineEditProperties,
+        TTkList.__name__           : TTkListProperties,
+        TTkMenuButton.__name__     : TTkMenuButtonProperties,
+        TTkRadioButton.__name__    : TTkRadioButtonProperties,
+        TTkResizableFrame.__name__ : TTkResizableFrameProperties,
+        TTkScrollBar.__name__      : TTkScrollBarProperties,
+        TTkSpinBox.__name__        : TTkSpinBoxProperties,
+        TTkSplitter.__name__       : TTkSplitterProperties,
+        TTkTextEdit.__name__       : TTkTextEditProperties,
+        TTkWidget.__name__         : TTkWidgetProperties,
+        TTkWindow.__name__         : TTkWindowProperties,
     # Pickers
         TTkColorButtonPicker.__name__ : TTkColorButtonPickerProperties,
         TTkFileButtonPicker.__name__  : TTkFileButtonPickerProperties,
     # Layouts
-        TTkLayout.__name__:         TTkLayoutProperties,
+        TTkLayout.__name__   : TTkLayoutProperties,
+    # Models
+        TTkTable.__name__    : TTkTableProperties,
+        TTkTree.__name__     : TTkTreeProperties,
+        TTkFileTree.__name__ : TTkFileTreeProperties,
 }
