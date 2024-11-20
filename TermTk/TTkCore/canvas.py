@@ -743,16 +743,14 @@ class TTkCanvas():
                     ansi = TTkTerm.Cursor.moveTo(y+1,x+1)
                     empty = False
                 if color != lastcolor:
-                    ansi += str(color-lastcolor)
+                    ansi += color-lastcolor
                     lastcolor = color
                 ansi+=ch
             if not empty:
                 TTkTerm.push(ansi)
                 empty=True
         # Reset the color at the end
-        TTkTerm.push(TTkColor.RST)
-        if lastcolor._link:
-            TTkTerm.push("\033]8;;\033\\")
+        TTkTerm.push(TTkColor.RST-lastcolor)
         # TTkTerm.flush()
         # Switch the buffer
         self._bufferedData, self._bufferedColors = data, colors

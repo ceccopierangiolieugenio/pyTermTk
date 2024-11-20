@@ -63,6 +63,8 @@ class TTkTermColor():
     @staticmethod
     def rgb2ansi(fg: tuple=None, bg:tuple=None, mod:int=0, link:str='', clean:bool=False, cleanLink:bool=False):
         ret = []
+        ret_append = ret.append
+
         linkAnsi = ""
 
         if cleanLink:
@@ -71,31 +73,32 @@ class TTkTermColor():
             linkAnsi = f"\033]8;;{link}\033\\"
 
         if clean:
-            ret.append(0)
+            ret_append('0')
 
         if fg:
-            ret.append(f'38;2;{fg[0]};{fg[1]};{fg[2]}')
+            ret_append(f'38;2;{fg[0]};{fg[1]};{fg[2]}')
         if bg:
-            ret.append(f'48;2;{bg[0]};{bg[1]};{bg[2]}')
+            ret_append(f'48;2;{bg[0]};{bg[1]};{bg[2]}')
 
-        if mod & TTkTermColor.BOLD:
-            ret.append('1')
-        if mod & TTkTermColor.FAINT:
-            ret.append('2')
-        if mod & TTkTermColor.ITALIC:
-            ret.append('3')
-        if mod & TTkTermColor.UNDERLINE:
-            ret.append('4')
-        if mod & TTkTermColor.BLINKING:
-            ret.append('5')
-        if mod & TTkTermColor.REVERSED:
-            ret.append('7')
-        if mod & TTkTermColor.HIDDEN:
-            ret.append('8')
-        if mod & TTkTermColor.STRIKETROUGH:
-            ret.append('9')
+        if mod:
+            if mod & TTkTermColor.BOLD:
+                ret_append('1')
+            if mod & TTkTermColor.FAINT:
+                ret_append('2')
+            if mod & TTkTermColor.ITALIC:
+                ret_append('3')
+            if mod & TTkTermColor.UNDERLINE:
+                ret_append('4')
+            if mod & TTkTermColor.BLINKING:
+                ret_append('5')
+            if mod & TTkTermColor.REVERSED:
+                ret_append('7')
+            if mod & TTkTermColor.HIDDEN:
+                ret_append('8')
+            if mod & TTkTermColor.STRIKETROUGH:
+                ret_append('9')
         if ret:
-            return f'\033[{";".join(str(x) for x in ret)}m{linkAnsi}'
+            return f'\033[{";".join(ret)}m{linkAnsi}'
         else:
             return '\033[0m'+linkAnsi
 
