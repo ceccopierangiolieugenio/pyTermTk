@@ -27,7 +27,7 @@ class A():
         self.a = a
         self.b = b
 
-    def __str__(self):        return f"a={self.a} {type(self).__name__} {type(other).__name__}, b={self.b}"
+    def __str__(self):        return f"a={self.a}, b={self.b}"
     def __sub__(self, other): return f"A( ).  sub {type(self).__name__} {type(other).__name__}"
     def __or__( self, other): return f"A( ).  or  {type(self).__name__} {type(other).__name__}"
     def __ror__(self, other): return f"A( ).R-or  {type(self).__name__} {type(other).__name__}"

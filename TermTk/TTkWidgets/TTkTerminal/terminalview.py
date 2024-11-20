@@ -27,7 +27,7 @@ import re
 from dataclasses import dataclass
 
 from TermTk.TTkCore.canvas import TTkCanvas
-from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.color import TTkColor, _TTkColor, _TTkColor_mod, _TTkColor_mod_link
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
@@ -354,6 +354,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                 # CSI Color Functions
                 #   CSI Pm ; Pm ; ... m
                 ################################################
+                # TODO: Rework this routine to avoid the use
+                #   of the internal color sub classes
+                ################################################
                 elif ((m      := TTkTerminalView.re_CURSOR.match(slice)) and
                       (mg     := m.groups()) and
                        mg[-1] == 'm' ):
@@ -367,7 +370,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                         color = self._screen_current.color()
                         fg = color._fg
                         bg = color._bg
-                        mod = color._mod
+                        mod = color._mod if hasattr(color,'_mod') else 0
                         clean = False
 
                         while values:
@@ -407,7 +410,11 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                                 mod &= _sgr
                             else:
                                 _termLog.warn(f"Unhandled color: <ESC>{slice}")
-                        color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
+                        if mod:
+                            color = _TTkColor_mod(fg=fg, bg=bg, mod=mod, clean=clean)
+                        else:
+                            color = _TTkColor(fg=fg, bg=bg, clean=clean)
+                        # color = TTkColor(fg=fg, bg=bg, mod=mod, clean=clean)
 
                     self._screen_alt.setColor(color)
                     self._screen_normal.setColor(color)

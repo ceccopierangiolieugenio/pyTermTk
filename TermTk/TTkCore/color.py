@@ -263,7 +263,7 @@ class _TTkColor_mod(_TTkColor):
                  ) -> None:
         self._mod = mod
         super().__init__(**kwargs)
-        self._clean = self._clean or mod
+        self._clean = self._clean and not mod
 
     def bold(self) -> bool:
         return  self._mod & TTkTermColor.BOLD
@@ -363,7 +363,7 @@ class _TTkColor_mod_link(_TTkColor_mod):
                  ) -> None:
         self._link = link
         super().__init__(**kwargs)
-        self._clean = self._clean or link
+        self._clean = self._clean and not link
 
     def colorType(self):
         return (
