@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,4 +22,50 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = []
+class A():
+    def __init__(self,a,b) -> None:
+        self.a = a
+        self.b = b
+
+    def __eq__(self, value: object) -> bool:
+        print(f"A.eq - {self=},{value=}")
+        return self.a==value.a and self.b==value.b
+
+class B():
+    def __init__(self,a,b) -> None:
+        self.a = a
+        self.b = b
+
+    def __eq__(self, value: object) -> bool:
+        print(f"B.eq - {self=},{value=}")
+        return self.a==value.a and self.b==value.b
+
+class C(A):
+    def __eq__(self, value: object) -> bool:
+        print(f"C(A).eq - {self=},{value=}")
+        return self.a==value.a and self.b==value.b
+
+class D():
+    def __init__(self,a,b) -> None:
+        self.a = a
+        self.b = b
+
+a = A(1,2)
+aa = a
+b = B(1,2)
+bb = b
+c = C(1,2)
+cc = c
+d = D(1,2)
+
+
+print(f"{(a==aa)=}")
+print(f"{(aa==a)=}")
+print(f"{(a==c )=}")
+print(f"{(c==a )=}")
+print(f"{(a==b )=}")
+print(f"{(b==a )=}")
+print(f"{(b==c )=}")
+print(f"{(c==b )=}")
+print(f"{(c==d )=}")
+print(f"{(d==c )=}")

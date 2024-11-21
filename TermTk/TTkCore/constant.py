@@ -37,10 +37,12 @@ class TTkConstant:
     class ColorType(int):
         Foreground = 0x01
         Background = 0x02
-        Modifier   = 0x03
+        Modifier   = 0x04
+        Link       = 0x08
     Foreground = ColorType.Foreground
     Background = ColorType.Background
     Modifier   = ColorType.Modifier
+    Link       = ColorType.Link
 
     class FocusPolicy(int):
         '''

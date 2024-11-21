@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,4 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = []
+
+
+for i in range(0xF):
+    a,b,c,d = i&1,i&1<<1,i&1<<2,i&1<<3
+    print(f"{a} {b} {c} {d} = {a or not (b or c or d)} -> {a or not (b or c) and not d}")

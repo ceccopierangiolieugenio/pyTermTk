@@ -20,5 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# from .input_mono import *
-from .input_thread import *
+__all__ = ['TTkInput']
+
+# from .input_mono import TTkInput
+from .input_thread import TTkInput
