@@ -372,7 +372,7 @@ class _TTkColor_mod_link(_TTkColor_mod):
 
     def __str__(self):
         if not self._buffer:
-            self._buffer = TTkTermColor.rgb2ansi(
+            self._buffer = TTkTermColor.rgb2ansi_link(
                                 fg=self._fg, bg=self._bg, mod=self._mod,
                                 link=self._link, clean=self._clean)
         return self._buffer
@@ -428,16 +428,16 @@ class _TTkColor_mod_link(_TTkColor_mod):
              None == self._fg   != other._fg or
                      self._link != otherLink or
                      self._mod  != otherMod ):
-            return TTkTermColor.rgb2ansi(
+            return TTkTermColor.rgb2ansi_link(
                                 fg=self._fg, bg=self._bg, mod=self._mod,
                                 link=self._link, clean=True)
         return ''
 
     def __rsub__(self, other) -> str:
         if type(other) == _TTkColor:
-            return TTkTermColor.rgb2ansi(fg=other._fg, bg=other._bg, clean=True, cleanLink=True)
+            return TTkTermColor.rgb2ansi_link(fg=other._fg, bg=other._bg, clean=True, cleanLink=True)
         else:
-            return TTkTermColor.rgb2ansi(fg=other._fg, bg=other._bg, mod=other._mod, clean=True, cleanLink=True)
+            return TTkTermColor.rgb2ansi_link(fg=other._fg, bg=other._bg, mod=other._mod, clean=True, cleanLink=True)
 
     def copy(self, modifier=True):
         ret = _TTkColor_mod_link()

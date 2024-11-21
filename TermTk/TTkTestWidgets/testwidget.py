@@ -31,8 +31,10 @@ from TermTk.TTkWidgets.label import *
 from TermTk.TTkWidgets.frame import *
 
 class _TestContent(TTkWidget):
-    t01 = TTkString(color=TTkColor.fg("#ff0000") ,text="     L😎rem ipsum dolor sit amet, ⌚ ❤ 💙 🙋'")
-    t02 = TTkString(color=TTkColor.fg("#ff8800") ,text="consectetur adipiscing elit,")
+    t01 = TTkString(color=TTkColor.fg("#ff0000",  link="https://github.com/ceccopierangiolieugenio/pyTermTk") ,
+                                                  text="     L😎rem ipsum dolor sit amet, ⌚ ❤ 💙 🙋'")
+    t02 = TTkString(color=TTkColor.fg("#ff8800",  link="https://ceccopierangiolieugenio.itch.io/dumb-paint-tool"),
+                                                  text="consectetur adipiscing elit,")
     t03 = TTkString(color=TTkColor.fg("#ffff00") ,text="sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
     t04 = TTkString(color=TTkColor.fg("#00ff00") ,text="Ut enim ad minim veniam,")
     t05 = TTkString(color=TTkColor.fg("#00ffff") ,text="quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
