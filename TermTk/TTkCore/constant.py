@@ -55,9 +55,6 @@ class TTkConstant:
         '''The :py:class:`TTkColor` include an hyperlink'''
         ColorModifier = 0x08
         '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
-    Foreground = ColorType.Foreground
-    Background = ColorType.Background
-    Modifier   = ColorType.Modifier
 
     class FocusPolicy(int):
         '''

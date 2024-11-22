@@ -174,7 +174,7 @@ class _TTkColor:
         return r,g,b
 
     def getHex(self, ctype):
-        if ctype == TTkK.Foreground:
+        if ctype == TTkK.ColorType.Foreground:
             r,g,b = self.fgToRGB()
         else:
             r,g,b = self.bgToRGB()
@@ -292,7 +292,7 @@ class _TTkColor_mod(_TTkColor):
     def colorType(self):
         return (
             super().colorType() |
-            ( TTkK.Modifier if self._mod else TTkK.NONE ))
+            ( TTkK.ColorType.Modifier if self._mod else TTkK.NONE ))
 
     def __str__(self):
         if not self._buffer:
