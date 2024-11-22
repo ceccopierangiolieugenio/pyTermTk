@@ -35,14 +35,29 @@ class TTkConstant:
 
     # Color Type
     class ColorType(int):
-        Foreground = 0x01
-        Background = 0x02
-        Modifier   = 0x04
-        Link       = 0x08
+        '''
+        This Class type defines the various elements included in :py:class:`TTkColor`.
+
+        .. autosummary::
+          Foreground
+          Background
+          Modifier
+          Link
+          ColorModifier
+        '''
+        Foreground    = 0x01
+        '''The :py:class:`TTkColor` has a foreground color defined'''
+        Background    = 0x02
+        '''The :py:class:`TTkColor` has a background color defined'''
+        Modifier      = 0x04
+        '''The :py:class:`TTkColor` include one or more of **BOLD**, **ITALIC**, **UNDERLINE**, **STRIKETROUGH**, **BLINKING**'''
+        Link          = 0x08
+        '''The :py:class:`TTkColor` include an hyperlink'''
+        ColorModifier = 0x08
+        '''The :py:class:`TTkColor` include a color modifier based on :py:class:`TTkColorModifier`'''
     Foreground = ColorType.Foreground
     Background = ColorType.Background
     Modifier   = ColorType.Modifier
-    Link       = ColorType.Link
 
     class FocusPolicy(int):
         '''

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 __all__ = ['TTkColor',
+           'TTkColorModifier',
            'TTkColorGradient', 'TTkLinearGradient', 'TTkAlternateColor']
 
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
@@ -112,8 +113,9 @@ class _TTkColor:
 
     def colorType(self):
         return (
-            ( TTkK.Foreground if self._fg  else TTkK.NONE ) |
-            ( TTkK.Background if self._bg  else TTkK.NONE ) )
+            ( TTkK.ColorType.ColorModifier if self._colorMod  else TTkK.NONE ) |
+            ( TTkK.ColorType.Foreground    if self._fg        else TTkK.NONE ) |
+            ( TTkK.ColorType.Background    if self._bg        else TTkK.NONE ) )
 
     @staticmethod
     def rgb2hsl(rgb):
@@ -458,12 +460,12 @@ class _TTkColor_mod_link(_TTkColor_mod):
         return ret
 
 
-class _TTkColorModifier():
+class TTkColorModifier():
     def __init__(self, *args, **kwargs) -> None: pass
     def setParam(self, *args, **kwargs) -> None: pass
     def copy(self): return self
 
-class TTkColorGradient(_TTkColorModifier):
+class TTkColorGradient(TTkColorModifier):
     '''TTkColorGradient'''
 
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
@@ -515,7 +517,7 @@ class TTkColorGradient(_TTkColorModifier):
     def copy(self):
         return self
 
-class TTkLinearGradient(_TTkColorModifier):
+class TTkLinearGradient(TTkColorModifier):
     '''TTkLinearGradient'''
 
     __slots__ = (
@@ -740,7 +742,7 @@ class TTkColor(_TTkColor):
             return _TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
 
     @staticmethod
-    def fgbg(fg:str='', bg:str='', link:str='', modifier:_TTkColorModifier=None):
+    def fgbg(fg:str='', bg:str='', link:str='', modifier:TTkColorModifier=None):
         ''' Helper to generate a Background color
 
         Example:
@@ -765,7 +767,7 @@ class TTkColor(_TTkColor):
         else:
             return _TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier)
 
-class TTkAlternateColor(_TTkColorModifier):
+class TTkAlternateColor(TTkColorModifier):
     '''TTkAlternateColor'''
 
     __slots__ = ('_alternateColor')

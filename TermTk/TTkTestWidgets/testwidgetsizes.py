@@ -38,7 +38,7 @@ class TTkTestWidgetSizes(TTkFrame):
         w,h = self.size()
         style = self.currentStyle()
         color = style['color']
-        if color.background():
+        if color.hasBackground():
             canvas.fill(pos=(0,0), size=(w,h), color=color)
         borderColor = style['borderColor']
         canvas.drawText(pos=(l,t+0), color=color, text=f"Test Widget [{self._name}]")

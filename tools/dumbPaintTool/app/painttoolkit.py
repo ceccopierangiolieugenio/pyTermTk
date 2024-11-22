@@ -143,7 +143,7 @@ class PaintToolKit(ttk.TTkContainer):
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def setColor(self, color:ttk.TTkColor):
-        if ttk.TTkK.ColorType.Foreground & (colorType := color.colorType()):
+        if color.hasForeground():
             self._cbFg.setCheckState(ttk.TTkK.Checked)
             self._bpFg.setEnabled()
             self._bpFg.setColor(color.foreground())
@@ -151,7 +151,7 @@ class PaintToolKit(ttk.TTkContainer):
             self._cbFg.setCheckState(ttk.TTkK.Unchecked)
             self._bpFg.setDisabled()
 
-        if ttk.TTkK.ColorType.Background &  colorType:
+        if color.hasBackground():
             self._cbBg.setCheckState(ttk.TTkK.Checked)
             self._bpBg.setEnabled()
             self._bpBg.setColor(color.background())

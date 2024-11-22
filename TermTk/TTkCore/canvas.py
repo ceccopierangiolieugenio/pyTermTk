@@ -157,7 +157,7 @@ class TTkCanvas():
         fillCh    = [char]*(fxb-fxa)
         for iy in range(fya,fyb):
             self._data[iy][fxa:fxb]   = fillCh
-        if color.colorType() & TTkK.Modifier:
+        if color.colorType() & TTkK.ColorType.ColorModifier:
             for iy in range(fya,fyb):
                 for ix in range(fxa,fxb):
                     self._colors[iy][ix] = color.mod(fxa+ix,fya+iy)
@@ -240,7 +240,7 @@ class TTkCanvas():
             self._data[y][x+i] = txt[i]
             if colors[i] == TTkColor.RST != color:
                 self._colors[y][x+i] =  color.mod(x+i,y)
-            elif (not colors[i].background()) and color.background():
+            elif (not colors[i].hasBackground()) and color.hasBackground():
                 self._colors[y][x+i] = (color + colors[i]).mod(x+i,y)
             else:
                 self._colors[y][x+i] =  colors[i].mod(x+i,y)

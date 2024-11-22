@@ -158,7 +158,7 @@ def demoTextEdit(root=None, document=None):
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def _currentColorChangedCB(format:ttk.TTkColor):
-        if ttk.TTkK.ColorType.Foreground & (colorType := format.colorType()):
+        if format.hasForeground():
             cb_fg.setCheckState(ttk.TTkK.Checked)
             btn_fgColor.setEnabled()
             btn_fgColor.setColor(format.foreground())
@@ -166,7 +166,7 @@ def demoTextEdit(root=None, document=None):
             cb_fg.setCheckState(ttk.TTkK.Unchecked)
             btn_fgColor.setDisabled()
 
-        if ttk.TTkK.ColorType.Background &  colorType:
+        if format.hasBackground():
             cb_bg.setCheckState(ttk.TTkK.Checked)
             btn_bgColor.setEnabled()
             btn_bgColor.setColor(format.background())

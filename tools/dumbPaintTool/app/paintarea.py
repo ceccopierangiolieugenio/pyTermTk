@@ -209,10 +209,10 @@ class PaintArea(ttk.TTkAbstractScrollView):
                         if not glyph and color == ttk.TTkColor.RST:
                             glyph = _gl
                             color = _co
-                        elif color.background() == ttk.TTkColor.RST:
-                            if _co.background() != ttk.TTkColor.RST:
-                                if (_fg:=color.foreground()) != ttk.TTkColor.RST:
-                                    color = _fg + _co.background()
+                        elif color.hasBackground():
+                            if _co.hasBackground():
+                                if color.hasForeground():
+                                    color = color.foreground() + _co.background()
                                 else:
                                     color = _co.background()
                         else:

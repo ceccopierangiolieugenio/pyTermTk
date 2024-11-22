@@ -323,13 +323,12 @@ class TTkImageNew(ttk.TTkWidget):
         s = (0,0,w,h)
         for y,(rowd,rowc) in enumerate(zip(self._canvasImage._data[:h],self._canvasImage._colors[:h])):
             for x,(gl,c) in enumerate(zip(rowd[:w],rowc[:w])):
-                nColorType = c.colorType()
-                if gl == ' ' and not (nColorType & ttk.TTkK.ColorType.Background):
+                if gl == ' ' and not c.hasBackground():
                     continue
                 elif gl == ' ':
                     canvas._data[  y][x] = ' '
                     canvas._colors[y][x] = c.background()
-                elif not (nColorType & ttk.TTkK.ColorType.Background):
+                elif not c.hasBackground():
                     nbg = canvas._colors[y][x].background()
                     canvas._data[  y][x] = gl
                     canvas._colors[y][x] = c.foreground() + nbg
