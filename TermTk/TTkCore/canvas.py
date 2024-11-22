@@ -42,8 +42,8 @@ class TTkCanvas():
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
-    _data:list[str]
-    _colors:list[TTkColor]
+    _data:list[list[str]]
+    _colors:list[list[TTkColor]]
     def __init__(self,
                  width:int=0,
                  height:int=0) -> None:
