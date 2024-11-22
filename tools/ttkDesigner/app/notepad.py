@@ -81,19 +81,19 @@ class NotePad(ttk.TTkGridLayout):
         fontLayout.addWidget(SuperSimpleHorizontalLine(),0,12,2,1)
 
         @ttk.pyTTkSlot(ttk.TTkColor)
-        def _currentColorChangedCB(format):
-            if fg := format.foreground():
+        def _currentColorChangedCB(format:ttk.TTkColor):
+            if ttk.TTkK.ColorType.Foreground & (colorType := format.colorType()):
                 cb_fg.setCheckState(ttk.TTkK.Checked)
                 btn_fgColor.setEnabled()
-                btn_fgColor.setColor(fg)
+                btn_fgColor.setColor(format.foreground())
             else:
                 cb_fg.setCheckState(ttk.TTkK.Unchecked)
                 btn_fgColor.setDisabled()
 
-            if bg := format.background():
+            if ttk.TTkK.ColorType.Background &  colorType:
                 cb_bg.setCheckState(ttk.TTkK.Checked)
                 btn_bgColor.setEnabled()
-                btn_bgColor.setColor(bg)
+                btn_bgColor.setColor(format.background())
             else:
                 cb_bg.setCheckState(ttk.TTkK.Unchecked)
                 btn_bgColor.setDisabled()

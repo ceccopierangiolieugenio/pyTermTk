@@ -64,7 +64,8 @@ from TermTk.TTkCore.helper import TTkHelper
 
 class _TTkColor:
     __slots__ = ('_fg','_bg', '_colorMod', '_buffer', '_clean')
-    _fg: tuple[int]; _bg: tuple[int];
+    _fg: tuple[int]
+    _bg: tuple[int]
     def __init__(self,
                  fg:tuple[int]=None,
                  bg:tuple[int]=None,
@@ -80,13 +81,19 @@ class _TTkColor:
         if self._fg:
             return _TTkColor(fg=self._fg)
         else:
-            return None
+            return TTkColor.RST
 
     def background(self):
         if self._bg:
             return _TTkColor(bg=self._bg)
         else:
-            return None
+            return TTkColor.RST
+
+    def hasForeground(self) -> bool:
+        return True if self._fg else False
+
+    def hasBackground(self) -> bool:
+        return True if self._bg else False
 
     def bold(self) -> bool:
         return  False

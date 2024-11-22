@@ -42,6 +42,8 @@ class TTkCanvas():
         '_data', '_colors',
         '_bufferedData', '_bufferedColors',
         '_visible', '_transparent', '_doubleBuffer')
+    _data:list[str]
+    _colors:list[TTkColor]
     def __init__(self,
                  width:int=0,
                  height:int=0) -> None:
@@ -50,7 +52,7 @@ class TTkCanvas():
         self._doubleBuffer = False
         self._width = 0
         self._height = 0
-        self._data = [[]]
+        self._data   = [[]]
         self._colors = [[]]
         self._newWidth = width
         self._newHeight = height

@@ -84,8 +84,8 @@ class Palette(ttk.TTkWidget):
     def setColor(self, color:ttk.TTkColor) -> None:
         fg = color.foreground()
         bg = color.background()
-        self.enableFg(fg!=None)
-        self.enableBg(bg!=None)
+        self.enableFg(fg!=ttk.TTkColor.RST)
+        self.enableBg(bg!=ttk.TTkColor.RST)
         def _getPos(col):
             for y,row in enumerate(self._palette):
                 for x,c in enumerate(row):
@@ -93,14 +93,14 @@ class Palette(ttk.TTkWidget):
                         return x,y
             return None
         pw, ph = len(self._palette[0]),len(self._palette)
-        if fg:
+        if fg!=ttk.TTkColor.RST:
             if (pos:=_getPos(fg)) != None:
                 self._fg = pos
             else:
                 self._fg = (pw-2,ph-1)
                 self._palette[ph-1][pw-2] = (fg,fg.invertFgBg())
 
-        if bg:
+        if bg!=ttk.TTkColor.RST:
             if (pos:=_getPos(bg)) != None:
                 self._bg = pos
             else:

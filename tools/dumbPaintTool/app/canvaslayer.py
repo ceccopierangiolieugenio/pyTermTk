@@ -278,8 +278,9 @@ class CanvasLayer():
             palette = outData['palette'] = []
             for row in colors:
                 for c in row:
-                    fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                    bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                    colorType = c.colorType()
+                    fg = f"{c.getHex(ttk.TTkK.ColorType.Foreground)}" if (colorType&ttk.TTkK.ColorType.Foreground) else None
+                    bg = f"{c.getHex(ttk.TTkK.ColorType.Background)}" if (colorType&ttk.TTkK.ColorType.Background) else None
                     if (pc:=(fg,bg)) not in palette:
                         palette.append(pc)
 
@@ -296,8 +297,9 @@ class CanvasLayer():
         for row in colors[hslice]:
             outData['colors'].append([])
             for c in row[wslice]:
-                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                colorType = c.colorType()
+                fg = f"{c.getHex(ttk.TTkK.ColorType.Foreground)}" if (colorType&ttk.TTkK.ColorType.Foreground) else None
+                bg = f"{c.getHex(ttk.TTkK.ColorType.Background)}" if (colorType&ttk.TTkK.ColorType.Background) else None
                 if palette:
                     outData['colors'][-1].append(palette.index((fg,bg)))
                 else:
@@ -493,18 +495,15 @@ class CanvasLayer():
                 colors[oy+y][ox+x] = color
             else:
                 glyph = data[  oy+y][ox+x]
-                ofg = colors[oy+y][ox+x].foreground()
-                obg = colors[oy+y][ox+x].background()
-                nfg = color.foreground()
-                nbg = color.background()
+                oColorType = (oc:=colors[oy+y][ox+x]).colorType()
+                nColorType = (nc:=color).colorType()
                 if glyph==' ':
-                    if obg:
-                        colors[oy+y][ox+x] = nbg if nbg else ttk.TTkColor.RST
+                    if oColorType & ttk.TTkK.ColorType.Background:
+                        colors[oy+y][ox+x] = nc.background()
                 else:
-                    fg = nfg if nfg         else ofg if ofg else ttk.TTkColor.RST
-                    bg = nbg if nbg and obg else obg if obg else fg
+                    fg = nc.foreground() if ttk.TTkK.ColorType.Foreground & nColorType              else oc.foreground()
+                    bg = nc.background() if ttk.TTkK.ColorType.Background & nColorType & oColorType else oc.background() if ttk.TTkK.ColorType.Background & oColorType else fg
                     color = fg+bg
-                    color = color if color else ttk.TTkColor.RST
                     colors[oy+y][ox+x] = color
             return True
         return False

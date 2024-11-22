@@ -173,18 +173,18 @@ class TTkTextDialogPicker(TTkWindow):
 
         @pyTTkSlot(TTkColor)
         def _currentColorChangedCB(format:TTkColor):
-            if fg := format.foreground():
+            if TTkK.ColorType.Foreground & (colorType := format.colorType()):
                 cb_fg.setCheckState(TTkK.Checked)
                 btn_fgColor.setEnabled()
-                btn_fgColor.setColor(fg)
+                btn_fgColor.setColor(format.foreground())
             else:
                 cb_fg.setCheckState(TTkK.Unchecked)
                 btn_fgColor.setDisabled()
 
-            if bg := format.background():
+            if TTkK.ColorType.Background &  colorType:
                 cb_bg.setCheckState(TTkK.Checked)
                 btn_bgColor.setEnabled()
-                btn_bgColor.setColor(bg)
+                btn_bgColor.setColor(format.background())
             else:
                 cb_bg.setCheckState(TTkK.Unchecked)
                 btn_bgColor.setDisabled()

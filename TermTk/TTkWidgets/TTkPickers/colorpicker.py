@@ -207,10 +207,10 @@ class _TTkColorButton(TTkButton):
         style = self.style()
         for t in style:
             if 'color' in style[t]:
-                if   fg := color.foreground():
-                    style[t]['color'] = fg.invertFgBg()
-                elif bg := color.background():
-                    style[t]['color'] = bg
+                if   TTkK.ColorType.Foreground & (colorType := color.colorType()):
+                    style[t]['color'] = color.foreground().invertFgBg()
+                elif TTkK.ColorType.Background & colorType:
+                    style[t]['color'] = color.background()
                 else:
                     style[t]['color'] = TTkColor.BG_BLACK
         self.setStyle(style)
@@ -223,12 +223,16 @@ class _TTkColorButton(TTkButton):
         self._returnType = returnType
 
     def color(self) -> TTkColor:
-        fg = self._color.foreground()
-        bg = self._color.background()
         if self._returnType==TTkK.ColorPickerReturnType.Foreground:
-            return fg if fg else bg.invertFgBg() if bg else TTkColor.RST
+            if self._color.colorType() & TTkK.ColorType.Foreground:
+                return self._color.foreground()
+            else:
+                return self._color.background().invertFgBg()
         if self._returnType==TTkK.ColorPickerReturnType.Background:
-            return bg if bg else fg.invertFgBg() if fg else TTkColor.RST
+            if self._color.colorType() & TTkK.ColorType.Background:
+                return self._color.background()
+            else:
+                return self._color.foreground().invertFgBg()
         return self._color
 
     def isCustom(self) -> bool:
@@ -549,12 +553,16 @@ class TTkColorDialogPicker(TTkWindow):
         :return: the current color
         :rtype: :py:class:`TTkColor`
         '''
-        fg = self._color.foreground()
-        bg = self._color.background()
         if self._returnType==TTkK.ColorPickerReturnType.Foreground:
-            return fg if fg else bg.invertFgBg() if bg else TTkColor.RST
+            if self._color.colorType() & TTkK.ColorType.Foreground:
+                return self._color.foreground()
+            else:
+                return self._color.background().invertFgBg()
         if self._returnType==TTkK.ColorPickerReturnType.Background:
-            return bg if bg else fg.invertFgBg() if fg else TTkColor.RST
+            if self._color.colorType() & TTkK.ColorType.Background:
+                return self._color.background()
+            else:
+                return self._color.foreground().invertFgBg()
         return self._color
 
     def setColor(self, color:TTkColor) -> None:
@@ -663,10 +671,12 @@ class TTkColorButtonPicker(_TTkColorButton):
 
     @pyTTkSlot(TTkColor)
     def _processColorSelected(self, color:TTkColor):
-        if   fg := self.color().foreground():
-            bg = fg.invertFgBg()
-        elif bg := self.color().background():
-            fg = bg.invertFgBg()
+        if   TTkK.ColorType.Foreground & (colorType := color.colorType()):
+            fg = color.foreground()
+            bg = color.foreground().invertFgBg()
+        elif TTkK.ColorType.Background &  colorType:
+            fg = color.background().invertFgBg()
+            bg = color.background()
         else:
             fg = TTkColor.BLACK
             bg = TTkColor.BG_BLACK
