@@ -185,6 +185,10 @@ class TTk(TTkContainer):
             self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
+                if self._timer:
+                    self._timer.timeout.disconnect(self._time_event)
+                    self._paintEvent.set()
+                    self._timer.join()
                 TTkSignalDriver.exit()
                 self.quit()
                 TTkTerm.exit()
@@ -333,9 +337,7 @@ class TTk(TTkContainer):
         '''Tells the application to exit with a return code.'''
         if self._timer:
             self._timer.timeout.disconnect(self._time_event)
-            self._timer.join()
         TTkInput.inputEvent.clear()
-        self._paintEvent.set()
         TTkInput.close()
 
     @pyTTkSlot()
