@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 __all__ = ['TTkColor',
+           'TTkColorModifier',
            'TTkColorGradient', 'TTkLinearGradient', 'TTkAlternateColor']
 
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
@@ -64,7 +65,8 @@ from TermTk.TTkCore.helper import TTkHelper
 
 class _TTkColor:
     __slots__ = ('_fg','_bg', '_colorMod', '_buffer', '_clean')
-    _fg: tuple[int]; _bg: tuple[int];
+    _fg: tuple[int]
+    _bg: tuple[int]
     def __init__(self,
                  fg:tuple[int]=None,
                  bg:tuple[int]=None,
@@ -80,13 +82,19 @@ class _TTkColor:
         if self._fg:
             return _TTkColor(fg=self._fg)
         else:
-            return None
+            return TTkColor.RST
 
     def background(self):
         if self._bg:
             return _TTkColor(bg=self._bg)
         else:
-            return None
+            return TTkColor.RST
+
+    def hasForeground(self) -> bool:
+        return True if self._fg else False
+
+    def hasBackground(self) -> bool:
+        return True if self._bg else False
 
     def bold(self) -> bool:
         return  False
@@ -105,8 +113,9 @@ class _TTkColor:
 
     def colorType(self):
         return (
-            ( TTkK.Foreground if self._fg  else TTkK.NONE ) |
-            ( TTkK.Background if self._bg  else TTkK.NONE ) )
+            ( TTkK.ColorType.ColorModifier if self._colorMod  else TTkK.NONE ) |
+            ( TTkK.ColorType.Foreground    if self._fg        else TTkK.NONE ) |
+            ( TTkK.ColorType.Background    if self._bg        else TTkK.NONE ) )
 
     @staticmethod
     def rgb2hsl(rgb):
@@ -165,7 +174,7 @@ class _TTkColor:
         return r,g,b
 
     def getHex(self, ctype):
-        if ctype == TTkK.Foreground:
+        if ctype == TTkK.ColorType.Foreground:
             r,g,b = self.fgToRGB()
         else:
             r,g,b = self.bgToRGB()
@@ -196,19 +205,19 @@ class _TTkColor:
             self._fg   == other._fg and
             self._bg   == other._bg )
 
-    # self | other
-    def __or__(self, other):
-        # TTkLog.debug("__add__")
-        if other._clean:
-            return other
-        clean = self._clean
-        fg:  str = self._fg or other._fg
-        bg:  str = self._bg or other._bg
-        colorMod = self._colorMod or other._colorMod
-        return _TTkColor(
-                    fg=fg, bg=bg,
-                    colorMod=colorMod,
-                    clean=clean)
+    # # self | other
+    # def __or__(self, other):
+    #     # TTkLog.debug("__add__")
+    #     if other._clean:
+    #         return other
+    #     clean = self._clean
+    #     fg:  str = self._fg or other._fg
+    #     bg:  str = self._bg or other._bg
+    #     colorMod = self._colorMod or other._colorMod
+    #     return _TTkColor(
+    #                 fg=fg, bg=bg,
+    #                 colorMod=colorMod,
+    #                 clean=clean)
 
     # self + other
     def __add__(self, other):
@@ -283,7 +292,7 @@ class _TTkColor_mod(_TTkColor):
     def colorType(self):
         return (
             super().colorType() |
-            ( TTkK.Modifier if self._mod else TTkK.NONE ))
+            ( TTkK.ColorType.Modifier if self._mod else TTkK.NONE ))
 
     def __str__(self):
         if not self._buffer:
@@ -298,21 +307,21 @@ class _TTkColor_mod(_TTkColor):
                 ( self._mod == (other._mod if isinstance(other,_TTkColor_mod) else 0))
             )
 
-    # self | other
-    def __or__(self, other):
-        # TTkLog.debug("__add__")
-        if other._clean:
-            return other
-        otherMod = other._mod if isinstance(other,_TTkColor_mod) else 0
-        clean = self._clean
-        fg:  str = self._fg or other._fg
-        bg:  str = self._bg or other._bg
-        mod: str = self._mod + otherMod
-        colorMod = self._colorMod or other._colorMod
-        return _TTkColor_mod(
-                    fg=fg, bg=bg, mod=mod,
-                    colorMod=colorMod,
-                    clean=clean)
+    # # self | other
+    # def __or__(self, other):
+    #     # TTkLog.debug("__add__")
+    #     if other._clean:
+    #         return other
+    #     otherMod = other._mod if isinstance(other,_TTkColor_mod) else 0
+    #     clean = self._clean
+    #     fg:  str = self._fg or other._fg
+    #     bg:  str = self._bg or other._bg
+    #     mod: str = self._mod + otherMod
+    #     colorMod = self._colorMod or other._colorMod
+    #     return _TTkColor_mod(
+    #                 fg=fg, bg=bg, mod=mod,
+    #                 colorMod=colorMod,
+    #                 clean=clean)
 
     # self + other
     def __add__(self, other):
@@ -325,6 +334,21 @@ class _TTkColor_mod(_TTkColor):
         bg:  str = other._bg or self._bg
         mod: str = self._mod + otherMod
         colorMod = other._colorMod or self._colorMod
+        return _TTkColor_mod(
+                    fg=fg, bg=bg, mod=mod,
+                    colorMod=colorMod,
+                    clean=clean)
+
+    # self + other
+    def __radd__(self, other):
+        # TTkLog.debug("__add__")
+        if self._clean:
+            return self
+        clean = other._clean
+        fg:  str = self._fg or other._fg
+        bg:  str = self._bg or other._bg
+        mod: str = self._mod
+        colorMod = self._colorMod or other._colorMod
         return _TTkColor_mod(
                     fg=fg, bg=bg, mod=mod,
                     colorMod=colorMod,
@@ -383,23 +407,23 @@ class _TTkColor_mod_link(_TTkColor_mod):
                 ( self._link == (other._link if isinstance(other,_TTkColor_mod_link) else 0))
             )
 
-    # self | other
-    def __or__(self, other):
-        # TTkLog.debug("__add__")
-        if other._clean:
-            return other
-        otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
-        otherLink = other._link if isinstance(other,_TTkColor_mod_link) else ''
-        clean = self._clean
-        fg:  str = self._fg or other._fg
-        bg:  str = self._bg or other._bg
-        mod: str = self._mod + otherMod
-        link:str = self._link or otherLink
-        colorMod = self._colorMod or other._colorMod
-        return _TTkColor_mod_link(
-                    fg=fg, bg=bg, mod=mod,
-                    colorMod=colorMod, link=link,
-                    clean=clean)
+    # # self | other
+    # def __or__(self, other):
+    #     # TTkLog.debug("__add__")
+    #     if other._clean:
+    #         return other
+    #     otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
+    #     otherLink = other._link if isinstance(other,_TTkColor_mod_link) else ''
+    #     clean = self._clean
+    #     fg:  str = self._fg or other._fg
+    #     bg:  str = self._bg or other._bg
+    #     mod: str = self._mod + otherMod
+    #     link:str = self._link or otherLink
+    #     colorMod = self._colorMod or other._colorMod
+    #     return _TTkColor_mod_link(
+    #                 fg=fg, bg=bg, mod=mod,
+    #                 colorMod=colorMod, link=link,
+    #                 clean=clean)
 
     # self + other
     def __add__(self, other):
@@ -414,6 +438,22 @@ class _TTkColor_mod_link(_TTkColor_mod):
         mod: str = self._mod + otherMod
         link:str = self._link or otherLink
         colorMod = other._colorMod or self._colorMod
+        return _TTkColor_mod_link(
+                    fg=fg, bg=bg, mod=mod,
+                    colorMod=colorMod, link=link,
+                    clean=clean)
+
+    def __radd__(self, other):
+        # TTkLog.debug("__add__")
+        if self._clean:
+            return self
+        otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
+        clean = self._clean
+        fg:  str = self._fg or other._fg
+        bg:  str = self._bg or other._bg
+        mod: str = self._mod + otherMod
+        link:str = self._link
+        colorMod = self._colorMod or other._colorMod
         return _TTkColor_mod_link(
                     fg=fg, bg=bg, mod=mod,
                     colorMod=colorMod, link=link,
@@ -451,12 +491,12 @@ class _TTkColor_mod_link(_TTkColor_mod):
         return ret
 
 
-class _TTkColorModifier():
+class TTkColorModifier():
     def __init__(self, *args, **kwargs) -> None: pass
     def setParam(self, *args, **kwargs) -> None: pass
     def copy(self): return self
 
-class TTkColorGradient(_TTkColorModifier):
+class TTkColorGradient(TTkColorModifier):
     '''TTkColorGradient'''
 
     __slots__ = ('_fgincrement', '_bgincrement', '_val', '_step', '_buffer', '_orientation')
@@ -508,7 +548,7 @@ class TTkColorGradient(_TTkColorModifier):
     def copy(self):
         return self
 
-class TTkLinearGradient(_TTkColorModifier):
+class TTkLinearGradient(TTkColorModifier):
     '''TTkLinearGradient'''
 
     __slots__ = (
@@ -733,7 +773,7 @@ class TTkColor(_TTkColor):
             return _TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
 
     @staticmethod
-    def fgbg(fg:str='', bg:str='', link:str='', modifier:_TTkColorModifier=None):
+    def fgbg(fg:str='', bg:str='', link:str='', modifier:TTkColorModifier=None):
         ''' Helper to generate a Background color
 
         Example:
@@ -758,7 +798,7 @@ class TTkColor(_TTkColor):
         else:
             return _TTkColor(fg=TTkColor.hexToRGB(fg), bg=TTkColor.hexToRGB(bg), colorMod=modifier)
 
-class TTkAlternateColor(_TTkColorModifier):
+class TTkAlternateColor(TTkColorModifier):
     '''TTkAlternateColor'''
 
     __slots__ = ('_alternateColor')

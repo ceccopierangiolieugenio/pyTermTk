@@ -478,17 +478,17 @@ class TTkString():
             while pos := self._text.index(match, start) if match in self._text[start:] else None:
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
-                    ret._colors[i] |= color
+                    ret._colors[i] += color
         elif posFrom == posTo == None:
-            ret._colors = [c|color for c in self._colors]
+            ret._colors = [c+color for c in self._colors]
         elif posFrom < posTo:
             ret._colors = self._colors.copy()
             posFrom = min(len(self._text),posFrom)
             posTo   = min(len(self._text),posTo)
             for i in range(posFrom, posTo):
-                ret._colors[i] |= color
+                ret._colors[i] += color
         else:
-            ret._colors = [c|color for c in self._colors]
+            ret._colors = [c+color for c in self._colors]
         return ret
 
 

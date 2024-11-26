@@ -323,21 +323,18 @@ class TTkImageNew(ttk.TTkWidget):
         s = (0,0,w,h)
         for y,(rowd,rowc) in enumerate(zip(self._canvasImage._data[:h],self._canvasImage._colors[:h])):
             for x,(gl,c) in enumerate(zip(rowd[:w],rowc[:w])):
-                nfg = c.foreground()
-                nbg = c.background()
-                if gl == ' ' and not nbg:
+                if gl == ' ' and not c.hasBackground():
                     continue
                 elif gl == ' ':
                     canvas._data[  y][x] = ' '
-                    canvas._colors[y][x] = nbg
-                elif not nbg:
+                    canvas._colors[y][x] = c.background()
+                elif not c.hasBackground():
                     nbg = canvas._colors[y][x].background()
                     canvas._data[  y][x] = gl
-                    canvas._colors[y][x] = nbg + nfg if nbg else nfg
+                    canvas._colors[y][x] = c.foreground() + nbg
                 else:
                     canvas._data[  y][x] = gl
                     canvas._colors[y][x] = c
-        # canvas.paintCanvas(self._canvasImage,s,s,s)
 
 class ImagePreview(TTkImageNew):
     __slots__ = ('_trColor1','_trColor2')

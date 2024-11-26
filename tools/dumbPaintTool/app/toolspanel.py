@@ -212,8 +212,8 @@ class ToolsPanel(ttk.TTkVBoxLayout):
                 ttk.TTkString("Glyph: '") +
                 ttk.TTkString(glyph,color) +
                 ttk.TTkString("'"))
-        self._cb_p_fg.setChecked(None != color.foreground())
-        self._cb_p_bg.setChecked(None != color.background())
+        self._cb_p_fg.setChecked(color.hasForeground())
+        self._cb_p_bg.setChecked(color.hasBackground())
 
     @ttk.pyTTkSlot(ttk.TTkColor)
     def setColor(self, color:ttk.TTkColor):

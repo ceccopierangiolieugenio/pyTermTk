@@ -1588,14 +1588,14 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _sa = self._selected[_row  ][_col  ]
                 _sb = self._selected[_row+1][_col  ]
                 if (showHS and showVS) and _sa and not _sb:
-                    _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
+                    _bgA:TTkColor = cellColor.background()
                     _bgB:TTkColor = TTkColor.RST
                 elif (showHS and showVS) and not _sa and _sb:
                     _bgA:TTkColor = TTkColor.RST
-                    _bgB:TTkColor = c if (c:=_belowColor.background()) else TTkColor.RST
+                    _bgB:TTkColor = _belowColor.background()
                 else:
-                    _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
-                    _bgB:TTkColor = c if (c:=_belowColor.background()) else TTkColor.RST
+                    _bgA:TTkColor = cellColor.background()
+                    _bgB:TTkColor = _belowColor.background()
 
                 if _bgA == _bgB:
                     _char='─'
@@ -1610,13 +1610,12 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _char='▀'
                     _color=_bgB + _bgA.invertFgBg()
             else:
-                _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
                 if self._selected[_row  ][_col  ]:
                     _char='▀'
                     _color=selectedColorInv
-                elif _bgA:=cellColor.background():
+                elif cellColor.hasBackground():
                     _char='▀'
-                    _color=_bgA.invertFgBg()
+                    _color=cellColor.background().invertFgBg()
                 else:
                     _char='─'
                     _color=lineColor
@@ -1631,14 +1630,14 @@ class TTkTableWidget(TTkAbstractScrollView):
                 _sa = self._selected[_row  ][_col  ]
                 _sc = self._selected[_row  ][_col+1]
                 if (showHS and showVS) and _sa and not _sc:
-                    _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
+                    _bgA:TTkColor = cellColor.background()
                     _bgC:TTkColor = TTkColor.RST
                 elif (showHS and showVS) and not _sa and _sc:
                     _bgA:TTkColor = TTkColor.RST
-                    _bgC:TTkColor = c if (c:=_rightColor.background()) else TTkColor.RST
+                    _bgC:TTkColor = _rightColor.background()
                 else:
-                    _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
-                    _bgC:TTkColor = c if (c:=_rightColor.background()) else TTkColor.RST
+                    _bgA:TTkColor = cellColor.background()
+                    _bgC:TTkColor = _rightColor.background()
 
                 if _bgA == _bgC:
                     _char='│'
@@ -1653,13 +1652,12 @@ class TTkTableWidget(TTkAbstractScrollView):
                     _char='▌'
                     _color=_bgC + _bgA.invertFgBg()
             else:
-                _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
                 if self._selected[_row  ][_col  ]:
                     _char='▌'
                     _color=selectedColorInv
-                elif _bgA:=cellColor.background():
+                elif cellColor.hasBackground():
                     _char=' '
-                    _color=_bgA
+                    _color=cellColor.background()
                 else:
                     _char='│'
                     _color=lineColor
@@ -1688,8 +1686,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     0x08 * self._selected[_row+1][_col+1] )
                 if chId==0x00 or chId==0x0F:
                     _belowColor:TTkColor = _colorCache2d[_row+1-rowa][_col-cola]
-                    _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
-                    _bgB:TTkColor = c if (c:=_belowColor.background()) else TTkColor.RST
+                    _bgA:TTkColor = cellColor.background()
+                    _bgB:TTkColor = _belowColor.background()
 
                     if _bgA == _bgB:
                         _color = lineColor if _bgA == TTkColor.RST else _bgA + lineColor
@@ -1714,9 +1712,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if chId:
                     _char = _charList[chId]
                     _color=selectedColorInv
-                elif _c:=cellColor.background():
+                elif cellColor.hasBackground():
                     _char='▀'
-                    _color = _c.invertFgBg()
+                    _color = cellColor.background().invertFgBg()
                 else:
                     _char = '┴'
                     _color = lineColor
@@ -1725,8 +1723,8 @@ class TTkTableWidget(TTkAbstractScrollView):
                     (0x01) * self._selected[row  ][col  ] +
                     (0x04) * self._selected[row+1][col  ] )
                 _belowColor:TTkColor = _colorCache2d[_row+1-rowa][_col-cola]
-                _bgA:TTkColor = c if (c:=cellColor.background())   else TTkColor.RST
-                _bgB:TTkColor = c if (c:=_belowColor.background()) else TTkColor.RST
+                _bgA:TTkColor = cellColor.background()
+                _bgB:TTkColor = _belowColor.background()
 
                 if chId:
                     _char = _charList[chId]
@@ -1749,9 +1747,9 @@ class TTkTableWidget(TTkAbstractScrollView):
                 if chId:
                     _char = _charList[chId]
                     _color=selectedColorInv
-                elif _c:=cellColor.background():
+                elif cellColor.hasBackground():
                     _char='▀'
-                    _color = _c.invertFgBg()
+                    _color = cellColor.background().invertFgBg()
                 else:
                     _char = '┘'
                     _color = lineColor

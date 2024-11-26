@@ -200,25 +200,25 @@ class PaintArea(ttk.TTkAbstractScrollView):
         if self._tool & ToolType.PICKGLYPH:
             if mp:
                 mpx,mpy = mp
-                color = None
+                color = ttk.TTkColor.RST
                 glyph = None
                 for lm in glbls.layers.layers():
                     lmx,lmy = lm.pos()
                     if lm.isOpaque(mpx-lmx-dx,mpy-lmy-dy):
                         _gl, _co = lm.glyphColorAt(mpx-lmx-dx,mpy-lmy-dy)
-                        if not glyph and not color:
+                        if not glyph and color == ttk.TTkColor.RST:
                             glyph = _gl
                             color = _co
-                        elif not color.background():
-                            if _co.background():
-                                if _fg:=color.foreground():
-                                    color = _fg + _co.background()
+                        elif color.hasBackground():
+                            if _co.hasBackground():
+                                if color.hasForeground():
+                                    color = color.foreground() + _co.background()
                                 else:
                                     color = _co.background()
                         else:
                             break
                 glbls.brush.setColor(color)
-                glbls.brush.setGlyph(glyph)
+                glbls.brush.setGlyph(glyph if glyph else ' ')
             if mr:
                 glbls.brush.setToolType(self._tool & ~ToolType.PICKGLYPH)
                 self._mousePress   = None

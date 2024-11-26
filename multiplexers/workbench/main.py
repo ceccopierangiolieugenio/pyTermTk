@@ -67,7 +67,7 @@ class WorkBench(ttk.TTkContainer):
                 data = ttk.TTkUtil.base64_deflate_2_obj(f.read())
                 _win = ttk.TTkWindow(pos=(10,0), size=(100,30),title=f"Guru Meditation", layout=ttk.TTkGridLayout())
                 _sa = ttk.TTkScrollArea(parent=_win)
-                ttk.TTkImage(parent=_sa.viewport(), data=data)
+                ttk.TTkImage(parent=_sa.viewport(), data=data, rasteriser=ttk.TTkImage.QUADBLOCK)
                 self._backLayout.addWidget(_win)
 
     def mousePressEvent(self, evt):

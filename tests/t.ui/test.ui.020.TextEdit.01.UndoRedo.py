@@ -76,19 +76,19 @@ def demoTextEdit(root=None, document=None):
     fontLayout.addWidget(superSimpleHorizontalLine(),0,10,2,1)
 
     @ttk.pyTTkSlot(ttk.TTkColor)
-    def _currentColorChangedCB(format):
-        if fg := format.foreground():
+    def _currentColorChangedCB(format:ttk.TTkColor):
+        if format.hasForeground():
             cb_fg.setCheckState(ttk.TTkK.Checked)
             btn_fgColor.setEnabled()
-            btn_fgColor.setColor(fg.invertFgBg())
+            btn_fgColor.setColor(format.foreground())
         else:
             cb_fg.setCheckState(ttk.TTkK.Unchecked)
             btn_fgColor.setDisabled()
 
-        if bg := format.background():
+        if format.hasBackground():
             cb_bg.setCheckState(ttk.TTkK.Checked)
             btn_bgColor.setEnabled()
-            btn_bgColor.setColor(bg)
+            btn_bgColor.setColor(format.background())
         else:
             cb_bg.setCheckState(ttk.TTkK.Unchecked)
             btn_bgColor.setDisabled()

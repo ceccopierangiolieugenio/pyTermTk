@@ -161,7 +161,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         firstLine: bool
 
     def __init__(self, *,
-                 header=[],
+                 header=None,
                  sortingEnabled=True,
                  **kwargs) -> None:
         '''
@@ -181,7 +181,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._selected = None
         self._selectedId = None
         self._separatorSelected = None
-        self._header = header
+        self._header = header if header else []
         self._columnsPos = []
         self._cache = []
         self._sortingEnabled=sortingEnabled

@@ -148,7 +148,7 @@ class CanvasLayer():
         data = self._data
         colors = self._colors
         if 0<=x<w and 0<=y<h:
-            return data[oy+y][ox+x] != ' ' or colors[oy+y][ox+x].background()
+            return data[oy+y][ox+x] != ' ' or colors[oy+y][ox+x].hasBackground()
         return False
 
     def move(self,x,y):
@@ -251,7 +251,7 @@ class CanvasLayer():
             xa,xb,ya,yb = 0x10000,0,0x10000,0
             for y,(drow,crow) in enumerate(zip(data,colors)):
                 for x,(d,c) in enumerate(zip(drow,crow)):
-                    if d != ' ' or c.background():
+                    if d != ' ' or c.hasBackground():
                         xa,xb = min(x,xa),max(x,xb)
                         ya,yb = min(y,ya),max(y,yb)
             if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
@@ -278,8 +278,8 @@ class CanvasLayer():
             palette = outData['palette'] = []
             for row in colors:
                 for c in row:
-                    fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                    bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                    fg = f"{c.getHex(ttk.TTkK.ColorType.Foreground)}" if c.hasForeground() else None
+                    bg = f"{c.getHex(ttk.TTkK.ColorType.Background)}" if c.hasBackground() else None
                     if (pc:=(fg,bg)) not in palette:
                         palette.append(pc)
 
@@ -296,8 +296,8 @@ class CanvasLayer():
         for row in colors[hslice]:
             outData['colors'].append([])
             for c in row[wslice]:
-                fg = f"{c.getHex(ttk.TTkK.Foreground)}" if c.foreground() else None
-                bg = f"{c.getHex(ttk.TTkK.Background)}" if c.background() else None
+                fg = f"{c.getHex(ttk.TTkK.ColorType.Foreground)}" if c.hasForeground() else None
+                bg = f"{c.getHex(ttk.TTkK.ColorType.Background)}" if c.hasBackground() else None
                 if palette:
                     outData['colors'][-1].append(palette.index((fg,bg)))
                 else:
@@ -385,7 +385,7 @@ class CanvasLayer():
         xa,xb,ya,yb = 0x10000,0,0x10000,0
         for y,(drow,crow) in enumerate(zip(tmpd,tmpc)):
             for x,(d,c) in enumerate(zip(drow,crow)):
-                if d != ' ' or c.background():
+                if d != ' ' or c.hasBackground():
                     xa,xb = min(x,xa),max(x,xb)
                     ya,yb = min(y,ya),max(y,yb)
         if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
@@ -412,7 +412,7 @@ class CanvasLayer():
         xa,xb,ya,yb = 0x10000,0,0x10000,0
         for y,(drow,crow) in enumerate(zip(tmpd,tmpc)):
             for x,(d,c) in enumerate(zip(drow,crow)):
-                if d != ' ' or c.background():
+                if d != ' ' or c.hasBackground():
                     xa,xb = min(x,xa),max(x,xb)
                     ya,yb = min(y,ya),max(y,yb)
         if (xa,xb,ya,yb) == (0x10000,0,0x10000,0):
@@ -493,18 +493,15 @@ class CanvasLayer():
                 colors[oy+y][ox+x] = color
             else:
                 glyph = data[  oy+y][ox+x]
-                ofg = colors[oy+y][ox+x].foreground()
-                obg = colors[oy+y][ox+x].background()
-                nfg = color.foreground()
-                nbg = color.background()
+                oc = colors[oy+y][ox+x]
+                nc = color
                 if glyph==' ':
-                    if obg:
-                        colors[oy+y][ox+x] = nbg if nbg else ttk.TTkColor.RST
+                    if oc.hasBackground():
+                        colors[oy+y][ox+x] = oc.background()
                 else:
-                    fg = nfg if nfg         else ofg if ofg else ttk.TTkColor.RST
-                    bg = nbg if nbg and obg else obg if obg else fg
+                    fg = nc.foreground() if nc.hasForeground()                        else oc.foreground()
+                    bg = nc.background() if nc.hasBackground() and oc.hasBackground() else oc.background() if oc.hasBackground() else fg
                     color = fg+bg
-                    color = color if color else ttk.TTkColor.RST
                     colors[oy+y][ox+x] = color
             return True
         return False
@@ -531,7 +528,7 @@ class CanvasLayer():
 
         for _y,(darow,carow) in enumerate(zip(darea,carea),oy+y):
             for _x,(da,ca)   in enumerate(zip(darow,carow),ox+x):
-                if 0<=_x<w and 0<=_y<h and ( da!=' ' or ca.background()):
+                if 0<=_x<w and 0<=_y<h and ( da!=' ' or ca.hasBackground()):
                     if not transparent or (da==' ' and ca._bg):
                         data[_y][_x]   = da
                         colors[_y][_x] = ca
