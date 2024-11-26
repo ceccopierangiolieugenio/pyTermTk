@@ -41,6 +41,8 @@ class TTkTimer(threading.Thread):
         TTkHelper.quitEvent.connect(self.quit)
 
     def quit(self):
+        TTkHelper.quitEvent.disconnect(self.quit)
+        self.timeout.clear()
         self._quit.set()
         self._timer.set()
         self._start.set()

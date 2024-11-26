@@ -66,11 +66,11 @@ class TTkImage(TTkWidget):
 
     __slots__ = ('_data', '_rasterType', '_canvasImage')
     def __init__(self, *,
-                 data=[],
+                 data=None,
                  rasteriser=HALFBLOCK,
                  **kwargs) -> None:
         TTkWidget.__init__(self, **kwargs)
-        self._data = data
+        self._data = data if data else []
         self._rasterType = rasteriser
         self._canvasImage = TTkCanvas()
         if self._data:

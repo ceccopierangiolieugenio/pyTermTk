@@ -67,7 +67,7 @@ class TTkComboBox(TTkContainer):
         #signals
         'currentIndexChanged', 'currentTextChanged', 'editTextChanged')
     def __init__(self, *,
-                 list:list = [],
+                 list:list = None,
                  index:int = -1,
                  insertPolicy:TTkK.InsertPolicy = TTkK.InsertAtBottom,
                  textAlign:TTkK.Alignment = TTkK.CENTER_ALIGN,
@@ -94,7 +94,7 @@ class TTkComboBox(TTkContainer):
         super().__init__(**kwargs)
         # self.checked = pyTTkSignal()
         self._lineEdit = TTkLineEdit(parent=self)
-        self._list = list
+        self._list =  list if list else []
         self._insertPolicy = insertPolicy
         self._lineEdit.returnPressed.connect(self._lineEditChanged)
         self._textAlign = textAlign

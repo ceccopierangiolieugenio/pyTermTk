@@ -55,9 +55,9 @@ class TTkTableModelList(TTkAbstractTableModel):
     __slots__ = ('_data','_dataOriginal', '_hheader', '_vheader')
 
     def __init__(self, *,
-                 data:list[list[object]]=[],
-                 header:list[str]=[],
-                 indexes:list[str]=[]) -> None:
+                 data:list[list[object]]=None,
+                 header:list[str]=None,
+                 indexes:list[str]=None) -> None:
         '''
         :param data: the 2D List model for the view to present.
         :type data: list[list]
@@ -69,8 +69,8 @@ class TTkTableModelList(TTkAbstractTableModel):
         :type indexes: list[str], optional
         '''
         self._data = self._dataOriginal = data if data else [['']]
-        self._hheader = header
-        self._vheader = indexes
+        self._hheader = header  if header  else []
+        self._vheader = indexes if indexes else []
         super().__init__()
 
     def modelList(self) -> list[list]:

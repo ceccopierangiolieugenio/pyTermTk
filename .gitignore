@@ -20,6 +20,7 @@ sandbox
 !tests/sandbox
 node_modules
 Varie
+stacktrace.txt
 
 # VizTracker default file
 result.json

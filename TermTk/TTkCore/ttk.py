@@ -185,6 +185,7 @@ class TTk(TTkContainer):
             self._mainLoop()
         finally:
             if platform.system() != 'Emscripten':
+                TTkHelper.quitEvent.emit()
                 if self._timer:
                     self._timer.timeout.disconnect(self._time_event)
                     self._paintEvent.set()

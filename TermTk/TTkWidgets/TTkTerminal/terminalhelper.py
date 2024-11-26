@@ -176,6 +176,7 @@ class TTkTerminalHelper():
 
     @pyTTkSlot()
     def _quit(self):
+        TTkHelper.quitEvent.disconnect(self._quit)
         if pid := self._pid:
             try:
                 os.kill(pid,0)

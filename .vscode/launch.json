@@ -16,10 +16,10 @@
             "name": "Python: Test Player",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "tests/pytest/test_001_demo.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["-p", "tmp/test.input.bin"]
+            "args": ["-p", "tmp/test.input.001.bin"]
         },{
             "name": "Python: TTk Designer",
             "type": "debugpy",
