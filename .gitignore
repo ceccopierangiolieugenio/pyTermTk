@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # other
+pygments
 pyTermTk-Docs
 tests/test.dummy.py
 *.swp
