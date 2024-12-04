@@ -272,8 +272,7 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def addItems(self, items):
         '''addItems'''
-        for item in items:
-            self.addItem(item)
+        self.addItemsAt(items=items, pos=len(self._items))
 
     def _placeItems(self):
         minw = self.width()
@@ -292,6 +291,7 @@ class TTkListWidget(TTkAbstractScrollView):
 
     def addItemsAt(self, items, pos):
         '''addItemsAt'''
+        items = [TTkAbstractListItem(text=i) if isinstance(i, str) or isinstance(i, TTkString) else i for i in items]
         for item in items:
             if not issubclass(type(item),TTkAbstractListItem):
                 TTkLog.error(f"{item=} is not an TTkAbstractListItem")

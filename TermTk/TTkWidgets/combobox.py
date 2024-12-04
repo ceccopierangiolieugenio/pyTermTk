@@ -336,9 +336,8 @@ class TTkComboBox(TTkContainer):
         self._popupFrame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
         TTkHelper.overlay(self, self._popupFrame, 0, 0)
         listw = TTkList(parent=self._popupFrame)
-        TTkLog.debug(f"{self._list}")
-        for item in self._list:
-            listw.addItem(item)
+        # TTkLog.debug(f"{self._list}")
+        listw.addItems(self._list)
         if self._id != -1:
             listw.setCurrentRow(self._id)
         listw.textClicked.connect(self._callback)
