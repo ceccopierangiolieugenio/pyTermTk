@@ -22,7 +22,7 @@
 
 __all__ = ['TextDocumentHighlight']
 
-from threading import Lock
+# from threading import Lock
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
@@ -30,12 +30,10 @@ from TermTk.TTkGui import TTkTextDocument
 
 class TextDocumentHighlight(TTkTextDocument):
     __slots__ = (
-        '_highlightDocMutex',
         #Signals
         'highlightUpdate')
     def __init__(self, *args, **kwargs):
         self.highlightUpdate = pyTTkSignal()
-        self._highlightDocMutex = Lock()
         super().__init__(*args, **kwargs)
         TTkLog.warn("Pygments not found!!!")
 
