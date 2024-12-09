@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import array, fcntl, struct, termios, os, sys
+__all__ = ['TextDocumentHighlight']
 
-KDGKBMODE = 0x4B44
+from TermTk.TTkCore.log import TTkLog
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkGui import TTkTextDocument
 
-print(f"{sys.stdin=}")
+class TextDocumentHighlight(TTkTextDocument):
+    __slots__ = (
+        #Signals
+        'highlightUpdate')
+    def __init__(self, *args, **kwargs):
+        self.highlightUpdate = pyTTkSignal()
+        super().__init__(*args, **kwargs)
+        TTkLog.warn("Pygments not found!!!")
 
-print(f"{fcntl.ioctl(0, termios.TIOCGPGRP, '  ')}")
+    @staticmethod
+    def getStyles() -> list[str]:
+        return []
 
-print(f"{fcntl.ioctl(0, KDGKBMODE)=}")
-# fcntl.ioctl(0, termios.TIOCGPGRP, "  ")
+    @staticmethod
+    def getLexers() -> list[str]:
+        return []
+
+    @pyTTkSlot(str)
+    def setStyle(self, alias:str) -> None:
+        pass
+
+    @pyTTkSlot(str)
+    def setLexer(self, alias:str) -> None:
+        pass
+
+    @pyTTkSlot(str)
+    def guessLexerFromFilename(self, fileName:str) -> None:
+        pass
+
