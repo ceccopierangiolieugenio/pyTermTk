@@ -49,6 +49,10 @@ __check(){
             -e "TTkTerm/input_thread.py:from ..drivers import TTkInputDriver" \
             -e "TTkTerm/input.py:from .input_thread import *" |
         grep -v \
+            -e "TTkGui/__init__.py:import importlib.util" \
+            -e "TTkGui/textdocument.py:from threading import Lock" \
+            -e "TTkGui/textdocument_highlight_pygments.py:from pygments" |
+        grep -v \
             -e "TTkTerm/term.py:from ..drivers import *" \
             -e "drivers/unix_thread.py:import sys, os" \
             -e "drivers/unix_thread.py:from select import select" \
