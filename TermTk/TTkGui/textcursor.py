@@ -348,6 +348,7 @@ class TTkTextCursor():
     def replaceText(self, text:TTkString, moveCursor:bool=False) -> None:
         # if there is no selection, just select the next n chars till the end of the line
         # the newline is not replaced
+        self._document._acquire()
         for p in self._properties:
             if not p.hasSelection():
                 line = p.position.line
@@ -358,9 +359,11 @@ class TTkTextCursor():
                     pos = self._document._dataLines[line].nextPos(pos)
                 pos = min(size,pos)
                 p.anchor.set(line,pos)
+        self._document._release()
         return self.insertText(text, moveCursor)
 
     def insertText(self, text:TTkString, moveCursor:bool=False) -> None:
+        self._document._acquire()
         _lineFirst = -1
         if self.hasSelection():
             _lineFirst, _lineRem, _lineAdd = self._removeSelectedText()
@@ -446,6 +449,7 @@ class TTkTextCursor():
                 pp.anchor.line += diffLine
         self._autoChanged = True
         self._document.setChanged(True)
+        self._document._release()
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(lineFirst,  lineRem,  lineAdd)
         self._autoChanged = False
@@ -552,14 +556,17 @@ class TTkTextCursor():
 
     def removeSelectedText(self) -> None:
         if not self.hasSelection(): return
+        self._document._acquire()
         a,b,c = self._removeSelectedText()
         self._autoChanged = True
         self._document.setChanged(True)
+        self._document._release()
         self._document.contentsChanged.emit()
         self._document.contentsChange.emit(a,b,c)
         self._autoChanged = False
 
     def applyColor(self, color:TTkColor) -> None:
+        self._document._acquire()
         for p in self._properties:
             selSt = p.selectionStart()
             selEn = p.selectionEnd()
@@ -570,6 +577,7 @@ class TTkTextCursor():
                 self._document._dataLines[l] = line.setColor(color=color, posFrom=pf, posTo=pt)
         self._autoChanged = True
         self._document.setChanged(True)
+        self._document._acquire()
         self._document.contentsChanged.emit()
         # self._document.contentsChange.emit(0,0,0)
         self._autoChanged = True

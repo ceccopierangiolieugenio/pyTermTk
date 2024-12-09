@@ -22,6 +22,8 @@
 
 __all__ = ['TTkTextDocument']
 
+from threading import Lock
+
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
@@ -124,6 +126,7 @@ class TTkTextDocument():
         '_snap', '_snapChanged',
         '_lastSnap', '_lastCursor',
         '_backgroundColor',
+        '_docMutex',
         # Signals
         'contentsChange', 'contentsChanged',
         'formatChanged',
@@ -133,6 +136,7 @@ class TTkTextDocument():
         )
     def __init__(self, *, text:TTkString=" ") -> None:
         from TermTk.TTkGui.textcursor import TTkTextCursor
+        self._docMutex = Lock()
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
@@ -174,6 +178,12 @@ class TTkTextDocument():
     # y2 = l2+r2 + (r1-a1)
     # z1 = l1+a1 + (a2-r2)
     # z2 = l2+a2
+
+    def _acquire(self) -> None:
+        self._docMutex.acquire()
+
+    def _release(self) -> None:
+        self._docMutex.release()
 
     @staticmethod
     def _mergeChangesSlices(ch1,ch2):
@@ -226,10 +236,12 @@ class TTkTextDocument():
         remLines = len(self._dataLines)
         if not isinstance(text, str) and not isinstance(text,TTkString):
             text=str(text)
+        self._acquire()
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False
         self._lastSnap = self._dataLines.copy()
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
+        self._release()
         self.contentsChanged.emit()
         self.contentsChange.emit(0,remLines,len(self._dataLines))
         self._snapChanged = None
@@ -237,11 +249,13 @@ class TTkTextDocument():
     def appendText(self, text):
         if type(text) == str:
             text = TTkString() + text
+        self._acquire()
         oldLines = len(self._dataLines)
         self._dataLines += text.split('\n')
         self._modified = False
         self._lastSnap = self._dataLines.copy()
         self._snap = TTkTextDocument._snapshot(self._lastCursor, None, None)
+        self._release()
         self.contentsChanged.emit()
         self.contentsChange.emit(oldLines,0,len(self._dataLines)-oldLines)
         self._snapChanged = None
@@ -297,10 +311,12 @@ class TTkTextDocument():
             (not next and not self._snap._prevDiff) ):
             return None
 
+        self._acquire()
         if next:
             self._snap = self._snap.getNextSnap(self._dataLines)
         else:
             self._snap = self._snap.getPrevSnap(self._dataLines)
+        self._release()
 
         self._lastSnap = self._dataLines.copy()
         self._lastCursor = self._snap._cursor.copy()

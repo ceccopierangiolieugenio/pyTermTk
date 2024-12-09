@@ -22,8 +22,6 @@
 
 __all__ = ['TextDocumentHighlight']
 
-# from threading import Lock
-
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkGui import TTkTextDocument

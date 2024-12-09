@@ -22,8 +22,6 @@
 
 __all__ = ['TextDocumentHighlight']
 
-from threading import Lock
-
 from pygments import highlight
 from pygments.util import ClassNotFound
 from pygments.styles import get_all_styles
@@ -50,8 +48,9 @@ class _TTkFormatter(Formatter):
             self.error = None
             self.multiline = False
 
-    __slots__ = ('_dl', '_blockNum', '_highlightStyles')
+    __slots__ = ('_dl', '_blockNum', '_highlightStyles', '_defaultColor')
     def __init__(self, *args, **kwargs):
+        self._defaultColor = TTkColor.RST
         super().__init__(*args, **kwargs)
         self._highlightStyles = {}
         self._blockNum = 1
@@ -82,6 +81,9 @@ class _TTkFormatter(Formatter):
     def setDl(self,dl):
         self._dl = dl
 
+    def setDefaultColor(self, color:TTkColor) -> None:
+        self._defaultColor = color
+
     def format(self, tokensource, _):
         multiline = False
         multilineId = 0
@@ -95,7 +97,9 @@ class _TTkFormatter(Formatter):
                 ttype = ttype.parent
             # TTkLog.debug (f"{ttype=}")
             # TTkLog.debug (f"{value=}")
-            color = self._highlightStyles[ttype]
+            color:TTkColor = self._highlightStyles[ttype]
+            if not color.hasForeground():
+               color += self._defaultColor
 
             values = value.split('\n')
 
@@ -124,16 +128,16 @@ class TextDocumentHighlight(TTkTextDocument):
     _linesRefreshed:int = 30
     __slots__ = (
         '_timerRefresh',
-        '_highlightDocMutex',
         '_blocks', '_changedContent', '_refreshContent',
         '_lexer', '_formatter',
+        '_defaultForegroundColor',
         #Signals
         'highlightUpdate')
     def __init__(self, **kwargs):
         self.highlightUpdate = pyTTkSignal()
-        self._highlightDocMutex = Lock()
         self._lexer = None
         self._blocks = []
+        self._defaultForegroundColor = TTkColor.RST
         # self._formatter = _TTkFormatter(style='dracula')
         self._formatter = _TTkFormatter(style='gruvbox-dark')
         super().__init__(**kwargs)
@@ -141,7 +145,7 @@ class TextDocumentHighlight(TTkTextDocument):
         self._timerRefresh.timeout.connect(self._refreshEvent)
         self._changedContent = (0,0,len(self._dataLines))
         self._refreshContent = (0,TextDocumentHighlight._linesRefreshed)
-        self.contentsChange.connect(lambda a,b,c: TTkLog.debug(f"{a=} {b=} {c=}"))
+        # self.contentsChange.connect(lambda a,b,c: TTkLog.debug(f"{a=} {b=} {c=}"))
         self.contentsChange.connect(self._saveChangedContent)
 
         try:
@@ -167,6 +171,16 @@ class TextDocumentHighlight(TTkTextDocument):
             self._backgroundColor = TTkColor.bg(color)
         else:
             self._backgroundColor = TTkColor.RST
+
+        if self._backgroundColor == TTkColor.RST:
+            self._defaultForegroundColor = TTkColor.RST
+        else:
+            r,g,b = self._backgroundColor.bgToRGB()
+            if r+g+b < 127*3:
+                self._defaultForegroundColor = TTkColor.WHITE
+            else:
+                self._defaultForegroundColor = TTkColor.BLACK
+
         TTkLog.debug(f"{color=} {alias=} {formatter.style}")
         self._changedContent = (0,0,len(self._dataLines))
         self._refreshContent = (0,TextDocumentHighlight._linesRefreshed)
@@ -206,7 +220,7 @@ class TextDocumentHighlight(TTkTextDocument):
     @pyTTkSlot()
     def _refreshEvent(self):
         if not self._refreshContent: return
-        self._highlightDocMutex.acquire()
+        self._acquire()
 
         ra,rb = self._refreshContent
 
@@ -251,6 +265,7 @@ class TextDocumentHighlight(TTkTextDocument):
 
         kfd = _TTkFormatter.Data(tsl1, block)
         self._formatter.setDl(kfd)
+        self._formatter.setDefaultColor(self._defaultForegroundColor)
 
         rawl = [l._text for l in tsl[offset:]]
         rawt = '\n'.join(rawl)
@@ -283,6 +298,6 @@ class TextDocumentHighlight(TTkTextDocument):
         else:
             TTkLog.debug(f"Refresh {self._lexer.name} DONE!!!")
 
-        self._highlightDocMutex.release()
+        self._release()
         self.highlightUpdate.emit()
         self.formatChanged.emit()
