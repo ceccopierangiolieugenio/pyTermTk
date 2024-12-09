@@ -25,58 +25,59 @@ __all__ = ['TTkTextDocument']
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.color import TTkColor
 
 class TTkTextDocument():
-    '''
-        Undo,Redo Logic
-
-        Old:
-
-        ::
-
-            _snapshotId: = last saved/undo/redo state
-                                   3 = doc4
-            _snapshots:
-                [doc1, doc2, doc3, doc4, doc5, doc6, . . .]
-
-        New:
-
-        ::
-
-            SnapshotId:
-                              2
-            Snapshots:                  _lastSnap     _dataLines (unstaged)
-                ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕         ╒═══╕
-                │ 0 │ │ 1 │ │ 2 │ │ 3 │ │ 4 │         │ 5 │
-                └───┘ └───┘ └───┘ └───┘ └───┘         └───┘
-            Cursors:
-                 c0,   c1,   c2,   c3,   c4 = _lastCursor
-            Diffs:
-                [   d01,  d12,  d23,  d34   ] = Forward  Diffs
-                [   d10,  d21,  d32,  d43   ] = Backward Diffs
-            Slices: = common txt slices between snapshots
-                [   s01,  s12,  s23,  s34   ]
-
-        ::
-
-            Data Structure
-                        ╔═══════════════╗                         ╔═══════════════╗
-                        ║   Snapshot B  ║          ┌─────────────>║   Snapshot C  ║
-                        ╟───────────────╢          │              ╟───────────────╢
-                        ║ _nextDiff     ║──────┐   │              ║ _nextDiff     ║───> Next snapshot
-                    ┌───║ _prevDiff     ║      │   │          ┌───║ _prevDiff     ║  or Null if at the end
-                    │   ╚═══════════════╝      │   │          │   ╚═══════════════╝
-                    V              A           V   │          V
-                ╔═══════════════╗  │  ╔═══════════════╗   ╔═══════════════╗
-                ║   Diff B->A   ║  │  ║   Diff B->C   ║   ║   Diff C->B   ║
-                ╟───────────────╢  │  ╟───────────────╢   ╟───────────────╢
-                ║ slice = txtBA ║  │  ║ slice = txtBC ║   ║ slice = txtBA ║
-                ║ snap          ║  │  ║ snap          ║   ║ snap          ║
-                ╚═══════════════╝  │  ╚═══════════════╝   ╚═══════════════╝
-                                   │                             │
-                                   └─────────────────────────────┘
-
-    '''
+    # '''
+    #     Undo,Redo Logic
+    #
+    #     Old:
+    #
+    #     ::
+    #
+    #         _snapshotId: = last saved/undo/redo state
+    #                                 3 = doc4
+    #         _snapshots:
+    #             [doc1, doc2, doc3, doc4, doc5, doc6, . . .]
+    #
+    #     New:
+    #
+    #     ::
+    #
+    #         SnapshotId:
+    #                             2
+    #         Snapshots:                  _lastSnap     _dataLines (unstaged)
+    #             ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕ ╒═══╕         ╒═══╕
+    #             │ 0 │ │ 1 │ │ 2 │ │ 3 │ │ 4 │         │ 5 │
+    #             └───┘ └───┘ └───┘ └───┘ └───┘         └───┘
+    #         Cursors:
+    #                 c0,   c1,   c2,   c3,   c4 = _lastCursor
+    #         Diffs:
+    #             [   d01,  d12,  d23,  d34   ] = Forward  Diffs
+    #             [   d10,  d21,  d32,  d43   ] = Backward Diffs
+    #         Slices: = common txt slices between snapshots
+    #             [   s01,  s12,  s23,  s34   ]
+    #
+    #     ::
+    #
+    #         Data Structure
+    #                     ╔═══════════════╗                         ╔═══════════════╗
+    #                     ║   Snapshot B  ║          ┌─────────────>║   Snapshot C  ║
+    #                     ╟───────────────╢          │              ╟───────────────╢
+    #                     ║ _nextDiff     ║──────┐   │              ║ _nextDiff     ║───> Next snapshot
+    #                 ┌───║ _prevDiff     ║      │   │          ┌───║ _prevDiff     ║  or Null if at the end
+    #                 │   ╚═══════════════╝      │   │          │   ╚═══════════════╝
+    #                 V              A           V   │          V
+    #             ╔═══════════════╗  │  ╔═══════════════╗   ╔═══════════════╗
+    #             ║   Diff B->A   ║  │  ║   Diff B->C   ║   ║   Diff C->B   ║
+    #             ╟───────────────╢  │  ╟───────────────╢   ╟───────────────╢
+    #             ║ slice = txtBA ║  │  ║ slice = txtBC ║   ║ slice = txtBA ║
+    #             ║ snap          ║  │  ║ snap          ║   ║ snap          ║
+    #             ╚═══════════════╝  │  ╚═══════════════╝   ╚═══════════════╝
+    #                                 │                             │
+    #                                 └─────────────────────────────┘
+    #
+    # '''
     class _snapDiff():
         '''
         Doc:
@@ -122,8 +123,10 @@ class TTkTextDocument():
         '_dataLines', '_modified',
         '_snap', '_snapChanged',
         '_lastSnap', '_lastCursor',
+        '_backgroundColor',
         # Signals
         'contentsChange', 'contentsChanged',
+        'formatChanged',
         'cursorPositionChanged',
         'undoAvailable', 'redoAvailable', 'undoCommandAdded',
         'modificationChanged'
@@ -133,10 +136,12 @@ class TTkTextDocument():
         self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.contentsChange = pyTTkSignal(int,int,int) # int line, int linesRemoved, int linesAdded
         self.contentsChanged = pyTTkSignal()
+        self.formatChanged = pyTTkSignal()
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self.undoCommandAdded = pyTTkSignal()
         self.modificationChanged = pyTTkSignal(bool)
+        self._backgroundColor = TTkColor.RST
         text = text
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False

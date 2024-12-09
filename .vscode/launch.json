@@ -13,6 +13,14 @@
             "console": "integratedTerminal",
             "justMyCode": true,
         },{
+            "name": "Python: Current File with Args",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["tools/webExporter/js/ttkproxy.js"]
+        },{
             "name": "Python: Test Player",
             "type": "debugpy",
             "request": "launch",
@@ -30,7 +38,6 @@
             "env": {
                 "PYTHONPATH": "./tools"
             }
-
         },{
             "name": "Python: TTk Designer Quick",
             "type": "debugpy",

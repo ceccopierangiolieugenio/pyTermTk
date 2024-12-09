@@ -24,13 +24,15 @@ __all__ = ['TTkTextEditView', 'TTkTextEdit']
 
 from math import log10, floor
 
-from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.log import TTkLog
-from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
+from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
@@ -59,14 +61,14 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         super().__init__(**kwargs)
         self.setMaximumWidth(2)
 
-    def _wrapChanged(self):
+    def _wrapChanged(self) -> None:
         dt = max(1,self._textWrap._lines[-1][0])
         off  = self._startingNumber
         width = 1+max(len(str(int(dt+off))),len(str(int(off))))
         self.setMaximumWidth(width)
         self.update()
 
-    def setTextWrap(self, tw):
+    def setTextWrap(self, tw) -> None:
         self._textWrap = tw
         tw.wrapChanged.connect(self._wrapChanged)
         self._wrapChanged()
@@ -77,7 +79,7 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         else:
             return self.size()
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         if not self._textWrap: return
         _, oy = self.getViewOffsets()
         w, h = self.size()
@@ -244,11 +246,11 @@ class TTkTextEditView(TTkAbstractScrollView):
         return self._multiLine
 
     @pyTTkSlot(bool)
-    def _undoAvailable(self, available):
+    def _undoAvailable(self, available) -> None:
         self.undoAvailable.emit(available)
 
     @pyTTkSlot(bool)
-    def _redoAvailable(self, available):
+    def _redoAvailable(self, available) -> None:
         self.redoAvailable.emit(available)
 
     # def toHtml(self, encoding): pass
@@ -261,31 +263,31 @@ class TTkTextEditView(TTkAbstractScrollView):
     #        return self._textDocument.toMarkdown()
     #    return ""
 
-    def toAnsi(self):
+    def toAnsi(self) -> str:
         '''toAnsi'''
         if self._textDocument:
             return self._textDocument.toAnsi()
         return ""
 
-    def toPlainText(self):
+    def toPlainText(self) ->str:
         '''toPlainText'''
         if self._textDocument:
             return self._textDocument.toPlainText()
         return ""
 
-    def toRawText(self):
+    def toRawText(self) -> TTkString:
         '''toRawText'''
         if self._textDocument:
             return self._textDocument.toRawText()
         return TTkString()
 
-    def isUndoAvailable(self):
+    def isUndoAvailable(self) -> bool:
         '''isUndoAvailable'''
         if self._textDocument:
             return self._textDocument.isUndoAvailable()
         return False
 
-    def isRedoAvailable(self):
+    def isRedoAvailable(self) -> bool:
         '''isRedoAvailable'''
         if self._textDocument:
             return self._textDocument.isRedoAvailable()
@@ -295,13 +297,14 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''document'''
         return self._textDocument
 
-    def setDocument(self, document:TTkTextDocument):
+    def setDocument(self, document:TTkTextDocument) -> None:
         '''setDocument'''
         if self._textDocument:
             self._textDocument.contentsChanged.disconnect(self._documentChanged)
             self._textDocument.cursorPositionChanged.disconnect(self._cursorPositionChanged)
             self._textDocument.undoAvailable.disconnect(self._undoAvailable)
             self._textDocument.redoAvailable.disconnect(self._redoAvailable)
+            self._textDocument.formatChanged.disconnect(self.update)
             self._textWrap.wrapChanged.disconnect(self.update)
         if not document:
             document = TTkTextDocument()
@@ -312,6 +315,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textDocument.cursorPositionChanged.connect(self._cursorPositionChanged)
         self._textDocument.undoAvailable.connect(self._undoAvailable)
         self._textDocument.redoAvailable.connect(self._redoAvailable)
+        self._textDocument.formatChanged.connect(self.update)
         # Trigger an update when the rewrap happen
         self._textWrap.wrapChanged.connect(self.update)
 
@@ -327,53 +331,53 @@ class TTkTextEditView(TTkAbstractScrollView):
     def isReadOnly(self) -> bool :
         return self._readOnly
 
-    def setReadOnly(self, ro):
+    def setReadOnly(self, ro) -> None:
         self._readOnly = ro
         self.disableWidgetCursor(ro)
 
-    def clear(self):
+    def clear(self) -> None:
         self.setText(TTkString())
 
-    def lineWrapMode(self):
+    def lineWrapMode(self) -> TTkK.LineWrapMode:
         return self._lineWrapMode
 
-    def setLineWrapMode(self, mode):
+    def setLineWrapMode(self, mode:TTkK.LineWrapMode):
         self._lineWrapMode = mode
-        if mode == TTkK.NoWrap:
+        if mode == TTkK.LineWrapMode.NoWrap:
             self._textWrap.disable()
         else:
             self._textWrap.enable()
-            if mode == TTkK.WidgetWidth:
+            if mode == TTkK.LineWrapMode.WidgetWidth:
                 self._textWrap.setWrapWidth(self.width())
         self._textWrap.rewrap()
 
     @pyTTkSlot(str)
-    def setText(self, text):
+    def setText(self, text) -> None:
         self.viewMoveTo(0, 0)
         self._textDocument.setText(text)
         self._updateSize()
 
     @pyTTkSlot(str)
-    def append(self, text):
+    def append(self, text) -> None:
         self._textDocument.appendText(text)
         self._updateSize()
 
     @pyTTkSlot()
-    def undo(self):
+    def undo(self) -> None:
         if c := self._textDocument.restoreSnapshotPrev():
             self._textCursor.restore(c)
 
     @pyTTkSlot()
-    def redo(self):
+    def redo(self) -> None:
         if c := self._textDocument.restoreSnapshotNext():
             self._textCursor.restore(c)
 
     @pyTTkSlot()
-    def clear(self):
+    def clear(self) -> None:
         pass
 
     @pyTTkSlot()
-    def copy(self):
+    def copy(self) -> None:
         if not self._textCursor.hasSelection():
             txt = TTkString('\n').join(self._textCursor.getLinesUnderCursor())
         else:
@@ -381,7 +385,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._clipboard.setText(txt)
 
     @pyTTkSlot()
-    def cut(self):
+    def cut(self) -> None:
         if not self._textCursor.hasSelection():
             self._textCursor.movePosition(moveMode=TTkTextCursor.MoveAnchor, operation=TTkTextCursor.StartOfLine)
             self._textCursor.movePosition(moveMode=TTkTextCursor.KeepAnchor, operation=TTkTextCursor.EndOfLine)
@@ -390,31 +394,31 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._textCursor.removeSelectedText()
 
     @pyTTkSlot()
-    def paste(self):
+    def paste(self) -> None:
         txt = self._clipboard.text()
         self.pasteEvent(txt)
 
     @pyTTkSlot()
-    def _documentChanged(self):
+    def _documentChanged(self) -> None:
         self._rewrap()
         self.textChanged.emit()
 
-    def _rewrap(self):
+    def _rewrap(self) -> None:
         self._textWrap.rewrap()
         self.viewChanged.emit()
         self.update()
 
     @pyTTkSlot(TTkColor)
-    def setColor(self, color):
+    def setColor(self, color:TTkColor) -> None:
         self.textCursor().setColor(color)
 
     @pyTTkSlot(TTkTextCursor)
-    def _cursorPositionChanged(self, cursor):
+    def _cursorPositionChanged(self, cursor:TTkTextCursor) -> None:
         if cursor == self._textCursor:
             self.currentColorChanged.emit(cursor.positionColor())
             self._pushCursor()
 
-    def resizeEvent(self, w, h):
+    def resizeEvent(self, w:int, h:int) -> None:
         if ( self.lineWrapMode() == TTkK.WidgetWidth and
              w != self._lastWrapUsed and
              w > self._textWrap._tabSpaces ):
@@ -423,7 +427,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             self._rewrap()
         return super().resizeEvent(w,h)
 
-    def _updateSize(self):
+    def _updateSize(self) -> None:
         self._hsize = max( len(l) for l in self._textDocument._dataLines ) + 1
 
     def viewFullAreaSize(self) -> tuple[int,int]:
@@ -434,7 +438,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         elif self.lineWrapMode() == TTkK.FixedWidth:
             return self.wrapWidth(), self._textWrap.size()
 
-    def _pushCursor(self):
+    def _pushCursor(self) -> None:
         ox, oy = self.getViewOffsets()
 
         x,y = self._textWrap.dataToScreenPosition(
@@ -452,7 +456,7 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         self.update()
 
-    def _setCursorPos(self, x, y, moveAnchor=True, addCursor=False):
+    def _setCursorPos(self, x, y, moveAnchor=True, addCursor=False) -> tuple[int,int]:
         x,y = self._textWrap.normalizeScreenPosition(x,y)
         line, pos = self._textWrap.screenToDataPosition(x,y)
         if addCursor:
@@ -464,7 +468,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._scrolToInclude(x,y)
         return x, y
 
-    def _scrolToInclude(self, x, y):
+    def _scrolToInclude(self, x, y) -> None:
         # Scroll the area (if required) to include the position x,y
         _,_,w,h = self.geometry()
         offx, offy = self.getViewOffsets()
@@ -472,7 +476,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         offy = max(min(offy, y),y-h+1)
         self.viewMoveTo(offx, offy)
 
-    def mousePressEvent(self, evt) -> bool:
+    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
@@ -482,12 +486,12 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt) -> bool:
+    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
         if self._textCursor.hasSelection():
             self.copy()
         return True
 
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt: TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mouseDragEvent(evt)
         ox, oy = self.getViewOffsets()
@@ -498,7 +502,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseDoubleClickEvent(self, evt) -> bool:
+    def mouseDoubleClickEvent(self, evt: TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
         self._textCursor.select(TTkTextCursor.WordUnderCursor)
@@ -509,7 +513,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseTapEvent(self, evt) -> bool:
+    def mouseTapEvent(self, evt: TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mouseTapEvent(evt)
         self._textCursor.select(TTkTextCursor.LineUnderCursor)
@@ -520,7 +524,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def pasteEvent(self, txt:str):
+    def pasteEvent(self, txt:str) -> bool:
         txt = TTkString(txt)
         if not self._multiLine:
             txt = TTkString().join(txt.split('\n'))
@@ -537,7 +541,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt: TTkKeyEvent) -> bool:
         if self._readOnly:
             return super().keyEvent(evt)
 
@@ -669,13 +673,17 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         return super().keyEvent(evt)
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas: TTkCanvas) -> None:
         ox, oy = self.getViewOffsets()
 
         style = self.currentStyle()
         color         = style['color']
         selectColor = style['selectedColor']
         lineColor = style['lineColor']
+        backgroundColor = self._textDocument._backgroundColor
+
+        if backgroundColor != TTkColor.RST:
+            canvas.fill(color=backgroundColor)
 
         h = self.height()
         subLines = self._textWrap._lines[oy:oy+h]
@@ -684,7 +692,10 @@ class TTkTextEditView(TTkAbstractScrollView):
 
         for y, l in enumerate(subLines):
             t = outLines[l[0]-subLines[0][0]]
-            canvas.drawTTkString(pos=(-ox,y), text=t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces))
+            text:TTkString = t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces)
+            if backgroundColor != TTkColor.RST:
+                text = text.completeColor(backgroundColor)
+            canvas.drawTTkString(pos=(-ox,y), text=text)
 
         if self._lineWrapMode == TTkK.FixedWidth:
             canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=lineColor)
