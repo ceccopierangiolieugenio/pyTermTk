@@ -27,16 +27,20 @@
 #   https://stackoverflow.com/questions/3794309/python-ctypes-python-file-object-c-file
 
 import sys
+import termios, tty
+import threading, queue
 
-from ctypes import CDLL, c_void_p, cdll, CFUNCTYPE
-from ctypes import Structure, Union, pointer, POINTER, cast
-from ctypes import c_short, c_int, c_char, c_ushort, c_ubyte, c_void_p
+from ctypes import ( CDLL, c_void_p, cdll, CFUNCTYPE )
+from ctypes import ( Structure, Union, pointer, POINTER, cast )
+from ctypes import ( c_short, c_int, c_char, c_ushort, c_ubyte, c_void_p )
 
 libgpm = CDLL('libgpm.so.2') # libgpm.so.2
 
 libc = cdll.LoadLibrary('libc.so.6') # libc.so.6
 cstdout = c_void_p.in_dll(libc, 'stdout')
 cstdin = c_void_p.in_dll(libc, 'stdin')
+
+gpmQueue = queue.Queue()
 
 '''
     #define GPM_MAGIC 0x47706D4C /* "GpmL" */
@@ -145,7 +149,8 @@ def my_handler(event:Gpm_Event, data):
             types.append(tt[t])
 
     margin = {1:"Top",2:"Bottom",4:"Left",8:"Right"}.get(ec.margin,f"UNDEF ({ec.margin})!!!")
-    print(f"{buttons=}, {modifiers=}, {vc=}, {dx=}, {dy=}, {x=}, {y=}, {types=}, {clicks=}, {margin=}, {wdx=}, {wdy=}")
+    # print(f"{buttons=}, {modifiers=}, {vc=}, {dx=}, {dy=}, {x=}, {y=}, {types=}, {clicks=}, {margin=}, {wdx=}, {wdy=}")
+    gpmQueue.put(f"{buttons=}, {modifiers=}, {vc=}, {dx=}, {dy=}, {x=}, {y=}, {types=}, {clicks=}, {margin=}, {wdx=}, {wdy=}")
     return 0
 
 '''
@@ -168,6 +173,21 @@ def my_handler(event:Gpm_Event, data):
     }
 '''
 
+def setEcho(val: bool):
+    # Set/Unset Terminal Input Echo
+    (i,o,c,l,isp,osp,cc) = termios.tcgetattr(sys.stdin.fileno())
+    if val: l |= termios.ECHO
+    else:   l &= ~termios.ECHO
+    termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
+
+def CRNL(val: bool):
+    #Translate carriage return to newline on input (unless IGNCR is set).
+    # '\n' CTRL-J
+    # '\r' CTRL-M (Enter)
+    (i,o,c,l,isp,osp,cc) = termios.tcgetattr(sys.stdin.fileno())
+    if val: i |= termios.ICRNL
+    else:    i &= ~termios.ICRNL
+    termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
 
 def main():
     conn = Gpm_Connect()
@@ -178,7 +198,7 @@ def main():
     conn.maxMod      = ~0 # all modifiers included
 
     gpm_handler = c_void_p.in_dll(libgpm, 'gpm_handler')
-    gpm_fd = c_void_p.in_dll(libgpm, 'gpm_fd')
+    gpm_fd = c_int.in_dll(libgpm, 'gpm_fd')
 
     print("Open Connection")
     print(f"{libgpm.gpm_handler=} {gpm_handler=} {gpm_handler.value=} {gpm_fd=}")
@@ -192,12 +212,47 @@ def main():
 
     if (_gpm_fd := libgpm.Gpm_Open(pointer(conn), 0)) == -1:
        print("Cannot connect to mouse server\n")
+
     gpm_fd.value = _gpm_fd
 
-    print("Starting Loop")
+    print(f"{libgpm.gpm_handler=} {gpm_handler=} {gpm_handler.value=} {gpm_fd=}")
 
-    while c := libgpm.Gpm_Getc(cstdin):
-        print(f"Key: {c=:04X} ")
+    print("Starting Loop")
+    print(f"{sys.stdin=} {cstdin=}")
+
+    # setEcho(False)
+    old_settings = termios.tcgetattr(sys.stdin)
+    # new_settings = termios.tcgetattr(sys.stdin)
+    # new_settings[3] &= ~termios.ICANON
+    # new_settings[3] &= ~termios.ICRNL
+    # new_settings[3] &= ~termios.ECHO
+    # termios.tcsetattr(sys.stdin, termios.TCSADRAIN, new_settings)
+
+    tty.setcbreak(sys.stdin)
+
+    def _processGpm():
+        print(f"Thread Started")
+        while (c:=libgpm.Gpm_Getc(cstdin)) and c != ord('q'):
+            print(f"Key: {c=:04X} - '{chr(c)}'")
+            gpmQueue.put(chr(c))
+        gpmQueue.put(None)
+
+    t = threading.Thread(target=_processGpm)
+    t.start()
+
+    while True:
+        item = gpmQueue.get()
+        if item is None:
+            break
+        print(f"{item=}")
+        gpmQueue.task_done()
+
+    t.join()
+    print(f"Thread Joined")
+
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    # setEcho(True)
+
     # while c := libgpm.Gpm_Getchar():
     #     print(f"Key: {c=:04X} ")
 

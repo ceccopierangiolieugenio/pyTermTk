@@ -26,17 +26,28 @@
 #   https://www.linuxjournal.com/article/4600
 #   https://stackoverflow.com/questions/3794309/python-ctypes-python-file-object-c-file
 
-import sys
+import sys, os
+import termios, tty
+import threading, queue
 
-from ctypes import CDLL, c_void_p, cdll, CFUNCTYPE
-from ctypes import Structure, Union, pointer, POINTER, cast
-from ctypes import c_short, c_int, c_char, c_ushort, c_ubyte, c_void_p
+try: import fcntl, termios, tty
+except Exception as e:
+    print(f'ERROR: {e}')
+    exit(1)
+
+from select import select
+
+from ctypes import ( CDLL, c_void_p, cdll, CFUNCTYPE )
+from ctypes import ( Structure, Union, pointer, POINTER, cast )
+from ctypes import ( c_short, c_int, c_char, c_ushort, c_ubyte, c_void_p )
 
 libgpm = CDLL('libgpm.so.2') # libgpm.so.2
 
 libc = cdll.LoadLibrary('libc.so.6') # libc.so.6
 cstdout = c_void_p.in_dll(libc, 'stdout')
 cstdin = c_void_p.in_dll(libc, 'stdin')
+
+gpmQueue = queue.Queue()
 
 '''
     #define GPM_MAGIC 0x47706D4C /* "GpmL" */
@@ -126,7 +137,8 @@ HANDLER_FUNC = CFUNCTYPE(c_int, POINTER(Gpm_Event), POINTER(c_void_p))
 
 def my_handler(event:Gpm_Event, data):
     # print(f"{event=} {data=} {dir(event)=} {event.contents=}")
-    ec = event.contents
+    # ec = event.contents
+    ec = event
     buttons   = ec.buttons
     modifiers = ec.modifiers
     vc     = ec.vc
@@ -168,6 +180,21 @@ def my_handler(event:Gpm_Event, data):
     }
 '''
 
+def setEcho(val: bool):
+    # Set/Unset Terminal Input Echo
+    (i,o,c,l,isp,osp,cc) = termios.tcgetattr(sys.stdin.fileno())
+    if val: l |= termios.ECHO
+    else:   l &= ~termios.ECHO
+    termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
+
+def CRNL(val: bool):
+    #Translate carriage return to newline on input (unless IGNCR is set).
+    # '\n' CTRL-J
+    # '\r' CTRL-M (Enter)
+    (i,o,c,l,isp,osp,cc) = termios.tcgetattr(sys.stdin.fileno())
+    if val: i |= termios.ICRNL
+    else:    i &= ~termios.ICRNL
+    termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, [i,o,c,l,isp,osp,cc])
 
 def main():
     conn = Gpm_Connect()
@@ -177,32 +204,61 @@ def main():
     conn.minMod      =  0 # want everything
     conn.maxMod      = ~0 # all modifiers included
 
-    gpm_handler = c_void_p.in_dll(libgpm, 'gpm_handler')
-    gpm_fd = c_void_p.in_dll(libgpm, 'gpm_fd')
-
     print("Open Connection")
-    print(f"{libgpm.gpm_handler=} {gpm_handler=} {gpm_handler.value=} {gpm_fd=}")
-    # RDFM;
-    # This is one of the rare cases where "Readuing the Fucking Manual" was the only way to solve this issue
-    # Not just that but a basic knowledge of c casting annd function pointers
-    #   https://docs.python.org/3/library/ctypes.html#type-conversions
-    gpm_handler.value = cast(HANDLER_FUNC(my_handler),c_void_p).value
-
-    print(f"{libgpm.gpm_handler=} {gpm_handler=} {gpm_handler.value=} {gpm_fd=}")
-
     if (_gpm_fd := libgpm.Gpm_Open(pointer(conn), 0)) == -1:
        print("Cannot connect to mouse server\n")
-    gpm_fd.value = _gpm_fd
+
 
     print("Starting Loop")
+    print(f"{sys.stdin.fileno()=} {cstdin=}, {_gpm_fd=}")
 
-    while c := libgpm.Gpm_Getc(cstdin):
-        print(f"Key: {c=:04X} ")
+    # setEcho(False)
+    old_settings = termios.tcgetattr(sys.stdin)
+    # new_settings = termios.tcgetattr(sys.stdin)
+    # new_settings[3] &= ~termios.ICANON
+    # new_settings[3] &= ~termios.ICRNL
+    # new_settings[3] &= ~termios.ECHO
+    # termios.tcsetattr(sys.stdin, termios.TCSADRAIN, new_settings)
+
+    # tty.setcbreak(sys.stdin)
+
+    _fn = sys.stdin.fileno()
+    tty.setcbreak(_fn)
+
+# Convert file descriptor to Python file object
+    if _gpm_fd <= 0:
+        print("GPM XTerm Daemon not supported")
+    else:
+        with os.fdopen(_gpm_fd, "r") as gpm_file_obj:
+            print(f"File obj: {gpm_file_obj=} {gpm_file_obj.fileno()=} ")
+            _ev = Gpm_Event()
+            while True:
+                rlist, _, _ = select( [sys.stdin, gpm_file_obj], [], [] )
+
+                if gpm_file_obj in rlist:
+                    libgpm.Gpm_GetEvent(pointer(_ev))
+                    my_handler(_ev, None)
+
+                if sys.stdin in rlist:
+                    if (stdinRead := sys.stdin.read(1)) == "\033":  # Check if the stream start with an escape sequence
+                        _fl = fcntl.fcntl(_fn, fcntl.F_GETFL)
+                        fcntl.fcntl(_fn, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
+                        stdinRead += sys.stdin.read(20)       # Check if the stream start with an escape sequence
+                        if stdinRead.startswith("\033[<"):    # Clear the buffer if this is a mouse code
+                            sys.stdin.read(0x40)
+                        fcntl.fcntl(_fn, fcntl.F_SETFL, _fl)
+                    out = stdinRead.replace('\033','<ESC>')
+                    print(f"{out=}")
+
+
+    termios.tcsetattr(sys.stdin, termios.TCSANOW, old_settings)
+    # setEcho(True)
+
     # while c := libgpm.Gpm_Getchar():
     #     print(f"Key: {c=:04X} ")
 
+    print(f"GPM Close()")
     libgpm.Gpm_Close()
-
 
 if __name__ == "__main__":
     main()

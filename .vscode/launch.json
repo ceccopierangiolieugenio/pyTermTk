@@ -21,6 +21,16 @@
             "justMyCode": true,
             "args": ["tools/webExporter/js/ttkproxy.js"]
         },{
+            "name": "Python: Current File with Env",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "TERMTK_GPM": "1"
+            },
+        },{
             "name": "Python: Test Player",
             "type": "debugpy",
             "request": "launch",
