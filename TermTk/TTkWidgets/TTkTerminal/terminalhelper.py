@@ -124,6 +124,10 @@ class TTkTerminalHelper():
 
         if self._pid == 0:
             def _spawnTerminal(argv=self._shell, env=os.environ):
+                env=env.copy()
+                env.pop("TERMTK_GPM",None)
+                env.pop("TERMTK_MOUSE",None)
+                env['TERM']='screen'
                 os.execvpe(argv[0], argv, env)
             # threading.Thread(target=_spawnTerminal).start()
             # TTkHelper.quit()

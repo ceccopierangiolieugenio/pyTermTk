@@ -9,10 +9,10 @@ Clipboard
 
 pyTermTk_ include a clipboard wrapper :py:class:`TTkClipboard`, around any of the following libraries:
 
-- `copykitten <https://github.com/klavionik/copykitten>`_ - Robust, dependency-free way to use the system clipboard in Python.
-- `pyperclip <https://github.com/asweigart/pyperclip>`_ - Python module for cross-platform clipboard functions.
-- `pyperclip3 <https://pypi.org/project/pyperclip3>`_ / `pyclip <https://github.com/spyoungtech/pyclip>`_  - Cross-platform Clipboard module for Python with binary support.
-- `clipboard <https://github.com/terryyin/clipboard>`_  - A cross platform clipboard operation library of Python. Works for Windows, Mac and Linux.
+- `copykitten <https://github.com/klavionik/copykitten>`__ - Robust, dependency-free way to use the system clipboard in Python.
+- `pyperclip <https://github.com/asweigart/pyperclip>`__ - Python module for cross-platform clipboard functions.
+- `pyperclip3 <https://pypi.org/project/pyperclip3>`__ / `pyclip <https://github.com/spyoungtech/pyclip>`_  - Cross-platform Clipboard module for Python with binary support.
+- `clipboard <https://github.com/terryyin/clipboard>`__  - A cross platform clipboard operation library of Python. Works for Windows, Mac and Linux.
 
 .. raw:: html
 

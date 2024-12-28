@@ -26,8 +26,7 @@ import sys, os
 import logging
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
-from TermTk import TTkLog, TTkK, TTkTerm
-from TermTk.TTkCore.TTkTerm.input import TTkInput
+from TermTk import TTkLog, TTkK, TTkTerm, TTkInput
 
 def message_handler(mode, context, message):
     log = logging.debug
@@ -45,10 +44,10 @@ TTkLog.installMessageHandler(message_handler)
 TTkLog.info("Retrieve Keyboard, Mouse press/drag/wheel Events")
 TTkLog.info("Press q or <ESC> to exit")
 
-TTkTerm.push(TTkTerm.Mouse.ON)
-TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
-TTkTerm.push(TTkTerm.SET_BRACKETED_PM)
-TTkTerm.setEcho(False)
+# TTkTerm.push(TTkTerm.Mouse.ON)
+# TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
+# TTkTerm.push(TTkTerm.SET_BRACKETED_PM)
+# TTkTerm.setEcho(False)
 
 def winCallback(width, height):
     TTkLog.info(f"Resize: w:{width}, h:{height}")

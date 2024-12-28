@@ -72,7 +72,7 @@ class ReadInput():
     def close(self):
         os.write(self._readPipe[1], b'quit')
 
-    def _read(self):
+    def _read_old(self):
         _fn = sys.stdin.fileno()
         _attr = termios.tcgetattr(_fn)
         tty.setcbreak(_fn)

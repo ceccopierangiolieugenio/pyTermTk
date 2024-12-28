@@ -22,6 +22,7 @@
 
 __all__ = ['TTkString']
 
+import os
 import re
 import unicodedata
 from types import GeneratorType
@@ -674,13 +675,15 @@ class TTkString():
              sum(unicodedata.east_asian_width(ch) == 'W' for ch in self._text) -
              sum(unicodedata.category(ch) in ('Me','Mn') for ch in self._text) )
 
-    def _getDataW(self):
+    def _getDataW_pts(self):
         retTxt = []
         retCol = []
-        for i,ch in enumerate(self._text):
+        retTxt_append = retTxt.append
+        retCol_append = retCol.append
+        for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
-                retTxt += (ch,'')
-                retCol += (self._colors[i],self._colors[i])
+                retTxt += [ch,'']
+                retCol += [color,color]
             elif unicodedata.category(ch) in ('Me','Mn'):
                 if retTxt:
                     if len(retTxt)>1 and retTxt[-1] == '':
@@ -691,6 +694,25 @@ class TTkString():
                 #    retTxt = [f"{ch}"]
                 #    retCol = [TTkColor.RST]
             else:
-                retTxt.append(ch)
-                retCol.append(self._colors[i])
+                retTxt_append(ch)
+                retCol_append(color)
         return (retTxt, retCol)
+
+    def _getDataW_tty(self):
+        retTxt = []
+        retCol = []
+        retTxt_append = retTxt.append
+        retCol_append = retCol.append
+        for ch,color in zip(self._text,self._colors):
+            if unicodedata.east_asian_width(ch) == 'W':
+                retTxt += ['■','■']
+                retCol += [color,color]
+            elif unicodedata.category(ch) not in ('Me','Mn'):
+                retTxt_append(ch)
+                retCol_append(color)
+        return (retTxt, retCol)
+
+    if os.environ.get("TERMTK_GPM",False):
+        _getDataW = _getDataW_tty
+    else:
+        _getDataW = _getDataW_pts

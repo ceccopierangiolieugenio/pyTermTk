@@ -72,6 +72,12 @@ __check(){
             -e "drivers/term_unix.py:from threading import Thread, Lock" \
             -e "drivers/term_unix_serial.py:from ..TTkTerm.term_base import TTkTermBase" \
             -e "drivers/term_unix_serial.py:from .term_unix import *" \
+            -e "drivers/unix_gpm.py:import sys" \
+            -e "drivers/unix_gpm.py:import os" \
+            -e "drivers/unix_gpm.py:import re" \
+            -e "drivers/unix_gpm.py:import ctypes" \
+            -e "drivers/unix_gpm.py:import signal" \
+            -e "drivers/unix_gpm.py:from select import select" \
             -e "drivers/term_pyodide.py:import pyodideProxy" \
             -e "drivers/term_pyodide.py:from ..TTkTerm.term_base import TTkTermBase" \
             -e "drivers/__init__.py:import importlib.util" \
