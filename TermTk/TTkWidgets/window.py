@@ -52,10 +52,13 @@ class TTkWindow(TTkResizableFrame):
 
     classStyle = {
                 'default':     {'color': TTkColor.RST,
+                                'fillColor':TTkColor.RST,
                                 'borderColor': TTkColor.RST},
                 'disabled':    {'color': TTkColor.fg('#888888'),
+                                'fillColor':TTkColor.RST,
                                 'borderColor':TTkColor.fg('#888888')},
                 'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'fillColor':TTkColor.RST,
                                 'borderColor': TTkColor.fg("#ffff55")}
             }
 
@@ -204,8 +207,11 @@ class TTkWindow(TTkResizableFrame):
     def paintEvent(self, canvas):
         style = self.currentStyle()
         color = style['color']
+        fillColor = style['fillColor']
         borderColor = style['borderColor']
 
+        if fillColor != TTkColor.RST:
+            canvas.fill(color=fillColor)
         canvas.drawText(pos=(2,1),text=self._title, color=color)
         canvas.drawGrid(
                     color=borderColor,
