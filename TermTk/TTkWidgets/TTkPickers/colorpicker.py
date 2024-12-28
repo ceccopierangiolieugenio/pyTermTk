@@ -326,12 +326,15 @@ class TTkColorDialogPicker(TTkWindow):
 
     classStyle = {
                 'default':     {'color': TTkColor.RST,
+                                'fillColor':TTkColor.RST,
                                 'borderColor': TTkColor.RST,
                                 'titleColor': TTkColor.fg("#dddddd")+TTkColor.bg("#222222")},
                 'disabled':    {'color': TTkColor.fg('#888888'),
+                                'fillColor':TTkColor.RST,
                                 'borderColor':TTkColor.fg('#888888'),
                                 'titleColor': TTkColor.fg('#888888')},
                 'focus':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000044")+TTkColor.BOLD,
+                                'fillColor':TTkColor.RST,
                                 'borderColor': TTkColor.fg("#ffff55"),
                                 'titleColor': TTkColor.fg("#ffffdd")+TTkColor.bg("#222222")},
             }
