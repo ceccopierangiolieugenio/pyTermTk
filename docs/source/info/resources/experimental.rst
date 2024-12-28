@@ -23,6 +23,8 @@ set the environment variable **TERMTK_MOUSE** to `1` and run your application:
 
     TERMTK_MOUSE=1  demo/demo.py
 
+.. _gpm_integration:
+
 ----------------------------------------------------------------------------
 `GPM <https://wiki.archlinux.org/title/General_purpose_mouse>`__ Integration
 ----------------------------------------------------------------------------
@@ -53,6 +55,8 @@ To activate GPM support, set the **TERMTK_GPM** environment variable to `1`:
     * https://github.com/telmich/gpm
     * https://wiki.archlinux.org/title/General_purpose_mouse
     * https://www.geeksforgeeks.org/gpm-command-in-linux-with-examples
+
+.. _serial_console:
 
 --------------
 Serial Console

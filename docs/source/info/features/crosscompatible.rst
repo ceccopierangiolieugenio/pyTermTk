@@ -4,7 +4,7 @@ Cross Compatibility
 
 .. _cc-linux:
 
-Linux
+Linux (pty, :ref:`tty/gpm <gpm_integration>`, :ref:`serial <serial_console>`)
 -----
 
 .. image:: https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.CC.Linux.png
