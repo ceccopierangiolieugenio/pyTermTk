@@ -682,8 +682,8 @@ class TTkString():
         retCol_append = retCol.append
         for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
-                retTxt += [ch,'']
-                retCol += [color,color]
+                retTxt += (ch,'')
+                retCol += (color,color)
             elif unicodedata.category(ch) in ('Me','Mn'):
                 if retTxt:
                     if len(retTxt)>1 and retTxt[-1] == '':
@@ -705,8 +705,8 @@ class TTkString():
         retCol_append = retCol.append
         for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
-                retTxt += ['■','■']
-                retCol += [color,color]
+                retTxt += ('■','■')
+                retCol += (color,color)
             elif unicodedata.category(ch) not in ('Me','Mn'):
                 retTxt_append(ch)
                 retCol_append(color)
