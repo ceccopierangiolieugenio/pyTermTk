@@ -22,7 +22,9 @@
 
 __all__ = ['TTkSignalDriver','TTkInputDriver']
 
-import sys, os, re
+import sys
+import os
+import re
 import signal
 from select import select
 

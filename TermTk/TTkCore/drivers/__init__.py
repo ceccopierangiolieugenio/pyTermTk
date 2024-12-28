@@ -10,7 +10,6 @@ elif platform.system() == 'Linux':
 
     if os.environ.get("TERMTK_GPM",False):
         from .unix_gpm import *
-        # from .term_gpm import *
         from .term_unix import *
     else:
         from .unix import *
