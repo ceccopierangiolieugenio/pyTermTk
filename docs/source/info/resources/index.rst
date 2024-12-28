@@ -9,3 +9,4 @@ Resources
    clipboard
    modal
    dragdrop
+   experimental
