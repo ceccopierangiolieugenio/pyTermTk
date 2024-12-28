@@ -42,7 +42,7 @@ def test_ti_02():
         a += [i,i,i,i,i,i]
     return len(a)
 
-def test_ti_03():
+def test_ti_03_01():
     a = []
     a_a = a.append
     for i in range(100):
@@ -52,6 +52,17 @@ def test_ti_03():
         a_a(i)
         a_a(i)
         a_a(i)
+    return len(a)
+
+def test_ti_03_02():
+    a = []
+    for i in range(100):
+        a.append(i)
+        a.append(i)
+        a.append(i)
+        a.append(i)
+        a.append(i)
+        a.append(i)
     return len(a)
 
 def test_ti_04():

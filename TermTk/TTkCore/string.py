@@ -678,8 +678,6 @@ class TTkString():
     def _getDataW_pts(self):
         retTxt = []
         retCol = []
-        retTxt_append = retTxt.append
-        retCol_append = retCol.append
         for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
                 retTxt += (ch,'')
@@ -694,22 +692,20 @@ class TTkString():
                 #    retTxt = [f"{ch}"]
                 #    retCol = [TTkColor.RST]
             else:
-                retTxt_append(ch)
-                retCol_append(color)
+                retTxt.append(ch)
+                retCol.append(color)
         return (retTxt, retCol)
 
     def _getDataW_tty(self):
         retTxt = []
         retCol = []
-        retTxt_append = retTxt.append
-        retCol_append = retCol.append
         for ch,color in zip(self._text,self._colors):
             if unicodedata.east_asian_width(ch) == 'W':
                 retTxt += ('■','■')
                 retCol += (color,color)
             elif unicodedata.category(ch) not in ('Me','Mn'):
-                retTxt_append(ch)
-                retCol_append(color)
+                retTxt.append(ch)
+                retCol.append(color)
         return (retTxt, retCol)
 
     if os.environ.get("TERMTK_GPM",False):
