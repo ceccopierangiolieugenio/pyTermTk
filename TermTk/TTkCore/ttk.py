@@ -46,42 +46,41 @@ from TermTk.TTkWidgets.about import TTkAbout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 
-class TTk(TTkContainer):
-    class _mouseCursor(TTkWidget):
-        __slots__ = ('_cursor','_color')
-        def __init__(self):
-            super().__init__(name='MouseCursor')
+class _MouseCursor():
+    __slots__ = ('_cursor','_color', '_pos', 'updated')
+    def __init__(self):
+        self.updated = pyTTkSignal()
+        self._pos = (0,0)
+        self._cursor = '✠'
+        self._color = TTkColor.RST
+        TTkInput.inputEvent.connect(self._mouseInput)
+
+    @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
+    def _mouseInput(self, _, mevt):
+        if mevt is not None:
             self._cursor = '✠'
             self._color = TTkColor.RST
-            self.resize(1,1)
-            TTkInput.inputEvent.connect(self._mouseInput)
-        @pyTTkSlot(TTkKeyEvent, TTkMouseEvent)
-        def _mouseInput(self, _, mevt):
-            if mevt is not None:
-                self._cursor = '✠'
-                self._color = TTkColor.RST
-                if mevt.key == TTkK.Wheel:
-                    if mevt.evt == TTkK.WHEEL_Up:
-                        self._cursor = '⇑'
-                    else:
-                        self._cursor = '⇓'
-                elif mevt.evt == TTkK.Press:
-                    self._color = TTkColor.bg('#FFFF00') + TTkColor.fg('#000000')
-                elif mevt.evt == TTkK.Drag:
-                    self._color = TTkColor.bg('#666600') + TTkColor.fg('#FFFF00')
-                # elif mevt.evt == TTkK.Release:
-                #     self._color = TTkColor.bg('#006600') + TTkColor.fg('#00FFFF')
-                self.move(mevt.x, mevt.y)
-                self.update()
-                self.raiseWidget()
-        def paintEvent(self, canvas):
-            canvas.drawChar((0,0), self._cursor, self._color)
-            #canvas.drawChar((0,0),'✜')
+            if mevt.key == TTkK.Wheel:
+                if mevt.evt == TTkK.WHEEL_Up:
+                    self._cursor = '⇑'
+                else:
+                    self._cursor = '⇓'
+            elif mevt.evt == TTkK.Press:
+                self._color = TTkColor.bg('#FFFF00') + TTkColor.fg('#000000')
+            elif mevt.evt == TTkK.Drag:
+                self._color = TTkColor.bg('#666600') + TTkColor.fg('#FFFF00')
+            # elif mevt.evt == TTkK.Release:
+            #     self._color = TTkColor.bg('#006600') + TTkColor.fg('#00FFFF')
+            self._pos = (mevt.x, mevt.y)
+            self.updated.emit()
+
+class TTk(TTkContainer):
+
 
     __slots__ = (
         '_termMouse', '_termDirectMouse',
         '_title',
-        '_showMouseCursor',
+        '_showMouseCursor', '_mouseCursor',
         '_sigmask', '_timer',
         '_drawMutex',
         '_paintEvent',
@@ -107,7 +106,8 @@ class TTk(TTkContainer):
         self.paintExecuted = pyTTkSignal()
         self._termMouse = True
         self._termDirectMouse = mouseTrack
-        self._showMouseCursor = os.environ.get("TTK_MOUSE",mouseCursor)
+        self._mouseCursor = None
+        self._showMouseCursor = os.environ.get("TERMTK_MOUSE",mouseCursor)
         super().__init__(**kwargs)
         TTkInput.inputEvent.connect(self._processInput)
         TTkInput.pasteEvent.connect(self._processPaste)
@@ -125,6 +125,9 @@ class TTk(TTkContainer):
         if 'TERMTK_NEWRENDERER' in os.environ:
             TTkCfg.doubleBuffer = False
             TTkCfg.doubleBufferNew = True
+
+        if os.environ.get("TERMTK_GPM",False):
+            self._showMouseCursor = True
 
         TTkHelper.registerRootWidget(self)
 
@@ -178,9 +181,9 @@ class TTk(TTkContainer):
                 sigmask=self._sigmask)
 
             if self._showMouseCursor:
-                TTkTerm.push(TTkTerm.Mouse.DIRECT_ON)
-                m = TTk._mouseCursor()
-                self.rootLayout().addWidget(m)
+                self._mouseCursor = _MouseCursor()
+                self._mouseCursor.updated.connect(self.update)
+                self.paintChildCanvas = self._mouseCursorPaintChildCanvas
 
             self._mainLoop()
         finally:
@@ -193,6 +196,13 @@ class TTk(TTkContainer):
                 TTkSignalDriver.exit()
                 self.quit()
                 TTkTerm.exit()
+
+    def _mouseCursorPaintChildCanvas(self) -> None:
+        super().paintChildCanvas()
+        ch = self._mouseCursor._cursor
+        pos = self._mouseCursor._pos
+        color = self._mouseCursor._color
+        self.getCanvas().drawChar(char=ch, pos=pos, color=color)
 
     def _mainLoop(self):
         if platform.system() == 'Emscripten':
