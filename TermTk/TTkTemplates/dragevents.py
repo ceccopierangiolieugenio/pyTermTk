@@ -23,58 +23,56 @@
 __all__ = ['TDragEvents']
 
 class TDragEvents():
-    def __init__(self) -> None: pass
-
-    def dragEnterEvent(self, evt)  -> bool:
+    def dragEnterEvent(self, evt:"TTkDnDEvent") -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :py:class:`TTkDropEvent`
+        :type evt: :py:class:`TTkDnDEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
         '''
         return False
 
-    def dragLeaveEvent(self, evt) -> bool:
+    def dragLeaveEvent(self, evt:"TTkDnDEvent") -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :py:class:`TTkDropEvent`
+        :type evt: :py:class:`TTkDnDEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
         '''
         return False
 
-    def dragMoveEvent(self, evt) -> bool:
+    def dragMoveEvent(self, evt:"TTkDnDEvent") -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :py:class:`TTkDropEvent`
+        :type evt: :py:class:`TTkDnDEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool
         '''
         return False
 
-    def dropEvent(self, evt) -> bool:
+    def dropEvent(self, evt:"TTkDnDEvent") -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
         .. note:: Reimplement this function to handle this event
 
         :param evt: The drop event
-        :type evt: :py:class:`TTkDropEvent`
+        :type evt: :py:class:`TTkDnDEvent`
 
         :return: **True** if the event has been handled
         :rtype: bool

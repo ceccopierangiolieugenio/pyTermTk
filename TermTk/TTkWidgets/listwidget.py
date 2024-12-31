@@ -31,7 +31,10 @@ from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkGui.drag import TTkDrag
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+from TermTk.TTkGui.drag import TTkDrag, TTkDnDEvent
+
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
@@ -79,7 +82,7 @@ class TTkAbstractListItem(TTkWidget):
         self._data = data
         self.update()
 
-    def mousePressEvent(self, evt) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self.listItemClicked.emit(self)
         return True
 
@@ -363,7 +366,7 @@ class TTkListWidget(TTkAbstractScrollView):
         elif index <= offy:
             self.viewMoveTo(offx, index)
 
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if not(self._dndMode & TTkK.DragDropMode.AllowDrag):
             return False
         if not (items:=self._selectedItems.copy()):
@@ -388,26 +391,26 @@ class TTkListWidget(TTkAbstractScrollView):
         drag.exec()
         return True
 
-    def dragEnterEvent(self, evt):
+    def dragEnterEvent(self, evt:TTkDnDEvent) -> bool:
         if not(self._dndMode & TTkK.DragDropMode.AllowDrop):
             return False
         if issubclass(type(evt.data()),TTkListWidget._DropListData):
             return self.dragMoveEvent(evt)
         return False
 
-    def dragMoveEvent(self, evt):
+    def dragMoveEvent(self, evt:TTkDnDEvent) -> bool:
         offx,offy = self.getViewOffsets()
         y=min(evt.y+offy,len(self._items))
         self._dragPos = (offx+evt.x, y)
         self.update()
         return True
 
-    def dragLeaveEvent(self, evt):
+    def dragLeaveEvent(self, evt:TTkDnDEvent) -> bool:
         self._dragPos = None
         self.update()
         return True
 
-    def dropEvent(self, evt) -> bool:
+    def dropEvent(self, evt:TTkDnDEvent) -> bool:
         if not(self._dndMode & TTkK.DragDropMode.AllowDrop):
             return False
         self._dragPos = None
@@ -424,7 +427,7 @@ class TTkListWidget(TTkAbstractScrollView):
             return True
         return False
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if not self._highlighted: return False
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):

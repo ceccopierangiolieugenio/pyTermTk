@@ -29,14 +29,18 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkGui.drag import TTkDrag
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
+from TermTk.TTkGui.drag import TTkDrag, TTkDnDEvent
+
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.spacer import TTkSpacer
 from TermTk.TTkWidgets.frame import TTkFrame
-from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.menubar import TTkMenuBarButton
+
 from TermTk.TTkLayouts.boxlayout import TTkHBoxLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
@@ -102,11 +106,11 @@ class _TTkTabColorButton(TTkContainer):
     def text(self) -> TTkString:
         return self._text
 
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         self.clicked.emit()
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             self._keyPressed = True
@@ -165,7 +169,7 @@ class TTkTabButton(_TTkTabColorButton):
 
     # This is a hack to force the action aftet the keypress
     # And not key release as normally happen to the button
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x,evt.y
         w,h = self.size()
         self._closeButtonPressed = False
@@ -176,7 +180,7 @@ class TTkTabButton(_TTkTabColorButton):
             self._closeButtonPressed = True
             return True
         return super().mouseReleaseEvent(evt)
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x,evt.y
         w,h = self.size()
         if self._closable and y == (1 if self._border else 0) and w-4<=x<w-1 and self._closeButtonPressed:
@@ -185,7 +189,7 @@ class TTkTabButton(_TTkTabColorButton):
             return True
         self._closeButtonPressed = False
         return False
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         drag = TTkDrag()
         self._closeButtonPressed = False
         if tb := self.parentWidget():
@@ -266,11 +270,11 @@ class _TTkTabScrollerButton(_TTkTabColorButton):
 
     # This is a hack to force the action aftet the keypress
     # And not key release as normally happen to the button
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         return super().mouseReleaseEvent(evt)
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         return False
-    def mouseTapEvent(self, evt) -> bool:
+    def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
         self.clicked.emit()
         return True
 
@@ -504,14 +508,14 @@ class TTkTabBar(TTkContainer):
         self._highlighted = self._currentIndex
         self._updateTabs()
 
-    def wheelEvent(self, evt):
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if evt.evt == TTkK.WHEEL_Up:
             self._moveToTheLeft()
         else:
             self._andMoveToTheRight()
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Right:
                 self._highlighted = min(self._highlighted+1,len(self._tabButtons)-1)
@@ -656,10 +660,10 @@ class TTkTabWidget(TTkFrame):
             else:
                 widget.hide()
 
-    def keyEvent(self, evt) -> bool:
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         return self._tabBar.keyEvent(evt)
 
-    def dropEvent(self, evt) -> bool:
+    def dropEvent(self, evt:TTkDnDEvent) -> bool:
         data = evt.data()
         x, y = evt.x, evt.y
         if not issubclass(type  (data),_TTkTabWidgetDragData):

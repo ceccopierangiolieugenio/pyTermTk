@@ -28,26 +28,37 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 class DragDrop(ttk.TTkFrame):
-    def mouseDragEvent(self, evt) -> bool:
-        ttk.TTkLog.debug("Start DnD")
-        drag = ttk.TTkDrag()
-        drag.setData(f"Test Drag ({self.title()})")
-        drag.exec()
+    def mouseDragEvent(self, evt:ttk. TTkMouseEvent) -> bool:
+        if evt.key == ttk. TTkMouseEvent.LeftButton:
+            ttk.TTkLog.debug("Start Left DnD")
+            drag = ttk.TTkDrag()
+            drag.setData(f"Test Drag ({self.title()})")
+            drag.exec()
+        elif evt.key == ttk. TTkMouseEvent.RightButton:
+            ttk.TTkLog.debug("Start Right DnD")
+            drag = ttk.TTkDrag()
+            drag.setData(f"Test Drag ({self.title()})")
+            drag.exec()
+        elif evt.key == ttk. TTkMouseEvent.MidButton:
+            ttk.TTkLog.debug("Start Middle DnD")
+            drag = ttk.TTkDrag()
+            drag.setData(f"Test Drag ({self.title()})")
+            drag.exec()
         return True
 
-    def dragEnterEvent(self, evt) -> bool:
+    def dragEnterEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Enter ({self.title()}) -> {evt.data()}, pos={evt.pos()}")
         return True
 
-    def dragLeaveEvent(self, evt) -> bool:
+    def dragLeaveEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Leave ({self.title()}) -> {evt.data()}, pos={evt.pos()}")
         return True
 
-    def dragMoveEvent(self, evt) -> bool:
+    def dragMoveEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Move ({self.title()}) -> {evt.data()}, pos={evt.pos()}")
         return True
 
-    def dropEvent(self, evt) -> bool:
+    def dropEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drop ({self.title()}) -> {evt.data()}, pos={evt.pos()}")
         return True
 

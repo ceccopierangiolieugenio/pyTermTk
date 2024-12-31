@@ -31,8 +31,8 @@ sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
 
 class DragThing(ttk.TTkFrame):
-    def __init__(self, *args, **kwargs):
-        ttk.TTkFrame.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs):
+        ttk.TTkFrame.__init__(self, **kwargs)
         # Define and place 4 images with different Hue Color rotation
         ttk.TTkImage(parent=self, pos=( 0, 0), data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK)
         ttk.TTkImage(parent=self, pos=( 0,10), data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK).rotHue(60)
@@ -41,22 +41,23 @@ class DragThing(ttk.TTkFrame):
         self.setMaximumWidth(30)
         self.setMinimumWidth(30)
 
-    def mouseDragEvent(self, evt) -> bool:
-        ttk.TTkLog.debug("Start DnD")
-        drag = ttk.TTkDrag()
-        data = ttk.TTkImage(data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK)
-        # Change color if the drag start over the side images,
-        # based on the same Hue rotation defined in the init
-        if   evt.x <= 15 and evt.y >  10: data.rotHue(60)
-        elif evt.x  > 15 and evt.y <= 10: data.rotHue(90)
-        elif evt.x  > 15 and evt.y >  10: data.rotHue(200)
-        drag.setPixmap(data)
-        drag.setData(data)
-        drag.exec()
+    def mouseDragEvent(self, evt:ttk.TTkMouseEvent) -> bool:
+        if evt.key == ttk. TTkMouseEvent.LeftButton:
+            ttk.TTkLog.debug("Start DnD")
+            drag = ttk.TTkDrag()
+            data = ttk.TTkImage(data=ttk.TTkAbout.peppered, rasteriser=ttk.TTkImage.QUADBLOCK)
+            # Change color if the drag start over the side images,
+            # based on the same Hue rotation defined in the init
+            if   evt.x <= 15 and evt.y >  10: data.rotHue(60)
+            elif evt.x  > 15 and evt.y <= 10: data.rotHue(90)
+            elif evt.x  > 15 and evt.y >  10: data.rotHue(200)
+            drag.setPixmap(data)
+            drag.setData(data)
+            drag.exec()
         return True
 
 class DropThings(ttk.TTkFrame):
-    def dropEvent(self, evt) -> bool:
+    def dropEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drop ({self.title()}) -> pos={evt.pos()}")
         data = evt.data()
         if issubclass(type(data),ttk.TTkWidget):
