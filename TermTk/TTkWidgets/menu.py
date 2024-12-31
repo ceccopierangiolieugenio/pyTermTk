@@ -28,14 +28,16 @@ from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkLayouts.boxlayout import TTkVBoxLayout
-from TermTk.TTkWidgets.scrollarea import TTkScrollArea
-from TermTk.TTkWidgets.list_ import TTkList
+
 from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.scrollarea import TTkScrollArea
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
-from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
+
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkMenuSpacer(TTkWidget):
     def __init__(self, **kwargs) -> None:
@@ -199,7 +201,7 @@ class TTkMenuButton(TTkWidget):
         self.setHighlight(True)
         self.update()
 
-    def mouseReleaseEvent(self, evt) -> bool:
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         self._triggerButton()
         return True
 
@@ -268,7 +270,7 @@ class _TTkMenuAreaWidget(TTkAbstractScrollView):
         [b.setHighlight(False) for b in self._submenu if type(b)==TTkMenuButton]
 
 
-    def keyEvent(self, evt) -> bool:
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if not self._submenu: return False
         btns = [b for b in self._submenu if type(b)==TTkMenuButton]
         if evt.type == TTkK.SpecialKey:
@@ -375,7 +377,7 @@ class TTkMenu(TTkResizableFrame):
         self.resize(w+3,h+2)
         return ret
 
-    def keyEvent(self, evt) -> bool:
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         return self._scrollView.keyEvent(evt)
     # # Forward Focus Method
     # def setFocus(self):

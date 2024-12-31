@@ -23,6 +23,8 @@
 __all__ = ['TTkResizableFrame']
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkWidgets.frame import TTkFrame
 
 class TTkResizableFrame(TTkFrame):
@@ -36,7 +38,7 @@ class TTkResizableFrame(TTkFrame):
         self.setFocusPolicy(TTkK.ClickFocus)
 
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._resizable = TTkK.NONE
         self._mouseDelta = (evt.x, evt.y)
         w,h = self.size()
@@ -55,7 +57,7 @@ class TTkResizableFrame(TTkFrame):
         #return self._resizable != TTkK.NONE
         return True
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if self._resizable:
             # TTkLog.debug(f"{self._resizable}")
             x,y,w,h = self.geometry()

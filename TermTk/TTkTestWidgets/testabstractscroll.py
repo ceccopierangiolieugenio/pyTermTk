@@ -23,6 +23,8 @@
 __all__ = ['TTkTestAbstractScrollWidget']
 
 from TermTk.TTkCore.signal import pyTTkSlot
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
@@ -57,8 +59,11 @@ class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
         canvas.drawText(pos=(l+1,t+1+6), text=f"areaPos1  {self._areaPos}")
         canvas.drawText(pos=(l+1,t+1+7), text=f"areaPos2  ({self._areaPos[0]+self._width},{self._areaPos[1]+self._height})")
 
-    def mousePressEvent(self, evt): return True
-    def mouseReleaseEvent(self, evt): return True
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
+        return True
+    
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
+        return True
 
     def viewFullAreaSize(self) -> tuple[int,int]:
         return self._areaSize

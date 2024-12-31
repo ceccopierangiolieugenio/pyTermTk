@@ -25,10 +25,12 @@ __all__ = ['TTkTestWidget']
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
-from TermTk.TTkWidgets.widget import *
-from TermTk.TTkWidgets.button import *
-from TermTk.TTkWidgets.label import *
-from TermTk.TTkWidgets.frame import *
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
+from TermTk.TTkWidgets.widget import TTkWidget
+from TermTk.TTkWidgets.button import TTkButton
+from TermTk.TTkWidgets.label import TTkLabel
+from TermTk.TTkWidgets.frame import TTkFrame
 
 class _TestContent(TTkWidget):
     t01 = TTkString(color=TTkColor.fg("#ff0000",  link="https://github.com/ceccopierangiolieugenio/pyTermTk") ,
@@ -90,8 +92,8 @@ class TTkTestWidget(TTkFrame):
         canvas.drawText(pos=(x,y+7), width=w, color=self._l[4], text=f"min w,h ({self._minw},{self._minh})")
         TTkFrame.paintEvent(self, canvas)
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         TTkLog.debug(f"{self._name} Test Mouse {evt}")
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         TTkLog.debug(f"{self._name} Test Mouse {evt}")

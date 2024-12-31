@@ -33,12 +33,14 @@ from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textwrap1 import TTkTextWrap
 from TermTk.TTkGui.textcursor import TTkTextCursor
 from TermTk.TTkGui.textdocument import TTkTextDocument
+
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
@@ -241,7 +243,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self._updateSize()
         self.viewChanged.connect(self._pushCursor)
 
-    def multiLine(self) -> bool :
+    def multiLine(self) -> bool:
         '''multiline'''
         return self._multiLine
 
@@ -328,7 +330,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def textCursor(self) -> TTkTextCursor:
         return self._textCursor
 
-    def isReadOnly(self) -> bool :
+    def isReadOnly(self) -> bool:
         return self._readOnly
 
     def setReadOnly(self, ro) -> None:
@@ -476,7 +478,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         offy = max(min(offy, y),y-h+1)
         self.viewMoveTo(offx, offy)
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mousePressEvent(evt)
         ox, oy = self.getViewOffsets()
@@ -486,12 +488,12 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         if self._textCursor.hasSelection():
             self.copy()
         return True
 
-    def mouseDragEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mouseDragEvent(evt)
         ox, oy = self.getViewOffsets()
@@ -502,7 +504,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseDoubleClickEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mouseDoubleClickEvent(evt)
         self._textCursor.select(TTkTextCursor.WordUnderCursor)
@@ -513,7 +515,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseTapEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
         if self._readOnly:
             return super().mouseTapEvent(evt)
         self._textCursor.select(TTkTextCursor.LineUnderCursor)

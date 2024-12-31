@@ -33,6 +33,7 @@ from TermTk.TTkWidgets.tabwidget import TTkTabWidget
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
+from TermTk.TTkGui.drag import TTkDnDEvent
 
 class _KolorFrame(TTkFrame):
     __slots__ = ('_fillColor')
@@ -82,17 +83,17 @@ class _TTkKodeTab(TTkTabWidget):
         self._tabBarTopLayout.update()
         kt._tabBarTopLayout.update()
 
-    def dragEnterEvent(self, evt) -> bool:
+    def dragEnterEvent(self, evt:TTkDnDEvent) -> bool:
         TTkLog.debug(f"Drag Enter")
         return True
 
-    def dragLeaveEvent(self, evt) -> bool:
+    def dragLeaveEvent(self, evt:TTkDnDEvent) -> bool:
         TTkLog.debug(f"Drag Leave")
         self._frameOverlay = None
         self.update()
         return True
 
-    def dragMoveEvent(self, evt) -> bool:
+    def dragMoveEvent(self, evt:TTkDnDEvent) -> bool:
         x,y = evt.x, evt.y
         w,h = self.size()
         k = 3 if self.border() else 2
@@ -113,7 +114,7 @@ class _TTkKodeTab(TTkTabWidget):
         self.update()
         return True
 
-    def dropEvent(self, evt) -> bool:
+    def dropEvent(self, evt:TTkDnDEvent) -> bool:
         self._frameOverlay = None
         x,y = evt.x, evt.y
         ret = True

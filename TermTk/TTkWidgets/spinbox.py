@@ -26,6 +26,9 @@ from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkLayouts import TTkGridLayout
 from TermTk.TTkWidgets.container import TTkContainer
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
@@ -120,14 +123,14 @@ class TTkSpinBox(TTkContainer):
             self.setValue(int(str(text)))
         self._lineEdit.setText(str(self._value))
 
-    def wheelEvent(self, evt):
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if evt.evt == TTkK.WHEEL_Up:
             self.setValue(self._value+1)
         else:
             self.setValue(self._value-1)
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if evt.type == TTkK.SpecialKey:
             if evt.key == TTkK.Key_Up:
                 self.setValue(self._value+1)
@@ -137,7 +140,7 @@ class TTkSpinBox(TTkContainer):
                 return True
         return TTkLineEdit.keyEvent(self._lineEdit, evt)
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         w = self.width()
         value = self._value
@@ -153,7 +156,7 @@ class TTkSpinBox(TTkContainer):
         self._valueDelta = self._value
         return True
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         d = evt.y-evt.x
         if self._draggable:
             self.setValue(self._valueDelta + self._mouseDelta - d)

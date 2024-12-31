@@ -30,6 +30,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkGui.textcursor import TTkTextCursor
@@ -814,7 +816,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._hSeparatorSelected = None
         self._vSeparatorSelected = None
 
-    def leaveEvent(self, evt):
+    def leaveEvent(self, evt:TTkMouseEvent) -> bool:
         self._hoverPos = None
         self.update()
         return super().leaveEvent(evt)
@@ -1155,7 +1157,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.viewMoveTo(ox,oy)
         self.update()
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         # rows = self._tableModel.rowCount()
         cols = self._tableModel.columnCount()
         if self._currentPos:
@@ -1207,7 +1209,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         return True
 
 
-    def mouseDoubleClickEvent(self, evt):
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         showHS = self._showHSeparators
@@ -1248,7 +1250,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._editCell(row,col)
         return True
 
-    def mouseMoveEvent(self, evt) -> bool:
+    def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x,evt.y
         ox, oy = self.getViewOffsets()
         showHS = self._showHSeparators
@@ -1280,7 +1282,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mousePressEvent(self, evt) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         showHS = self._showHSeparators
@@ -1361,7 +1363,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.update()
         return True
 
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         #     columnPos       (Selected = 2)
         #         0       1        2          3   4
         #     ----|-------|--------|----------|---|
@@ -1411,7 +1413,7 @@ class TTkTableWidget(TTkAbstractScrollView):
             return True
         return False
 
-    def mouseReleaseEvent(self, evt) -> bool:
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         if self._dragPos:
             rows = self._tableModel.rowCount()
             cols = self._tableModel.columnCount()

@@ -31,6 +31,9 @@ from TermTk.TTkCore.helper import TTkHelper
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkGui.clipboard import TTkClipboard
 from TermTk.TTkWidgets.widget import TTkWidget
 
@@ -159,7 +162,7 @@ class TTkLineEdit(TTkWidget):
 
         self.update()
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         txtPos = self._text.tabCharPos(evt.x+self._offset)
         self._cursorPos     = txtPos
         self._selectionFrom = txtPos
@@ -167,7 +170,7 @@ class TTkLineEdit(TTkWidget):
         self._pushCursor()
         return True
 
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         txtPos = self._text.tabCharPos(evt.x+self._offset)
         self._selectionFrom = max(0,              min(txtPos,self._cursorPos))
         self._selectionTo   = min(len(self._text),max(txtPos,self._cursorPos))
@@ -177,7 +180,7 @@ class TTkLineEdit(TTkWidget):
         self.copy()
         return True
 
-    def mouseDoubleClickEvent(self, evt) -> bool:
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         before = self._text.substring(to=self._cursorPos)
         after =  self._text.substring(fr=self._cursorPos)
 
@@ -202,7 +205,7 @@ class TTkLineEdit(TTkWidget):
         self.copy()
         return True
 
-    def mouseTapEvent(self, evt) -> bool:
+    def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
         self._selectionFrom = 0
         self._selectionTo = len(self._text)
         if self._selectionFrom < self._selectionTo:
@@ -263,7 +266,7 @@ class TTkLineEdit(TTkWidget):
         self.textEdited.emit(self._text)
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         baseText = self._text
         if evt.type == TTkK.SpecialKey:
             # Don't Handle the special focus switch key

@@ -26,6 +26,8 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkWidgets.container import TTkContainer
@@ -341,7 +343,7 @@ class TTkSplitter(TTkContainer):
         self._processRefSizes(w-b,h-b)
         self._updateGeometries(resized=True)
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._separatorSelected = None
         x,y = evt.x, evt.y
         if self._border:
@@ -358,7 +360,7 @@ class TTkSplitter(TTkContainer):
                     self._updateGeometries()
         return self._separatorSelected is not None
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if self._separatorSelected is not None:
             x,y = evt.x, evt.y
             if self._border:

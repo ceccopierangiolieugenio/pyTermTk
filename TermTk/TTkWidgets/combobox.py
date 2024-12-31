@@ -345,18 +345,18 @@ class TTkComboBox(TTkContainer):
         self.update()
         return True
 
-    def wheelEvent(self, evt: TTkMouseEvent) -> bool:
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if evt.evt == TTkK.WHEEL_Up:
             self.setCurrentIndex(self._id-1)
         else:
             self.setCurrentIndex(self._id+1)
         return True
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._pressEvent()
         return True
 
-    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key in [TTkK.Key_Enter,TTkK.Key_Down] ):
             self._pressEvent()

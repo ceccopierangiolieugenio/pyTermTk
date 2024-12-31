@@ -27,7 +27,7 @@ from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 class TKeyEvents():
     def __init__(self) -> None: pass
 
-#    def keyPressEvent(self, evt:TTkKeyEvent) -> bool :
+#    def keyPressEvent(self, evt:TTkKeyEvent) -> bool:
 #        '''
 #        This event handler, can be reimplemented in a subclass to receive key press events for the widget.
 #
@@ -40,7 +40,7 @@ class TKeyEvents():
 #        :rtype: bool
 #        '''
 #        return False
-#    def keyReleaseEvent(self, evt:TTkKeyEvent) -> bool :
+#    def keyReleaseEvent(self, evt:TTkKeyEvent) -> bool:
 #        '''
 #        This event handler, can be reimplemented in a subclass to receive key release events for the widget.
 #
@@ -54,7 +54,7 @@ class TKeyEvents():
 #        '''
 #        return False
 
-    def keyEvent(self, evt:TTkKeyEvent) -> bool :
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive key events for the widget.
 

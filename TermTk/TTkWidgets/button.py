@@ -219,12 +219,12 @@ class TTkButton(TTkWidget):
         self.update()
 
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         # TTkLog.debug(f"{self._text} Test Mouse {evt}")
         if self._checkable:
             self._checked = not self._checked
@@ -233,7 +233,7 @@ class TTkButton(TTkWidget):
         self.clicked.emit()
         return True
 
-    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             if self._checkable:
@@ -244,7 +244,7 @@ class TTkButton(TTkWidget):
             return True
         return False
 
-    def paintEvent(self, canvas: TTkCanvas) -> None:
+    def paintEvent(self, canvas:TTkCanvas) -> None:
         if self.isEnabled() and self._checkable:
             if self._checked:
                 style = self.style()['checked']

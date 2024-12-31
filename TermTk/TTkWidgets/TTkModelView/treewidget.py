@@ -24,8 +24,10 @@ __all__ = ['TTkTreeWidget']
 
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
-from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
@@ -312,7 +314,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         contentSize = max(row.data[column].termWidth() for row in self._cache)
         self.setColumnWidth(column, contentSize)
 
-    def mouseDoubleClickEvent(self, evt) -> bool:
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         x += ox
@@ -355,7 +357,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
     def focusOutEvent(self) -> None:
         self._separatorSelected = None
 
-    def mousePressEvent(self, evt) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()
         x += ox
@@ -404,7 +406,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             self.update()
         return True
 
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         #    columnPos       (Selected = 2)
         #        0       1        2          3   4
         #    ----|-------|--------|----------|---|

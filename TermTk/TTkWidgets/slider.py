@@ -28,6 +28,8 @@ from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkWidgets.scrollbar import TTkScrollBar
 
 '''
@@ -48,7 +50,7 @@ class TTkSlider(TTkScrollBar):
                         'sliderColor': TTkColor.fg('#8888ff')},
             }
 
-    def wheelEvent(self, evt):
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if self._orientation == TTkK.VERTICAL:
             if evt.evt == TTkK.WHEEL_Up: value = self._value+self._pageStep
             else:                        value = self._value-self._pageStep
@@ -59,7 +61,7 @@ class TTkSlider(TTkScrollBar):
         self.sliderMoved.emit(self._value)
         return True
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         if self._orientation == TTkK.VERTICAL:
             size=self._height-1
             mouse = max(0,min(size,size-evt.y))
@@ -83,7 +85,7 @@ class TTkSlider(TTkScrollBar):
         self.sliderMoved.emit(self._value)
         return True
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if not self._draggable: return False
         if self._orientation == TTkK.VERTICAL:
             size=self._height-1

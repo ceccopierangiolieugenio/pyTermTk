@@ -25,6 +25,8 @@ __all__ = ['TTkScrollBar']
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkWidgets.widget import TTkWidget
 
 '''
@@ -133,7 +135,7 @@ class TTkScrollBar(TTkWidget):
         self._screenPgUp =     ( bb+1 , size-1 )
         # TTkLog.debug(f"aa:{aa} bb:{bb}, a:{a}, size2:{size2}")
 
-    def wheelEvent(self, evt):
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if evt.evt == TTkK.WHEEL_Up:
             value = self._value-self._pageStep
         else:
@@ -142,7 +144,7 @@ class TTkScrollBar(TTkWidget):
         self.sliderMoved.emit(self._value)
         return True
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         if self._orientation == TTkK.VERTICAL:
             size=self._height
             mouse = max(0,min(size,evt.y))
@@ -167,7 +169,7 @@ class TTkScrollBar(TTkWidget):
         self.sliderMoved.emit(self._value)
         return True
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if not self._draggable: return False
         if self._orientation == TTkK.VERTICAL:
             size=self._height

@@ -32,6 +32,8 @@ from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 from TermTk.TTkGui.clipboard import TTkClipboard
 
@@ -831,7 +833,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self.termData.emit(txt.encode())
         return True
 
-    def keyEvent(self, evt):
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         # _termLog.debug(f"Key: {evt.code=}")
         _termLog.debug(f"Key: {str(evt)=}")
         if evt.type == TTkK.SpecialKey:
@@ -976,7 +978,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             self.termData.emit(bah)
         return True
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         if self._mouse.reportPress:
             self._screen_current.select(0,0)
             return self._sendMouse(evt) | True
@@ -987,7 +989,7 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self.update()
         return True
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if self._mouse.reportPress:
             self._screen_current.select(0,0)
             return self._sendMouse(evt)
@@ -997,14 +999,14 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
         self.update()
         return True
 
-    def mouseReleaseEvent(self, evt):
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         self._selecting = False
         if (selected := self._screen_current.getSelected()):
             # self._clipboard.setText(selected)
             self.textSelected.emit(selected)
         return self._sendMouse(evt)
 
-    def wheelEvent(self, evt):
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         if self._sendMouse(evt):
             return True
         ret = super().wheelEvent(evt)
@@ -1015,9 +1017,11 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
             self.update()
         return ret
 
-    def mouseTapEvent(self, evt):     return self._sendMouse(evt)
-    def mouseDoubleClickEvent(self, evt): return self._sendMouse(evt)
-    def mouseMoveEvent(self, evt):
+    def mouseTapEvent(self, evt:TTkMouseEvent) -> bool:
+        return self._sendMouse(evt)
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
+        return self._sendMouse(evt)
+    def mouseMoveEvent(self, evt:TTkMouseEvent) -> bool:
         if self._mouse.reportMove:
             return self._sendMouse(evt)
         return False

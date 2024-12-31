@@ -229,11 +229,11 @@ class TTkCheckbox(TTkWidget):
         self.update()
         return True
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._pressEvent()
         return True
 
-    def keyEvent(self, evt: TTkKeyEvent) -> bool:
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
         if ( evt.type == TTkK.Character and evt.key==" " ) or \
            ( evt.type == TTkK.SpecialKey and evt.key == TTkK.Key_Enter ):
             self._pressEvent()

@@ -25,7 +25,10 @@ __all__ = ['TTkAbstractScrollViewInterface', 'TTkAbstractScrollView', 'TTkAbstra
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkWidgets.container import TTkContainer
+
 from TermTk.TTkLayouts.layout import TTkLayout
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 
@@ -195,7 +198,7 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
     def getViewOffsets(self) -> tuple:
         return self._viewOffsetX, self._viewOffsetY
 
-    def wheelEvent(self, evt):
+    def wheelEvent(self, evt:TTkMouseEvent) -> bool:
         delta = TTkCfg.scrollDelta
         offx, offy = self.getViewOffsets()
         if evt.evt == TTkK.WHEEL_Up:

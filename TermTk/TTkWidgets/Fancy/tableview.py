@@ -26,9 +26,12 @@ from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkWidgets.widget import TTkWidget
+
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
-from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
+from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
 
 class _TTkFancyTableViewHeader(TTkAbstractScrollView):
     __slots__ = ('_header', '_alignments', '_headerColor', '_columns')
@@ -295,7 +298,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
                 return index
         return -1
 
-    def mouseDoubleClickEvent(self, evt):
+    def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         _,y = evt.x, evt.y
         _, oy = self.getViewOffsets()
         if y >= 0:
@@ -307,7 +310,7 @@ class _TTkFancyTableView(TTkAbstractScrollView):
             self.doubleClicked.emit(self._selected)
         return True
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         _,y = evt.x, evt.y
         _, oy = self.getViewOffsets()
         if y >= 0:

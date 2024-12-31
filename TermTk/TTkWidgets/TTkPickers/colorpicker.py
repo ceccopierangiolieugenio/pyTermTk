@@ -60,14 +60,14 @@ class _TTkHueCanvas(TTkWidget):
     def resizeEvent(self, width: int, height: int) -> None:
         self._selected = -1
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._selected = evt.x
         if evt.x < len(self._hueList):
             self.colorPicked.emit(self._hueList[evt.x])
         self.update()
         return True
 
-    def mouseDragEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         return self.mousePressEvent(evt)
 
     def paintEvent(self, canvas: TTkCanvas) -> None:
@@ -111,7 +111,7 @@ class _TTkColorCanvas(TTkWidget):
         self._hue = hue
         self.update()
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         w,h = self.size()
         x,y = evt.x, evt.y
         self._selected = (x,y)
@@ -119,7 +119,7 @@ class _TTkColorCanvas(TTkWidget):
         self.update()
         return True
 
-    def mouseDragEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         return self.mousePressEvent(evt)
 
     def _colorAt(self,x,y,w,h):

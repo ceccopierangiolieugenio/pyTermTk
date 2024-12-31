@@ -22,9 +22,10 @@
 
 __all__ = ['TTkWindow']
 
-from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
+from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+
 from TermTk.TTkLayouts import TTkGridLayout, TTkLayout
 from TermTk.TTkWidgets.button import TTkButton
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
@@ -165,7 +166,7 @@ class TTkWindow(TTkResizableFrame):
         self._winTopLayout.setGeometry(1,1,w-2,1)
         super().resizeEvent(w,h)
 
-    def mousePressEvent(self, evt):
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._mouseDelta = (evt.x, evt.y)
         self._draggable = False
         w,_ = self.size()
@@ -176,7 +177,7 @@ class TTkWindow(TTkResizableFrame):
             return True
         return TTkResizableFrame.mousePressEvent(self, evt)
 
-    def mouseDragEvent(self, evt):
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if self._draggable:
             x,y = self.pos()
             dx = evt.x-self._mouseDelta[0]

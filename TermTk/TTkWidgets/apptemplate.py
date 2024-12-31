@@ -337,12 +337,12 @@ class TTkAppTemplate(TTkContainer):
         self._selected = None
         self.update()
 
-    def mouseReleaseEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         self._selected = None
         self.update()
         return True
 
-    def mousePressEvent(self, evt: TTkMouseEvent) -> bool:
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         self._selected = []
         self._updateGeometries()
         spl = self._splitters
@@ -355,7 +355,7 @@ class TTkAppTemplate(TTkContainer):
                 self._selected.append(loc)
         return True
 
-    def mouseDragEvent(self, evt: TTkMouseEvent) -> bool:
+    def mouseDragEvent(self, evt:TTkMouseEvent) -> bool:
         if not self._selected: return False
         pns = self._panels
         for loc in self._selected:
