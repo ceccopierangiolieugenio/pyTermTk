@@ -122,7 +122,7 @@ class DragDesignItem(ttk.TTkWidget):
         self._designer = designer
         self.setEnabled('disabled' not in widgetClass)
 
-    def mouseDragEvent(self, evt) -> bool:
+    def mouseDragEvent(self, evt:ttk.TTkMouseEvent) -> bool:
         ttk.TTkLog.debug(f"Start DnD -> {self._itemName}")
         wc = self._widgetClass
 

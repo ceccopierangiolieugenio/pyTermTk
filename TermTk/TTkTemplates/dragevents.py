@@ -22,8 +22,15 @@
 
 __all__ = ['TDragEvents']
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from TermTk.TTkGui.drag import TTkDnDEvent
+else:
+    class TTkDnDEvent(): ...
+
 class TDragEvents():
-    def dragEnterEvent(self, evt:"TTkDnDEvent") -> bool:
+    def dragEnterEvent(self, evt:TTkDnDEvent) -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
@@ -37,7 +44,7 @@ class TDragEvents():
         '''
         return False
 
-    def dragLeaveEvent(self, evt:"TTkDnDEvent") -> bool:
+    def dragLeaveEvent(self, evt:TTkDnDEvent) -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
@@ -51,7 +58,7 @@ class TDragEvents():
         '''
         return False
 
-    def dragMoveEvent(self, evt:"TTkDnDEvent") -> bool:
+    def dragMoveEvent(self, evt:TTkDnDEvent) -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 
@@ -65,7 +72,7 @@ class TDragEvents():
         '''
         return False
 
-    def dropEvent(self, evt:"TTkDnDEvent") -> bool:
+    def dropEvent(self, evt:TTkDnDEvent) -> bool:
         '''
         This event handler, can be reimplemented in a subclass to receive drag events for the widget.
 

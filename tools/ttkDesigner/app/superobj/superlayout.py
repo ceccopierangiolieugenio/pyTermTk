@@ -118,7 +118,7 @@ class SuperLayout(ttk.TTkContainer):
         canvas.clean()
         self.paintEvent(canvas)
         ttk.TTkWidget._paintChildCanvas(canvas, self.layout(), self.layout().geometry(), self.layout().offset())
-        drag.setHotSpot(evt.x, evt.y)
+        drag.setHotSpot(pos=(evt.x, evt.y))
         drag.setPixmap(canvas)
         drag.setData(data)
         drag.exec()

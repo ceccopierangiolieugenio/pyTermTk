@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkDrag', 'TTkDnDEvent']
+__all__ = ['TTkDrag', 'TTkDnDEvent', 'TTkDnD']
+
+from typing import Any
 
 from TermTk.TTkCore.helper    import TTkHelper
 from TermTk.TTkCore.canvas    import TTkCanvas
@@ -29,8 +31,13 @@ from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
 
 class _TTkDragDisplayWidget(TTkWidget):
     __slots__ = ('_pixmap')
+    def __init__(self, **kwargs) -> None:
+        self._pixmap = TTkCanvas(width=5, height=1)
+        self._pixmap.drawText(pos=(0,0), text='[...]')
+        super().__init__(**kwargs)
+        self.setPixmap(self._pixmap, (0,0))
 
-    def setPixmap(self, pixmap, hotSpot):
+    def setPixmap(self, pixmap:TTkCanvas, hotSpot:tuple[int,int]) -> None:
         self.getCanvas().setTransparent(True)
         w,h = pixmap.size()
         hsx, hsy= hotSpot
@@ -38,57 +45,99 @@ class _TTkDragDisplayWidget(TTkWidget):
         self._pixmap = pixmap
         self.setGeometry(x-hsx,y-hsy,w,h)
 
-    def paintEvent(self, canvas):
+    def paintEvent(self, canvas:TTkCanvas) -> None:
         _,_,w,h = self.geometry()
         canvas.paintCanvas(self._pixmap, (0,0,w,h), (0,0,w,h), (0,0,w,h))
 
 class TTkDnD():
-    __slots__ = ('_data')
-    def __init__(self, data:object=None) -> None:
+    '''
+    Base class for drag and drop operations.
+    '''
+    __slots__ = ('_data', '_hotSpot')
+    def __init__(self, data:Any=None, hotspot:tuple[int,int]=(0,0)) -> None:
+        '''
+        :param data: The data attached to this Drag object, defaults to 0.
+        :type data: Any
+        :param hotSpot: The offset coordinates of the visual overlay relative to the mouse drag position.
+        :type hotSpot: tuple[int,int]
+        '''
+        self._data = data
+        self._hotSpot = hotspot
+
+    def setData(self, data:Any) -> None:
+        '''
+        The data attached to this Drag object
+
+        :param data: The data attached to this Drag object
+        :type data: Any
+        '''
         self._data = data
 
-    def setData(self, data:object) -> None:
-        self._data = data
+    def data(self) -> Any:
+        '''
+        Returns the data attached to this Drag object
 
-    def data(self) -> object:
+        :return: The data attached to this Drag object
+        :rtype:  Any
+        '''
         return self._data
-
-class TTkDnDEvent(TTkDnD):
-    __slots__ = ('_pos', 'x', 'y')
-    def __init__(self, data:object=None, pos:tuple[int,int]=(0,0)) -> None:
-        self._pos = pos
-        self.x, self.y = pos
-        super().__init__(data)
-
-    def setPos(self, pos:tuple[int,int]) -> None:
-        self._pos = pos
-        self.x, self.y = pos
-
-    def pos(self) -> tuple[int,int]:
-        return self._pos
     
-    def copy(self):
-        ret = TTkDnDEvent(self._data, self._pos)
-        return ret
+    def setHotSpot(self, pos:tuple[int,int]) -> None:
+        '''
+        Sets the position of the hot spot relative to the top-left corner of the pixmap used to the point specified by hotspot.
 
-class TTkDrag(TTkDnD):
-    __slots__ = ('_pixmap', '_showPixmap', '_hotSpot')
-    def __init__(self, data:object=None) -> None:
-        self._showPixmap = True
-        self._hotSpot = (0,0)
-        self._pixmap = _TTkDragDisplayWidget(size=(5,1))
-        pixmap = TTkCanvas(width=5, height=1)
-        pixmap.drawText(pos=(0,0), text='[...]')
-        self._pixmap.setPixmap(pixmap, self._hotSpot)
-        super().__init__(data)
-
-    def setHotSpot(self, x,y) -> None:
-        self._hotSpot = (x,y)
+        :param pos: the hotspot position
+        :type pos:  tuple[int,int]
+        ''' 
+        self._hotSpot = pos
 
     def hotSpot(self) -> tuple[int,int]:
-        return self._hotSpot
+        '''
+        Returns the position of the hot spot relative to the top-left corner of the cursor.
 
-    def setPixmap(self, pixmap:TTkWidget) -> None:
+        :return: the hotspot position
+        :rtype:  tuple[int,int]
+        '''
+        return self._hotSpot
+    
+class TTkDnDEvent(TTkDnD):
+    '''
+    Drag and Drop event class.
+    '''
+    __slots__ = ('_pos', 'x', 'y')
+    def __init__(self, *, pos:tuple[int,int]=(0,0), **kwargs) -> None:
+        '''
+        :param pos: The position of the mouse cursor relative to the current widget.
+        :type pos: tuple[int,int]
+        '''
+        self._pos = pos
+        self.x, self.y = pos
+        super().__init__(**kwargs)
+
+    def pos(self) -> tuple[int,int]:
+        '''
+        Returns the position of the mouse cursor relative to the current widget.
+
+        :return: the position.
+        :rtype:  tuple[int,int]
+        '''
+        return self._pos
+    
+class TTkDrag(TTkDnD):
+    __slots__ = ('_pixmap', '_showPixmap')
+    def __init__(self, **kwargs) -> None:
+        self._showPixmap = True
+        self._pixmap = _TTkDragDisplayWidget(size=(5,1))
+        super().__init__(**kwargs)
+
+    def setPixmap(self, pixmap:TTkWidget|TTkCanvas) -> None:
+        '''
+        Sets the pixmap used to represent the data in a drag and drop operation.
+        If a :py:class:`TTkWidget` is provided as pixmap, its default rendering will be used in the pixmap :py:class:`TTkCanvas`.
+
+        :param pixmap: the pixmap
+        :type  pixmap: :py:class:`TTkWidget` or :py:class:`TTkCanvas`
+        '''
         if issubclass(type(pixmap),TTkWidget):
             canvas = pixmap.getCanvas()
             canvas.updateSize()
@@ -98,33 +147,90 @@ class TTkDrag(TTkDnD):
             pixmap.updateSize()
             self._pixmap.setPixmap(pixmap, self._hotSpot)
 
-    def pixmap(self) -> TTkWidget:
+    def pixmap(self) -> TTkCanvas:
+        '''
+        Returns the pixmap used to represent the data in a drag and drop operation.
+
+        :return: the pixmap used to represent the data in a drag and drop operation.
+        :rtype:  :py:class:`TTkCanvas`
+        '''
         return self._pixmap
 
     def visible(self) -> bool:
+        '''
+        Returns pixmap's visibility status.
+
+        :return: True if the pixmap is visible, False otherwise.
+        :rtype:  bool
+        '''
         return self._showPixmap
 
     def showPixmap(self) -> None:
+        '''
+        Shows the pixmap used to represent the data in a drag and drop operation.
+        '''
         self._showPixmap = True
 
     def hidePixmap(self) -> None:
+        '''
+        Hides the pixmap used to represent the data in a drag and drop operation.
+        '''
         self._showPixmap = False
 
     def exec(self) -> None:
+        '''
+        Starts the drag operation.
+        '''
         TTkHelper.dndInit(self)
     
     def _toDropEvent(self, pos:tuple[int,int]) -> TTkDnDEvent:
-        ret = TTkDnDEvent(self._data, pos)
+        ret = TTkDnDEvent(data=self._data, hotspot=self._hotSpot, pos=pos)
         return ret
 
     def getDragEnterEvent(self, evt:TTkMouseEvent) -> TTkDnDEvent:
+        '''
+        Returns a Drag and Drop event for the DragEnter event.
+
+        :param evt: The mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+
+        :return: The Drag and Drop event
+        :rtype:  :py:class:`TTkDnDEvent`
+        '''
         return self._toDropEvent((evt.x, evt.y))
 
     def getDragLeaveEvent(self, evt:TTkMouseEvent) -> TTkDnDEvent:
+        '''
+        Returns a Drag and Drop event for the DragLeave event.
+
+        :param evt: The mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+
+        :return: The Drag and Drop event
+        :rtype:  :py:class:`TTkDnDEvent`
+        '''
         return self._toDropEvent((evt.x, evt.y))
 
     def getDragMoveEvent(self, evt:TTkMouseEvent) -> TTkDnDEvent:
+        '''
+        Returns a Drag and Drop event for the DragMove event.
+
+        :param evt: The mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+
+        :return: The Drag and Drop event
+        :rtype:  :py:class:`TTkDnDEvent`
+        '''
         return self._toDropEvent((evt.x, evt.y))
 
     def getDropEvent(self, evt:TTkMouseEvent) -> TTkDnDEvent:
+        '''
+        Returns a Drag and Drop event for the Drop event.
+
+        :param evt: The mouse event
+        :type evt: :py:class:`TTkMouseEvent`
+
+        :return: The Drag and Drop event
+        :rtype:  :py:class:`TTkDnDEvent`        
+        '''
         return self._toDropEvent((evt.x, evt.y))

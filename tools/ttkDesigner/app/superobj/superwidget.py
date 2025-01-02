@@ -227,7 +227,7 @@ class SuperWidget(ttk.TTkContainer):
         drag = ttk.TTkDrag()
         data = self
         data.paintChildCanvas()
-        drag.setHotSpot(evt.x, evt.y)
+        drag.setHotSpot(pos=(evt.x, evt.y))
         drag.setPixmap(data.getCanvas())
         drag.setData(data)
         drag.exec()

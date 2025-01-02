@@ -22,11 +22,22 @@
 
 __all__ = ['TTkHelper']
 
+from typing import TYPE_CHECKING
+from dataclasses import dataclass
+
 from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
 from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
+
+if TYPE_CHECKING:
+    from TermTk.TTkGui.drag import TTkDnDEvent, TTkDrag
+    from TermTk.TTkWidgets import TTkWidget
+else:
+    class TTkDrag(): ...
+    class TTkDnDEvent(): ...
+    class TTkWidget(): ...
 
 class TTkHelper:
     '''TTkHelper
@@ -267,8 +278,8 @@ class TTkHelper:
         TTkHelper._mousePos = pos
         # update the position of the Drag and Drop Widget
         if TTkHelper._dnd:
-            hsx, hsy = TTkHelper._dnd['d'].hotSpot()
-            TTkHelper._dnd['d'].pixmap().move(pos[0]-hsx, pos[1]-hsy)
+            hsx, hsy = TTkHelper._dnd.d.hotSpot()
+            TTkHelper._dnd.d.pixmap().move(pos[0]-hsx, pos[1]-hsy)
 
     @staticmethod
     def mousePos():
@@ -486,38 +497,40 @@ class TTkHelper:
     def cursorWidget():
         return TTkHelper._cursorWidget
 
+    @dataclass(frozen=False)
+    class _DnD():
+        d:    TTkDrag = None
+        w:  TTkWidget = None
+
     # Drag and Drop related helper routines
     _dnd = None
 
     @staticmethod
-    def dndInit(drag):
-        TTkHelper._dnd = {
-                'd' : drag,
-                'w' : None
-            }
+    def dndInit(drag:TTkDrag):
+        TTkHelper._dnd = TTkHelper._DnD(d=drag, w=None)
         TTkHelper._rootWidget.rootLayout().addWidget(drag.pixmap())
         drag.pixmap().raiseWidget()
 
     @staticmethod
-    def dndGetDrag():
-        return TTkHelper._dnd['d'] if TTkHelper._dnd else None
+    def dndGetDrag() -> TTkDrag:
+        return TTkHelper._dnd.d if TTkHelper._dnd else None
 
     @staticmethod
-    def dndWidget():
-        return TTkHelper._dnd['w'] if TTkHelper._dnd else None
+    def dndWidget() -> TTkWidget:
+        return TTkHelper._dnd.w if TTkHelper._dnd else None
 
     @staticmethod
-    def dndEnter(widget):
-        TTkHelper._dnd['w'] = widget
+    def dndEnter(widget:TTkWidget):
+        TTkHelper._dnd.w = widget
 
     @staticmethod
-    def isDnD():
+    def isDnD() -> bool:
         return TTkHelper._dnd is not None
 
     @staticmethod
     def dndEnd():
         if TTkHelper._dnd:
-            TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper._dnd['d'].pixmap())
+            TTkHelper._rootWidget.rootLayout().removeWidget(TTkHelper._dnd.d.pixmap())
         TTkHelper._dnd = None
         TTkHelper._rootWidget.update()
 

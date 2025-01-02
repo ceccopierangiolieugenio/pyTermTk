@@ -106,7 +106,7 @@ class _layerButton(ttk.TTkContainer):
         pm = ttk.TTkCanvas(width=len(name)+4,height=3)
         pm.drawBox(pos=(0,0),size=pm.size())
         pm.drawText(pos=(2,1), text=name)
-        drag.setHotSpot(5, 1)
+        drag.setHotSpot(pos=(5, 1))
         drag.setPixmap(pm)
         drag.exec()
         return True
