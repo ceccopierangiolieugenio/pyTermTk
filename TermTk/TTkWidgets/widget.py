@@ -392,6 +392,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '''
         return False
 
+    def _mouseEventParseChildren(self, evt:TTkMouseEvent) -> bool:
+        return False
+
     _mouseOver = None
     _mouseOverTmp = None
     _mouseOverProcessed = False
@@ -416,6 +419,9 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         #     if  TTkWidget._mouseEventLayoutHandle(evt, self.rootLayout()):
         #         return True
 
+        if self._mouseEventParseChildren(evt):
+            return True
+
         # If there is an overlay and it is modal,
         # return False if this widget is not part of any
         # of the widgets above the modal
@@ -428,10 +434,11 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
             if evt.evt == TTkK.Drag:
                 dndw = TTkHelper.dndWidget()
                 if dndw == self:
-                    if self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt)):
-                        return True
+                    self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt))
+                    return True
                 else:
-                    if self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)):
+                    if ( self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)) or 
+                         self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt))):
                         if dndw:
                             ret = dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(evt))
                         TTkHelper.dndEnter(self)

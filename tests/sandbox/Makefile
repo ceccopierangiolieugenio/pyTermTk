@@ -72,7 +72,7 @@ buildSandbox: www
 	$( cd ../../ ; tools/prepareBuild.sh release ; )
 
 	find ../../tmp/TermTk/  -name "*.py" | sed 's,.*tmp/,,' | sort | xargs tar cvzf bin/TermTk.tgz -C ../../tmp
-	find ../../tutorial -name "*.py" | sort | xargs tar cvzf bin/tutorial.tgz
+	find ../../tutorial -name '*.py' -o -name '*.json' | sort | xargs tar cvzf bin/tutorial.tgz
 	find ../../demo/paint.py ../../demo/ttkode.py ../../demo/demo.py ../../demo/showcase/*.* | sort | xargs tar cvzf bin/demo.tgz
 	find ../../tests/ansi.images.json ../../tests/t.ui/*.* | sort | xargs tar cvzf bin/tests.tgz
 

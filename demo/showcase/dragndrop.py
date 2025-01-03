@@ -62,7 +62,10 @@ class DropThings(ttk.TTkFrame):
         data = evt.data()
         if issubclass(type(data),ttk.TTkWidget):
             self.layout().addWidget(data)
-            data.move(evt.x,evt.y)
+            # Since the frame by default has a padding of 1
+            # I align the button to the mouse coordinates by subtracting the Top/Left padding size
+            t,b,l,r = self.getPadding()
+            data.move(evt.x-l, evt.y-t)
             self.update()
             return True
         return False

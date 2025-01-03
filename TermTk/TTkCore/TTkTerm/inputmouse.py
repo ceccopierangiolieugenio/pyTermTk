@@ -92,6 +92,15 @@ class TTkMouseEvent:
         self.mod = mod
         self.raw = raw
         self.tap = tap
+    
+    def pos(self) -> tuple[int,int]:
+        '''
+        Returns the position of the mouse cursor relative to the current widget.
+
+        :return: the position.
+        :rtype:  tuple[int,int]
+        '''
+        return (self.x, self.y)
 
     def clone(self, pos=None, evt=None):
         x,y = pos or (self.x, self.y)

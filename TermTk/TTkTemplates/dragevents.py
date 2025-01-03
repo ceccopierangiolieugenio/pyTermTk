@@ -50,6 +50,8 @@ class TDragEvents():
 
         .. note:: Reimplement this function to handle this event
 
+        .. note:: This event is triggered only if :py:meth:`TDragEvents.dragEnterEvent` or :py:meth:`TDragEvents.dragMoveEvent` were previously handled inside this widget.
+
         :param evt: The drop event
         :type evt: :py:class:`TTkDnDEvent`
 
