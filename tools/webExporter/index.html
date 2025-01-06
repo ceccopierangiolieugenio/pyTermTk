@@ -15,7 +15,6 @@
     <script src="www/xterm/addon-unicode11/addon-unicode11.js"></script>
     <script src="www/file-saver/FileSaver.js"></script>
 
-    <script src="js/ttkproxy.js"></script>
     <style>
       body {
         height: 100%;
@@ -30,7 +29,8 @@
     <div id="terminal" contenteditable="true" onpaste="pasteFunction()" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
     <input type="file" id="file-input" hidden />
 
-    <script type="text/javascript">
+    <script type="module">
+      import { TTkProxy } from './js/ttkproxy.js'
 
       function pasteFunction(abc) {
             text = abc.clipboardData.getData("Text")
@@ -79,15 +79,15 @@
 
       /* pyodide demo */
       async function mainTTk(term,json){
-        ttkProxy = new TTkProxy(term)
+        let ttkProxy = new TTkProxy(term)
         await ttkProxy.init()
 
-        for (lib of json['libs']){
+        for (let lib of json['libs']){
           await ttkProxy.loadLib(lib['pkg']);
           term.write(`${lib['name']} - Loaded\n\r`)
         }
 
-        for (pkg of json['pkgs']){
+        for (let pkg of json['pkgs']){
           await ttkProxy.loadPackage(pkg);
           term.write(`${pkg} - Loaded\n\r`)
         }

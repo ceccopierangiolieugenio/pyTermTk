@@ -333,3 +333,4 @@ class TTkProxy {
         this.ttk_log(filename + " - LOADED")
     }
 }
+export {TTkProxy};
