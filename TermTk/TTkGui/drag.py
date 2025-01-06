@@ -130,7 +130,8 @@ class TTkDrag(TTkDnD):
         self._pixmap = _TTkDragDisplayWidget(size=(5,1))
         super().__init__(**kwargs)
 
-    def setPixmap(self, pixmap:TTkWidget|TTkCanvas) -> None:
+    # def setPixmap(self, pixmap:TTkWidget|TTkCanvas) -> None:
+    def setPixmap(self, pixmap:TTkWidget) -> None:
         '''
         Sets the pixmap used to represent the data in a drag and drop operation.
         If a :py:class:`TTkWidget` is provided as pixmap, its default rendering will be used in the pixmap :py:class:`TTkCanvas`.
