@@ -11,8 +11,7 @@ TTkLineEdit
 Init
 ----
 
-`TTkLineEdit/Init.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkLineEdit/Init.01.py>`__ -
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkLineEdit/Init.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkLineEdit/Init.01.py`:
 
 .. code:: bash
 
@@ -24,8 +23,7 @@ Init
 Set/Get Text
 ------------
 
-`TTkLineEdit/SetGet.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkLineEdit/SetGet.01.py>`__ -
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkLineEdit/SetGet.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkLineEdit/SetGet.01.py`:
 
 .. code:: bash
 
@@ -37,8 +35,7 @@ Set/Get Text
 Events
 ------
 
-`TTkLineEdit/SetGet.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkLineEdit/Events.01.py>`__ -
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkLineEdit/Events.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkLineEdit/Events.01.py`
 
 .. _Examples-Terminal:
 
@@ -48,69 +45,58 @@ TTkTerminal
 .. note::
     This widget is available only on Linux/Mac
 
-`TTkTerminal/TerminalTab.01.Basic.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTerminal/TerminalTab.01.Basic.py>`__
+:ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.01.Basic.py`
 
-`TTkTerminal/TerminalTab.02.AddButton.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTerminal/TerminalTab.02.AddButton.py>`__
+:ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.02.AddButton.py`
 
-`TTkTerminal/TerminalTab.03.KodeTab.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTerminal/TerminalTab.03.KodeTab.py>`__
+:ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.03.KodeTab.py`
 
-`TTkTerminal/TerminalTab.04.KodeTab.close.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTerminal/TerminalTab.04.KodeTab.close.py>`__
+:ttk:ghIntLink:`tutorial/examples,TTkTerminal/TerminalTab.04.KodeTab.close.py`
 
 TTkTable
 ========
 
-`TTkTable/table.01.basic.py           <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.01.basic.py>`__
-(`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.01.basic.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.01.basic.py`
 
-`TTkTable/table.02.custom.model.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.02.custom.model.01.py>`__
-(`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.02.custom.model.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.02.custom.model.01.py`
 
-`TTkTable/table.02.custom.model.02.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.02.custom.model.02.py>`__
-(`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.02.custom.model.02.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.02.custom.model.02.py`
 
-`TTkTable/table.02.custom.model.03.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.02.custom.model.03.py>`__
-(`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.02.custom.model.03.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.02.custom.model.03.py`
 
-`TTkTable/table.03.theming.color.01.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.03.theming.color.01.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.03.theming.color.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.color.01.py`
 
-`TTkTable/table.03.theming.color.02.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.03.theming.color.02.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.03.theming.color.02.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.color.02.py`
 
-`TTkTable/table.03.theming.color.03.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.03.theming.color.03.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.03.theming.color.03.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.color.03.py`
 
-`TTkTable/table.03.theming.headers.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.03.theming.headers.01.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.03.theming.headers.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.headers.01.py`
 
-`TTkTable/table.03.theming.lines.01.py    <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.03.theming.lines.01.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.03.theming.lines.01.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.03.theming.lines.01.py`
 
-`TTkTable/table.04.methods.py             <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.04.methods.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.04.methods.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.04.methods.py`
 
-`TTkTable/table.05.events.py              <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/TTkTable/table.05.events.py>`__
-(`tryItOnline          <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/TTkTable/table.05.events.py>`__):
+:ttk:sbIntLink:`tutorial/examples,TTkTable/table.05.events.py`
 
 
 DragAndDrop
 ===========
 
-`tutorial/examples/DragAndDrop/dnd.01.basic.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.01.basic.py>`__       (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.01.basic.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.01.basic.py`
 
-`tutorial/examples/DragAndDrop/dnd.02.events.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.02.events.01.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.02.events.01.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.02.events.01.py`
 
-`tutorial/examples/DragAndDrop/dnd.02.events.02.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.02.events.02.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.02.events.02.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.02.events.02.py`
 
-`tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.01.py`
 
-`tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.02.py`
 
-`tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.03.py`
 
-`tutorial/examples/DragAndDrop/dnd.04.pixmap.03.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.03.pixmap.04.py`
 
-`tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py>`__  (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py>`__)
+:ttk:sbIntLink:`tutorial/examples,DragAndDrop/dnd.04.hotSpot.01.py`
 
 
 

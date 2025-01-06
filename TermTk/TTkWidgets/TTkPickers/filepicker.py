@@ -88,8 +88,7 @@ class TTkFileDialogPicker(TTkWindow):
         ║Files of type:[All Files (*)                                   ^][Cancel]║
         ╚═════════════════════════════════════════════════════════════════════════╝
 
-    Demo: `filepicker.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py>`_
-    (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py>`__)
+    Demo: :ttk:sbIntLink:`demo/showcase,filepicker.py`
 
     :ref:`ttkdesigner Tutorial <TextEdit_ttkDesigner-Tutorial_Intro>`
 
@@ -413,8 +412,7 @@ class TTkFileButtonPicker(TTkButton):
         ║Files of type:[All Files (*)                                   ^][Cancel]║
         ╚═════════════════════════════════════════════════════════════════════════╝
 
-    Demo: `filepicker.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/filepicker.py>`_
-    (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/filepicker.py>`__)
+    Demo: :ttk:sbIntLink:`demo/showcase,filepicker.py`
 
     :param path: the current path used in the file dialog, defaults to "."
     :type path: str, optional

@@ -46,6 +46,7 @@ extensions = [
     'sphinx_ext_autosummary_reworked',  # Create neat summary tables
     'sphinx_PyRefRole_hacked',          # Resolve Domainless TermTk Classes
     'method_signal',
+    'sandbox_links',
 ]
 
 templates_path = ['templates']

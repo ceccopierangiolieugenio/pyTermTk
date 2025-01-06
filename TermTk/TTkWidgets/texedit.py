@@ -122,8 +122,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         ║ <▌nt mollit anim id est laborum."                                                 ╨   ║
         ╚═══════════════════════════════════════════════════════════════════════════════════════╝
 
-    Demo: `textedit.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/demo/showcase/textedit.py>`_
-    (`Try Online <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py>`__)
+    Demo: :ttk:sbIntLink:`demo/showcase,textedit.py`
 
     :ref:`ttkdesigner Tutorial <TextEdit_ttkDesigner-Tutorial_Intro>`
     '''
@@ -213,7 +212,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param multiLine: In a multiline text edit the user can split the text in multiple lines, defaults to **True**
         :type multiLine: bool, optional
 
-        :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri=https://raw.githubusercontent.com/ceccopierangiolieugenio/pyTermTk/main/demo/showcase/textedit.py>`__, defaults to a new Document
+        :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`__, defaults to a new Document
         :type document: :py:class:`TTkTextDocument`, optional
         '''
 

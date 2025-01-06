@@ -57,7 +57,7 @@ Note that the :py:meth:`TTkDrag.exec` function does not block the main event loo
 
 .. seealso::
 
-    * `tutorial/examples/DragAndDrop/dnd.01.basic.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.01.basic.py>`__       (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.01.basic.py>`__)
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.01.basic.py`
 
 --------
 Dropping
@@ -74,7 +74,7 @@ the :py:meth:`TDragEvents.dropEvent` event handler functions.
 
 .. seealso::
 
-    * `tutorial/examples/DragAndDrop/dnd.01.basic.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.01.basic.py>`__       (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.01.basic.py>`__)
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.01.basic.py`
 
 
 ------
@@ -108,8 +108,8 @@ There are several events that can be used to customize the drag and drop operati
 
 .. seealso::
 
-    * `tutorial/examples/DragAndDrop/dnd.02.events.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.02.events.01.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.02.events.01.py>`__)
-    * `tutorial/examples/DragAndDrop/dnd.02.events.02.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.02.events.02.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.02.events.02.py>`__)
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.02.events.01.py`
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.02.events.02.py`
 
 
 ------
@@ -164,10 +164,10 @@ Or use a :py:class:`TTkCanvas` as pixmap and draw the required content on it:
 
 .. seealso::
 
-    * `tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py>`__)
-    * `tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py>`__)
-    * `tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py>`__)
-    * `tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py>`__)
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py`
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py`
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py`
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py`
 
 
 -------
@@ -192,17 +192,17 @@ the object being dragged from the clicked position:
 
 .. seealso::
 
-    * `tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py>`__  (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py>`__)
+    * :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py`
 
 --------
 Examples
 --------
 
-* `tutorial/examples/DragAndDrop/dnd.01.basic.py      <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.01.basic.py>`__       (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.01.basic.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.02.events.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.02.events.01.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.02.events.01.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.02.events.02.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.02.events.02.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.02.events.02.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.04.pixmap.03.py  <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py>`__   (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py>`__)
-* `tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py>`__  (`tryItOnline      <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py>`__)
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.01.basic.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.02.events.01.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.02.events.02.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.01.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.02.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.03.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.03.pixmap.04.py`
+* :ttk:sbIntLink:`tutorial/examples/DragAndDrop/dnd.04.hotSpot.01.py`
