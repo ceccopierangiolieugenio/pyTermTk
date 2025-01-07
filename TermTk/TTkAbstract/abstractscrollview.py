@@ -176,6 +176,11 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
     def viewDisplayedSize(self) -> tuple[int,int]:
         return self.size()
 
+    def viewFullAreaSize(self) -> tuple[int,int]:
+        t,b,l,r = self.getPadding()
+        _,_,w,h = self.layout().fullWidgetAreaGeometry()
+        return w+l+r, h+t+b
+    
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()
@@ -215,6 +220,10 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         if updateLayout:
             self.viewChanged.emit()
         return super().update(repaint, updateLayout, updateParent)
+
+    def setPadding(self, top, bottom, left, right) -> None:
+        super().setPadding(top, bottom, left, right)
+        self.viewChanged.emit()
 
 class TTkAbstractScrollViewLayout(TTkLayout, TTkAbstractScrollViewInterface):
     '''
