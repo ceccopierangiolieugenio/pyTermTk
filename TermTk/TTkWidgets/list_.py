@@ -35,7 +35,7 @@ class TTkList(TTkAbstractScrollArea):
     __slots__ = tuple(
         ['_listView'] +
         (_forwardedSignals:=[ # Forwarded Signals From TTkTable
-            'itemClicked', 'textClicked']) +
+            'itemClicked', 'textClicked', 'searchModified']) +
         (_forwardedMethods:=[ # Forwarded Methods From TTkTable
             'items',
             'dragDropMode', 'setDragDropMode',
@@ -43,6 +43,7 @@ class TTkList(TTkAbstractScrollArea):
             'indexOf', 'itemAt', 'moveItem',
             'removeAt', 'removeItem', 'removeItems',
             'selectionMode', 'setSelectionMode', 'selectedItems', 'selectedLabels',
+            'search', 'setSearch', 'searchVisibility', 'setSearchVisibility',
             'setCurrentRow', 'setCurrentItem'])
         )
     _forwardWidget = TTkListWidget

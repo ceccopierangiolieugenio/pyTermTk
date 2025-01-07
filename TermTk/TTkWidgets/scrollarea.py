@@ -39,10 +39,6 @@ class _TTkAreaWidget(TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> tuple[int,int]:
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        return w , h
-
     def maximumWidth(self):   return 0x10000
     def maximumHeight(self):  return 0x10000
     def minimumWidth(self):   return 0

@@ -187,10 +187,6 @@ class LayerScrollWidget(ttk.TTkAbstractScrollView):
         x,y = self.getViewOffsets()
         self.layout().setOffset(-x,-y)
 
-    def viewFullAreaSize(self) -> tuple:
-        _,_,w,h = self.layout().fullWidgetAreaGeometry()
-        return w,h
-
     def viewDisplayedSize(self) -> tuple:
         return self.size()
 

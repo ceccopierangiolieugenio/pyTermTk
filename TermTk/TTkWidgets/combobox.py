@@ -39,6 +39,41 @@ from TermTk.TTkWidgets.list_ import TTkList
 from TermTk.TTkWidgets.lineedit import TTkLineEdit
 from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 
+
+class _TTkComboBoxPopup(TTkResizableFrame):
+    classStyle = TTkResizableFrame.classStyle
+    classStyle['default'] |= {'searchColor': TTkColor.fg("#FFFF00")}
+    
+    __slots__ = ('_list',
+                 #exportedMethods
+                 'setCurrentRow',
+                 #exportedSignals
+                 'textClicked')
+    def __init__(self, *, items:list[str], **kwargs) -> None:
+        super().__init__(**kwargs|{'layout':TTkGridLayout()})
+        self._list:TTkList = TTkList(parent=self, showSearch=False)
+        self._list.addItems(items)
+        self._list.searchModified.connect(self.update)
+
+        self.textClicked   = self._list.textClicked
+        self.setCurrentRow = self._list.setCurrentRow
+    
+    # def setFocus(self) -> None:
+    #     self._list.viewport().setFocus()
+
+    def keyEvent(self, evt:TTkKeyEvent) -> bool:
+        return self._list.viewport().keyEvent(evt)
+    
+    def paintEvent(self, canvas:TTkCanvas) -> None:
+        super().paintEvent(canvas)
+        if text := self._list.search():
+            w = self.width()-6
+            if len(text) > w:
+                text = f"...{text[w-3:]}"
+            color = self.currentStyle()['searchColor']
+            canvas.drawText(pos=(1,0), text=f"╼ {text} ╾")
+            canvas.drawText(pos=(3,0), text=text,color=color)
+
 class TTkComboBox(TTkContainer):
     ''' TTkComboBox:
 
@@ -333,16 +368,23 @@ class TTkComboBox(TTkContainer):
         if frameHeight > 20: frameHeight = 20
         if frameWidth  < 20: frameWidth = 20
 
-        self._popupFrame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
+        self._popupFrame = _TTkComboBoxPopup(items=self._list, size=(frameWidth,frameHeight))
         TTkHelper.overlay(self, self._popupFrame, 0, 0)
-        listw = TTkList(parent=self._popupFrame)
-        # TTkLog.debug(f"{self._list}")
-        listw.addItems(self._list)
         if self._id != -1:
-            listw.setCurrentRow(self._id)
-        listw.textClicked.connect(self._callback)
-        listw.viewport().setFocus()
+            self._popupFrame.setCurrentRow(self._id)
+        self._popupFrame.textClicked.connect(self._callback)
         self.update()
+
+        # self._popupFrame = TTkResizableFrame(layout=TTkGridLayout(), size=(frameWidth,frameHeight))
+        # TTkHelper.overlay(self, self._popupFrame, 0, 0)
+        # listw = TTkList(parent=self._popupFrame)
+        # # TTkLog.debug(f"{self._list}")
+        # listw.addItems(self._list)
+        # if self._id != -1:
+        #     listw.setCurrentRow(self._id)
+        # listw.textClicked.connect(self._callback)
+        # listw.viewport().setFocus()
+        # self.update()
         return True
 
     def wheelEvent(self, evt:TTkMouseEvent) -> bool:
