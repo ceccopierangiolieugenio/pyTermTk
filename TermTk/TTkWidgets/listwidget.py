@@ -521,13 +521,28 @@ class TTkListWidget(TTkAbstractScrollView):
             if self._highlighted:
                 # TTkLog.debug(self._highlighted)
                 self._highlighted.listItemClicked.emit(self._highlighted)
+        
         elif evt.type == TTkK.Character:
+            # Add this char to the search text
             self._searchText += evt.key
             self.update()
             self.searchModified.emit(self._searchText)
-        elif evt.type == TTkK.SpecialKey:
-            if evt.key == TTkK.Key_Tab:
-                return False
+        
+        elif ( evt.type == TTkK.SpecialKey and 
+               evt.key == TTkK.Key_Tab ):
+            return False
+        
+        elif ( evt.type == TTkK.SpecialKey and
+               evt.key in (TTkK.Key_Delete,TTkK.Key_Backspace) and
+               self._searchText ):
+            # Handle the backspace to remove the last char from the search text
+            self._searchText = self._searchText[:-1]
+            self.update()
+            self.searchModified.emit(self._searchText)
+
+        elif ( evt.type == TTkK.SpecialKey and
+               self._filteredItems):
+            # Handle the arrow/movement keys
             index = 0
             if self._highlighted:
                 self._highlighted._setHighlighted(False)
@@ -560,6 +575,7 @@ class TTkListWidget(TTkAbstractScrollView):
             self._highlighted = self._filteredItems[index]
             self._highlighted._setHighlighted(True)
             self._moveToHighlighted()
+
         else:
             return False
         return True
@@ -591,12 +607,12 @@ class TTkListWidget(TTkAbstractScrollView):
     def paintEvent(self, canvas):
         if self._searchVisibility and self._searchText:
             w,h = self.size()
-            if len(self._searchText) > w:
-                text = f"...{self._searchText[-w-3:]}"
-            else:
-                text = self._searchText
             color = self.currentStyle()['searchColor']
-            canvas.drawText(pos=(0,0),text=text, color=color, width=w)
+            if len(self._searchText) > w:
+                text = TTkString("≼",TTkColor.BG_BLUE+TTkColor.FG_CYAN)+TTkString(self._searchText[-w+1:],color)
+            else:
+                text = TTkString(self._searchText,color)
+            canvas.drawTTkString(pos=(0,0),text=text, color=color, width=w)
 
 
 

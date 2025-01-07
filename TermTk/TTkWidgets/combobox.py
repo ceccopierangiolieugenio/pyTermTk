@@ -68,11 +68,13 @@ class _TTkComboBoxPopup(TTkResizableFrame):
         super().paintEvent(canvas)
         if text := self._list.search():
             w = self.width()-6
-            if len(text) > w:
-                text = f"...{text[w-3:]}"
             color = self.currentStyle()['searchColor']
+            if len(text) > w:
+                text = TTkString("≼",TTkColor.BG_BLUE+TTkColor.FG_CYAN)+TTkString(text[-w+1:],color)
+            else:
+                text = TTkString(text,color)
             canvas.drawText(pos=(1,0), text=f"╼ {text} ╾")
-            canvas.drawText(pos=(3,0), text=text,color=color)
+            canvas.drawTTkString(pos=(3,0), text=text)
 
 class TTkComboBox(TTkContainer):
     ''' TTkComboBox:

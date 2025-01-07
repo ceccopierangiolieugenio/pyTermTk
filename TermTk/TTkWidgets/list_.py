@@ -52,6 +52,7 @@ class TTkList(TTkAbstractScrollArea):
                  listWidget:TTkListWidget=None,
                  selectionMode:int=TTkK.SingleSelection,
                  dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
+                 showSearch:bool=True,
                  **kwargs) -> None:
         '''
         :param listWidget: a custom List Widget to be used instead of the default one.
@@ -60,6 +61,7 @@ class TTkList(TTkAbstractScrollArea):
         self._listView = listWidget if listWidget else TTkListWidget(
                                                             selectionMode=selectionMode,
                                                             dragDropMode=dragDropMode,
+                                                            showSearch=showSearch,
                                                             **kwargs|{'parent':None,'visible':True})
         super().__init__(**kwargs)
         self.setViewport(self._listView)
