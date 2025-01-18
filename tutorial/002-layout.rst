@@ -32,7 +32,7 @@ Intro
 
 TTkLayouts_ are specialised classes that allow the placement of the widgets.
 
-.. image:: https://ceccopierangiolieugenio.github.io/pyTermTk/_images/Layout.HLD.001.svg
+.. image:: https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/_images/Layout.HLD.001.svg
 
 TTkLayout_
 ----------

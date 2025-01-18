@@ -49,17 +49,17 @@ def demoTextEdit(root, filename):
     # te.setLineWrapMode(ttk.TTkK.FixedWidth)
     # te.setWrapWidth(100)
 
-    frame.layout().addWidget(te,1,0,1,9)
+    frame.layout().addWidget(te,1,0,1,10)
     frame.layout().addWidget(ttk.TTkLabel(text="Wrap: ", maxWidth=6),0,0)
     frame.layout().addWidget(lineWrap := ttk.TTkComboBox(list=['NoWrap','WidgetWidth','FixedWidth']),0,1)
     frame.layout().addWidget(ttk.TTkLabel(text=" Type: ",maxWidth=7),0,2)
     frame.layout().addWidget(wordWrap := ttk.TTkComboBox(list=['WordWrap','WrapAnywhere'], enabled=False),0,3)
     frame.layout().addWidget(ttk.TTkLabel(text=" FixW: ",maxWidth=7),0,4)
     frame.layout().addWidget(fixWidth := ttk.TTkSpinBox(value=te.wrapWidth(), maximum=500, minimum=10, enabled=False),0,5)
-    frame.layout().addWidget(ttk.TTkLabel(text=" Lexer: ",maxWidth=8),0,5)
-    frame.layout().addWidget(lexers   := ttk.TTkComboBox(list=ttk.TextDocumentHighlight.getLexers()),0,6)
-    frame.layout().addWidget(ttk.TTkLabel(text=" Style: ",maxWidth=8),0,7)
-    frame.layout().addWidget(styles   := ttk.TTkComboBox(list=ttk.TextDocumentHighlight.getStyles()),0,8)
+    frame.layout().addWidget(ttk.TTkLabel(text=" Lexer: ",maxWidth=8),0,6)
+    frame.layout().addWidget(lexers   := ttk.TTkComboBox(list=ttk.TextDocumentHighlight.getLexers()),0,7)
+    frame.layout().addWidget(ttk.TTkLabel(text=" Style: ",maxWidth=8),0,8)
+    frame.layout().addWidget(styles   := ttk.TTkComboBox(list=ttk.TextDocumentHighlight.getStyles()),0,9)
 
 
     lineWrap.setCurrentIndex(0)
