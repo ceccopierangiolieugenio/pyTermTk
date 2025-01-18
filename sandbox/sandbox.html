@@ -48,56 +48,55 @@
   </head>
   <body>
     <div id="layout" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>
-
-    <script type="module">
-          import { w2sidebar, w2utils, w2layout, w2field, query } from './www/w2ui/w2ui.es6.min.js'
-          let pstyle = 'border: 1px solid #efefef; padding: 5px;';
-          let expand = 'position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px';
-          new w2layout({
-              box: '#layout',
-              name: 'layout_pyTermTk_sandbox',
-              padding: 4,
-              panels: [
-                  //{ type: 'top', size: 50, resizable: true, style: pstyle, html: 'top' },
-                  { type: 'left', size: 200, resizable: true, style: pstyle,
-                    html: '<div id="sidebar" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' },
-                  { type: 'main', style: pstyle,
-                    toolbar: {
-                      items: [
-                        { type: 'button', id: 'run_button', text: 'Run', icon: 'far fa-play-circle' },
-                        { type: 'html',  id: 'uri',
-                            html(item) {
-                              let html =
-                                '<div style="padding: 0px 10px; margin-top: -2px;" >'+
-                                '  URI: <input id="codeUri" size="50"/>'+
-                                '  FPS Cap: <input id="fpsCap" value="30" size="1">'+
-                                '</div>';
-                              return html;
-                              },
-                        },
-                      ],
-                      onClick(event) { run(); }
-                    },
-                      html: '<div id="codeArea" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 25px"></div>'+
-                            `<div id="codeArea" style="position: absolute; left: 15px;          right: 0px; bottom: 0px">
-                              <a href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> sandbox,
-                              Powered by <a href="https://pyodide.org/">Pyodide</a>
-                              and <a href="https://xtermjs.org">xterm.js</a>
-                              and <a href="https://codemirror.net/5/">CodeMirror5</a>
-                              and <a href="https://w2ui.com/">w2ui</a>
-                             </div>`},
-                  { type: 'right', size: 1000, resizable: true, style: pstyle,
-                    html: '<div id="terminal" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
-              ]
-          });
-          new w2field({ el: query('#fpsCap')[0], type: 'int', autoFormat: false })
-    </script>
     
     <input type="file" id="file-input" hidden />
 
     <script type="module">
       import { TTkProxy } from './js/ttkproxy.js'
-          import { w2sidebar, w2utils, w2layout, w2field, query } from './www/w2ui/w2ui.es6.min.js'
+      import { w2sidebar, w2utils, w2layout, w2field, query } from './www/w2ui/w2ui.es6.min.js'
+
+      let pstyle = 'border: 1px solid #efefef; padding: 5px;';
+      let expand = 'position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px';
+      let run = function(){};
+
+      new w2layout({
+          box: '#layout',
+          name: 'layout_pyTermTk_sandbox',
+          padding: 4,
+          panels: [
+              //{ type: 'top', size: 50, resizable: true, style: pstyle, html: 'top' },
+              { type: 'left', size: 200, resizable: true, style: pstyle,
+                html: '<div id="sidebar" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' },
+              { type: 'main', style: pstyle,
+                toolbar: {
+                  items: [
+                    { type: 'button', id: 'run_button', text: 'Run', icon: 'far fa-play-circle' },
+                    { type: 'html',  id: 'uri',
+                        html(item) {
+                          let html =
+                            '<div style="padding: 0px 10px; margin-top: -2px;" >'+
+                            '  URI: <input id="codeUri" size="50"/>'+
+                            '  FPS Cap: <input id="fpsCap" value="30" size="1">'+
+                            '</div>';
+                          return html;
+                          },
+                    },
+                  ],
+                  onClick(event) { run(); }
+                },
+                  html: '<div id="codeArea" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 25px"></div>'+
+                        `<div id="codeArea" style="position: absolute; left: 15px;          right: 0px; bottom: 0px">
+                          <a href="https://github.com/ceccopierangiolieugenio/pyTermTk">pyTermTk</a> sandbox,
+                          Powered by <a href="https://pyodide.org/">Pyodide</a>
+                          and <a href="https://xtermjs.org">xterm.js</a>
+                          and <a href="https://codemirror.net/5/">CodeMirror5</a>
+                          and <a href="https://w2ui.com/">w2ui</a>
+                          </div>`},
+              { type: 'right', size: 1000, resizable: true, style: pstyle,
+                html: '<div id="terminal" oncontextmenu="return false;" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px"></div>' }
+          ]
+      });
+      new w2field({ el: query('#fpsCap')[0], type: 'int', autoFormat: false })
 
       // Workaround from: https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API
       const font = new FontFace("NerdFont", "url(www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf)");
@@ -211,7 +210,7 @@
 
         ttkProxy.preRun()
 
-        let run = function(){
+        run = function(){
           let filename = document.getElementById("codeUri").value
           let fps = document.getElementById("fpsCap").value
           ttkProxy.run(getCode(), filename,fps)
