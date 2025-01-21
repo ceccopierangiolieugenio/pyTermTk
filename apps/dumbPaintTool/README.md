@@ -10,7 +10,7 @@
 ![dpt hero](https://github.com/ceccopierangiolieugenio/pyTermTk/assets/8876552/005b31a9-d9d6-4799-be17-5a3e478a4703)
 
 
-## [the Dumb Paint Tool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/dumbPaintTool)
+## [the Dumb Paint Tool](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool)
 
 A Uber SourcesOpen Super Duper Powerful and User-Friendly ASCII/ANSI/UTF-8  Terminal art editor, basically the Terminal ASCII Photoshop
 

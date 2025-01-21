@@ -36,7 +36,7 @@ TTkUiSignature = "TTkUi/Document"
 class TTkUiLoader():
     '''TTkUiLoader
 
-    .. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner
+    .. _ttkDesigner: https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner
 
 
     `ttkdesigner Tutorial <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/ttkDesigner/textEdit>`_

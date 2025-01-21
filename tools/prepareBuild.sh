@@ -73,16 +73,16 @@ case $1 in
                 ;;
         ttkDesigner)
                 _NAME='ttkDesigner'
-                _BUILD_LIB='tools/ttkDesigner'
+                _BUILD_LIB='apps/ttkDesigner'
                 _SETUP='setup.ttkDesigner.py'
-                _README='tools/ttkDesigner/README.md'
+                _README='apps/ttkDesigner/README.md'
                 _CFG='ttkDesigner/app/cfg.py'
                 ;;
         dumbPaintTool)
                 _NAME='dumbPaintTool'
-                _BUILD_LIB='tools/dumbPaintTool'
+                _BUILD_LIB='apps/dumbPaintTool'
                 _SETUP='setup.dumbPaintTool.py'
-                _README='tools/dumbPaintTool/README.md'
+                _README='apps/dumbPaintTool/README.md'
                 _CFG='dumbPaintTool/app/cfg.py'
                 ;;
         doc)

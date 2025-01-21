@@ -8,7 +8,7 @@
 
 [![screenshot](https://user-images.githubusercontent.com/8876552/236525667-dcdcec6e-1066-4294-bdb0-db98ef8850da.png)](https://pypi.org/project/ttkDesigner)
 
-## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner)
+## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner)
 
 **ttkDesigner** is the [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s) with [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) Widgets. You can compose and customize your windows or dialogs in a what-you-see-is-what-you-get (WYSIWYG) manner, and test them interactively.
 
@@ -18,7 +18,7 @@ Widgets and forms created with **ttkDesigner** integrate seamlessly with program
 tbd
 
 ## Install/Upgrade
-[ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/tools/ttkDesigner)
+[ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner)
  is available on [PyPI](https://pypi.org/project/ttkDesigner/)
 ```bash
 pip3 install --upgrade ttkDesigner
