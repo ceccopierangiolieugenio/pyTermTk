@@ -1,21 +1,21 @@
 
 
-[![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
-[![Linux](https://img.shields.io/badge/-Windows-grey?logo=pcgamingwiki)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
-[![Linux](https://img.shields.io/badge/-OSX-grey?logo=apple)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Linux](https://img.shields.io/badge/-Windows-grey?logo=pcgamingwiki&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Linux](https://img.shields.io/badge/-OSX-grey?logo=apple&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 [![Linux](https://img.shields.io/badge/-HTML5-grey?logo=html5)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 
-![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)
-![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)
+[![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)](https://devguide.python.org/versions/)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
+[![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)](https://github.com/ceccopierangiolieugenio/pyTermTk/releases)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
-![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)
+[![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/)
 
 ![screenshot](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.800.png)
 
-[![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
-[![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
-[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logoColor=blue)](https://discord.gg/7E5DZdbw)
+[![pypi_version](https://img.shields.io/badge/Twitter-pyTermTk-blue?logo=x&logoColor=blue)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
+[![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logo=bluesky&logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
+[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logo=discord&logoColor=blue)](https://discord.gg/7E5DZdbw)
 
 
 
