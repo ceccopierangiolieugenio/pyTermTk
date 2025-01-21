@@ -1,17 +1,23 @@
 
 
-![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux)
-![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)
-![Python](https://img.shields.io/badge/Python-v3.8%5E-green?logo=python)
+[![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Linux](https://img.shields.io/badge/-Windows-grey?logo=pcgamingwiki)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Linux](https://img.shields.io/badge/-OSX-grey?logo=apple)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Linux](https://img.shields.io/badge/-HTML5-grey?logo=html5)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+
+![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)
 ![pyTermTk_version](https://img.shields.io/github/v/tag/ceccopierangiolieugenio/pyTermTk?label=version)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
+![Usage](https://img.shields.io/badge/Usage-Terminal%20User%20Interface-yellow)
+
+![screenshot](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.800.png)
+
 [![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
 [![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
 [![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logoColor=blue)](https://discord.gg/7E5DZdbw)
 
 
-![screenshot](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.800.png)
 
 ## [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk)
 
