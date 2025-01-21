@@ -7,8 +7,8 @@
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
 [![pypi_version](https://img.shields.io/pypi/v/pyTermTk?label=pypi)](https://pypi.org/project/pyTermTk)
 [![pypi_version](https://img.shields.io/twitter/follow/Pier95886803?style=social&logo=twitter)](https://twitter.com/hashtag/pyTermTk?src=hashtag_click&f=live)
-![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logoColor=blue&link=https%3A%2F%2Fbsky.app%2Fprofile%2Fpiercecco.bsky.social)
-![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logoColor=blue&link=https%3A%2F%2Fdiscord.gg%2F7E5DZdbw)
+[![Static Badge](https://img.shields.io/badge/BlyeSky-pyTermTk-blue?logoColor=blue)](https://bsky.app/profile/piercecco.bsky.social)
+[![Static Badge](https://img.shields.io/badge/Discord-pyTermTk-8A2BE2?logoColor=blue)](https://discord.gg/7E5DZdbw)
 
 
 ![screenshot](https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/images/pyTermTk.HERO.800.png)
