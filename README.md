@@ -1,9 +1,10 @@
 
 
+[![Serial](https://img.shields.io/badge/-ssh,serial,tty-grey?logo=gnometerminal&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 [![Linux](https://img.shields.io/badge/-Linux-grey?logo=linux&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
-[![Linux](https://img.shields.io/badge/-Windows-grey?logo=pcgamingwiki&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
-[![Linux](https://img.shields.io/badge/-OSX-grey?logo=apple&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
-[![Linux](https://img.shields.io/badge/-HTML5-grey?logo=html5)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![Windows](https://img.shields.io/badge/-Windows-grey?logo=pcgamingwiki&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![OSX](https://img.shields.io/badge/-OSX-grey?logo=apple&logoColor=white)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
+[![HTML5](https://img.shields.io/badge/-HTML5-grey?logo=html5)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html)
 
 [![Python](https://img.shields.io/badge/Python-v3.9%5E-green?logo=python)](https://devguide.python.org/versions/)
 [![Test Status](https://img.shields.io/github/actions/workflow/status/ceccopierangiolieugenio/pyTermTk/testing.yml?branch=main&label=tests)](https://github.com/ceccopierangiolieugenio/pyTermTk/actions?query=workflow%3Atesting)
