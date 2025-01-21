@@ -125,6 +125,17 @@ class TTkConstant:
     # ContiguousSelection = SelectionMode.ContiguousSelection
     MultiSelection      = SelectionMode.MultiSelection
 
+    class SelectionFormat(int):
+        '''
+        Selection properties
+
+        .. autosummary::
+          FullWidthSelection
+        '''
+        FullWidthSelection = 0x06000
+        '''When set on the characterFormat of a selection, the whole width of the text will be shown selected.'''
+
+
     # Graph types
     FILLED = 0x0001
     LINE   = 0x0002

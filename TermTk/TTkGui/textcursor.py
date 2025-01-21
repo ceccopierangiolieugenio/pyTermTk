@@ -221,6 +221,9 @@ class TTkTextCursor():
 
     def position(self) -> _CP:
         return self._properties[self._cID].position
+    
+    def cursors(self) -> list[_CP]:
+        return self._properties
 
     def addCursor(self, line:int, pos:int) -> None:
         self._cID = 0
@@ -490,6 +493,7 @@ class TTkTextCursor():
                     xTo += len(m.group(0))
                 p.position.pos = xTo
                 p.anchor.pos   = xFrom
+                p.anchor.line  = line
         self._checkCursors(notify=self.position().toNum()!=currPos)
 
     def selectedText(self) -> TTkString:
@@ -577,12 +581,38 @@ class TTkTextCursor():
                 self._document._dataLines[l] = line.setColor(color=color, posFrom=pf, posTo=pt)
         self._autoChanged = True
         self._document.setChanged(True)
-        self._document._acquire()
+        self._document._release()
         self._document.contentsChanged.emit()
         # self._document.contentsChange.emit(0,0,0)
         self._autoChanged = True
 
-    def getHighlightedLines(self, fr:int, to:int, color:TTkColor) -> list[TTkString]:
+    def _getCoveredLines(self, fr:int, to:int, lines:list[TTkColor], color:TTkColor) -> list[TTkColor]:
+        for p in self._properties:
+            selSt = p.selectionStart().line
+            selEn = p.selectionEnd().line
+            if selEn >= fr and selSt<=to:
+                for i in range(max(selSt,fr),min(selEn,to)+1):
+                    lines[i-fr] = color
+        return lines
+
+    def _getBlinkingCursors(self, fr:int, to:int, lines, color:TTkColor) -> list[TTkString]:
+        ret = lines
+        # Add Blinking cursor
+        if len(self._properties)>1:
+            for p in self._properties:
+                cp = p.position
+                if not 0<=(cp.line-fr)<len(ret): continue 
+                ret[cp.line-fr] = ret[cp.line-fr].setColor(color=color+TTkColor.BLINKING, posFrom=cp.pos, posTo=cp.pos+1)
+                if cp.pos == len(ret[cp.line-fr]):
+                   ret[cp.line-fr] = ret[cp.line-fr]+TTkString('↵',color+TTkColor.BLINKING)
+                elif ret[cp.line-fr].charAt(cp.pos) == ' ':
+                    ret[cp.line-fr].setCharAt(pos=cp.pos, char='∙')
+                    # ret[p.line-fr].setColorAt(pos=p.pos, color=TTkCfg.theme.treeLineColor+TTkColor.BLINKING)
+                #elif ret[p.line-fr].charAt(p.pos) == '\t':
+                #    ret[p.line-fr].setCharAt(pos=p.pos, char='\t')
+        return ret
+
+    def _getHighlightedLines(self, fr:int, to:int, lines, color:TTkColor) -> list[TTkString]:
         # Create a list of cursors (filtering out the ones which
         # position/selection is outside the screen boundaries)
         sel = []
@@ -593,7 +623,7 @@ class TTkTextCursor():
                 sel.append((selSt,selEn,p))
 
         # Retrieve the sublist of lines to be required (displayed)
-        ret = self._document._dataLines[fr:to+1]
+        ret = lines
         # Apply the selection color for each of them
         for s in sel:
             selSt, selEn, _ = s
@@ -602,18 +632,4 @@ class TTkTextCursor():
                 pf = 0      if i > selSt.line else selSt.pos
                 pt = len(l) if i < selEn.line else selEn.pos
                 ret[i-fr] = l.setColor(color=color, posFrom=pf, posTo=pt)
-        # Add Blinking cursor
-        if len(self._properties)>1:
-            for s in sel:
-                _, _, prop = s
-                p = prop.position
-                ret[p.line-fr] = ret[p.line-fr].setColor(color=color+TTkColor.BLINKING, posFrom=p.pos, posTo=p.pos+1)
-                if p.pos == len(ret[p.line-fr]):
-                   ret[p.line-fr] = ret[p.line-fr]+TTkString('↵',color+TTkColor.BLINKING)
-                elif ret[p.line-fr].charAt(p.pos) == ' ':
-                    ret[p.line-fr].setCharAt(pos=p.pos, char='∙')
-                    # ret[p.line-fr].setColorAt(pos=p.pos, color=TTkCfg.theme.treeLineColor+TTkColor.BLINKING)
-                #elif ret[p.line-fr].charAt(p.pos) == '\t':
-                #    ret[p.line-fr].setCharAt(pos=p.pos, char='\t')
-
         return ret

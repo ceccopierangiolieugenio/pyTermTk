@@ -205,19 +205,11 @@ class _TTkColor:
             self._fg   == other._fg and
             self._bg   == other._bg )
 
-    # # self | other
-    # def __or__(self, other):
-    #     # TTkLog.debug("__add__")
-    #     if other._clean:
-    #         return other
-    #     clean = self._clean
-    #     fg:  str = self._fg or other._fg
-    #     bg:  str = self._bg or other._bg
-    #     colorMod = self._colorMod or other._colorMod
-    #     return _TTkColor(
-    #                 fg=fg, bg=bg,
-    #                 colorMod=colorMod,
-    #                 clean=clean)
+    # self | other
+    def __or__(self, other):
+        c = self.copy()
+        c._clean = False
+        return other + c
 
     # self + other
     def __add__(self, other):
@@ -307,21 +299,11 @@ class _TTkColor_mod(_TTkColor):
                 ( self._mod == (other._mod if isinstance(other,_TTkColor_mod) else 0))
             )
 
-    # # self | other
-    # def __or__(self, other):
-    #     # TTkLog.debug("__add__")
-    #     if other._clean:
-    #         return other
-    #     otherMod = other._mod if isinstance(other,_TTkColor_mod) else 0
-    #     clean = self._clean
-    #     fg:  str = self._fg or other._fg
-    #     bg:  str = self._bg or other._bg
-    #     mod: str = self._mod + otherMod
-    #     colorMod = self._colorMod or other._colorMod
-    #     return _TTkColor_mod(
-    #                 fg=fg, bg=bg, mod=mod,
-    #                 colorMod=colorMod,
-    #                 clean=clean)
+    # self | other
+    def __or__(self, other):
+        c = self.copy()
+        c._clean = False
+        return other + c
 
     # self + other
     def __add__(self, other):
@@ -407,24 +389,12 @@ class _TTkColor_mod_link(_TTkColor_mod):
                 ( self._link == (other._link if isinstance(other,_TTkColor_mod_link) else 0))
             )
 
-    # # self | other
-    # def __or__(self, other):
-    #     # TTkLog.debug("__add__")
-    #     if other._clean:
-    #         return other
-    #     otherMod  = other._mod  if isinstance(other,_TTkColor_mod) else 0
-    #     otherLink = other._link if isinstance(other,_TTkColor_mod_link) else ''
-    #     clean = self._clean
-    #     fg:  str = self._fg or other._fg
-    #     bg:  str = self._bg or other._bg
-    #     mod: str = self._mod + otherMod
-    #     link:str = self._link or otherLink
-    #     colorMod = self._colorMod or other._colorMod
-    #     return _TTkColor_mod_link(
-    #                 fg=fg, bg=bg, mod=mod,
-    #                 colorMod=colorMod, link=link,
-    #                 clean=clean)
-
+    # self | other
+    def __or__(self, other):
+        c = self.copy()
+        c._clean = False
+        return other + c
+    
     # self + other
     def __add__(self, other):
         # TTkLog.debug("__add__")

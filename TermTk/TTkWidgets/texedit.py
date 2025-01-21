@@ -22,7 +22,6 @@
 
 __all__ = ['TTkTextEditView', 'TTkTextEdit']
 
-from math import log10, floor
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.cfg import TTkCfg
@@ -127,6 +126,79 @@ class TTkTextEditView(TTkAbstractScrollView):
     :ref:`ttkdesigner Tutorial <TextEdit_ttkDesigner-Tutorial_Intro>`
     '''
 
+
+    class ExtraSelection():
+        '''
+        The :py:class:`ExtraSelection` structure provides a way of specifying a character format for a given selection in a document.
+
+        :param format: A format that is used to specify the type of selection, defaults to :py:class:`TTkK.NONE`.
+        :type format: :py:class:`TTkK.SelectionFormat`
+        :param color: The color used to specify the foreground/background color/mod for the selection.
+        :type color: :py:class:`TTkColor`        
+        :param cursor: A cursor that contains a selection in a :py:class:`QTextDocument`.
+        :type cursor: :py:class:`TTkTextCursor`
+        '''
+
+        __slots__ = ('_format', '_color', '_cursor')
+        def __init__(self, 
+                     format:TTkK.SelectionFormat=TTkK.NONE, 
+                     color:TTkColor=TTkColor.RST, 
+                     cursor:TTkTextCursor=None) -> None:
+            self._color = color
+            self._format = format
+            self._cursor = cursor if cursor else TTkTextCursor()
+
+        def color(self) -> TTkColor:
+             '''
+             This propery holds the color that is used for the selection.
+
+             :rtype: :py:class:`TTkColor`
+             '''
+             return self._color
+        
+        def setColor(self, color:TTkColor) -> None:
+            '''
+            Set the color.
+
+            :param color: A color that is used for the selection.
+            :type color: :py:class:`TTkColor` 
+            '''
+            self._color = color
+
+        def format(self) -> TTkK.SelectionFormat:
+             '''
+             This propery holds the format that is used to specify the type of selection.
+
+             :rtype: :py:class:`TTkK.SelectionFormat`
+             '''
+             return self._format
+        
+        def setFormat(self, format:TTkK.SelectionFormat) -> None:
+            '''
+            Set the format.
+
+            :param format: A format that is used to specify the type of selection.
+            :type format: :py:class:`TTkK.SelectionFormat` 
+            '''
+            self._format = format
+        
+        def cursor(self) -> TTkTextCursor:
+             '''
+             This propery holds the fcursor that contains a selection in a :py:class:`QTextDocument`.
+
+             :rtype: :py:class:`TTkTextCursor`
+             '''
+             return self._cursor
+
+        def setCursor(self, cursor:TTkTextCursor) -> None:
+            '''
+            Set the cursor.
+
+            :param cursor: A cursor that contains a selection in a :py:class:`QTextDocument`.
+            :type cursor: :py:class:`TTkTextCursor`
+            '''
+            self._cursor = cursor
+
     currentColorChanged:pyTTkSignal
     '''
     This signal is emitted if the current character color has changed,
@@ -134,6 +206,14 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     :param color: the new color
     :type color: :py:class:`TTkColor`
+    '''
+
+    cursorPositionChanged:pyTTkSignal
+    '''
+    This signal is emitted whenever the position of the cursor changed.
+
+    :param cursor: the cursor changed.
+    :type cursor: :py:class:`TTkTextCursor`
     '''
 
     undoAvailable:pyTTkSignal
@@ -175,6 +255,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     __slots__ = (
             '_textDocument', '_hsize',
             '_textCursor', '_cursorParams',
+            '_extraSelections',
             '_textWrap', '_lineWrapMode', '_lastWrapUsed',
             '_replace',
             '_readOnly', '_multiCursor',
@@ -185,7 +266,7 @@ class TTkTextEditView(TTkAbstractScrollView):
             # 'wrapWidth',    'setWrapWidth',
             # 'wordWrapMode', 'setWordWrapMode',
             # Signals
-            'currentColorChanged',
+            'currentColorChanged', 'cursorPositionChanged',
             'undoAvailable', 'redoAvailable',
             'textChanged'
         )
@@ -217,20 +298,22 @@ class TTkTextEditView(TTkAbstractScrollView):
         '''
 
         self.currentColorChanged = pyTTkSignal(TTkColor)
+        self.cursorPositionChanged = pyTTkSignal(TTkTextCursor)
         self.undoAvailable = pyTTkSignal(bool)
         self.redoAvailable = pyTTkSignal(bool)
         self.textChanged = pyTTkSignal()
 
-        self._readOnly = readOnly
-        self._multiLine = multiLine
-        self._multiCursor = True
-        self._hsize = 0
+        self._readOnly:bool = readOnly
+        self._multiLine:bool = multiLine
+        self._multiCursor:bool = True
+        self._extraSelections:list[TTkTextEditView.ExtraSelection] = []
+        self._hsize:int = 0
         self._lastWrapUsed  = 0
         self._lineWrapMode = TTkK.NoWrap
         self._replace = False
         self._cursorParams = None
-        self._textDocument = None
-        self._textCursor = None
+        self._textDocument:TTkTextDocument = None
+        self._textCursor:TTkTextCursor = None
         self._textWrap = None
         self._clipboard = TTkClipboard()
 
@@ -326,6 +409,26 @@ class TTkTextEditView(TTkAbstractScrollView):
     def wordWrapMode(self, *args, **kwargs) -> None:    return self._textWrap.wordWrapMode(*args, **kwargs)
     def setWordWrapMode(self, *args, **kwargs) -> None: return self._textWrap.setWordWrapMode(*args, **kwargs)
 
+    def extraSelections(self) -> list[ExtraSelection]:
+        '''
+        Returns previously set extra selections.
+
+        :rtype: list[:py:class:`ExtraSelection`]
+        '''
+        return self._extraSelections
+
+    def setExtraSelections(self, extraSelections:list[ExtraSelection]) -> None:
+        '''
+        This function allows temporarily marking certain regions in the document with a given color, 
+        specified as selections. This can be useful for example in a programming editor to mark a 
+        whole line of text with a given background color to indicate the existence of a breakpoint.
+
+        :param extraSelections: the list of extra selections.
+        :type extraSelections: list[:py:class:`ExtraSelection`]
+        '''
+        self._extraSelections = extraSelections
+        self.update()
+
     def textCursor(self) -> TTkTextCursor:
         return self._textCursor
 
@@ -417,6 +520,7 @@ class TTkTextEditView(TTkAbstractScrollView):
     def _cursorPositionChanged(self, cursor:TTkTextCursor) -> None:
         if cursor == self._textCursor:
             self.currentColorChanged.emit(cursor.positionColor())
+            self.cursorPositionChanged.emit(cursor)
             self._pushCursor()
 
     def resizeEvent(self, w:int, h:int) -> None:
@@ -676,30 +780,44 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     def paintEvent(self, canvas: TTkCanvas) -> None:
         ox, oy = self.getViewOffsets()
+        w,h = self.size()
 
         style = self.currentStyle()
         color         = style['color']
         selectColor = style['selectedColor']
         lineColor = style['lineColor']
-        backgroundColor = self._textDocument._backgroundColor
+        backgroundColors = [self._textDocument._backgroundColor]*h
 
-        if backgroundColor != TTkColor.RST:
-            canvas.fill(color=backgroundColor)
-
-        h = self.height()
         subLines = self._textWrap._lines[oy:oy+h]
         if not subLines: return
-        outLines = self._textCursor.getHighlightedLines(subLines[0][0], subLines[-1][0], selectColor)
+        fr = subLines[0][0]
+        to = subLines[-1][0]
+        outLines = self._textDocument._dataLines[fr:to+1]
+        outLines = self._textCursor._getHighlightedLines(fr, to, outLines, selectColor)
+
+        for extraSelection in self._extraSelections:
+            esCursor = extraSelection._cursor
+            esColor  = extraSelection._color
+            esFormat = extraSelection._format
+            if esFormat == TTkK.SelectionFormat.FullWidthSelection:
+                backgroundColors = esCursor._getCoveredLines(fr, to, backgroundColors, esColor)
+            outLines = esCursor._getHighlightedLines(fr, to, outLines, esColor)
+
+        outLines = self._textCursor._getBlinkingCursors(fr, to, outLines, selectColor)
 
         for y, l in enumerate(subLines):
-            t = outLines[l[0]-subLines[0][0]]
+            t  = outLines[l[0]-subLines[0][0]]
+            bg = backgroundColors[l[0]-subLines[0][0]]
             text:TTkString = t.substring(l[1][0],l[1][1]).tab2spaces(self._textWrap._tabSpaces)
-            if backgroundColor != TTkColor.RST:
-                text = text.completeColor(backgroundColor)
+            if bg != TTkColor.RST:
+                canvas.fill(color=bg,pos=(0,y), size=(w,1))
+                text = text.completeColor(bg)
             canvas.drawTTkString(pos=(-ox,y), text=text)
 
         if self._lineWrapMode == TTkK.FixedWidth:
             canvas.drawVLine(pos=(self._textWrap._wrapWidth,0), size=h, color=lineColor)
+
+
 
 class TTkTextEdit(TTkAbstractScrollArea):
     __doc__ = '''
@@ -707,12 +825,14 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
     ''' + TTkTextEditView.__doc__
 
+    ExtraSelection = TTkTextEditView.ExtraSelection
+
     __slots__ = (
         ['_textEditView',
          '_lineNumberView', '_lineNumber'] +
         (_forwardedSignals:=[ # Forwarded Signals From TTkTexteditView
             # Signals
-            'focusChanged', 'currentColorChanged',
+            'focusChanged', 'currentColorChanged', 'cursorPositionChanged',
             'undoAvailable', 'redoAvailable',
             'textChanged']) +
         (_forwardedMethods:=[ # Forwarded Methods From TTkTexteditView
@@ -723,6 +843,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'lineWrapMode', 'setLineWrapMode',
             'wordWrapMode', 'setWordWrapMode',
             'textCursor', 'setFocus', 'setColor',
+            'extraSelections', 'setExtraSelections',
             'cut', 'copy', 'paste',
             'undo', 'redo', 'isUndoAvailable', 'isRedoAvailable',
             # Export Methods,
