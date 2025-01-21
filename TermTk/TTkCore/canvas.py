@@ -232,18 +232,16 @@ class TTkCanvas():
 
         text = text.align(width=width, alignment=alignment, color=color)
         txt, colors = text.tab2spaces().getData()
+        a,b = max(0,-x), min(len(txt),self._width-x)
+        self._data[y][x+a:x+b] = txt[a:b]
         if forceColor:
             colors=[color]*len(colors)
-        a,b = max(0,-x), min(len(txt),self._width-x)
-        for i in range(a,b):
-            #self._set(y, x+i, txt[i-x], colors[i-x])
-            self._data[y][x+i] = txt[i]
-            if colors[i] == TTkColor.RST != color:
-                self._colors[y][x+i] =  color.mod(x+i,y)
-            elif (not colors[i].hasBackground()) and color.hasBackground():
-                self._colors[y][x+i] = (color + colors[i]).mod(x+i,y)
-            else:
-                self._colors[y][x+i] =  colors[i].mod(x+i,y)
+        else: 
+            for i in range(a,b):
+                if color != TTkColor.RST:
+                    self._colors[y][x+i] = (colors[i] | color).mod(x+i,y)
+                else:
+                    self._colors[y][x+i] = colors[i].mod(x+i,y)
         # Check the full wide chars on the edge of the two canvasses
         if ((0 <= (x+a) < self._width) and self._data[y][x+a] == ''):
             self._data[y][x+a]   = TTkCfg.theme.unicodeWideOverflowCh[0]

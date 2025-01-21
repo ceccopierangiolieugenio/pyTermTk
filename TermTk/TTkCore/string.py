@@ -452,7 +452,7 @@ class TTkString():
 
         return ret
 
-    def completeColor(self, color, match=None, posFrom=None, posTo=None) -> Self:
+    def completeColor(self, color:TTkColor, match=None, posFrom=None, posTo=None) -> Self:
         ''' Complete the color of the entire string or a slice of it
 
         The Fg and/or Bg of the string is replaced with the selected Fg/Bg color only if missing
@@ -479,17 +479,17 @@ class TTkString():
             while pos := self._text.index(match, start) if match in self._text[start:] else None:
                 start = pos+lenMatch
                 for i in range(pos, pos+lenMatch):
-                    ret._colors[i] += color
+                    ret._colors[i] |= color
         elif posFrom == posTo == None:
-            ret._colors = [c+color for c in self._colors]
+            ret._colors = [c|color for c in self._colors]
         elif posFrom < posTo:
             ret._colors = self._colors.copy()
             posFrom = min(len(self._text),posFrom)
             posTo   = min(len(self._text),posTo)
             for i in range(posFrom, posTo):
-                ret._colors[i] += color
+                ret._colors[i] |= color
         else:
-            ret._colors = [c+color for c in self._colors]
+            ret._colors = [c|color for c in self._colors]
         return ret
 
 
