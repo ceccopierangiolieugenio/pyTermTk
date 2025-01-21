@@ -38,7 +38,7 @@ class TTkGraph(TTkWidget):
                  color:TTkColor=TTkColor.RST,
                  maxData:int=0x1000,
                  direction:int=TTkK.RIGHT,
-                 align:TTkK.Alignment=TTkK.LEFT_ALIGN,
+                 align:TTkK.Alignment=TTkK.CENTER,
                  **kwargs) -> None:
         self._data = [[0]]
         self._offset = 0
