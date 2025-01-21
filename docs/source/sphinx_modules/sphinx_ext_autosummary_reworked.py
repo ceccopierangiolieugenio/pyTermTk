@@ -142,6 +142,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
                 issubclass(cc, ttk.TTkTemplates.dragevents.TDragEvents) or
                 issubclass(cc, ttk.TTkTemplates.mouseevents.TMouseEvents) or
                 issubclass(cc, ttk.TTkTemplates.keyevents.TKeyEvents) or
+                issubclass(cc, ttk.TTkTextEditView.ExtraSelection) or
                 issubclass(cc, ttk.TTkWidget) or
                 issubclass(cc, ttk.TTkLayout) ) :
                 ccName = cc.__name__
