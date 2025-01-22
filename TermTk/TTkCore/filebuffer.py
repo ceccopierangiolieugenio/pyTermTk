@@ -28,16 +28,15 @@ import threading
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal
 
-'''
-             w1   w3   w2   w5
-    Buffer |----|----|----|----|            cache buffer
-             |      \ /       \
-             |       x         \
-             |      / \         \
-    Pages  | 0  | 2  | 1  |None| 3  |None|  index to buffer
-    File   |----|----|----|----|----|----|  view as list of windows
-             w1   w2   w3   w4   w5   w6
-'''
+#              w1   w3   w2   w5
+#     Buffer |----|----|----|----|            cache buffer
+#              |      \ /       \
+#              |       x         \
+#              |      / \         \
+#     Pages  | 0  | 2  | 1  |None| 3  |None|  index to buffer
+#     File   |----|----|----|----|----|----|  view as list of windows
+#              w1   w2   w3   w4   w5   w6
+
 class TTkFileBuffer():
     class _Page:
         __slots__ = ('_page', '_size', '_buffer')

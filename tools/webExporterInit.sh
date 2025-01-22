@@ -26,7 +26,8 @@
 _PWD=`pwd`
 _TOOLS_BASE_PATH=$(dirname $(readlink -f $0))
 _BASE_PATH=$( readlink -f ${_TOOLS_BASE_PATH}/.. )
-_TMP_PATH=$(  readlink -f  ${_BASE_PATH}/tmp     )
+_APPS_PATH=$( readlink -f ${_BASE_PATH}/apps     )
+_TMP_PATH=$(  readlink -f ${_BASE_PATH}/tmp      )
 
 _MAJOR=$( git describe --tags | sed 's,\([0-9]*\)\..*,\1,'                     )
 _MINOR=$( git describe --tags | sed 's,[0-9]*\.\([0-9]*\)\..*,\1,'             )
@@ -102,12 +103,12 @@ _download ${_TMP_PATH}/www/   www/favicon.ico
 
 tar cvzf ${_TMP_PATH}/bin/TermTk.tgz --exclude='__pycache__' --transform "s,^.*TermTk/,TermTk/," ${_TMP_PATH}/TermTk
 tar cvzf ${_TMP_PATH}/bin/DPT.tgz    --exclude='__pycache__' --transform "s,^.*/dumbPaintTool,dumbPaintTool," \
-    ${_TOOLS_BASE_PATH}/dumbPaintTool.py \
-    ${_TOOLS_BASE_PATH}/dumbPaintTool/*.py \
-    ${_TOOLS_BASE_PATH}/dumbPaintTool/app \
-    ${_TOOLS_BASE_PATH}/dumbPaintTool/tui
+    ${_APPS_PATH}/dumbPaintTool.py \
+    ${_APPS_PATH}/dumbPaintTool/*.py \
+    ${_APPS_PATH}/dumbPaintTool/app \
+    ${_APPS_PATH}/dumbPaintTool/tui
 
-cp  ${_TOOLS_BASE_PATH}/dumbPaintTool/web.ttk.package.json ${_TMP_PATH}
+cp  ${_APPS_PATH}/dumbPaintTool/web.ttk.package.json ${_TMP_PATH}
 
 cp -a ${_TOOLS_BASE_PATH}/webExporter/* ${_TMP_PATH}/
 
