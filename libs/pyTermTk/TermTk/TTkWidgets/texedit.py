@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTextEditView', 'TTkTextEdit']
+__all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
 
 from TermTk.TTkCore.log import TTkLog
@@ -43,7 +43,7 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
-class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
+class TTkTextEditRuler(TTkAbstractScrollView):
     classStyle = {
                 'default':     {
                     'color': TTkColor.fg("#88aaaa")+TTkColor.bg("#333333"),
@@ -55,10 +55,26 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
                     'separatorColor': TTkColor.fg("#888888")},
             }
 
-    __slots__ = ('_textWrap','_startingNumber')
+    class MarkRuler():
+        class MarkRulerType():
+            ALLOW_EMPTY  = 0x01       
+            SINGLE_STATE = 0x02
+            MULTI_STATE  = 0x04
+
+        __slots__ = ('_marker', '_type', '_states')
+        def __init__(self, 
+                marker:list[TTkString], 
+                mrtype:MarkRulerType=MarkRulerType.SINGLE_STATE|MarkRulerType.ALLOW_EMPTY,
+                states:int=0) -> None:
+            self._marker = marker
+            self._type = mrtype
+            self._states = states
+
+    __slots__ = ('_textWrap','_startingNumber', '_markRuler')
     def __init__(self, startingNumber=0, **kwargs) -> None:
         self._startingNumber = startingNumber
         self._textWrap = None
+        self._markRuler = {}
         super().__init__(**kwargs)
         self.setMaximumWidth(2)
 
@@ -68,6 +84,9 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         width = 1+max(len(str(int(dt+off))),len(str(int(off))))
         self.setMaximumWidth(width)
         self.update()
+
+    def addMarkRuler(self, name:str, markRuler:MarkRuler) -> None:
+        self._markRuler[name] = markRuler
 
     def setTextWrap(self, tw) -> None:
         self._textWrap = tw
@@ -897,7 +916,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         textEditLayout = TTkAbstractScrollViewGridLayout()
         textEditLayout.addWidget(self._textEditView,0,1)
-        self._lineNumberView = _TTkTextEditViewLineNumber(visible=self._lineNumber, startingNumber=lineNumberStarting)
+        self._lineNumberView = TTkTextEditRuler(visible=self._lineNumber, startingNumber=lineNumberStarting)
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
         textEditLayout.addWidget(self._lineNumberView,0,0)
         self.setViewport(textEditLayout)
