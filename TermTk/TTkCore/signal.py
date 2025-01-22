@@ -150,7 +150,6 @@ class pyTTkSignal():
             for slot,sl in self._connected_async_slots.copy().items():
                 asyncio.run_coroutine_threadsafe(slot(*args[sl], **kwargs), _loop)
                 # should I call the future results?
-            self.future.result()
 
         self._mutex.release()
 
