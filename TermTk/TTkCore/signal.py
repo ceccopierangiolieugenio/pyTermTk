@@ -58,9 +58,10 @@ Methods
 __all__ = ['pyTTkSlot', 'pyTTkSignal']
 
 # from typing import TypeVar, TypeVarTuple, Generic, List
-from inspect import getfullargspec
+from inspect import getfullargspec, iscoroutinefunction
 from types import LambdaType
 from threading import Lock
+import asyncio
 
 def pyTTkSlot(*args):
     def pyTTkSlot_d(func):
@@ -72,8 +73,9 @@ def pyTTkSlot(*args):
 # Ts = TypeVarTuple("Ts")
 # class pyTTkSignal(Generic[*Ts]):
 class pyTTkSignal():
+    _asyncio_event_loop = asyncio.new_event_loop()
     _signals = []
-    __slots__ = ('_types', '_connected_slots', '_mutex')
+    __slots__ = ('_types', '_connected_slots', '_connected_async_slots', '_mutex')
     def __init__(self, *args, **kwargs) -> None:
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
 
@@ -87,6 +89,7 @@ class pyTTkSignal():
         #        an unbound signal
         self._types = args
         self._connected_slots = {}
+        self._connected_async_slots = {}
         self._mutex = Lock()
         pyTTkSignal._signals.append(self)
 
@@ -122,8 +125,12 @@ class pyTTkSignal():
                 if a!=b and not issubclass(a,b):
                     error = "Decorated slot has no signature compatible: "+slot.__name__+str(slot._TTkslot_attr)+" != signal"+str(self._types)
                     raise TypeError(error)
-        if slot not in self._connected_slots:
-            self._connected_slots[slot]=slice(nargs)
+        if iscoroutinefunction(slot):
+            if slot not in self._connected_async_slots:
+                self._connected_async_slots[slot]=slice(nargs)
+        else:
+            if slot not in self._connected_slots:
+                self._connected_slots[slot]=slice(nargs)
 
     def disconnect(self, *args, **kwargs) -> None:
         for slot in args:
@@ -137,6 +144,14 @@ class pyTTkSignal():
             raise TypeError(error)
         for slot,sl in self._connected_slots.copy().items():
             slot(*args[sl], **kwargs)
+        if self._connected_async_slots:
+            asyncio.set_event_loop(_loop:=pyTTkSignal._asyncio_event_loop)
+            # asyncio.set_event_loop(_loop:=asyncio.new_event_loop())
+            for slot,sl in self._connected_async_slots.copy().items():
+                asyncio.run_coroutine_threadsafe(slot(*args[sl], **kwargs), _loop)
+                # should I call the future results?
+            self.future.result()
+
         self._mutex.release()
 
     def clear(self):
