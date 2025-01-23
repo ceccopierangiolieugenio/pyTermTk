@@ -26,6 +26,7 @@ import asyncio
 import inspect
 import sys, os
 import time
+from datetime import datetime
 
 sys.path.append(os.path.join(sys.path[0],'../..'))
 import TermTk as ttk
@@ -46,36 +47,44 @@ qb.clicked.connect(ttk.TTkHelper.quit)
 rgl.addWidget(ttk.TTkLogViewer(), 3, 0, 1, 3)
 
 
+# normal slot with a bolocking call
 @ttk.pyTTkSlot()
 def call0():
-    res.setText("0 Calling...")
-    ttk.TTkLog.info("0 Calling...")
+    now = datetime.now().strftime("[%Y-%m-%d]-[%H:%M:%S]")
+    res.setText(f"{now} 0 Calling...")
+    ttk.TTkLog.info(f"{now} 0 Calling...")
     time.sleep(1)
-    res.setText("0 Calling... - DONE")
-    ttk.TTkLog.info("0 Calling... - DONE")
+    res.setText(f"{now} 0 Calling... - DONE")
+    ttk.TTkLog.info(f"{now} 0 Calling... - DONE")
 
+# async call wothout slot decorator
 async def call1():
-    res.setText("1 Calling...")
-    ttk.TTkLog.info("1 Calling...")
+    now = datetime.now().strftime("[%Y-%m-%d]-[%H:%M:%S]")
+    res.setText(f"{now} 1 Calling...")
+    ttk.TTkLog.info(f"{now} 1 Calling...")
     await asyncio.sleep(3)
-    res.setText("1 Calling... - DONE")
-    ttk.TTkLog.info("1 Calling... - DONE")
+    res.setText(f"{now} 1 Calling... - DONE")
+    ttk.TTkLog.info(f"{now} 1 Calling... - DONE")
 
+# async call with slot decorator
 @ttk.pyTTkSlot()
 async def call2():
-    res.setText("2 Calling...")
-    ttk.TTkLog.info("2 Calling...")
+    now = datetime.now().strftime("[%Y-%m-%d]-[%H:%M:%S]")
+    res.setText(f"{now} 2 Calling...")
+    ttk.TTkLog.info(f"{now} 2 Calling...")
     await asyncio.sleep(4)
-    res.setText("2 Calling... - DONE")
-    ttk.TTkLog.info("2 Calling... - DONE")
+    res.setText(f"{now} 2 Calling... - DONE")
+    ttk.TTkLog.info(f"{now} 2 Calling... - DONE")
 
+# async call with slot decorator and arguments
 @ttk.pyTTkSlot(bool)
 async def call3(val):
-    res.setText(f"3 Calling... {val}")
-    ttk.TTkLog.info(f"3 Calling... {val}")
+    now = datetime.now().strftime("[%Y-%m-%d]-[%H:%M:%S]")
+    res.setText(f"{now} 3 Calling... {val}")
+    ttk.TTkLog.info(f"{now} 3 Calling... {val}")
     await asyncio.sleep(5)
-    res.setText(f"3 Calling... {val} - DONE")
-    ttk.TTkLog.info(f"3 Calling... {val} - DONE")
+    res.setText(f"{now} 3 Calling... {val} - DONE")
+    ttk.TTkLog.info(f"{now} 3 Calling... {val} - DONE")
 
 print(inspect.iscoroutinefunction(call0))
 print(inspect.iscoroutinefunction(call1))
