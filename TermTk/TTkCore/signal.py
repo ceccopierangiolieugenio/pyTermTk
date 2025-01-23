@@ -66,7 +66,9 @@ import asyncio
 import importlib.util
 
 if importlib.util.find_spec('pyodideProxy'):
-    pass
+    def _run_coroutines(coros):
+        for call in coros:
+            asyncio.create_task(call)
 else:
     from threading import Thread
     import asyncio
