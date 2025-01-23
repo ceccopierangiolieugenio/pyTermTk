@@ -11,37 +11,38 @@ www:
 		www/fontawesome www/webfonts www/fonts/nerdfonts \
 		www/w2ui
 
-	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.js
-	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/python_stdlib.zip
-	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.asm.js
-	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/repodata.json
-	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/pyodide/pyodide.asm.wasm
+	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/pyodide/pyodide.js
+	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/pyodide/python_stdlib.zip
+	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/pyodide/pyodide.asm.js
+	# wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/pyodide/repodata.json
+	wget  -P www/pyodide/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/pyodide/pyodide.asm.wasm
 
-	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.css
-	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js
-	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/xterm.js.map
+	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/xterm/xterm.css
+	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/xterm/xterm.js
+	wget  -P www/xterm/    https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/xterm/xterm.js.map
 
-	wget  -P www/xterm/addon-fit/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/addon-fit/addon-fit.js
-	wget  -P www/xterm/addon-fit/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/addon-fit/addon-fit.js.map
+	wget  -P www/xterm/addon-fit/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/xterm/addon-fit/addon-fit.js
+	wget  -P www/xterm/addon-fit/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/xterm/addon-fit/addon-fit.js.map
 
-	wget  -P www/xterm/addon-unicode11/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/xterm/addon-unicode11/addon-unicode11.js
+	wget  -P www/xterm/addon-unicode11/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/xterm/addon-unicode11/addon-unicode11.js
 
-	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/fontawesome/regular.min.css
-	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/fontawesome/fontawesome.min.css
+	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/fontawesome/regular.min.css
+	wget  -P www/fontawesome/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/fontawesome/fontawesome.min.css
 
-	wget  -P www/webfonts/      https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/webfonts/fa-regular-400.woff2
-	wget  -P www/fonts/nerdfonts/     https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/nerdfonts/HurmitNerdFontMono-Regular.otf
-	wget  -P www/fonts/nerdfonts/     https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/nerdfonts/DejaVuSansMNerdFont-Regular.ttf
+	# wget  -P www/webfonts/      https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/webfonts/fa-regular-400.woff2
+	# wget  -P www/fonts/nerdfonts/     https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/nerdfonts/HurmitNerdFontMono-Regular.otf
+	wget  -P www/fonts/nerdfonts/     https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/fonts/nerdfonts/DejaVuSansMNerdFont-Regular.ttf
 
-	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/w2ui/w2ui-2.0.min.js
-	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/w2ui/w2ui-2.0.min.css
 
-	wget  -P www/codemirror/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.js
-	wget  -P www/codemirror/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/codemirror.css
-	wget  -P www/codemirror/theme/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/theme/mbo.css
-	wget  -P www/codemirror/modes/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/codemirror/modes/python.js
+	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/w2ui/w2ui-2.0.min.js
+	wget  -P www/w2ui/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/w2ui/w2ui-2.0.min.css
 
-	wget  -P www/   https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/www/favicon.ico
+	wget  -P www/codemirror/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/codemirror/codemirror.js
+	wget  -P www/codemirror/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/codemirror/codemirror.css
+	wget  -P www/codemirror/theme/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/codemirror/theme/mbo.css
+	wget  -P www/codemirror/modes/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/codemirror/modes/python.js
+
+	wget  -P www/   https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico
 
 updateXterm: www
 	rm -rf node_modules package.json package-lock.json
