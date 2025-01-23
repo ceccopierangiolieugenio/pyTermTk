@@ -17,7 +17,7 @@ You can use this command:
 
 Check the font rendering in the browser:
 https://typezebra.com
-OK: 
+OK:
 * FreeSans Regular
 * FreeSerif Regular
 * FreeMono Regular

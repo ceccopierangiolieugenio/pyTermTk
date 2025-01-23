@@ -81,14 +81,14 @@ class TTkDnD():
         :rtype:  Any
         '''
         return self._data
-    
+
     def setHotSpot(self, pos:tuple[int,int]) -> None:
         '''
         Sets the position of the hot spot relative to the top-left corner of the pixmap used to the point specified by hotspot.
 
         :param pos: the hotspot position
         :type pos:  tuple[int,int]
-        ''' 
+        '''
         self._hotSpot = pos
 
     def hotSpot(self) -> tuple[int,int]:
@@ -99,7 +99,7 @@ class TTkDnD():
         :rtype:  tuple[int,int]
         '''
         return self._hotSpot
-    
+
 class TTkDnDEvent(TTkDnD):
     '''
     Drag and Drop event class.
@@ -122,7 +122,7 @@ class TTkDnDEvent(TTkDnD):
         :rtype:  tuple[int,int]
         '''
         return self._pos
-    
+
 class TTkDrag(TTkDnD):
     __slots__ = ('_pixmap', '_showPixmap')
     def __init__(self, **kwargs) -> None:
@@ -183,7 +183,7 @@ class TTkDrag(TTkDnD):
         Starts the drag operation.
         '''
         TTkHelper.dndInit(self)
-    
+
     def _toDropEvent(self, pos:tuple[int,int]) -> TTkDnDEvent:
         ret = TTkDnDEvent(data=self._data, hotspot=self._hotSpot, pos=pos)
         return ret
@@ -232,6 +232,6 @@ class TTkDrag(TTkDnD):
         :type evt: :py:class:`TTkMouseEvent`
 
         :return: The Drag and Drop event
-        :rtype:  :py:class:`TTkDnDEvent`        
+        :rtype:  :py:class:`TTkDnDEvent`
         '''
         return self._toDropEvent((evt.x, evt.y))

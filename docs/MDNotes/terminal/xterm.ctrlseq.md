@@ -1,7 +1,7 @@
 https://www.x.org/docs/xterm/
 
 # DCS - ESC P
-ESC P + Pt + ESC \ 
+ESC P + Pt + ESC \
 Device Control String (DCS) xterm implements no DCS functions; Pt is ignored. Pt need not be printable characters.
 
 vim initialization using DCS

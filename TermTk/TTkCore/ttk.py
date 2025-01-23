@@ -29,7 +29,7 @@ import queue
 import threading
 import platform
 
-from TermTk.TTkCore.drivers import *
+from TermTk.TTkCore.drivers import TTkSignalDriver
 from TermTk.TTkCore.TTkTerm.input import TTkInput
 from TermTk.TTkCore.TTkTerm.inputkey import TTkKeyEvent
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent

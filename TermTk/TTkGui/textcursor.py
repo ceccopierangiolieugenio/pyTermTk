@@ -221,7 +221,7 @@ class TTkTextCursor():
 
     def position(self) -> _CP:
         return self._properties[self._cID].position
-    
+
     def cursors(self) -> list[_CP]:
         return self._properties
 
@@ -601,7 +601,7 @@ class TTkTextCursor():
         if len(self._properties)>1:
             for p in self._properties:
                 cp = p.position
-                if not 0<=(cp.line-fr)<len(ret): continue 
+                if not 0<=(cp.line-fr)<len(ret): continue
                 ret[cp.line-fr] = ret[cp.line-fr].setColor(color=color+TTkColor.BLINKING, posFrom=cp.pos, posTo=cp.pos+1)
                 if cp.pos == len(ret[cp.line-fr]):
                    ret[cp.line-fr] = ret[cp.line-fr]+TTkString('↵',color+TTkColor.BLINKING)

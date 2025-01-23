@@ -4,17 +4,17 @@
 Drag and Drop
 =============
 
-Drag and drop provides a simple visual mechanism which users can use to transfer 
-information between and within widgets. 
+Drag and drop provides a simple visual mechanism which users can use to transfer
+information between and within widgets.
 Drag and drop is similar in function to the clipboard's cut and paste mechanism.
 
 
 .. image:: https://github.com/user-attachments/assets/857fd144-7a2a-4173-80b3-d135e62b8235
 
 
-This document describes the basic drag and drop mechanism and outlines the 
-approach used to enable it in custom controls. 
-Drag and drop operations are also supported by many of TermTk's controls, 
+This document describes the basic drag and drop mechanism and outlines the
+approach used to enable it in custom controls.
+Drag and drop operations are also supported by many of TermTk's controls,
 such as :py:class:`TTkList` or :py:class:`TTkTabWidget`.
 
 
@@ -38,10 +38,10 @@ These classes deal with drag and drop and the necessary mime type encoding and d
 Dragging
 --------
 
-To start a drag, create a :py:class:`TTkDrag` object, and call its :py:meth:`TTkDrag.exec` function. 
-In most applications, it is a good idea to begin a drag and drop operation only 
-after a mouse button has been pressed and the cursor has been moved a certain distance. 
-However, the simplest way to enable dragging from a widget is to reimplement 
+To start a drag, create a :py:class:`TTkDrag` object, and call its :py:meth:`TTkDrag.exec` function.
+In most applications, it is a good idea to begin a drag and drop operation only
+after a mouse button has been pressed and the cursor has been moved a certain distance.
+However, the simplest way to enable dragging from a widget is to reimplement
 the widget's :py:meth:`TTkWidget.mouseDragEvent` and start a drag and drop operation:
 
 .. code:: python
@@ -63,7 +63,7 @@ Note that the :py:meth:`TTkDrag.exec` function does not block the main event loo
 Dropping
 --------
 
-To be able to receive the content dropped on a widget, reimplement 
+To be able to receive the content dropped on a widget, reimplement
 the :py:meth:`TDragEvents.dropEvent` event handler functions.
 
 .. code:: python
@@ -117,8 +117,8 @@ Pixmap
 ------
 
 The visual representation of the drag can be customized by setting a pixmap with :py:meth:`TTkDrag.setPixmap`.
-By default the pixmap is initialized as a simple text string ("[...]") 
-but it can be customized by using 
+By default the pixmap is initialized as a simple text string ("[...]")
+but it can be customized by using
 a :py:class:`TTkWidget` or :py:class:`TTkCanvas` as a pixmap.
 
 .. image:: https://github.com/user-attachments/assets/7a23f5a9-444b-4e5a-878b-91c4b35ee8d8
@@ -175,8 +175,8 @@ HotSpot
 -------
 
 The hotspot is the offset of the pixmap related to the cursor position.
-It can be set using :py:meth:`TTkDrag.setHotSpot`. 
-It is useful when the pixmap is not centered on the cursor or when you want to define an offset to allow 
+It can be set using :py:meth:`TTkDrag.setHotSpot`.
+It is useful when the pixmap is not centered on the cursor or when you want to define an offset to allow
 the object being dragged from the clicked position:
 
 .. image:: https://github.com/user-attachments/assets/8d999365-c787-4eff-84f2-03ef2b22c37a

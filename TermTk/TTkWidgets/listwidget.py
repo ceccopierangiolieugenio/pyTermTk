@@ -100,7 +100,7 @@ class TTkAbstractListItem(TTkWidget):
         if self._highlighted == highlighted: return
         self._highlighted = highlighted
         self.update()
-    
+
     def geometry(self):
         if self._quickVisible:
             return super().geometry()
@@ -115,9 +115,9 @@ class TTkAbstractListItem(TTkWidget):
             color = color+self.style()['selected']['color']
         if style==self.style()['hover']:
             color = color+self.style()['hover']['color']
-    
+
         w = self.width()
-    
+
         canvas.drawTTkString(pos=(0,0), width=w, color=color ,text=self._text)
 
 class TTkListWidget(TTkAbstractScrollView):
@@ -256,14 +256,14 @@ class TTkListWidget(TTkAbstractScrollView):
         self._highlighted = label
         self.itemClicked.emit(label)
         self.textClicked.emit(label.text())
-    
+
     @pyTTkSlot(str)
     def _searchModifiedHandler(self, text:str='s') -> None:
         if self._searchVisibility and self._searchText:
             self.setPadding(1,0,0,0)
         else:
             self.setPadding(0,0,0,0)
-        
+
         if self._searchText:
             text = self._searchText.lower()
             self._filteredItems = [i for i in self._items if text in i._lowerText]
@@ -273,13 +273,13 @@ class TTkListWidget(TTkAbstractScrollView):
             self._filteredItems = self._items
             for item in self._items:
                 item.setVisible(True)
-            
+
         self._placeItems()
-    
+
     def search(self) -> str:
         '''search'''
         return self._searchText
-    
+
     def setSearch(self, search:str) -> None:
         '''setSearch'''
         self._searchText = search
@@ -288,7 +288,7 @@ class TTkListWidget(TTkAbstractScrollView):
     def searchVisibility(self) -> bool:
         '''searchVisibility'''
         return self._searchVisibility
-    
+
     def setSearchVisibility(self, visibility:bool) -> None:
         '''setSearchVisibility'''
         self._searchVisibility = visibility
@@ -521,17 +521,17 @@ class TTkListWidget(TTkAbstractScrollView):
             if self._highlighted:
                 # TTkLog.debug(self._highlighted)
                 self._highlighted.listItemClicked.emit(self._highlighted)
-        
+
         elif evt.type == TTkK.Character:
             # Add this char to the search text
             self._searchText += evt.key
             self.update()
             self.searchModified.emit(self._searchText)
-        
-        elif ( evt.type == TTkK.SpecialKey and 
+
+        elif ( evt.type == TTkK.SpecialKey and
                evt.key == TTkK.Key_Tab ):
             return False
-        
+
         elif ( evt.type == TTkK.SpecialKey and
                evt.key in (TTkK.Key_Delete,TTkK.Key_Backspace) and
                self._searchText ):
@@ -603,7 +603,7 @@ class TTkListWidget(TTkAbstractScrollView):
             p2 = (0,y-offy)
             canvas.drawText(pos=p1,text="╙─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
             canvas.drawText(pos=p2,text="╓─╼", color=TTkColor.fg("#FFFF00")+TTkColor.bg("#008855"))
-    
+
     def paintEvent(self, canvas):
         if self._searchVisibility and self._searchText:
             w,h = self.size()

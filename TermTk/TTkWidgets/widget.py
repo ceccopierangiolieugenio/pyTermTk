@@ -437,7 +437,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                     self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt))
                     return True
                 else:
-                    if ( self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)) or 
+                    if ( self.dragEnterEvent(TTkHelper.dndGetDrag().getDragEnterEvent(evt)) or
                          self.dragMoveEvent(TTkHelper.dndGetDrag().getDragMoveEvent(evt))):
                         if dndw:
                             ret = dndw.dragLeaveEvent(TTkHelper.dndGetDrag().getDragLeaveEvent(evt))

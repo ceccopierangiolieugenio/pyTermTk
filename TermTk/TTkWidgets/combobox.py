@@ -43,7 +43,7 @@ from TermTk.TTkWidgets.resizableframe import TTkResizableFrame
 class _TTkComboBoxPopup(TTkResizableFrame):
     classStyle = TTkResizableFrame.classStyle
     classStyle['default'] |= {'searchColor': TTkColor.fg("#FFFF00")}
-    
+
     __slots__ = ('_list',
                  #exportedMethods
                  'setCurrentRow',
@@ -57,13 +57,13 @@ class _TTkComboBoxPopup(TTkResizableFrame):
 
         self.textClicked   = self._list.textClicked
         self.setCurrentRow = self._list.setCurrentRow
-    
+
     # def setFocus(self) -> None:
     #     self._list.viewport().setFocus()
 
     def keyEvent(self, evt:TTkKeyEvent) -> bool:
         return self._list.viewport().keyEvent(evt)
-    
+
     def paintEvent(self, canvas:TTkCanvas) -> None:
         super().paintEvent(canvas)
         if text := self._list.search():

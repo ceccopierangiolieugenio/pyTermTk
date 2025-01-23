@@ -60,9 +60,9 @@ m1 = bg_b + fg_g
 m2 = bg_b | fg_g
 testColor("T2 ",m1,m2)
 
-m3 = ttk.TTkColor.FG_YELLOW + m1 
+m3 = ttk.TTkColor.FG_YELLOW + m1
 m4 = m1 + ttk.TTkColor.FG_YELLOW
-m5 = ttk.TTkColor.FG_YELLOW | m1 
+m5 = ttk.TTkColor.FG_YELLOW | m1
 m6 = m1 | ttk.TTkColor.FG_YELLOW
 testColor("M1 ",m3,m4)
 testColor("M1 ",m5,m6)

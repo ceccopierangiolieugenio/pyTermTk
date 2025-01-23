@@ -77,7 +77,7 @@ class DragDropTxt(ttk.TTkFrame):
         pixmap.drawText(pos=(0,2),text="│consectetur adi│")
         pixmap.drawText(pos=(0,3),text="│sed do eiusmod │")
 
-        # The next condition is meant to show that you can 
+        # The next condition is meant to show that you can
         # handle also the Drag and Drop with the Right or Middle mouse buttons.
         if   evt.key == ttk. TTkMouseEvent.LeftButton:
             pixmap.drawText(pos=(0,4),text="╰───────╼ Left ╾╯")
@@ -110,7 +110,7 @@ class DragDropImg(ttk.TTkFrame):
         return True
 
 root = ttk.TTk()
- 
+
 root.layout().addWidget(DragDropBase(  pos=( 0,  0), size=(25,10), title="Pixmap: Default"))
 root.layout().addWidget(DragDropWidget(pos=( 0, 10), size=(25,10), title="Pixmap: Widget"))
 root.layout().addWidget(DragDropTxt(   pos=(50,  0), size=(25,10), title="Pixmap: Txt"))

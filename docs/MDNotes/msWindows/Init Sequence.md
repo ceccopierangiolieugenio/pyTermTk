@@ -3,7 +3,7 @@ TTk:
 - __init__()
   ```python
   self._input = TTkInput()
-  self._input.inputEvent.connect(self._processInput)  
+  self._input.inputEvent.connect(self._processInput)
   self._input.pasteEvent.connect(self._processPaste)
   ```
 - mainLoop()
@@ -15,7 +15,7 @@ TTk:
         mouse=self._termMouse,
         directMouse=self._termDirectMouse )
   ```
-  
+
 # How it Should Be
 - __init__()
   ```python

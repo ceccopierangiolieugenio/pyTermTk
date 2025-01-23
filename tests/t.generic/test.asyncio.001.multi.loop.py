@@ -41,7 +41,7 @@ async def main():
     # Create and run tasks for the loops
     task1 = asyncio.create_task(loop_one())
     task2 = asyncio.create_task(loop_two())
-    
+
     # Keep the program running indefinitely
     await asyncio.gather(task1, task2)
 

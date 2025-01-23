@@ -1,4 +1,4 @@
-Gnu Screen Escape 
+Gnu Screen Escape
 https://www.gnu.org/software/screen/manual/html_node/Control-Sequences.html
 
 The following is a list of control sequences recognized by `screen`. ‘(V)’ and ‘(A)’ indicate VT100-specific and ANSI- or ISO-specific functions, respectively.

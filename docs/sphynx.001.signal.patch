@@ -1,7 +1,7 @@
 --- .venv/lib/python3.11/site-packages/sphinx/domains/python/__init__.py.old	2024-10-23 10:51:56.882646206 +0100
 +++ .venv/lib/python3.11/site-packages/sphinx/domains/python/__init__.py	2024-10-23 10:53:16.557626613 +0100
 @@ -204,6 +204,7 @@
- 
+
      option_spec: ClassVar[OptionSpec] = PyObject.option_spec.copy()
      option_spec.update({
 +        'signal': directives.flag,

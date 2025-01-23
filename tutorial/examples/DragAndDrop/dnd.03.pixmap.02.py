@@ -36,11 +36,11 @@ import TermTk as ttk
 
 class DragDrop(ttk.TTkFrame):
     def mouseDragEvent(self, evt:ttk. TTkMouseEvent) -> bool:
-        # Create a new drag object, a new TTkLabel as DnD Data and 
+        # Create a new drag object, a new TTkLabel as DnD Data and
         # a custom Pixmap drawn as a titled box of fixed sizes around
         # a snippet of the label's text
         label = ttk.TTkLabel(text="Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit,\nsed do eiusmod tempor incididunt ut\nlabore et dolore magna aliqua.", size=(10,1))
-        
+
         pixmap = ttk.TTkCanvas(width=17,height=5)
         pixmap.drawText(pos=(0,0),text="╭───────────────╮")
         pixmap.drawText(pos=(2,0),text=f"╼ {self.title()} ╾") # Here for simplicity I am writing the title over the top border
@@ -49,7 +49,7 @@ class DragDrop(ttk.TTkFrame):
         pixmap.drawText(pos=(0,3),text="│sed do eiusmod │")
         pixmap.drawText(pos=(0,4),text="╰───────────────╯")
 
-        # The next condition is meant to show that you can 
+        # The next condition is meant to show that you can
         # handle also the Drag and Drop with the Right or Middle mouse buttons.
         if   evt.key == ttk. TTkMouseEvent.LeftButton:
             pixmap.drawText(pos=(0,4),text="╰───────╼ Left ╾╯")
@@ -70,11 +70,11 @@ class DragDrop(ttk.TTkFrame):
         # Similar to the previous example
         # I am retrieving the TTkLabel widget used as Drag'nDrop data
         # and I am placing it inside the current Frame
-        # This time I am not removing the padding sizes from the 
-        # position due to the frame I draw in the pixmap that 
-        # already changed the offset of the text being aligned to the final 
+        # This time I am not removing the padding sizes from the
+        # position due to the frame I draw in the pixmap that
+        # already changed the offset of the text being aligned to the final
         # dropped Label position.
-        # BTW, I am not a genious that can figure out all of this upfront, 
+        # BTW, I am not a genious that can figure out all of this upfront,
         # this is just the result of trial and errors
         label:ttk.TTkLabel = evt.data()
         self.layout().addWidget(label)
@@ -83,9 +83,9 @@ class DragDrop(ttk.TTkFrame):
         return True
 
 # Create the root application
-# and set its layout to TTkGridLayout in order to 
+# and set its layout to TTkGridLayout in order to
 # place the widgets in the following way:
-#  
+#
 #          Col 0            Col 1
 #         +----------------+----------------+
 #   Row 0 | DragDrop 1     | DragDrop 2     |

@@ -236,7 +236,7 @@ class TTkCanvas():
         self._data[y][x+a:x+b] = txt[a:b]
         if forceColor:
             colors=[color]*len(colors)
-        else: 
+        else:
             for i in range(a,b):
                 if color != TTkColor.RST:
                     self._colors[y][x+i] = (colors[i] | color).mod(x+i,y)

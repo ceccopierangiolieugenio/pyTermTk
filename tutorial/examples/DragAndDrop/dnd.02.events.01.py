@@ -38,7 +38,7 @@ import TermTk as ttk
 # Overriding any of those methods in a subclass will allow the widget to handle the DnD events
 #
 # To start a Drag and Drop operation, the TTkDrag object must be created and executed.
-# The Drag and Drop operation is usually started after a mouseDragEvent as shown in 
+# The Drag and Drop operation is usually started after a mouseDragEvent as shown in
 # this example, but it can be started after any other events/methods or signals.
 
 class DragDrop(ttk.TTkFrame):
@@ -69,9 +69,9 @@ class DragDrop(ttk.TTkFrame):
         return True
 
 # Create the root application
-# and set its layout to TTkGridLayout in order to 
+# and set its layout to TTkGridLayout in order to
 # place the widgets in the following way:
-#  
+#
 #          Col 0            Col 1
 #         +----------------+----------------+
 #   Row 0 | DragDrop 1     | DragDrop 2     |
