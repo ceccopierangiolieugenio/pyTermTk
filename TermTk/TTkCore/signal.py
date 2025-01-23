@@ -59,6 +59,7 @@ __all__ = ['pyTTkSlot', 'pyTTkSignal']
 
 # from typing import TypeVar, TypeVarTuple, Generic, List
 from inspect import getfullargspec, iscoroutinefunction
+from concurrent.futures import ThreadPoolExecutor
 from types import LambdaType
 from threading import Lock, Thread
 import asyncio
@@ -74,7 +75,7 @@ def pyTTkSlot(*args):
 # class pyTTkSignal(Generic[*Ts]):
 class pyTTkSignal():
     _signals = []
-    __slots__ = ('_types', '_connected_slots', '_connected_async_slots', '_mutex')
+    __slots__ = ('_types', '_connected_slots', '_connected_async_slots', '_mutex', '_async_executor')
     def __init__(self, *args, **kwargs) -> None:
         # ref: http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html#PyQt5.QtCore.pyqtSignal
 
@@ -90,6 +91,7 @@ class pyTTkSignal():
         self._connected_slots = {}
         self._connected_async_slots = {}
         self._mutex = Lock()
+        self._async_executor = None
         pyTTkSignal._signals.append(self)
 
     def connect(self, slot):
