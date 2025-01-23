@@ -180,7 +180,7 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         t,b,l,r = self.getPadding()
         _,_,w,h = self.layout().fullWidgetAreaGeometry()
         return w+l+r, h+t+b
-    
+
     @pyTTkSlot(int, int)
     def viewMoveTo(self, x: int, y: int):
         fw, fh = self.viewFullAreaSize()

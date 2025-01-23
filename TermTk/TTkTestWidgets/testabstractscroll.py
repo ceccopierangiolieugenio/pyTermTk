@@ -61,7 +61,7 @@ class TTkTestAbstractScrollWidget(TTkAbstractScrollView):
 
     def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
         return True
-    
+
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         return True
 

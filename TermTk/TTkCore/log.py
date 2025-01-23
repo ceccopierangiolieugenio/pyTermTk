@@ -80,7 +80,7 @@ class TTkLog:
             curframe = inspect.currentframe()
             calframe = inspect.getouterframes(curframe,1)
             if len(calframe) > 2:
-                ctx = _TTkContext(calframe[2])                
+                ctx = _TTkContext(calframe[2])
                 for txt in str(msg).split('\n'):
                     cb(mode, ctx, txt)
 

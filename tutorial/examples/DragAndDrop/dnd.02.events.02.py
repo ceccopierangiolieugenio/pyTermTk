@@ -38,11 +38,11 @@ import TermTk as ttk
 # Overriding any of those methods in a subclass will allow the widget to handle the DnD events
 #
 # To start a Drag and Drop operation, the TTkDrag object must be created and executed.
-# The Drag and Drop operation is usually started after a mouseDragEvent as shown in 
+# The Drag and Drop operation is usually started after a mouseDragEvent as shown in
 # this example, but it can be started after any other events/methods or signals.
 #
 # Here I am exploring the different interactions between the Drag and Drop events
-# In particular I am testing the dragLeaveEvent whch is triggered only if the 
+# In particular I am testing the dragLeaveEvent whch is triggered only if the
 # dragMoveEvent or dragEnterEvent has been handled (returned True) before.
 
 class DragDrop(ttk.TTkFrame):
@@ -81,17 +81,17 @@ class DragDropLeave1(DragDrop):
     def dragEnterEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Enter ({self.title()}) - {evt.data()}, pos={evt.pos()}")
         return True
-    
+
     def dragLeaveEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Leave ({self.title()}) - {evt.data()}, pos={evt.pos()}")
         return True
-    
+
 class DragDropLeave2(DragDrop):
     # Drag and Drop widget that handles the dragMoveEvent and dragLeaveEvent
     def dragMoveEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Move ({self.title()}) - {evt.data()}, pos={evt.pos()}")
-        return True 
-    
+        return True
+
     def dragLeaveEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Leave ({self.title()}) - {evt.data()}, pos={evt.pos()}")
         return True
@@ -99,16 +99,16 @@ class DragDropLeave2(DragDrop):
 class DragDropLeave3(DragDrop):
     # Drag and Drop widget that handles only the dragLeaveEvent
     # NOTE:
-    #   This widget will never receive the dragLeaveEvent because 
+    #   This widget will never receive the dragLeaveEvent because
     #   neither the dragMoveEvent or dragEnterEvent are handled
     def dragLeaveEvent(self, evt:ttk.TTkDnDEvent) -> bool:
         ttk.TTkLog.debug(f"Drag Leave ({self.title()}) - {evt.data()}, pos={evt.pos()}")
         return True
 
 # Create the root application
-# and set its layout to TTkGridLayout in order to 
+# and set its layout to TTkGridLayout in order to
 # place the widgets in the following way:
-#  
+#
 #          Col 0            Col 1            Col 2
 #         +----------------+----------------+-----------------+
 #   Row 0 | DnD Move       | DnD Enter                        |

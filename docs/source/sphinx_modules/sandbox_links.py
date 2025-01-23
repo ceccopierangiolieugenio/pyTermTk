@@ -29,10 +29,10 @@ def demo_link_role_int(name, rawtext, text, lineno, inliner, options={}, content
     base_github_url = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/"
 
     # Split text into prefix and actual file path
-    
+
     file_name = text.split(',')[-1].strip()
     file_path = '/'.join([s.strip() for s in text.split(',')])
-    
+
     # Generate GitHub and TryItOnline links
     github_url = f"{base_github_url}{file_path.strip()}"
 
@@ -53,10 +53,10 @@ def demo_link_role_int_sb(name, rawtext, text, lineno, inliner, options={}, cont
     base_tio_url = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath="
 
     # Split text into prefix and actual file path
-    
+
     file_name = text.split(',')[-1].strip()
     file_path = '/'.join([s.strip() for s in text.split(',')])
-    
+
     # Generate GitHub and TryItOnline links
     github_url = f"{base_github_url}{file_path.strip()}"
     tio_url = f"{base_tio_url}{file_path.strip()}"
@@ -82,10 +82,10 @@ def demo_link_role_ext_sb(name, rawtext, text, lineno, inliner, options={}, cont
     base_tio_url = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri="
 
     # Split text into prefix and actual file path
-    
+
     file_name = text.split(',')[-1].strip()
     file_uri = '/'.join([s.strip() for s in text.split(',')])
-    
+
     # Generate GitHub and TryItOnline links
     tio_url = f"{base_tio_url}{file_uri.strip()}"
 

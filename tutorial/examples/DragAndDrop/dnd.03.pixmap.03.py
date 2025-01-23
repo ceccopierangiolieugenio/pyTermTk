@@ -71,7 +71,7 @@ class DragDrop(ttk.TTkFrame):
 
     def mouseDragEvent(self, evt:ttk. TTkMouseEvent) -> bool:
         if evt.key == ttk. TTkMouseEvent.LeftButton:
-            # Create a new drag object and 
+            # Create a new drag object and
             # a random image is chosen
             imageString = random.choice([diamond,fire,key,peach,ring,sword,whip,pepper,python])
 
@@ -107,9 +107,9 @@ class DragDrop(ttk.TTkFrame):
         super().paintEvent(canvas)
 
 # Create the root application
-# and set its layout to TTkGridLayout in order to 
+# and set its layout to TTkGridLayout in order to
 # place the widgets in the following way:
-#  
+#
 #          Col 0            Col 1
 #         +----------------+----------------+
 #   Row 0 | DragDrop 1     | DragDrop 2     |

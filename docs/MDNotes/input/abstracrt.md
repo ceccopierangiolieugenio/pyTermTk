@@ -21,7 +21,7 @@ TTkInputDriver           TTkInput                                              T
       yield inString  -->  for inString in _readInput.read()
                              kevt,mevt,paste = key_process(inString)
                              queue.put(kevt,mevt,paste)
-                             
+
                                          queue.get()
                                          inputEvent.emit(kevt, mevt)  ------>  _processInput
                                          pasteEvent.emit(str)         ------>  _pasteInput

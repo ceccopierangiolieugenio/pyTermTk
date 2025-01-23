@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="www/favicon.ico">
+
+    <script src="www/pyodide/pyodide.js"></script>
+
+    <link  href="www/xterm/xterm.css" rel="stylesheet" />
+    <script src="www/xterm/xterm.js"></script>
+    <script src="www/xterm/addon-fit/addon-fit.js"></script>
+    <!--
+      <script src="www/xterm/addon-canvas/addon-canvas.js"></script>
+    -->
+    <script src="www/xterm/addon-unicode11/addon-unicode11.js"></script>
+    <script src="www/file-saver/FileSaver.js"></script>
+
+    <style>
+      body {
+        height: 100%;
+        overflow-y: hidden;
+        overflow-x: hidden;
+      }
+      .xterm .xterm-viewport {overflow-y: hidden;}
+    </style>
+  </head>
+  <body>
+
+    <div id="terminal" oncontextmenu="return false;" style="float: left"></div>
+    <input type="file" id="file-input" hidden />
+
+    <script type="module">
+      import { TTkProxy } from './js/ttkproxy.js'
+
+      function pasteFunction(abc) {
+            text = abc.clipboardData.getData("Text")
+            console.log(`Pasted: ${text}`);
+      }
+
+      const font = new FontFace("pyTermTkFont", "url(www/fonts/opentype/3270-Regular.otf)");
+      document.fonts.add(font);
+      font.load();
+      document.fonts.ready.then(() => {main()});
+
+      /* pyodide demo */
+      async function mainTTk(term){
+        let ttkProxy = new TTkProxy(term)
+        await ttkProxy.init()
+
+        ttkProxy.namespace = ttkProxy.pyodide.globals.get("dict")();
+        await ttkProxy.pyodide.runPython(`
+            import asyncio
+
+            print('Hello from asyncio')
+
+            # Define the first endless loop
+            async def loop_one():
+                while True:
+                    print("Running loop one...")
+                    await asyncio.sleep(1)  # Non-blocking sleep
+
+            # Define the second endless loop
+            async def loop_two():
+                while True:
+                    print("Running loop two...")
+                    await asyncio.sleep(2)  # Non-blocking sleep
+
+            # Main entry point
+            async def main():
+                # Create and run tasks for the loops
+                task1 = asyncio.create_task(loop_one())
+                task2 = asyncio.create_task(loop_two())
+                # Keep the program running indefinitely
+                await asyncio.gather(task1, task2)
+
+            # Run the event loop
+            # asyncio.run(main())
+            # main()
+            _loop=async_pyodide.CustomLoop()
+            asyncio.set_event_loop(_loop)
+            _loop.set_task_to_run_until_done(main())
+        `,{ globals: ttkProxy.namespace }
+        );
+      }
+
+      function main(){
+        /* xterm.js */
+        var term = new Terminal({
+            allowProposedApi: true,
+            fontSize: 17,
+            // fontFamily: 'FreeSerif Regular'});
+            fontFamily: 'pyTermTkFont'});
+
+        /* https://www.npmjs.com/package/@xterm/addon-unicode11 */
+        const unicode11Addon = new Unicode11Addon.Unicode11Addon();
+
+        // term.loadAddon(new CanvasAddon.CanvasAddon());
+        term.loadAddon(unicode11Addon);
+
+        term.unicode.activeVersion = '11';
+
+        term.open(document.getElementById('terminal'));
+
+        term.write('\n\rxterm.js - Loaded\n\r')
+        mainTTk(term)
+      }
+    </script>
+
+  </body>
+</html>

@@ -92,7 +92,7 @@ def demoTextEdit(root, filename):
             te.setWordWrapMode(ttk.TTkK.WordWrap)
         else:
             te.setWordWrapMode(ttk.TTkK.WrapAnywhere)
-    
+
     @ttk.pyTTkSlot(ttk.TTkTextCursor)
     def _positionChanged(cursor:ttk.TTkTextCursor):
         extra_selections = []
@@ -109,8 +109,8 @@ def demoTextEdit(root, filename):
         for x in set(lines):
             cursor.addCursor(x,0)
         selection = ttk.TTkTextEdit.ExtraSelection(
-                                        cursor=cursor, 
-                                        color=ttk.TTkColor.BG_YELLOW, 
+                                        cursor=cursor,
+                                        color=ttk.TTkColor.BG_YELLOW,
                                         format=ttk.TTkK.SelectionFormat.FullWidthSelection)
         extra_selections.append(selection)
 
@@ -118,8 +118,8 @@ def demoTextEdit(root, filename):
         cursor = te.textCursor().copy()
         cursor.clearSelection()
         selection = ttk.TTkTextEdit.ExtraSelection(
-                                        cursor=cursor, 
-                                        color=ttk.TTkColor.BG_RED, 
+                                        cursor=cursor,
+                                        color=ttk.TTkColor.BG_RED,
                                         format=ttk.TTkK.SelectionFormat.FullWidthSelection)
         extra_selections.append(selection)
 
@@ -127,11 +127,11 @@ def demoTextEdit(root, filename):
         cursor = te.textCursor().copy()
         cursor.select(ttk.TTkTextCursor.SelectionType.WordUnderCursor)
         selection = ttk.TTkTextEdit.ExtraSelection(
-                                        cursor=cursor, 
+                                        cursor=cursor,
                                         color=ttk.TTkColor.BG_GREEN)
         extra_selections.append(selection)
 
-        te.setExtraSelections(extra_selections)        
+        te.setExtraSelections(extra_selections)
 
     wordWrap.currentIndexChanged.connect(_wordWrapCallback)
     te.cursorPositionChanged.connect(_positionChanged)
@@ -164,7 +164,7 @@ def main():
 
     for file in args.filename:
         _openFile(file)
-    
+
     fileTree.fileActivated.connect(lambda x: _openFile(x.path()))
 
     root.mainloop()

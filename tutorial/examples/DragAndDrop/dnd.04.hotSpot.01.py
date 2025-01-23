@@ -79,19 +79,19 @@ class DropFrame(ttk.TTkFrame):
         ttk.TTkLog.debug(f"Drop ({self.title()}) <- {button.text()}, pos={evt.x},{evt.y}")
 
         # This is not required in this example
-        # 
+        #
         # But I just add a logging feedback to the button
         # To show that the button has been clicked
         # Note: I highly recommend to avoid using lambda as a slot
         #       The correct way is to have a method in the class, marked as pyTTkSlot,
         #       capable of handling the signal
         button.clicked.connect(lambda: ttk.TTkLog.debug(f"Clicked: {button.text()}"))
-        return True 
+        return True
 
 # Create the root application
-# and set its layout to TTkGridLayout in order to 
+# and set its layout to TTkGridLayout in order to
 # place the widgets in the following way:
-#  
+#
 #          Col 0            Col 1
 #         +----------------+----------------+
 #   Row 0 | DragDrop 1     | DragDrop 2     |

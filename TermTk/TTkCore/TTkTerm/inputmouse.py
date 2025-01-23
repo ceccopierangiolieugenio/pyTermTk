@@ -92,7 +92,7 @@ class TTkMouseEvent:
         self.mod = mod
         self.raw = raw
         self.tap = tap
-    
+
     def pos(self) -> tuple[int,int]:
         '''
         Returns the position of the mouse cursor relative to the current widget.

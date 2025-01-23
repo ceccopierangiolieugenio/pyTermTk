@@ -37,7 +37,7 @@ import TermTk as ttk
 class DragDrop(ttk.TTkFrame):
     def mouseDragEvent(self, evt:ttk. TTkMouseEvent) -> bool:
         if evt.key == ttk. TTkMouseEvent.LeftButton:
-            # Create a new drag object and 
+            # Create a new drag object and
             # a new TTkButton as DnD Data and Pixmap
             # the default TTkButton canvas will be used as Pixmap
             button = ttk.TTkButton(text=f"Test DnD ({self.title()})", border=True, size=(20,3))
@@ -60,9 +60,9 @@ class DragDrop(ttk.TTkFrame):
         return True
 
 # Create the root application
-# and set its layout to TTkGridLayout in order to 
+# and set its layout to TTkGridLayout in order to
 # place the widgets in the following way:
-#  
+#
 #          Col 0            Col 1
 #         +----------------+----------------+
 #   Row 0 | DragDrop 1     | DragDrop 2     |

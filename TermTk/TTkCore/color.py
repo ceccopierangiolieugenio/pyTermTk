@@ -394,7 +394,7 @@ class _TTkColor_mod_link(_TTkColor_mod):
         c = self.copy()
         c._clean = False
         return other + c
-    
+
     # self + other
     def __add__(self, other):
         # TTkLog.debug("__add__")
