@@ -60,8 +60,25 @@ __all__ = ['pyTTkSlot', 'pyTTkSignal']
 # from typing import TypeVar, TypeVarTuple, Generic, List
 from inspect import getfullargspec, iscoroutinefunction
 from types import LambdaType
-from threading import Lock, Thread
+from threading import Lock
 import asyncio
+
+import importlib.util
+
+if importlib.util.find_spec('pyodideProxy'):
+    pass
+else:
+    from threading import Thread
+    import asyncio
+
+    def _async_runner(coros):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(asyncio.gather(*coros))
+        loop.close()
+
+    def _run_coroutines(coros):
+        Thread(target=_async_runner, args=(coros,)).start()
 
 def pyTTkSlot(*args):
     def pyTTkSlot_d(func):
@@ -136,12 +153,6 @@ class pyTTkSignal():
             if slot in self._connected_slots:
                 del self._connected_slots[slot]
 
-    def _async_runner(self, coros):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(asyncio.gather(*coros))
-        loop.close()
-
     def emit(self, *args, **kwargs) -> None:
         if not self._mutex.acquire(False): return
         if len(args) != len(self._types):
@@ -151,7 +162,7 @@ class pyTTkSignal():
             slot(*args[sl], **kwargs)
         if self._connected_async_slots:
             coros = [slot(*args[sl], **kwargs) for slot,sl in self._connected_async_slots.copy().items()]
-            Thread(target=self._async_runner, args=(coros,)).start()
+            _run_coroutines(coros)
         self._mutex.release()
 
     def clear(self):
