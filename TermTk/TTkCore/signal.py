@@ -61,7 +61,7 @@ __all__ = ['pyTTkSlot', 'pyTTkSignal']
 from inspect import getfullargspec, iscoroutinefunction
 from concurrent.futures import ThreadPoolExecutor
 from types import LambdaType
-from threading import Lock
+from threading import Lock, Thread
 import asyncio
 
 def pyTTkSlot(*args):
@@ -74,7 +74,6 @@ def pyTTkSlot(*args):
 # Ts = TypeVarTuple("Ts")
 # class pyTTkSignal(Generic[*Ts]):
 class pyTTkSignal():
-    _asyncio_event_loop = asyncio.new_event_loop()
     _signals = []
     __slots__ = ('_types', '_connected_slots', '_connected_async_slots', '_mutex', '_async_executor')
     def __init__(self, *args, **kwargs) -> None:
@@ -139,13 +138,11 @@ class pyTTkSignal():
             if slot in self._connected_slots:
                 del self._connected_slots[slot]
 
-    def async_runner(self, coros):
+    def _async_runner(self, coros):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(asyncio.gather(*coros))
         loop.close()
-        
-
 
     def emit(self, *args, **kwargs) -> None:
         if not self._mutex.acquire(False): return
@@ -155,10 +152,8 @@ class pyTTkSignal():
         for slot,sl in self._connected_slots.copy().items():
             slot(*args[sl], **kwargs)
         if self._connected_async_slots:
-            if self._async_executor is None:
-                self._async_executor = ThreadPoolExecutor(max_workers=1) # async dont need so many workers
             coros = [slot(*args[sl], **kwargs) for slot,sl in self._connected_async_slots.copy().items()]
-            self._async_executor.submit(self.async_runner, coros)
+            Thread(target=self._async_runner, args=(coros,)).start()
         self._mutex.release()
 
     def clear(self):
