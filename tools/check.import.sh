@@ -11,6 +11,8 @@ __check(){
             -e "signal.py:from inspect import getfullargspec" \
             -e "signal.py:from types import LambdaType" \
             -e "signal.py:from threading import Lock" \
+            -e "signal.py:import asyncio" \
+            -e "signal.py:import importlib.util" \
             -e "colors.py:from .colors_ansi_map" \
             -e "log.py:import inspect" \
             -e "log.py:import logging" \
