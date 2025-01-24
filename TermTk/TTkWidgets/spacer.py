@@ -29,3 +29,10 @@ class TTkSpacer(TTkWidget):
     __slots__ = ()
     def __init__(self, **kwargs) -> None:
         TTkWidget.__init__(self, **kwargs)
+
+    def __mul__(self, num:int):
+        if not isinstance(num, int):
+            raise ValueError(f"Expected int but got {type(num)}")
+        return [TTkSpacer() for _ in range(num)]
+
+        
