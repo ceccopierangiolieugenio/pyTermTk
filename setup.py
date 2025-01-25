@@ -4,16 +4,27 @@ from TermTk.TTkCore.cfg import TTkCfg
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-print(f"Version: {TTkCfg.version}")
-print(f"Name: {TTkCfg.name}")
+_name=TTkCfg.name
+_version=TTkCfg.version
+
+print(f"Name: {_name}")
+print(f"Version: {_version}")
+
+if _name.startswith('__'):
+    _name = 'pyTermTk'
+if _version.startswith('__'):
+    _version = '0.1.0a1'
+
+print(f"Name: {_name}")
+print(f"Version: {_version}")
 
 setuptools.setup(
     # name='pyTermTk',
     # name='example-pkg-ceccopierangiolieugenio',
     # version=version,
     # version="0.1.0a1",
-    name=TTkCfg.name,
-    version=TTkCfg.version,
+    name=_name,
+    version=_version,
     author='Eugenio Parodi',
     author_email='ceccopierangiolieugenio@googlemail.com',
     description='Python Terminal Toolkit',
