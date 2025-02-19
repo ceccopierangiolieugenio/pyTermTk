@@ -82,6 +82,8 @@ class TTkMouseEvent:
     Move    = TTkK.Move
     Up      = TTkK.WHEEL_Up
     Down    = TTkK.WHEEL_Down
+    Left    = TTkK.WHEEL_Left
+    Right   = TTkK.WHEEL_Right
 
     __slots__ = ('x', 'y', 'key', 'evt', 'mod', 'tap', 'raw')
     def __init__(self, x: int, y: int, key: int, evt: int, mod: int, tap: int, raw: str):
@@ -127,6 +129,8 @@ class TTkMouseEvent:
             TTkMouseEvent.Move    : "Move",
             TTkMouseEvent.Up      : "Up",
             TTkMouseEvent.Down    : "Down",
+            TTkMouseEvent.Left    : "Left",
+            TTkMouseEvent.Right   : "Right",
         }.get(self.evt, "Undefined")
 
     def mod2str(self):

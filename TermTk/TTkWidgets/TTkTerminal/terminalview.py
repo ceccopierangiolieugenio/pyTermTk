@@ -957,7 +957,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                 TTkK.Move:      (35, 0,'M'),
                 TTkK.Drag:      (k, 32,'M'),
                 TTkK.WHEEL_Up:  (k,  0,'M'),
-                TTkK.WHEEL_Down:(k,  1,'M')}.get(
+                TTkK.WHEEL_Down:(k,  1,'M'),
+                TTkK.WHEEL_Left:(k,  2,'M'),
+                TTkK.WHEEL_Right:(k, 3,'M')}.get(
                     evt.evt,(0,0,'M'))
             # _termLog.mouse(f'Mouse: <ESC>[<{k+km};{x};{y}{pr}')
             self.termData.emit(f'\033[<{k+km};{x};{y}{pr}'.encode())
@@ -968,7 +970,9 @@ class TTkTerminalView(TTkAbstractScrollView, _TTkTerminal_CSI_DEC):
                 TTkK.Move:      b'\033[MC',
                 TTkK.Drag:      b'\033[M@',
                 TTkK.WHEEL_Up:  b'\033[M`',
-                TTkK.WHEEL_Down:b'\033[Ma'}.get(
+                TTkK.WHEEL_Down:b'\033[Ma',
+                TTkK.WHEEL_Left:b'\033[Mb',
+                TTkK.WHEEL_Right:b'\033[Mc'}.get(
                     evt.evt,
                     b'')
             bah = bytearray(head)

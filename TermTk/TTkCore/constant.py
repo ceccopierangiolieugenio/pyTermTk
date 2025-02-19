@@ -388,6 +388,8 @@ class TTkConstant:
         Move       = 0x00080000
         WHEEL_Up   = 0x00100000 # Wheel Up
         WHEEL_Down = 0x00200000 # Wheel Down
+        WHEEL_Left = 0x00400000 # Wheel Down
+        WHEEL_Right= 0x00800000 # Wheel Down
 
     NoEvent    = MouseEvent.NoEvent
     Press      = MouseEvent.Press
@@ -396,6 +398,8 @@ class TTkConstant:
     Move       = MouseEvent.Move
     WHEEL_Up   = MouseEvent.WHEEL_Up
     WHEEL_Down = MouseEvent.WHEEL_Down
+    WHEEL_Left = MouseEvent.WHEEL_Left
+    WHEEL_Right= MouseEvent.WHEEL_Right
 
     # Cursors
     Cursor_Blinking_Block      = 0x0001

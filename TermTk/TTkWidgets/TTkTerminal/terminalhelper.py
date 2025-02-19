@@ -136,8 +136,8 @@ class TTkTerminalHelper():
             sys.exit()
         else:
             self._inout = os.fdopen(self._fd, "w+b", 0)
-            name = os.ttyname(self._fd)
-            TTkLog.debug(f"{self._pid=} {self._fd=} {name}")
+            # name = os.ttyname(self._fd)
+            TTkLog.debug(f"{self._pid=} {self._fd=}")
 
             self._quit_pipe = os.pipe()
 

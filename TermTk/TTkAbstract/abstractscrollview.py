@@ -207,8 +207,13 @@ class TTkAbstractScrollView(TTkContainer, TTkAbstractScrollViewInterface):
         delta = TTkCfg.scrollDelta
         offx, offy = self.getViewOffsets()
         if evt.evt == TTkK.WHEEL_Up:
-            delta = -delta
-        self.viewMoveTo(offx, offy + delta)
+            self.viewMoveTo(offx, offy - delta)
+        elif evt.evt == TTkK.WHEEL_Down:
+            self.viewMoveTo(offx, offy + delta)
+        elif evt.evt == TTkK.WHEEL_Left:
+            self.viewMoveTo(offx - delta, offy)
+        elif evt.evt == TTkK.WHEEL_Right:
+            self.viewMoveTo(offx + delta, offy)
         return True
 
     def resizeEvent(self, w, h):

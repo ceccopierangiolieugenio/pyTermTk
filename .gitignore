@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# OSX del cazzo file demmerda
+.DS_Store
+
 # other
 pygments
 pyTermTk-Docs
