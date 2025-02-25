@@ -292,29 +292,18 @@ class TTk(TTkContainer):
                 TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     async def _drawLoop(self):
-        # Event.{wait and clear} should be atomic,
-        # BUTt: ( y )
-        #   if an update event (set) happen in between the wait and clear
-        #      the widget is still processed in the current paint routine
-        #   if an update event (set) happen after the wait and clear
-        #      the widget is processed in the current paint routine
-        #      an extra paint routine is triggered which return immediately due to
-        #      the empty list of widgets to be processed - Not a big deal
-        #   if an update event (set) happen after the wait and clear and the paintAll Routine
-        #      well, it works as it is supposed to be
-        await self._paintEvent.wait()
-        self._paintEvent.clear()
+        while True:
+            await self._paintEvent.wait()
+            self._paintEvent.clear()
 
-        w,h = TTkTerm.getTerminalSize()
-        await self._drawMutex.acquire()
-        self.setGeometry(0,0,w,h)
-        self._fps()
-        TTkHelperDraw.paintAll()
-        self.paintExecuted.emit()
-        self._drawMutex.release()
-        await TTkAsyncio.sleep(1/TTkCfg.maxFps)
-        TTkAsyncio.create_task(self._drawLoop())
-        # self._timer.start(1/TTkCfg.maxFps)
+            w,h = TTkTerm.getTerminalSize()
+            await self._drawMutex.acquire()
+            self.setGeometry(0,0,w,h)
+            self._fps()
+            TTkHelperDraw.paintAll()
+            self.paintExecuted.emit()
+            self._drawMutex.release()
+            await TTkAsyncio.sleep(1/TTkCfg.maxFps)
 
     def _win_resize_cb(self, width, height):
         TTkGlbl.term_w = int(width)

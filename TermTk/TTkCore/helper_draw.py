@@ -47,11 +47,7 @@ class TTkHelperDraw:
     @staticmethod
     def unlockPaint():
         if rw := TTkHelper._rootWidget:
-            async def _set():
-                rw._paintEvent.set()
-            # TTkAsyncio.create_task(rw._paintEvent.set   )
-            # rw._paintEvent.set()
-            TTkAsyncio.create_task(_set())
+            rw._paintEvent.set()
 
     @staticmethod
     def addUpdateWidget(widget):
