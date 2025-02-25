@@ -187,6 +187,12 @@ class TTkInput:
             elif code == 0x41:
                 key = TTkMouseEvent.Wheel
                 evt = TTkMouseEvent.Down
+            elif code == 0x42:
+                key = TTkMouseEvent.Wheel
+                evt = TTkMouseEvent.Left
+            elif code == 0x43:
+                key = TTkMouseEvent.Wheel
+                evt = TTkMouseEvent.Right
             elif code == 0x23:
                 evt = TTkMouseEvent.Move
             elif code == 0x27:
