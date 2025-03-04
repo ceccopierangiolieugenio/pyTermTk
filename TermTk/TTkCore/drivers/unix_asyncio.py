@@ -37,7 +37,6 @@ from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 class TTkInputDriver():
     _inputQueue = TTkAsyncio.Queue()
-    _readPipe = os.pipe()
     _attr = termios.tcgetattr(sys.stdin)
 
     @staticmethod
@@ -50,7 +49,6 @@ class TTkInputDriver():
     def close():
         TTkAsyncio.loop.remove_reader(sys.stdin.fileno())
         termios.tcsetattr(sys.stdin, termios.TCSANOW, TTkInputDriver._attr)
-        os.write(TTkInputDriver._readPipe[1], b'quit')
 
     @staticmethod
     def cont():
@@ -79,32 +77,32 @@ class TTkInputDriver():
                 for ch in sr:
                     TTkAsyncio.create_task(TTkInputDriver._inputQueue.put(ch))
 
-    async def _newRead():
-        import asyncio
-        """Reads from stdin asynchronously line by line."""
-        loop = TTkAsyncio.loop
-        reader = asyncio.StreamReader()
-        protocol = asyncio.StreamReaderProtocol(reader)
-        await loop.connect_read_pipe(lambda: protocol, asyncio.sys.stdin)
-
-        while True:
-            _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
-
-            fcntl.fcntl(asyncio.sys.stdin, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
-            stdinRead = await reader.read()
-            fcntl.fcntl(asyncio.sys.stdin, fcntl.F_SETFL, _fl)
-
-            # Split all the ansi sequences
-            # or yield any separate input char
-            if stdinRead == '\033':
-                await TTkInputDriver._inputQueue.put('\033')
-                return
-            for sr in TTkInputDriver._rm.findall(stdinRead):
-                if '\033' == sr[0]:
-                    await TTkInputDriver._inputQueue.put(sr)
-                else:
-                    for ch in sr:
-                        await TTkInputDriver._inputQueue.put(ch)
+    # async def _newRead():
+    #     import asyncio
+    #     """Reads from stdin asynchronously line by line."""
+    #     loop = TTkAsyncio.loop
+    #     reader = asyncio.StreamReader()
+    #     protocol = asyncio.StreamReaderProtocol(reader)
+    #     await loop.connect_read_pipe(lambda: protocol, asyncio.sys.stdin)
+    #
+    #     while True:
+    #         _fl = fcntl.fcntl(sys.stdin, fcntl.F_GETFL)
+    #
+    #         fcntl.fcntl(asyncio.sys.stdin, fcntl.F_SETFL, _fl | os.O_NONBLOCK) # Set the input as NONBLOCK to read the full sequence
+    #         stdinRead = await reader.read()
+    #         fcntl.fcntl(asyncio.sys.stdin, fcntl.F_SETFL, _fl)
+    #
+    #         # Split all the ansi sequences
+    #         # or yield any separate input char
+    #         if stdinRead == '\033':
+    #             await TTkInputDriver._inputQueue.put('\033')
+    #             return
+    #         for sr in TTkInputDriver._rm.findall(stdinRead):
+    #             if '\033' == sr[0]:
+    #                 await TTkInputDriver._inputQueue.put(sr)
+    #             else:
+    #                 for ch in sr:
+    #                     await TTkInputDriver._inputQueue.put(ch)
 
 class TTkSignalDriver():
     sigStop = pyTTkSignal()
@@ -114,13 +112,13 @@ class TTkSignalDriver():
     @staticmethod
     def init():
         # Register events
-        signal.signal(signal.SIGTSTP, TTkSignalDriver._SIGSTOP) # Ctrl-Z
-        signal.signal(signal.SIGCONT, TTkSignalDriver._SIGCONT) # Resume
-        signal.signal(signal.SIGINT,  TTkSignalDriver._SIGINT)  # Ctrl-C
+        TTkAsyncio.add_signal_handler(signal.SIGTSTP, TTkSignalDriver._SIGSTOP) # Ctrl-Z
+        TTkAsyncio.add_signal_handler(signal.SIGCONT, TTkSignalDriver._SIGCONT) # Resume
+        TTkAsyncio.add_signal_handler(signal.SIGINT,  TTkSignalDriver._SIGINT)  # Ctrl-C
 
     def exit():
         signal.signal(signal.SIGINT,  signal.SIG_DFL)
 
-    def _SIGSTOP(signum, frame): TTkSignalDriver.sigStop.emit()
-    def _SIGCONT(signum, frame): TTkSignalDriver.sigCont.emit()
-    def _SIGINT( signum, frame): TTkSignalDriver.sigInt.emit()
+    def _SIGSTOP(*args): TTkSignalDriver.sigStop.emit()
+    def _SIGCONT(*args): TTkSignalDriver.sigCont.emit()
+    def _SIGINT( *args): TTkSignalDriver.sigInt.emit()

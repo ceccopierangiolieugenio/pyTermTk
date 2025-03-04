@@ -128,23 +128,21 @@ class TTkTerm(TTkTermBase):
     _sigWinChMutex = TTkAsyncio.Lock()
 
     @staticmethod
-    async def _sigWinChThreaded():
-        if not TTkTerm._sigWinChMutex.acquire(blocking=False): return
+    async def _sigWinChAsync():
         while (TTkTerm.width, TTkTerm.height) != (wh:=TTkTerm.getTerminalSize()):
             TTkTerm.width, TTkTerm.height = wh
             if TTkTerm._sigWinChCb is not None:
                 TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
-        TTkTerm._sigWinChMutex.release()
+
 
     @staticmethod
-    def _sigWinCh(signum, frame):
-        pass
-        # Thread(target=TTkTerm._sigWinChThreaded).start()
+    def _sigWinCh():
+        TTkAsyncio.call_soon_threadsafe(TTkTerm._sigWinChAsync())
 
     @staticmethod
     def _registerResizeCb(callback):
         TTkTerm._sigWinChCb = callback
         # Dummy call to retrieve the terminal size
-        TTkTerm._sigWinCh(signal.SIGWINCH, None)
-        signal.signal(signal.SIGWINCH, TTkTerm._sigWinCh)
+        TTkTerm._sigWinCh()
+        TTkAsyncio.add_signal_handler(signal.SIGWINCH, TTkTerm._sigWinCh)
     TTkTermBase.registerResizeCb = _registerResizeCb

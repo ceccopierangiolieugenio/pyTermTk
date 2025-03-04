@@ -78,7 +78,7 @@ class TTk(TTkContainer):
         '_termMouse', '_termDirectMouse',
         '_title',
         '_showMouseCursor', '_mouseCursor',
-        '_sigmask', '_timer',
+        '_sigmask', '_stop_event',
         '_drawMutex',
         '_paintEvent',
         '_lastMultiTap',
@@ -97,10 +97,10 @@ class TTk(TTkContainer):
         if ('TERMTK_FILE_LOG' in os.environ and (_logFile := os.environ['TERMTK_FILE_LOG'])):
             TTkLog.use_default_file_logging(_logFile)
 
-        self._timer = None
         self._title = title
         self._sigmask = sigmask
         self.paintExecuted = pyTTkSignal()
+        self._stop_event = TTkAsyncio.Event()
         self._termMouse = True
         self._termDirectMouse = mouseTrack
         self._mouseCursor = None
@@ -163,10 +163,6 @@ class TTk(TTkContainer):
 
             TTkTerm.registerResizeCb(self._win_resize_cb)
 
-            # self._timer = TTkTimer()
-            # self._timer.timeout.connect(self._time_event)
-            # self.show()
-
             # Keep track of the multiTap to avoid the extra key release
             self._lastMultiTap = False
             TTkInput.init(
@@ -185,10 +181,6 @@ class TTk(TTkContainer):
         finally:
             if platform.system() != 'Emscripten':
                 TTkHelper.quitEvent.emit()
-                # if self._timer:
-                #     self._timer.timeout.disconnect(self._time_event)
-                #     self._paintEvent.set()
-                #     self._timer.join()
                 TTkSignalDriver.exit()
                 self.quit()
                 TTkTerm.exit()
@@ -202,10 +194,9 @@ class TTk(TTkContainer):
 
     async def _mainLoop(self):
         self.show()
-        TTkAsyncio.create_task(self._drawLoop())
         if platform.system() == 'Emscripten':
             return
-        await TTkInput.start()
+        await TTkAsyncio.gather(self._drawLoop(),TTkInput.start())
 
     @pyTTkSlot(str)
     def _processPaste(self, txt:str):
@@ -292,7 +283,7 @@ class TTk(TTkContainer):
                 TTkHelper.prevFocus(focusWidget if focusWidget else self)
 
     async def _drawLoop(self):
-        while True:
+        while not self._stop_event.is_set():
             await self._paintEvent.wait()
             self._paintEvent.clear()
 
@@ -335,13 +326,16 @@ class TTk(TTkContainer):
     @pyTTkSlot()
     def _quit(self):
         '''Tells the application to exit with a return code.'''
-        if self._timer:
-            self._timer.timeout.disconnect(self._time_event)
         TTkInput.inputEvent.clear()
+        self._stop_event.set()
         TTkInput.close()
+        TTkAsyncio.quit()
 
     @pyTTkSlot()
     def _SIGSTOP(self):
+        TTkAsyncio.call_soon_threadsafe(self._SIGSTOP_ASYNC())
+
+    async def _SIGSTOP_ASYNC(self):
         """Reset terminal settings and stop background input read before putting to sleep"""
         TTkLog.debug("Captured SIGSTOP <CTRL-z>")
         TTkTerm.stop()
@@ -351,16 +345,23 @@ class TTk(TTkContainer):
 
     @pyTTkSlot()
     def _SIGCONT(self):
+        TTkAsyncio.call_soon_threadsafe(self._SIGCONT_ASYNC())
+
+    async def _SIGCONT_ASYNC(self):
         """Set terminal settings and restart background input read"""
         TTkLog.debug("Captured SIGCONT 'fg/bg'")
         TTkTerm.cont()
         TTkInput.cont()
-        TTkHelper.rePaintAll()
+        TTkHelperDraw.rePaintAll()
         # TODO: Restart threads
         # TODO: Redraw the screen
 
+
     @pyTTkSlot()
     def _SIGINT(self):
+        TTkAsyncio.call_soon_threadsafe(self._SIGINT_ASYNC())
+
+    async def _SIGINT_ASYNC(self):
         # If the "TERMTK_STACKTRACE" env variable is defined
         # a stacktrace file is generated once CTRL+C is pressed
         # i.e.

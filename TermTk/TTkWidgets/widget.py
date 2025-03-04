@@ -902,7 +902,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                 # char, it can be displayed also if its position is one char outside the boudaries
                  ( self._widgetCursorType == TTkK.Cursor_Blinking_Bar and
                    self == TTkHelper.widgetAt(cx+ax-1, cy+ay) ) ):
-                TTkHelper.showCursor(self._widgetCursorType)
+                TTkHelperDraw.showCursor(self._widgetCursorType)
                 TTkHelper.moveCursor(self, cx, cy)
             else:
                 TTkHelper.hideCursor()

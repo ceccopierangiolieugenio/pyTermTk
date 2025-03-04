@@ -24,16 +24,19 @@ __all__ = ['TTkAsyncio']
 
 import asyncio
 
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
-
 class TTkAsyncio():
     loop = asyncio.get_event_loop()
     Queue = asyncio.Queue
+    QueueShutDown = asyncio.QueueShutDown
     Event = asyncio.Event
     Lock = asyncio.Lock
     sleep = asyncio.sleep
+    ensure_future = asyncio.ensure_future
+    gather = asyncio.gather
+
+    @staticmethod
+    def quit():
+        pass
 
     @staticmethod
     def run(coro):
@@ -44,6 +47,10 @@ class TTkAsyncio():
 
     @staticmethod
     def create_task(*args, **kwargs):
-        if TTkAsyncio.loop.is_running():
-            # asyncio.set_event_loop(TTkAsyncio.loop)
-            TTkAsyncio.loop.create_task(*args, **kwargs)
+        return TTkAsyncio.loop.create_task(*args, **kwargs)
+
+    def call_soon_threadsafe(*args, **kwargs):
+        return TTkAsyncio.loop.call_soon_threadsafe(TTkAsyncio.loop.create_task, *args, **kwargs)
+
+    def add_signal_handler(*args, **kwargs):
+        return TTkAsyncio.loop.add_signal_handler(*args, **kwargs)

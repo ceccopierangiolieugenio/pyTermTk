@@ -40,7 +40,6 @@ class TTkInput:
     pasteEvent = pyTTkSignal(str)
     _pasteBuffer = ""
     _bracketedPaste = False
-    _readInput = None
     _inputThread = None
     _inputQueue = None
     _leftLastTime = 0
@@ -57,14 +56,13 @@ class TTkInput:
 
     @staticmethod
     def init(mouse:bool=False, directMouse:bool=False) -> None:
-        TTkInput._inputQueue = TTkAsyncio.Queue()
+        TTkInput._inputQueue = TTkInputDriver.queue()
         TTkTerm.setMouse(mouse, directMouse)
 
     @staticmethod
     def close() -> None:
         TTkTerm.setMouse(False, False)
-        if TTkInput._readInput:
-            TTkInput._readInput.close()
+        TTkInputDriver.queue().put_nowait(None)
 
     @staticmethod
     def stop() -> None:
@@ -72,8 +70,7 @@ class TTkInput:
 
     @staticmethod
     def cont() -> None:
-        if TTkInput._readInput:
-            TTkInput._readInput.cont()
+        pass
 
     @staticmethod
     async def start() -> None:
@@ -82,23 +79,23 @@ class TTkInput:
             kevt,mevt,paste = TTkInput.key_process(inq)
 
             # Try to filter out the queued moved mouse events
-            while (not kevt and
-                   not paste and
-                   mevt and mevt.evt == TTkK.Drag and
-                   not TTkInput._inputQueue.empty() ):
-                mevtOld = mevt
-                kevt, mevt, paste = TTkInput._inputQueue.get()
-                if (kevt  or
-                    paste or
-                    mevt and mevt.evt != TTkK.Drag):
-                    TTkInput.inputEvent.emit(kevt, mevtOld)
-                    break
+            # while (not kevt and
+            #     not paste and
+            #     mevt and mevt.evt == TTkK.Drag and
+            #     not TTkInput._inputQueue.empty() ):
+            #     mevtOld = mevt
+            #     kevt, mevt, paste = TTkInput._inputQueue.get()
+            #     if (kevt  or
+            #         paste or
+            #         mevt and mevt.evt != TTkK.Drag):
+            #         TTkInput.inputEvent.emit(kevt, mevtOld)
+            #         break
+            TTkInputDriver.queue().task_done()
 
             if kevt or mevt:
                 TTkInput.inputEvent.emit(kevt, mevt)
             if paste:
                 TTkInput.pasteEvent.emit(paste)
-        TTkLog.debug("Close TTkInput")
 
     @staticmethod
     def _handleBracketedPaste(stdinRead:str):
