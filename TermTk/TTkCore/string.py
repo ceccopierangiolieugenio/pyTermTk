@@ -581,7 +581,7 @@ class TTkString():
         '''
         return re.search(regexp, self._text, re.IGNORECASE if ignoreCase else 0)
 
-    def find(self, *args, **kwargs) -> None:
+    def find(self, *args, **kwargs) -> Any:
         return self._text.find(*args, **kwargs)
 
     def findall(self, regexp, ignoreCase=False):
