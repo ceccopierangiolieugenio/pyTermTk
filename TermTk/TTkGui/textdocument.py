@@ -22,12 +22,18 @@
 
 __all__ = ['TTkTextDocument']
 
+from typing import TYPE_CHECKING
 from threading import Lock
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor
+
+if TYPE_CHECKING:
+    from TermTk.TTkGui.textcursor import TTkTextCursor
+else:
+    class TTkTextCursor(): ...
 
 class TTkTextDocument():
     # '''
@@ -304,6 +310,16 @@ class TTkTextDocument():
         self._lastCursor = cursor
         self.undoAvailable.emit(self.isUndoAvailable())
         self.redoAvailable.emit(self.isRedoAvailable())
+
+    def find(self, exp) -> TTkTextCursor:
+        for i,line in enumerate(self._dataLines):
+            if -1 != (pos := line.find(str(exp))):
+                from .textcursor import TTkTextCursor
+                ret = TTkTextCursor(document=self)
+                ret.setPosition(line=i, pos=pos)
+                ret.setPosition(line=i, pos=pos+len(exp), moveMode=TTkTextCursor.MoveMode.KeepAnchor)
+                return ret
+        return None
 
     def _restoreSnapshotDiff(self, next=True):
         if ( not self._snap or
