@@ -134,15 +134,15 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param format: A format that is used to specify the type of selection, defaults to :py:class:`TTkK.NONE`.
         :type format: :py:class:`TTkK.SelectionFormat`
         :param color: The color used to specify the foreground/background color/mod for the selection.
-        :type color: :py:class:`TTkColor`        
+        :type color: :py:class:`TTkColor`
         :param cursor: A cursor that contains a selection in a :py:class:`QTextDocument`.
         :type cursor: :py:class:`TTkTextCursor`
         '''
 
         __slots__ = ('_format', '_color', '_cursor')
-        def __init__(self, 
-                     format:TTkK.SelectionFormat=TTkK.NONE, 
-                     color:TTkColor=TTkColor.RST, 
+        def __init__(self,
+                     format:TTkK.SelectionFormat=TTkK.NONE,
+                     color:TTkColor=TTkColor.RST,
                      cursor:TTkTextCursor=None) -> None:
             self._color = color
             self._format = format
@@ -155,13 +155,13 @@ class TTkTextEditView(TTkAbstractScrollView):
              :rtype: :py:class:`TTkColor`
              '''
              return self._color
-        
+
         def setColor(self, color:TTkColor) -> None:
             '''
             Set the color.
 
             :param color: A color that is used for the selection.
-            :type color: :py:class:`TTkColor` 
+            :type color: :py:class:`TTkColor`
             '''
             self._color = color
 
@@ -172,16 +172,16 @@ class TTkTextEditView(TTkAbstractScrollView):
              :rtype: :py:class:`TTkK.SelectionFormat`
              '''
              return self._format
-        
+
         def setFormat(self, format:TTkK.SelectionFormat) -> None:
             '''
             Set the format.
 
             :param format: A format that is used to specify the type of selection.
-            :type format: :py:class:`TTkK.SelectionFormat` 
+            :type format: :py:class:`TTkK.SelectionFormat`
             '''
             self._format = format
-        
+
         def cursor(self) -> TTkTextCursor:
              '''
              This propery holds the fcursor that contains a selection in a :py:class:`QTextDocument`.
@@ -419,8 +419,8 @@ class TTkTextEditView(TTkAbstractScrollView):
 
     def setExtraSelections(self, extraSelections:list[ExtraSelection]) -> None:
         '''
-        This function allows temporarily marking certain regions in the document with a given color, 
-        specified as selections. This can be useful for example in a programming editor to mark a 
+        This function allows temporarily marking certain regions in the document with a given color,
+        specified as selections. This can be useful for example in a programming editor to mark a
         whole line of text with a given background color to indicate the existence of a breakpoint.
 
         :param extraSelections: the list of extra selections.
@@ -475,6 +475,14 @@ class TTkTextEditView(TTkAbstractScrollView):
     def redo(self) -> None:
         if c := self._textDocument.restoreSnapshotNext():
             self._textCursor.restore(c)
+
+    @pyTTkSlot(TTkString)
+    def find(self, exp):
+        if not (cursor := self._textDocument.find(exp)):
+            return False
+        self._textCursor = cursor
+        self._textDocument.cursorPositionChanged.emit(self._textCursor)
+        return True
 
     @pyTTkSlot()
     def clear(self) -> None:
@@ -572,6 +580,11 @@ class TTkTextEditView(TTkAbstractScrollView):
                             moveMode=TTkTextCursor.MoveAnchor if moveAnchor else TTkTextCursor.KeepAnchor )
         self._scrolToInclude(x,y)
         return x, y
+
+    @pyTTkSlot()
+    def ensureCursorVisible(self):
+        cp = self._textCursor.position()
+        self._scrolToInclude(cp.pos,cp.line)
 
     def _scrolToInclude(self, x, y) -> None:
         # Scroll the area (if required) to include the position x,y
@@ -846,6 +859,7 @@ class TTkTextEdit(TTkAbstractScrollArea):
             'extraSelections', 'setExtraSelections',
             'cut', 'copy', 'paste',
             'undo', 'redo', 'isUndoAvailable', 'isRedoAvailable',
+            'find', 'ensureCursorVisible',
             # Export Methods,
             'toAnsi', 'toRawText', 'toPlainText', # 'toHtml', 'toMarkdown',
             ])
