@@ -35,7 +35,7 @@ class About(TTkAbout):
     #     "╰─────────────────|___|──────────┄ "]
     designerTxt = [
                                                                         TTkString("   ____          _                 ",TTkColor.fg("#FFFFFF")),
-        TTkString("╭─", TTkColor.fg("#4400FF"))+                        TTkString(  "|    \ ___ ___|_|___ ___ ___ ___ ",TTkColor.fg("#F8FFE8")),
+        TTkString("╭─", TTkColor.fg("#4400FF"))+                        TTkString( "|    \\ ___ ___|_|___ ___ ___ ___ ",TTkColor.fg("#F8FFE8")),
         TTkString("│ ", TTkColor.fg("#5500FF"))+                        TTkString(  "|  |  | -_|_ -| | . |   | -_|  _|",TTkColor.fg("#EFFFCF")),
         TTkString("TTk",TTkColor.fg("#00FF66")+TTkColor.bg("#7700FF"))+ TTkString(   "____/|___|___|_|_  |_|_|___|_|  ",TTkColor.fg("#E8FFB8")),
         TTkString("╰─────────────────",TTkColor.fg("#9900FF"))+         TTkString(                  "|___|",            TTkColor.fg("#DFFF9F"))+TTkString("──────────┄ ",TTkColor.fg("#BB00FF"))]
