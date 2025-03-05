@@ -20,7 +20,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTk']
+__all__ = ['TTkTimer']
 
-# from .ttk_thread import TTk
-from .ttk_asyncio import TTk
+from TermTk.TTkCore.drivers import TTkAsyncio
+from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
+from TermTk.TTkCore.helper import TTkHelper
+
+class TTkTimer():
+    __slots__ = (
+        'timeout', '_timerHandle')
+    def __init__(self):
+        self.timeout = pyTTkSignal()
+        self._timerHandle = None
+        super().__init__()
+        TTkHelper.quitEvent.connect(self.quit)
+
+    def quit(self):
+        TTkHelper.quitEvent.disconnect(self.quit)
+        if self._timerHandle:
+            self._timerHandle.cancel()
+        self.timeout.clear()
+
+    # def run(self):
+    #     self.timeout.emit()
+
+    @pyTTkSlot(float)
+    def start(self, sec=0.0):
+        self._timerHandle = TTkAsyncio.loop.call_later(sec, self.timeout.emit)
+
+    @pyTTkSlot()
+    def stop(self):
+        # delay = self._timerHandle.when() - TTkAsyncio.loop.time()
+        if self._timerHandle:
+            self._timerHandle.cancel()
+
