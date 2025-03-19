@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTextEditView', 'TTkTextEdit']
+__all__ = ['TTkTextEditView', 'TTkTextEdit', 'TTkTextEditRuler']
 
 
 from TermTk.TTkCore.log import TTkLog
@@ -43,7 +43,46 @@ from TermTk.TTkWidgets.widget import TTkWidget
 from TermTk.TTkAbstract.abstractscrollarea import TTkAbstractScrollArea
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView, TTkAbstractScrollViewGridLayout
 
-class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
+class TTkTextEditRuler(TTkAbstractScrollView):
+    class MarkRuler():
+        class States(int):
+            NONE      = 0x00
+            FLAGGED   = 0x01
+            UNFLAGGED = NONE
+
+        # class MarkRulerType(int):
+        #     ALLOW_EMPTY  = 0x01
+        #     SINGLE_STATE = 0x02
+        #     MULTI_STATE  = 0x04
+
+        __slots__ = ('_markers','_states','_width','_lines','_defaultState')
+        def __init__(self,
+                markers:dict[int,TTkString]) -> None:
+            self._lines = {}
+            self._markers = markers
+            self._states = len(markers)
+            self._defaultState = next(iter(markers))
+            self._width = max(v.termWidth() for v in markers.values())
+
+        def width(self) -> int:
+            return self._width
+
+        def nextState(self, state:int) -> int:
+            return (state+1)%self._states
+
+        def setState(self, line:int, state:int) -> None:
+            if state == self._defaultState:
+                if line in self._lines:
+                    del self._lines[line]
+            self._lines[line] = state
+
+        def getState(self, line:int) -> int:
+            return self._lines.get(line, self._defaultState)
+
+        def getTTkStr(self, line:int) -> TTkString:
+            state=self._lines.get(line, self._defaultState)
+            return self._markers.get(state, TTkString())
+
     classStyle = {
                 'default':     {
                     'color': TTkColor.fg("#88aaaa")+TTkColor.bg("#333333"),
@@ -55,19 +94,27 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
                     'separatorColor': TTkColor.fg("#888888")},
             }
 
-    __slots__ = ('_textWrap','_startingNumber')
+    __slots__ = ('_textWrap','_startingNumber', '_markRuler', '_markRulerSizes')
     def __init__(self, startingNumber=0, **kwargs) -> None:
-        self._startingNumber = startingNumber
-        self._textWrap = None
+        self._startingNumber:int = startingNumber
+        self._textWrap:bool = None
+        self._markRuler:list[TTkTextEditRuler.MarkRuler] = []
+        self._markRulerSizes:list[int] = []
         super().__init__(**kwargs)
         self.setMaximumWidth(2)
 
     def _wrapChanged(self) -> None:
         dt = max(1,self._textWrap._lines[-1][0])
         off  = self._startingNumber
-        width = 1+max(len(str(int(dt+off))),len(str(int(off))))
+        width = 2+max(len(str(int(dt+off))),len(str(int(off))))
+        width += sum(self._markRulerSizes)
         self.setMaximumWidth(width)
         self.update()
+
+    def addMarkRuler(self, markRuler:MarkRuler) -> None:
+        self._markRuler.append(markRuler)
+        self._markRulerSizes.append(markRuler.width())
+        self._wrapChanged()
 
     def setTextWrap(self, tw) -> None:
         self._textWrap = tw
@@ -80,11 +127,32 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         else:
             return self.size()
 
+    def mousePressEvent(self, evt:TTkMouseEvent) -> bool:
+        if not self._markRuler:
+            return True
+        ox, oy = self.getViewOffsets()
+        w, h = self.size()
+        mx,my = evt.x+ox, evt.y+oy
+        for mk in self._markRuler:
+            mx -= mk.width()
+            if mx < 0:
+                break
+        if self._textWrap and my < len(self._textWrap._lines):
+            dt = self._textWrap._lines[my][0]
+            mk.setState(dt, mk.nextState(mk.getState(dt)))
+        else:
+            mk.setState(my, mk.nextState(mk.getState(my)))
+
+        self.update()
+        return True
+
     def paintEvent(self, canvas: TTkCanvas) -> None:
         if not self._textWrap: return
         _, oy = self.getViewOffsets()
         w, h = self.size()
         off  = self._startingNumber
+        leftOff = sum(self._markRulerSizes)
+        sum(self._markRulerSizes)
 
         style = self.currentStyle()
         color = style['color']
@@ -94,14 +162,25 @@ class _TTkTextEditViewLineNumber(TTkAbstractScrollView):
         if self._textWrap:
             for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
                 if fr:
-                    canvas.drawText(pos=(0,i), text='<', width=w, color=wrapColor)
+                    canvas.drawText(pos=(leftOff,i), text='<', width=w, color=wrapColor)
                 else:
-                    canvas.drawText(pos=(0,i), text=f"{dt+off}", width=w, color=color)
+                    canvas.drawText(pos=(leftOff,i), text=f"{dt+off}", width=w, color=color)
                 canvas.drawChar(pos=(w-1,i), char='▌', color=separatorColor)
         else:
             for y in range(h):
-                canvas.drawText(pos=(0,y), text=f"{y+oy+off}", width=w, color=color)
+                canvas.drawText(pos=(leftOff,y), text=f"{y+oy+off}", width=w, color=color)
                 canvas.drawChar(pos=(w-1,y), char='▌', color=separatorColor)
+
+        ox = 0
+        for mk in self._markRuler:
+            if self._textWrap:
+                for i, (dt, (fr, _)) in enumerate(self._textWrap._lines[oy:oy+h]):
+                    if not fr:
+                        canvas.drawText(pos=(ox,i), text=mk.getTTkStr(dt+off))
+            else:
+                for y in range(h):
+                    canvas.drawText(pos=(ox,y), text=mk.getTTkStr(dt+off))
+            ox += mk.width()
 
 class TTkTextEditView(TTkAbstractScrollView):
     '''
@@ -897,13 +976,17 @@ class TTkTextEdit(TTkAbstractScrollArea):
 
         textEditLayout = TTkAbstractScrollViewGridLayout()
         textEditLayout.addWidget(self._textEditView,0,1)
-        self._lineNumberView = _TTkTextEditViewLineNumber(visible=self._lineNumber, startingNumber=lineNumberStarting)
+        self._lineNumberView = TTkTextEditRuler(visible=self._lineNumber, startingNumber=lineNumberStarting)
         self._lineNumberView.setTextWrap(self._textEditView._textWrap)
         textEditLayout.addWidget(self._lineNumberView,0,0)
         self.setViewport(textEditLayout)
 
         for _attr in self._forwardedSignals+self._forwardedMethods:
             setattr(self,_attr,getattr(self._textEditView,_attr))
+
+    def ruler(self) -> TTkTextEditRuler:
+        '''ruler'''
+        return self._lineNumberView
 
     def textEditView(self):
         '''textEditView'''
