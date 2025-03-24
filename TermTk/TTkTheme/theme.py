@@ -23,8 +23,7 @@
 __all__ = ['TTkTheme']
 
 from TermTk.TTkCore.color import TTkColor
-from TermTk.TTkCore.helper import TTkHelper
-# from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.helper_draw import TTkHelperDraw
 import TermTk.TTkTheme.fileicon_nerd  as fi_nerd
 import TermTk.TTkTheme.fileicon_utf8  as fi_utf8
 import TermTk.TTkTheme.fileicon_ascii as fi_ascii
@@ -87,5 +86,5 @@ class TTkTheme():
         TTkTheme.progressbarBlocks = theme['draw'].TTkTheme.progressbarBlocks
 
         TTkTheme.fileIcon    = theme['file'].FileIcon
-        TTkHelper.updateAll()
+        TTkHelperDraw.updateAll()
 

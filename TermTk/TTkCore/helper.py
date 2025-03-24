@@ -25,9 +25,8 @@ __all__ = ['TTkHelper']
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
 
-from TermTk.TTkCore.TTkTerm.colors import TTkTermColor
 from TermTk.TTkCore.TTkTerm.term import TTkTerm
-from TermTk.TTkCore.cfg import TTkCfg, TTkGlbl
+from TermTk.TTkCore.cfg import TTkGlbl
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
@@ -48,8 +47,6 @@ class TTkHelper:
     _focusWidget = None
     _rootCanvas = None
     _rootWidget = None
-    _updateWidget = set()
-    _updateBuffer  = set()
     _mousePos = (0,0)
     _cursorPos = (0,0)
     _cursor = False
@@ -63,30 +60,6 @@ class TTkHelper:
             self._modal = modal
             widget.move(x,y)
     _overlay = []
-
-    @staticmethod
-    def updateAll():
-        if TTkHelper._rootWidget:
-            TTkHelper._rootWidget.update(repaint=True, updateLayout=True)
-            for w in TTkHelper._rootWidget.layout().iterWidgets():
-                w.update(repaint=True, updateLayout=True)
-
-    @staticmethod
-    def unlockPaint():
-        if rw := TTkHelper._rootWidget:
-            rw._paintEvent.set()
-
-    @staticmethod
-    def addUpdateWidget(widget):
-        # if not widget.isVisibleAndParent(): return
-        if widget not in TTkHelper._updateWidget:
-            TTkHelper._updateWidget.add(widget)
-            TTkHelper.unlockPaint()
-
-    @staticmethod
-    def addUpdateBuffer(canvas):
-        if canvas is not TTkHelper._rootCanvas:
-            TTkHelper._updateBuffer.add(canvas)
 
     @staticmethod
     def registerRootWidget(widget):
@@ -286,73 +259,6 @@ class TTkHelper:
         return TTkHelper._mousePos
 
     @staticmethod
-    def paintAll():
-        '''
-            _updateBuffer = list widgets that require a repaint [paintEvent]
-            _updateWidget = list widgets that need to be pushed below
-        '''
-        if TTkHelper._rootCanvas is None:
-            return
-
-        # Build a list of buffers to be repainted
-        updateWidgetsBk = TTkHelper._updateWidget.copy()
-        updateBuffers = TTkHelper._updateBuffer.copy()
-        TTkHelper._updateWidget.clear()
-        TTkHelper._updateBuffer.clear()
-        updateWidgets = set()
-
-        # TTkLog.debug(f"{len(TTkHelper._updateBuffer)} {len(TTkHelper._updateWidget)}")
-        for widget in updateWidgetsBk:
-            if not widget.isVisibleAndParent(): continue
-            updateBuffers.add(widget)
-            updateWidgets.add(widget)
-            parent = widget.parentWidget()
-            while parent is not None:
-                updateBuffers.add(parent)
-                updateWidgets.add(parent)
-                parent = parent.parentWidget()
-
-        # Paint all the canvas
-        for widget in updateBuffers:
-            if not widget.isVisibleAndParent(): continue
-            # Resize the canvas just before the paintEvent
-            # to avoid too many allocations
-            canvas = widget.getCanvas()
-            canvas.updateSize()
-            canvas.clean()
-            widget.paintEvent(canvas)
-
-        # Compose all the canvas to the parents
-        # From the deepest children to the bottom
-        pushToTerminal = False
-        sortedUpdateWidget = sorted(updateWidgets, key=lambda w: -TTkHelper.widgetDepth(w))
-        for widget in sortedUpdateWidget:
-            if not widget.isVisibleAndParent(): continue
-            pushToTerminal = True
-            widget.paintChildCanvas()
-
-        if pushToTerminal:
-            if TTkHelper._cursor:
-                TTkTerm.Cursor.hide()
-            if TTkCfg.doubleBuffer:
-                TTkHelper._rootCanvas.pushToTerminalBuffered(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            elif TTkCfg.doubleBufferNew:
-                TTkHelper._rootCanvas.pushToTerminalBufferedNew(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            else:
-                TTkHelper._rootCanvas.pushToTerminal(0, 0, TTkGlbl.term_w, TTkGlbl.term_h)
-            if TTkHelper._cursor:
-                x,y = TTkHelper._cursorPos
-                TTkTerm.push(TTkTerm.Cursor.moveTo(y+1,x+1))
-                TTkTerm.Cursor.show(TTkHelper._cursorType)
-
-    @staticmethod
-    def rePaintAll():
-        if TTkHelper._rootCanvas and  TTkHelper._rootWidget:
-            TTkTerm.push(TTkTerm.CLEAR)
-            TTkHelper._rootCanvas.cleanBuffers()
-            TTkHelper._rootWidget.update()
-
-    @staticmethod
     def widgetDepth(widget) -> int:
         if widget is None:
             return 0
@@ -459,22 +365,6 @@ class TTkHelper:
     @staticmethod
     def clearFocus():
         TTkHelper._focusWidget = None
-
-    @staticmethod
-    def showCursor(cursorType = TTkK.Cursor_Blinking_Block):
-        newType = {
-            TTkK.Cursor_Blinking_Block      : TTkTerm.Cursor.BLINKING_BLOCK,
-            TTkK.Cursor_Blinking_Block_Also : TTkTerm.Cursor.BLINKING_BLOCK_ALSO,
-            TTkK.Cursor_Steady_Block        : TTkTerm.Cursor.STEADY_BLOCK,
-            TTkK.Cursor_Blinking_Underline  : TTkTerm.Cursor.BLINKING_UNDERLINE,
-            TTkK.Cursor_Steady_Underline    : TTkTerm.Cursor.STEADY_UNDERLINE,
-            TTkK.Cursor_Blinking_Bar        : TTkTerm.Cursor.BLINKING_BAR,
-            TTkK.Cursor_Steady_Bar          : TTkTerm.Cursor.STEADY_BAR,
-        }.get(cursorType, TTkTerm.Cursor.BLINKING_BAR)
-        if not TTkHelper._cursor or TTkHelper._cursorType != newType:
-            TTkHelper._cursorType = newType
-            TTkTerm.Cursor.show(TTkHelper._cursorType)
-        TTkHelper._cursor = True
 
     @staticmethod
     def hideCursor():
