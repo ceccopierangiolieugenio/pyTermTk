@@ -20,7 +20,8 @@ def read_mouse_events():
         while True:
             event += sys.stdin.read(1)
             if event[-1]=='\033':
-                print(f"Mouse event: {event[:-1].replace('\033','<ESC>')}")
+                mouse_event = event[:-1].replace('\033','<ESC>')
+                print(f"Mouse event: {mouse_event}")
                 event = '\033'
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
