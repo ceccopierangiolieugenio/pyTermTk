@@ -142,6 +142,12 @@ class TTkAbstractTableModel():
         :param size: the size of the modified area
         :type size: tuple(int,int)
     '''
+    modelChanged:pyTTkSignal
+    '''
+        This signal is emitted whenever the model changes.
+
+        When the model topology changes, this signal must be emitted explicitly.
+    '''
     def __init__(self):
         self.dataChanged = pyTTkSignal(tuple[int,int],tuple[int,int])
         self.modelChanged = pyTTkSignal()
