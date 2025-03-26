@@ -1,0 +1,13 @@
+# Changelog
+
+## [0.41.0-alpha.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.40.0-alpha.0...pyTermTk-v0.41.0-alpha.0) (2025-03-26)
+
+
+### Fixes
+
+* [#326](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/326) crash adding row in the TTkTableModelList ([#327](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/327)) ([b0feaa1](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/b0feaa139ee8fb19d475e1cf267ff7b6c182dc72))
+
+
+### Features
+
+* added find in the text edit ([#320](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/320)) ([d809d0b](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d809d0bcca544e42e3bb1b89f55481bb646c1a90))

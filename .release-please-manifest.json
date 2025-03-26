@@ -1,5 +1,5 @@
 {
-    "TermTk":"0.40.0-alpha.0",
-    "apps/ttkDesigner":"0.40.0-alpha.0",
-    "apps/dumbPaintTool":"0.40.0-alpha.0"
+    "TermTk": "0.41.0-alpha.0",
+    "apps/ttkDesigner": "0.40.1-alpha.0",
+    "apps/dumbPaintTool": "0.40.0-alpha.0"
 }
