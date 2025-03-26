@@ -57,7 +57,7 @@ jobs:
           mkdir -p tmp
           find TermTk/  -name "*.py" |
             sort | xargs tar cvzf tmp/TermTk.tgz
-          find tutogit checkou  rial -name '*.py' -o -name '*.json' |
+          find tutorial -name '*.py' -o -name '*.json' |
             sort | xargs tar cvzf tmp/tutorial.tgz
           find \
             demo/paint.py \
