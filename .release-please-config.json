@@ -1,0 +1,28 @@
+{
+  "release-search-depth": 10,
+  "commit-search-depth": 20,
+  "release-type": "python",
+  "bump-minor-pre-major": true,
+  "prerelease": true,
+  "prerelease-type": "alpha",
+  "include-component-in-tag": true,
+  "changelog-sections": [
+    { "type": "fix",      "section": "Fixes"            },
+    { "type": "feat",     "section": "Features"         },
+    { "type": "chore",    "section": "Chores"           },
+    { "type": "refactor", "section": "Refactors"        },
+    { "type": "docs",     "section": "Document Changes" },
+    { "type": "test",     "section": "Test Changes"     }
+  ],
+  "packages": {
+    "TermTk": {
+      "package-name": "pyTermTk"
+    },
+    "apps/dumbPaintTool": {
+      "package-name": "the Dumb Paint Tool"
+    },
+    "apps/ttkDesigner": {
+      "package-name": "ttkDesigner"
+    }
+  }
+}
