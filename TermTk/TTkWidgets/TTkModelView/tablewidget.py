@@ -325,6 +325,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._sortOrder = TTkK.AscendingOrder
         self._tableModel = tableModel if tableModel else TTkTableModelList(data=[['']*10 for _ in range(10)])
         self._tableModel.dataChanged.connect(self.update)
+        self._tableModel.modelChanged.connect(self._refreshLayout)
         super().__init__(**kwargs)
         self._refreshLayout()
         self.setMinimumHeight(1)
@@ -534,6 +535,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         self.setPadding(hhs,0,vhs,0)
         self.viewChanged.emit()
 
+    @pyTTkSlot()
     def _refreshLayout(self):
         self._selected = None
         self._selectedBase = None
@@ -562,6 +564,7 @@ class TTkTableWidget(TTkAbstractScrollView):
         # self._selectedBase = sb =  [False]*cols
         # self._selected = [sb]*rows
         self.clearSelection()
+        self.viewChanged.emit()
 
     # Overridden function
     def viewFullAreaSize(self) -> tuple[int, int]:
@@ -810,7 +813,6 @@ class TTkTableWidget(TTkAbstractScrollView):
         self._tableModel = model
         self._tableModel.dataChanged.connect(self.update)
         self._refreshLayout()
-        self.viewChanged.emit()
 
     def focusOutEvent(self) -> None:
         self._hSeparatorSelected = None

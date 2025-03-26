@@ -79,6 +79,7 @@ class TTkTableModelList(TTkAbstractTableModel):
     def setModelList(self, modelList:list[list]) -> None:
         if modelList == self._data: return
         self._data = modelList
+        self.modelChanged.emit()
 
     def rowCount(self) -> int:
         return len(self._data)

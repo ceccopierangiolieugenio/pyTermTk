@@ -125,7 +125,7 @@ class TTkAbstractTableModel():
 
     __slots__ = (
         # Signals
-        'dataChanged'
+        'dataChanged', 'modelChanged'
     )
 
     dataChanged:pyTTkSignal
@@ -144,6 +144,7 @@ class TTkAbstractTableModel():
     '''
     def __init__(self):
         self.dataChanged = pyTTkSignal(tuple[int,int],tuple[int,int])
+        self.modelChanged = pyTTkSignal()
 
     def rowCount(self) -> int:
         '''
