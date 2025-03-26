@@ -10,3 +10,5 @@ from .TTkUiTools     import *
 from .TTkCrossTools  import *
 
 TTkCfg.theme = TTkTheme()
+
+# Dummy
