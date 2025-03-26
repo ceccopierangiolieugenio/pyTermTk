@@ -1,0 +1,86 @@
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  pages: write
+  id-token: write
+
+name: Create Release
+
+env:
+  APP_NAME: pyTermTk
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      rp_out: ${{ toJson(steps.release-please.outputs) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Trust git directory
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+      - uses: googleapis/release-please-action@v4
+        timeout-minutes: 15
+        id: release-please
+        with:
+          token: ${{ secrets.GH_PAT_TOKEN }}
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
+      - name: Print outputs
+        shell: bash
+        env:
+          OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
+        run: |
+          echo OUTPUTS: "$OUTPUTS"
+
+  pyTermTk_deploy:
+    runs-on: ubuntu-latest
+    name: Deploy pyTermTk to github release
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
+    needs: release-please
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Install zip
+        shell: bash
+        run: |
+          apk add zip
+      - name: Create Artifacts
+        shell: bash
+        run: |
+          mkdir -p tmp
+          find TermTk/  -name "*.py" |
+            sort | xargs tar cvzf tmp/TermTk.tgz -C ../../tmp
+          find tutorial -name '*.py' -o -name '*.json' |
+            sort | xargs tar cvzf tmp/tutorial.tgz
+          find \
+            demo/paint.py \
+            demo/ttkode.py \
+            demo/demo.py \
+            demo/showcase/*.* |
+            sort | xargs tar cvzf tmp/demo.tgz
+          find \
+            tests/ansi.images.json \
+            tests/t.ui/*.* |
+            sort | xargs tar cvzf tmp/tests.tgz
+
+      - name: Upload artifatcs to Release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          TAG_NAME: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--tag_name'] }}
+        run: |
+          gh release upload ${TAG_NAME} tmp/TermTk.tgz
+          gh release upload ${TAG_NAME} tmp/tutorial.tgz
+          gh release upload ${TAG_NAME} tmp/tests.tgz
+          gh release upload ${TAG_NAME} tmp/demo.tgz
