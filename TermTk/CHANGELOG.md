@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.2-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.1-a.0...pyTermTk-v0.41.2-a.0) (2025-03-26)
+
+
+### Chores
+
+* testing deploy ([#338](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/338)) ([4dc5d73](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4dc5d733eefd9377dfd90dc0927941f46465a62f))
+
 ## [0.41.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.0-a.0...pyTermTk-v0.41.1-a.0) (2025-03-26)
 
 
