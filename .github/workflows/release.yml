@@ -51,10 +51,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-      - name: Install zip
-        shell: bash
-        run: |
-          apk add zip
       - name: Create Artifacts
         shell: bash
         run: |
