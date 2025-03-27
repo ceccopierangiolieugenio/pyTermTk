@@ -124,16 +124,16 @@
         let ttkProxy = new TTkProxy(term)
         await ttkProxy.init()
 
-        await ttkProxy.loadLib("bin/TermTk.tgz");
+        await ttkProxy.loadLib("https://github.com/ceccopierangiolieugenio/pyTermTk/releases/download/pyTermTk-v0.41.3-a.0/TermTk.tgz");
         term.write('TermTk - Loaded\n\r')
 
-        await ttkProxy.loadLib("bin/demo.tgz");
+        await ttkProxy.loadLib("https://github.com/ceccopierangiolieugenio/pyTermTk/releases/download/pyTermTk-v0.41.3-a.0/demo.tgz");
         term.write('Demos - Loaded\n\r')
 
-        await ttkProxy.loadLib("bin/tutorial.tgz");
+        await ttkProxy.loadLib("https://github.com/ceccopierangiolieugenio/pyTermTk/releases/download/pyTermTk-v0.41.3-a.0/tutorial.tgz");
         term.write('Tutorials - Loaded\n\r')
 
-        await ttkProxy.loadLib("bin/tests.tgz");
+        await ttkProxy.loadLib("https://github.com/ceccopierangiolieugenio/pyTermTk/releases/download/pyTermTk-v0.41.3-a.0/tests.tgz");
         term.write('Tests - Loaded\n\r')
 
         /* Sidebar
