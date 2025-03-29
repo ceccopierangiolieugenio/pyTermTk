@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -41,6 +42,11 @@ jobs:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
+      - name: check RP
+        shell: bash
+        run: |
+          git status
+          git branch -a
 
   pyTermTk_deploy:
     runs-on: ubuntu-latest
