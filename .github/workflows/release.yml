@@ -51,7 +51,7 @@ jobs:
         run: |
           git checkout ${{ steps.release-please.outputs.pr.headBranchName }}
           _VERSION=$(jq .TermTk .release-please-manifest.json)
-          sed "s,version:str.*,version:str = '${_VERSION}'" \
+          sed "s|version:str.*|version:str = '${_VERSION}'|" \
               -i TermTk/__init__.py
           git add TermTk/__init__.py
           git commit -m "chore: updated version to ${_VERSION}"
