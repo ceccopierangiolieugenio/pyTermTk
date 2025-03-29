@@ -36,14 +36,14 @@ jobs:
           git config --global user.name 'Eugenio Parodi - Action'
           git config --global user.email 'ceccopierangioliegenio@googlemail.com'
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
-          cp -a \
-            docs/source/_build/html/* \
-            docs/source/_build/html/.buildinfo \
-            docs/source/_build/html/.nojekyll \
-            pyTermTk-Docs
           cd pyTermTk-Docs
           git checkout docs
-          git add .
+          cp -a \
+            ../docs/source/_build/html/* \
+            ../docs/source/_build/html/.buildinfo \
+            ../docs/source/_build/html/.nojekyll \
+            .
+          git add --all
           git commit -m "chore: updated docs- ($(date))"
           git push --force docs
           git checkout gh-pages
