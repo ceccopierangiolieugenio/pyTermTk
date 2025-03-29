@@ -49,7 +49,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
-          git checkout ${{ steps.release-please.outputs.pr.headBranchName }}
+          git config --global user.name 'Eugenio Parodi - Action'
+          git config --global user.email 'ceccopierangioliegenio@googlemail.com'
+          git checkout ${{ toJson(steps.release-please.outputs.pr)['headBranchName'] }}
           _VERSION=$(jq .TermTk .release-please-manifest.json)
           sed "s|version:str.*|version:str = '${_VERSION}'|" \
               -i TermTk/__init__.py
