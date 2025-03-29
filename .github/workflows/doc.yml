@@ -2,14 +2,17 @@ name: Gen Docs
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'TermTk/**'
-      - 'docs/**'
-      - 'tests/**'
-      - 'tutorial/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'TermTk/**'
+  #     - 'docs/**'
+  #     - 'tests/**'
+  #     - 'tutorial/**'
+  release:
+    types:
+      - created # Trigger the workflow when a release is created
 
 permissions:
   contents: write
