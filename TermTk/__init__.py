@@ -1,4 +1,4 @@
-version:str = "0.41.9-a.0"
+version:str = "0.41.9-a.1"
 
 from .TTkCore        import *
 from .TTkTheme       import *
