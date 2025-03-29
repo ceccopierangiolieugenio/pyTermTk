@@ -56,11 +56,16 @@ jobs:
             pyTermTk.new
           cd pyTermTk.new
           _VERSION=$(jq .TermTk .release-please-manifest.json)
+          echo "Version: ${_VERSION}"
           sed -i \
             "s|version:str.*|version:str = ${_VERSION}|" \
             TermTk/TTkCore/cfg.py \
             TermTk/__init__.py
-          git add TermTk/TTkCore/cfg.py TermTk/__init__.py
+          cp TermTk/CHANGELOG.md CHANGELOG.md
+          git add \
+            TermTk/TTkCore/cfg.py \
+            TermTk/__init__.py \
+            CHANGELOG.md
           git commit -m "chore: updated version to ${_VERSION}"
           git push
 
