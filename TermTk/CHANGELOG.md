@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.9-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.8-a.0...pyTermTk-v0.41.9-a.0) (2025-03-29)
+
+
+### Chores
+
+* bump version ([5884f69](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5884f69a276e9fca20b9413d17b7ce368d1cc8bd))
+
 ## [0.41.8-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.7-a.0...pyTermTk-v0.41.8-a.0) (2025-03-29)
 
 
