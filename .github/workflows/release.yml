@@ -110,7 +110,6 @@ jobs:
 
   pyTermTk-deploy-docs:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
-    runs-on: ubuntu-latest
     name: Deploy pyTermTk Docs
     uses: ./.github/workflows/doc.yml
     needs: release-please
