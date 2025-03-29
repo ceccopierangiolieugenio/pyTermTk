@@ -1,0 +1,20 @@
+name: Sandbox
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  pages: write
+  id-token: write
+
+jobs:
+  gen-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Sandbox
+      # - uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{ github.sha }}
