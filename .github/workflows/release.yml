@@ -48,6 +48,24 @@ jobs:
           git status
           git branch -a
 
+      - name: Check if Release PR was created
+        id: check_release_pr
+        env:
+          RP_OUTPUT: ${{ steps.release_please.outputs }}
+        run: |
+          if [[ -z "${{ steps.release-please.outputs.pull_request_number }}" ]]; then
+            echo "No release PR created."
+            echo "release_pr_created=false" >> $GITHUB_ENV
+          else
+            echo "Release PR created."
+            echo "release_pr_created=true" >> $GITHUB_ENV
+            echo "pr_number=${{ steps.release_please.outputs.pull_request_number }}" >> $GITHUB_ENV
+          fi
+
+      - name: Create a file in the pull request
+        if: env.release_pr_created == 'true'
+        run: |
+          echo "This is a new file created by GitHub Actions"
   pyTermTk_deploy:
     runs-on: ubuntu-latest
     name: Deploy pyTermTk to github release
