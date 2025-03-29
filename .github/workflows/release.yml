@@ -42,12 +42,6 @@ jobs:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
-          echo ${{ steps.release-please.outputs.pr }}
-          echo ${{ toJson(steps.release-please.outputs.pr)['headBranchName'] }}
-          echo ${{ fromJson(steps.release-please.outputs.pr)['headBranchName'] }}
-          echo ${{ toJson(steps.release-please.outputs.pr).headBranchName }}
-          echo ${{ fromJson(steps.release-please.outputs.pr).headBranchName }}
-
       - name: Update Version
         if: ${{ steps.release-please.outputs.prs_created == 'true'}}
         shell: bash
