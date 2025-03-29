@@ -42,6 +42,11 @@ jobs:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
+          echo ${{ steps.release-please.outputs.pr }}
+          echo ${{ toJson(steps.release-please.outputs.pr)['headBranchName'] }}
+          echo ${{ fromJson(steps.release-please.outputs.pr)['headBranchName'] }}
+          echo ${{ toJson(steps.release-please.outputs.pr).headBranchName }}
+          echo ${{ fromJson(steps.release-please.outputs.pr).headBranchName }}
 
       - name: Update Version
         if: ${{ steps.release-please.outputs.prs_created == 'true'}}
@@ -51,7 +56,7 @@ jobs:
         run: |
           git config --global user.name 'Eugenio Parodi - Action'
           git config --global user.email 'ceccopierangioliegenio@googlemail.com'
-          git checkout ${{ toJson(steps.release-please.outputs.pr)['headBranchName'] }}
+          git checkout ${{ fromJson(steps.release-please.outputs.pr)headBranchName }}
           _VERSION=$(jq .TermTk .release-please-manifest.json)
           sed "s|version:str.*|version:str = '${_VERSION}'|" \
               -i TermTk/__init__.py
