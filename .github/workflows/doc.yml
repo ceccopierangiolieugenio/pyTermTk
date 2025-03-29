@@ -2,6 +2,7 @@ name: Gen Docs
 
 on:
   workflow_dispatch:
+  workflow_call:
   # push:
   #   branches:
   #     - main
@@ -10,9 +11,9 @@ on:
   #     - 'docs/**'
   #     - 'tests/**'
   #     - 'tutorial/**'
-  release:
-    types:
-      - created # Trigger the workflow when a release is created
+  # release:
+  #   types:
+  #     - created # Trigger the workflow when a release is created
 
 permissions:
   contents: write

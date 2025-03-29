@@ -69,11 +69,10 @@ jobs:
           git commit -m "chore: updated version to ${_VERSION}"
           git push
 
-
-  pyTermTk_deploy:
+  pyTermTk-deploy-artifacts:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
     runs-on: ubuntu-latest
     name: Deploy pyTermTk to github release
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
     needs: release-please
     steps:
       - uses: actions/checkout@v4
@@ -108,3 +107,10 @@ jobs:
           gh release upload ${TAG_NAME} tmp/tutorial.tgz
           gh release upload ${TAG_NAME} tmp/tests.tgz
           gh release upload ${TAG_NAME} tmp/demo.tgz
+
+  pyTermTk-deploy-docs:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
+    runs-on: ubuntu-latest
+    name: Deploy pyTermTk Docs
+    uses: ./.github/workflows/doc.yml
+    needs: release-please
