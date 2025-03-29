@@ -53,5 +53,5 @@ jobs:
           git push --force origin docs
           git checkout gh-pages
           git reset --hard initial-commit
-          git merge docs
+          git merge docs -m "chore: merged docs - ($(date))"
           git push --force origin gh-pages
