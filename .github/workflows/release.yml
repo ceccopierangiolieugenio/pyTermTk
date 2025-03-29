@@ -56,8 +56,11 @@ jobs:
         run: |
           git config --global user.name 'Eugenio Parodi - Action'
           git config --global user.email 'ceccopierangioliegenio@googlemail.com'
-          git fetch origin/${{ fromJson(steps.release-please.outputs.pr).headBranchName }}
-          git checkout ${{ fromJson(steps.release-please.outputs.pr).headBranchName }}
+          git clone \
+            -b ${{ fromJson(steps.release-please.outputs.pr).headBranchName }} \
+            https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk.git \
+            pyTermTk.new
+          cd pyTermTk.new
           _VERSION=$(jq .TermTk .release-please-manifest.json)
           sed "s|version:str.*|version:str = '${_VERSION}'|" \
               -i TermTk/__init__.py
