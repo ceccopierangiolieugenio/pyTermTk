@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
-          cd pyTermTk-docs
+          cd pyTermTk-Docs
           echo "Test - $(date)" > test.txt
           git add .
           git commit -m "chore: added file - ($(date))"
