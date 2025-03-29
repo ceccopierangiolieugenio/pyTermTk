@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
-          git clone ceccopierangiolieugenio/pyTermTk-docs
+          git clone git@github.com:ceccopierangiolieugenio/pyTermTk-Docs.git
           cd pyTermTk-docs
           echo "Test - $(date)" > test.txt
           git add .
