@@ -44,7 +44,7 @@ jobs:
           echo OUTPUTS: "$OUTPUTS"
 
       - name: Update Version
-        if: ${{ steps.release-please.outputs.prs_created }}
+        if: ${{ steps.release-please.outputs.prs_created == 'true'}}
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
