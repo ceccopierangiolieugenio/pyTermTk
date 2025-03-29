@@ -1,28 +1,16 @@
 import setuptools, os
-from TermTk.TTkCore.cfg import TTkCfg
+from TermTk import version
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-_name=TTkCfg.name
-_version=TTkCfg.version
-
-print(f"Name: {_name}")
-print(f"Version: {_version}")
-
-if _name.startswith('__'):
-    _name = 'pyTermTk'
-if _version.startswith('__'):
-    _version = '0.1.0a1'
+_name="pyTermTk"
+_version=version
 
 print(f"Name: {_name}")
 print(f"Version: {_version}")
 
 setuptools.setup(
-    # name='pyTermTk',
-    # name='example-pkg-ceccopierangiolieugenio',
-    # version=version,
-    # version="0.1.0a1",
     name=_name,
     version=_version,
     author='Eugenio Parodi',

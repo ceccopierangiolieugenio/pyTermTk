@@ -25,17 +25,17 @@ __all__ = ['TTkCfg', 'TTkGlbl']
 from TermTk.TTkCore.constant import TTkK
 
 class TTkCfg:
-    version="__VERSION__"
-    name="__NAME__"
+    version:str = "0.41.6-a.0"
+    name:str = "pyTermTk"
 
     color_depth: int = TTkK.DEP_24
 
-    toolTipTime = 1
-    maxFps = 65
-    doubleBuffer = True
-    doubleBufferNew = False
+    toolTipTime:int = 1
+    maxFps:int = 65
+    doubleBuffer:bool = True
+    doubleBufferNew:bool = False
 
-    scrollDelta = 5
+    scrollDelta:bool = 5
     theme = None
 
 class TTkGlbl:
