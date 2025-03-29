@@ -111,6 +111,6 @@ jobs:
   pyTermTk-deploy-docs:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
     name: Deploy pyTermTk Docs
-    uses: ./.github/workflows/doc.yml
+    uses: ./.github/workflows/release_doc.yml
     needs: release-please
     secrets: inherit
