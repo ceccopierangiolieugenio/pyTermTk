@@ -1,3 +1,5 @@
+version:str="0.41.4-a.0"
+
 from .TTkCore        import *
 from .TTkTheme       import *
 from .TTkGui         import *

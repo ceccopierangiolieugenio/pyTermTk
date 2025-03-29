@@ -42,6 +42,7 @@ jobs:
           OUTPUTS: ${{ toJSON(steps.release-please.outputs) }}
         run: |
           echo OUTPUTS: "$OUTPUTS"
+
       - name: check RP
         shell: bash
         run: |
@@ -51,7 +52,7 @@ jobs:
       - name: Check if Release PR was created
         id: check_release_pr
         env:
-          RP_OUTPUT: ${{ steps.release_please.outputs }}
+          RP_OUTPUT: ${{ steps.release-please.outputs }}
         run: |
           if [[ -z "${{ steps.release-please.outputs.pull_request_number }}" ]]; then
             echo "No release PR created."
@@ -59,13 +60,29 @@ jobs:
           else
             echo "Release PR created."
             echo "release_pr_created=true" >> $GITHUB_ENV
-            echo "pr_number=${{ steps.release_please.outputs.pull_request_number }}" >> $GITHUB_ENV
+            echo "pr_number=${{ steps.release-please.outputs.pull_request_number }}" >> $GITHUB_ENV
           fi
 
       - name: Create a file in the pull request
         if: env.release_pr_created == 'true'
         run: |
           echo "This is a new file created by GitHub Actions"
+
+      - name: Update Version
+        if: ${{ steps.release-please.outputs.prs_created }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+        run: |
+          git checkout ${{ steps.release-please.outputs.pr.headBranchName }}
+          _VERSION=$(jq .TermTk .release-please-manifest.json)
+          sed "s,version:str.*,version:str = '${_VERSION}'" \
+              -i TermTk/__init__.py
+          git add TermTk/__init__.py
+          git commit -m "chore: updated version to ${_VERSION}"
+          git push
+
+
   pyTermTk_deploy:
     runs-on: ubuntu-latest
     name: Deploy pyTermTk to github release
