@@ -38,7 +38,11 @@ class TTkTerm(TTkTermBase):
 
     # Save treminal attributes during the initialization in order to
     # restore later the original states
-    _termAttr = termios.tcgetattr(sys.stdin)
+
+    if os.isatty(sys.stdin.fileno()):
+        _termAttr = termios.tcgetattr(sys.stdin)
+    else:
+        _termAttr = None
 
     _termAttrBk = []
     @staticmethod
@@ -49,7 +53,7 @@ class TTkTerm(TTkTermBase):
     def restoreTermAttr():
         if TTkTerm._termAttrBk:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttrBk.pop())
-        else:
+        elif TTkTerm._termAttr:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
 
     @staticmethod
@@ -79,7 +83,8 @@ class TTkTerm(TTkTermBase):
     @staticmethod
     def exit():
         TTkTermBase.exit()
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
+        if TTkTerm._termAttr:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
 
     @staticmethod
     def _push(*args):

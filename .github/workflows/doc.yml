@@ -2,14 +2,18 @@ name: Gen Docs
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'TermTk/**'
-      - 'docs/**'
-      - 'tests/**'
-      - 'tutorial/**'
+  workflow_call:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'TermTk/**'
+  #     - 'docs/**'
+  #     - 'tests/**'
+  #     - 'tutorial/**'
+  # release:
+  #   types:
+  #     - created # Trigger the workflow when a release is created
 
 permissions:
   contents: write
@@ -25,18 +29,29 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-      - name: Set up Git
-        shell: bash
+      - name: Gen Docs
         run: |
-          git config --global user.name 'Eugenio Parodi - Action'
-          git config --global user.email 'ceccopierangioliegenio@googlemail.com'
+          echo "Generating Docs"
+          make doc
       - name: clone pyTermTk-docs
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
+          git config --global user.name 'Eugenio Parodi - Action'
+          git config --global user.email 'ceccopierangioliegenio@googlemail.com'
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
           cd pyTermTk-Docs
-          echo "Test - $(date)" > test.txt
-          git add .
-          git commit -m "chore: added file - ($(date))"
-          git push
+          git fetch --all
+          git checkout docs
+          cp -a \
+            ../docs/source/_build/html/* \
+            ../docs/source/_build/html/.buildinfo \
+            ../docs/source/_build/html/.nojekyll \
+            .
+          git add --all
+          git commit -m "chore: updated docs - ($(date))"
+          git push --force origin docs
+          git checkout gh-pages
+          git reset --hard initial-commit
+          git merge docs
+          git push --force origin gh-pages
