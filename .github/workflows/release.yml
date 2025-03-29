@@ -113,3 +113,4 @@ jobs:
     name: Deploy pyTermTk Docs
     uses: ./.github/workflows/doc.yml
     needs: release-please
+    secrets: inherit
