@@ -25,18 +25,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-      - name: Set up Git
-        shell: bash
+      - name: Gen Docs
         run: |
-          git config --global user.name 'Eugenio Parodi - Action'
-          git config --global user.email 'ceccopierangioliegenio@googlemail.com'
+          echo "Generating Docs"
+          make doc
       - name: clone pyTermTk-docs
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
+          git config --global user.name 'Eugenio Parodi - Action'
+          git config --global user.email 'ceccopierangioliegenio@googlemail.com'
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
+          cp -a \
+            docs/source/_build/html/* \
+            docs/source/_build/html/.buildinfo \
+            docs/source/_build/html/.nojekyll \
+            pyTermTk-Docs
           cd pyTermTk-Docs
-          echo "Test - $(date)" > test.txt
+          git checkout docs
           git add .
-          git commit -m "chore: added file - ($(date))"
-          git push
+          git commit -m "chore: updated docs- ($(date))"
+          git push --force docs
+          git checkout gh-pages
+          git reset --hard initial-commit
+          git merge docs
+          git push --force gh-pages
