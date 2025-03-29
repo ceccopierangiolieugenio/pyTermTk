@@ -37,6 +37,7 @@ jobs:
           git config --global user.email 'ceccopierangioliegenio@googlemail.com'
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
           cd pyTermTk-Docs
+          git fetch --all
           git checkout docs
           cp -a \
             ../docs/source/_build/html/* \
@@ -44,9 +45,9 @@ jobs:
             ../docs/source/_build/html/.nojekyll \
             .
           git add --all
-          git commit -m "chore: updated docs- ($(date))"
-          git push --force docs
+          git commit -m "chore: updated docs - ($(date))"
+          git push --force origin docs
           git checkout gh-pages
           git reset --hard initial-commit
           git merge docs
-          git push --force gh-pages
+          git push --force origin gh-pages
