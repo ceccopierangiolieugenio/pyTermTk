@@ -61,6 +61,9 @@ jobs:
             "s|version:str.*|version:str = ${_VERSION}|" \
             TermTk/TTkCore/cfg.py \
             TermTk/__init__.py
+          sed -i \
+            "s|'pyTermTk>=.*',|'pyTermTk>=${_VERSION}',|" \
+            setup.*
           cp TermTk/CHANGELOG.md CHANGELOG.md
           git add \
             TermTk/TTkCore/cfg.py \
@@ -108,9 +111,17 @@ jobs:
           gh release upload ${TAG_NAME} tmp/tests.tgz
           gh release upload ${TAG_NAME} tmp/demo.tgz
 
+  pyTermTk-deploy-sandbox:
+    name: Deploy pyTermTk Docs
+    uses: ./.github/workflows/release_sandbox.yml
+    needs: release-please
+    secrets: inherit
+
   pyTermTk-deploy-docs:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
     name: Deploy pyTermTk Docs
     uses: ./.github/workflows/release_doc.yml
-    needs: release-please
+    needs:
+      - release-please
+      - pyTermTk-deploy-artifacts
     secrets: inherit
