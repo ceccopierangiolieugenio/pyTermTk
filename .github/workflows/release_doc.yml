@@ -50,9 +50,13 @@ jobs:
             ../docs/source/_build/html/.nojekyll \
             .
           git add --all
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            exit 0
+          fi
           git commit -m "chore: ($(date)) - updated docs"
-
           git push --force origin docs
+
           git checkout gh-pages
           git reset --hard initial-commit
           git merge origin/docs         -m "chore: ($(date)) - merged docs"

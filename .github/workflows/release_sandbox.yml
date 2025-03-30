@@ -48,6 +48,10 @@ jobs:
             ../tools/webExporter/js \
             sandbox
           git add --all
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            exit 0
+          fi
           git commit -m "chore: ($(date)) - updated sandbox"
           git push --force origin sandbox
 
