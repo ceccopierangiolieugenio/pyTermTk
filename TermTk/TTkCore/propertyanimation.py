@@ -29,6 +29,7 @@ from types import LambdaType
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 from TermTk.TTkCore.helper import TTkHelper
+from TermTk.TTkCore.helper_draw import TTkHelperDraw
 
 class TTkEasingCurve():
     Linear       = 0
@@ -367,7 +368,7 @@ class TTkPropertyAnimation():
             else:
                 newVal = self._easingCurve.process(self._startValue,self._endValue,v)
                 self._cb(*self._cast(newVal))
-        TTkHelper.unlockPaint()
+        TTkHelperDraw.unlockPaint()
 
     @pyTTkSlot()
     def start(self):
