@@ -2,6 +2,9 @@ name: Sandbox
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -15,6 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo Sandbox
+        env:
+          GH: ${{ toJson(github) }}
+          GHE: ${{ toJson(github.event) }}
+          GHEH: ${{ toJson(github.event.head_commit) }}
+          GHEHM: ${{ toJson(github.event.head_commit.modified) }}
       # - uses: actions/checkout@v4
       #   with:
       #     ref: ${{ github.sha }}
