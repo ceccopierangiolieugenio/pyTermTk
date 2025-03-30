@@ -113,7 +113,7 @@ jobs:
           gh release upload ${TAG_NAME} tmp/demo.tgz
 
   pyTermTk-deploy-sandbox:
-    name: Deploy pyTermTk Docs
+    name: Deploy pyTermTk Sandbox
     uses: ./.github/workflows/release_sandbox.yml
     needs: release-please
     secrets: inherit
