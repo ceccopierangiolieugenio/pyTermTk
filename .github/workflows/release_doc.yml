@@ -33,13 +33,14 @@ jobs:
         run: |
           echo "Generating Docs"
           make doc
-      - name: clone pyTermTk-docs
+      - name: Deploy Docs
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           git config --global user.name 'Eugenio Parodi - Action'
           git config --global user.email 'ceccopierangioliegenio@googlemail.com'
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
+
           cd pyTermTk-Docs
           git fetch --all
           git checkout docs
@@ -49,9 +50,13 @@ jobs:
             ../docs/source/_build/html/.nojekyll \
             .
           git add --all
-          git commit -m "chore: updated docs - ($(date))"
+          git commit -m "chore: ($(date)) - updated docs"
+
           git push --force origin docs
           git checkout gh-pages
           git reset --hard initial-commit
-          git merge docs -m "chore: merged docs - ($(date))"
+          git merge origin/docs         -m "chore: ($(date)) - merged docs"
+          git merge origin/sandbox      -m "chore: ($(date)) - merged sandbox"
+          git merge origin/sandbox-www  -m "chore: ($(date)) - merged sandbox-www"
+          git merge origin/sandbox-bin  -m "chore: ($(date)) - merged sandbox-bin"
           git push --force origin gh-pages

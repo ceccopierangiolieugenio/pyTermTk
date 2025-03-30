@@ -30,14 +30,30 @@ jobs:
         with:
           ref: ${{ github.sha }}
 
-      - name: clone pyTermTk-docs
+      - name: Deploy Sandbox
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           git config --global user.name 'Eugenio Parodi - Action'
           git config --global user.email 'ceccopierangioliegenio@googlemail.com'
           git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
+
           cd pyTermTk-Docs
           git fetch --all
+          git checkout sandbox
+          rm -rf sandbox
+          mkdir -p sandbox
+          cp -a \
+            ../tests/sandbox/*.html sandbox/
+            ../tools/webExporter/js sandbox/         .
+          git add --all
+          git commit -m "chore: ($(date)) - updated sandbox"
+          git push --force origin sandbox
 
-          echo Release Sandbox
+          git checkout gh-pages
+          git reset --hard initial-commit
+          git merge origin/docs         -m "chore: ($(date)) - merged docs"
+          git merge origin/sandbox      -m "chore: ($(date)) - merged sandbox"
+          git merge origin/sandbox-www  -m "chore: ($(date)) - merged sandbox-www"
+          git merge origin/sandbox-bin  -m "chore: ($(date)) - merged sandbox-bin"
+          git push --force origin gh-pages
