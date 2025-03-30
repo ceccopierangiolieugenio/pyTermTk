@@ -44,8 +44,9 @@ jobs:
           rm -rf sandbox
           mkdir -p sandbox
           cp -a \
-            ../tests/sandbox/*.html sandbox/
-            ../tools/webExporter/js sandbox/         .
+            ../tests/sandbox/*.html \
+            ../tools/webExporter/js
+            sandbox/         .
           git add --all
           git commit -m "chore: ($(date)) - updated sandbox"
           git push --force origin sandbox
