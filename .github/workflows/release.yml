@@ -68,6 +68,7 @@ jobs:
           git add \
             TermTk/TTkCore/cfg.py \
             TermTk/__init__.py \
+            setup.* \
             CHANGELOG.md
           git commit -m "chore: updated version to ${_VERSION}"
           git push
