@@ -23,7 +23,7 @@ permissions:
   id-token: write
 
 jobs:
-  gen-docs:
+  gen-sandbox:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,8 +45,8 @@ jobs:
           mkdir -p sandbox
           cp -a \
             ../tests/sandbox/*.html \
-            ../tools/webExporter/js
-            sandbox/         .
+            ../tools/webExporter/js \
+            sandbox
           git add --all
           git commit -m "chore: ($(date)) - updated sandbox"
           git push --force origin sandbox
