@@ -1,0 +1,78 @@
+name: Release Sandbox
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'TermTk/**'
+  #     - 'docs/**'
+  #     - 'tests/**'
+  #     - 'tutorial/**'
+  # release:
+  #   types:
+  #     - created # Trigger the workflow when a release is created
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  pages: write
+  id-token: write
+
+jobs:
+  gen-sandbox-bin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Deploy Sandbox
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+        run: |
+          git config --global user.name 'Eugenio Parodi - Action'
+          git config --global user.email 'ceccopierangioliegenio@googlemail.com'
+          git clone https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk-Docs.git
+
+          cd pyTermTk-Docs
+          git fetch --all
+          git checkout sandbox-bin
+          git reset --hard initial-commit
+          mkdir -p sandbox/bin
+
+          cd ../
+          find TermTk/  -name "*.py" |
+            sort | xargs tar cvzf pyTermTk-Docs/sandbox/bin/TermTk.tgz
+          find tutorial -name '*.py' -o -name '*.json' |
+            sort | xargs tar cvzf pyTermTk-Docs/sandbox/bin/tutorial.tgz
+          find \
+            demo/paint.py \
+            demo/ttkode.py \
+            demo/demo.py \
+            demo/showcase/*.* |
+            sort | xargs tar cvzf pyTermTk-Docs/sandbox/bin/demo.tgz
+          find \
+            tests/ansi.images.json \
+            tests/t.ui/*.* |
+            sort | xargs tar cvzf pyTermTk-Docs/sandbox/bin/tests.tgz
+          cd pyTermTk-Docs
+
+          git add --all
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: ($(date)) - updated sandbox"
+          git push --force origin sandbox-bin
+
+          git checkout gh-pages
+          git reset --hard initial-commit
+          git merge origin/docs         -m "chore: ($(date)) - merged docs"
+          git merge origin/sandbox      -m "chore: ($(date)) - merged sandbox"
+          git merge origin/sandbox-www  -m "chore: ($(date)) - merged sandbox-www"
+          git merge origin/sandbox-bin  -m "chore: ($(date)) - merged sandbox-bin"
+          git push --force origin gh-pages
