@@ -1,4 +1,4 @@
-name: Sandbox
+name: Scratchpad
 
 on:
   workflow_dispatch:
@@ -14,10 +14,10 @@ permissions:
   id-token: write
 
 jobs:
-  gen-docs:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo Sandbox
+      - run: echo Scratchpad
         env:
           GH: ${{ toJson(github) }}
           GHE: ${{ toJson(github.event) }}
