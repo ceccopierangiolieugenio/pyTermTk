@@ -62,7 +62,7 @@ jobs:
             TermTk/TTkCore/cfg.py \
             TermTk/__init__.py
           sed -i \
-            "s|'pyTermTk>=.*',|'pyTermTk>=${_VERSION}',|" \
+            "s|'pyTermTk>=.*',|'pyTermTk>=${_VERSION/-/}',|" \
             setup.*
           cp TermTk/CHANGELOG.md CHANGELOG.md
           git add \
