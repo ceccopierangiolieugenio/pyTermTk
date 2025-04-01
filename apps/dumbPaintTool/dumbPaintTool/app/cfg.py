@@ -22,9 +22,10 @@
 
 import os
 
+from .. import __version__
 class DPTCfg:
-    version="__VERSION__"
-    name="__NAME__"
+    version=__version__
+    name="dumbPaintTool"
     cfgVersion = '1.0'
     pathCfg="."
     options={}

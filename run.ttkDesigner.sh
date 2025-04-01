@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-PYTHONPATH=$(pwd)/apps python3 -m ttkDesigner $@
+PYTHONPATH=$(pwd)/apps/ttkDesigner python3 -m ttkDesigner $@

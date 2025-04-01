@@ -20,26 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkCfg', 'TTkGlbl']
+__version__:str = "0.41.11-a.6"
 
-from TermTk.TTkCore.constant import TTkK
+from .TTkCore        import *
+from .TTkTheme       import *
+from .TTkGui         import *
+from .TTkWidgets     import *
+from .TTkTypes       import *
+from .TTkLayouts     import *
+from .TTkTestWidgets import *
+from .TTkAbstract    import *
+from .TTkUiTools     import *
+from .TTkCrossTools  import *
 
-class TTkCfg:
-    version:str = "0.41.11-a.0"
-    name:str = "pyTermTk"
-
-    color_depth: int = TTkK.DEP_24
-
-    toolTipTime:int = 1
-    maxFps:int = 65
-    doubleBuffer:bool = True
-    doubleBufferNew:bool = False
-
-    scrollDelta:bool = 5
-    theme = None
-
-class TTkGlbl:
-    term_w: int = 0
-    term_h: int = 0
-
-
+TTkCfg.theme = TTkTheme()

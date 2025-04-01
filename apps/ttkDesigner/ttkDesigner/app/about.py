@@ -43,7 +43,6 @@ class About(TTkAbout):
     __slots__=('_image')
     def __init__(self, *args, **kwargs):
         TTkAbout.__init__(self, *args, **kwargs)
-
         self.setTitle('[PierCecco Cecco] Eugenio Parodi proudly presents...')
         self.resize(56,15)
 
@@ -51,8 +50,10 @@ class About(TTkAbout):
         c = [0xFF,0xFF,0xFF]
         for y, line in enumerate(About.designerTxt):
             canvas.drawText(pos=(13,3+y),text=line)
+        for i,line in enumerate(TTkAbout._peppered_string.split('\n')):
+            canvas.drawTTkString(pos=(1,3+i), text=line)
         canvas.drawText(pos=(20, 9),text=f"  Version: {TTkDesignerCfg.version}", color=TTkColor.fg('#AAAAFF'))
         canvas.drawText(pos=(14,11),text=f"Powered By, pyTermTk")
-        canvas.drawText(pos=( 2,13),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF'))
+        canvas.drawText(pos=( 2,13),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF', link="https://github.com/ceccopierangiolieugenio/pyTermTk"))
 
         TTkWindow.paintEvent(self, canvas)

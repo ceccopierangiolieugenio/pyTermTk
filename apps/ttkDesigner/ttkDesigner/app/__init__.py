@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,10 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys,os
-sys.path.append(os.path.join(sys.path[0],'..'))
-
-from dumbPaintTool.app import main
-
-if __name__ == '__main__':
-    main()
+from .cfg import *
+from .about import About
+from .main import main
+from .designer import TTkDesigner
+from .treeinspector import TreeInspector
+from .widgetbox import DragDesignItem, WidgetBox
+from .windoweditor import WindowEditor
+from .propertyeditor import PropertyEditor
+from .signalsloteditor import SignalSlotEditor
+from .quickexport import QuickExport
+from .notepad import NotePad
+from .menuBarEditor import MenuBarEditor
+from .superobj import *

@@ -23,6 +23,7 @@
 __all__ = ['About']
 
 import TermTk as ttk
+from .. import __version__
 
 _DPT_image = ttk.TTkUtil.base64_deflate_2_obj(
     "eJydWDtuJDcQdeBIuaNNdAKhi78mwTs4M2BgYwNOlPkAo10FC3sAK7C0M1jJAjacC2y+R9FJXFVksYtU9wiwRA40XcXm5716VdTux/tffvqBf379Gf949366vsSfd+9t" +
@@ -50,7 +51,7 @@ class About(ttk.TTkWindow):
         self.resize(65+2,12+4)
         self.layout().addWidgets([
             ttk.TTkLabel(text=_DPT_image),
-            ttk.TTkLabel(pos=(38,7), text=ttk.TTkString(f"  Version: {ttk.TTkCfg.version}", ttk.TTkColor.fg('#AAAAFF'))),
+            ttk.TTkLabel(pos=(38,7), text=ttk.TTkString(f"  Version: {__version__}", ttk.TTkColor.fg('#AAAAFF'))),
             ttk.TTkLabel(pos=(38,9), text=ttk.TTkString("Powered By, Eugenio Parodi",ttk.TTkColor.fg("#FF00FF"))),
-            ttk.TTkLabel(pos=(13,11),text=ttk.TTkString("https://github.com/ceccopierangiolieugenio/pyTermTk", ttk.TTkColor.fg('#44FFFF')))
+            ttk.TTkLabel(pos=(13,11),text=ttk.TTkString("https://github.com/ceccopierangiolieugenio/pyTermTk", ttk.TTkColor.fg('#44FFFF', link="https://github.com/ceccopierangiolieugenio/pyTermTk")))
             ])

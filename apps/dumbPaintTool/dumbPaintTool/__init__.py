@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,10 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys,os
-sys.path.append(os.path.join(sys.path[0],'..'))
+__version__:str = "0.41.11-a.4"
 
-from ttkDesigner.app import main
+from .app import main
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
