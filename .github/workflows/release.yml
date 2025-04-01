@@ -158,9 +158,9 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
-  pyTermTk-deploy-build:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
-    name: Deploy pyTermTk to pypi
-    shell: bash
-    run: |
-      gh release upload ${TAG_NAME} tmp/TermTk.tgz
+  # pyTermTk-deploy-build:
+  #   if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
+  #   name: Deploy pyTermTk to pypi
+  #   shell: bash
+  #   run: |
+  #     gh release upload ${TAG_NAME} tmp/TermTk.tgz
