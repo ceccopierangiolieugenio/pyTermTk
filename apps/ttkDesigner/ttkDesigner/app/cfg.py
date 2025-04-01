@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # MIT License
 #
 # Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -20,7 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .app import *
+import os
+# import yaml
 
-if __name__ == "__main__":
-    main()
+from .. import __version__
+class TTkDesignerCfg:
+    version=__version__
+    name="ttkDesigner"
+    cfgVersion = '1.0'
+    pathCfg="."
+    options={}
+    maxsearches=200
+

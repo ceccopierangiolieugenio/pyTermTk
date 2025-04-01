@@ -9,25 +9,30 @@
             "type": "debugpy",
             "request": "attach",
             "connect": {
-              "host": "localhost",
-              "port": 64321
+                "host": "localhost",
+                "port": 64321
             }
-        },{
+        },
+        {
             "name": "Python: Current File",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-        },{
+        },
+        {
             "name": "Python: Current File with Args",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["tools/webExporter/js/ttkproxy.js"]
-        },{
+            "args": [
+                "tools/webExporter/js/ttkproxy.js"
+            ]
+        },
+        {
             "name": "Python: Current File with Env",
             "type": "debugpy",
             "request": "launch",
@@ -37,25 +42,31 @@
             "env": {
                 "TERMTK_GPM": "1"
             },
-        },{
+        },
+        {
             "name": "Python: Test Player",
             "type": "debugpy",
             "request": "launch",
             "program": "tests/pytest/test_001_demo.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["-p", "tmp/test.input.001.bin"]
-        },{
-            "name": "Python: TTk Designer",
+            "args": [
+                "-p",
+                "tmp/test.input.001.bin"
+            ]
+        },
+        {
+            "name": "py Debug: Module ttkDesigner",
             "type": "debugpy",
             "request": "launch",
             "module": "ttkDesigner",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./tools"
+                "PYTHONPATH": "./apps/ttkDesigner"
             }
-        },{
+        },
+        {
             "name": "Python: TTk Designer Quick",
             "type": "debugpy",
             "request": "launch",
@@ -65,18 +76,22 @@
             "env": {
                 "PYTHONPATH": "./tools"
             },
-            "args": ["ttkDesigner/tui/newWindow.tui.json"]
-        },{
-            "name": "Python: DumbPaintTool",
+            "args": [
+                "ttkDesigner/tui/newWindow.tui.json"
+            ]
+        },
+        {
+            "name": "py Debug: Module DumbPaintTool",
             "type": "debugpy",
             "request": "launch",
-            "program": "apps/dumbPaintTool.py",
+            "module": "dumbPaintTool",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./tools"
+                "PYTHONPATH": "./apps/dumbPaintTool"
             }
-        },{
+        },
+        {
             "name": "Python: DumbPaintTool File",
             "type": "debugpy",
             "request": "launch",
@@ -86,22 +101,28 @@
             "env": {
                 "PYTHONPATH": "./tools"
             },
-            "args":["experiments/untitled.DPT.json"]
-        },{
+            "args": [
+                "experiments/untitled.DPT.json"
+            ]
+        },
+        {
             "name": "Python: Demo",
             "type": "debugpy",
             "request": "launch",
             "program": "demo/demo.py",
             "console": "integratedTerminal",
             "justMyCode": true
-        },{
+        },
+        {
             "name": "Python: Demo Mouse tracking",
             "type": "debugpy",
             "request": "launch",
             "program": "demo/demo.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["-t"]
+            "args": [
+                "-t"
+            ]
         },
     ]
 }

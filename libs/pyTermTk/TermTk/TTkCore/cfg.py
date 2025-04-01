@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-# import yaml
+__all__ = ['TTkCfg', 'TTkGlbl']
 
-class TTkDesignerCfg:
-    version="__VERSION__"
-    name="__NAME__"
-    cfgVersion = '1.0'
-    pathCfg="."
-    options={}
-    maxsearches=200
+from TermTk.TTkCore.constant import TTkK
+from TermTk import __version__
+
+class TTkCfg:
+    version:str = __version__
+    name:str = "pyTermTk"
+
+    color_depth: int = TTkK.DEP_24
+
+    toolTipTime:int = 1
+    maxFps:int = 65
+    doubleBuffer:bool = True
+    doubleBufferNew:bool = False
+
+    scrollDelta:bool = 5
+    theme = None
+
+class TTkGlbl:
+    term_w: int = 0
+    term_h: int = 0
+
 

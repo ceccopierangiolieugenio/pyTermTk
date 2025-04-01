@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyTermTk"
+dynamic = ["version", "readme"]
+description = "Python Terminal Toolkit"
+requires-python = ">=3.9"
+license = { text = "MIT License" }
+authors = [
+    { name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Terminals",
+    "Topic :: Text Editors :: Text Processing",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Application Frameworks"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.dynamic]
+version = {attr = "TermTk.__version__"}
+readme = {file = ["README.md", "CHANGELOG.md"]}
