@@ -15,7 +15,7 @@
     { "type": "test",     "section": "Test Changes"     }
   ],
   "packages": {
-    "TermTk": {
+    "libs/pyTermTk": {
       "package-name": "pyTermTk"
     },
     "apps/dumbPaintTool": {

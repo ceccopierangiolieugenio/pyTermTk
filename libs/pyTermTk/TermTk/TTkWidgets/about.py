@@ -39,6 +39,7 @@ _peppered_image = TTkUtil.base64_deflate_2_obj(
     "5U2DXq3mDsvOfNqlvUa+RyTDOIh2FzT0BTmKSF6LuBkvvDOKPDpMvEXbHn1c6vRN2kpFuMgl9u2lXnzdyIBqxgR8Vh+GLZhjEoz1rDe3NTPOD+7TKdv/iBsvaPR+fnxK" +
     "xQDE4uRREkUJ66XbtrnsPzh2UpZrPsLpiuSfWR4dVb7jqa6eZJnJVIxboW48rdJF2ABxDMxk73q1GcaMFpv7wcfOF+RqZ89t+64LcTjIw8OTYYtVm3J7H3cB43I6aSq0" +
     "4Zf9GYaCzmMK1e6+dLH7AkxADRtZ3ojHUrmNqNtco9mqF7pzbppx0GQSQ3Op8FcJ2G5ltCNVLuI74ZeG5vr8rDHAaP/o5bQnnOawWcPyRePnp/8KRQkp")
+_peppered_string = TTkString(_peppered_image)
 
 class TTkAbout(TTkWindow):
     '''
@@ -104,12 +105,10 @@ class TTkAbout(TTkWindow):
         "    ▌    ▐  ╚═╝                  ╚═╝       ",
         "      ▚▄▄▘                                 "]
 
+    __slots__=('_image')
+    _image:TTkString
     def __init__(self, **kwargs) -> None:
         TTkWindow.__init__(self,**kwargs)
-        TTkLabel(parent=self, pos=( 0, 0), text=_peppered_image)
-        TTkLabel(parent=self, pos=(20, 6),text=TTkString(f"  Version: {TTkCfg.version}", color=TTkColor.fg('#AAAAFF')))
-        TTkLabel(parent=self, pos=(12, 8),text=TTkString("Powered By, Eugenio Parodi"))
-        TTkLabel(parent=self, pos=( 2,10),text=TTkString("https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF')))
         if not self.title():
             self.setTitle('About...')
         self.resize(55,15)
@@ -119,6 +118,11 @@ class TTkAbout(TTkWindow):
         for y, line in enumerate(TTkAbout.pyTermTk):
             canvas.drawText(pos=(9,3+y),text=line, color=TTkColor.fg(f'#{c[0]:02X}{c[1]:02X}{c[2]:02X}'))
             c[2]-=0x11
+        for i,line in enumerate(_peppered_string.split('\n')):
+            canvas.drawTTkString(pos=(1,3+i), text=line)
+        canvas.drawText(pos=(20, 9),text=f"  Version: {TTkCfg.version}", color=TTkColor.fg('#AAAAFF'))
+        canvas.drawText(pos=(12,11),text=f"Powered By, Eugenio Parodi")
+        canvas.drawText(pos=( 2,13),text=f"https://github.com/ceccopierangiolieugenio/pyTermTk", color=TTkColor.fg('#44FFFF', link="https://github.com/ceccopierangiolieugenio/pyTermTk"))
 
 
         TTkWindow.paintEvent(self, canvas)

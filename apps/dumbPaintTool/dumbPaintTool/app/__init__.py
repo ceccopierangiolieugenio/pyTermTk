@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys,os
-sys.path.append(os.path.join(sys.path[0],'..'))
-
-from ttkDesigner.app import main
-
-if __name__ == '__main__':
-    main()
+from .main         import *
+from .maintemplate import *
+from .toolspanel   import *
+from .paintarea    import *
+from .painttoolkit import *
+from .textarea     import *
+from .palette      import *
+from .layersctrl   import *
+from .canvaslayer  import *
+from .about        import *
+from .glbls        import *
+from .const        import *
+from .filters      import *
+from .importimage  import *
+from .exportarea   import *
+from .state        import *

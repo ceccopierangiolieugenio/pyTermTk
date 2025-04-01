@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+__version__:str = "0.41.11-a.4"
 
-class DPTCfg:
-    version="__VERSION__"
-    name="__NAME__"
-    cfgVersion = '1.0'
-    pathCfg="."
-    options={}
-    maxsearches=200
+from .app import main
 
+if __name__ == "__main__":
+    main()

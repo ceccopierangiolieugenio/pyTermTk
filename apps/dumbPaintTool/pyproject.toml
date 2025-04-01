@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dumbPaintTool"
+dynamic = ["version", "readme"]
+description = "the Dumb Paint Tool is a Terminal ASCII Photoshop"
+authors = [
+    {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
+]
+requires-python = ">=3.9"
+dependencies = [
+    'pyTermTk >= 0.41.11-a.1',
+    'pyperclip',
+    'Pillow',
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Terminals",
+    "Topic :: Text Editors :: Text Processing",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Graphics :: Editors",
+    "Topic :: Multimedia :: Graphics :: Editors :: Raster-Based",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+
+[project.urls]
+Homepage = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool"
+
+[project.scripts]
+dumbPaintTool = "dumbPaintTool:main"
+
+[tool.setuptools]
+packages = [
+    "dumbPaintTool",
+    "dumbPaintTool.app",
+    "dumbPaintTool.app.filters",
+    "dumbPaintTool.app.state"
+]
+
+[tool.setuptools.package-data]
+dumbPaintTool = ["tui/*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "dumbPaintTool.__version__"}
+readme = {file = ["README.md", "CHANGELOG.md"]}

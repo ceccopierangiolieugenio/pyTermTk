@@ -23,9 +23,10 @@
 __all__ = ['TTkCfg', 'TTkGlbl']
 
 from TermTk.TTkCore.constant import TTkK
+from TermTk import __version__
 
 class TTkCfg:
-    version:str = "0.41.11-a.0"
+    version:str = __version__
     name:str = "pyTermTk"
 
     color_depth: int = TTkK.DEP_24

@@ -20,7 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .app import main
-
-if __name__ == "__main__":
-    main()
+from .cfg import *
+from .about import About
+from .main import main
+from .designer import TTkDesigner
+from .treeinspector import TreeInspector
+from .widgetbox import DragDesignItem, WidgetBox
+from .windoweditor import WindowEditor
+from .propertyeditor import PropertyEditor
+from .signalsloteditor import SignalSlotEditor
+from .quickexport import QuickExport
+from .notepad import NotePad
+from .menuBarEditor import MenuBarEditor
+from .superobj import *

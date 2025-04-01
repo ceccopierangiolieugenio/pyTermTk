@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2024 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys,os
-sys.path.append(os.path.join(sys.path[0],'..'))
+import os
 
-from dumbPaintTool.app import main
+from .. import __version__
+class DPTCfg:
+    version=__version__
+    name="dumbPaintTool"
+    cfgVersion = '1.0'
+    pathCfg="."
+    options={}
+    maxsearches=200
 
-if __name__ == '__main__':
-    main()

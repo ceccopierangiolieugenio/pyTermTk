@@ -59,22 +59,40 @@ jobs:
             https://${GITHUB_TOKEN}@github.com/ceccopierangiolieugenio/pyTermTk.git \
             pyTermTk.new
           cd pyTermTk.new
-          _VERSION=$(jq .TermTk .release-please-manifest.json)
-          echo "Version: ${_VERSION}"
+
+          # Update version in the project
+          _VERSION_TTK=$(jq .libs/pyTermTk      .release-please-manifest.json)
+          _VERSION_DPT=$(jq .apps/dumbPaintTool .release-please-manifest.json)
+          _VERSION_T_D=$(jq .apps/ttkDesigner   .release-please-manifest.json)
+          echo "Version TermTk: ${_VERSION_TTK}"
+          echo "Version dumbPaintTool: ${_VERSION_DPT}"
+          echo "Version ttkDesigner: ${_VERSION_T_D}"
           sed -i \
-            "s|version:str.*|version:str = ${_VERSION}|" \
-            TermTk/TTkCore/cfg.py \
-            TermTk/__init__.py
+            "s|__version__:str.*|__version__:str = ${_VERSION_TTK}|" \
+            libs/pyTermTk/TermTk/__init__.py
           sed -i \
-            "s|'pyTermTk>=.*',|'pyTermTk>=${_VERSION/-/}',|" \
-            setup.*
-          cp TermTk/CHANGELOG.md CHANGELOG.md
+            "s|__version__:str.*|__version__:str = ${_VERSION_TTK}|" \
+            apps/dumbPaintTool/dumbPaintTool/__init__.py
+          sed -i \
+            "s|__version__:str.*|__version__:str = ${_VERSION_T_D}|" \
+            apps/ttkDesigner/ttkDesigner/__init__.py
+
+          # Update required version in any pyproject.toml
+          # that depend on pyTermTk
+          find . -name pyproject.toml |
+            xargs sed -i \
+              "s|'pyTermTk >= [^']*'|'pyTermTk >= ${_VERSION_TTK}'|"
+
           git add \
-            TermTk/TTkCore/cfg.py \
-            TermTk/__init__.py \
-            setup.* \
+            libs/pyTermTk/TermTk/TTkCore/cfg.py \
+            apps/dumbPaintTool/dumbPaintTool/__init__.py \
+            apps/ttkDesigner/ttkDesigner/__init__.py \
+            libs/pyTermTk/TermTk/__init__.py \
             CHANGELOG.md
-          git commit -m "chore: updated version to ${_VERSION}"
+          find . -name pyproject.toml |
+            xargs git add
+
+          git commit -m "chore: updated TermTk and apps to versions to ${_VERSION_TTK}, ${_VERSION_DPT}, ${_VERSION_T_D}"
           git push
 
   pyTermTk-deploy-artifacts:
@@ -139,3 +157,10 @@ jobs:
       - release-please
       - pyTermTk-deploy-artifacts
     secrets: inherit
+
+  pyTermTk-deploy-build:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
+    name: Deploy pyTermTk to pypi
+    shell: bash
+    run: |
+      gh release upload ${TAG_NAME} tmp/TermTk.tgz

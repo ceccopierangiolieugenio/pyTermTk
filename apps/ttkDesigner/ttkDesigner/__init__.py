@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+__version__:str = "0.41.113-a.12"
+
 from .app import *
 
 if __name__ == "__main__":

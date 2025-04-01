@@ -25,9 +25,10 @@
 import os
 # import yaml
 
+from .. import __version__
 class TTkDesignerCfg:
-    version="__VERSION__"
-    name="__NAME__"
+    version=__version__
+    name="ttkDesigner"
     cfgVersion = '1.0'
     pathCfg="."
     options={}
