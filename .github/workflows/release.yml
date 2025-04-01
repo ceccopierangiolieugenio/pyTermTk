@@ -24,7 +24,7 @@ env:
 
 jobs:
   release-please:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted, ubuntu-latest
     outputs:
       rp_out: ${{ toJson(steps.release-please.outputs) }}
     steps:
