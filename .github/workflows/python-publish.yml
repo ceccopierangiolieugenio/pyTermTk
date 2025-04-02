@@ -85,5 +85,5 @@ jobs:
           echo '::endgroup::'
 
           echo '::group::Deploy The Package'
-            python -m twine upload dist/
+            python -m twine upload dist/*
           echo '::endgroup::'
