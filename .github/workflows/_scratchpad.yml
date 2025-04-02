@@ -1,10 +1,10 @@
-name: Scratchpad
+name: _Scratchpad
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 permissions:
   contents: write
@@ -15,7 +15,9 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+
     steps:
       - run: echo Scratchpad
         env:
