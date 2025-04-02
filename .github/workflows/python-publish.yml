@@ -44,8 +44,13 @@ jobs:
       - name: Build release distributions
         run: |
           # NOTE: put your own distribution build steps here.
-          python -m pip install build
-          python -m build
+          echo '::group::Installing Build'
+            python -m pip install build
+          echo '::endgroup::'
+
+          echo '::group::Installing Build the package'
+            python -m build
+          echo '::endgroup::'
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
@@ -75,5 +80,10 @@ jobs:
           ls -laR dist
       - name: Publish
         run: |
-          python -m pip install twine
-          python -m twine upload ${{ inputs.pkg_folder }}/dist/
+          echo '::group::Installing Twine'
+            python -m pip install twine
+          echo '::endgroup::'
+
+          echo '::group::Deploy The Package'
+            python -m twine upload dist/
+          echo '::endgroup::'
