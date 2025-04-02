@@ -19,7 +19,7 @@
       "package-name": "pyTermTk"
     },
     "apps/dumbPaintTool": {
-      "package-name": "the Dumb Paint Tool"
+      "package-name": "theDumbPaintTool"
     },
     "apps/ttkDesigner": {
       "package-name": "ttkDesigner"

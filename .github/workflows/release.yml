@@ -78,7 +78,7 @@ jobs:
               "s|__version__:str.*|__version__:str = ${_VERSION_TTK}|" \
               libs/pyTermTk/TermTk/__init__.py
             sed -i \
-              "s|__version__:str.*|__version__:str = ${_VERSION_TTK}|" \
+              "s|__version__:str.*|__version__:str = ${_VERSION_DPT}|" \
               apps/dumbPaintTool/dumbPaintTool/__init__.py
             sed -i \
               "s|__version__:str.*|__version__:str = ${_VERSION_T_D}|" \
