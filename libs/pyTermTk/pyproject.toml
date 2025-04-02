@@ -29,6 +29,13 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks"
 ]
 
+[project.urls]
+Homepage      = "https://github.com/ceccopierangiolieugenio/pyTermTk"
+Documentation = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/"
+Repository    = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
+Issues        = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
+Changelog     = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/libs/pyTermTk/CHANGELOG.md"
+
 [tool.setuptools.packages.find]
 where = ["."]
 
