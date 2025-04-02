@@ -29,7 +29,8 @@ permissions:
 
 jobs:
   release-build:
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     defaults:
       run:
@@ -55,7 +56,7 @@ jobs:
           path: ${{ inputs.pkg_folder }}/dist/
 
   pypi-publish:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - release-build
     permissions:
