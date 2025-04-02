@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = "0.41.11-a.4"
+__version__:str = "0.41.12-a.0"
 
 from .app import main
 
