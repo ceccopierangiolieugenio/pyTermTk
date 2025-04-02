@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "pyTermTk"
 dynamic = ["version"]
 description = "Python Terminal Toolkit"
-readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
+readme = {file = "README.md", content-type = "text/markdown"}
 license = { text = "MIT License" }
 authors = [
     { name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com" }
