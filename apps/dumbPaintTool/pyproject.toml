@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "dumbPaintTool"
 dynamic = ["version"]
 readme = {file = "README.md", content-type = "text/markdown"}
-description = "the Dumb Paint Tool is a Terminal ASCII Photoshop"
+description = "the Dumb Paint Tool is THE Terminal ASCII Photoshop"
 authors = [
     {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
 ]

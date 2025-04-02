@@ -105,34 +105,42 @@ jobs:
         with:
           ref: ${{ github.sha }}
       - name: Create Artifacts
+        id: create-artifacts
         shell: bash
         run: |
-          mkdir -p tmp
-          find TermTk/  -name "*.py" |
-            sort | xargs tar cvzf tmp/TermTk.tgz
+          _TMP=$(mktmp)
+          # _TMP=tmp
+          echo "artifacts_dir=${_TMP}" >> $GITHUB_OUTPUTS
+          mkdir -p ${_TMP}
+          find libs/pyTermTk/TermTk  -name "*.py" |
+            sed 's,libs/pyTermTk/,,' |
+            sort | xargs tar cvzf ${_TMP}/TermTk.tgz -C libs/pyTermTk
           find tutorial -name '*.py' -o -name '*.json' |
-            sort | xargs tar cvzf tmp/tutorial.tgz
+            sort | xargs tar cvzf ${_TMP}/tutorial.tgz
           find \
             demo/paint.py \
             demo/ttkode.py \
             demo/demo.py \
             demo/showcase/*.* |
-            sort | xargs tar cvzf tmp/demo.tgz
+            sort | xargs tar cvzf ${_TMP}/demo.tgz
           find \
             tests/ansi.images.json \
             tests/t.ui/*.* |
-            sort | xargs tar cvzf tmp/tests.tgz
+            sort | xargs tar cvzf ${_TMP}/tests.tgz
 
       - name: Upload artifatcs to Release
         shell: bash
+        needs: create-artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
           TAG_NAME: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--tag_name'] }}
         run: |
-          gh release upload ${TAG_NAME} tmp/TermTk.tgz
-          gh release upload ${TAG_NAME} tmp/tutorial.tgz
-          gh release upload ${TAG_NAME} tmp/tests.tgz
-          gh release upload ${TAG_NAME} tmp/demo.tgz
+          _TMP=${{ needs.create-artifacts.outputs.artifacts_dir }}
+          gh release upload ${TAG_NAME} ${_TMP}/TermTk.tgz
+          gh release upload ${TAG_NAME} ${_TMP}/tutorial.tgz
+          gh release upload ${TAG_NAME} ${_TMP}/tests.tgz
+          gh release upload ${TAG_NAME} ${_TMP}/demo.tgz
+          rm -rf ${_TMP}
 
   pyTermTk-deploy-sandbox:
     name: Deploy pyTermTk Sandbox
