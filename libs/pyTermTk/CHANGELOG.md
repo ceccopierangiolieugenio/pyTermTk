@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.41.16-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.15-a.0...pyTermTk-v0.41.16-a.0) (2025-04-02)
+
+
+### Chores
+
+* add pkgs uri for pypi ([0363708](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0363708cd969d6495192459031ac5be12d035328))
+* merge main ([761f608](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/761f608e77ed5b2b31c7e4434b95094609eb9794))
+
 ## [0.41.15-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.14-a.0...pyTermTk-v0.41.15-a.0) (2025-04-02)
 
 
