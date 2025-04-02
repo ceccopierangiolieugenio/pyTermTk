@@ -91,6 +91,7 @@ jobs:
             find . -name pyproject.toml |
               xargs sed -i \
                 "s|'pyTermTk >= [^']*'|'pyTermTk >= ${_VERSION_TTK}'|"
+            cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
 
           echo '::group::Push the Versions'
