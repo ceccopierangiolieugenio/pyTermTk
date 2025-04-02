@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.2-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.1-a.54...ttkDesigner-v0.41.2-a.54) (2025-04-02)
+
+
+### Chores
+
+* added links in the apps ([c4b8f64](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/c4b8f64b6b8f02502f2db2c8d3886b62f63b6d4e))
+
 ## [0.41.1-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.0-a.54...ttkDesigner-v0.41.1-a.54) (2025-04-02)
 
 
