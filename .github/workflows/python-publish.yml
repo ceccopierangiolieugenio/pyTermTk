@@ -11,12 +11,20 @@ name: Upload Python Package
 on:
   workflow_dispatch:
     inputs:
+      pkg_name:
+        description: the name of the project
+        type: string
+        required: true
       pkg_folder:
         description: the folder containing the pyproject.toml file
         type: string
         required: true
   workflow_call:
     inputs:
+      pkg_name:
+        description: the name of the project
+        type: string
+        required: true
       pkg_folder:
         description: the folder containing the pyproject.toml file
         type: string
@@ -54,7 +62,7 @@ jobs:
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
-          name: release-dists
+          name: release-dist-${{ inputs.pkg_name }}
           path: ${{ inputs.pkg_folder }}/dist/
 
   pypi-publish:
@@ -72,7 +80,7 @@ jobs:
       - name: Retrieve release distributions
         uses: actions/download-artifact@v4
         with:
-          name: release-dists
+          name: release-dist-${{ inputs.pkg_name }}
           path: dist/
       - name: check
         shell: bash
