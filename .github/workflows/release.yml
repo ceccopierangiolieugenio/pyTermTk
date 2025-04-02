@@ -121,8 +121,8 @@ jobs:
         id: create-artifacts
         shell: bash
         run: |
-          _TMP=$(mktmp)
-          # _TMP=tmp
+          # _TMP=$(mktmp)
+          _TMP=tmp
           echo "artifacts_dir=${_TMP}" >> $GITHUB_OUTPUTS
           mkdir -p ${_TMP}
           find libs/pyTermTk/TermTk  -name "*.py" |
