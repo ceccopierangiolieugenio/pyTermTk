@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pyTermTk"
 dynamic = ["version"]
-readme = {file = "README.md", content-type = "text/markdown"}
 description = "Python Terminal Toolkit"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.9"
 license = { text = "MIT License" }
 authors = [
