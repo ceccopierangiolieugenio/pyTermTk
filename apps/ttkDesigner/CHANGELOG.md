@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.3-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.2-a.54...ttkDesigner-v0.41.3-a.54) (2025-04-02)
+
+
+### Chores
+
+* fix toml typo ([5e3012f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5e3012f41d1322ba0ff679af3e43a6e3deb7594d))
+
 ## [0.41.2-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.1-a.54...ttkDesigner-v0.41.2-a.54) (2025-04-02)
 
 
