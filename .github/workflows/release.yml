@@ -123,7 +123,7 @@ jobs:
         run: |
           # _TMP=$(mktmp)
           _TMP=tmp
-          echo "artifacts_dir=${_TMP}" >> $GITHUB_OUTPUTS
+          echo "artifacts_dir=${_TMP}" >> $GITHUB_OUTPUT
           mkdir -p ${_TMP}
           find libs/pyTermTk/TermTk  -name "*.py" |
             sed 's,libs/pyTermTk/,,' |
