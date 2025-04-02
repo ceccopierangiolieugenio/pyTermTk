@@ -74,7 +74,7 @@ jobs:
         shell: bash
         run: |
           ls -laR dist
-          file ${{ inputs.pkg_folder }}/dist/*
+          file dist/*
 
       - name: Publish
         run: |
