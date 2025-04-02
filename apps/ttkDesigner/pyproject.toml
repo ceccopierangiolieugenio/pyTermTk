@@ -38,7 +38,7 @@ dependencies = [
 Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner"
 Repository = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
 Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
-Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkDesigner/CHANGELOG.md
+Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkDesigner/CHANGELOG.md"
 
 [project.scripts]
 ttkDesigner = "ttkDesigner:main"

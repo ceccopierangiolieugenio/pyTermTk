@@ -41,7 +41,7 @@ classifiers = [
 Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/dumbPaintTool"
 Repository = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
 Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
-Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/dumbPaintTool/CHANGELOG.md
+Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/dumbPaintTool/CHANGELOG.md"
 
 [project.scripts]
 dumbPaintTool = "dumbPaintTool:main"
