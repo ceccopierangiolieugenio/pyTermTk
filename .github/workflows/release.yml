@@ -109,7 +109,7 @@ jobs:
           echo '::endgroup::'
 
   pyTermTk-deploy-artifacts:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/TermTk--release_created'] }}
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
     runs-on: ubuntu-latest
     name: Deploy pyTermTk to github release
     needs: release-please
@@ -161,7 +161,7 @@ jobs:
     secrets: inherit
 
   pyTermTk-deploy-sandbox-bin:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/TermTk--release_created'] }}
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
     name: Deploy pyTermTk Sandbox Binaries
     uses: ./.github/workflows/release_sandbox_bin.yml
     needs:
@@ -170,7 +170,7 @@ jobs:
     secrets: inherit
 
   pyTermTk-deploy-docs:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/TermTk--release_created'] }}
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
     name: Deploy pyTermTk Docs
     uses: ./.github/workflows/release_doc.yml
     needs:
@@ -179,7 +179,7 @@ jobs:
     secrets: inherit
 
   pyTermTk-publish:
-    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/TermTk--release_created'] }}
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
     name: Publish pyTermTk
     uses: ./.github/workflows/python-publish.yml
     with:
@@ -190,7 +190,7 @@ jobs:
     secrets: inherit
 
   # pyTermTk-deploy-build:
-  #   if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/TermTk--release_created'] }}
+  #   if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
   #   name: Deploy pyTermTk to pypi
   #   shell: bash
   #   run: |
