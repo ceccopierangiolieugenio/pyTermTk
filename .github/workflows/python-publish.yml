@@ -74,7 +74,6 @@ jobs:
         shell: bash
         run: |
           ls -laR dist
-          file dist/*
 
       - name: Publish
         run: |
