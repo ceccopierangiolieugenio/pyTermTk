@@ -177,6 +177,17 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
+  pyTermTk-publish:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
+    name: Publish pyTermTk
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_folder: libs/pyTermTk
+      pkg_name: pyTermTk
+    needs:
+      - release-please
+    secrets: inherit
+
   # pyTermTk-deploy-build:
   #   if: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--release_created'] }}
   #   name: Deploy pyTermTk to pypi
