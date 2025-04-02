@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-dists
-          path: dist/
+          path: ${{ inputs.pkg_folder }}/dist/
 
   pypi-publish:
     runs-on: ubuntu-latest
@@ -61,10 +61,6 @@ jobs:
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
       id-token: write
-
-    defaults:
-      run:
-        working-directory: ${{ inputs.pkg_folder }}
 
     steps:
       - name: Retrieve release distributions
