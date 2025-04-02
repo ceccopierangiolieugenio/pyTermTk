@@ -71,6 +71,12 @@ jobs:
           path: dist/
 
       - name: check
+        shell: bash
         run: |
           ls -laR dist
-          file dist/*
+          file ${{ inputs.pkg_folder }}/dist/*
+
+      - name: Publish
+        run: |
+          python -m pip install twine
+          python -m twine upload ${{ inputs.pkg_folder }}/dist/
