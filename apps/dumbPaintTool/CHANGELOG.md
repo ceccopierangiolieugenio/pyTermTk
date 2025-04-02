@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.6-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.5-a.54...theDumbPaintTool-v0.41.6-a.54) (2025-04-02)
+
+
+### Chores
+
+* fix toml typo ([5e3012f](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5e3012f41d1322ba0ff679af3e43a6e3deb7594d))
+
 ## [0.41.5-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.4-a.54...theDumbPaintTool-v0.41.5-a.54) (2025-04-02)
 
 
