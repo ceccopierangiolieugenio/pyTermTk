@@ -85,5 +85,5 @@ jobs:
           echo '::endgroup::'
 
           echo '::group::Deploy The Package'
-            python -m twine upload dist/*
+            python -m twine upload --verbose -u ${{ secrets.TWINE_USER }} -p ${{ secrets.TWINE_PASSWORD }} dist/*
           echo '::endgroup::'
