@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.4-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.3-a.54...theDumbPaintTool-v0.41.4-a.54) (2025-04-02)
+
+
+### Chores
+
+* merge main ([761f608](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/761f608e77ed5b2b31c7e4434b95094609eb9794))
+
 ## [0.41.3-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.2-a.54...theDumbPaintTool-v0.41.3-a.54) (2025-04-02)
 
 
