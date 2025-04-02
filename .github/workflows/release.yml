@@ -178,14 +178,35 @@ jobs:
       - pyTermTk-deploy-artifacts
     secrets: inherit
 
-  pyTermTk-publish:
+  publish-pyTermTk:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
     name: Publish pyTermTk
     uses: ./.github/workflows/python-publish.yml
     with:
-      pkg_folder: libs/pyTermTk
       pkg_name: pyTermTk
+      pkg_folder: libs/pyTermTk
     needs:
       - release-please
     secrets: inherit
 
+  publish-ttkDesigner:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkDesigner--release_created'] }}
+    name: Publish ttkDesigner
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: ttkDesigner
+      pkg_folder: apps/ttkDesigner
+    needs:
+      - release-please
+    secrets: inherit
+
+  publish-dumbPaintTool:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
+    name: Publish dumbPaintTool
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: dumbPaintTool
+      pkg_folder: apps/dumbPaintTool
+    needs:
+      - release-please
+    secrets: inherit
