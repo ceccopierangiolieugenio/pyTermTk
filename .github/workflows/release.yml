@@ -70,13 +70,16 @@ jobs:
             _VERSION_TTK=$(jq -r '.["libs/pyTermTk"     ]' .release-please-manifest.json)
             _VERSION_DPT=$(jq -r '.["apps/dumbPaintTool"]' .release-please-manifest.json)
             _VERSION_T_D=$(jq -r '.["apps/ttkDesigner"  ]' .release-please-manifest.json)
+            _VERSION_KOD=$(jq -r '.["apps/ttkode"       ]' .release-please-manifest.json)
             _NAME_TTK=$(jq -r '.packages["libs/pyTermTk"     ]["package-name"]' .release-please-config.json)
             _NAME_DPT=$(jq -r '.packages["apps/dumbPaintTool"]["package-name"]' .release-please-config.json)
             _NAME_T_D=$(jq -r '.packages["apps/ttkDesigner"  ]["package-name"]' .release-please-config.json)
+            _NAME_KOD=$(jq -r '.packages["apps/ttkode"       ]["package-name"]' .release-please-config.json)
 
             echo "Version ${_NAME_TTK}: ${_VERSION_TTK}"
             echo "Version ${_NAME_DPT}: ${_VERSION_DPT}"
             echo "Version ${_NAME_T_D}: ${_VERSION_T_D}"
+            echo "Version ${_NAME_KOD}: ${_VERSION_KOD}"
           echo '::endgroup::'
 
           echo '::group::Update the Versions'
@@ -96,20 +99,23 @@ jobs:
                 apps/dumbPaintTool/dumbPaintTool/__init__.py
               sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkDesigner/pyproject.toml
             fi
-
+            if grep -q "${_NAME_KOD}: ${_VERSION_KOD}" <<< ' ${{ steps.release-please.outputs.pr }}': then
+              sed -i \
+                "s|__version__:str.*|__version__:str = '${_VERSION_KOD}'|" \
+                apps/ttkode/ttkode/__init__.py
+              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkode/pyproject.toml
+            fi
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
 
           echo '::group::Push the Versions'
             git add \
-              libs/pyTermTk/TermTk/TTkCore/cfg.py \
-              apps/dumbPaintTool/dumbPaintTool/__init__.py \
-              apps/ttkDesigner/ttkDesigner/__init__.py \
+              apps/*/*/__init__.py \
               libs/pyTermTk/TermTk/__init__.py \
               CHANGELOG.md
             find . -name pyproject.toml xargs git add
 
-            git commit -m "chore: updated TermTk and apps to versions to ${_VERSION_TTK}, ${_VERSION_DPT}, ${_VERSION_T_D}"
+            git commit -m "chore: updated TermTk and apps to versions to ${_VERSION_TTK}, ${_VERSION_DPT}, ${_VERSION_T_D} ${_VERSION_KOD}"
             git push
           echo '::endgroup::'
 
@@ -212,6 +218,17 @@ jobs:
     with:
       pkg_name: dumbPaintTool
       pkg_folder: apps/dumbPaintTool
+    needs:
+      - release-please
+    secrets: inherit
+
+  publish-ttkode:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkode--release_created'] }}
+    name: Publish ttkode
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: ttkode
+      pkg_folder: apps/ttkode
     needs:
       - release-please
     secrets: inherit

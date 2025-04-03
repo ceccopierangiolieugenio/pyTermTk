@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ttkode"
+dynamic = ["version"]
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
+]
+description = "Terminal ToolKit Studio Code editor"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Terminals",
+    "Topic :: Software Development :: User Interfaces",
+]
+dependencies = [
+    'pyTermTk>=0.41.17-a.0',
+    'appdirs',
+    'copykitten',
+    'pygments'
+]
+
+[project.urls]
+Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode"
+Repository = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
+Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
+Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkDesigner/CHANGELOG.md"
+
+[project.scripts]
+ttkode = "ttkode:main"
+
+[tool.setuptools]
+packages = ["ttkode", "ttkode.app"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ttkode.__version__"}

@@ -23,6 +23,9 @@
     },
     "apps/ttkDesigner": {
       "package-name": "ttkDesigner"
+    },
+    "apps/ttkode": {
+      "package-name": "ttkode"
     }
   }
 }

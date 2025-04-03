@@ -106,6 +106,17 @@
             ]
         },
         {
+            "name": "py Debug: Module ttkode",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "ttkode",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "./apps/ttkode"
+            }
+        },
+        {
             "name": "Python: Demo",
             "type": "debugpy",
             "request": "launch",

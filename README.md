@@ -54,6 +54,9 @@ Be inspired by [the Tutorials](https://github.com/ceccopierangiolieugenio/pyTerm
 ## [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
 Don't get bored by the [Api Definitions](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/index.html#api-reference)
 
+## [ttkode](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode)
+Burn your fingers with the Terminal Studio Kode
+
 ## [ttkDesigner](https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkDesigner)
 Smell deliciousness with the official [pyTermTk](https://github.com/ceccopierangiolieugenio/pyTermTk) tool for designing and building Text-based user interfaces ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)s)
 
