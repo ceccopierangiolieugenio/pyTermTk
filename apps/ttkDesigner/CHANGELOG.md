@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.4-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.3-a.54...ttkDesigner-v0.41.4-a.54) (2025-04-03)
+
+
+### Chores
+
+* release main ([#376](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/376)) ([9b85fc4](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9b85fc4d4f3a5997811f10ca5b87cf756c8dd621))
+
 ## [0.41.3-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkDesigner-v0.41.2-a.54...ttkDesigner-v0.41.3-a.54) (2025-04-02)
 
 
