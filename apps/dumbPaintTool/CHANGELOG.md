@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.7-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.6-a.54...theDumbPaintTool-v0.41.7-a.54) (2025-04-03)
+
+
+### Chores
+
+* fix release format and flake error ([fa840f5](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/fa840f514fb102ef71adaf9dd148ba9031cebe94))
+
 ## [0.41.6-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.5-a.54...theDumbPaintTool-v0.41.6-a.54) (2025-04-02)
 
 
