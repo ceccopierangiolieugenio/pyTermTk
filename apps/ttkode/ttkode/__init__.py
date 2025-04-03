@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.2.4-a.15'
+__version__:str = '0.2.15-a.2'
 
 from .app import *
 
