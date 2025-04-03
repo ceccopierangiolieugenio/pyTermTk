@@ -126,7 +126,6 @@ clipboard = ttk.TTkClipboard()
 
 ttk.pyTTkSlot()
 def _openTerminal(term=[]):
-    global clipboard
     _x,_y = 15,5
     while (_x,_y) in [_t['pos'] for _t in term]:
         _x += 4

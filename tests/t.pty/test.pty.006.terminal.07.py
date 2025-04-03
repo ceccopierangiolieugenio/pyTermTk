@@ -71,7 +71,6 @@ tnum = 0
 @ttk.pyTTkSlot()
 def _addTerminal():
     global tnum
-    global clipboard
     tnum+=1
     win  = ttk.TTkWindow(pos=(12,0), size=(100,30), title=f"Terminallo n.{tnum}", border=True, layout=ttk.TTkVBoxLayout(), flags = ttk.TTkK.WindowFlag.WindowMinMaxButtonsHint|ttk.TTkK.WindowFlag.WindowCloseButtonHint)
     term = ttk.TTkTerminal(parent=win)

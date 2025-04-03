@@ -67,9 +67,9 @@ jobs:
 
           echo '::group::Retrieve the Versions'
             # Update version in the project
-            _VERSION_TTK=$(jq '.["libs/pyTermTk"]'      .release-please-manifest.json)
-            _VERSION_DPT=$(jq '.["apps/dumbPaintTool"]' .release-please-manifest.json)
-            _VERSION_T_D=$(jq '.["apps/ttkDesigner"]'   .release-please-manifest.json)
+            _VERSION_TTK=$(jq -r '.["libs/pyTermTk"]'      .release-please-manifest.json)
+            _VERSION_DPT=$(jq -r '.["apps/dumbPaintTool"]' .release-please-manifest.json)
+            _VERSION_T_D=$(jq -r '.["apps/ttkDesigner"]'   .release-please-manifest.json)
             echo "Version TermTk: ${_VERSION_TTK}"
             echo "Version dumbPaintTool: ${_VERSION_DPT}"
             echo "Version ttkDesigner: ${_VERSION_T_D}"
@@ -77,20 +77,19 @@ jobs:
 
           echo '::group::Update the Versions'
             sed -i \
-              "s|__version__:str.*|__version__:str = ${_VERSION_TTK}|" \
+              "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
             sed -i \
-              "s|__version__:str.*|__version__:str = ${_VERSION_DPT}|" \
+              "s|__version__:str.*|__version__:str = '${_VERSION_DPT}'|" \
               apps/dumbPaintTool/dumbPaintTool/__init__.py
             sed -i \
-              "s|__version__:str.*|__version__:str = ${_VERSION_T_D}|" \
+              "s|__version__:str.*|__version__:str = '${_VERSION_T_D}'|" \
               apps/ttkDesigner/ttkDesigner/__init__.py
 
             # Update required version in any pyproject.toml
             # that depend on pyTermTk
             find . -name pyproject.toml |
-              xargs sed -i \
-                "s|'pyTermTk >= [^']*'|'pyTermTk >= ${_VERSION_TTK}'|"
+              xargs sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
 
