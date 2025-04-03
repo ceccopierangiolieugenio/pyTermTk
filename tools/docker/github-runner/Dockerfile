@@ -3,14 +3,20 @@
 FROM --platform=linux/arm64 ubuntu:latest
 # FROM --platform=linux/amd64 ubuntu:latest
 
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Install required dependencies
+# Update and install default applications
 RUN apt-get update && apt-get install -y \
-    sudo \
-    curl wget tar \
-    jq git gh \
-    libicu74 \
+    python3 python3-pip \
+    maven ant sudo \
+    libicu74 sqlite3 \
+    gh git curl wget jq \
+    unzip tar \
     && apt-get clean
+
+# Clean up
+RUN rm -rf /var/lib/apt/lists/*
 
 RUN echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
