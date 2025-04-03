@@ -113,7 +113,7 @@ jobs:
               apps/*/*/__init__.py \
               libs/pyTermTk/TermTk/__init__.py \
               CHANGELOG.md
-            find . -name pyproject.toml xargs git add
+            find . -name pyproject.toml | xargs git add
 
             git commit -m "chore: updated TermTk and apps to versions to ${_VERSION_TTK}, ${_VERSION_DPT}, ${_VERSION_T_D} ${_VERSION_KOD}"
             git push
