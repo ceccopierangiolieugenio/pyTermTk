@@ -87,19 +87,19 @@ jobs:
               "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
 
-            if grep -q "${_NAME_DPT}: ${_VERSION_DPT}" <<< ' ${{ steps.release-please.outputs.pr }}': then
+            if grep -q "${_NAME_DPT}: ${_VERSION_DPT}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
               sed -i \
                 "s|__version__:str.*|__version__:str = '${_VERSION_T_D}'|" \
                 apps/ttkDesigner/ttkDesigner/__init__.py
               sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/dumbPaintTool/pyproject.toml
             fi
-            if grep -q "${_NAME_T_D}: ${_VERSION_T_D}" <<< ' ${{ steps.release-please.outputs.pr }}': then
+            if grep -q "${_NAME_T_D}: ${_VERSION_T_D}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
               sed -i \
                 "s|__version__:str.*|__version__:str = '${_VERSION_DPT}'|" \
                 apps/dumbPaintTool/dumbPaintTool/__init__.py
               sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkDesigner/pyproject.toml
             fi
-            if grep -q "${_NAME_KOD}: ${_VERSION_KOD}" <<< ' ${{ steps.release-please.outputs.pr }}': then
+            if grep -q "${_NAME_KOD}: ${_VERSION_KOD}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
               sed -i \
                 "s|__version__:str.*|__version__:str = '${_VERSION_KOD}'|" \
                 apps/ttkode/ttkode/__init__.py
