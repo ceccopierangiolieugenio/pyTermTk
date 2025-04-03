@@ -67,29 +67,36 @@ jobs:
 
           echo '::group::Retrieve the Versions'
             # Update version in the project
-            _VERSION_TTK=$(jq -r '.["libs/pyTermTk"]'      .release-please-manifest.json)
+            _VERSION_TTK=$(jq -r '.["libs/pyTermTk"     ]' .release-please-manifest.json)
             _VERSION_DPT=$(jq -r '.["apps/dumbPaintTool"]' .release-please-manifest.json)
-            _VERSION_T_D=$(jq -r '.["apps/ttkDesigner"]'   .release-please-manifest.json)
-            echo "Version TermTk: ${_VERSION_TTK}"
-            echo "Version dumbPaintTool: ${_VERSION_DPT}"
-            echo "Version ttkDesigner: ${_VERSION_T_D}"
+            _VERSION_T_D=$(jq -r '.["apps/ttkDesigner"  ]' .release-please-manifest.json)
+            _NAME_TTK=$(jq -r '.packages["libs/pyTermTk"     ]["package-name"]' .release-please-config.json)
+            _NAME_DPT=$(jq -r '.packages["apps/dumbPaintTool"]["package-name"]' .release-please-config.json)
+            _NAME_T_D=$(jq -r '.packages["apps/ttkDesigner"  ]["package-name"]' .release-please-config.json)
+
+            echo "Version ${_NAME_TTK}: ${_VERSION_TTK}"
+            echo "Version ${_NAME_DPT}: ${_VERSION_DPT}"
+            echo "Version ${_NAME_T_D}: ${_VERSION_T_D}"
           echo '::endgroup::'
 
           echo '::group::Update the Versions'
             sed -i \
               "s|__version__:str.*|__version__:str = '${_VERSION_TTK}'|" \
               libs/pyTermTk/TermTk/__init__.py
-            sed -i \
-              "s|__version__:str.*|__version__:str = '${_VERSION_DPT}'|" \
-              apps/dumbPaintTool/dumbPaintTool/__init__.py
-            sed -i \
-              "s|__version__:str.*|__version__:str = '${_VERSION_T_D}'|" \
-              apps/ttkDesigner/ttkDesigner/__init__.py
 
-            # Update required version in any pyproject.toml
-            # that depend on pyTermTk
-            find . -name pyproject.toml |
-              xargs sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i
+            if grep -q "${_NAME_DPT}: ${_VERSION_DPT}" <<< ' ${{ steps.release-please.outputs.pr }}': then
+              sed -i \
+                "s|__version__:str.*|__version__:str = '${_VERSION_T_D}'|" \
+                apps/ttkDesigner/ttkDesigner/__init__.py
+              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/dumbPaintTool/pyproject.toml
+            fi
+            if grep -q "${_NAME_T_D}: ${_VERSION_T_D}" <<< ' ${{ steps.release-please.outputs.pr }}': then
+              sed -i \
+                "s|__version__:str.*|__version__:str = '${_VERSION_DPT}'|" \
+                apps/dumbPaintTool/dumbPaintTool/__init__.py
+              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkDesigner/pyproject.toml
+            fi
+
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
 
@@ -100,8 +107,7 @@ jobs:
               apps/ttkDesigner/ttkDesigner/__init__.py \
               libs/pyTermTk/TermTk/__init__.py \
               CHANGELOG.md
-            find . -name pyproject.toml |
-              xargs git add
+            find . -name pyproject.toml xargs git add
 
             git commit -m "chore: updated TermTk and apps to versions to ${_VERSION_TTK}, ${_VERSION_DPT}, ${_VERSION_T_D}"
             git push
