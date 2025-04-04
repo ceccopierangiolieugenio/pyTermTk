@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,37 +20,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import json
 
-from .. import __version__
+from pygments import highlight
+from pygments.lexers import PythonLexer, JavascriptLexer
+from pygments.formatters import TerminalFormatter, Terminal256Formatter, TerminalTrueColorFormatter
 
-class TTKodeCfg:
-    version=__version__
-    name="ttkode"
-    cfgVersion = '1.0'
-    pathCfg="."
-    options={}
-    maxsearches=200
+import TermTk as ttk
 
-    @staticmethod
-    def save(searches=True, filters=True, colors=True, options=True):
-        os.makedirs(TTKodeCfg.pathCfg, exist_ok=True)
-        optionsPath  = os.path.join(TTKodeCfg.pathCfg,'options.json')
+import tlogg
 
-        def writeCfg(path, cfg):
-            fullCfg = {
-                'version':TTKodeCfg.cfgVersion,
-                'cfg':cfg }
-            # with open(path, 'w') as f:
-            #     json.dump(fullCfg, f, sort_keys=False, default_flow_style=False)
+class JsonViewer(ttk.TTkTextEdit):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setLineWrapMode(ttk.TTkK.WidgetWidth)
+        self.setWordWrapMode(ttk.TTkK.WordWrap)
+        tlogg.tloggProxy.lineSelected.connect(self._showLine)
 
-        if options:  writeCfg(optionsPath,  TTKodeCfg.options)
+    ttk.pyTTkSlot(str)
+    def _showLine(self, text):
+        try:
+            text = json.loads(text)
+            text = json.dumps(text, indent=4)
+            text = highlight(text, JavascriptLexer(), TerminalTrueColorFormatter(style='material'))
 
-    @staticmethod
-    def load():
-        optionsPath  = os.path.join(TTKodeCfg.pathCfg,'options.json')
+        except ValueError as e:
+            pass
+        self.setText(text)
 
-        # if os.path.exists(optionsPath):
-        #     with open(optionsPath) as f:
-        #         TTKodeCfg.options = json.load(f, Loader=json.SafeLoader)['cfg']
+tlogg.TloggPlugin(
+    name="Json Viewer",
+    position=ttk.TTkK.RIGHT,
+    menu=True,
+    visible=False,
+    widget=JsonViewer(lineNumber=True, readOnly=False, ))

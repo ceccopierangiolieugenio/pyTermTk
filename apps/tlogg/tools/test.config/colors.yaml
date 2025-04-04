@@ -1,0 +1,30 @@
+version: '1.0'
+cfg:
+- pattern: ipsum dolore
+  ignorecase: true
+  fg: '#FFFFFF'
+  bg: '#0000ff'
+- pattern: cillum sit
+  ignorecase: true
+  fg: '#101d46'
+  bg: '#ff00ff'
+- pattern: excepteur
+  ignorecase: true
+  fg: '#ffff00'
+  bg: '#000000'
+- pattern: dolore
+  ignorecase: true
+  fg: '#00ff00'
+  bg: '#002338'
+- pattern: cupida
+  ignorecase: true
+  fg: '#00ffff'
+  bg: '#0000ff'
+- pattern: consequa
+  ignorecase: true
+  fg: '#ffff00'
+  bg: '#0000ff'
+- pattern: sunt ad
+  ignorecase: true
+  fg: '#ffff00'
+  bg: '#ff0000'

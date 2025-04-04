@@ -117,6 +117,17 @@
             }
         },
         {
+            "name": "py Debug: Module tlogg",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tlogg",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "./apps/tlogg"
+            }
+        },
+        {
             "name": "Python: Demo",
             "type": "debugpy",
             "request": "launch",

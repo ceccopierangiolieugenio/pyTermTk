@@ -3,13 +3,13 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ttkode"
+name = "tlogg"
 dynamic = ["version"]
 readme = {file = "README.md", content-type = "text/markdown"}
 authors = [
     {name = "Eugenio Parodi", email = "ceccopierangiolieugenio@googlemail.com"},
 ]
-description = "Terminal ToolKit Studio Code editor"
+description = "A fast, advanced log explorer"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 classifiers = [
@@ -27,20 +27,20 @@ dependencies = [
     'pyTermTk>=0.41.17-a.0',
     'appdirs',
     'copykitten',
-    'pygments'
+    'pyyaml'
 ]
 
 [project.urls]
-Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/ttkode"
+Homepage   = "https://github.com/ceccopierangiolieugenio/pyTermTk/tree/main/apps/tlogg"
 Repository = "https://github.com/ceccopierangiolieugenio/pyTermTk.git"
 Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
-Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkode/CHANGELOG.md"
+Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/tlogg/CHANGELOG.md"
 
 [project.scripts]
-ttkode = "ttkode:main"
+tlogg = "tlogg.__main__:main"
 
 [tool.setuptools]
-packages = ["ttkode", "ttkode.app"]
+packages = ["tlogg", "tlogg.app", "tlogg.plugins"]
 
 [tool.setuptools.dynamic]
-version = {attr = "ttkode.__version__"}
+version = {attr = "tlogg.__version__"}
