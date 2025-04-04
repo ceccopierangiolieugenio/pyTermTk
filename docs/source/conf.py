@@ -71,7 +71,7 @@ html_css_files = [
     'ttk.css'
 ]
 
-html_favicon = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"
+html_favicon = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/favicon.ico"
 # html_favicon = "_images/favicon.ico"
 # html_favicon = "../images/favicon.ico"
 
@@ -127,7 +127,7 @@ toc_object_entries_show_parents='hide'
 html_theme = 'sphinx_book_theme'
 html_permalinks_icon = '<span>🌶️</span>'
 # html_permalinks_icon = '<span><image src="/_images/favicon.png"></span>'
-# html_permalinks_icon = '<span><image src="https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/www/favicon.ico"></span>'
+# html_permalinks_icon = '<span><image src="https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/www/favicon.ico"></span>'
 html_theme_options = {
     "home_page_in_toc": True,
     "use_fullscreen_button": True,

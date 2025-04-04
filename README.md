@@ -30,7 +30,7 @@ https://github.com/user-attachments/assets/888e745a-ea00-4d03-b6ec-273319d54ea7
 
 ## [Features](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/index.html)
 - [Self Contained](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/installing.html#copy-termtk-folder) (no external lib required), Python 3.9 or above required.
-- [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
+- [Cross compatible](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/crosscompatible.html): [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html))
 - [Basic widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#base-widgets) for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
 - [Specialized widgets](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/info/features/widgets.html#specialised-widgets) to improve the usability (Windows, Frames, Tables, ...)
 - QT Like Layout system to help arrange the widgets in the terminal
@@ -40,9 +40,9 @@ https://github.com/user-attachments/assets/888e745a-ea00-4d03-b6ec-273319d54ea7
 
 ---
 
-## Try the [Sandbox](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html) straight from your browser
+## Try the [Sandbox](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html) straight from your browser
 
-[![SandBox](https://user-images.githubusercontent.com/8876552/206438915-fdc868b1-32e0-46e8-9e2c-e29f4a7a0e75.png)](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html)
+[![SandBox](https://user-images.githubusercontent.com/8876552/206438915-fdc868b1-32e0-46e8-9e2c-e29f4a7a0e75.png)](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html)
 
 Powered by [Pyodide](https://pyodide.org/) and [xterm.js](https://xtermjs.org/) and [CodeMirror5](https://codemirror.net/5/) and [w2ui](https://w2ui.com/)
 

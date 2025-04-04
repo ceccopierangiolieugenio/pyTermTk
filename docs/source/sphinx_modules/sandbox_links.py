@@ -50,7 +50,7 @@ def demo_link_role_int_sb(name, rawtext, text, lineno, inliner, options={}, cont
     Custom role to generate GitHub and TryItOnline links with optional prefix removal.
     """
     base_github_url = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/"
-    base_tio_url = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath="
+    base_tio_url = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath="
 
     # Split text into prefix and actual file path
 
@@ -79,7 +79,7 @@ def demo_link_role_ext_sb(name, rawtext, text, lineno, inliner, options={}, cont
     """
     Custom role to generate GitHub and TryItOnline links with optional prefix removal.
     """
-    base_tio_url = "https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?fileUri="
+    base_tio_url = "https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?fileUri="
 
     # Split text into prefix and actual file path
 

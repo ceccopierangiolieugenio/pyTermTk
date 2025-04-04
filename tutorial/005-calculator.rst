@@ -53,7 +53,7 @@ Initialize the window
 ---------------------
 
 From `calculator.001.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.001.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.001.py>`__):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.001.py>`__):
 
 .. code:: bash
 
@@ -83,7 +83,7 @@ Add all the widgets of calculator to it
 ---------------------------------------
 
 From `calculator.002.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.002.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.002.py>`__):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.002.py>`__):
 
 Based on the positions and sizes defined in the `design layout <#design>`_, I place all the widgets on the TTkGridLayout_ (**winLayout**)
 
@@ -165,7 +165,7 @@ Numeric Button Events
 ---------------------------------------
 
 From `calculator.003.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.003.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.003.py>`__):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.003.py>`__):
 
 .. code:: bash
 
@@ -212,7 +212,7 @@ Operation and results events
 ----------------------------
 
 From `calculator.004.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.004.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.004.py>`__):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.004.py>`__):
 
 .. code:: bash
 
@@ -256,7 +256,7 @@ Beware the Mystery Button
 -----------------------------------------
 
 From `calculator.005.py <https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/tutorial/calculator/calculator.005.py>`_
-(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.005.py>`__):
+(`tryItOnline <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=tutorial/calculator/calculator.005.py>`__):
 
 .. code:: bash
 

@@ -293,7 +293,7 @@ class TTkTextEditView(TTkAbstractScrollView):
         :param multiLine: In a multiline text edit the user can split the text in multiple lines, defaults to **True**
         :type multiLine: bool, optional
 
-        :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`__, defaults to a new Document
+        :param document: If required an external Document can be used in this text editor, this option is useful if multiple editors share the same document as in the `demo <https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html?filePath=demo/showcase/textedit.py>`__, defaults to a new Document
         :type document: :py:class:`TTkTextDocument`, optional
         '''
 

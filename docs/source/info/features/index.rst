@@ -13,7 +13,7 @@ Main features
 
 ..  From the README.md
     - Self Contained (no external lib required)
-    - Cross compatible: [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk/sandbox/sandbox.html))
+    - Cross compatible: [Linux](https://en.wikipedia.org/wiki/Linux)🐧, [MacOS](https://en.wikipedia.org/wiki/MacOS)🍎, [MS Windows](https://en.wikipedia.org/wiki/Microsoft_Windows)🪟, [HTML5](https://en.wikipedia.org/wiki/HTML5)🌍([Try](https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html))
     - Basic widgets for [TUI](https://en.wikipedia.org/wiki/Text-based_user_interface) development (Button, Label, checkbox, ...)
     - Specialized widgets to improve the usability (Windows, Frames, Tables, ...)
     - QT Like Layout system to help arrange the widgets in the terminal
