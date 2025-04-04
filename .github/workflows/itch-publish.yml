@@ -7,40 +7,23 @@ on:
         description: the name of the project
         type: string
         required: true
-      # pkg_folder:
-      #   description: the folder containing the pyproject.toml file
-      #   type: string
-      #   required: true
   workflow_call:
     inputs:
       pkg_name:
         description: the name of the project
         type: string
         required: true
-      # pkg_folder:
-      #   description: the folder containing the pyproject.toml file
-      #   type: string
-      #   required: true
-  # release:
-  #   types: [published]
 
 permissions:
   contents: read
 
 jobs:
-  release-build:
+  release-itchio-build:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
 
-    # defaults:
-    #   run:
-    #     working-directory: ${{ inputs.pkg_folder }}
-
     steps:
       - uses: actions/checkout@v4
-      # - uses: actions/setup-python@v5
-      #   with:
-      #     python-version: "3.x"
       - name: Install Butler
         shell: bash
         run: |

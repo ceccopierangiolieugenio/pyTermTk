@@ -223,6 +223,16 @@ jobs:
       - release-please
     secrets: inherit
 
+  publish-dumbPaintTool-itch:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/dumbPaintTool--release_created'] }}
+    name: Publish dumbPaintTool on itch.io
+    uses: ./.github/workflows/itch-publish.yml
+    with:
+      pkg_name: dumb-paint-tool
+    needs:
+      - release-please
+    secrets: inherit
+
   publish-ttkode:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/ttkode--release_created'] }}
     name: Publish ttkode
