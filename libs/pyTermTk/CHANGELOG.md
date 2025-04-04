@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.18-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.17-a.0...pyTermTk-v0.41.18-a.0) (2025-04-04)
+
+
+### Refactors
+
+* moved the sandbox to pyTermTk-docs ([2cac91d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/2cac91d259c193badf676bdd1373a53f5db3557e))
+
 ## [0.41.17-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.16-a.0...pyTermTk-v0.41.17-a.0) (2025-04-03)
 
 
