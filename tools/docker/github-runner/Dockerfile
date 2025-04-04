@@ -1,6 +1,6 @@
 # Use the latest Ubuntu image as the base
-# FROM ubuntu:latest
-FROM --platform=linux/arm64 ubuntu:latest
+FROM ubuntu:latest
+# FROM --platform=linux/arm64 ubuntu:latest
 # FROM --platform=linux/amd64 ubuntu:latest
 
 # Set environment variables
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     maven ant sudo \
     libicu74 sqlite3 \
     gh git curl wget jq \
-    unzip tar \
+    zip unzip tar \
     && apt-get clean
 
 # Clean up
@@ -26,12 +26,12 @@ USER ubuntu
 WORKDIR /home/ubuntu
 
 # x86-64
-# RUN curl -o actions-runner-linux-x64-2.323.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-x64-2.323.0.tar.gz
-# RUN echo "0dbc9bf5a58620fc52cb6cc0448abcca964a8d74b5f39773b7afcad9ab691e19  actions-runner-linux-x64-2.323.0.tar.gz" | shasum -a 256 -c
+RUN curl -o actions-runner-linux-x64-2.323.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-x64-2.323.0.tar.gz
+RUN echo "0dbc9bf5a58620fc52cb6cc0448abcca964a8d74b5f39773b7afcad9ab691e19  actions-runner-linux-x64-2.323.0.tar.gz" | shasum -a 256 -c
 
 # arm-64
-RUN curl -o actions-runner-linux-arm64-2.323.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-arm64-2.323.0.tar.gz
-RUN echo "9cb778fffd4c6d8bd74bc4110df7cb8c0122eb62fda30b389318b265d3ade538  actions-runner-linux-arm64-2.323.0.tar.gz" | shasum -a 256 -c
+# RUN curl -o actions-runner-linux-arm64-2.323.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.323.0/actions-runner-linux-arm64-2.323.0.tar.gz
+# RUN echo "9cb778fffd4c6d8bd74bc4110df7cb8c0122eb62fda30b389318b265d3ade538  actions-runner-linux-arm64-2.323.0.tar.gz" | shasum -a 256 -c
 
 RUN mv actions-runner-linux-* actions-runner-linux.tgz
 
