@@ -31,8 +31,11 @@ import appdirs
 from TermTk import TTk, TTkTerm, TTkTheme
 from TermTk import TTkLog
 
+from ttkode import TTkodeHelper
+
 from .ttkode import TTKode
 from .cfg import TTKodeCfg
+
 
 def main():
     TTKodeCfg.pathCfg = appdirs.user_config_dir("ttkode")
@@ -57,11 +60,15 @@ def main():
 
     TTkTheme.loadTheme(TTkTheme.NERD)
 
+    TTkodeHelper._loadPlugins()
+
     root = TTk( layout=TTKode(files=args.filename), title="TTkode",
                 sigmask=(
                     # TTkTerm.Sigmask.CTRL_C |
                     TTkTerm.Sigmask.CTRL_Q |
                     TTkTerm.Sigmask.CTRL_S |
                     TTkTerm.Sigmask.CTRL_Z ))
+
+    TTkodeHelper._runPlugins()
 
     root.mainloop()

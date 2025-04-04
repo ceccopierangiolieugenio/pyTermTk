@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.2.15-a.2'
+__all__ = ['TTkodePlugin']
 
-from .helper import TTkodeHelper
-from .plugin import TTkodePlugin
-from .proxy import TTkodeViewerProxy, TTkodeProxy, tloggProxy
+from dataclasses import dataclass
+from typing import Callable
+
+import TermTk as ttk
+
+@dataclass
+class TTkodePlugin:
+    instances = []
+    name   : str
+    init   : Callable[[],None] = None
+    apply  : Callable[[],None] = None
+    run    : Callable[[],None] = None
+    position : int = ttk.TTkK.NONE    # Accepted Values are ; NONE, LEFT, RIGHT
+    widget : ttk.TTkWidget     = None # Required if a position is defined
+    menu   : bool = False
+    visible: bool = False
+
+    def __post_init__(self):
+        TTkodePlugin.instances.append(self)

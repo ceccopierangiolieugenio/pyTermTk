@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.2.15-a.2'
+__all__ = ['TTkodeViewerProxy', 'TTkodeProxy', 'tloggProxy']
 
-from .helper import TTkodeHelper
-from .plugin import TTkodePlugin
-from .proxy import TTkodeViewerProxy, TTkodeProxy, tloggProxy
+import TermTk as ttk
+
+class TTkodeViewerProxy():
+    __slots__ = ('_fileName')
+    def __init__(self, fileName) -> None:
+        self._fileName = fileName
+
+    def fileName(self):
+        return self._fileName
+
+class TTkodeProxy():
+    __slots__ = ('_openFileCb',
+                 # Signals
+                 )
+    def __init__(self) -> None:
+        self._openFileCb = lambda _ : None
+
+    def setOpenFile(self, cb):
+        self._openFileCb = cb
+
+    def openFile(self, fileName):
+        return self._openFileCb(fileName)
+
+tloggProxy = TTkodeProxy()

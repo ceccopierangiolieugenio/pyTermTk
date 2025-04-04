@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
-# Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.2.15-a.2'
+import TermTk as ttk
 
-from .helper import TTkodeHelper
-from .plugin import TTkodePlugin
-from .proxy import TTkodeViewerProxy, TTkodeProxy, tloggProxy
+import ttkode
+
+def init():
+    ttk.TTkLog.debug("Test Plugin1 Init")
+
+def apply():
+    ttk.TTkLog.debug("Test Plugin1 Apply")
+
+def run():
+    ttk.TTkLog.debug("Test Plugin1 Run")
+
+ttkode.TTkodePlugin(name="Test Plugin 1", init=init, apply=apply, run=run)

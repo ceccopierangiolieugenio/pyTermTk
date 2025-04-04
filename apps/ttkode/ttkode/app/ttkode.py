@@ -36,8 +36,10 @@ from TermTk import TTkFileDialogPicker
 from TermTk import TTkFileTree, TTkTextEdit
 
 from TermTk import TTkGridLayout
-from TermTk import TTkSplitter
+from TermTk import TTkSplitter,TTkAppTemplate
 from TermTk import TextDocumentHighlight
+from TermTk import TTkLogViewer
+from TermTk import TTkMenuBarLayout
 from TermTk import TTkAbout
 
 from .about import About
@@ -56,18 +58,15 @@ class TTKode(TTkGridLayout):
 
         super().__init__(**kwargs)
 
-        self.addWidget(splitter := TTkSplitter())
-
         layoutLeft = TTkGridLayout()
-        splitter.addItem(layoutLeft, 20)
 
-        hSplitter = TTkSplitter(parent=splitter,  orientation=TTkK.HORIZONTAL)
+        appTemplate = TTkAppTemplate(border=False)
+        self.addWidget(appTemplate)
 
-        menuFrame = TTkFrame(border=False, maxHeight=1)
+        self._kodeTab = TTkKodeTab(border=False, closable=True)
 
-        self._kodeTab = TTkKodeTab(parent=hSplitter, border=False, closable=True)
-
-        fileMenu = menuFrame.newMenubarTop().addMenu("&File")
+        appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.LEFT)
+        fileMenu = appMenuBar.addMenu("&File")
         fileMenu.addMenu("Open").menuButtonClicked.connect(self._showFileDialog)
         fileMenu.addMenu("Close") # .menuButtonClicked.connect(self._closeFile)
         fileMenu.addMenu("Exit").menuButtonClicked.connect(lambda _:TTkHelper.quit())
@@ -77,15 +76,18 @@ class TTKode(TTkGridLayout):
         def _showAboutTTk(btn):
             TTkHelper.overlay(None, TTkAbout(), 30,10)
 
-        helpMenu = menuFrame.newMenubarTop().addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
+        helpMenu = appMenuBar.addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
         fileTree = TTkFileTree(path='.')
 
-        layoutLeft.addWidget(menuFrame, 0,0)
         layoutLeft.addWidget(fileTree, 1,0)
         layoutLeft.addWidget(quitbtn := TTkButton(border=True, text="Quit", maxHeight=3), 2,0)
+
+        appTemplate.setWidget(self._kodeTab, TTkAppTemplate.MAIN)
+        appTemplate.setItem(layoutLeft, TTkAppTemplate.LEFT, size=30)
+        appTemplate.setWidget(TTkLogViewer(), TTkAppTemplate.BOTTOM, title="Logs", size=3)
 
         quitbtn.clicked.connect(TTkHelper.quit)
 
