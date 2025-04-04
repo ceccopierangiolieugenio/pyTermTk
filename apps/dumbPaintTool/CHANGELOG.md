@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.9-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.8-a.54...theDumbPaintTool-v0.41.9-a.54) (2025-04-04)
+
+
+### Chores
+
+* add the ci itch exporter for theDumbPaintTool ([549789b](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/549789be758458fe9939b72e22ddc8ee46ffa577))
+
 ## [0.41.8-a.54](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/theDumbPaintTool-v0.41.7-a.54...theDumbPaintTool-v0.41.8-a.54) (2025-04-03)
 
 
