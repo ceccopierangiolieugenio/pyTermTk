@@ -122,7 +122,9 @@ jobs:
 
   pyTermTk-deploy-artifacts:
     if: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--release_created'] }}
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+
     name: Deploy pyTermTk to github release
     needs: release-please
     steps:
