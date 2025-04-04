@@ -54,10 +54,7 @@ jobs:
           tools/webExporterInit.sh
       - name: Upload to itch.io
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.ITCHIO_TOKEN }}
+          BUTLER_API_KEY: ${{ secrets.ITCHIO_TOKEN }}
         shell: bash
         run: |
-          mkdir -p ~/.config/itch/
-          echo ${BUTLER_CREDENTIALS} > ~/.config/itch/butler_creds
           ./butler push itchExport.zip ${{ secrets.ITCHIO_USER }}/${{ inputs.pkg_name }}:html5
-          ./butler logout --assume-yes
