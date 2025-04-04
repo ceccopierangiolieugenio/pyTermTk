@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -21,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+__all__ = ['About']
 
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.color import TTkColor
@@ -47,6 +47,8 @@ class About(TTkAbout):
 
     def paintEvent(self, canvas):
         c = [0xFF,0xFF,0xFF]
+        for i,line in enumerate(TTkAbout._peppered_string.split('\n')):
+            canvas.drawTTkString(pos=(1,3+i), text=line)
         for y, line in enumerate(About.ttkode):
             canvas.drawText(pos=(13,3+y),text=line, color=TTkColor.fg(f'#{c[0]:02X}{c[1]:02X}{c[2]:02X}'))
             c[2]-=0x18

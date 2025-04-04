@@ -23,8 +23,3 @@
 # SOFTWARE.
 
 __version__:str = '0.2.15-a.2'
-
-from .app import *
-
-if __name__ == "__main__":
-    main()
