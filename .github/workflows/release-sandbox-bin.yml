@@ -1,4 +1,4 @@
-name: Release Sandbox
+name: Release Sandbox Binaries
 
 on:
   workflow_dispatch:

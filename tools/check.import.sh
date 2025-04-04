@@ -1,7 +1,7 @@
 #!/bin/sh
 
 __check(){
-    grep -r -e "^import" -e "^from" TermTk |
+    grep -r -e "^import" -e "^from" libs/pyTermTk/TermTk |
         grep -v -e "from TermTk" -e "import TermTk" |
         grep -v "from typing import" |
         grep -v "__init__.py:from \.[^ ]* *import" |

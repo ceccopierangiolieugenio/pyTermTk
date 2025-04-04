@@ -1,0 +1,62 @@
+name: Upload itch.io Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      pkg_name:
+        description: the name of the project
+        type: string
+        required: true
+      # pkg_folder:
+      #   description: the folder containing the pyproject.toml file
+      #   type: string
+      #   required: true
+  workflow_call:
+    inputs:
+      pkg_name:
+        description: the name of the project
+        type: string
+        required: true
+      # pkg_folder:
+      #   description: the folder containing the pyproject.toml file
+      #   type: string
+      #   required: true
+  # release:
+  #   types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  release-build:
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+
+    # defaults:
+    #   run:
+    #     working-directory: ${{ inputs.pkg_folder }}
+
+    steps:
+      - uses: actions/checkout@v4
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: "3.x"
+      - name: Install Butler
+        shell: bash
+        run: |
+          # Download the latest stable version
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+      - name: create web package
+        shell: bash
+        run: |
+          tools/webExporterInit.sh
+      - name: Upload to itch.io
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCHIO_TOKEN }}
+        shell: bash
+        run: |
+          echo ${BUTLER_CREDENTIALS} > ~/.config/itch/butler_creds
+          ./butler push dist/* ${{ secrets.ITCHIO_USER }}/${{ inputs.pkg_name }}:html5
+          ./butler logout --assume-yes

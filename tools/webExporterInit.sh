@@ -43,8 +43,6 @@ echo Name: ${_NAME}
 mkdir -p ${_TMP_PATH}
 rm -rf ${_TMP_PATH}/* itchExport.zip
 
-${_TOOLS_BASE_PATH}/prepareBuild.sh release
-
 mkdir -p ${_TMP_PATH}/bin \
          ${_TMP_PATH}/www/pyodide \
          ${_TMP_PATH}/www/xterm/ \
@@ -62,7 +60,7 @@ function _download {
     _F=$2
     if [ -f tests/sandbox/${_F} ] ;
     then cp tests/sandbox/${_F} ${_P} ;
-    else wget -P ${_P} https://ceccopierangiolieugenio.github.io/binaryRepo/pyTermTk/${_F};
+    else wget -P ${_P} https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/${_F};
     fi ;
 };
 
@@ -100,13 +98,15 @@ _download ${_TMP_PATH}/www/fonts/opentype/   www/fonts/opentype/3270-Regular.otf
 
 _download ${_TMP_PATH}/www/   www/favicon.ico
 
-
-tar cvzf ${_TMP_PATH}/bin/TermTk.tgz --exclude='__pycache__' --transform "s,^.*TermTk/,TermTk/," ${_TMP_PATH}/TermTk
-tar cvzf ${_TMP_PATH}/bin/DPT.tgz    --exclude='__pycache__' --transform "s,^.*/dumbPaintTool,dumbPaintTool," \
-    ${_APPS_PATH}/dumbPaintTool.py \
-    ${_APPS_PATH}/dumbPaintTool/*.py \
-    ${_APPS_PATH}/dumbPaintTool/app \
-    ${_APPS_PATH}/dumbPaintTool/tui
+cd ${_BASE_PATH}/libs/pyTermTk/
+tar -cvzf ${_TMP_PATH}/bin/TermTk.tgz --exclude='__pycache__' TermTk
+cd ${_APPS_PATH}/dumbPaintTool
+tar -cvzf ${_TMP_PATH}/bin/DPT.tgz    --exclude='__pycache__' \
+    dumbPaintTool/*.py \
+    dumbPaintTool/app \
+    dumbPaintTool/tui \
+    main.py
+cd ${_BASE_PATH}
 
 cp  ${_APPS_PATH}/dumbPaintTool/web.ttk.package.json ${_TMP_PATH}
 
