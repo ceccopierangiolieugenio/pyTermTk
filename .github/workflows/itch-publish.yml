@@ -58,5 +58,5 @@ jobs:
         shell: bash
         run: |
           echo ${BUTLER_CREDENTIALS} > ~/.config/itch/butler_creds
-          ./butler push dist/* ${{ secrets.ITCHIO_USER }}/${{ inputs.pkg_name }}:html5
+          ./butler push itchExport.zip ${{ secrets.ITCHIO_USER }}/${{ inputs.pkg_name }}:html5
           ./butler logout --assume-yes
