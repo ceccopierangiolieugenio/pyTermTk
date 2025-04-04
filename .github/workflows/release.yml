@@ -157,7 +157,7 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
-          TAG_NAME: ${{ fromJson(needs.release-please.outputs.rp_out)['TermTk--tag_name'] }}
+          TAG_NAME: ${{ fromJson(needs.release-please.outputs.rp_out)['libs/pyTermTk--tag_name'] }}
         run: |
           _TMP=${{ steps.create-artifacts.outputs.artifacts_dir }}
           gh release upload ${TAG_NAME} ${_TMP}/TermTk.tgz
