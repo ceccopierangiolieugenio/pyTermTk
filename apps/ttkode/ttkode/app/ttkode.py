@@ -38,6 +38,7 @@ from TermTk import TTkFileTree, TTkTextEdit
 from TermTk import TTkGridLayout
 from TermTk import TTkSplitter
 from TermTk import TextDocumentHighlight
+from TermTk import TTkAbout
 
 from .about import About
 
