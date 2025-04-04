@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Sandbox to docs</title>
+    <script>
+        // Function to redirect with all GET parameters
+        function redirect() {
+            const targetUrl = 'https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html';
+            const queryString = window.location.search;
+            window.location.href = targetUrl + queryString;
+        }
+
+        // Execute the redirect function on page load
+        window.onload = redirect;
+    </script>
+</head>
+<body>
+    <p>Redirecting to <a href="https://ceccopierangiolieugenio.github.io/pyTermTk-Docs/sandbox/sandbox.html">pyTermTk-Docs</a>...</p>
+</body>
+</html>
