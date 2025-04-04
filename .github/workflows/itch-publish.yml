@@ -57,6 +57,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCHIO_TOKEN }}
         shell: bash
         run: |
+          mkdir -p ~/.config/itch/
           echo ${BUTLER_CREDENTIALS} > ~/.config/itch/butler_creds
           ./butler push itchExport.zip ${{ secrets.ITCHIO_USER }}/${{ inputs.pkg_name }}:html5
           ./butler logout --assume-yes
