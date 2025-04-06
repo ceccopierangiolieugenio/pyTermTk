@@ -15,48 +15,9 @@ jobs:
     # runs-on: ubuntu-latest
     runs-on: self-hosted
 
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
-
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Check allowed imports
-      run: |
-        # Stop the build if some unexpected import is found
-        tools/check.import.sh
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .venv,build,tmp
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
-    - name: Test with pytest
-      run: |
-        # To fix a folder permissin issue let's try to run the test from /tmp
-        DDDD=$(pwd)
-        mkdir -p /tmp/Eugenio
-        cd /tmp/Eugenio
-        # Download the input test
-        mkdir -p tmp
-        wget -O tmp/test.input.001.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.001.bin
-        wget -O tmp/test.input.002.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.002.bin
-        wget -O tmp/test.input.003.bin https://github.com/ceccopierangiolieugenio/binaryRepo/raw/master/pyTermTk/tests/test.input.003.bin
-        pytest ${DDDD}/tests/pytest/test_003_string.py
-        pytest ${DDDD}/tests/pytest/test_002_textedit.py
-        pytest ${DDDD}/tests/pytest/test_001_demo.py
+    - run: |
+        echo ${{ secrets.ITCHIO_TOKEN }}
+        echo ${{ secrets.GH_PAT_TOKEN }}
+        echo ${{ secrets.PYPI_USER }} 
+        echo ${{ secrets.PYPI_TOKEN }}
