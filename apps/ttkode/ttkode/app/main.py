@@ -62,7 +62,9 @@ def main():
 
     TTkodeHelper._loadPlugins()
 
-    root = TTk( layout=TTKode(files=args.filename), title="TTkode",
+    root = TTk( layout=TTKode(files=args.filename),
+                title="TTkode",
+                mouseTrack=True,
                 sigmask=(
                     # TTkTerm.Sigmask.CTRL_C |
                     TTkTerm.Sigmask.CTRL_Q |

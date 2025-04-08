@@ -41,8 +41,10 @@ from TermTk import TextDocumentHighlight
 from TermTk import TTkLogViewer
 from TermTk import TTkMenuBarLayout
 from TermTk import TTkAbout
+from TermTk import TTkTestWidget, TTkTestWidgetSizes
 
 from .about import About
+from .activitybar import TTKodeActivityBar
 
 class _TextDocument(TextDocumentHighlight):
     __slots__ = ('_filePath')
@@ -52,20 +54,18 @@ class _TextDocument(TextDocumentHighlight):
         self.guessLexerFromFilename(filePath)
 
 class TTKode(TTkGridLayout):
-    __slots__ = ('_kodeTab', '_documents')
+    __slots__ = ('_kodeTab', '_documents', '_activityBar')
     def __init__(self, *, files, **kwargs):
         self._documents = {}
 
         super().__init__(**kwargs)
-
-        layoutLeft = TTkGridLayout()
 
         appTemplate = TTkAppTemplate(border=False)
         self.addWidget(appTemplate)
 
         self._kodeTab = TTkKodeTab(border=False, closable=True)
 
-        appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.LEFT)
+        appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.MAIN)
         fileMenu = appMenuBar.addMenu("&File")
         fileMenu.addMenu("Open").menuButtonClicked.connect(self._showFileDialog)
         fileMenu.addMenu("Close") # .menuButtonClicked.connect(self._closeFile)
@@ -76,20 +76,20 @@ class TTKode(TTkGridLayout):
         def _showAboutTTk(btn):
             TTkHelper.overlay(None, TTkAbout(), 30,10)
 
+        appMenuBar.addMenu("&Quit", alignment=TTkK.RIGHT_ALIGN).menuButtonClicked.connect(TTkHelper.quit)
         helpMenu = appMenuBar.addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
         fileTree = TTkFileTree(path='.')
-
-        layoutLeft.addWidget(fileTree, 1,0)
-        layoutLeft.addWidget(quitbtn := TTkButton(border=True, text="Quit", maxHeight=3), 2,0)
+        self._activityBar = TTKodeActivityBar()
+        self._activityBar.addActivity(name="Explorer", icon=TTkString("╔██\n╚═╝"), widget=fileTree, select=True)
+        self._activityBar.addActivity(name="Search", icon=TTkString("╔═╗\n🔎╝"), widget=TTkTestWidget())
+        self._activityBar.addActivity(name="Debug", icon=TTkString(" 🭑🬽\n🪲🭘"), widget=TTkTestWidgetSizes())
 
         appTemplate.setWidget(self._kodeTab, TTkAppTemplate.MAIN)
-        appTemplate.setItem(layoutLeft, TTkAppTemplate.LEFT, size=30)
+        appTemplate.setItem(self._activityBar, TTkAppTemplate.LEFT, size=30)
         appTemplate.setWidget(TTkLogViewer(), TTkAppTemplate.BOTTOM, title="Logs", size=3)
-
-        quitbtn.clicked.connect(TTkHelper.quit)
 
         for file in files:
             self._openFile(file)
