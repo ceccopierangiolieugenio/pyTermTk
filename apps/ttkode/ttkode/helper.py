@@ -26,7 +26,8 @@ import os
 import importlib, pkgutil
 
 import TermTk as ttk
-from .plugin import TTkodePlugin
+from .plugin import TTkodePlugin, TTkodePluginActivity
+from .proxy import ttkodeProxy
 
 class TTkodeHelper():
     @staticmethod
@@ -36,7 +37,7 @@ class TTkodeHelper():
         if not os.path.exists(pluginFolder):
             ttk.TTkLog.error("No 'plugins' folder found in the 'tlogg' main directory")
         else:
-            for fn in os.listdir(pluginFolder):
+            for fn in sorted(os.listdir(pluginFolder)):
                 filePath = os.path.join(pluginFolder,fn)
                 if not os.path.isfile(filePath): continue
                 absolute_name = importlib.util.resolve_name(filePath, None)
@@ -48,7 +49,7 @@ class TTkodeHelper():
 
         # Check installed plugins
         for finder, name, ispkg in pkgutil.iter_modules():
-            if name.startswith("tlogg_"):
+            if name.startswith("ttkode_"):
                 loader = importlib.find_loader(name)
                 spec = importlib.util.find_spec(name)
                 mod = importlib.util.module_from_spec(spec)
@@ -63,21 +64,15 @@ class TTkodeHelper():
     @staticmethod
     def _runPlugins():
         for mod in TTkodePlugin.instances:
+            if isinstance(mod, TTkodePluginActivity):
+                ttkodeProxy.ttkode()._activityBar.addActivity(
+                    name=mod.activityName,
+                    icon=mod.icon,
+                    widget=mod.widget)
             if mod.apply is not None:
                 mod.apply()
 
     @staticmethod
     def _getPlugins():
         return TTkodePlugin.instances
-
-    @staticmethod
-    def _getPluginPlacements():
-        ret = ttk.TTkK.NONE
-        for mod in TTkodePlugin.instances:
-            ret |= mod.position
-        return ret
-
-    @staticmethod
-    def _getPlacedPlugins(placement):
-        return [mod for mod in TTkodePlugin.instances if mod.position & placement]
 

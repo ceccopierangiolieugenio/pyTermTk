@@ -20,11 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkodeViewerProxy', 'TTkodeProxy', 'tloggProxy']
+__all__ = ['TTKodeViewerProxy', 'ttkodeProxy']
 
 import TermTk as ttk
 
-class TTkodeViewerProxy():
+from ttkode.app.ttkode import TTKode
+
+class TTKodeViewerProxy():
     __slots__ = ('_fileName')
     def __init__(self, fileName) -> None:
         self._fileName = fileName
@@ -32,12 +34,21 @@ class TTkodeViewerProxy():
     def fileName(self):
         return self._fileName
 
-class TTkodeProxy():
+class TTKodeProxy():
     __slots__ = ('_openFileCb',
+                 '_ttkode',
                  # Signals
                  )
+    _ttkode:TTKode
     def __init__(self) -> None:
         self._openFileCb = lambda _ : None
+        self._ttkode = None
+
+    def setTTKode(self, ttkode:TTKode) -> None:
+        self._ttkode = ttkode
+
+    def ttkode(self) -> TTKode:
+        return self._ttkode
 
     def setOpenFile(self, cb):
         self._openFileCb = cb
@@ -45,4 +56,4 @@ class TTkodeProxy():
     def openFile(self, fileName):
         return self._openFileCb(fileName)
 
-tloggProxy = TTkodeProxy()
+ttkodeProxy:TTKodeProxy = TTKodeProxy()

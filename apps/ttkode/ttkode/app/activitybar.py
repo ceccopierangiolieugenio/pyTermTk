@@ -121,7 +121,12 @@ class TTKodeActivityBar(ttk.TTkVBoxLayout):
             else:
                 act.widget().setVisible(False)
 
-    def addActivity(self, name: ttk.TTkString, icon: ttk.TTkString, widget: ttk.TTkWidget, select:bool=False) -> None:
+    def addActivity(
+            self,
+            name: ttk.TTkString,
+            icon: ttk.TTkString,
+            widget: ttk.TTkWidget,
+            select:bool=False) -> None:
         activityWidget = _ActivityWidget(name, icon, widget)
         self.addWidget(widget)
         widget.setVisible(False)

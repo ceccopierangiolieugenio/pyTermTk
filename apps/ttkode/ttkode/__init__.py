@@ -25,5 +25,5 @@
 __version__:str = '0.2.15-a.2'
 
 from .helper import TTkodeHelper
-from .plugin import TTkodePlugin
-from .proxy import TTkodeViewerProxy, TTkodeProxy, tloggProxy
+from .plugin import TTkodePlugin, TTkodePluginActivity
+from .proxy import TTKodeViewerProxy, ttkodeProxy

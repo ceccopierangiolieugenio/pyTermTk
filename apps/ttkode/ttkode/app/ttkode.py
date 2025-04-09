@@ -84,8 +84,6 @@ class TTKode(TTkGridLayout):
         fileTree = TTkFileTree(path='.')
         self._activityBar = TTKodeActivityBar()
         self._activityBar.addActivity(name="Explorer", icon=TTkString("╔██\n╚═╝"), widget=fileTree, select=True)
-        self._activityBar.addActivity(name="Search", icon=TTkString("╔═╗\n🔎╝"), widget=TTkTestWidget())
-        self._activityBar.addActivity(name="Debug", icon=TTkString(" 🭑🬽\n🪲🭘"), widget=TTkTestWidgetSizes())
 
         appTemplate.setWidget(self._kodeTab, TTkAppTemplate.MAIN)
         appTemplate.setItem(self._activityBar, TTkAppTemplate.LEFT, size=30)

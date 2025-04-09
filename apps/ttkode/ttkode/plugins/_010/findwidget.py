@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
+# Copyright (c) 2025 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkodePlugin', 'TTkodePluginActivity']
-
-from dataclasses import dataclass
-from typing import Callable, Self, List, Optional, Union
-from enum import Enum
+__all__ = ['FindWidget']
 
 import TermTk as ttk
 
-class TTkodePlugin():
-    instances: List['Self'] = []
-    def __init__(
-            self,
-            name   : str,
-            init   : Optional[Callable[[],None]] = None,
-            apply  : Optional[Callable[[],None]] = None,
-            run    : Optional[Callable[[],None]] = None ):
-        self.name = name
-        self.init = init
-        self.apply = apply
-        self.run = run
-        self.instances.append(self)
+import ttkode
 
-class TTkodePluginActivity(TTkodePlugin):
-    def __init__(
-            self,
-            activityName: str,
-            widget: ttk.TTkWidget,
-            icon:ttk.TTkString,
-            **kwargs):
-        self.activityName = activityName
-        self.widget = widget
-        self.icon = icon
+class FindWidget(ttk.TTkContainer):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.setLayout(layout:=ttk.TTkGridLayout())
+        searchLayout = ttk.TTkGridLayout()
+        searchLayout.addWidget(expandReplace:=ttk.TTkButton(text=">", maxWidth=3, checkable=True), 0, 0)
+        searchLayout.addWidget(ttk.TTkLineEdit(), 0, 1)
+        searchLayout.addWidget(replace:=ttk.TTkLineEdit(), 1, 0, 1, 2)
+        layout.addItem(searchLayout, 0, 0)
+        layout.addWidget(ttk.TTkButton(text="Find", border=False), 1,0)
+        layout.addWidget(ttk.TTkButton(text="Find", border=False), 2,0)
+        layout.addWidget(ttk.TTkButton(text="Find", border=True), 3,0)
+        expandReplace.toggled.connect(replace.setVisible)
+        replace.setVisible(False)
