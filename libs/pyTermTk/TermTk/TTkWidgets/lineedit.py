@@ -22,8 +22,6 @@
 
 __all__ = ['TTkLineEdit']
 
-import re
-
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.log import TTkLog
 from TermTk.TTkCore.constant import TTkK
@@ -58,21 +56,26 @@ class TTkLineEdit(TTkWidget):
         '''Display characters as they are entered while editing otherwise display asterisks.'''
 
     classStyle = {
-                'default':     {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
-                                'selectedColor': TTkColor.fg("#ffffff")+TTkColor.bg("#008844")},
-                'disabled':    {'color': TTkColor.fg('#888888'),
-                                'selectedColor': TTkColor.fg("#888888")+TTkColor.bg("#444444")},
-                'focus':       {'color':         TTkColor.fg("#dddddd")+TTkColor.bg("#000044")},
+                'default':     {'color':         TTkColor.fgbg("#dddddd","#222222"),
+                                'bgcolor':       TTkColor.fgbg("#666666","#222222")+TTkColor.UNDERLINE,
+                                'selectedColor': TTkColor.fgbg("#ffffff","#008844")},
+                'disabled':    {'color':         TTkColor.fg(  "#888888"),
+                                'bgcolor':       TTkColor.fg(  "#444444")+TTkColor.UNDERLINE,
+                                'selectedColor': TTkColor.fgbg("#888888","#444444")},
+                'focus':       {'color':         TTkColor.fgbg("#dddddd","#000044"),
+                                'bgcolor':       TTkColor.fgbg("#666666","#000044")+TTkColor.UNDERLINE}
             }
 
     __slots__ = (
         '_text', '_cursorPos', '_offset', '_replace', '_inputType', '_echoMode',
         '_selectionFrom', '_selectionTo',
         '_clipboard',
+        '_hint',
         # Signals
         'returnPressed', 'textChanged', 'textEdited'     )
     def __init__(self, *,
                  text:TTkString='',
+                 hint:TTkString='',
                  inputType:int=TTkK.Input_Text,
                  echoMode:EchoMode=EchoMode.Normal,
                  **kwargs) -> None:
@@ -86,6 +89,7 @@ class TTkLineEdit(TTkWidget):
         self._selectionTo   = 0
         self._replace=False
         self._text = TTkString(text)
+        self._hint = TTkString(hint)
         self._inputType = inputType
         self._echoMode = echoMode
         self._clipboard = TTkClipboard()
@@ -361,7 +365,8 @@ class TTkLineEdit(TTkWidget):
     def paintEvent(self, canvas):
         style = self.currentStyle()
 
-        color         = style['color']
+        color       = style['color']
+        bgcolor     = style['bgcolor']
         selectColor = style['selectedColor']
 
         w = self.width()
@@ -376,4 +381,10 @@ class TTkLineEdit(TTkWidget):
         if self._selectionFrom < self._selectionTo:
             text = text.setColor(color=selectColor, posFrom=self._selectionFrom, posTo=self._selectionTo)
         text = text.substring(self._offset)
-        canvas.drawText(pos=(0,0), text=text, color=color, width=w)
+        canvas.fill(color=bgcolor)
+        if self._text:
+            canvas.drawTTkString(pos=(0,0), text=text, color=color)
+        else:
+            canvas.drawTTkString(pos=(0,0), text=self._hint, color=bgcolor)
+
+

@@ -163,6 +163,8 @@ class TTkString():
     def __getitem__(self, index:int):
         raise NotImplementedError()
 
+    def __bool__(self) -> bool:
+        return bool(self._text)
     def __int__(self) -> int:
         return int(self._text)
     def __float__(self) -> float:
