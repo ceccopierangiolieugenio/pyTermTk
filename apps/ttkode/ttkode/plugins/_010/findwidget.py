@@ -24,10 +24,43 @@ __all__ = ['FindWidget']
 
 import os
 import re
+import fnmatch
+
 from threading import Thread
+
 import TermTk as ttk
 
 import ttkode
+
+
+import os
+import fnmatch
+
+from ttkode import ttkodeProxy
+
+def _load_gitignore_patterns(gitignore_path):
+    if os.path.exists(gitignore_path):
+        with open(gitignore_path, 'r') as f:
+            patterns = f.read().splitlines()
+        return patterns
+    return []
+
+def _should_ignore(path, patterns):
+    for pattern in patterns:
+        if fnmatch.fnmatch(path, pattern):
+            return True
+    return False
+
+def _walk_with_gitignore(root):
+    for dirpath, dirnames, filenames in os.walk(root):
+        gitignore_path = os.path.join(dirpath, '.gitignore')
+        patterns = _load_gitignore_patterns(gitignore_path)
+
+        dirnames[:] = [d for d in dirnames if not _should_ignore(os.path.join(dirpath, d), patterns)]
+        filenames[:] = [f for f in filenames if not _should_ignore(os.path.join(dirpath, f), patterns)]
+
+        yield dirpath, dirnames, filenames
+
 
 class _ExpandButton(ttk.TTkButton):
     def __init__(self, **kwargs):
@@ -45,6 +78,17 @@ class _ExpandButton(ttk.TTkButton):
             canvas.drawChar(pos=(1,0),char='▼')
         else:
             canvas.drawChar(pos=(1,0),char='▶')
+
+class _MatchTreeWidgetItem(ttk.TTkTreeWidgetItem):
+    __slots__ = ('_match','_line','_file')
+    _match:str
+    _line:int
+    _file:str
+    def __init__(self, *args, match:str, line:int, file:str, **kwargs):
+        self._match = match
+        self._line = line
+        self._file = file
+        super().__init__(*args, **kwargs)
 
 class FindWidget(ttk.TTkContainer):
     __slots__ = (
@@ -92,6 +136,16 @@ class FindWidget(ttk.TTkContainer):
         self._files_exc_le = ft_excl
 
         btn_search.clicked.connect(self._search)
+        search.returnPressed.connect(self._search)
+        res_tree.itemActivated.connect(self._activated)
+
+    @ttk.pyTTkSlot(ttk.TTkTreeWidgetItem, int)
+    def _activated(self, item:ttk.TTkTreeWidgetItem, _):
+        if isinstance(item, _MatchTreeWidgetItem):
+            file = item._file
+            line = item._line
+            ttkodeProxy.ttkode()._openFile(file, line)
+
 
     @ttk.pyTTkSlot()
     def _search(self):
@@ -101,6 +155,7 @@ class FindWidget(ttk.TTkContainer):
             return
         def _search_threading():
             self._results_tree.clear()
+            group = []
             for (file,root,matches) in self._search_files('.',str(search_pattern),self._runId):
                 ttk.TTkLog.debug((file,matches))
                 item = ttk.TTkTreeWidgetItem([
@@ -112,18 +167,27 @@ class FindWidget(ttk.TTkContainer):
                     ],expanded=True)
                 for num,line in matches:
                     item.addChild(
-                        ttk.TTkTreeWidgetItem([
-                            ttk.TTkString(str(num)+" ",ttk.TTkColor.YELLOW) +
+                        _MatchTreeWidgetItem([
+                            ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) +
                             ttk.TTkString(line.replace('\n','')).completeColor(
                                 match=search_pattern,
                                 color=ttk.TTkColor.GREEN)
-                        ]))
-                self._results_tree.addTopLevelItem(item)
+                            ],
+                            match=line,
+                            line=num,
+                            file=os.path.join(root,file)))
+                group.append(item)
+                if len(group) > 20:
+                    self._results_tree.addTopLevelItems(group)
+                    group = []
+                # self._results_tree.addTopLevelItem(item)
+            if group:
+                self._results_tree.addTopLevelItems(group)
         Thread(target=_search_threading).start()
 
     def _search_files(self, root_folder, match, runId):
         matches = []
-        for root, dirs, files in os.walk(root_folder):
+        for root, dirs, files in _walk_with_gitignore(root_folder):
             for file in files:
                 if runId != self._runId:
                     return
@@ -131,7 +195,7 @@ class FindWidget(ttk.TTkContainer):
                     file_path = os.path.join(root, file)
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         lines = f.readlines()
-                        line_matches = [(i+1, line) for i, line in enumerate(lines) if match in line]
+                        line_matches = [(i, line) for i, line in enumerate(lines) if match in line]
                         if line_matches:
                             yield (file, root, line_matches)
 
