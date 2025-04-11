@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.42.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.18-a.0...pyTermTk-v0.42.0-a.0) (2025-04-11)
+
+
+### Features
+
+* added hinting and bgcolor to TTkLineEdit ([5afecec](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5afecec62d6061e5ba14b3d93a008cf5b9733579))
+
+
+### Refactors
+
+* adapted ttkode to the latest pyTermTk ([542ecd7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/542ecd7f7798b10bca29a7e856e85aa91bb3bc74))
+
 ## [0.41.18-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.17-a.0...pyTermTk-v0.41.18-a.0) (2025-04-04)
 
 
