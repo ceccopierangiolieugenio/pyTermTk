@@ -33,7 +33,7 @@ from TermTk import pyTTkSlot, pyTTkSignal
 from TermTk import TTkFrame, TTkButton
 from TermTk import TTkKodeTab
 from TermTk import TTkFileDialogPicker
-from TermTk import TTkFileTree, TTkTextEdit
+from TermTk import TTkFileTree, TTkTextEdit, TTkTextCursor
 
 from TermTk import TTkGridLayout
 from TermTk import TTkSplitter,TTkAppTemplate
@@ -100,7 +100,7 @@ class TTKode(TTkGridLayout):
         filePicker.pathPicked.connect(self._openFile)
         TTkHelper.overlay(None, filePicker, 20, 5, True)
 
-    def _openFile(self, filePath):
+    def _openFile(self, filePath, lineNumber=0):
         filePath = os.path.realpath(filePath)
         if filePath in self._documents:
             doc = self._documents[filePath]['doc']
@@ -114,6 +114,20 @@ class TTKode(TTkGridLayout):
 
         self._kodeTab.addTab(tedit, label)
         self._kodeTab.setCurrentWidget(tedit)
+
+        if lineNumber:
+            tedit.textCursor().movePosition(operation=TTkTextCursor.MoveOperation.End)
+            tedit.ensureCursorVisible()
+            tedit.textCursor().setPosition(line=lineNumber,pos=0)
+            tedit.ensureCursorVisible()
+            newCursor = tedit.textCursor().copy()
+            newCursor.clearSelection()
+            selection = TTkTextEdit.ExtraSelection(
+                                            cursor=newCursor,
+                                            color=TTkColor.bg("#444400"),
+                                            format=TTkK.SelectionFormat.FullWidthSelection)
+            tedit.setExtraSelections([selection])
+        tedit.setFocus()
 
         # def _closeFile():
         #     if (index := KodeTab.lastUsed.currentIndex()) >= 0:
