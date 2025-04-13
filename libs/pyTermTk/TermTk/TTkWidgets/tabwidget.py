@@ -65,13 +65,24 @@ _tabStyleFocussed = {
         }
 
 class _TTkTabWidgetDragData():
-
     __slots__ = ('_tabButton', '_tabWidget')
     def __init__(self, b, tw):
         self._tabButton = b
         self._tabWidget = tw
     def tabButton(self): return self._tabButton
     def tabWidget(self): return self._tabWidget
+
+class _TTkNewTabWidgetDragData():
+    __slots__ = ('_label', '_widget', '_closable', '_data')
+    def __init__(self, label, widget:TTkWidget, data=None, closable:bool=False):
+        self._data = data
+        self._label = label
+        self._widget = widget
+        self._closable = closable
+    def data(self): return self._data
+    def label(self): return self._label
+    def widget(self): return self._widget
+    def closable(self): return self._closable
 
 class _TTkTabBarDragData():
     __slots__ = ('_tabButton','_tabBar')
@@ -666,37 +677,53 @@ class TTkTabWidget(TTkFrame):
     def dropEvent(self, evt:TTkDnDEvent) -> bool:
         data = evt.data()
         x, y = evt.x, evt.y
-        if not issubclass(type  (data),_TTkTabWidgetDragData):
-            return False
-        tb = data.tabButton()
-        tw = data.tabWidget()
-        index  = tw._tabBar._tabButtons.index(tb)
-        widget = tw.widget(index)
-        data   = tw.tabData(index)
-        if TTkHelper.isParent(self, tw):
-            return False
-        if y < 3:
-            tbx = self._tabBar.x()
-            newIndex = 0
-            for b in self._tabBar._tabButtons:
-                if tbx+b.x()+b.width()/2 < x:
-                    newIndex += 1
-            if tw == self:
-                if index <= newIndex:
-                    newIndex -= 1
-            tw.removeTab(index)
-            self.insertTab(newIndex, widget, tb.text(), data, tb._closable)
-            self.setCurrentIndex(newIndex)
-            #self._tabChanged(newIndex)
-        elif tw != self:
-            tw.removeTab(index)
-            newIndex = len(self._tabWidgets)
-            self.addTab(widget, tb.text(), data)
-            self.setCurrentIndex(newIndex)
-            self._tabChanged(newIndex)
-
-        TTkLog.debug(f"Drop -> pos={evt.pos()}")
-        return True
+        if issubclass(type(data),_TTkTabWidgetDragData):
+            tb = data.tabButton()
+            tw = data.tabWidget()
+            index  = tw._tabBar._tabButtons.index(tb)
+            widget = tw.widget(index)
+            data   = tw.tabData(index)
+            if TTkHelper.isParent(self, tw):
+                return False
+            if y < 3:
+                tbx = self._tabBar.x()
+                newIndex = 0
+                for b in self._tabBar._tabButtons:
+                    if tbx+b.x()+b.width()/2 < x:
+                        newIndex += 1
+                if tw == self:
+                    if index <= newIndex:
+                        newIndex -= 1
+                tw.removeTab(index)
+                self.insertTab(newIndex, widget, tb.text(), data, tb._closable)
+                self.setCurrentIndex(newIndex)
+                #self._tabChanged(newIndex)
+            elif tw != self:
+                tw.removeTab(index)
+                newIndex = len(self._tabWidgets)
+                self.addTab(widget, tb.text(), data)
+                self.setCurrentIndex(newIndex)
+                self._tabChanged(newIndex)
+            TTkLog.debug(f"Drop -> pos={evt.pos()}")
+            return True
+        elif issubclass(type(data),_TTkNewTabWidgetDragData):
+            w = data.widget()
+            d = data.data()
+            l = data.label()
+            c = data.closable()
+            if y < 3:
+                tbx = self._tabBar.x()
+                newIndex = 0
+                for b in self._tabBar._tabButtons:
+                    if tbx+b.x()+b.width()/2 < x:
+                        newIndex += 1
+                self.insertTab(newIndex, w, l, d, c)
+                self.setCurrentIndex(newIndex)
+            else:
+                self.addTab(w, l, d, c)
+            TTkLog.debug(f"Drop -> pos={evt.pos()}")
+            return True
+        return False
 
     def addMenu(self, text, position=TTkK.LEFT, data=None) -> TTkMenuBarButton:
         '''addMenu'''

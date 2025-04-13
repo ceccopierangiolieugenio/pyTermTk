@@ -22,6 +22,8 @@
 
 __all__ = ['TTkWidget']
 
+from typing import Callable, Any, List
+
 try:
     from typing import Self
 except:
@@ -115,6 +117,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         '_enabled',
         '_style', '_currentStyle',
         '_toolTip',
+        '_dropEventProxy',
         '_widgetCursor', '_widgetCursorEnabled', '_widgetCursorType',
         #Signals
         'focusChanged', 'sizeChanged', 'currentStyleChanged', 'closed')
@@ -194,6 +197,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         self.closed = pyTTkSignal(TTkWidget)
         # self.sizeChanged.connect(self.resizeEvent)
 
+        self._dropEventProxy = lambda x:x
         self._widgetCursor = (0,0)
         self._widgetCursorEnabled = False
         self._widgetCursorType = TTkK.Cursor_Blinking_Bar
@@ -266,6 +270,13 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
         :type name: str
         '''
         self._name = name
+
+    def setDropEventProxy(self, proxy:Callable) -> None:
+        '''
+        .. warning::
+            This is an alpha Method to prototype the Drag and Drop prosy feature and may change in the future
+        '''
+        self._dropEventProxy = proxy
 
     def widgetItem(self) -> TTkWidgetItem:
         return self._widgetItem
@@ -444,7 +455,7 @@ class TTkWidget(TMouseEvents,TKeyEvents, TDragEvents):
                         TTkHelper.dndEnter(self)
                         return True
             if evt.evt == TTkK.Release:
-                if self.dropEvent(TTkHelper.dndGetDrag().getDropEvent(evt)):
+                if self.dropEvent(self._dropEventProxy(TTkHelper.dndGetDrag().getDropEvent(evt))):
                     return True
             return ret
 

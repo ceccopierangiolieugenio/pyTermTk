@@ -49,6 +49,23 @@ class DropClass(ttk.TTkFrame):
         ttk.TTkLog.debug(f"Drag Leave: {evt}")
         return super().dragLeaveEvent(evt)
 
+
+def dropEventProxy(evt:ttk.TTkDnDEvent):
+    data = evt.data()
+    ttk.TTkLog.debug(f"Proxy: {evt=} {data=}")
+    if issubclass(type(data), ttk.TTkTreeWidget._DropTreeData) and data.items:
+        item:ttk.TTkTreeWidgetItem = data.items[0]
+        newData = ttk.TTkWidgets.tabwidget._TTkNewTabWidgetDragData(
+            widget=ttk.TTkTestWidgetSizes(),
+            label=item.data(0),
+            data=None,
+            closable=True
+        )
+        newEvt = evt.clone()
+        newEvt.setData(newData)
+        return newEvt
+    return evt
+
 ttk.TTkLog.use_default_file_logging()
 
 parser = argparse.ArgumentParser()
@@ -60,6 +77,16 @@ root = ttk.TTk()
 DropClass(parent=root, pos=(0,0), size=(30,5))
 logsWin = ttk.TTkWindow(parent=root, title='Logs', pos=(31,0), size=(100,30), layout=ttk.TTkGridLayout())
 ttk.TTkLogViewer(parent=logsWin)
+
+kodeWin = ttk.TTkWindow(parent=root,pos = (30,5), size=(80,40), title="KodeWin", layout=ttk.TTkGridLayout(), border=True)
+kt = ttk.TTkKodeTab(parent=kodeWin)
+kt.setDropEventProxy(dropEventProxy)
+kt.addTab(ttk.TTkTestWidgetSizes(),"t 1")
+kt.addTab(ttk.TTkTestWidgetSizes(),"t 2")
+kt.addTab(ttk.TTkTestWidgetSizes(),"t 3")
+kt.addTab(ttk.TTkTestWidgetSizes(),"t 4")
+kt.addTab(ttk.TTkTestWidgetSizes(),"t 5")
+
 
 fileTreeWin = ttk.TTkWindow(parent=root,pos = (3,12), size=(40,40), title="Test Tree 1", layout=ttk.TTkGridLayout(), border=True)
 ft = ttk.TTkFileTree(parent=fileTreeWin, dragDropMode=ttk.TTkK.DragDropMode.AllowDrag)

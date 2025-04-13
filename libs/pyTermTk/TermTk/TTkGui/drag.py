@@ -100,6 +100,15 @@ class TTkDnD():
         '''
         return self._hotSpot
 
+    def clone(self):
+        '''
+        Clone this event
+
+        :return: the cloned event
+        :rtype:  :py:class:`TTkDnD`
+        '''
+        return TTkDnD(data=self._data, hotspot=self._hotSpot)
+
 class TTkDnDEvent(TTkDnD):
     '''
     Drag and Drop event class.
@@ -122,6 +131,15 @@ class TTkDnDEvent(TTkDnD):
         :rtype:  tuple[int,int]
         '''
         return self._pos
+
+    def clone(self):
+        '''
+        Clone this event
+
+        :return: the cloned event
+        :rtype:  :py:class:`TTkDnDEvent`
+        '''
+        return TTkDnDEvent(data=self._data, hotspot=self._hotSpot, pos=self._pos)
 
 class TTkDrag(TTkDnD):
     __slots__ = ('_pixmap', '_showPixmap')
