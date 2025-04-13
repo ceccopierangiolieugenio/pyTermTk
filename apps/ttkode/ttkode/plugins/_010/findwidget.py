@@ -25,8 +25,10 @@ __all__ = ['FindWidget']
 import os
 import re
 import fnmatch
+import mimetypes
 
 from threading import Thread
+from typing import Generator,List,Tuple
 
 import TermTk as ttk
 
@@ -37,6 +39,31 @@ import os
 import fnmatch
 
 from ttkode import ttkodeProxy
+
+import mimetypes
+
+def is_text_file(file_path, block_size=512):
+    # Check MIME type
+    mime_type, _ = mimetypes.guess_type(file_path)
+    text_based_mime_types = [
+        'text/', 'application/json', 'application/xml',
+        'application/javascript', 'application/x-httpd-php',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]
+    if mime_type is not None and any(mime_type.startswith(mime) for mime in text_based_mime_types):
+        return True
+
+    # Check for non-printable characters
+    try:
+        with open(file_path, 'rb') as file:
+            block = file.read(block_size)
+        if b'\0' in block:
+            return False
+        text_characters = bytearray({7, 8, 9, 10, 12, 13, 27} | set(range(0x20, 0x100)) - {0x7f})
+        return not bool(block.translate(None, text_characters))
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return False
 
 def _load_gitignore_patterns(gitignore_path):
     if os.path.exists(gitignore_path):
@@ -51,15 +78,28 @@ def _should_ignore(path, patterns):
             return True
     return False
 
+def _custom_walk(directory:str, patterns:List[str]=[]) -> Generator[Tuple[str, str], None, None]:
+    gitignore_path = os.path.join(directory, '.gitignore')
+    patterns = patterns + _load_gitignore_patterns(gitignore_path)
+    for entry in sorted(os.listdir(directory)):
+        full_path = os.path.join(directory, entry)
+        if _should_ignore(full_path, patterns):
+            continue
+        if os.path.isdir(full_path):
+            if entry == '.git':
+                continue
+            yield from _custom_walk(full_path, patterns)
+        else:
+            yield directory, entry
+
 def _walk_with_gitignore(root):
-    for dirpath, dirnames, filenames in os.walk(root):
+    for dirpath, filenames in os.walk(root):
         gitignore_path = os.path.join(dirpath, '.gitignore')
         patterns = _load_gitignore_patterns(gitignore_path)
 
-        dirnames[:] = [d for d in dirnames if not _should_ignore(os.path.join(dirpath, d), patterns)]
         filenames[:] = [f for f in filenames if not _should_ignore(os.path.join(dirpath, f), patterns)]
 
-        yield dirpath, dirnames, filenames
+        yield dirpath, filenames
 
 
 class _ExpandButton(ttk.TTkButton):
@@ -156,6 +196,7 @@ class FindWidget(ttk.TTkContainer):
         def _search_threading():
             self._results_tree.clear()
             group = []
+            groupSize = 1
             for (file,root,matches) in self._search_files('.',str(search_pattern),self._runId):
                 ttk.TTkLog.debug((file,matches))
                 item = ttk.TTkTreeWidgetItem([
@@ -177,9 +218,10 @@ class FindWidget(ttk.TTkContainer):
                             line=num,
                             file=os.path.join(root,file)))
                 group.append(item)
-                if len(group) > 20:
+                if len(group) > groupSize:
                     self._results_tree.addTopLevelItems(group)
                     group = []
+                    groupSize <<= 1
                 # self._results_tree.addTopLevelItem(item)
             if group:
                 self._results_tree.addTopLevelItems(group)
@@ -187,17 +229,18 @@ class FindWidget(ttk.TTkContainer):
 
     def _search_files(self, root_folder, match, runId):
         matches = []
-        for root, dirs, files in _walk_with_gitignore(root_folder):
-            for file in files:
-                if runId != self._runId:
-                    return
-                if file.endswith('.py'): # file.endswith(file_extension):
-                    file_path = os.path.join(root, file)
-                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                        lines = f.readlines()
-                        line_matches = [(i, line) for i, line in enumerate(lines) if match in line]
-                        if line_matches:
-                            yield (file, root, line_matches)
+        for root, file in _custom_walk(root_folder):
+            if runId != self._runId:
+                return
+            if True: # file.endswith('.py'): # file.endswith(file_extension):
+                file_path = os.path.join(root, file)
+                if not is_text_file(file_path):
+                    continue
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    lines = f.readlines()
+                    line_matches = [(i, line.split('\n')[0]) for i, line in enumerate(lines) if match in line]
+                    if line_matches:
+                        yield (file, root, line_matches)
 
     def _search_files_re(self, root_folder, file_extension, search_pattern):
         matches = []
