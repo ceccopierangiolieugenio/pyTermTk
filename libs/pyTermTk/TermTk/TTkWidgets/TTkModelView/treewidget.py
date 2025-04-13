@@ -22,14 +22,19 @@
 
 __all__ = ['TTkTreeWidget']
 
+from typing import List
+
 from TermTk.TTkCore.cfg import TTkCfg
 from TermTk.TTkCore.constant import TTkK
 from TermTk.TTkCore.color import TTkColor
 from TermTk.TTkCore.string import TTkString
+from TermTk.TTkCore.canvas import TTkCanvas
 from TermTk.TTkCore.TTkTerm.inputmouse import TTkMouseEvent
+from TermTk.TTkGui.drag import TTkDrag, TTkDnDEvent
 
 from TermTk.TTkWidgets.TTkModelView.treewidgetitem import TTkTreeWidgetItem
 from TermTk.TTkAbstract.abstractscrollview import TTkAbstractScrollView
+from TermTk.TTkAbstract.abstractitemmodel import TTkAbstractItemModel
 from TermTk.TTkCore.signal import pyTTkSignal, pyTTkSlot
 
 from dataclasses import dataclass
@@ -151,6 +156,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
                   '_header', '_columnsPos',
                   '_selectedId', '_selected', '_separatorSelected',
                   '_sortColumn', '_sortOrder', '_sortingEnabled',
+                  '_dndMode',
                   # Signals
                   'itemChanged', 'itemClicked', 'itemDoubleClicked', 'itemExpanded', 'itemCollapsed', 'itemActivated'
                   )
@@ -162,15 +168,23 @@ class TTkTreeWidget(TTkAbstractScrollView):
         widgets: list
         firstLine: bool
 
+    @dataclass(frozen=True)
+    class _DropTreeData:
+        widget: TTkAbstractScrollView
+        items: List[TTkAbstractItemModel]
+
     def __init__(self, *,
                  header=None,
                  sortingEnabled=True,
+                 dragDropMode:TTkK.DragDropMode=TTkK.DragDropMode.NoDragDrop,
                  **kwargs) -> None:
         '''
         :param header: define the header labels of each column, defaults to []
         :type header: list[TTkString], optional
         :param sortingEnabled: enable the column sorting, defaults to False
         :type sortingEnabled: bool, optional
+        :param dragDropMode: This property holds the drag and drop event the view will act upon, defaults to :py:class:`TTkK.DragDropMode.NoDragDrop`.
+        :type dragDropMode: :py:class:`TTkK.DragDropMode`, optional
         '''
         # Signals
         self.itemActivated     = pyTTkSignal(TTkTreeWidgetItem, int)
@@ -180,6 +194,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self.itemExpanded      = pyTTkSignal(TTkTreeWidgetItem)
         self.itemCollapsed     = pyTTkSignal(TTkTreeWidgetItem)
 
+        self._dndMode = dragDropMode
         self._selected = None
         self._selectedId = None
         self._separatorSelected = None
@@ -269,6 +284,14 @@ class TTkTreeWidget(TTkAbstractScrollView):
         self._columnsPos = [20+x*20 for x in range(len(labels))]
         self.viewChanged.emit()
         self.update()
+
+    def dragDropMode(self):
+        '''dragDropMode'''
+        return self._dndMode
+
+    def setDragDropMode(self, dndMode):
+        '''setDragDropMode'''
+        self._dndMode = dndMode
 
     def isSortingEnabled(self) -> bool:
         'isSortingEnabled'
@@ -431,6 +454,21 @@ class TTkTreeWidget(TTkAbstractScrollView):
             self._alignWidgets()
             self.viewChanged.emit()
             self.update()
+            return True
+        elif ( self._dndMode & TTkK.DragDropMode.AllowDrag and
+               evt.key == TTkMouseEvent.LeftButton and self._selected ):
+            drag = TTkDrag()
+            data = TTkTreeWidget._DropTreeData(widget=self,items=[self._selected])
+            text = self._selected.data(0)
+            if text.termWidth() > 30:
+                text = '['+text.slice(to=27)+'...]'
+            else:
+                text = '['+text+']'
+            pm = TTkCanvas(text.termWidth()+2,1)
+            pm.drawTTkString(pos=(0,0),text=text)
+            drag.setPixmap(pm)
+            drag.setData(data)
+            drag.exec()
             return True
         return False
 
