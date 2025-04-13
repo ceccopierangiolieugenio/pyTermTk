@@ -42,6 +42,9 @@ from TermTk import TTkLogViewer
 from TermTk import TTkMenuBarLayout
 from TermTk import TTkAbout
 from TermTk import TTkTestWidget, TTkTestWidgetSizes
+from TermTk import TTkDnDEvent
+from TermTk import TTkTreeWidget, TTkFileTreeWidget, TTkFileTreeWidgetItem
+from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
 
 from .about import About
 from .activitybar import TTKodeActivityBar
@@ -64,6 +67,7 @@ class TTKode(TTkGridLayout):
         self.addWidget(appTemplate)
 
         self._kodeTab = TTkKodeTab(border=False, closable=True)
+        self._kodeTab.setDropEventProxy(self._dropEventProxyFile)
 
         appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.MAIN)
         fileMenu = appMenuBar.addMenu("&File")
@@ -129,6 +133,33 @@ class TTKode(TTkGridLayout):
             tedit.setExtraSelections([selection])
         tedit.setFocus()
 
+    def _dropEventProxyFile(self, evt:TTkDnDEvent):
+        data = evt.data()
+        if ( issubclass(type(data), TTkTreeWidget._DropTreeData) and
+            data.items and
+            issubclass(type(data.items[0]), TTkFileTreeWidgetItem)):
+            item:TTkFileTreeWidgetItem = data.items[0]
+            filePath = os.path.realpath(item.path())
+            if filePath in self._documents:
+                doc = self._documents[filePath]['doc']
+            else:
+                with open(filePath, 'r') as f:
+                    content = f.read()
+                doc = _TextDocument(text=content, filePath=filePath)
+                self._documents[filePath] = {'doc':doc,'tabs':[]}
+            tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
+            label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
+
+            newData = _TTkNewTabWidgetDragData(
+                widget=tedit,
+                label=label,
+                data=None,
+                closable=True
+            )
+            newEvt = evt.clone()
+            newEvt.setData(newData)
+            return newEvt
+        return evt
         # def _closeFile():
         #     if (index := KodeTab.lastUsed.currentIndex()) >= 0:
         #         KodeTab.lastUsed.removeTab(index)
