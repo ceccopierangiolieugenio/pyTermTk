@@ -81,7 +81,7 @@ class TTKode(TTkGridLayout):
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
-        fileTree = TTkFileTree(path='.')
+        fileTree = TTkFileTree(path='.', dragDropMode=TTkK.DragDropMode.AllowDrag)
         self._activityBar = TTKodeActivityBar()
         self._activityBar.addActivity(name="Explorer", icon=TTkString("╔██\n╚═╝"), widget=fileTree, select=True)
 
