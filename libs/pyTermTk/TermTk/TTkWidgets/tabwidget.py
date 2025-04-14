@@ -721,6 +721,7 @@ class TTkTabWidget(TTkFrame):
                 self.setCurrentIndex(newIndex)
             else:
                 self.addTab(w, l, d, c)
+                self.setCurrentIndex(len(self._tabBar._tabButtons)-1)
             TTkLog.debug(f"Drop -> pos={evt.pos()}")
             return True
         return False
