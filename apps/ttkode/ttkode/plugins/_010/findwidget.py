@@ -32,13 +32,11 @@ from typing import Generator,List,Tuple
 
 import TermTk as ttk
 
-import ttkode
-
-
 import os
 import fnmatch
 
 from ttkode import ttkodeProxy
+from ttkode.app.ttkode import TTKodeFileWidgetItem
 
 import mimetypes
 
@@ -119,15 +117,11 @@ class _ExpandButton(ttk.TTkButton):
         else:
             canvas.drawChar(pos=(1,0),char='▶')
 
-class _MatchTreeWidgetItem(ttk.TTkTreeWidgetItem):
+class _MatchTreeWidgetItem(TTKodeFileWidgetItem):
     __slots__ = ('_match','_line','_file')
     _match:str
-    _line:int
-    _file:str
-    def __init__(self, *args, match:str, line:int, file:str, **kwargs):
+    def __init__(self, *args, match:str, **kwargs):
         self._match = match
-        self._line = line
-        self._file = file
         super().__init__(*args, **kwargs)
 
 class FindWidget(ttk.TTkContainer):
@@ -158,7 +152,7 @@ class FindWidget(ttk.TTkContainer):
 
         layout.addItem(searchLayout, 0, 0)
         layout.addWidget(btn_search:=ttk.TTkButton(text="Search", border=False), 4,0)
-        layout.addWidget(res_tree:=ttk.TTkTree(), 5,0)
+        layout.addWidget(res_tree:=ttk.TTkTree(dragDropMode=ttk.TTkK.DragDropMode.AllowDrag), 5,0)
         res_tree.setHeaderLabels(["Results"])
         res_tree.setColumnWidth(0,100)
 
@@ -182,8 +176,8 @@ class FindWidget(ttk.TTkContainer):
     @ttk.pyTTkSlot(ttk.TTkTreeWidgetItem, int)
     def _activated(self, item:ttk.TTkTreeWidgetItem, _):
         if isinstance(item, _MatchTreeWidgetItem):
-            file = item._file
-            line = item._line
+            file = item.path()
+            line = item.lineNumber()
             ttkodeProxy.ttkode()._openFile(file, line)
 
 
@@ -215,8 +209,8 @@ class FindWidget(ttk.TTkContainer):
                                 color=ttk.TTkColor.GREEN)
                             ],
                             match=line,
-                            line=num,
-                            file=os.path.join(root,file)))
+                            lineNumber=num,
+                            path=os.path.join(root,file)))
                 group.append(item)
                 if len(group) > groupSize:
                     self._results_tree.addTopLevelItems(group)

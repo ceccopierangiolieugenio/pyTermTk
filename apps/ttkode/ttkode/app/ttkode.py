@@ -43,11 +43,22 @@ from TermTk import TTkMenuBarLayout
 from TermTk import TTkAbout
 from TermTk import TTkTestWidget, TTkTestWidgetSizes
 from TermTk import TTkDnDEvent
-from TermTk import TTkTreeWidget, TTkFileTreeWidget, TTkFileTreeWidgetItem
+from TermTk import TTkTreeWidget, TTkTreeWidgetItem, TTkFileTreeWidgetItem
 from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
 
 from .about import About
 from .activitybar import TTKodeActivityBar
+
+class TTKodeFileWidgetItem(TTkTreeWidgetItem):
+    __slots__ = ('_path', '_lineNumber')
+    def __init__(self, *args, path:str, lineNumber:int=0, **kwargs) -> None:
+        self._path = path
+        self._lineNumber = lineNumber
+        super().__init__(*args, **kwargs)
+    def path(self) -> str:
+        return self._path
+    def lineNumber(self) -> int:
+        return self._lineNumber
 
 class _TextDocument(TextDocumentHighlight):
     __slots__ = ('_filePath')
@@ -135,11 +146,18 @@ class TTKode(TTkGridLayout):
 
     def _dropEventProxyFile(self, evt:TTkDnDEvent):
         data = evt.data()
+        filePath = None
+
         if ( issubclass(type(data), TTkTreeWidget._DropTreeData) and
-            data.items and
-            issubclass(type(data.items[0]), TTkFileTreeWidgetItem)):
-            item:TTkFileTreeWidgetItem = data.items[0]
-            filePath = os.path.realpath(item.path())
+            data.items ):
+            if issubclass(type(data.items[0]), TTkFileTreeWidgetItem):
+                item:TTkFileTreeWidgetItem = data.items[0]
+                filePath = os.path.realpath(item.path())
+            elif issubclass(type(data.items[0]), TTKodeFileWidgetItem):
+                item:TTkFileTreeWidgetItem = data.items[0]
+                filePath = os.path.realpath(item.path())
+
+        if filePath:
             if filePath in self._documents:
                 doc = self._documents[filePath]['doc']
             else:
