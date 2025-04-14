@@ -41,6 +41,7 @@ class TTkTree(TTkAbstractScrollArea):
             'setHeaderLabels',
             'setColumnWidth', 'resizeColumnToContents',
             'sortColumn', 'sortItems',
+            'dragDropMode', 'setDragDropMode',
             # 'appendItem', 'setAlignment', 'setColumnColors', 'setColumnSize', 'setHeader',
             'addTopLevelItem', 'addTopLevelItems', 'takeTopLevelItem', 'topLevelItem', 'indexOfTopLevelItem', 'selectedItems', 'clear'])
         )

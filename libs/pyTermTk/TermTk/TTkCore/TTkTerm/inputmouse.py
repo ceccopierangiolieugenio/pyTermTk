@@ -86,6 +86,13 @@ class TTkMouseEvent:
     Right   = TTkK.WHEEL_Right
 
     __slots__ = ('x', 'y', 'key', 'evt', 'mod', 'tap', 'raw')
+    x: int
+    y: int
+    key: int
+    evt: int
+    mod: int
+    tap: int
+    raw: str
     def __init__(self, x: int, y: int, key: int, evt: int, mod: int, tap: int, raw: str):
         self.x = x
         self.y = y
