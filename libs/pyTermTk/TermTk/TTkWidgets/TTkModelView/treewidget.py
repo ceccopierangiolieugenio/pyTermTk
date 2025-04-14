@@ -461,7 +461,7 @@ class TTkTreeWidget(TTkAbstractScrollView):
             data = TTkTreeWidget._DropTreeData(widget=self,items=[self._selected])
             text = self._selected.data(0)
             if text.termWidth() > 30:
-                text = '['+text.slice(to=27)+'...]'
+                text = '['+text.substring(to=27)+'...]'
             else:
                 text = '['+text+']'
             pm = TTkCanvas(text.termWidth()+2,1)
