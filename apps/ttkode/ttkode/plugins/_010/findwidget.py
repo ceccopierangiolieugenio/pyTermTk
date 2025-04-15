@@ -100,7 +100,7 @@ def _walk_with_gitignore(root):
         yield dirpath, filenames
 
 
-class _ExpandButton(ttk.TTkButton):
+class _ToggleButton(ttk.TTkButton):
     def __init__(self, **kwargs):
         params = {
             'border':False,
@@ -142,7 +142,7 @@ class FindWidget(ttk.TTkContainer):
 
 
         searchLayout = ttk.TTkGridLayout()
-        searchLayout.addWidget(expandReplace:=_ExpandButton(), 0, 0)
+        searchLayout.addWidget(expandReplace:=_ToggleButton(), 0, 0)
         searchLayout.addWidget(search  :=ttk.TTkLineEdit(hint='Search'), 0, 1)
         searchLayout.addWidget(repl__l:=ttk.TTkLabel(visible=False, text='sub:'), 1, 0)
         searchLayout.addWidget(ft_in_l:=ttk.TTkLabel(visible=False, text='inc:'), 2, 0)
@@ -155,6 +155,8 @@ class FindWidget(ttk.TTkContainer):
         controlsLayout = ttk.TTkGridLayout()
         controlsLayout.addWidget(btn_search:=ttk.TTkButton(text="Search", border=False), 0,0)
         controlsLayout.addWidget(btn_replace:=ttk.TTkButton(text='Replace', border=False, enabled=False), 0, 1)
+        controlsLayout.addWidget(btn_expand  :=ttk.TTkButton(text='+', maxWidth=3, border=False), 0, 2)
+        controlsLayout.addWidget(btn_collapse:=ttk.TTkButton(text='-', maxWidth=3, border=False), 0, 3)
         layout.addItem(controlsLayout,1,0)
 
         layout.addWidget(res_tree:=ttk.TTkTree(dragDropMode=ttk.TTkK.DragDropMode.AllowDrag), 2,0)
@@ -175,6 +177,8 @@ class FindWidget(ttk.TTkContainer):
         self._files_exc_le = ft_excl
 
         btn_search.clicked.connect(self._search)
+        btn_expand.clicked.connect(self._results_tree.expandAll)
+        btn_collapse.clicked.connect(self._results_tree.collapseAll)
         search.returnPressed.connect(self._search)
         res_tree.itemActivated.connect(self._activated)
 
