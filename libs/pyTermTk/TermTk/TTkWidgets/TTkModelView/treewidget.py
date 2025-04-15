@@ -337,6 +337,26 @@ class TTkTreeWidget(TTkAbstractScrollView):
         contentSize = max(row.data[column].termWidth() for row in self._cache)
         self.setColumnWidth(column, contentSize)
 
+    @pyTTkSlot()
+    def expandAll(self) -> None:
+        '''expandAll'''
+        if not self._rootItem:
+            return
+        self._rootItem.dataChanged.disconnect(self._refreshCache)
+        self._rootItem.expandAll()
+        self._rootItem.dataChanged.connect(self._refreshCache)
+        self._refreshCache()
+
+    @pyTTkSlot()
+    def collapseAll(self) -> None:
+        '''collapseAll'''
+        if not self._rootItem:
+            return
+        self._rootItem.dataChanged.disconnect(self._refreshCache)
+        self._rootItem.collapseAll()
+        self._rootItem.dataChanged.connect(self._refreshCache)
+        self._refreshCache()
+
     def mouseDoubleClickEvent(self, evt:TTkMouseEvent) -> bool:
         x,y = evt.x, evt.y
         ox, oy = self.getViewOffsets()

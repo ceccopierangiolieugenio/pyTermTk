@@ -305,6 +305,16 @@ class TTkTreeWidgetItem(TTkAbstractItemModel):
             return None
         return self._widgets[col]
 
+    def expandAll(self) -> None:
+        for child in self._children:
+            child.setExpanded(True)
+            child.expandAll()
+
+    def collapseAll(self) -> None:
+        for child in self._children:
+            child.setExpanded(False)
+            child.collapseAll()
+
     def sortData(self, col):
         return self.data(col)
 

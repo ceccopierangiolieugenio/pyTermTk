@@ -41,5 +41,7 @@ TTkTreeProperties = {
         'itemExpanded(TTkTreeWidgetItem)'          : {'name' : 'itemExpanded'      ,  'type': TTkTreeWidgetItem},
         'itemCollapsed(TTkTreeWidgetItem)'         : {'name' : 'itemCollapsed'     ,  'type': TTkTreeWidgetItem},
     },'slots' : {
+        'expandAll()'   : {'name': 'expandAll',   'type':None},
+        'collapseAll()' : {'name': 'collapseAll', 'type':None},
     }
 }
