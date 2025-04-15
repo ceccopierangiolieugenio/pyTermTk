@@ -106,6 +106,7 @@ class TTkLineEdit(TTkWidget):
         if text != self._text:
             self.textChanged.emit(text)
             self._text = TTkString(text)
+        if cursorPos != self._cursorPos:
             self._cursorPos = max(0,min(cursorPos, len(text)))
             self._pushCursor()
 
@@ -290,38 +291,43 @@ class TTkLineEdit(TTkWidget):
                     return super().keyEvent(evt)
                 return True
 
+            text = self._text
+            cursorPos = self._cursorPos
+
             if evt.key == TTkK.Key_Left:
                 if self._selectionFrom < self._selectionTo:
-                    self._cursorPos = self._selectionTo
-                self._cursorPos = self._text.prevPos(self._cursorPos)
+                    cursorPos = self._selectionTo
+                cursorPos = self._text.prevPos(self._cursorPos)
             elif evt.key == TTkK.Key_Right:
                 if self._selectionFrom < self._selectionTo:
-                    self._cursorPos = self._selectionTo-1
-                self._cursorPos = self._text.nextPos(self._cursorPos)
+                    cursorPos = self._selectionTo-1
+                cursorPos = self._text.nextPos(self._cursorPos)
             elif evt.key == TTkK.Key_End:
-                self._cursorPos = len(self._text)
+                cursorPos = len(self._text)
             elif evt.key == TTkK.Key_Home:
-                self._cursorPos = 0
+                cursorPos = 0
             elif evt.key == TTkK.Key_Insert:
                 self._replace = not self._replace
             elif evt.key == TTkK.Key_Delete:
                 if self._selectionFrom < self._selectionTo:
-                    self._text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
-                    self._cursorPos = self._selectionFrom
+                    text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
+                    cursorPos = self._selectionFrom
                 else:
-                    self._text = self._text.substring(to=self._cursorPos) + self._text.substring(fr=self._text.nextPos(self._cursorPos))
+                    text = self._text.substring(to=self._cursorPos) + self._text.substring(fr=self._text.nextPos(self._cursorPos))
             elif evt.key == TTkK.Key_Backspace:
                 if self._selectionFrom < self._selectionTo:
-                    self._text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
-                    self._cursorPos = self._selectionFrom
+                    text = self._text.substring(to=self._selectionFrom) + self._text.substring(fr=self._selectionTo)
+                    cursorPos = self._selectionFrom
                 elif self._cursorPos > 0:
                    prev = self._text.prevPos(self._cursorPos)
-                   self._text = self._text.substring(to=prev) + self._text.substring(fr=self._cursorPos)
-                   self._cursorPos = prev
+                   text = self._text.substring(to=prev) + self._text.substring(fr=self._cursorPos)
+                   cursorPos = prev
 
             if ( self._inputType & TTkK.Input_Number and
                  not self._isFloat(self._text) ):
                 self.setText('0', 1)
+            else:
+                self.setText(text, cursorPos)
 
             self._pushCursor()
 
