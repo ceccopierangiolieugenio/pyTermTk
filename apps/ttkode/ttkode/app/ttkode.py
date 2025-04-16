@@ -119,13 +119,19 @@ class TTKode(TTkGridLayout):
         filePath = os.path.realpath(filePath)
         if filePath in self._documents:
             doc = self._documents[filePath]['doc']
+            if self._documents[filePath]['widgets']:
+                widget = self._documents[filePath]['widgets'][0]
+                self._kodeTab.setCurrentWidget(widget)
+                widget.setFocus()
+                return
         else:
             with open(filePath, 'r') as f:
                 content = f.read()
             doc = _TextDocument(text=content, filePath=filePath)
-            self._documents[filePath] = {'doc':doc,'tabs':[]}
+            self._documents[filePath] = {'doc':doc,'tabs':[],'widgets':[]}
         tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
         label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
+        self._documents[filePath]['widgets'].append(tedit)
 
         self._kodeTab.addTab(tedit, label)
         self._kodeTab.setCurrentWidget(tedit)
@@ -164,9 +170,10 @@ class TTKode(TTkGridLayout):
                 with open(filePath, 'r') as f:
                     content = f.read()
                 doc = _TextDocument(text=content, filePath=filePath)
-                self._documents[filePath] = {'doc':doc,'tabs':[]}
+                self._documents[filePath] = {'doc':doc,'tabs':[], 'widgets':[]}
             tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
             label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
+            self._documents[filePath]['widgets'].append(tedit)
 
             newData = _TTkNewTabWidgetDragData(
                 widget=tedit,
