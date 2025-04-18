@@ -29,17 +29,19 @@ import time
 
 
 sys.path.append(os.path.join(sys.path[0],'..'))
-from TermTk import TTk, TTkLog, TTkHelper
-from TermTk import TTkGridLayout, TTkFileTree, TTkWidget, TTkFrame
-from TermTk import TTkWindow, TTkColor, TTkColorGradient, TTkRadioButton, TTkSpacer
-from TermTk import TTkTheme, TTkK, TTkSplitter, TTkTabWidget, TTkKodeTab
+import TermTk as ttk
 
-# TTkFileTree(parent=self, path=".")
-class _KolorFrame(TTkFrame):
-    __slots__ = ('_fillColor')
-    def __init__(self, *args, **kwargs):
-        TTkFrame.__init__(self, *args, **kwargs)
-        self._fillColor = kwargs.get('fillColor', TTkColor.RST)
+# ttk.TTkFileTree(parent=self, path=".")
+class _KolorFrame(ttk.TTkFrame):
+    __slots__ = ('_fillColor', '_text')
+    def __init__(self, fillColor=ttk.TTkColor.RST, text:str="", **kwargs):
+        self._text = text
+        self._fillColor = fillColor
+        ttk.TTkFrame.__init__(self, **kwargs)
+        self.setFocusPolicy(ttk.TTkK.FocusPolicy.ClickFocus)
+
+    def text(self):
+        return self._text
 
     def setFillColor(self, color):
         self._fillColor = color
@@ -48,6 +50,7 @@ class _KolorFrame(TTkFrame):
         w,h = self.size()
         for y in range(h):
             canvas.drawText(pos=(0,y),text='',width=w,color=self._fillColor)
+        canvas.drawText(pos=(2,2),text=self._text)
         return super().paintEvent(canvas)
 
 def main():
@@ -55,38 +58,39 @@ def main():
     parser.add_argument('-f', help='Full Screen', action='store_true')
     args = parser.parse_args()
 
-    TTkTheme.loadTheme(TTkTheme.NERD)
+    ttk.TTkTheme.loadTheme(ttk.TTkTheme.NERD)
 
-    root = TTk(title="ttkode")
-    layout = TTkGridLayout()
+    root = ttk.TTk(title="ttkode", mouseTrack=True)
+    layout = ttk.TTkGridLayout()
     if args.f:
         root.setLayout(layout)
         container = root
         border = False
     else:
-        container = TTkWindow(
+        container = ttk.TTkWindow(
             parent=root,pos=(0,0), size=(100,40), title="pyTermTk Showcase", border=True, layout=layout,
-            flags = TTkK.WindowFlag.WindowMaximizeButtonHint | TTkK.WindowFlag.WindowCloseButtonHint)
-        border = True
+            flags = ttk.TTkK.WindowFlag.WindowMaximizeButtonHint | ttk.TTkK.WindowFlag.WindowCloseButtonHint)
+        border = False
 
-    splitter = TTkSplitter(parent=container)
-    splitter.addWidget(fileTree:=TTkFileTree(path='.'), 15)
+    at = ttk.TTkAppTemplate(parent=container, border=border)
+    kodeTab  = ttk.TTkKodeTab(border=False, closable=True)
+    fileTree = ttk.TTkFileTree(path='.')
 
-    hSplitter = TTkSplitter(parent=splitter,  orientation=TTkK.HORIZONTAL)
-    kt = TTkKodeTab(parent=hSplitter, border=False, closable=True)
+    at.setWidget(widget=fileTree, position=at.LEFT, size=15)
+    at.setWidget(widget=kodeTab, position=at.MAIN)
+    at.setWidget(widget=ttk.TTkLogViewer(), position=at.BOTTOM, size=3, title="Logs")
 
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#008800", modifier=TTkColorGradient(increment=-6)), title="uno"),"uno")
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#880000", modifier=TTkColorGradient(increment=-6)), title="due"),"due")
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#000088", modifier=TTkColorGradient(increment=-6)), title="tre"),"tre")
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#888800", modifier=TTkColorGradient(increment=-6)), title="quattro"),"quattro")
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#008888", modifier=TTkColorGradient(increment=-6)), title="cinque"),"cinque")
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#880088", modifier=TTkColorGradient(increment=-6)), title="sei"),"sei")
+    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#008800", modifier=ttk.TTkColorGradient(increment=-6)), title=" uno ")," uno ")
+    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#880000", modifier=ttk.TTkColorGradient(increment=-6)), title=" due ")," due ")
+    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#000088", modifier=ttk.TTkColorGradient(increment=-6)), title=" tre ")," tre ")
+    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#888800", modifier=ttk.TTkColorGradient(increment=-6)), title=" quattro ")," quattro ")
+    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#008888", modifier=ttk.TTkColorGradient(increment=-6)), title=" cinque ")," cinque ")
+    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#880088", modifier=ttk.TTkColorGradient(increment=-6)), title=" sei ")," sei ")
+    # kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#888888", modifier=ttk.TTkColorGradient(increment=-6)), title=" sette ")," sette ")
+    # kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#444444", modifier=ttk.TTkColorGradient(increment= 3)), title=" otto ")," otto ")
 
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#888888", modifier=TTkColorGradient(increment=-6)), title="sette"),"sette")
-    kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#444444", modifier=TTkColorGradient(increment= 3)), title="otto"),"otto")
-
-    m1 = kt.addMenu('Test1')
-    m2 = kt.addMenu('Test2')
+    m1 = kodeTab.addMenu('Test1')
+    m2 = kodeTab.addMenu('Test2')
 
     m1.addMenu("Open",checkable=True)
     m1.addMenu("Save",checkable=True,checked=True)
@@ -96,8 +100,24 @@ def main():
     m2.addMenu("m2 Save",checkable=True,checked=True)
     m2.addMenu("m2 Save as").setDisabled()
 
-    fileTree.fileActivated.connect(lambda item:kt.addTab(_KolorFrame(fillColor=TTkColor.bg("#888888", modifier=TTkColorGradient(increment=-6)), title=item.path()),"File")
-)
+    def _openFile(item):
+        kt = _KolorFrame(
+                text=item.path(),
+                title=item.path(),
+                fillColor=ttk.TTkColor.bg("#888888", modifier=ttk.TTkColorGradient(increment=-6)),)
+        kt.focusChanged.connect(lambda _f, _p=item.path() : ttk.TTkLog.debug(f"Focus Changed ({_f}) -> {_p}"))
+        kodeTab.addTab(kt, 'File')
+        kodeTab.setCurrentWidget(kt)
+        for wid in kodeTab.iterWidgets():
+            ttk.TTkLog.debug(wid)
+        kt.setFocus()
+
+    fileTree.fileActivated.connect(_openFile)
+
+    def _reportClose(tab:ttk.TTkTabWidget, num:int):
+        ttk.TTkLog.debug(f"DEL: {num} - {tab} - {tab.widget(num).text()}")
+
+    kodeTab.tabCloseRequested.connect(_reportClose)
 
     root.mainloop()
 
