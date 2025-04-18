@@ -37,23 +37,6 @@ from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkGui.drag import TTkDnDEvent
 
-class _KolorFrame(TTkFrame):
-    __slots__ = ('_fillColor')
-    def __init__(self, *,
-                 fillColor:TTkColor=TTkColor.RST,
-                 **kwargs) -> None:
-        self._fillColor = fillColor
-        super().__init__(*kwargs)
-
-    def setFillColor(self, color):
-        self._fillColor = color
-
-    def paintEvent(self, canvas):
-        w,h = self.size()
-        for y in range(h):
-            canvas.drawText(pos=(0,y),text='',width=w,color=self._fillColor)
-        return super().paintEvent()
-
 class _TTkKodeTab(TTkTabWidget):
     __slots__ = (
         '_frameOverlay','_baseWidget')
@@ -84,6 +67,10 @@ class _TTkKodeTab(TTkTabWidget):
             self._tabBarTopLayout.addItem(rl,1 if self.border() else 0,2)
         self._tabBarTopLayout.update()
         kt._tabBarTopLayout.update()
+
+    def iterWidgets(self):
+        for i in range(self.count()):
+            yield self.widget(i)
 
     def dragEnterEvent(self, evt:TTkDnDEvent) -> bool:
         TTkLog.debug(f"Drag Enter")
@@ -242,6 +229,16 @@ class TTkKodeTab(TTkSplitter):
         item = None
         while type(item:=kt.widget(0)) != _TTkKodeTab: kt = item
         return item if type(item)==_TTkKodeTab else None
+
+    def iterWidgets(self):
+        def _iterSplitter(split:TTkSplitter):
+            for i in range(split.count()):
+                _wid = split.widget(i)
+                if issubclass(type(_wid), TTkSplitter):
+                    yield from _iterSplitter(_wid)
+                elif issubclass(type(_wid), _TTkKodeTab):
+                    yield from _wid.iterWidgets()
+        yield from _iterSplitter(self)
 
     def setDropEventProxy(self, proxy:Callable) -> None:
         for widget in self.layout().iterWidgets(onlyVisible=False):

@@ -86,8 +86,8 @@ def main():
     kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#888800", modifier=ttk.TTkColorGradient(increment=-6)), title=" quattro ")," quattro ")
     kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#008888", modifier=ttk.TTkColorGradient(increment=-6)), title=" cinque ")," cinque ")
     kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#880088", modifier=ttk.TTkColorGradient(increment=-6)), title=" sei ")," sei ")
-    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#888888", modifier=ttk.TTkColorGradient(increment=-6)), title=" sette ")," sette ")
-    kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#444444", modifier=ttk.TTkColorGradient(increment= 3)), title=" otto ")," otto ")
+    # kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#888888", modifier=ttk.TTkColorGradient(increment=-6)), title=" sette ")," sette ")
+    # kodeTab.addTab(_KolorFrame(fillColor=ttk.TTkColor.bg("#444444", modifier=ttk.TTkColorGradient(increment= 3)), title=" otto ")," otto ")
 
     m1 = kodeTab.addMenu('Test1')
     m2 = kodeTab.addMenu('Test2')
@@ -108,6 +108,8 @@ def main():
         kt.focusChanged.connect(lambda _f, _p=item.path() : ttk.TTkLog.debug(f"Focus Changed ({_f}) -> {_p}"))
         kodeTab.addTab(kt, 'File')
         kodeTab.setCurrentWidget(kt)
+        for wid in kodeTab.iterWidgets():
+            ttk.TTkLog.debug(wid)
         kt.setFocus()
 
     fileTree.fileActivated.connect(_openFile)
