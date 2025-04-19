@@ -115,6 +115,17 @@ class TTKode(TTkGridLayout):
         filePicker.pathPicked.connect(self._openFile)
         TTkHelper.overlay(None, filePicker, 20, 5, True)
 
+    def _getDocument(self, filePath) -> _TextDocument:
+        for item in self._kodeTab.iterWidgets():
+            if issubclass(type(item), TTkTextEdit):
+                doc = item.document()
+                if issubclass(type(doc), _TextDocument):
+                    if filePath == doc._filePath:
+                        return doc
+        with open(filePath, 'r') as f:
+            content = f.read()
+        return _TextDocument(text=content, filePath=filePath)
+
     def _openFile(self, filePath, lineNumber=0):
         filePath = os.path.realpath(filePath)
         if filePath in self._documents:
