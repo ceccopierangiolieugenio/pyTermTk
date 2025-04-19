@@ -68,10 +68,8 @@ class _TextDocument(TextDocumentHighlight):
         self.guessLexerFromFilename(filePath)
 
 class TTKode(TTkGridLayout):
-    __slots__ = ('_kodeTab', '_documents', '_activityBar')
+    __slots__ = ('_kodeTab', '_activityBar')
     def __init__(self, *, files, **kwargs):
-        self._documents = {}
-
         super().__init__(**kwargs)
 
         appTemplate = TTkAppTemplate(border=False)
@@ -115,20 +113,28 @@ class TTKode(TTkGridLayout):
         filePicker.pathPicked.connect(self._openFile)
         TTkHelper.overlay(None, filePicker, 20, 5, True)
 
+    def _getDocument(self, filePath) -> tuple[_TextDocument, TTkTextEdit]:
+        for item in self._kodeTab.iterWidgets():
+            if issubclass(type(item), TTkTextEdit):
+                doc = item.document()
+                if issubclass(type(doc), _TextDocument):
+                    if filePath == doc._filePath:
+                        return doc, item
+        with open(filePath, 'r') as f:
+            content = f.read()
+        return _TextDocument(text=content, filePath=filePath), None
+
     def _openFile(self, filePath, lineNumber=0):
         filePath = os.path.realpath(filePath)
-        if filePath in self._documents:
-            doc = self._documents[filePath]['doc']
+        doc, tedit = self._getDocument(filePath=filePath)
+        if tedit:
+            self._kodeTab.setCurrentWidget(tedit)
+            tedit.setFocus()
         else:
-            with open(filePath, 'r') as f:
-                content = f.read()
-            doc = _TextDocument(text=content, filePath=filePath)
-            self._documents[filePath] = {'doc':doc,'tabs':[]}
-        tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
-        label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
-
-        self._kodeTab.addTab(tedit, label)
-        self._kodeTab.setCurrentWidget(tedit)
+            tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
+            label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
+            self._kodeTab.addTab(tedit, label)
+            self._kodeTab.setCurrentWidget(tedit)
 
         if lineNumber:
             tedit.textCursor().movePosition(operation=TTkTextCursor.MoveOperation.End)
@@ -158,13 +164,7 @@ class TTKode(TTkGridLayout):
                 filePath = os.path.realpath(item.path())
 
         if filePath:
-            if filePath in self._documents:
-                doc = self._documents[filePath]['doc']
-            else:
-                with open(filePath, 'r') as f:
-                    content = f.read()
-                doc = _TextDocument(text=content, filePath=filePath)
-                self._documents[filePath] = {'doc':doc,'tabs':[]}
+            doc, _ = self._getDocument(filePath=filePath)
             tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
             label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
 

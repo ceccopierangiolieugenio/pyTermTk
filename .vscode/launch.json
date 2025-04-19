@@ -113,7 +113,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
-                "PYTHONPATH": "./apps/ttkode"
+                "PYTHONPATH": "./apps/ttkode:./libs/pyTermTk"
             }
         },
         {
