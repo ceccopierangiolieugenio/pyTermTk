@@ -25,31 +25,15 @@
 __all__ = ['TTKode']
 
 import os
+from typing import List,Tuple,Optional,Any
 
-from TermTk import TTkK, TTkLog, TTkCfg, TTkColor, TTkTheme, TTkTerm, TTkHelper
-from TermTk import TTkString
-from TermTk import pyTTkSlot, pyTTkSignal
-
-from TermTk import TTkFrame, TTkButton
-from TermTk import TTkKodeTab
-from TermTk import TTkFileDialogPicker
-from TermTk import TTkFileTree, TTkTextEdit, TTkTextCursor
-
-from TermTk import TTkGridLayout
-from TermTk import TTkSplitter,TTkAppTemplate
-from TermTk import TextDocumentHighlight
-from TermTk import TTkLogViewer
-from TermTk import TTkMenuBarLayout
-from TermTk import TTkAbout
-from TermTk import TTkTestWidget, TTkTestWidgetSizes
-from TermTk import TTkDnDEvent
-from TermTk import TTkTreeWidget, TTkTreeWidgetItem, TTkFileTreeWidgetItem
+import TermTk as ttk
 from TermTk.TTkWidgets.tabwidget import _TTkNewTabWidgetDragData
 
 from .about import About
 from .activitybar import TTKodeActivityBar
 
-class TTKodeFileWidgetItem(TTkTreeWidgetItem):
+class TTKodeFileWidgetItem(ttk.TTkTreeWidgetItem):
     __slots__ = ('_path', '_lineNumber')
     def __init__(self, *args, path:str, lineNumber:int=0, **kwargs) -> None:
         self._path = path
@@ -60,62 +44,65 @@ class TTKodeFileWidgetItem(TTkTreeWidgetItem):
     def lineNumber(self) -> int:
         return self._lineNumber
 
-class _TextDocument(TextDocumentHighlight):
+class _TextDocument(ttk.TextDocumentHighlight):
     __slots__ = ('_filePath')
     def __init__(self, filePath:str="", **kwargs):
         self._filePath = filePath
         super().__init__(**kwargs)
         self.guessLexerFromFilename(filePath)
 
-class TTKode(TTkGridLayout):
+class _TextEdit(ttk.TTkTextEdit):
+    pass
+
+class TTKode(ttk.TTkGridLayout):
     __slots__ = ('_kodeTab', '_activityBar')
     def __init__(self, *, files, **kwargs):
         super().__init__(**kwargs)
 
-        appTemplate = TTkAppTemplate(border=False)
+        appTemplate = ttk.TTkAppTemplate(border=False)
         self.addWidget(appTemplate)
 
-        self._kodeTab = TTkKodeTab(border=False, closable=True)
+        self._kodeTab = ttk.TTkKodeTab(border=False, closable=True)
         self._kodeTab.setDropEventProxy(self._dropEventProxyFile)
 
-        appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.MAIN)
+        appTemplate.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), ttk.TTkAppTemplate.MAIN)
         fileMenu = appMenuBar.addMenu("&File")
         fileMenu.addMenu("Open").menuButtonClicked.connect(self._showFileDialog)
         fileMenu.addMenu("Close") # .menuButtonClicked.connect(self._closeFile)
-        fileMenu.addMenu("Exit").menuButtonClicked.connect(lambda _:TTkHelper.quit())
+        fileMenu.addMenu("Exit").menuButtonClicked.connect(lambda _:ttk.TTkHelper.quit())
 
         def _showAbout(btn):
-            TTkHelper.overlay(None, About(), 30,10)
+            ttk.TTkHelper.overlay(None, About(), 30,10)
         def _showAboutTTk(btn):
-            TTkHelper.overlay(None, TTkAbout(), 30,10)
+            ttk.TTkHelper.overlay(None, ttk.TTkAbout(), 30,10)
 
-        appMenuBar.addMenu("&Quit", alignment=TTkK.RIGHT_ALIGN).menuButtonClicked.connect(TTkHelper.quit)
-        helpMenu = appMenuBar.addMenu("&Help", alignment=TTkK.RIGHT_ALIGN)
+        appMenuBar.addMenu("&Quit", alignment=ttk.TTkK.RIGHT_ALIGN).menuButtonClicked.connect(ttk.TTkHelper.quit)
+        helpMenu = appMenuBar.addMenu("&Help", alignment=ttk.TTkK.RIGHT_ALIGN)
         helpMenu.addMenu("About ...").menuButtonClicked.connect(_showAbout)
         helpMenu.addMenu("About ttk").menuButtonClicked.connect(_showAboutTTk)
 
-        fileTree = TTkFileTree(path='.', dragDropMode=TTkK.DragDropMode.AllowDrag)
+        fileTree = ttk.TTkFileTree(path='.', dragDropMode=ttk.TTkK.DragDropMode.AllowDrag)
         self._activityBar = TTKodeActivityBar()
-        self._activityBar.addActivity(name="Explorer", icon=TTkString("╔██\n╚═╝"), widget=fileTree, select=True)
+        self._activityBar.addActivity(name="Explorer", icon=ttk.TTkString("╔██\n╚═╝"), widget=fileTree, select=True)
 
-        appTemplate.setWidget(self._kodeTab, TTkAppTemplate.MAIN)
-        appTemplate.setItem(self._activityBar, TTkAppTemplate.LEFT, size=30)
-        appTemplate.setWidget(TTkLogViewer(), TTkAppTemplate.BOTTOM, title="Logs", size=3)
+        appTemplate.setWidget(self._kodeTab, ttk.TTkAppTemplate.MAIN)
+        appTemplate.setItem(self._activityBar, ttk.TTkAppTemplate.LEFT, size=30)
+        appTemplate.setWidget(ttk.TTkLogViewer(), ttk.TTkAppTemplate.BOTTOM, title="Logs", size=3)
 
         for file in files:
             self._openFile(file)
 
         fileTree.fileActivated.connect(lambda x: self._openFile(x.path()))
 
-    pyTTkSlot()
+    ttk.pyTTkSlot()
     def _showFileDialog(self):
-        filePicker = TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
+        filePicker = ttk.TTkFileDialogPicker(pos = (3,3), size=(75,24), caption="Pick Something", path=".", fileMode=ttk.TTkK.FileMode.AnyFile ,filter="All Files (*);;Python Files (*.py);;Bash scripts (*.sh);;Markdown Files (*.md)")
         filePicker.pathPicked.connect(self._openFile)
-        TTkHelper.overlay(None, filePicker, 20, 5, True)
+        ttk.TTkHelper.overlay(None, filePicker, 20, 5, True)
 
-    def _getDocument(self, filePath) -> tuple[_TextDocument, TTkTextEdit]:
+    def _getDocument(self, filePath) -> Tuple[_TextDocument, Optional[_TextEdit]]:
         for item in self._kodeTab.iterWidgets():
-            if issubclass(type(item), TTkTextEdit):
+            if issubclass(type(item), _TextEdit):
                 doc = item.document()
                 if issubclass(type(doc), _TextDocument):
                     if filePath == doc._filePath:
@@ -131,42 +118,42 @@ class TTKode(TTkGridLayout):
             self._kodeTab.setCurrentWidget(tedit)
             tedit.setFocus()
         else:
-            tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
-            label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
+            tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
+            label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
             self._kodeTab.addTab(tedit, label)
             self._kodeTab.setCurrentWidget(tedit)
 
         if lineNumber:
-            tedit.textCursor().movePosition(operation=TTkTextCursor.MoveOperation.End)
+            tedit.textCursor().movePosition(operation=ttk.TTkTextCursor.MoveOperation.End)
             tedit.ensureCursorVisible()
             tedit.textCursor().setPosition(line=lineNumber,pos=0)
             tedit.ensureCursorVisible()
             newCursor = tedit.textCursor().copy()
             newCursor.clearSelection()
-            selection = TTkTextEdit.ExtraSelection(
+            selection = _TextEdit.ExtraSelection(
                                             cursor=newCursor,
-                                            color=TTkColor.bg("#444400"),
-                                            format=TTkK.SelectionFormat.FullWidthSelection)
+                                            color=ttk.TTkColor.bg("#444400"),
+                                            format=ttk.TTkK.SelectionFormat.FullWidthSelection)
             tedit.setExtraSelections([selection])
         tedit.setFocus()
 
-    def _dropEventProxyFile(self, evt:TTkDnDEvent):
+    def _dropEventProxyFile(self, evt:ttk.TTkDnDEvent):
         data = evt.data()
         filePath = None
 
-        if ( issubclass(type(data), TTkTreeWidget._DropTreeData) and
+        if ( issubclass(type(data), ttk.TTkTreeWidget._DropTreeData) and
             data.items ):
-            if issubclass(type(data.items[0]), TTkFileTreeWidgetItem):
-                item:TTkFileTreeWidgetItem = data.items[0]
+            if issubclass(type(data.items[0]), ttk.TTkFileTreeWidgetItem):
+                item:ttk.TTkFileTreeWidgetItem = data.items[0]
                 filePath = os.path.realpath(item.path())
             elif issubclass(type(data.items[0]), TTKodeFileWidgetItem):
-                item:TTkFileTreeWidgetItem = data.items[0]
+                item:ttk.TTkFileTreeWidgetItem = data.items[0]
                 filePath = os.path.realpath(item.path())
 
         if filePath:
             doc, _ = self._getDocument(filePath=filePath)
-            tedit = TTkTextEdit(document=doc, readOnly=False, lineNumber=True)
-            label = TTkString(TTkCfg.theme.fileIcon.getIcon(filePath),TTkCfg.theme.fileIconColor) + TTkColor.RST + " " + os.path.basename(filePath)
+            tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
+            label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
 
             newData = _TTkNewTabWidgetDragData(
                 widget=tedit,
