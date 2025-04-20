@@ -52,7 +52,33 @@ class _TextDocument(ttk.TextDocumentHighlight):
         self.guessLexerFromFilename(filePath)
 
 class _TextEdit(ttk.TTkTextEdit):
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.cursorPositionChanged.connect(self._positionChanged)
+
+
+    @ttk.pyTTkSlot(ttk.TTkTextCursor)
+    def _positionChanged(self, cursor:ttk.TTkTextCursor):
+        extra_selections = []
+        # Highlight Red only the  lines under the cursor positions
+        cursor = self.textCursor().copy()
+        cursor.clearSelection()
+        selection = ttk.TTkTextEdit.ExtraSelection(
+                                        cursor=cursor,
+                                        color=ttk.TTkColor.bg("#333300"),
+                                        format=ttk.TTkK.SelectionFormat.FullWidthSelection)
+        extra_selections.append(selection)
+        self.setExtraSelections(extra_selections)
+
+    def goToLine(self, linenum: int) ->  None:
+        w,h = self.size()
+        h = min(h, self.document().lineCount())
+        tedit:ttk.TTkTextEditView = self
+        tedit.textCursor().movePosition(operation=ttk.TTkTextCursor.MoveOperation.End)
+        tedit.ensureCursorVisible()
+        tedit.textCursor().setPosition(line=linenum-h//2,pos=0)
+        tedit.ensureCursorVisible()
+        tedit.textCursor().setPosition(line=linenum,pos=0)
 
 class TTKode(ttk.TTkGridLayout):
     __slots__ = ('_kodeTab', '_activityBar')
@@ -122,37 +148,27 @@ class TTKode(ttk.TTkGridLayout):
             label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
             self._kodeTab.addTab(tedit, label)
             self._kodeTab.setCurrentWidget(tedit)
-
-        if lineNumber:
-            tedit.textCursor().movePosition(operation=ttk.TTkTextCursor.MoveOperation.End)
-            tedit.ensureCursorVisible()
-            tedit.textCursor().setPosition(line=lineNumber,pos=0)
-            tedit.ensureCursorVisible()
-            newCursor = tedit.textCursor().copy()
-            newCursor.clearSelection()
-            selection = _TextEdit.ExtraSelection(
-                                            cursor=newCursor,
-                                            color=ttk.TTkColor.bg("#444400"),
-                                            format=ttk.TTkK.SelectionFormat.FullWidthSelection)
-            tedit.setExtraSelections([selection])
+        tedit.goToLine(lineNumber)
         tedit.setFocus()
 
     def _dropEventProxyFile(self, evt:ttk.TTkDnDEvent):
         data = evt.data()
         filePath = None
 
-        if ( issubclass(type(data), ttk.TTkTreeWidget._DropTreeData) and
-            data.items ):
+        if ( issubclass(type(data), ttk.TTkTreeWidget._DropTreeData) and data.items ):
             if issubclass(type(data.items[0]), ttk.TTkFileTreeWidgetItem):
-                item:ttk.TTkFileTreeWidgetItem = data.items[0]
-                filePath = os.path.realpath(item.path())
+                linenum:int = 0
+                ftwi:ttk.TTkFileTreeWidgetItem = data.items[0]
+                filePath = os.path.realpath(ftwi.path())
             elif issubclass(type(data.items[0]), TTKodeFileWidgetItem):
-                item:ttk.TTkFileTreeWidgetItem = data.items[0]
-                filePath = os.path.realpath(item.path())
+                kfwi:TTKodeFileWidgetItem = data.items[0]
+                linenum:int = kfwi.lineNumber()
+                filePath = os.path.realpath(kfwi.path())
 
         if filePath:
             doc, _ = self._getDocument(filePath=filePath)
             tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
+            tedit.goToLine(linenum)
             label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
 
             newData = _TTkNewTabWidgetDragData(
@@ -165,6 +181,3 @@ class TTKode(ttk.TTkGridLayout):
             newEvt.setData(newData)
             return newEvt
         return evt
-        # def _closeFile():
-        #     if (index := KodeTab.lastUsed.currentIndex()) >= 0:
-        #         KodeTab.lastUsed.removeTab(index)
