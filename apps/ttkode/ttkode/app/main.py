@@ -63,7 +63,7 @@ def main():
 
     TTkodeHelper._loadPlugins()
 
-    ttkode = TTKode(files=args.filename)
+    ttkode = TTKode()
     ttkodeProxy.setTTKode(ttkode)
 
     root = TTk( layout=ttkode,
@@ -74,6 +74,9 @@ def main():
                     TTkTerm.Sigmask.CTRL_Q |
                     TTkTerm.Sigmask.CTRL_S |
                     TTkTerm.Sigmask.CTRL_Z ))
+
+    for file in args.filename:
+        ttkodeProxy.openFile(file)
 
     TTkodeHelper._runPlugins()
 

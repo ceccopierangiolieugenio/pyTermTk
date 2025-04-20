@@ -76,13 +76,13 @@ class _TextEdit(ttk.TTkTextEdit):
         tedit:ttk.TTkTextEditView = self
         tedit.textCursor().movePosition(operation=ttk.TTkTextCursor.MoveOperation.End)
         tedit.ensureCursorVisible()
-        tedit.textCursor().setPosition(line=linenum-h//2,pos=0)
+        tedit.textCursor().setPosition(line=linenum-h//3,pos=0)
         tedit.ensureCursorVisible()
         tedit.textCursor().setPosition(line=linenum,pos=0)
 
 class TTKode(ttk.TTkGridLayout):
     __slots__ = ('_kodeTab', '_activityBar')
-    def __init__(self, *, files, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         appTemplate = ttk.TTkAppTemplate(border=False)
@@ -115,9 +115,6 @@ class TTKode(ttk.TTkGridLayout):
         appTemplate.setItem(self._activityBar, ttk.TTkAppTemplate.LEFT, size=30)
         appTemplate.setWidget(ttk.TTkLogViewer(), ttk.TTkAppTemplate.BOTTOM, title="Logs", size=3)
 
-        for file in files:
-            self._openFile(file)
-
         fileTree.fileActivated.connect(lambda x: self._openFile(x.path()))
 
     ttk.pyTTkSlot()
@@ -137,18 +134,17 @@ class TTKode(ttk.TTkGridLayout):
             content = f.read()
         return _TextDocument(text=content, filePath=filePath), None
 
-    def _openFile(self, filePath, lineNumber=0):
+    def _openFile(self, filePath, line:int=0, pos:int=0):
         filePath = os.path.realpath(filePath)
         doc, tedit = self._getDocument(filePath=filePath)
         if tedit:
             self._kodeTab.setCurrentWidget(tedit)
-            tedit.setFocus()
         else:
             tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
             label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
             self._kodeTab.addTab(tedit, label)
             self._kodeTab.setCurrentWidget(tedit)
-        tedit.goToLine(lineNumber)
+        tedit.goToLine(line)
         tedit.setFocus()
 
     def _dropEventProxyFile(self, evt:ttk.TTkDnDEvent):

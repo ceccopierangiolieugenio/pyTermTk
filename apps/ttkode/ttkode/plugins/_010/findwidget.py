@@ -194,7 +194,7 @@ class FindWidget(ttk.TTkContainer):
         if isinstance(item, _MatchTreeWidgetItem):
             file = item.path()
             line = item.lineNumber()
-            ttkodeProxy.ttkode()._openFile(file, line)
+            ttkodeProxy.openFile(file, line)
 
 
     @ttk.pyTTkSlot()
