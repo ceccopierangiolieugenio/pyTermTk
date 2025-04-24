@@ -84,6 +84,7 @@ class TTkTermBase():
         CTRL_S = 0x0002
         CTRL_Z = 0x0004
         CTRL_Q = 0x0008
+        CTRL_Y = 0x0010
 
     title: str = "TermTk"
     width: int = 0

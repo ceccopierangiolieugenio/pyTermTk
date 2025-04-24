@@ -152,7 +152,6 @@ class TTkTextDocument():
         self.undoCommandAdded = pyTTkSignal()
         self.modificationChanged = pyTTkSignal(bool)
         self._backgroundColor = TTkColor.RST
-        text = text
         self._dataLines = [TTkString(t) for t in text.split('\n')]
         self._modified = False
         # Cumulative changes since the lasrt snapshot
@@ -267,10 +266,10 @@ class TTkTextDocument():
         self._snapChanged = None
 
     def isUndoAvailable(self):
-        return self._snap and self._snap._prevDiff
+        return self._snap is not None and self._snap._prevDiff is not None
 
     def isRedoAvailable(self):
-        return self._snap and self._snap._nextDiff
+        return self._snap is not None and self._snap._nextDiff is not None
 
     def hasSnapshots(self):
         return self._snap is not None

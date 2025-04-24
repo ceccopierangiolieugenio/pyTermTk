@@ -31,7 +31,7 @@ from TermTk.TTkCore.string import TTkString
 from TermTk.TTkCore.color import TTkColor, TTkColorGradient
 from TermTk.TTkCore.signal import pyTTkSlot, pyTTkSignal
 from TermTk.TTkWidgets.widget import TTkWidget
-from TermTk.TTkWidgets.tabwidget import TTkTabWidget, _TTkNewTabWidgetDragData, _TTkTabWidgetDragData
+from TermTk.TTkWidgets.tabwidget import TTkTabWidget, TTkBarType, _TTkNewTabWidgetDragData, _TTkTabWidgetDragData
 from TermTk.TTkWidgets.splitter import TTkSplitter
 from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
@@ -70,7 +70,7 @@ class _TTkKodeTab(TTkTabWidget):
 
     def iterWidgets(self):
         for i in range(self.count()):
-            yield self.widget(i)
+            yield self.widget(i), self.tabButton(i)
 
     def dragEnterEvent(self, evt:TTkDnDEvent) -> bool:
         TTkLog.debug(f"Drag Enter")
@@ -122,7 +122,7 @@ class _TTkKodeTab(TTkTabWidget):
                 splitter.replaceWidget(index, splitter := TTkSplitter(orientation=orientation))
                 splitter.addWidget(self)
                 index=offset
-            splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), closable=self.tabsClosable()))
+            splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
             kt._dropEventProxy = self._dropEventProxy
             kt.addTab(widget,label)
             if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
@@ -208,19 +208,22 @@ class _TTkKodeTab(TTkTabWidget):
 
 class TTkKodeTab(TTkSplitter):
     __slots__ = (
-        '_lastKodeTabWidget',
+        '_lastKodeTabWidget', '_barType',
         # Signals
         'currentChanged','tabBarClicked','tabCloseRequested' )
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self,
+                 barType:TTkBarType=TTkBarType.NONE,
+                 **kwargs) -> None:
         self.currentChanged    = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabBarClicked     = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabCloseRequested = pyTTkSignal(TTkTabWidget,int)
+        self._barType = barType
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
         # self.layout().addWidget(splitter := TTkSplitter())
-        self._lastKodeTabWidget = _TTkKodeTab(baseWidget=self, **kwargs)
+        self._lastKodeTabWidget = _TTkKodeTab(baseWidget=self, barType=self._barType, **kwargs)
         self._lastKodeTabWidget._dropEventProxy = self._dropEventProxy
         self.addWidget(self._lastKodeTabWidget)
 

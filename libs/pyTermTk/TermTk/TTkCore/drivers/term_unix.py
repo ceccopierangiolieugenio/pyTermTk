@@ -67,6 +67,8 @@ class TTkTerm(TTkTermBase):
             attr[6][termios.VSUSP]=  b'\x1a' if value else 0
         if mask & TTkTerm.Sigmask.CTRL_Q:
             attr[6][termios.VSTART]= b'\x11' if value else 0
+        if mask & TTkTerm.Sigmask.CTRL_Y:
+            attr[6][termios.VDSUSP]= b'\x19' if value else 0
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attr)
     TTkTermBase.setSigmask = _setSigmask
 
