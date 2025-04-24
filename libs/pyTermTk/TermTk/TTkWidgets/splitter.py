@@ -36,11 +36,14 @@ class TTkSplitter(TTkContainer):
     '''TTkSplitter'''
 
     classStyle = {
-                'default':     {'color': TTkColor.fg("#dddddd")+TTkColor.bg("#222222"),
-                                'borderColor': TTkColor.RST},
+                'default':     {'glyphs' : {
+                                    TTkK.VERTICAL   : ('╞','═','╡'),
+                                    TTkK.HORIZONTAL : ('╥','║','╨') },
+                                'color': TTkColor.fgbg("#dddddd","#222222"),
+                                'borderColor': TTkColor.RST },
                 'disabled':    {'color': TTkColor.fg('#888888'),
                                 'borderColor':TTkColor.fg('#888888')},
-                'focus':       {'color': TTkColor.fg("#ffddff")+TTkColor.bg("#222222"),
+                'focus':       {'color': TTkColor.fgbg("#ffddff","#222222"),
                                 'borderColor': TTkColor.fg("#ffffaa")}
             }
 
@@ -440,12 +443,22 @@ class TTkSplitter(TTkContainer):
             off= 1
             canvas.drawBox(pos=(0,0),size=(w,h),color=borderColor)
 
+        glyphs = style['glyphs'][self._orientation]
         if self._orientation == TTkK.HORIZONTAL:
             for i in self._separators[:-1]:
-                canvas.drawVLine(pos=(i+off,0), size=h,color=borderColor)
+                canvas.drawChar(pos=(i+off,0  ), char=glyphs[0], color=borderColor)
+                canvas.drawChar(pos=(i+off,h-1), char=glyphs[2], color=borderColor)
+                if h>2:
+                    canvas.fill(pos=(i+off,1),size=(1,h-2), char=glyphs[1], color=borderColor)
+
+                # canvas.drawVLine(pos=(i+off,0), size=h,color=borderColor)
         else:
             for i in self._separators[:-1]:
-                canvas.drawHLine(pos=(0,i+off), size=w,color=borderColor)
+                canvas.drawChar(pos=(0,  i+off), char=glyphs[0], color=borderColor)
+                canvas.drawChar(pos=(w-1,i+off), char=glyphs[2], color=borderColor)
+                if w>2:
+                    canvas.fill(pos=(1,i+off),size=(w-2,1), char=glyphs[1], color=borderColor)
+                # canvas.drawHLine(pos=(0,i+off), size=w,color=borderColor)
 
         if self._orientation == TTkK.HORIZONTAL and self._border:
             for i,t in enumerate(self._titles):

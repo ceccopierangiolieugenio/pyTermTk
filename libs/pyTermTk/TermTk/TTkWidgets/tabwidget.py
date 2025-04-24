@@ -75,20 +75,16 @@ _tabGlyphs = {
 
 _tabStyle  = {
             'default':     {'color': TTkColor.fgbg("#dddd88","#000044"),
-                            'bgColor': TTkColor.fgbg("#000000","#aaaaaa"),
+                            'bgColor': TTkColor.fgbg("#000000","#8888aa"),
                             'borderColor': TTkColor.RST,
                             'tabOffsetColor': TTkColor.RST,
                             'glyphs':_tabGlyphs},
             'disabled':    {'color': TTkColor.fg('#888888'),
-                            'bgColor': TTkColor.fgbg("#000000","#aaaaaa"),
                             'borderColor':TTkColor.fg('#888888'),
-                            'tabOffsetColor': TTkColor.RST,
-                            'glyphs':_tabGlyphs},
+                            'tabOffsetColor': TTkColor.RST},
             'focus':       {'color': TTkColor.fgbg("#dddd88","#000044")+TTkColor.BOLD,
-                            'bgColor': TTkColor.fgbg("#000000","#aaaaaa"),
                             'borderColor': TTkColor.fg("#ffff00") + TTkColor.BOLD,
-                            'tabOffsetColor': TTkColor.RST,
-                            'glyphs':_tabGlyphs},
+                            'tabOffsetColor': TTkColor.RST},
         }
 
 _tabStyleNormal = {
@@ -196,7 +192,7 @@ class TTkTabButton(_TTkTabColorButton):
         self.resize(size, self._barType.vSize())
         self.setMinimumSize(size, self._barType.vSize())
         self.setMaximumSize(size, self._barType.vSize())
-        self.setFocusPolicy(TTkK.ParentFocus)
+        self.setFocusPolicy(TTkK.ClickFocus)
 
     def data(self):
         return self._data
@@ -236,6 +232,8 @@ class TTkTabButton(_TTkTabColorButton):
         x,y = evt.x,evt.y
         w,h = self.size()
         offY = self._barType.offY()
+        if parent:=self.parentWidget():
+            parent.setFocus()
         if self._closable and y == offY and w-4<=x<w-1 and self._closeButtonPressed:
             self._closeButtonPressed = False
             self.closeClicked.emit()

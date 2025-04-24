@@ -37,6 +37,19 @@ from TermTk.TTkWidgets.frame import TTkFrame
 from TermTk.TTkLayouts.gridlayout import TTkGridLayout
 from TermTk.TTkGui.drag import TTkDnDEvent
 
+_splitter_NERD_1_style = {
+        'default':{
+            'glyphs' : {
+                TTkK.VERTICAL   : ('▃','▃','▃'),
+                TTkK.HORIZONTAL : ('┇','║','┇') },
+            'color': TTkColor.fgbg("#dddddd","#222222"),
+            'borderColor': TTkColor.fg("#8888aa") },
+        'focus':{
+            'color': TTkColor.fgbg("#ffddff","#222222"),
+            'borderColor': TTkColor.fg("#8888aa")},
+        'hover':{
+            'borderColor': TTkColor.fg("#aaaa88")}
+    }
 class _TTkKodeTab(TTkTabWidget):
     __slots__ = (
         '_frameOverlay','_baseWidget')
@@ -119,7 +132,7 @@ class _TTkKodeTab(TTkTabWidget):
             splitter = self.parentWidget()
             index = splitter.indexOf(self)
             if splitter.orientation() != orientation:
-                splitter.replaceWidget(index, splitter := TTkSplitter(orientation=orientation))
+                splitter.replaceWidget(index, splitter := TTkSplitter(orientation=orientation, style=self.parentWidget().classStyle))
                 splitter.addWidget(self)
                 index=offset
             splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
@@ -219,6 +232,9 @@ class TTkKodeTab(TTkSplitter):
         self.tabBarClicked     = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabCloseRequested = pyTTkSignal(TTkTabWidget,int)
         self._barType = barType
+
+        self.classStyle |= _splitter_NERD_1_style
+
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
