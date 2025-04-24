@@ -73,6 +73,7 @@ def main():
                     # TTkTerm.Sigmask.CTRL_C |
                     TTkTerm.Sigmask.CTRL_Q |
                     TTkTerm.Sigmask.CTRL_S |
+                    TTkTerm.Sigmask.CTRL_Y |
                     TTkTerm.Sigmask.CTRL_Z ))
 
     for file in args.filename:

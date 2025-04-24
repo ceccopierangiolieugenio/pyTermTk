@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # MIT License
 #
 # Copyright (c) 2021 Eugenio Parodi <ceccopierangiolieugenio AT googlemail DOT com>
@@ -45,11 +43,30 @@ class TTKodeFileWidgetItem(ttk.TTkTreeWidgetItem):
         return self._lineNumber
 
 class _TextDocument(ttk.TextDocumentHighlight):
-    __slots__ = ('_filePath')
+    __slots__ = ('_filePath', 'fileChangedStatus', '_changedStatus', '_savedSnapshot')
     def __init__(self, filePath:str="", **kwargs):
-        self._filePath = filePath
+        self.fileChangedStatus:ttk.pyTTkSignal = ttk.pyTTkSignal(bool, _TextDocument)
+        self._filePath:str = filePath
+        self._changedStatus:bool = False
         super().__init__(**kwargs)
+        self._savedSnapshot = self.snapshootId()
         self.guessLexerFromFilename(filePath)
+        self.contentsChanged.connect(self._handleContentChanged)
+
+    def _handleContentChanged(self) -> None:
+        '''A signal is emitted when the file status change, marking it as modified or not'''
+        # ttk.TTkLog.debug(f"{self.isUndoAvailable()=} == {self._changedStatus=}")
+        curState = self.changed() or self._savedSnapshot != self.snapshootId()
+        if self._changedStatus != curState:
+            self._changedStatus = not self._changedStatus
+            ttk.TTkLog.debug(f"{self.isUndoAvailable()=} == {self._changedStatus=}")
+            self.fileChangedStatus.emit(self._changedStatus, self)
+
+    def save(self):
+        self._changedStatus = False
+        self._savedSnapshot = self.snapshootId()
+        self.fileChangedStatus.emit(self._changedStatus, self)
+        pass
 
 class _TextEdit(ttk.TTkTextEdit):
     def __init__(self, **kwargs):
@@ -88,7 +105,7 @@ class TTKode(ttk.TTkGridLayout):
         appTemplate = ttk.TTkAppTemplate(border=False)
         self.addWidget(appTemplate)
 
-        self._kodeTab = ttk.TTkKodeTab(border=False, closable=True)
+        self._kodeTab = ttk.TTkKodeTab(border=False, barType=ttk.TTkBarType.NERD_1 ,closable=True)
         self._kodeTab.setDropEventProxy(self._dropEventProxyFile)
 
         appTemplate.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), ttk.TTkAppTemplate.MAIN)
@@ -124,7 +141,7 @@ class TTKode(ttk.TTkGridLayout):
         ttk.TTkHelper.overlay(None, filePicker, 20, 5, True)
 
     def _getDocument(self, filePath) -> Tuple[_TextDocument, Optional[_TextEdit]]:
-        for item in self._kodeTab.iterWidgets():
+        for item, _ in self._kodeTab.iterWidgets():
             if issubclass(type(item), _TextEdit):
                 doc = item.document()
                 if issubclass(type(doc), _TextDocument):
@@ -132,7 +149,18 @@ class TTKode(ttk.TTkGridLayout):
                         return doc, item
         with open(filePath, 'r') as f:
             content = f.read()
-        return _TextDocument(text=content, filePath=filePath), None
+        td = _TextDocument(text=content, filePath=filePath)
+        td.fileChangedStatus.connect(self._handleFileChangedStatus)
+        return td, None
+
+    ttk.pyTTkSlot(bool, _TextDocument)
+    def _handleFileChangedStatus(self, status:bool, doc:_TextDocument) -> None:
+        ttk.TTkLog.debug(f"Status ({status}) -> {doc._filePath}")
+        for item, tab in self._kodeTab.iterWidgets():
+            if issubclass(type(item), _TextEdit):
+                if doc == item.document():
+                    tab.setText("Modified" if status else "OKKK!!!")
+
 
     def _openFile(self, filePath, line:int=0, pos:int=0):
         filePath = os.path.realpath(filePath)
