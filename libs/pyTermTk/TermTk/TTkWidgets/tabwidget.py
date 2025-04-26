@@ -496,11 +496,11 @@ class TTkTabBar(TTkContainer):
         self._leftScroller.setSideEnd(sideEnd&TTkK.LEFT)
         self._updateTabs()
 
-    def addTab(self, label, data=None, closable=None):
+    def addTab(self, label, data=None, closable=None) -> int:
         '''addTab'''
         return self.insertTab(len(self._tabButtons), label=label, data=data, closable=closable)
 
-    def insertTab(self, index, label, data=None, closable=None):
+    def insertTab(self, index, label, data=None, closable=None) -> int:
         '''insertTab'''
         if index <= self._currentIndex:
             self._currentIndex += 1
@@ -772,7 +772,12 @@ class TTkTabWidget(TTkFrame):
     def count(self) -> int:
         return len(self._tabWidgets)
 
-    def tabButton(self, index):
+    def indexOf(self, widget) -> int:
+        if widget in self._tabWidgets:
+            return self._tabWidgets.index(widget)
+        return -1
+
+    def tabButton(self, index) -> TTkTabButton:
         '''tabButton'''
         return self._tabBar.tabButton(index)
 
@@ -782,7 +787,7 @@ class TTkTabWidget(TTkFrame):
             return self._tabWidgets[index]
         return None
 
-    def currentWidget(self):
+    def currentWidget(self) -> TTkWidget:
         '''currentWidget'''
         for w in self._tabWidgets:
             if w.isVisible():
@@ -880,22 +885,22 @@ class TTkTabWidget(TTkFrame):
         self._tabBarTopLayout.update()
         return button
 
-    def addTab(self, widget, label, data=None, closable=None):
+    def addTab(self, widget, label, data=None, closable=None) -> int:
         '''addTab'''
         widget.hide()
         self._tabWidgets.append(widget)
         self.layout().addWidget(widget)
-        self._tabBar.addTab(label, data, closable)
+        return self._tabBar.addTab(label, data, closable)
 
-    def insertTab(self, index, widget, label, data=None, closable=None):
+    def insertTab(self, index, widget, label, data=None, closable=None) -> int:
         '''insertTab'''
         widget.hide()
         self._tabWidgets.insert(index, widget)
         self.layout().addWidget(widget)
-        self._tabBar.insertTab(index, label, data, closable)
+        return self._tabBar.insertTab(index, label, data, closable)
 
     @pyTTkSlot(int)
-    def removeTab(self, index):
+    def removeTab(self, index) -> None:
         '''removeTab'''
         self.tabCloseRequested.emit(index)
         self.layout().removeWidget(self._tabWidgets[index])
