@@ -43,15 +43,23 @@ class TTKodeFileWidgetItem(ttk.TTkTreeWidgetItem):
         return self._lineNumber
 
 class _TextDocument(ttk.TextDocumentHighlight):
-    __slots__ = ('_filePath', 'fileChangedStatus', '_changedStatus', '_savedSnapshot')
-    def __init__(self, filePath:str="", **kwargs):
+    __slots__ = ('_filePath', '_tabText',
+                 'fileChangedStatus', '_changedStatus', '_savedSnapshot')
+    def __init__(self, filePath:str="", tabText:ttk.TTkString=ttk.TTkString(), **kwargs):
         self.fileChangedStatus:ttk.pyTTkSignal = ttk.pyTTkSignal(bool, _TextDocument)
         self._filePath:str = filePath
+        self._tabText = tabText
         self._changedStatus:bool = False
         super().__init__(**kwargs)
         self._savedSnapshot = self.snapshootId()
         self.guessLexerFromFilename(filePath)
         self.contentsChanged.connect(self._handleContentChanged)
+
+    def getTabButtonStyle(self) -> dict:
+        if self._changedStatus:
+            return {'default':{'closeGlyph':' ● '}}
+        else:
+            return {'default':{'closeGlyph':' □ '}}
 
     def _handleContentChanged(self) -> None:
         '''A signal is emitted when the file status change, marking it as modified or not'''
@@ -133,6 +141,20 @@ class TTKode(ttk.TTkGridLayout):
         appTemplate.setWidget(ttk.TTkLogViewer(), ttk.TTkAppTemplate.BOTTOM, title="Logs", size=3)
 
         fileTree.fileActivated.connect(lambda x: self._openFile(x.path()))
+        self._kodeTab.tabAdded.connect(self._tabAdded)
+
+    def _getTabButtonFromWidget(self, widget:ttk.TTkWidget) -> ttk.TTkTabButton:
+        for item, tab in self._kodeTab.iterWidgets():
+            if item == widget:
+                return tab
+        return None
+
+    ttk.pyTTkSlot(ttk.TTkTabWidget, int)
+    def _tabAdded(self, tw:ttk.TTkTabWidget, index:int):
+        tb = tw.tabButton(index)
+        wid = tw.widget(index)
+        if isinstance(wid,_TextEdit):
+            tb.mergeStyle(wid.document().getTabButtonStyle())
 
     ttk.pyTTkSlot()
     def _showFileDialog(self):
@@ -149,23 +171,18 @@ class TTKode(ttk.TTkGridLayout):
                         return doc, item
         with open(filePath, 'r') as f:
             content = f.read()
-        td = _TextDocument(text=content, filePath=filePath)
+        tabText = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
+        td = _TextDocument(text=content, filePath=filePath, tabText=tabText)
         td.fileChangedStatus.connect(self._handleFileChangedStatus)
         return td, None
 
     ttk.pyTTkSlot(bool, _TextDocument)
     def _handleFileChangedStatus(self, status:bool, doc:_TextDocument) -> None:
-        ttk.TTkLog.debug(f"Status ({status}) -> {doc._filePath}")
+        # ttk.TTkLog.debug(f"Status ({status}) -> {doc._filePath}")
         for item, tab in self._kodeTab.iterWidgets():
             if issubclass(type(item), _TextEdit):
                 if doc == item.document():
-                    if status:
-                        tab.setText("Modified")
-                        tab.mergeStyle({'default':{'closeGlyph':' ● '}})
-                    else:
-                        tab.setText("OKKK!!!")
-                        tab.mergeStyle({'default':{'closeGlyph':' □ '}})
-
+                    tab.mergeStyle(doc.getTabButtonStyle())
 
     def _openFile(self, filePath, line:int=0, pos:int=0):
         filePath = os.path.realpath(filePath)
@@ -174,8 +191,7 @@ class TTKode(ttk.TTkGridLayout):
             self._kodeTab.setCurrentWidget(tedit)
         else:
             tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
-            label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
-            self._kodeTab.addTab(tedit, label)
+            self._kodeTab.addTab(tedit, doc._tabText)
             self._kodeTab.setCurrentWidget(tedit)
         tedit.goToLine(line)
         tedit.setFocus()
@@ -198,11 +214,9 @@ class TTKode(ttk.TTkGridLayout):
             doc, _ = self._getDocument(filePath=filePath)
             tedit = _TextEdit(document=doc, readOnly=False, lineNumber=True)
             tedit.goToLine(linenum)
-            label = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
-
             newData = _TTkNewTabWidgetDragData(
                 widget=tedit,
-                label=label,
+                label=doc._tabText,
                 data=None,
                 closable=True
             )
