@@ -31,8 +31,8 @@ def demoDnDTabs(root=None, border=True):
     vsplitter = ttk.TTkSplitter(parent=root, orientation=ttk.TTkK.VERTICAL)
     tabWidget1 = ttk.TTkTabWidget(parent=vsplitter, border=border)
     hsplitter = ttk.TTkSplitter(parent=vsplitter)
-    tabWidget2 = ttk.TTkTabWidget(parent=hsplitter, border=False)
-    tabWidget3 = ttk.TTkTabWidget(parent=hsplitter, border=False)
+    tabWidget2 = ttk.TTkTabWidget(parent=hsplitter, border=False, barType=ttk.TTkBarType.DEFAULT_2)
+    tabWidget3 = ttk.TTkTabWidget(parent=hsplitter, border=False, barType=ttk.TTkBarType.NERD_1)
 
     tabWidget1.addTab(ttk.TTkLogViewer(follow=True),  "Logs")
 

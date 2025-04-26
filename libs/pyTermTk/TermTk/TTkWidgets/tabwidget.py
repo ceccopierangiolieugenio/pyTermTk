@@ -129,32 +129,23 @@ class _TTkTabBarDragData():
 # class _TTkTabColorButton(TTkContainer):
 class _TTkTabColorButton(TTkWidget):
     classStyle = _tabStyle | {
-                'hover':       {'color': TTkColor.fg("#dddd88")+TTkColor.bg("#000050")+TTkColor.BOLD,
+                'hover':       {'color': TTkColor.fgbg("#dddd88","#000050")+TTkColor.BOLD,
                                 'borderColor': TTkColor.fg("#AAFFFF")+TTkColor.BOLD},
             }
 
     __slots__ = (
-        '_text', '_barType',
+        '_barType',
         # Signals
         'clicked'
         )
     def __init__(self, *,
-                 text:TTkString='',
                  barType:TTkBarType=TTkBarType.DEFAULT_3,
                  **kwargs) -> None:
         self.clicked = pyTTkSignal()
 
-        self._text = TTkString(text.replace('\n',''))
         self._barType = barType
 
         super().__init__(forwardStyle=True, **kwargs)
-
-    def text(self) -> TTkString:
-        return self._text
-
-    def setText(self, text:TTkString) -> None:
-        self._text = TTkString(text.replace('\n',''))
-        self.update()
 
     def mouseReleaseEvent(self, evt:TTkMouseEvent) -> bool:
         self.clicked.emit()
@@ -174,11 +165,13 @@ class TTkTabButton(_TTkTabColorButton):
     '''TTkTabButton'''
     __slots__ = (
         '_data','_sideEnd', '_tabStatus', '_closable',
-        'closeClicked', '_closeButtonPressed','_data')
+        'closeClicked', '_closeButtonPressed','_data', '_text')
     def __init__(self, *,
+                 text:TTkString='',
                  data:object=None,
                  closable:bool=False,
                  **kwargs) -> None:
+        self._text = TTkString(text.replace('\n',''))
         self._sideEnd = TTkK.NONE
         self._tabStatus = TTkK.Unchecked
         self._data = data
@@ -186,13 +179,24 @@ class TTkTabButton(_TTkTabColorButton):
         self.closeClicked = pyTTkSignal()
         super().__init__(**kwargs)
         self._closeButtonPressed = False
+        self._resetSize()
+        self.setFocusPolicy(TTkK.ClickFocus)
+
+    def _resetSize(self):
         size = self.text().termWidth() + 2
         if self._closable:
             size += 3
         self.resize(size, self._barType.vSize())
         self.setMinimumSize(size, self._barType.vSize())
         self.setMaximumSize(size, self._barType.vSize())
-        self.setFocusPolicy(TTkK.ClickFocus)
+
+    def text(self) -> TTkString:
+        return self._text
+
+    def setText(self, text:TTkString) -> None:
+        self._text = TTkString(text.replace('\n',''))
+        self._resetSize()
+        self.update()
 
     def data(self):
         return self._data

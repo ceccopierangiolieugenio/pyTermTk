@@ -98,7 +98,7 @@ class _TTkKodeTab(TTkTabWidget):
     def dragMoveEvent(self, evt:TTkDnDEvent) -> bool:
         x,y = evt.x, evt.y
         w,h = self.size()
-        k = 3 if self.border() else 2
+        k,_,_,_ = self.getPadding()
         if y<k:
             return super().dragMoveEvent(evt)
         h-=k
