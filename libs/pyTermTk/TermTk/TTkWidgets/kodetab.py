@@ -54,9 +54,9 @@ class _TTkKodeTab(TTkTabWidget):
     __slots__ = (
         '_frameOverlay','_baseWidget')
     def __init__(self, *,
-                 baseWidget:TTkWidget=None,
+                 baseWidget=None,
                  **kwargs) -> None:
-        self._baseWidget = baseWidget
+        self._baseWidget:TTkKodeTab = baseWidget
         self._frameOverlay = None
         super().__init__(**kwargs)
         self.tabBarClicked.connect(    lambda i:self._baseWidget.tabBarClicked.emit(    self, i, self.widget(i), self.tabData(i)))
@@ -137,7 +137,8 @@ class _TTkKodeTab(TTkTabWidget):
                 index=offset
             splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
             kt._dropEventProxy = self._dropEventProxy
-            kt.addTab(widget,label)
+            ret = kt.addTab(widget,label)
+            self._baseWidget.tabAdded.emit(kt, ret)
             if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
                 fwnew._importMenu(fwold)
 
@@ -223,7 +224,7 @@ class TTkKodeTab(TTkSplitter):
     __slots__ = (
         '_lastKodeTabWidget', '_barType',
         # Signals
-        'currentChanged','tabBarClicked','tabCloseRequested' )
+        'currentChanged','tabBarClicked','tabCloseRequested', 'tabAdded' )
 
     def __init__(self,
                  barType:TTkBarType=TTkBarType.NONE,
@@ -231,6 +232,7 @@ class TTkKodeTab(TTkSplitter):
         self.currentChanged    = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabBarClicked     = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabCloseRequested = pyTTkSignal(TTkTabWidget,int)
+        self.tabAdded = pyTTkSignal(TTkTabWidget, int)
         self._barType = barType
 
         self.classStyle |= _splitter_NERD_1_style
@@ -269,14 +271,18 @@ class TTkKodeTab(TTkSplitter):
     def setCurrentWidget(self, *args, **kwargs) -> None:
         return self._lastKodeTabWidget.setCurrentWidget(*args, **kwargs)
 
-    def addTab(self, *args, **kwargs) -> None:
+    def addTab(self, *args, **kwargs) -> int:
         if not TTkHelper.isParent(self._lastKodeTabWidget, self):
             for w in self.layout().iterWidgets():
-                if type(w) is _TTkKodeTab:
+                if isinstance(w,_TTkKodeTab):
                     self._lastKodeTabWidget = w
-                    return self._lastKodeTabWidget.addTab(*args, **kwargs)
+                    ret = self._lastKodeTabWidget.addTab(*args, **kwargs)
+                    self.tabAdded.emit(self._lastKodeTabWidget, ret)
+                    return ret
             raise Exception("No TTkKodeTab found to be used")
-        return self._lastKodeTabWidget.addTab(*args, **kwargs)
+        ret = self._lastKodeTabWidget.addTab(*args, **kwargs)
+        self.tabAdded.emit(self._lastKodeTabWidget, ret)
+        return ret
 
     # def addMenu(self, text, position=TTkK.LEFT, data=None):
     def addMenu(self, text:TTkString, data:object=None, checkable:bool=False, checked:bool=False, position=TTkK.LEFT):
