@@ -22,6 +22,8 @@
 
 __all__ = ['TTKodeViewerProxy', 'ttkodeProxy']
 
+from typing import Optional, Callable, Any
+
 import TermTk as ttk
 
 from ttkode.app.ttkode import TTKode
@@ -39,21 +41,26 @@ class TTKodeProxy():
                  '_ttkode',
                  # Signals
                  )
-    _ttkode:TTKode
+    _ttkode:Optional[TTKode]
+    _openFileCb:Optional[Callable[[Any, int, int], Any]]
     def __init__(self) -> None:
-        self._openFileCb = lambda _ : None
+        self._openFileCb = None
         self._ttkode = None
 
     def setTTKode(self, ttkode:TTKode) -> None:
         self._ttkode = ttkode
+        self._openFileCb = ttkode._openFile
 
     def ttkode(self) -> TTKode:
+        if not self._ttkode:
+            raise Exception("TTkode uninitialized")
         return self._ttkode
 
     def setOpenFile(self, cb):
         self._openFileCb = cb
 
-    def openFile(self, fileName):
-        return self._openFileCb(fileName)
+    def openFile(self, fileName:str, line:int=0, pos:int=0):
+        if self._ttkode and self._openFileCb:
+            return self._openFileCb(fileName, line, pos)
 
 ttkodeProxy:TTKodeProxy = TTKodeProxy()

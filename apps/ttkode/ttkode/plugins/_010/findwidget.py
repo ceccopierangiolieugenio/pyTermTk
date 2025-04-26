@@ -100,7 +100,7 @@ def _walk_with_gitignore(root):
         yield dirpath, filenames
 
 
-class _ExpandButton(ttk.TTkButton):
+class _ToggleButton(ttk.TTkButton):
     def __init__(self, **kwargs):
         params = {
             'border':False,
@@ -140,19 +140,26 @@ class FindWidget(ttk.TTkContainer):
         super().__init__(**kwargs)
         self.setLayout(layout:=ttk.TTkGridLayout())
 
+
         searchLayout = ttk.TTkGridLayout()
-        searchLayout.addWidget(expandReplace:=_ExpandButton(), 0, 0)
-        searchLayout.addWidget(search :=ttk.TTkLineEdit(hint='Search'), 0, 1)
+        searchLayout.addWidget(expandReplace:=_ToggleButton(), 0, 0)
+        searchLayout.addWidget(search  :=ttk.TTkLineEdit(hint='Search'), 0, 1)
         searchLayout.addWidget(repl__l:=ttk.TTkLabel(visible=False, text='sub:'), 1, 0)
         searchLayout.addWidget(ft_in_l:=ttk.TTkLabel(visible=False, text='inc:'), 2, 0)
         searchLayout.addWidget(ft_ex_l:=ttk.TTkLabel(visible=False, text='exc:'), 3, 0)
         searchLayout.addWidget(replace:=ttk.TTkLineEdit(visible=False, hint='Replace'),          1, 1)
         searchLayout.addWidget(ft_incl:=ttk.TTkLineEdit(visible=False, hint='Files to include'), 2, 1)
         searchLayout.addWidget(ft_excl:=ttk.TTkLineEdit(visible=False, hint='Files to exclude'), 3, 1)
-
         layout.addItem(searchLayout, 0, 0)
-        layout.addWidget(btn_search:=ttk.TTkButton(text="Search", border=False), 4,0)
-        layout.addWidget(res_tree:=ttk.TTkTree(dragDropMode=ttk.TTkK.DragDropMode.AllowDrag), 5,0)
+
+        controlsLayout = ttk.TTkGridLayout()
+        controlsLayout.addWidget(btn_search:=ttk.TTkButton(text="Search", border=False), 0,0)
+        controlsLayout.addWidget(btn_replace:=ttk.TTkButton(text='Replace', border=False, enabled=False), 0, 1)
+        controlsLayout.addWidget(btn_expand  :=ttk.TTkButton(text='+', maxWidth=3, border=False), 0, 2)
+        controlsLayout.addWidget(btn_collapse:=ttk.TTkButton(text='-', maxWidth=3, border=False), 0, 3)
+        layout.addItem(controlsLayout,1,0)
+
+        layout.addWidget(res_tree:=ttk.TTkTree(dragDropMode=ttk.TTkK.DragDropMode.AllowDrag), 2,0)
         res_tree.setHeaderLabels(["Results"])
         res_tree.setColumnWidth(0,100)
 
@@ -170,15 +177,24 @@ class FindWidget(ttk.TTkContainer):
         self._files_exc_le = ft_excl
 
         btn_search.clicked.connect(self._search)
+        btn_expand.clicked.connect(self._results_tree.expandAll)
+        btn_collapse.clicked.connect(self._results_tree.collapseAll)
         search.returnPressed.connect(self._search)
         res_tree.itemActivated.connect(self._activated)
+
+        @ttk.pyTTkSlot(str)
+        def _replace_txt(value):
+            btn_replace.setEnabled(bool(value))
+
+        self._replace_le.textChanged.connect(_replace_txt)
+
 
     @ttk.pyTTkSlot(ttk.TTkTreeWidgetItem, int)
     def _activated(self, item:ttk.TTkTreeWidgetItem, _):
         if isinstance(item, _MatchTreeWidgetItem):
             file = item.path()
             line = item.lineNumber()
-            ttkodeProxy.ttkode()._openFile(file, line)
+            ttkodeProxy.openFile(file, line)
 
 
     @ttk.pyTTkSlot()
@@ -197,10 +213,13 @@ class FindWidget(ttk.TTkContainer):
                         ttk.TTkString(
                             ttk.TTkCfg.theme.fileIcon.getIcon(file),
                             ttk.TTkCfg.theme.fileIconColor) + " " +
-                        ttk.TTkString(f" {file} ", ttk.TTkColor.YELLOW+ttk.TTkColor.BOLD) +
+                        ttk.TTkString(f" {file} ", ttk.TTkColor.YELLOW+ttk.TTkColor.BOLD+ttk.TTkColor.bg('#000088')) +
                         ttk.TTkString(f" {root} ", ttk.TTkColor.fg("#888888"))
                     ],expanded=True)
                 for num,line in matches:
+                    line = line.lstrip(' ')
+                    # index = line.find(search_pattern)
+                    # outLine =
                     item.addChild(
                         _MatchTreeWidgetItem([
                             ttk.TTkString(str(num)+" ",ttk.TTkColor.CYAN) +
