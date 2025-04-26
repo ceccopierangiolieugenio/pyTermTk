@@ -159,7 +159,12 @@ class TTKode(ttk.TTkGridLayout):
         for item, tab in self._kodeTab.iterWidgets():
             if issubclass(type(item), _TextEdit):
                 if doc == item.document():
-                    tab.setText("Modified" if status else "OKKK!!!")
+                    if status:
+                        tab.setText("Modified")
+                        tab.mergeStyle({'default':{'closeGlyph':' ● '}})
+                    else:
+                        tab.setText("OKKK!!!")
+                        tab.mergeStyle({'default':{'closeGlyph':' □ '}})
 
 
     def _openFile(self, filePath, line:int=0, pos:int=0):
