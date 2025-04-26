@@ -162,6 +162,13 @@ class _TTkTabColorButton(TTkWidget):
         return False
 
 class TTkTabButton(_TTkTabColorButton):
+    classStyle = (
+        _TTkTabColorButton.classStyle |
+        { 'default': _TTkTabColorButton.classStyle['default'] |
+                    {'closeGlyph':' □ '} ,
+          'hover': _TTkTabColorButton.classStyle['hover'] |
+                    {'closeGlyph':' x '} } )
+
     '''TTkTabButton'''
     __slots__ = (
         '_data','_sideEnd', '_tabStatus', '_closable',
@@ -183,9 +190,10 @@ class TTkTabButton(_TTkTabColorButton):
         self.setFocusPolicy(TTkK.ClickFocus)
 
     def _resetSize(self):
+        style = self.currentStyle()
         size = self.text().termWidth() + 2
         if self._closable:
-            size += 3
+            size += len(style['closeGlyph'])
         self.resize(size, self._barType.vSize())
         self.setMinimumSize(size, self._barType.vSize())
         self.setMaximumSize(size, self._barType.vSize())
@@ -330,7 +338,9 @@ class TTkTabButton(_TTkTabColorButton):
                 canvas.drawText(pos=(0,0),color=borderColor,text=txtCenter)
         canvas.drawText(pos=(1,offY), text=self.text(), color=textColor)
         if self._closable:
-            canvas.drawText(pos=(w-4,offY), text="[X]", color=textColor)
+            closeGlyph = style['closeGlyph']
+            closeOff = len(closeGlyph)
+            canvas.drawText(pos=(w-closeOff-1,offY), text=closeGlyph, color=textColor)
 
 class _TTkTabMenuButton(TTkMenuBarButton):
     def paintEvent(self, canvas):
