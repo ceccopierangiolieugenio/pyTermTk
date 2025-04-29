@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.42.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.18-a.0...pyTermTk-v0.42.0-a.0) (2025-04-29)
+
+
+### Fixes
+
+* textEdit release control for unhandled shortcuts ([f5c60f9](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f5c60f9d5a4e47108e5a05063c40418c750b6778))
+* ttkLineEdit broadcast textChanged after deletion ([#388](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/388)) ([4857cb3](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/4857cb31cbd0bac49fd6464879a4590c0fc97550))
+
+
+### Features
+
+* add iterWidgets to KodeTab ([#390](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/390)) ([40ad352](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/40ad3524782cfe0330be7d5d3507a39b5042fd54))
+* add nerd_1 theme to the tab widget ([0da3881](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0da38814f153d062c347ac44cc9250fd6f2db5a2))
+* added expandAll,collapseAll to TTkTree ([f3d8205](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/f3d8205dcbddc54e7f50055128125bdf3cc939ae))
+* added hinting and bgcolor to TTkLineEdit ([5afecec](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/5afecec62d6061e5ba14b3d93a008cf5b9733579))
+* Allow configurable closing glyph in the tab button ([ebab624](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/ebab624779c7853c7831614d028cbe35a055ab1a))
+* prototyping Nerd_1 style to KodeTab ([a5fb669](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/a5fb6698fdd33d4cde34bb04855fbdce501aeafe))
+* tab button resize accordingly if the text change ([7aa6627](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/7aa6627fd2acb533a83a0975d6cc3cc75dbcd333))
+
+
+### Refactors
+
+* adapted ttkode to the latest pyTermTk ([542ecd7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/542ecd7f7798b10bca29a7e856e85aa91bb3bc74))
+
 ## [0.41.18-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.17-a.0...pyTermTk-v0.41.18-a.0) (2025-04-04)
 
 
