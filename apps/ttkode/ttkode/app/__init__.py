@@ -24,4 +24,3 @@
 from .cfg import *
 # from .glbl import *
 from .ttkode import *
-from .main import *

@@ -22,11 +22,16 @@
 
 __all__:list[str] = []
 
+import os, sys
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+
 import TermTk as ttk
 
 import ttkode
 
-from ttkode.plugins._010.findwidget import FindWidget
+from _010.findwidget import FindWidget
 
 _icon:str = (
     "╔═╗\n"
