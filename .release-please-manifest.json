@@ -1,6 +1,6 @@
 {
     "libs/pyTermTk": "0.42.0-a.0",
-    "apps/ttkode": "0.3.0-a.2",
+    "apps/ttkode": "0.3.1-a.2",
     "apps/ttkDesigner": "0.41.4-a.54",
     "apps/dumbPaintTool": "0.41.9-a.54"
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.0-a.2...ttkode-v0.3.1-a.2) (2025-04-29)
+
+
+### Chores
+
+* fix deployment ([#394](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/394)) ([3df5a09](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/3df5a092a326e1394c1db2d276d8e6e0a6407085))
+
 ## [0.3.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.2.15-a.2...ttkode-v0.3.0-a.2) (2025-04-29)
 
 
