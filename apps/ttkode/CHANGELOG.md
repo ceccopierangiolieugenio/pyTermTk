@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.2.15-a.2...ttkode-v0.3.0-a.2) (2025-04-29)
+
+
+### Features
+
+* added activity bar to ttkode ([68d60cd](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/68d60cd8da1f2fb46eb06fa84e772512f92c7e29))
+* added plugins and use apptemplate in ttkode ([cda2eb4](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/cda2eb45c560f35d2b4ec798600509c6eaea67a0))
+* improve search plugin ([#389](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/389)) ([09d190d](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/09d190d5c1a6879fb4e8fd14fd48d1ed9edd4878))
+* prototyping search plugin iin ttkode ([228d828](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/228d8288716cf5286555eb3a5b9ff63d72e8487b))
+* ttkode search plugin ([#385](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/385)) ([1d65bdf](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/1d65bdfdfdf522936976bdb920f2ec77ba241ded))
+* **ttkode:** add terminal ([#393](https://github.com/ceccopierangiolieugenio/pyTermTk/issues/393)) ([3f2d0e0](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/3f2d0e08500990b28da01b14c8c82fec3205951b))
+
+
+### Chores
+
+* fix ([0d6a80a](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0d6a80a6e2493b2d37722a575f19d9066cf9e35f))
+
+
+### Refactors
+
+* adapted ttkode to the latest pyTermTk ([542ecd7](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/542ecd7f7798b10bca29a7e856e85aa91bb3bc74))
+
 ## [0.2.15-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.2.14-a.2...ttkode-v0.2.15-a.2) (2025-04-03)
 
 
