@@ -22,7 +22,65 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ttkode.app import main
+__all__ = ['main']
+
+import argparse
+
+import appdirs
+
+from TermTk import TTk, TTkTerm, TTkTheme
+from TermTk import TTkLog
+
+from ttkode import TTkodeHelper
+from ttkode import ttkodeProxy
+from ttkode.app.ttkode import TTKode
+from ttkode.app.cfg import TTKodeCfg
+
+
+def main():
+    TTKodeCfg.pathCfg = appdirs.user_config_dir("ttkode")
+
+    parser = argparse.ArgumentParser()
+    # parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-c', help=f'config folder (default: "{TTKodeCfg.pathCfg}")', default=TTKodeCfg.pathCfg)
+    parser.add_argument('filename', type=str, nargs='*',
+                    help='the filename/s')
+    args = parser.parse_args()
+
+    # TTkLog.use_default_file_logging()
+
+    TTKodeCfg.pathCfg = args.c
+    TTkLog.debug(f"Config Path: {TTKodeCfg.pathCfg}")
+
+    TTKodeCfg.load()
+
+    # if 'theme' not in TTKodeCfg.options:
+    #     TTKodeCfg.options['theme'] = 'NERD'
+    # optionsLoadTheme(TTKodeCfg.options['theme'])
+
+    TTkTheme.loadTheme(TTkTheme.NERD)
+
+    TTkodeHelper._loadPlugins()
+
+    ttkode = TTKode()
+    ttkodeProxy.setTTKode(ttkode)
+
+    root = TTk( layout=ttkode,
+                title="TTkode",
+                mouseTrack=True,
+                sigmask=(
+                    # TTkTerm.Sigmask.CTRL_C |
+                    TTkTerm.Sigmask.CTRL_Q |
+                    TTkTerm.Sigmask.CTRL_S |
+                    TTkTerm.Sigmask.CTRL_Y |
+                    TTkTerm.Sigmask.CTRL_Z ))
+
+    for file in args.filename:
+        ttkodeProxy.openFile(file)
+
+    TTkodeHelper._runPlugins()
+
+    root.mainloop()
 
 if __name__ == '__main__':
     main()

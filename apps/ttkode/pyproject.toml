@@ -37,10 +37,14 @@ Issues     = "https://github.com/ceccopierangiolieugenio/pyTermTk/issues"
 Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps/ttkode/CHANGELOG.md"
 
 [project.scripts]
-ttkode = "ttkode:main"
+ttkode = "ttkode.__main__:main"
 
 [tool.setuptools]
-packages = ["ttkode", "ttkode.app"]
+packages = [
+    "ttkode", "ttkode.app",
+    "ttkode.plugins",
+    "ttkode.plugins._010",
+    ]
 
 [tool.setuptools.dynamic]
 version = {attr = "ttkode.__version__"}
