@@ -138,7 +138,24 @@ class TTKode(ttk.TTkGridLayout):
 
         appTemplate.setWidget(self._kodeTab, ttk.TTkAppTemplate.MAIN)
         appTemplate.setItem(self._activityBar, ttk.TTkAppTemplate.LEFT, size=30)
-        appTemplate.setWidget(ttk.TTkLogViewer(), ttk.TTkAppTemplate.BOTTOM, title="Logs", size=3)
+
+        # Define the bottom panel, using the menu feature to add logs and terminal
+        bottomLayout = ttk.TTkGridLayout()
+        appTemplate.setItem(bottomLayout, ttk.TTkAppTemplate.BOTTOM, size=3)
+        appTemplate.setMenuBar(bottomMenuBar:=ttk.TTkMenuBarLayout(), ttk.TTkAppTemplate.BOTTOM)
+
+        bottomLayout.addWidget(_logViewer:=ttk.TTkLogViewer())
+        bottomLayout.addWidget(_terminal:=ttk.TTkTerminal(visible=False))
+        _th = ttk.TTkTerminalHelper(term=_terminal)
+        _th.runShell()
+        @ttk.pyTTkSlot(ttk.TTkWidget)
+        def _showBottomTab(wid:ttk.TTkWidget):
+            _logViewer.hide()
+            _terminal.hide()
+            wid.show()
+
+        bottomMenuBar.addMenu("Logs", alignment=ttk.TTkK.LEFT_ALIGN).menuButtonClicked.connect(lambda : _showBottomTab(_logViewer))
+        bottomMenuBar.addMenu(" Terminal", alignment=ttk.TTkK.LEFT_ALIGN).menuButtonClicked.connect(lambda : _showBottomTab(_terminal))
 
         fileTree.fileActivated.connect(lambda x: self._openFile(x.path()))
         self._kodeTab.tabAdded.connect(self._tabAdded)
