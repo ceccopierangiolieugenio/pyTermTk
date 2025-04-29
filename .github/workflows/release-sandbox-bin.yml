@@ -49,7 +49,7 @@ jobs:
           cd ../
           find libs/pyTermTk/TermTk  -name "*.py" |
             sed 's,libs/pyTermTk/,,' |
-            sort | xargs tar cvzf -C libs/pyTermTk pyTermTk-Docs/sandbox/bin/TermTk.tgz
+            sort | xargs tar cvzf pyTermTk-Docs/sandbox/bin/TermTk.tgz -C libs/pyTermTk
           find tutorial -name '*.py' -o -name '*.json' |
             sort | xargs tar cvzf pyTermTk-Docs/sandbox/bin/tutorial.tgz
           find \
