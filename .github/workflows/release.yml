@@ -71,15 +71,18 @@ jobs:
             _VERSION_DPT=$(jq -r '.["apps/dumbPaintTool"]' .release-please-manifest.json)
             _VERSION_T_D=$(jq -r '.["apps/ttkDesigner"  ]' .release-please-manifest.json)
             _VERSION_KOD=$(jq -r '.["apps/ttkode"       ]' .release-please-manifest.json)
+            _VERSION_TLG=$(jq -r '.["apps/tlogg"        ]' .release-please-manifest.json)
             _NAME_TTK=$(jq -r '.packages["libs/pyTermTk"     ]["package-name"]' .release-please-config.json)
             _NAME_DPT=$(jq -r '.packages["apps/dumbPaintTool"]["package-name"]' .release-please-config.json)
             _NAME_T_D=$(jq -r '.packages["apps/ttkDesigner"  ]["package-name"]' .release-please-config.json)
             _NAME_KOD=$(jq -r '.packages["apps/ttkode"       ]["package-name"]' .release-please-config.json)
+            _NAME_TLG=$(jq -r '.packages["apps/tlogg"        ]["package-name"]' .release-please-config.json)
 
             echo "Version ${_NAME_TTK}: ${_VERSION_TTK}"
             echo "Version ${_NAME_DPT}: ${_VERSION_DPT}"
             echo "Version ${_NAME_T_D}: ${_VERSION_T_D}"
             echo "Version ${_NAME_KOD}: ${_VERSION_KOD}"
+            echo "Version ${_NAME_TLG}: ${_VERSION_TLG}"
           echo '::endgroup::'
 
           echo '::group::Update the Versions'
@@ -104,6 +107,12 @@ jobs:
                 "s|__version__:str.*|__version__:str = '${_VERSION_KOD}'|" \
                 apps/ttkode/ttkode/__init__.py
               sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/ttkode/pyproject.toml
+            fi
+            if grep -q "${_NAME_TLG}: ${_VERSION_TLG}" <<< ' ${{ steps.release-please.outputs.pr }}' ; then
+              sed -i \
+                "s|__version__:str.*|__version__:str = '${_VERSION_TLG}'|" \
+                apps/tlogg/tlogg/__init__.py
+              sed  "s|'pyTermTk *>=[^']*'|'pyTermTk>=${_VERSION_TTK}'|" -i apps/tlogg/pyproject.toml
             fi
             cp libs/pyTermTk/CHANGELOG.md CHANGELOG.md
           echo '::endgroup::'
@@ -242,6 +251,17 @@ jobs:
     with:
       pkg_name: ttkode
       pkg_folder: apps/ttkode
+    needs:
+      - release-please
+    secrets: inherit
+
+  publish-tlogg:
+    if: ${{ fromJson(needs.release-please.outputs.rp_out)['apps/tlogg--release_created'] }}
+    name: Publish tlogg
+    uses: ./.github/workflows/python-publish.yml
+    with:
+      pkg_name: tlogg
+      pkg_folder: apps/tlogg
     needs:
       - release-please
     secrets: inherit

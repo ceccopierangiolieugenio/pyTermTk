@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__:str = '0.2.7-a.3'
+__version__:str = '0.5.0-a.0'
 
 from .plugin import TloggPlugin
 from .proxy import tloggProxy, TloggViewerProxy

@@ -26,6 +26,9 @@
     },
     "apps/ttkode": {
       "package-name": "ttkode"
+    },
+    "apps/tlogg": {
+      "package-name": "tlogg"
     }
   }
 }
