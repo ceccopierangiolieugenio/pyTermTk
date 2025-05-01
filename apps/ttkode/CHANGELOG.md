@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.2-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.1-a.2...ttkode-v0.3.2-a.2) (2025-05-01)
+
+
+### Chores
+
+* **typing:** removed 'Self' to keep python 3.9 compatibility ([0225d4c](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/0225d4c19ffee21c243fc0c8bfdfe7e7954ffce2))
+* **typing:** removed "Self" reference to allow flake test to pass ([54ec928](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/54ec928496fa2e2ff98f13941ed111d520dc8017))
+
 ## [0.3.1-a.2](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/ttkode-v0.3.0-a.2...ttkode-v0.3.1-a.2) (2025-04-29)
 
 
