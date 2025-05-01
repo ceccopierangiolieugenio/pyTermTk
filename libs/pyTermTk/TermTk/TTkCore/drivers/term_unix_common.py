@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__all__ = ['TTkTerm']
+__all__ = ['_TTkTerm']
 
 import sys, os, signal
 from threading import Thread, Lock
@@ -33,7 +33,7 @@ except Exception as e:
 from ..TTkTerm.term_base import TTkTermBase
 from TermTk.TTkCore.log import TTkLog
 
-class TTkTerm(TTkTermBase):
+class _TTkTerm(TTkTermBase):
     _sigWinChCb = None
 
     # Save treminal attributes during the initialization in order to
@@ -47,46 +47,20 @@ class TTkTerm(TTkTermBase):
     _termAttrBk = []
     @staticmethod
     def saveTermAttr():
-        TTkTerm._termAttrBk.append(termios.tcgetattr(sys.stdin))
+        _TTkTerm._termAttrBk.append(termios.tcgetattr(sys.stdin))
 
     @staticmethod
     def restoreTermAttr():
-        if TTkTerm._termAttrBk:
-            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttrBk.pop())
-        elif TTkTerm._termAttr:
-            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
-
-    @staticmethod
-    def _setSigmask(mask, value=True):
-        attr = termios.tcgetattr(sys.stdin)
-        if mask & TTkTerm.Sigmask.CTRL_C:
-            attr[6][termios.VINTR]=  b'\x03' if value else 0
-        if mask & TTkTerm.Sigmask.CTRL_S:
-            attr[6][termios.VSTOP]=  b'\x13' if value else 0
-        if mask & TTkTerm.Sigmask.CTRL_Z:
-            attr[6][termios.VSUSP]=  b'\x1a' if value else 0
-        if mask & TTkTerm.Sigmask.CTRL_Q:
-            attr[6][termios.VSTART]= b'\x11' if value else 0
-        if mask & TTkTerm.Sigmask.CTRL_Y:
-            attr[6][termios.VDSUSP]= b'\x19' if value else 0
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attr)
-    TTkTermBase.setSigmask = _setSigmask
-
-    @staticmethod
-    def getSigmask():
-        mask = 0x00
-        attr = termios.tcgetattr(sys.stdin)
-        mask |= TTkTerm.Sigmask.CTRL_C if attr[6][termios.VINTR]  else 0
-        mask |= TTkTerm.Sigmask.CTRL_S if attr[6][termios.VSTOP]  else 0
-        mask |= TTkTerm.Sigmask.CTRL_Z if attr[6][termios.VSUSP]  else 0
-        mask |= TTkTerm.Sigmask.CTRL_Q if attr[6][termios.VSTART] else 0
-        return mask
+        if _TTkTerm._termAttrBk:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, _TTkTerm._termAttrBk.pop())
+        elif _TTkTerm._termAttr:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, _TTkTerm._termAttr)
 
     @staticmethod
     def exit():
         TTkTermBase.exit()
-        if TTkTerm._termAttr:
-            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, TTkTerm._termAttr)
+        if _TTkTerm._termAttr:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, _TTkTerm._termAttr)
 
     @staticmethod
     def _push(*args):
@@ -136,21 +110,21 @@ class TTkTerm(TTkTermBase):
 
     @staticmethod
     def _sigWinChThreaded():
-        if not TTkTerm._sigWinChMutex.acquire(blocking=False): return
-        while (TTkTerm.width, TTkTerm.height) != (wh:=TTkTerm.getTerminalSize()):
-            TTkTerm.width, TTkTerm.height = wh
-            if TTkTerm._sigWinChCb is not None:
-                TTkTerm._sigWinChCb(TTkTerm.width, TTkTerm.height)
-        TTkTerm._sigWinChMutex.release()
+        if not _TTkTerm._sigWinChMutex.acquire(blocking=False): return
+        while (_TTkTerm.width, _TTkTerm.height) != (wh:=_TTkTerm.getTerminalSize()):
+            _TTkTerm.width, _TTkTerm.height = wh
+            if _TTkTerm._sigWinChCb is not None:
+                _TTkTerm._sigWinChCb(_TTkTerm.width, _TTkTerm.height)
+        _TTkTerm._sigWinChMutex.release()
 
     @staticmethod
     def _sigWinCh(signum, frame):
-        Thread(target=TTkTerm._sigWinChThreaded).start()
+        Thread(target=_TTkTerm._sigWinChThreaded).start()
 
     @staticmethod
     def _registerResizeCb(callback):
-        TTkTerm._sigWinChCb = callback
+        _TTkTerm._sigWinChCb = callback
         # Dummy call to retrieve the terminal size
-        TTkTerm._sigWinCh(signal.SIGWINCH, None)
-        signal.signal(signal.SIGWINCH, TTkTerm._sigWinCh)
+        _TTkTerm._sigWinCh(signal.SIGWINCH, None)
+        signal.signal(signal.SIGWINCH, _TTkTerm._sigWinCh)
     TTkTermBase.registerResizeCb = _registerResizeCb

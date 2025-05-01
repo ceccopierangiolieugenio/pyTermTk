@@ -152,6 +152,7 @@ class TTkTermBase():
     # those methods are supposed to be overwritten with the
     # compatible one in "term_unix.py" or "term_pyodide.py"
     setSigmask = lambda *args: None
+    getSigmask = lambda *args: 0x00
     push       = lambda *args: None
     flush      = lambda *args: None
     setEcho    = lambda *args: None

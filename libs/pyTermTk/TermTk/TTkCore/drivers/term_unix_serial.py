@@ -23,7 +23,7 @@
 __all__ = ['TTkTerm']
 
 from ..TTkTerm.term_base import TTkTermBase
-from .term_unix import *
+from .term_unix_linux import *
 
 class _TTkTermSerial():
     @staticmethod
