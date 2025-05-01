@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.42.0-a.0...pyTermTk-v0.42.1-a.0) (2025-05-01)
+
+
+### Fixes
+
+* **driver:** allow different signal masks between darwin and Linux ([7fc8725](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/7fc8725ced906fb120bc086ffac10cb607859039))
+
 ## [0.42.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.41.18-a.0...pyTermTk-v0.42.0-a.0) (2025-04-29)
 
 
