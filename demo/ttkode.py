@@ -116,8 +116,9 @@ def main():
 
     def _reportClose(tab:ttk.TTkTabWidget, num:int):
         ttk.TTkLog.debug(f"DEL: {num} - {tab} - {tab.widget(num).text()}")
+        tab.removeTab(num)
 
-    kodeTab.tabCloseRequested.connect(_reportClose)
+    kodeTab.kodeTabCloseRequested.connect(_reportClose)
 
     root.mainloop()
 

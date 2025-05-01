@@ -747,7 +747,6 @@ class TTkTabWidget(TTkFrame):
 
         self.rootLayout().addItem(self._tabBarTopLayout)
         self._tabBarTopLayout.setGeometry(0,0,self._width,self._padt)
-        self._tabBar.tabCloseRequested.connect(self.removeTab)
         # forwarded methods
         self.currentIndex    = self._tabBar.currentIndex
         self.setCurrentIndex = self._tabBar.setCurrentIndex
@@ -759,7 +758,7 @@ class TTkTabWidget(TTkFrame):
         # forwarded Signals
         self.currentChanged    = self._tabBar.currentChanged
         self.tabBarClicked     = self._tabBar.tabBarClicked
-        self.tabCloseRequested = pyTTkSignal(int)
+        self.tabCloseRequested = self._tabBar.tabCloseRequested
 
         self.focusChanged.connect(self._focusChanged)
 
@@ -902,7 +901,6 @@ class TTkTabWidget(TTkFrame):
     @pyTTkSlot(int)
     def removeTab(self, index) -> None:
         '''removeTab'''
-        self.tabCloseRequested.emit(index)
         self.layout().removeWidget(self._tabWidgets[index])
         self._tabWidgets.pop(index)
         self._tabBar.removeTab(index)

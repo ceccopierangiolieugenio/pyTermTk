@@ -159,6 +159,11 @@ class TTKode(ttk.TTkGridLayout):
 
         fileTree.fileActivated.connect(lambda x: self._openFile(x.path()))
         self._kodeTab.tabAdded.connect(self._tabAdded)
+        self._kodeTab.kodeTabCloseRequested.connect(self._handleTabCloseRequested)
+
+    @ttk.pyTTkSlot(ttk.TTkTabWidget, int)
+    def _handleTabCloseRequested(self, tab:ttk.TTkTabWidget, num:int):
+        tab.removeTab(num)
 
     def _getTabButtonFromWidget(self, widget:ttk.TTkWidget) -> ttk.TTkTabButton:
         for item, tab in self._kodeTab.iterWidgets():

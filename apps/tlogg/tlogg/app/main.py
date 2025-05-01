@@ -70,7 +70,7 @@ class TLOGG(TTkGridLayout):
 
         self.addWidget(appTemplate:=TTkAppTemplate(border=False))
 
-        self._kodeTab      = TTkKodeTab(border=False, closable=True)
+        self._kodeTab = TTkKodeTab(border=False, closable=True)
 
         appTemplate.setMenuBar(appMenuBar:=TTkMenuBarLayout(), TTkAppTemplate.LEFT)
         fileMenu      = appMenuBar.addMenu("&File")
@@ -96,6 +96,7 @@ class TLOGG(TTkGridLayout):
             tloggProxy.tloggFocussed.emit(None, data)
 
         self._kodeTab.currentChanged.connect(_tabChanged)
+        self._kodeTab.kodeTabCloseRequested.connect(self._handleTabCloseRequested)
 
         # fileTree.fileActivated.connect(lambda x: self.openFile(x.path()))
 
@@ -115,6 +116,10 @@ class TLOGG(TTkGridLayout):
 
         appTemplate.setWidget(self._kodeTab, TTkAppTemplate.MAIN)
         appTemplate.setWidget(TTkLogViewer(),TTkAppTemplate.BOTTOM,size=1,title="Logs")
+
+    @ttk.pyTTkSlot(TTkTabWidget, int)
+    def _handleTabCloseRequested(self, tab:TTkTabWidget, num:int):
+        tab.removeTab(num)
 
     @pyTTkSlot()
     def scratchpad(self):

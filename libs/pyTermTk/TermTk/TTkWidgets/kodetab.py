@@ -52,17 +52,22 @@ _splitter_NERD_1_style = {
     }
 class _TTkKodeTab(TTkTabWidget):
     __slots__ = (
-        '_frameOverlay','_baseWidget')
+        '_frameOverlay','_baseWidget',
+        #Signals
+        'kodeTabCloseRequested')
     def __init__(self, *,
                  baseWidget=None,
                  **kwargs) -> None:
+        self.kodeTabCloseRequested = pyTTkSignal(_TTkKodeTab,int)
         self._baseWidget:TTkKodeTab = baseWidget
         self._frameOverlay = None
         super().__init__(**kwargs)
         self.tabBarClicked.connect(    lambda i:self._baseWidget.tabBarClicked.emit(    self, i, self.widget(i), self.tabData(i)))
         self.currentChanged.connect(   lambda i:self._baseWidget.currentChanged.emit(   self, i, self.widget(i), self.tabData(i)))
-        self.tabCloseRequested.connect(lambda i:self._baseWidget.tabCloseRequested.emit(self, i))
-        self.tabCloseRequested.connect(         self._kodeTabClosed)
+        self.tabCloseRequested.connect(self._handleTabCloseRequested)
+
+    def _handleTabCloseRequested(self, index):
+        self.kodeTabCloseRequested.emit(self,index)
 
     def _hasMenu(self):
         return True if (self._topLeftLayout or self._topRightLayout) else False
@@ -112,7 +117,7 @@ class _TTkKodeTab(TTkTabWidget):
         elif y>h*3//4:
             self._frameOverlay = (0,k+h-h//4,w,h//4)
         else:
-            self._frameOverlay = None
+            self._frameOverlay = (0,k,w,h)
         self.update()
         return True
 
@@ -133,10 +138,12 @@ class _TTkKodeTab(TTkTabWidget):
             index = splitter.indexOf(self)
             if splitter.orientation() != orientation:
                 splitter.replaceWidget(index, splitter := TTkSplitter(orientation=orientation, style=self.parentWidget().classStyle))
+                splitter.mergeStyle(_splitter_NERD_1_style)
                 splitter.addWidget(self)
                 index=offset
             splitter.insertWidget(index+offset, kt:=_TTkKodeTab(baseWidget=self._baseWidget, border=self.border(), barType=self._barType, closable=self.tabsClosable()))
             kt._dropEventProxy = self._dropEventProxy
+            kt.kodeTabCloseRequested.connect(self._baseWidget._handleKodeTabCloseRequested)
             ret = kt.addTab(widget,label)
             self._baseWidget.tabAdded.emit(kt, ret)
             if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
@@ -206,6 +213,7 @@ class _TTkKodeTab(TTkTabWidget):
                     widget = splitter
                     splitter = widget.parentWidget()
                 splitter.removeWidget(widget)
+                widget.kodeTabCloseRequested.clear()
                 if splitter == self._baseWidget and splitter.count() == 0:
                     splitter.addWidget(self)
         if fwold!=(fwnew := self._baseWidget._getFirstWidget()) and fwold._hasMenu():
@@ -224,26 +232,33 @@ class TTkKodeTab(TTkSplitter):
     __slots__ = (
         '_lastKodeTabWidget', '_barType',
         # Signals
-        'currentChanged','tabBarClicked','tabCloseRequested', 'tabAdded' )
+        'currentChanged','tabBarClicked','kodeTabCloseRequested', 'tabAdded' )
 
     def __init__(self,
                  barType:TTkBarType=TTkBarType.NONE,
                  **kwargs) -> None:
         self.currentChanged    = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
         self.tabBarClicked     = pyTTkSignal(TTkTabWidget,int,TTkWidget,object)
-        self.tabCloseRequested = pyTTkSignal(TTkTabWidget,int)
+        self.kodeTabCloseRequested = pyTTkSignal(TTkTabWidget,int)
         self.tabAdded = pyTTkSignal(TTkTabWidget, int)
         self._barType = barType
 
-        self.classStyle |= _splitter_NERD_1_style
-
         super().__init__(**kwargs|{'layout':TTkGridLayout()})
+
+        self.mergeStyle(_splitter_NERD_1_style)
         kwargs.pop('parent',None)
         kwargs.pop('visible',None)
         # self.layout().addWidget(splitter := TTkSplitter())
-        self._lastKodeTabWidget = _TTkKodeTab(baseWidget=self, barType=self._barType, **kwargs)
+        self._lastKodeTabWidget = kt = _TTkKodeTab(baseWidget=self, barType=self._barType, **kwargs)
         self._lastKodeTabWidget._dropEventProxy = self._dropEventProxy
         self.addWidget(self._lastKodeTabWidget)
+        kt.kodeTabCloseRequested.connect(self._handleKodeTabCloseRequested)
+
+    @pyTTkSlot(_TTkKodeTab,int)
+    def _handleKodeTabCloseRequested(self, kt:_TTkKodeTab, index:int) -> None:
+        TTkLog.debug(f"{kt} -> {index}")
+        self.kodeTabCloseRequested.emit(kt, index)
+        # kt.removeTab(index)
 
     def _getFirstWidget(self):
         kt = self
