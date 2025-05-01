@@ -70,10 +70,17 @@ __check(){
             -e "drivers/term_windows.py:from threading import Thread, Lock" \
             -e "drivers/term_windows.py:from ..TTkTerm.term_base import TTkTermBase" \
             -e "drivers/term_windows.py:from .windows import *" \
-            -e "drivers/term_unix.py:from ..TTkTerm.term_base import TTkTermBase" \
-            -e "drivers/term_unix.py:from threading import Thread, Lock" \
             -e "drivers/term_unix_serial.py:from ..TTkTerm.term_base import TTkTermBase" \
             -e "drivers/term_unix_serial.py:from .term_unix import *" \
+            -e "drivers/term_unix_common.py:from threading import Thread, Lock" \
+            -e "drivers/term_unix_common.py:from ..TTkTerm.term_base import TTkTermBase" \
+            -e "drivers/term_unix_darwin.py:import sys" \
+            -e "drivers/term_unix_darwin.py:from ..TTkTerm.term_base import TTkTermBase" \
+            -e "drivers/term_unix_darwin.py:from .term_unix_common import _TTkTerm" \
+            -e "drivers/term_unix_linux.py:import sys" \
+            -e "drivers/term_unix_linux.py:from ..TTkTerm.term_base import TTkTermBase" \
+            -e "drivers/term_unix_linux.py:from .term_unix_common import _TTkTerm" \
+            -e "drivers/term_unix_serial.py:from .term_unix_linux import *" \
             -e "drivers/unix_gpm.py:import sys" \
             -e "drivers/unix_gpm.py:import os" \
             -e "drivers/unix_gpm.py:import re" \
