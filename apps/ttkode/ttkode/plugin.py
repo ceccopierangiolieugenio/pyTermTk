@@ -23,7 +23,7 @@
 __all__ = ['TTkodePlugin', 'TTkodePluginActivity']
 
 from dataclasses import dataclass
-from typing import Callable, Self, List, Optional, Union
+from typing import Callable, List, Optional, Union
 from enum import Enum
 
 import TermTk as ttk
