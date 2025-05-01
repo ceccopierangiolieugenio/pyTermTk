@@ -29,7 +29,7 @@ from enum import Enum
 import TermTk as ttk
 
 class TTkodePlugin():
-    instances: List['Self'] = []
+    instances: List = []
     def __init__(
             self,
             name   : str,
