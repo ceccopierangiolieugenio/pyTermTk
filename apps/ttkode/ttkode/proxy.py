@@ -26,7 +26,7 @@ from typing import Optional, Callable, Any
 
 import TermTk as ttk
 
-from ttkode.app.ttkode import TTKode
+from ttkode.app.ttkode import TTKode, TTKodeWidget
 
 class TTKodeViewerProxy():
     __slots__ = ('_fileName')
@@ -55,6 +55,21 @@ class TTKodeProxy():
         if not self._ttkode:
             raise Exception("TTkode uninitialized")
         return self._ttkode
+
+    def iterWidgets(self, widType=TTKodeWidget):
+        if not self._ttkode:
+            return
+        for kt, index in self._ttkode._kodeTab.iterItems():
+            if issubclass(type(wid:=kt.widget(index)), widType):
+                yield wid
+
+    @ttk.pyTTkSlot(TTKodeWidget)
+    def closeTab(self, widget:TTKodeWidget) -> None:
+        if not self._ttkode:
+            return
+        for kt, index in self._ttkode._kodeTab.iterItems():
+            if kt.widget(index)==widget:
+                kt.removeTab(index)
 
     def setOpenFile(self, cb):
         self._openFileCb = cb

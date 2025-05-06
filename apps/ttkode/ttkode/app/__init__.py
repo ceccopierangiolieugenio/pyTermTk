@@ -23,4 +23,4 @@
 
 from .cfg import *
 # from .glbl import *
-from .ttkode import *
+from .ttkode import TTKode, TTKodeWidget
