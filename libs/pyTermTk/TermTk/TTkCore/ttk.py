@@ -191,8 +191,9 @@ class TTk(TTkContainer):
                 TTkHelper.quitEvent.emit()
                 if self._timer:
                     self._timer.timeout.disconnect(self._time_event)
+                    self._timer.quit()
                     self._paintEvent.set()
-                    self._timer.join()
+                    # self._timer.join()
                 TTkSignalDriver.exit()
                 self.quit()
                 TTkTerm.exit()
