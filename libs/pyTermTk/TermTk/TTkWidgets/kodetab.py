@@ -22,7 +22,7 @@
 
 __all__ = ['TTkKodeTab']
 
-from typing import Callable
+from typing import Callable, Iterator, Tuple
 
 from TermTk.TTkCore.constant import  TTkK
 from TermTk.TTkCore.helper import  TTkHelper
@@ -86,9 +86,9 @@ class _TTkKodeTab(TTkTabWidget):
         self._tabBarTopLayout.update()
         kt._tabBarTopLayout.update()
 
-    def iterWidgets(self):
+    def iterItems(self):
         for i in range(self.count()):
-            yield self.widget(i), self.tabButton(i)
+            yield self, i
 
     def dragEnterEvent(self, evt:TTkDnDEvent) -> bool:
         TTkLog.debug(f"Drag Enter")
@@ -266,14 +266,14 @@ class TTkKodeTab(TTkSplitter):
         while type(item:=kt.widget(0)) != _TTkKodeTab: kt = item
         return item if type(item)==_TTkKodeTab else None
 
-    def iterWidgets(self):
+    def iterItems(self) -> Iterator[Tuple[_TTkKodeTab, int]]:
         def _iterSplitter(split:TTkSplitter):
             for i in range(split.count()):
                 _wid = split.widget(i)
                 if issubclass(type(_wid), TTkSplitter):
                     yield from _iterSplitter(_wid)
                 elif issubclass(type(_wid), _TTkKodeTab):
-                    yield from _wid.iterWidgets()
+                    yield from _wid.iterItems()
         yield from _iterSplitter(self)
 
     def setDropEventProxy(self, proxy:Callable) -> None:
