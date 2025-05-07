@@ -48,15 +48,20 @@ class TTKodeFileWidgetItem(ttk.TTkTreeWidgetItem):
 class _TextDocument(ttk.TextDocumentHighlight):
     __slots__ = ('_filePath', '_tabText',
                  'fileChangedStatus', '_changedStatus', '_savedSnapshot')
-    def __init__(self, filePath:str="", tabText:ttk.TTkString=ttk.TTkString(), **kwargs):
+    def __init__(self, filePath:str="", **kwargs):
         self.fileChangedStatus:ttk.pyTTkSignal = ttk.pyTTkSignal(bool, _TextDocument)
         self._filePath:str = filePath
-        self._tabText = tabText
         self._changedStatus:bool = False
+        self._genTabText()
         super().__init__(**kwargs)
         self._savedSnapshot = self.snapshootId()
         self.guessLexerFromFilename(filePath)
         self.contentsChanged.connect(self._handleContentChanged)
+
+    def _genTabText(self):
+        self._tabText = (
+            ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(self._filePath),ttk.TTkCfg.theme.fileIconColor) +
+            ttk.TTkColor.RST + " " + os.path.basename(self._filePath) )
 
     def isChanged(self) -> bool:
         return self._changedStatus
@@ -76,12 +81,15 @@ class _TextDocument(ttk.TextDocumentHighlight):
             ttk.TTkLog.debug(f"{self.isUndoAvailable()=} == {self._changedStatus=}")
             self.fileChangedStatus.emit(self._changedStatus, self)
 
-    def save(self):
+    def save(self) -> None:
         self._changedStatus = False
         self._savedSnapshot = self.snapshootId()
         self.fileChangedStatus.emit(self._changedStatus, self)
-        pass
 
+    def saveToFile(self, fileName:str) -> None:
+        self._filePath = fileName
+        self._genTabText()
+        self.save()
 class _TextEdit(ttk.TTkTextEdit, TTKodeWidget):
     __slots__ = ('docFocussed')
     def __init__(self, **kwargs):
@@ -168,6 +176,8 @@ class TTKode(ttk.TTkGridLayout):
         appTemplate.setMenuBar(appMenuBar:=ttk.TTkMenuBarLayout(), ttk.TTkAppTemplate.MAIN)
         fileMenu = appMenuBar.addMenu("&File")
         fileMenu.addMenu("Open").menuButtonClicked.connect(self._showFileDialog)
+        fileMenu.addMenu("&Save").menuButtonClicked.connect(self.saveLastDoc)
+        fileMenu.addMenu("Save &As...").menuButtonClicked.connect(self.saveLastDocAs)
         fileMenu.addMenu("Close") # .menuButtonClicked.connect(self._closeFile)
         fileMenu.addMenu("Exit").menuButtonClicked.connect(lambda _:ttk.TTkHelper.quit())
 
@@ -210,7 +220,7 @@ class TTKode(ttk.TTkGridLayout):
         self._kodeTab.tabAdded.connect(self._tabAdded)
         self._kodeTab.kodeTabCloseRequested.connect(self._handleTabCloseRequested)
 
-        ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_S).activated.connect(self.save)
+        ttk.TTkShortcut(ttk.TTkK.CTRL | ttk.TTkK.Key_S).activated.connect(self.saveLastDoc)
 
 
     @ttk.pyTTkSlot(_TextDocument)
@@ -218,9 +228,44 @@ class TTKode(ttk.TTkGridLayout):
         self._lastDoc = doc
 
     @ttk.pyTTkSlot()
-    def save(self):
+    def saveLastDoc(self):
         if self._lastDoc:
             self._lastDoc.save()
+
+    @ttk.pyTTkSlot()
+    def saveLastDocAs(self):
+        if not self._lastDoc:
+            return
+        def _approveFile(fileName):
+            if os.path.exists(fileName):
+                @ttk.pyTTkSlot(ttk.TTkMessageBox.StandardButton)
+                def _cb(btn):
+                    if btn == ttk.TTkMessageBox.StandardButton.Save:
+                        self._lastDoc.saveToFile(fileName)
+                    elif btn == ttk.TTkMessageBox.StandardButton.Cancel:
+                        return
+                messageBox = ttk.TTkMessageBox(
+                    text= (
+                        ttk.TTkString( f'A file named "{os.path.basename(fileName)}" already exists.\nDo you want to replace it?', ttk.TTkColor.BOLD) +
+                        ttk.TTkString( f'\n\nReplacing it will overwrite its contents.') ),
+                    icon=ttk.TTkMessageBox.Icon.Warning,
+                    standardButtons=
+                        ttk.TTkMessageBox.StandardButton.Discard|
+                        ttk.TTkMessageBox.StandardButton.Save|
+                        ttk.TTkMessageBox.StandardButton.Cancel)
+                messageBox.buttonSelected.connect(_cb)
+                ttk.TTkHelper.overlay(None, messageBox, 5, 5, True)
+            else:
+                self._lastDoc.saveToFile(fileName)
+        filePicker = ttk.TTkFileDialogPicker(
+                pos = (3,3), size=(80,30),
+                acceptMode=ttk.TTkK.AcceptMode.AcceptSave,
+                caption="Save As...",
+                path=self._lastDoc._filePath,
+                fileMode=ttk.TTkK.FileMode.AnyFile ,
+                filter="All Files (*)")
+        filePicker.pathPicked.connect(_approveFile)
+        ttk.TTkHelper.overlay(None, filePicker, 5, 5, True)
 
     @ttk.pyTTkSlot(ttk.TTkTabWidget, int)
     def _handleTabCloseRequested(self, tab:ttk.TTkTabWidget, num:int):
@@ -255,8 +300,7 @@ class TTKode(ttk.TTkGridLayout):
                         return doc, wid
         with open(filePath, 'r') as f:
             content = f.read()
-        tabText = ttk.TTkString(ttk.TTkCfg.theme.fileIcon.getIcon(filePath),ttk.TTkCfg.theme.fileIconColor) + ttk.TTkColor.RST + " " + os.path.basename(filePath)
-        td = _TextDocument(text=content, filePath=filePath, tabText=tabText)
+        td = _TextDocument(text=content, filePath=filePath)
         td.fileChangedStatus.connect(self._handleFileChangedStatus)
         return td, None
 
@@ -267,6 +311,7 @@ class TTKode(ttk.TTkGridLayout):
             if issubclass(type(wid:=kt.widget(index)), _TextEdit):
                 if doc == wid.document():
                     kt.tabButton(index).mergeStyle(doc.getTabButtonStyle())
+                    kt.tabButton(index).setText(doc._tabText)
 
     def _openFile(self, filePath, line:int=0, pos:int=0):
         filePath = os.path.realpath(filePath)
