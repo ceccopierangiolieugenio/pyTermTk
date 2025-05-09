@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import annotations
+
 __all__ = ['TTkColor',
            'TTkColorModifier',
            'TTkColorGradient', 'TTkLinearGradient', 'TTkAlternateColor']
@@ -65,11 +67,11 @@ from TermTk.TTkCore.helper import TTkHelper
 
 class _TTkColor:
     __slots__ = ('_fg','_bg', '_colorMod', '_buffer', '_clean')
-    _fg: tuple[int]
-    _bg: tuple[int]
+    _fg: tuple[int,int,int]
+    _bg: tuple[int,int,int]
     def __init__(self,
-                 fg:tuple[int]=None,
-                 bg:tuple[int]=None,
+                 fg:tuple[int,int,int]=None,
+                 bg:tuple[int,int,int]=None,
                  colorMod=None,
                  clean=False) -> None:
         self._fg  = fg
@@ -236,7 +238,7 @@ class _TTkColor:
                                 clean=True)
         return str(self)
 
-    def modParam(self, *args, **kwargs) -> None:
+    def modParam(self, *args, **kwargs) -> _TTkColor:
         if not self._colorMod: return self
         ret = self.copy()
         ret._colorMod.setParam(*args, **kwargs)
@@ -267,19 +269,19 @@ class _TTkColor_mod(_TTkColor):
         self._clean = self._clean and not mod
 
     def bold(self) -> bool:
-        return  self._mod & TTkTermColor.BOLD
+        return  bool(self._mod & TTkTermColor.BOLD)
 
     def italic(self) -> bool:
-        return  self._mod & TTkTermColor.ITALIC
+        return  bool(self._mod & TTkTermColor.ITALIC)
 
     def underline(self) -> bool:
-        return  self._mod & TTkTermColor.UNDERLINE
+        return  bool(self._mod & TTkTermColor.UNDERLINE)
 
     def strikethrough(self) -> bool:
-        return  self._mod & TTkTermColor.STRIKETROUGH
+        return  bool(self._mod & TTkTermColor.STRIKETROUGH)
 
     def blinking(self) -> bool:
-        return  self._mod & TTkTermColor.BLINKING
+        return  bool(self._mod & TTkTermColor.BLINKING)
 
     def colorType(self):
         return (
@@ -683,7 +685,7 @@ class TTkColor(_TTkColor):
             return _TTkColor(fg=fg, bg=bg, clean=clean)
 
     @staticmethod
-    def fg(*args, **kwargs) -> None:
+    def fg(*args, **kwargs) -> _TTkColor:
         ''' Helper to generate a Foreground color
 
         Example:
@@ -713,7 +715,7 @@ class TTkColor(_TTkColor):
             return _TTkColor(fg=TTkColor.hexToRGB(color), colorMod=mod)
 
     @staticmethod
-    def bg(*args, **kwargs) -> None:
+    def bg(*args, **kwargs) -> _TTkColor:
         ''' Helper to generate a Background color
 
         Example:
@@ -743,7 +745,7 @@ class TTkColor(_TTkColor):
             return _TTkColor(bg=TTkColor.hexToRGB(color), colorMod=mod)
 
     @staticmethod
-    def fgbg(fg:str='', bg:str='', link:str='', modifier:TTkColorModifier=None):
+    def fgbg(fg:str='', bg:str='', link:str='', modifier:TTkColorModifier=None) -> _TTkColor:
         ''' Helper to generate a Background color
 
         Example:
@@ -772,13 +774,13 @@ class TTkAlternateColor(TTkColorModifier):
     '''TTkAlternateColor'''
 
     __slots__ = ('_alternateColor')
-    def __init__(self, alternateColor:TTkColor=TTkColor.RST, **kwargs) -> None:
+    def __init__(self, alternateColor:_TTkColor=TTkColor.RST, **kwargs) -> None:
         super().__init__(**kwargs)
         self.setParam(alternateColor)
 
-    def setParam(self, alternateColor:TTkColor):
+    def setParam(self, alternateColor:_TTkColor):
         self._alternateColor = alternateColor
 
-    def exec(self, x:int, y:int, base_color:TTkColor) -> TTkColor:
+    def exec(self, x:int, y:int, base_color:_TTkColor) -> _TTkColor:
         if y%2: return self._alternateColor
         else:   return base_color.copy(modifier=False)
