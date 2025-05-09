@@ -24,4 +24,4 @@ __version__:str = '0.5.0-a.0'
 
 from .plugin import TloggPlugin
 from .proxy import tloggProxy, TloggViewerProxy
-from .helper import *
+from .helper import TloggHelper

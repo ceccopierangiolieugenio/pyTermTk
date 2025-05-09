@@ -22,7 +22,57 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .app import main
+__all__ = []
+
+import argparse
+import appdirs
+
+import TermTk as ttk
+
+from tlogg.app.main import TLOGG
+from tlogg.app.cfg import TloggCfg
+from tlogg.app.options import optionsLoadTheme
+
+from tlogg.proxy import tloggProxy
+from tlogg.helper import TloggHelper
+
+def main():
+    TloggCfg.pathCfg = appdirs.user_config_dir("tlogg")
+
+    parser = argparse.ArgumentParser()
+    # parser.add_argument('-f', help='Full Screen', action='store_true')
+    parser.add_argument('-c', help=f'config folder (default: "{TloggCfg.pathCfg}")', default=TloggCfg.pathCfg)
+    parser.add_argument('filename', type=str, nargs='*',
+                    help='the filename/s')
+    args = parser.parse_args()
+
+    # TTkLog.use_default_file_logging()
+
+    TloggCfg.pathCfg = args.c
+    ttk.TTkLog.debug(f"Config Path: {TloggCfg.pathCfg}")
+
+    TloggCfg.load()
+
+    if 'theme' not in TloggCfg.options:
+        TloggCfg.options['theme'] = 'UTF8'
+    optionsLoadTheme(TloggCfg.options['theme'])
+
+    TloggHelper._loadPlugins()
+
+    root = ttk.TTk(
+            title="tlogg",
+            layout=(tlogg:=TLOGG(tloggProxy=tloggProxy)),
+            sigmask=(
+                ttk.TTkTerm.Sigmask.CTRL_C |
+                ttk.TTkTerm.Sigmask.CTRL_Q |
+                ttk.TTkTerm.Sigmask.CTRL_S |
+                ttk.TTkTerm.Sigmask.CTRL_Z ))
+    TloggHelper._runPlugins()
+
+    for file in args.filename:
+        tlogg.openFile(file)
+
+    root.mainloop()
 
 if __name__ == '__main__':
     main()
