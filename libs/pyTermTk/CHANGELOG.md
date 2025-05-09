@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.43.0-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.42.1-a.0...pyTermTk-v0.43.0-a.0) (2025-05-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **kodeTab:** reworked iterWidget in iterItems
+* **TabWidget:** tab request close  event need to be handled inside the app
+
+### Chores
+
+* **kodeTab:** reworked iterWidget in iterItems ([47f73fc](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/47f73fc03a5a049ac3e6073dcadc09018b509328))
+* **ttk:** workaround timer disconnect in case of error ([d70b2c1](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/d70b2c1c3cf25f7ffb479bc2850b3c9a3ca0fe0c))
+
+
+### Refactors
+
+* **TabWidget:** tab request close  event need to be handled inside the app ([9420adf](https://github.com/ceccopierangiolieugenio/pyTermTk/commit/9420adf68e2184482cd71266f280c560ea911f45))
+
 ## [0.42.1-a.0](https://github.com/ceccopierangiolieugenio/pyTermTk/compare/pyTermTk-v0.42.0-a.0...pyTermTk-v0.42.1-a.0) (2025-05-01)
 
 
