@@ -40,7 +40,9 @@ Changelog  = "https://github.com/ceccopierangiolieugenio/pyTermTk/blob/main/apps
 tlogg = "tlogg.__main__:main"
 
 [tool.setuptools]
-packages = ["tlogg", "tlogg.app", "tlogg.plugins"]
+packages = [
+    "tlogg", "tlogg.app",
+    "tlogg.plugins"]
 
 [tool.setuptools.dynamic]
 version = {attr = "tlogg.__version__"}
