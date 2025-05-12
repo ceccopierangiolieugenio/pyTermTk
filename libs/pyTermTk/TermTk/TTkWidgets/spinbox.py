@@ -110,14 +110,18 @@ class TTkSpinBox(TTkContainer):
     @staticmethod
     def _isFloat(num):
         try:
-            float(str(num))
-            return True
-        except:
+            int(str(num))
             return False
+        except:
+            return True
 
     @pyTTkSlot(str)
     def _textEdited(self, text):
-        if self._isFloat(text):
+        if text == '-':
+            return
+        if not text:
+            self.setValue(0)
+        elif self._isFloat(text):
             self.setValue(float(str(text)))
         else:
             self.setValue(int(str(text)))
